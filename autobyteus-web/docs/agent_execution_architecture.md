@@ -480,6 +480,9 @@ the depth-first execution projection and derives sibling continuation metadata.
 `WorkspaceHierarchyBranches.vue` renders continuous ancestor rails and a
 right-only current elbow from that metadata; the current vertical continues to
 the next sibling or stops at the current row midpoint for the last sibling.
+A two-line Task-worker row (with its [Task summary](./projects.md#task-summaries-in-the-workspaces-tree))
+uses `anchor="name-line"`: the elbow, and a last sibling's vertical, meet the
+name line instead of the row midpoint.
 These branches are presentation-only and do not create or rewrite topology.
 Selecting either a stable or transient Workspaces row uses the existing
 team-member inspection path. `TeamExecutionViewState` is the sole authority for
@@ -1089,6 +1092,16 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus canonical `agentRunId`) rather than assuming the root TeamRun owns every nested member; the draft owner remains the launch/root draft scope. Org owners use the exact `orgRunId` plus canonical `agentRunId`, captured before awaiting preparation. A missing exact Team location or Org owner fails rather than guessing a configured member. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the store replaces draft uploaded descriptors with final run/member locators on the already-visible canonical reactive local message before runtime send. The submission handle retains that same proxy so the mounted chip observes the update.
 6. After finalization, `contextAttachmentSend.planContextAttachmentSubmission` is the only executable partition. The optimistic local message retains every current attachment, while only eligible current kinds enter `context_file_paths` or `image_urls`. A newly unsupported local locator remains visible/removable in the current composer/message and identity-matched live echo, but is excluded from every runtime/server media array and may disappear after a fresh reload because there is deliberately no metadata-only persistence transport. Historical unsupported records remain readable as non-executable metadata.
 7. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
+8. Removal follows one rule for every run kind: standalone, New chat, Team and sub-Team member, Org member, delegated Agent copy and delegated Team-copy member. `ContextFileUploadStore.deleteDraftAttachment(attachment)` sends `DELETE` to the attachment's own draft locator. It resolves the locator with `utils/contextFiles/contextAttachmentUrl.ts` and sends the request through `authorizedFetch`, and it throws the server `detail` on a non-2xx response. No client code rebuilds a draft URL from an owner; the per-kind endpoint builder was removed.
+   - The composer (`useContextAttachmentComposer`) deletes the server copy only when the attachment's locator owner equals the target's `draftOwner`.
+   - A draft from another composer, or any draft in a composer without an upload owner, leaves the list without a server call. That file is reclaimed by the 24 h draft TTL.
+   - Path attachments never call the server.
+   - A draft URL pasted from another composer is cloned into the target's own draft. Removing the clone therefore never deletes the source.
+9. Attach and remove failures are composer-local and visible. The composable exposes `attachmentError`, and `ContextFilePathInputArea` renders it as a `role="alert"` line in the Context Files tray naming the file.
+   - A failed delete keeps the item so the user can retry.
+   - The error clears on the next successful attach or remove, or when the target changes.
+   - When the target has no upload owner (`canUpload` false), `+` is disabled with its reason. A pasted or dropped file then shows a message and uploads nothing, while path attachments are still accepted. For example, this applies to an Org task agent while its message is pending.
+   - The store keeps no global error state.
 
 This separation keeps draft attachment transport concerns out of UI components,
 keeps runtime consumers dependent only on finalized eligible locators, and
@@ -1162,7 +1175,7 @@ Org-root/addressed-member and saved-config owners retain draft, registration,
 locking and explicit Send/Run/Save policy. Saved roots do not become editable.
 This replaces the shared form's text-only presentation, not its owners or the
 retired configuration-form stack. See [workspace settings](./settings.md#run-workspace-choice-on-start-surfaces)
-and the [native-picker regression runbook](../../TESTING.md#native-workspace-folder-picker-regression)
+and the [native-picker regression probe](../tests/e2e/workspace-folder-picker-probe.mjs)
 for user behavior and the separate native/controlled test boundaries.
 
 The Existing workspace picker used elsewhere is the shared
@@ -1353,7 +1366,7 @@ other); choosing another model resets both. Thinking semantics stay in
 `llmThinkingConfigAdapter`; `service_tier` is not a thinking key.
 
 `ModelConfigSection` / `RuntimeModelConfigFields` remain only for mobile run
-setup, definition launch preferences and compaction model settings.
+setup and definition launch preferences.
 
 
 ### Skill Improvement Manual Composer Action

@@ -12,6 +12,8 @@ import { PendingCompactionExecutor } from '../../memory/compaction/pending-compa
 import { isAgentInterruptionError } from '../interruption/agent-interruption.js';
 import { resolveTurnToolNames } from './llm-phase-tools.js';
 import { evaluateLlmPhaseCompaction } from './llm-phase-compaction.js';
+import { LlmPhaseSummaryPort } from './llm-phase-summary-port.js';
+import { conversationRequestKwargs, conversationRequestOptions } from './conversation-request.js';
 import {
   applyCompactionPolicy,
   resolveCompactionTokenBudget,
@@ -26,11 +28,24 @@ import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-o
 import { MissingApiKeyError } from '../../secrets/provider-api-key-error.js';
 import { extractProviderErrorEvidence } from '../../llm/errors/provider-error.js';
 import type { ProviderNativeAssistantTurn } from '../../llm/provider-native/provider-native-assistant-turn.js';
+import type { LlmResponseFinish } from '../../llm/utils/llm-response-finish.js';
+import { resolveRequestMaxOutputTokens } from '../../llm/utils/max-output-tokens.js';
+import { OUTPUT_LIMIT_DISCARDED_TOOL_CALL_ERROR } from './output-limit-recovery.js';
 
 export type LlmPhaseOutcome =
   | { kind: 'compaction_blocked' }
   | { kind: 'final'; response: CompleteResponse; isError?: boolean }
-  | { kind: 'tool_invocations'; response: CompleteResponse; toolInvocations: ToolInvocation[] };
+  | { kind: 'tool_invocations'; response: CompleteResponse; toolInvocations: ToolInvocation[] }
+  /** The response hit the output limit. Its text (if any) is kept; its tool calls were discarded. */
+  | { kind: 'output_limited'; response: CompleteResponse; truncatedToolNames: string[]; outputTokenLimit: number | null };
+
+/** Content-filter and context-window stops fail the request clearly (no recovery, no tool runs). */
+const buildResponseStopError = (finish: LlmResponseFinish): Error => {
+  const providerReason = finish.providerReason ? ` (provider reason: ${finish.providerReason})` : '';
+  return finish.reason === 'context_window_exceeded'
+    ? Object.assign(new Error(`The request exceeded the model's context window${providerReason}. Compact or shorten the conversation, then try again.`), { code: 'LLM_CONTEXT_WINDOW_EXCEEDED' })
+    : Object.assign(new Error(`The model refused, or a content filter stopped, the response${providerReason}. No tool was run.`), { code: 'LLM_RESPONSE_REFUSED' });
+};
 
 const resolveLatestPromptTokens = (usage: LlmTokenUsageObservation): number | null => {
   if (usage.input_tokens === null) return null;
@@ -125,7 +140,8 @@ export class LlmPhase {
       );
       const reporter = compactionReporter;
       pendingCompactionExecutor = new PendingCompactionExecutor(memoryManager, {
-        reporter, createCompressionStrategy: automaticCompaction.createCompressionStrategy,
+        reporter,
+        summaryPort: new LlmPhaseSummaryPort({ agentId, llm: llmInstance, tools: toolSchemas, requestCapacity, notifier }),
         maxItemChars: automaticCompaction.policy.maxItemChars,
         onRecoveryStateChanged: (previous) => context.state.compactionRecovery?.publish(previous),
       });
@@ -136,7 +152,7 @@ export class LlmPhase {
       llmInstance.model.multimodalCapabilities,
     );
     const systemPrompt = context.state.processedSystemPrompt ?? llmInstance.config.systemMessage ?? null;
-    const llmCallSequence = turn.toolInvocationBatches.length + 1;
+    const llmCallSequence = turn.nextLlmCallSequence();
     const llmCallId = `${activeTurnId}:llm:${llmCallSequence}`;
 
     let request: RequestPackage;
@@ -145,7 +161,7 @@ export class LlmPhase {
         { kind: 'llm_request_assembly' },
         () => assembler.prepareRequest(
           input.llmUserMessage,
-          { turnId: activeTurnId, requestId: llmCallId, isToolContinuation: turn.toolInvocationBatches.length > 0, getParentModelIdentifier: () => (context.state.llmInstance as BaseLLM).model.modelIdentifier, signal: turn.executionScope.signal },
+          { turnId: activeTurnId, requestId: llmCallId, isTurnContinuation: turn.isContinuation, signal: turn.executionScope.signal },
           systemPrompt ?? undefined,
           toolSchemas,
         )
@@ -182,14 +198,34 @@ export class LlmPhase {
     let parsedToolInvocationCount = 0;
     let streamFinalized = false;
     let completeResponse: CompleteResponse;
+    let finish: LlmResponseFinish | null = null;
+    let truncatedToolNames: string[] | null = null;
+    const notifyTokenUsage = (): void => {
+      if (!tokenUsage) return;
+      const latestPromptTokens = resolveLatestPromptTokens(tokenUsage);
+      notifier?.notifyAgentTokenUsageUpdated({
+        usage: tokenUsage,
+        turn_id: activeTurnId,
+        llm_call_id: llmCallId,
+        call_sequence: llmCallSequence,
+        runtime_kind: 'autobyteus',
+        ingestion_kind: 'autobyteus_llm_phase',
+        idempotency_key: `${agentId}:${llmCallId}`,
+        latest_prompt_tokens: latestPromptTokens,
+        effective_context_window_tokens: requestCapacity?.effectiveContextCapacity ?? null,
+        context_window_usage_percent: percentOf(latestPromptTokens, requestCapacity?.effectiveContextCapacity),
+        // The prompt size at which this agent's automatic compaction triggers; null when it is off.
+        context_compaction_threshold_tokens: compactionTokenBudget?.triggerThresholdTokens ?? null
+      });
+    };
 
     try {
       turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
       turn.executionScope.throwIfAborted({ kind: 'llm_stream_start' });
       const stream = llmInstance.streamMessages(
         request.outboundMessages,
-        { logicalConversationId: agentId, ...(request.tools.length ? { tools: request.tools } : {}) },
-        { promptCacheScope: 'conversation', signal: turn.executionScope.signal, turnId: activeTurnId }
+        conversationRequestKwargs(agentId, request.tools),
+        conversationRequestOptions({ signal: turn.executionScope.signal, turnId: activeTurnId }),
       );
 
       for await (const chunkResponse of turn.executionScope.iterateAbortable(
@@ -203,6 +239,7 @@ export class LlmPhase {
 
         if (chunkResponse.is_complete) {
           tokenUsage = chunkResponse.usage ?? null;
+          finish = chunkResponse.finish;
           if (chunkResponse.image_urls?.length) completeImageUrls.push(...chunkResponse.image_urls);
           if (chunkResponse.audio_urls?.length) completeAudioUrls.push(...chunkResponse.audio_urls);
           if (chunkResponse.video_urls?.length) completeVideoUrls.push(...chunkResponse.video_urls);
@@ -224,56 +261,66 @@ export class LlmPhase {
       }
 
       turn.executionScope.throwIfAborted({ kind: 'llm_stream_finalize' });
-      streamingHandler.finalize();
-      streamFinalized = true;
-      if (currentReasoningPartId) {
-        notifier?.notifyAgentSegmentEvent(SegmentEvent.end(activeTurnId, currentReasoningPartId).toDict());
-        currentReasoningPartId = null;
+      const reportedFinish = finish as LlmResponseFinish | null;
+      if (reportedFinish?.reason === 'content_filter' || reportedFinish?.reason === 'context_window_exceeded') {
+        throw buildResponseStopError(reportedFinish);
       }
-      turn.executionScope.throwIfAborted({ kind: 'post_llm_stream' });
-      completeResponse = new CompleteResponse({
-        content: completeResponseText,
-        reasoning: completeReasoningText || null,
-        usage: tokenUsage,
-        image_urls: completeImageUrls,
-        audio_urls: completeAudioUrls,
-        video_urls: completeVideoUrls,
-        providerNativeAssistantTurn,
-      });
-
-      if (tokenUsage) {
-        const latestPromptTokens = resolveLatestPromptTokens(tokenUsage);
-        notifier?.notifyAgentTokenUsageUpdated({
-          usage: tokenUsage,
-          turn_id: activeTurnId,
-          llm_call_id: llmCallId,
-          call_sequence: llmCallSequence,
-          runtime_kind: 'autobyteus',
-          ingestion_kind: 'autobyteus_llm_phase',
-          idempotency_key: `${agentId}:${llmCallId}`,
-          latest_prompt_tokens: latestPromptTokens,
-          effective_context_window_tokens: requestCapacity?.effectiveContextCapacity ?? null,
-          context_window_usage_percent: percentOf(latestPromptTokens, requestCapacity?.effectiveContextCapacity),
-          // The prompt size at which this agent's automatic compaction triggers; null when it is off.
-          context_compaction_threshold_tokens: compactionTokenBudget?.triggerThresholdTokens ?? null
-        });
-      }
-
-      if (toolCallsEnabled) {
-        const toolInvocations = streamingHandler.getAllInvocations();
-        if (toolInvocations.length) {
-          parsedToolInvocationCount = toolInvocations.length;
-          turn.executionScope.throwIfAborted({ kind: 'llm_tool_intents' });
-          turn.startToolInvocationBatch(toolInvocations);
-          memoryManager.ingestAssistantToolResponse(completeResponse, toolInvocations, activeTurnId, 'LlmPhase');
+      if (reportedFinish?.reason === 'output_limit') {
+        // Settle as output-limited: commit the input, keep only the partial text (no reasoning,
+        // no native turn), discard every tool call. Nothing below can be interrupted.
+        turn.executionScope.throwIfAborted({ kind: 'post_llm_stream' });
+        releaseRequest();
+        if (completeResponseText) {
+          memoryManager.ingestAssistantResponse(
+            new CompleteResponse({ content: completeResponseText, reasoning: null, providerNativeAssistantTurn: null }),
+            activeTurnId,
+            'LlmPhaseOutputLimited'
+          );
         }
-      }
+        truncatedToolNames = streamingHandler.finalizeOutputLimited(OUTPUT_LIMIT_DISCARDED_TOOL_CALL_ERROR);
+        streamFinalized = true;
+        if (currentReasoningPartId) {
+          notifier?.notifyAgentSegmentEvent(SegmentEvent.end(activeTurnId, currentReasoningPartId).toDict());
+          currentReasoningPartId = null;
+        }
+        completeResponse = new CompleteResponse({ content: completeResponseText, usage: tokenUsage, finish: reportedFinish });
+        notifyTokenUsage();
+      } else {
+        streamingHandler.finalize();
+        streamFinalized = true;
+        if (currentReasoningPartId) {
+          notifier?.notifyAgentSegmentEvent(SegmentEvent.end(activeTurnId, currentReasoningPartId).toDict());
+          currentReasoningPartId = null;
+        }
+        turn.executionScope.throwIfAborted({ kind: 'post_llm_stream' });
+        completeResponse = new CompleteResponse({
+          content: completeResponseText,
+          reasoning: completeReasoningText || null,
+          usage: tokenUsage,
+          image_urls: completeImageUrls,
+          audio_urls: completeAudioUrls,
+          video_urls: completeVideoUrls,
+          providerNativeAssistantTurn,
+          finish: reportedFinish,
+        });
+        notifyTokenUsage();
 
-      if (parsedToolInvocationCount === 0) {
-        turn.executionScope.throwIfAborted({ kind: 'llm_assistant_response' });
-        memoryManager.ingestAssistantResponse(completeResponse, activeTurnId, 'LlmPhase');
+        if (toolCallsEnabled) {
+          const toolInvocations = streamingHandler.getAllInvocations();
+          if (toolInvocations.length) {
+            parsedToolInvocationCount = toolInvocations.length;
+            turn.executionScope.throwIfAborted({ kind: 'llm_tool_intents' });
+            turn.startToolInvocationBatch(toolInvocations);
+            memoryManager.ingestAssistantToolResponse(completeResponse, toolInvocations, activeTurnId, 'LlmPhase');
+          }
+        }
+
+        if (parsedToolInvocationCount === 0) {
+          turn.executionScope.throwIfAborted({ kind: 'llm_assistant_response' });
+          memoryManager.ingestAssistantResponse(completeResponse, activeTurnId, 'LlmPhase');
+        }
+        releaseRequest();
       }
-      releaseRequest();
     } catch (error) {
       if (isAgentInterruptionError(error)) {
         if (!streamFinalized) streamingHandler.finalizeInterrupted(error.reason);
@@ -353,6 +400,16 @@ export class LlmPhase {
         })
       : null;
 
+    if (truncatedToolNames) {
+      // The turn continues, so the compaction threshold is evaluated but nothing runs after it.
+      return {
+        kind: 'output_limited',
+        response: completeResponse,
+        truncatedToolNames,
+        outputTokenLimit: resolveRequestMaxOutputTokens(llmInstance.model, llmInstance.config),
+      };
+    }
+
     const toolInvocations = turn.activeToolInvocationBatch && parsedToolInvocationCount > 0
       ? streamingHandler.getAllInvocations()
       : [];
@@ -362,10 +419,12 @@ export class LlmPhase {
       && pendingCompactionExecutor
     ) {
       try {
+        // The cached summary request replays the settled history under the current prefix.
+        assembler.bindRequestPrefix(request.tools);
         await pendingCompactionExecutor.executeIfAuthorized({
           executionSite: 'after_final_response',
           turnId: activeTurnId,
-          getParentModelIdentifier: () => (context.state.llmInstance as BaseLLM).model.modelIdentifier, signal: turn.executionScope.signal,
+          signal: turn.executionScope.signal,
         });
       } catch (error) {
         turn.executionScope.throwIfAborted({ kind: 'llm_compaction' });

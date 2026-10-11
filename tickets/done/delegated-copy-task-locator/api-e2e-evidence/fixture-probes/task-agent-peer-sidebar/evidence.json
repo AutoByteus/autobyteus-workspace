@@ -1,0 +1,712 @@
+{
+  "startedAt": "2026-10-11T07:33:11.672Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/fixtures/task-agent-peer-sidebar.page.vue",
+  "scenarios": {
+    "PEER-001": {
+      "result": "Pass",
+      "description": "Initially visible peers; mouse/keyboard exact conversations; delayed loading, failure and retry",
+      "startedAt": "2026-10-11T07:33:23.228Z",
+      "details": {
+        "initial": {
+          "mode": "live",
+          "focus": "peer-reviewer",
+          "rows": [
+            {
+              "key": "agent:peer-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-worker"
+            },
+            {
+              "key": "agent:peer-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-a"
+            },
+            {
+              "key": "agent:peer-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-b"
+            },
+            {
+              "key": "agent:peer-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-reviewer"
+            },
+            {
+              "key": "team:peer-configured-research",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-configured-analyst",
+              "depth": 1,
+              "children": false,
+              "agent": "peer-configured-analyst"
+            },
+            {
+              "key": "team:peer-task-team",
+              "depth": 1,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-task-team-member",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-task-team-member"
+            },
+            {
+              "key": "agent:peer-nested-task",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:peer-configured-research",
+            "team:peer-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "peer-task-a": null,
+            "peer-task-b": null,
+            "peer-worker": null,
+            "peer-nested-task": null
+          },
+          "authoritative": {
+            "peer-task-a": false,
+            "peer-task-b": false,
+            "peer-worker": false,
+            "peer-nested-task": false
+          }
+        },
+        "layout": [
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Agent, Worker, level 1, idle, /Worker"
+          },
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker"
+          },
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker"
+          }
+        ],
+        "final": {
+          "mode": "live",
+          "focus": "peer-worker",
+          "rows": [
+            {
+              "key": "agent:peer-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-worker"
+            },
+            {
+              "key": "agent:peer-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-a"
+            },
+            {
+              "key": "agent:peer-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-b"
+            },
+            {
+              "key": "agent:peer-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-reviewer"
+            },
+            {
+              "key": "team:peer-configured-research",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-configured-analyst",
+              "depth": 1,
+              "children": false,
+              "agent": "peer-configured-analyst"
+            },
+            {
+              "key": "team:peer-task-team",
+              "depth": 1,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-task-team-member",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-task-team-member"
+            },
+            {
+              "key": "agent:peer-nested-task",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:peer-configured-research",
+            "team:peer-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "peer-task-a": null,
+            "peer-task-b": null,
+            "peer-worker": null,
+            "peer-nested-task": null
+          },
+          "authoritative": {
+            "peer-task-a": true,
+            "peer-task-b": true,
+            "peer-worker": true,
+            "peer-nested-task": false
+          }
+        },
+        "requests": [
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "peer-root",
+            "agentRunId": "peer-task-a",
+            "requestedAt": "2026-10-11T07:33:23.307Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "peer-root",
+            "agentRunId": "peer-task-b",
+            "requestedAt": "2026-10-11T07:33:24.098Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "peer-root",
+            "agentRunId": "peer-task-b",
+            "requestedAt": "2026-10-11T07:33:24.712Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "peer-root",
+            "agentRunId": "peer-worker",
+            "requestedAt": "2026-10-11T07:33:25.247Z"
+          }
+        ]
+      }
+    },
+    "PEER-002": {
+      "result": "Pass",
+      "description": "Task-Team containment and actual ancestor auto-reveal; outer collapse preserves peers",
+      "startedAt": "2026-10-11T07:33:25.847Z",
+      "details": {
+        "final": {
+          "mode": "live",
+          "focus": "peer-nested-task",
+          "rows": [
+            {
+              "key": "agent:peer-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-worker"
+            },
+            {
+              "key": "agent:peer-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-a"
+            },
+            {
+              "key": "agent:peer-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-b"
+            },
+            {
+              "key": "agent:peer-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-reviewer"
+            },
+            {
+              "key": "team:peer-configured-research",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-configured-analyst",
+              "depth": 1,
+              "children": false,
+              "agent": "peer-configured-analyst"
+            },
+            {
+              "key": "team:peer-task-team",
+              "depth": 1,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-task-team-member",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-task-team-member"
+            },
+            {
+              "key": "agent:peer-nested-task",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:peer-configured-research",
+            "team:peer-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "peer-task-a": null,
+            "peer-task-b": null,
+            "peer-worker": null,
+            "peer-nested-task": null
+          },
+          "authoritative": {
+            "peer-task-a": true,
+            "peer-task-b": true,
+            "peer-worker": true,
+            "peer-nested-task": true
+          }
+        }
+      }
+    },
+    "PEER-003": {
+      "result": "Pass",
+      "description": "Retained delegated execution reload uses exact conversation; no-delegation list unchanged",
+      "startedAt": "2026-10-11T07:33:26.870Z",
+      "details": {
+        "retained": {
+          "mode": "retained",
+          "focus": "peer-task-b",
+          "rows": [
+            {
+              "key": "agent:peer-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-worker"
+            },
+            {
+              "key": "agent:peer-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-a"
+            },
+            {
+              "key": "agent:peer-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-b"
+            },
+            {
+              "key": "agent:peer-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-reviewer"
+            },
+            {
+              "key": "team:peer-configured-research",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-configured-analyst",
+              "depth": 1,
+              "children": false,
+              "agent": "peer-configured-analyst"
+            },
+            {
+              "key": "team:peer-task-team",
+              "depth": 1,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-task-team-member",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-task-team-member"
+            },
+            {
+              "key": "agent:peer-nested-task",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:peer-configured-research",
+            "team:peer-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "peer-task-a": null,
+            "peer-task-b": null,
+            "peer-worker": null,
+            "peer-nested-task": null
+          },
+          "authoritative": {
+            "peer-task-a": false,
+            "peer-task-b": true,
+            "peer-worker": false,
+            "peer-nested-task": false
+          }
+        },
+        "empty": {
+          "mode": "empty",
+          "focus": "peer-worker",
+          "rows": [
+            {
+              "key": "agent:peer-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-worker"
+            },
+            {
+              "key": "agent:peer-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-reviewer"
+            }
+          ],
+          "ancestors": [],
+          "taskAncestors": [],
+          "attempts": {
+            "peer-task-a": null,
+            "peer-task-b": null,
+            "peer-worker": null,
+            "peer-nested-task": null
+          },
+          "authoritative": {
+            "peer-task-a": false,
+            "peer-task-b": false,
+            "peer-worker": true,
+            "peer-nested-task": false
+          }
+        }
+      }
+    }
+  },
+  "projectionRequests": [
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-task-a",
+      "requestedAt": "2026-10-11T07:33:23.307Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-task-b",
+      "requestedAt": "2026-10-11T07:33:24.098Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-task-b",
+      "requestedAt": "2026-10-11T07:33:24.712Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-worker",
+      "requestedAt": "2026-10-11T07:33:25.247Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-nested-task",
+      "requestedAt": "2026-10-11T07:33:26.213Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-task-a",
+      "requestedAt": "2026-10-11T07:33:27.663Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-task-b",
+      "requestedAt": "2026-10-11T07:33:28.870Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-worker",
+      "requestedAt": "2026-10-11T07:33:30.047Z"
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to open team member run: Error: PEER_EXPECTED_PROJECTION_FAILURE\n    at selectTreeRunFromHistory (http://127.0.0.1:60293/_nuxt/stores/runHistorySelectionActions.ts:79:52)\n    at async Object.onSelectTeamMember (http://127.0.0.1:60293/_nuxt/composables/useWorkspaceHistorySelectionActions.ts:73:22)"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65534/rest/health net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 66628,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [
+    {
+      "id": "HARNESS",
+      "description": "Run task Agent peer sidebar browser probe",
+      "message": "Unexpected browser error",
+      "details": [
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        }
+      ],
+      "stack": "Error: Unexpected browser error\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:70:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:357:3"
+    }
+  ],
+  "port": 60293,
+  "baseUrl": "http://127.0.0.1:60293",
+  "browserVersion": "154.0.8037.98",
+  "failureDom": "Task Agent peer history sidebar probe\nPeer Workspace\nTEAMS\nPeer Team\n(1)\nRequest peer-worker\nnow\nW\nWorker\nnow\nR\nReviewer\nnow\nW\nWorker\nIdle\nYou\nRequest peer-worker\nW\nWorker\n\nCONVERSATION_peer-worker\n\nContext Files (0)\n(drag, paste, or upload)",
+  "result": "Fail",
+  "finishedAt": "2026-10-11T07:33:31.097Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes/task-agent-peer-sidebar/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes/task-agent-peer-sidebar/nuxt.log",
+    "outputDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes/task-agent-peer-sidebar"
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "startedAt": "2026-10-08T17:07:14.068Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-018": {
+      "result": "Fail",
+      "description": "Collapsed strip Workspaces, other entries: nested task-Team member (non-coordinator) after a collapse, New chat first send, far-down Org worker (large scroll), slow history load with and without a user scroll first; highlight on the Org launch page, empty /workspace and /agents; page icon docks and navigates",
+      "durationMs": 44891,
+      "message": "in-app New chat: Workspaces moved focus onto a run row although no run is open (REQ-009)",
+      "details": {
+        "dockedOnNewChat": {
+          "selected": [
+            "workspace-team-member-delivery_team_pmustripmore_47e3_feb4d81183bd458eb01bce3344f8c5e0-/manager"
+          ],
+          "scrollTop": 773,
+          "scrollHeight": 1107,
+          "clientHeight": 186
+        },
+        "inAppBefore": {
+          "nav": {
+            "strip": true,
+            "workspacesLit": false,
+            "stripChatLit": true,
+            "panelChatLit": null,
+            "focus": "chat-message-input"
+          },
+          "selection": {
+            "route": "/chat",
+            "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_pmustripmore_47e3_feb4d81183bd458eb01bce3344f8c5e0\"}",
+            "focusedMember": "/manager",
+            "focusedRunId": "manager_pmustripmore_47e3_e752db2c253c41a79a30bec54c8b5850"
+          }
+        },
+        "inAppAfter": {
+          "focus": "workspace-team-member-delivery_team_pmustripmore_47e3_feb4d81183bd458eb01bce3344f8c5e0-/manager",
+          "route": "/chat",
+          "text": "Draft after a Team run",
+          "selection": {
+            "route": "/chat",
+            "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_pmustripmore_47e3_feb4d81183bd458eb01bce3344f8c5e0\"}",
+            "focusedMember": "/manager",
+            "focusedRunId": "manager_pmustripmore_47e3_e752db2c253c41a79a30bec54c8b5850"
+          },
+          "tree": {
+            "selected": [
+              "workspace-team-member-delivery_team_pmustripmore_47e3_feb4d81183bd458eb01bce3344f8c5e0-/manager"
+            ],
+            "scrollTop": 844,
+            "scrollHeight": 1107,
+            "clientHeight": 186
+          }
+        }
+      },
+      "pages": [
+        {
+          "url": "http://127.0.0.1:59108/chat",
+          "center": "Daily Assistant\n\nAll your skills are available. Type / to use a skill, or @ to delegate to an agent or team.\n\nContext Files (0)\n(drag, paste, or upload)\nTemp workspace\nAuto-approve\nGemini test\nAntigravity",
+          "console": [
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:59107/ws/terminal/82e93c4c-53be-4954-b539-7adf1822e842",
+            "log: [useTerminalSession] Connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: [useTerminalSession] Disconnected: 1005 ",
+            "log: Agent WebSocket connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected"
+          ]
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 49446,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 49100,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-018",
+      "message": "in-app New chat: Workspaces moved focus onto a run row although no run is open (REQ-009)"
+    }
+  ],
+  "feed": {
+    "total": 18,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 7,
+      "task_upserted": 6,
+      "task_worker_status": 4
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:59107",
+    "frontendUrl": "http://127.0.0.1:59108",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-ICixrp"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 1
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-08T17:08:25.042Z"
+}

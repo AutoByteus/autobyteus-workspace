@@ -32,7 +32,8 @@ import {
   FEATURED_CATALOG_ITEMS_SETTING_KEY,
   serializeFeaturedCatalogItemsSetting,
 } from "../../../src/config/featured-catalog-items-setting.js";
-import { COMPACTION_MODEL_SETTINGS_KEY } from "../../../src/config/compaction-model-settings.js";
+// Saved by the removed compaction-model setting; may linger in an existing configuration.
+const COMPACTION_MODEL_SETTINGS_KEY = "AUTOBYTEUS_COMPACTION_MODEL_SETTINGS";
 import { STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY } from "../../../src/config/streaming-content-flush-interval-setting.js";
 
 describe("ServerSettingsService", () => {
@@ -126,12 +127,8 @@ describe("ServerSettingsService", () => {
       isDeletable: false,
     });
     expect(settings.find((item) => item.key === "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID")).toBeUndefined();
-    expect(settings.find((item) => item.key === COMPACTION_MODEL_SETTINGS_KEY)).toMatchObject({
-      value: '{"modelIdentifier":null,"llmConfig":null}',
-      description: expect.stringContaining("compaction model"),
-      isEditable: true,
-      isDeletable: false,
-    });
+    // The compaction-model setting is removed: no predefined entry, even when a value is still resolvable.
+    expect(settings.find((item) => item.key === COMPACTION_MODEL_SETTINGS_KEY)).toBeUndefined();
     expect(settings.find((item) => item.key === "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE")).toMatchObject({
       value: "4096",
       description: expect.stringContaining("effective context ceiling override"),
@@ -289,11 +286,19 @@ describe("ServerSettingsService", () => {
     expect(mockConfig.set).toHaveBeenCalledWith("CUSTOM_SETTING", "next");
   });
 
-  it("persists the compound model/config with the durable setting writer", () => {
+  it("treats a leftover compaction-model value as an inert, deletable custom setting", () => {
+    mockConfig.getConfigData.mockReturnValue({ [COMPACTION_MODEL_SETTINGS_KEY]: '{"modelIdentifier":"old","llmConfig":null}' });
+    mockConfig.get.mockImplementation((key: string) => key === COMPACTION_MODEL_SETTINGS_KEY ? '{"modelIdentifier":"old","llmConfig":null}' : undefined);
     const service = new ServerSettingsService();
-    expect(service.updateSetting(COMPACTION_MODEL_SETTINGS_KEY, '{"modelIdentifier":" custom ","llmConfig":{"temperature":0.2}}')[0]).toBe(true);
-    expect(mockConfig.setDurably).toHaveBeenCalledWith(COMPACTION_MODEL_SETTINGS_KEY, '{"modelIdentifier":"custom","llmConfig":{"temperature":0.2}}');
-    expect(service.updateSetting(COMPACTION_MODEL_SETTINGS_KEY, 'unknown')[0]).toBe(false);
+    expect(service.getAvailableSettings().find((item) => item.key === COMPACTION_MODEL_SETTINGS_KEY)).toMatchObject({
+      description: "Custom user-defined setting",
+      isEditable: true,
+      isDeletable: true,
+    });
+    // No compaction-specific validation or durable writer remains for it.
+    expect(service.updateSetting(COMPACTION_MODEL_SETTINGS_KEY, 'unknown')[0]).toBe(true);
+    expect(mockConfig.set).toHaveBeenCalledWith(COMPACTION_MODEL_SETTINGS_KEY, 'unknown');
+    expect(mockConfig.setDurably).not.toHaveBeenCalled();
   });
 
   it("rejects invalid predefined Codex sandbox values before persistence", () => {

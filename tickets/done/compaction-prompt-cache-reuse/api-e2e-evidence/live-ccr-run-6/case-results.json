@@ -1,0 +1,484 @@
+[
+  {
+    "case": "CCR-E2E-001",
+    "name": "CCR-E2E-001: Opus 5.5 compacts with a cached summary request (>= 90 % cache read), continues, and meters the call",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "triggerSettings": {
+        "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE": "248256",
+        "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO": "0.2"
+      },
+      "compactionSite": "before_parent_request (T4)",
+      "modes": [
+        "cached"
+      ],
+      "summaryCalls": [
+        {
+          "index": 25,
+          "phase": "CCR1-T4",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 904,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 28539,
+            "cacheRead": 28006,
+            "cacheWrite": 529,
+            "output": 904
+          },
+          "strictInjected": true,
+          "cacheShare": 0.9813238025158555,
+          "thinkingBlocks": 8
+        }
+      ],
+      "lastAgentCallBefore": {
+        "index": 24,
+        "phase": "CCR1-T3",
+        "host": "api.anthropic.com",
+        "pathname": "/v1/messages",
+        "stream": true,
+        "limits": {
+          "max_tokens": 128000
+        },
+        "rewritten": false,
+        "status": 200,
+        "stopSignals": [
+          "end_turn"
+        ],
+        "maxReportedOutputTokens": 245,
+        "responseHasToolCall": false,
+        "responseHasVisibleText": true,
+        "errorBody": null,
+        "usage": {
+          "inputTotal": 28008,
+          "cacheRead": 27183,
+          "cacheWrite": 823,
+          "output": 245
+        },
+        "strictInjected": true,
+        "thinkingBlocks": 8
+      },
+      "firstAgentCallAfter": {
+        "index": 26,
+        "phase": "CCR1-T4",
+        "host": "api.anthropic.com",
+        "pathname": "/v1/messages",
+        "stream": true,
+        "limits": {
+          "max_tokens": 128000
+        },
+        "rewritten": false,
+        "status": 200,
+        "stopSignals": [
+          "tool_use"
+        ],
+        "maxReportedOutputTokens": 112,
+        "responseHasToolCall": true,
+        "responseHasVisibleText": false,
+        "errorBody": null,
+        "usage": {
+          "inputTotal": 15642,
+          "cacheRead": 8543,
+          "cacheWrite": 7095,
+          "output": 112
+        },
+        "strictInjected": true
+      },
+      "compactionFrames": [
+        {
+          "type": "COMPACTION_STATUS",
+          "phase": "requested",
+          "turn_id": "turn_0003",
+          "compaction_operation_id": "compaction_operation_mv3buu6k_1",
+          "requested_turn_id": "turn_0003"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0004",
+          "compaction_operation_id": "compaction_operation_mv3buu6k_1",
+          "requested_turn_id": "turn_0003",
+          "execution_turn_id": "turn_0004",
+          "selected_block_count": 18,
+          "raw_trace_count": 56,
+          "phase": "started"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0004",
+          "compaction_operation_id": "compaction_operation_mv3buu6k_1",
+          "requested_turn_id": "turn_0003",
+          "execution_turn_id": "turn_0004",
+          "selected_block_count": 18,
+          "raw_trace_count": 56,
+          "compaction_model_identifier": "claude-opus-5-5",
+          "summarizer_provider": "ANTHROPIC",
+          "compaction_invocation_id": "compaction_compaction_operation_mv3buu6k_1_1",
+          "completion_status": "complete",
+          "completion_reason": "end_turn",
+          "summary_char_count": 2123,
+          "summary_token_count": 544,
+          "phase": "completed",
+          "compacted_block_count": 18
+        }
+      ],
+      "meterFrames": [
+        {
+          "usage_event_id": "9ffcd9bf-dd6d-498e-a849-01e9da057b92",
+          "idempotency_key": "compaction_cache_auditor_3558efaa_0e639acf0248413f826c9846020e5bdb:turn_0004:compaction:compaction_operation_mv3buu6k_1:1",
+          "observed_at": "2026-10-11T04:33:12.987Z",
+          "run_id": "compaction_cache_auditor_3558efaa_0e639acf0248413f826c9846020e5bdb",
+          "root_team_run_id": null,
+          "turn_id": "turn_0004",
+          "llm_call_id": "turn_0004:compaction:compaction_operation_mv3buu6k_1:1",
+          "call_sequence": null,
+          "agent_definition_id": "compaction-cache-auditor-3558efaa",
+          "workspace_id": "agent_ws_635437ad0aa43486b5b92880c73c38ba9d5a84d0e12ff597aa1482b6335c75e6",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "compaction-cache-auditor-3558efaa",
+          "run_summary": "Audit chunk-01.txt through chunk-12.txt using the read_file tool, one file per tool call, in orde...",
+          "run_created_at": "2026-10-11T04:31:38.981Z",
+          "member_display_name": null,
+          "runtime_kind": "autobyteus",
+          "model_provider": "ANTHROPIC",
+          "provider_name": "Anthropic",
+          "model_identifier": "claude-opus-5-5",
+          "model_value": "claude-opus-5-5",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": null,
+          "claude_sdk_query_kind": null,
+          "claude_sdk_main_loop_usage": null,
+          "ingestion_kind": "autobyteus_compaction",
+          "usage_scope": "per_call",
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "base_excludes_cache",
+          "reported_input_tokens": 4,
+          "reported_output_tokens": 904,
+          "reported_total_tokens": 908,
+          "accounting_input_tokens": 28539,
+          "accounting_output_tokens": 904,
+          "accounting_total_tokens": 29443,
+          "standard_input_tokens": 4,
+          "cache_miss_input_tokens": 4,
+          "cache_read_input_tokens": 28006,
+          "cache_creation_input_tokens": 529,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 529,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": 28539,
+          "billable_output_tokens": 904,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 4,
+          "output_price_per_million": 20,
+          "cached_input_read_price_per_million": 0.2,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": 5,
+          "cached_input_write_1h_price_per_million": 8,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-opus-5-5",
+            "price_config_id": "autobyteus_model_catalog:ANTHROPIC:claude-opus-5-5",
+            "model_provider": "ANTHROPIC",
+            "model_identifier": "claude-opus-5-5",
+            "model_value": "claude-opus-5-5",
+            "canonical_name": "claude-opus-5-5",
+            "currency": "USD",
+            "input_price_per_million": 4,
+            "output_price_per_million": 20,
+            "cached_input_read_price_per_million": 0.2,
+            "cached_input_write_price_per_million": null,
+            "cached_input_write_5m_price_per_million": 5,
+            "cached_input_write_1h_price_per_million": 8,
+            "input_price_tiers": [],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": false,
+              "cached_input_write_5m": true,
+              "cached_input_write_1h": true
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-opus-5-5",
+          "selected_pricing_tier_id": null,
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.0098492,
+          "estimated_api_standard_input_cost": 0.000016,
+          "estimated_api_cache_read_input_cost": 0.005601200000000001,
+          "estimated_api_cache_creation_input_cost": 0.004232,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": 0.004232,
+          "estimated_api_output_cost": 0.01808,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.0279292,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 28539,
+          "meter_delta_output_tokens": 904,
+          "meter_delta_total_tokens": 29443,
+          "run_summary_after_event": {
+            "run_id": "compaction_cache_auditor_3558efaa_0e639acf0248413f826c9846020e5bdb",
+            "root_team_run_id": null,
+            "agent_definition_id": "compaction-cache-auditor-3558efaa",
+            "workspace_id": "agent_ws_635437ad0aa43486b5b92880c73c38ba9d5a84d0e12ff597aa1482b6335c75e6",
+            "gross_input_tokens": 499556,
+            "standard_input_tokens": 60,
+            "cache_miss_input_tokens": 60,
+            "cache_read_input_tokens": 470961,
+            "cache_creation_input_tokens": 28535,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 28535,
+            "output_tokens": 4797,
+            "reasoning_output_tokens": 1094,
+            "billable_output_tokens": 4797,
+            "total_tokens": 504353,
+            "cache_read_input_token_rate": 0.9427591701430871,
+            "standard_input_token_rate": 0.00012010665470938193,
+            "cache_creation_input_token_rate": 0.05712072320220356,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.3227122,
+            "estimated_api_standard_input_cost": 0.00024,
+            "estimated_api_cache_read_input_cost": 0.0941922,
+            "estimated_api_cache_creation_input_cost": 0.22828,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": 0.22828,
+            "estimated_api_output_cost": 0.09594000000000003,
+            "estimated_api_reasoning_output_cost": 0.02188,
+            "estimated_api_total_cost": 0.4186522,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-opus-5-5",
+            "selected_pricing_tier_id": null,
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 4
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "single",
+                "price_per_million": 8
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 20
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 20
+              }
+            },
+            "usage_report_count": 26,
+            "updated_at": "2026-10-11T04:33:12.987Z",
+            "latest_prompt_tokens": null,
+            "effective_context_window_tokens": 248256,
+            "context_window_usage_percent": null,
+            "latest_model_provider": "ANTHROPIC",
+            "latest_model_identifier": "claude-opus-5-5",
+            "latest_runtime_kind": "autobyteus",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": null,
+          "effective_context_window_tokens": 248256,
+          "context_window_usage_percent": null,
+          "raw_usage_json": {
+            "events": [
+              {
+                "input_tokens": 4,
+                "cache_creation_input_tokens": 529,
+                "cache_read_input_tokens": 28006,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 529
+                },
+                "output_tokens": 8,
+                "service_tier": "standard",
+                "inference_geo": "global"
+              },
+              {
+                "input_tokens": 4,
+                "cache_creation_input_tokens": 529,
+                "cache_read_input_tokens": 28006,
+                "output_tokens": 904,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                }
+              }
+            ]
+          },
+          "raw_event_json": {
+            "usage": {
+              "input_tokens": 4,
+              "output_tokens": 904,
+              "total_tokens": 908,
+              "usage_scope": "per_call",
+              "model_provider": "ANTHROPIC",
+              "provider_name": "Anthropic",
+              "model_identifier": "claude-opus-5-5",
+              "model_value": "claude-opus-5-5",
+              "input_token_semantic": "base_excludes_cache",
+              "cache_state": "positive",
+              "standard_input_tokens": 4,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": 28006,
+              "cache_creation_input_tokens": 529,
+              "cache_creation_5m_input_tokens": 0,
+              "cache_creation_1h_input_tokens": 529,
+              "reasoning_output_tokens": 0,
+              "billable_input_tokens": null,
+              "billable_output_tokens": null,
+              "raw_usage_json": {
+                "events": [
+                  {
+                    "input_tokens": 4,
+                    "cache_creation_input_tokens": 529,
+                    "cache_read_input_tokens": 28006,
+                    "cache_creation": {
+                      "ephemeral_5m_input_tokens": 0,
+                      "ephemeral_1h_input_tokens": 529
+                    },
+                    "output_tokens": 8,
+                    "service_tier": "standard",
+                    "inference_geo": "global"
+                  },
+                  {
+                    "input_tokens": 4,
+                    "cache_creation_input_tokens": 529,
+                    "cache_read_input_tokens": 28006,
+                    "output_tokens": 904,
+                    "output_tokens_details": {
+                      "thinking_tokens": 0
+                    }
+                  }
+                ]
+              },
+              "quality_flags": []
+            },
+            "turn_id": "turn_0004",
+            "llm_call_id": "turn_0004:compaction:compaction_operation_mv3buu6k_1:1",
+            "runtime_kind": "autobyteus",
+            "ingestion_kind": "autobyteus_compaction",
+            "idempotency_key": "compaction_cache_auditor_3558efaa_0e639acf0248413f826c9846020e5bdb:turn_0004:compaction:compaction_operation_mv3buu6k_1:1",
+            "latest_prompt_tokens": null,
+            "effective_context_window_tokens": 248256,
+            "context_window_usage_percent": null,
+            "observed_at": "2026-10-11T04:33:12.987Z"
+          },
+          "quality_flags": []
+        }
+      ],
+      "runSummary": {
+        "usageReportCount": 29,
+        "standardInputTokens": 68,
+        "cacheReadInputTokens": 511605,
+        "cacheCreationInputTokens": 37300,
+        "outputTokens": 5120,
+        "estimatedApiTotalCost": 0.503393,
+        "apiCostStatus": "estimated",
+        "cacheState": "positive"
+      },
+      "providerCalls": 29
+    },
+    "at": "2026-10-11T04:33:19.583Z"
+  },
+  {
+    "case": "CCR-E2E-002",
+    "name": "CCR-E2E-002: tools changed in Settings before the compaction turn: the summary request carries no thinking and is accepted (strict)",
+    "state": "fail",
+    "errors": [
+      "T4: {\"turn_id\":\"turn_0004\",\"compaction_operation_id\":\"compaction_operation_mv3bzkjo_1\",\"requested_turn_id\":\"turn_0003\",\"execution_turn_id\":\"turn_0004\",\"phase\":\"failed\",\"error_message\":\"Memory compaction failed before dispatch [target_unattainable]: Compaction target is unattainable because required context and reserves meet or exceed it.\"}: expected { type: 'COMPACTION_STATUS', …(1) } to be null"
+    ],
+    "details": {
+      "settingMessage": "Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' has been updated successfully.",
+      "compactionInT3": 0,
+      "thinkingBlocksInLastRequestBefore": 34,
+      "summaryCalls": [],
+      "toolsChanged": null,
+      "compactionFrames": [
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0004",
+          "compaction_operation_id": "compaction_operation_mv3bzkjo_1",
+          "requested_turn_id": "turn_0003",
+          "execution_turn_id": "turn_0004",
+          "phase": "failed",
+          "error_message": "Memory compaction failed before dispatch [target_unattainable]: Compaction target is unattainable because required context and reserves meet or exceed it."
+        },
+        {
+          "type": "COMPACTION_BLOCKED",
+          "block": {
+            "operationId": "compaction_operation_mv3bzkjo_1",
+            "failureEpoch": 1
+          },
+          "recovery": {
+            "operationId": "compaction_operation_mv3bzkjo_1",
+            "failureEpoch": 1,
+            "position": {
+              "kind": "held_turn",
+              "turnId": "turn_0004"
+            },
+            "state": "awaiting_user",
+            "code": "target_unattainable",
+            "message": "Compaction failed — send a message to retry"
+          }
+        }
+      ],
+      "agentCalls": []
+    },
+    "at": "2026-10-11T04:36:47.236Z"
+  },
+  {
+    "case": "CCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call",
+    "name": "CCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call",
+    "state": "fail",
+    "errors": [
+      "Timed out waiting for CCR3-T3 idle. Recent frames: AGENT_INPUT_STATE:{\"run_instance_id\":\"daea0c8d-be4e-4f1e-aa9f-d0356a08ae66\",\"revision\":13,\"entries\":[{\"sequence\":3,\"message_id\":\"e2e-9b86e9a5-1b07-4136-a3c1-08c3be94c065\",\"dedupe | COMPACTION_STATUS:{\"turn_id\":\"turn_0003\",\"compaction_operation_id\":\"compaction_operation_mv3bzxgz_1\",\"requested_turn_id\":\"turn_0003\",\"execution_turn_id\":\"turn_0003\",\"phase\":\"fail | AGENT_INPUT_STATE:{\"run_instance_id\":\"daea0c8d-be4e-4f1e-aa9f-d0356a08ae66\",\"revision\":13,\"entries\":[{\"sequence\":3,\"message_id\":\"e2e-9b86e9a5-1b07-4136-a3c1-08c3be94c065\",\"dedupe | COMPACTION_BLOCKED:{\"block\":{\"operationId\":\"compaction_operation_mv3bzxgz_1\",\"failureEpoch\":1},\"recovery\":{\"operationId\":\"compaction_operation_mv3bzxgz_1\",\"failureEpoch\":1,\"positi | AGENT_INPUT_STATE:{\"run_instance_id\":\"daea0c8d-be4e-4f1e-aa9f-d0356a08ae66\",\"revision\":13,\"entries\":[{\"sequence\":3,\"message_id\":\"e2e-9b86e9a5-1b07-4136-a3c1-08c3be94c065\",\"dedupe | AGENT_INPUT_STATE:{\"run_instance_id\":\"daea0c8d-be4e-4f1e-aa9f-d0356a08ae66\",\"revision\":13,\"entries\":[{\"sequence\":3,\"message_id\":\"e2e-9b86e9a5-1b07-4136-a3c1-08c3be94c065\",\"dedupe | ERROR:{\"code\":\"LLM_IMMEDIATE_COMPACTION_FAILED\",\"message\":\"Memory compaction failed before dispatch [target_unattainable]: Compaction target is unattainable because r | AGENT_INPUT_STATE:{\"run_instance_id\":\"daea0c8d-be4e-4f1e-aa9f-d0356a08ae66\",\"revision\":13,\"entries\":[{\"sequence\":3,\"message_id\":\"e2e-9b86e9a5-1b07-4136-a3c1-08c3be94c065\",\"dedupe | ASSISTANT_CO"
+    ],
+    "details": null,
+    "at": "2026-10-11T04:43:53.504Z"
+  }
+]

@@ -28,6 +28,7 @@
       :depth="row.depth"
       :continuing-ancestor-depths="continuingAncestorDepths"
       :has-following-sibling="hasFollowingSibling"
+      :anchor="task ? 'name-line' : 'center'"
     />
 
     <button
@@ -37,6 +38,7 @@
       data-test="workspace-team-transient-disclosure"
       :data-team-run-id="row.teamRunId"
       :data-member-address="row.memberAddress"
+      :class="task ? 'mt-[0.4375rem] self-start' : ''"
       :aria-expanded="expanded"
       :aria-label="disclosureLabel"
       :title="disclosureLabel"
@@ -86,6 +88,7 @@
       <!-- No visible "Started by" line; the starter stays in the accessible label. -->
       <span class="min-w-0 flex-1" :class="{ 'font-semibold': row.memberKind === 'agent_team' }">
         <span class="block truncate">{{ row.displayName }}</span>
+        <TaskWorkerTaskSummary v-if="task" :task="task" :selected="isSelected" @locate="emit('locate-task', task)" />
         <span
           v-if="inspectionAttempt?.state === 'loading'"
           class="mt-0.5 block text-[0.6875rem] font-medium text-indigo-700"
@@ -118,9 +121,12 @@ import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import WorkspaceHierarchyBranches from '~/components/workspace/history/WorkspaceHierarchyBranches.vue';
+import TaskWorkerTaskSummary from '~/components/workspace/history/TaskWorkerTaskSummary.vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
+import type { TaskWorkerTask } from '~/types/project';
+import { taskSummaryLabel } from '~/utils/projects/taskSummary';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 
 const props = withDefaults(defineProps<{
@@ -130,17 +136,21 @@ const props = withDefaults(defineProps<{
   expanded?: boolean;
   continuingAncestorDepths?: number[];
   hasFollowingSibling?: boolean;
+  /** The Task worker's current Task: shown as a summary line under the name (delegated-copy-task-locator). */
+  task?: TaskWorkerTask | null;
 }>(), {
   isSelected: false,
   hasChildren: false,
   expanded: false,
   continuingAncestorDepths: () => [],
   hasFollowingSibling: false,
+  task: null,
 });
 
 const emit = defineEmits<{
   (e: 'select', row: RunHistoryTransientExecutionRow): void;
   (e: 'toggle', row: RunHistoryTransientExecutionRow): void;
+  (e: 'locate-task', task: TaskWorkerTask): void;
 }>();
 
 const { t } = useLocalization();
@@ -169,13 +179,18 @@ const identityLabel = computed(() => t('workspace.history.hierarchy.identity', {
   address: props.row.memberAddress,
 }));
 
-const accessibleLabel = computed(() => t('workspace.history.hierarchy.tree_item', {
-  role: roleLabel.value,
-  name: props.row.displayName,
-  address: props.row.memberAddress,
-  level: props.row.depth + 1,
-  status: startedByLabel.value ? `${statusLabel.value}, ${startedByLabel.value}` : statusLabel.value,
-}));
+const accessibleLabel = computed(() => {
+  const label = t('workspace.history.hierarchy.tree_item', {
+    role: roleLabel.value,
+    name: props.row.displayName,
+    address: props.row.memberAddress,
+    level: props.row.depth + 1,
+    status: startedByLabel.value ? `${statusLabel.value}, ${startedByLabel.value}` : statusLabel.value,
+  });
+  return props.task
+    ? `${label}, ${t('workspace.history.copyTask.accessible', { title: taskSummaryLabel(props.task.description) })}`
+    : label;
+});
 
 const disclosureLabel = computed(() => t(
   props.expanded

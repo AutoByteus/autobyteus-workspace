@@ -329,6 +329,83 @@ describe('useWorkspaceHistoryTreeState', () => {
     expect(treeState.isTeamMemberExpanded('workspace:/ws/a', 'team-1', 'agent:reviewer-run')).toBe(true);
   });
 
+  // collapsed-left-panel-expand-keeps-run (REQ-003, D-5): a Team's focused member inside a nested
+  // sub-team is shown when the panel appears, however the member was opened.
+  describe('focused member ancestry in the Team reveal', () => {
+    const workspaceNode = {
+      stableKey: 'workspace:/ws/a',
+      workspaceId: 'workspace-a',
+      workspaceRootPath: '/ws/a',
+      workspaceName: 'Workspace A',
+      agents: [],
+      agentOrgDefinitions: [],
+    };
+    const nestedRows = [
+      { rowKey: 'agent:lead-run', memberAddress: '/lead', agentRunId: 'lead-run', depth: 0, hasChildren: false },
+      { rowKey: 'team:post', memberAddress: '/post', agentRunId: null, depth: 0, hasChildren: true },
+      { rowKey: 'agent:colorist-run', memberAddress: '/post/colorist', agentRunId: 'colorist-run', depth: 1, hasChildren: false },
+    ];
+    const teamFocusedOn = (focusedAgentRunId: string, executionRows: unknown[] = nestedRows) => ({
+      ...buildTeamNode('team-1'),
+      focusedAgentRunId,
+      executionRows,
+    });
+    const harnessWithTeam = (team: unknown) => {
+      const harness = buildReactiveHarness();
+      harness.state.nodes = [workspaceNode];
+      harness.state.workspaceGroups = [buildTeamHistoryWorkspace('team-1')];
+      harness.state.teams = [team];
+      harness.selectionStore.selectedType = 'team';
+      harness.selectionStore.selectedRunId = 'team-1';
+      return harness;
+    };
+    const subTeamOpen = (treeState: ReturnType<typeof buildReactiveHarness>['treeState']) =>
+      treeState.isTeamMemberExpanded('workspace:/ws/a', 'team-1', 'team:post');
+
+    it('opens the nested sub-team rows down to the focused member', async () => {
+      const { treeState } = harnessWithTeam(teamFocusedOn('colorist-run'));
+      await flushReactiveUpdates();
+
+      expect(treeState.isWorkspaceExpanded('workspace:/ws/a')).toBe(true);
+      expect(treeState.isTeamDefinitionExpanded('workspace:/ws/a', 'team-def-1')).toBe(true);
+      expect(treeState.isTeamExpanded('team-1')).toBe(true);
+      expect(subTeamOpen(treeState)).toBe(true);
+    });
+
+    it('opens no sub-team when the focused member is a direct member', async () => {
+      const { treeState } = harnessWithTeam(teamFocusedOn('lead-run'));
+      await flushReactiveUpdates();
+
+      expect(treeState.isTeamExpanded('team-1')).toBe(true);
+      expect(subTeamOpen(treeState)).toBe(false);
+    });
+
+    it('stays pending until the focused member row exists, then opens its sub-team', async () => {
+      const { state, treeState } = harnessWithTeam(teamFocusedOn('colorist-run', []));
+      await flushReactiveUpdates();
+      expect(treeState.isTeamExpanded('team-1')).toBe(true);
+      expect(subTeamOpen(treeState)).toBe(false);
+
+      state.teams = [teamFocusedOn('colorist-run')];
+      state.navigationTopologyRevision += 1;
+      await flushReactiveUpdates();
+
+      expect(subTeamOpen(treeState)).toBe(true);
+    });
+
+    it('does not re-open a sub-team the user collapsed after the reveal applied', async () => {
+      const { state, treeState } = harnessWithTeam(teamFocusedOn('colorist-run'));
+      await flushReactiveUpdates();
+      treeState.toggleTeamMember('workspace:/ws/a', 'team-1', 'team:post');
+      expect(subTeamOpen(treeState)).toBe(false);
+
+      state.navigationTopologyRevision += 1;
+      await flushReactiveUpdates();
+
+      expect(subTeamOpen(treeState)).toBe(false);
+    });
+  });
+
   it('reveals the selected AgentOrg branch by stable workspace identity across catalog registration', async () => {
     const { state, selectedAgentOrg, treeState } = buildReactiveHarness();
     state.nodes = [{

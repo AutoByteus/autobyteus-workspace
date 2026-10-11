@@ -1,16 +1,21 @@
-## License change
-- AutoByteus is now dual-licensed. It is open source under the **GNU Affero General Public License v3.0 only (AGPL-3.0-only)**, and a **commercial license** is available for closed-source products or services (contact ryan.zheng.work@gmail.com).
-- If you distribute AutoByteus or a modified version, or let others use a modified version over a network, you must publish your complete source code under AGPL-3.0, unless you have a commercial license.
-- The application SDKs, devkit, contract packages and sample applications keep their existing permissive license, so applications built on them may use any license.
-- Releases up to and including v1.4.97 remain available under the license they were published with.
-- See `LICENSING.md` in the repository for the component map and details.
-- The desktop app now ships `LICENSE`, `LICENSING.md` and `NOTICE`. The macOS About panel shows the copyright and license line.
-- The Docker image contains the same files under `/app/` and declares `org.opencontainers.image.licenses=AGPL-3.0-only`.
-- Contributions now require accepting the AutoByteus Contributor License Agreement (`CLA.md`). See `CONTRIBUTING.md`.
+## New
+- **Claude Sonnet 5.5 and Claude Haiku 5.5** are available in the model picker, with 1M context and 128K output.
+  - Thinking is **Off** by default. You can turn it **On** for each run. The display then defaults to **Summarized** on Sonnet 5.5 and **Omitted** on Haiku 5.5, and you can change it.
+  - The Token Meter prices both models at Anthropic Standard rates. Haiku 5.5 uses its prompt-size tiers (up to 100K and above 100K tokens, with cache tokens counted).
+- **See each delegated copy's Task in the Workspaces tree.** Under Agent runs and Agent Team runs, a delegated Agent or Team copy shows a one-line summary of its current Task under its name.
+  - Click the summary, or press Enter or Space on it, to open that Task in the right panel's Projects tab. The card is scrolled into view and briefly highlighted, and your conversation stays where it is.
+  - Summaries update without a reload when a Task is renamed, closed, deleted or replaced by a follow-up Task.
+- **New Workspaces icon on the collapsed left strip.** It opens the left panel without leaving the run you have open. The open run's row is selected, expanded and focused in the tree.
 
-## Added
-- **Archive all runs** from a group header in the Workspaces sidebar, for every agent, agent team and Agent Org group. A confirmation is shown first, and nothing is archived while a run in the group is still running.
-- Agents can attach files to a Project Task. `create_or_update_task` takes an optional `context_files` list. The files appear in the Task's Context Files and are passed to the worker as reference files when the Task is delegated.
+## Changed
+- On the collapsed strip, **Workspaces is lit while a run is shown**. Chat is lit only on New chat. Before, clicking Chat on an open run replaced the run with a New chat.
+- Collapsing the docked left panel, or closing the drawer, moves keyboard focus to the strip's Workspaces icon.
+- AutoByteus now builds each Claude request from a fixed set of rules per model. Existing Claude models send the same requests as before. Like Opus 5.5, Sonnet 5.5 refuses a forced tool choice before sending the request.
 
 ## Fixes
-- Restored the people-group icon for all Teams in the workspace history, Agent Org rows, Project Task workers and Memory views.
+- The Cancelled status pill shows its intended light slate ring.
+- A two-line row in the Workspaces tree now collapses smoothly instead of jumping first.
+- The Server Docker image builds reliably again. The Antigravity CLI installer was sometimes downloaded in compressed form and failed to run.
+
+## Notes
+- No reset or data migration is needed.

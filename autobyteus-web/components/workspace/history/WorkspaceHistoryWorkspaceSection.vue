@@ -123,6 +123,7 @@
             type="button"
             data-test="workspace-agent-run-row"
             :data-run-id="run.runId"
+            :aria-current="state.selectedRunId === run.runId && !collaboration.selectedChild(run.runId) ? 'true' : undefined"
             class="group/run-row flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm transition-colors"
             :class="state.selectedRunId === run.runId && !collaboration.selectedChild(run.runId)
               ? 'bg-indigo-50 text-indigo-900'
@@ -191,6 +192,7 @@
             :run-selected="state.selectedRunId === run.runId"
             :has-collaboration="run.hasCollaboration === true"
             @select-run="actions.onSelectRun(run)"
+            @open-run="selectAgentRun(run)"
           />
           </template>
         </div>
@@ -337,6 +339,7 @@
                 :format-relative-time="formatRelativeTime"
                 @select="(row: import('~/stores/runHistoryTypes').RunHistoryTeamExecutionRow) => selectTeamDisplayRow(team, row)"
                 @toggle="(row: import('~/stores/runHistoryTypes').RunHistoryTeamExecutionRow) => toggleTeamDisplayRow(team, row)"
+                @open-run="actions.onOpenTeamRun(team, workspaceNode.workspaceId)"
               />
             </div>
           </div>

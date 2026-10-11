@@ -1,0 +1,28 @@
+Updating autobyteus-web/package.json: 1.4.100-beta.1 -> 1.5.0-beta.1
+[release-tmp-aicb 12f92f057] chore(release): bump workspace release version to 1.5.0-beta.1
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Release prepared locally (not pushed).
+To push later:
+  git push origin release-tmp-aicb
+  git push origin v1.5.0-beta.1
+remote: 
+remote: GitHub found 940 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 429 moderate, 70 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   27cb8946f..12f92f057  HEAD -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.5.0-beta.1 -> v1.5.0-beta.1

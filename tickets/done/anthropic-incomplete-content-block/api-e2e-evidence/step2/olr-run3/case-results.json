@@ -1,0 +1,2127 @@
+[
+  {
+    "case": "OLR-E2E-001",
+    "name": "OLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note",
+    "state": "fail",
+    "errors": [
+      "the cut response was generating a tool call: expected false to be true // Object.is equality"
+    ],
+    "details": {
+      "error": null,
+      "calls": [
+        {
+          "index": 0,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 1200,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 1,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 1049,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 2,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 792,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 3,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 785,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 4,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 808,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 5,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 898,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 6,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 135,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "recoveryUserMessages": [
+        "Create the file sea-lines.md with exactly 100 lines. Line N (for every N from 1 to 100) is \"Line N: \" followed by one different sentence of 12 to 16 words about the sea. Write every line in full.\n\nThe user's current message is:\n\nSystem note: your previous response hit the output limit of 1200 tokens before producing any visible output, so nothing was kept. Answer again from the start, breaking the work into smaller pieces."
+      ],
+      "noteMergedWithCurrentMessageConnector": true,
+      "fileLineCount": 100,
+      "firstLine": "Line 1: The sea stretches endlessly toward the horizon, shimmering beneath the warm golden morning sun.",
+      "lastLine": "Line 100: Whatever our troubles, the timeless sea keeps rolling onward, steady, patient, and endlessly beautiful.",
+      "projection": [
+        {
+          "kind": "message",
+          "role": "user",
+          "messageId": "e2e-88b8a1cd-3807-4972-a4c4-5781165ea200",
+          "dedupeKey": "agent_run_input:e2e:e2e-88b8a1cd-3807-4972-a4c4-5781165ea200",
+          "content": "Create the file sea-lines.md with exactly 100 lines. Line N (for every N from 1 to 100) is \"Line N: \" followed by one different sentence of 12 to 16 words about the sea. Write every line in full.",
+          "media": null,
+          "ts": 1791610246.146
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "",
+          "media": null,
+          "ts": 1791610271.564
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_01VeuWTKpgQTnT5RqDk7ifdV",
+          "role": null,
+          "content": "",
+          "toolName": "write_file",
+          "toolArgs": {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-Zhv1zC/sea-lines.md",
+            "content": "Line 1: The sea stretches endlessly toward the horizon, shimmering beneath the warm golden morning sun.\nLine 2: Waves crash against the rocky shore, sending white spray high into the salty air.\nLine 3: Deep beneath the surface, the ocean hides mysteries that humans have barely begun exploring.\nLine 4: Seagulls circle above the gentle tide, calling loudly as they search for small fish.\nLine 5: The calm sea at dawn reflects the pale pink sky like a vast mirror.\nLine 6: Fishermen have depended on the generous sea for food and livelihood for countless generations.\nLine 7: During violent storms, the sea transforms into a roaring beast with towering dark waves.\nLine 8: Coral reefs beneath the tropical sea burst with color and shelter thousands of species.\nLine 9: The rhythmic sound of the sea lapping the sand soothes even the most restless minds.\nLine 10: Sailors once navigated the open sea using only the stars, wind, and their experience.\nLine 11: The salty sea breeze carries a fresh scent that instantly reminds people of summer holidays.\nLine 12: Moonlight dances across the dark sea, painting a silver path toward the distant horizon.\nLine 13: Whales migrate thousands of miles across the sea, singing haunting songs to one another.\nLine 14: The tide pulls the sea back each evening, revealing tiny creatures hidden among rocks.\nLine 15: Ancient explorers feared the unknown sea, imagining monsters lurking beyond the edge of maps.\nLine 16: Children build sandcastles near the sea, laughing as the waves wash their walls away.\nLine 17: The sea absorbs enormous amounts of heat, helping to regulate the climate of our planet.\nLine 18: A lone lighthouse stands guard over the restless sea, guiding ships safely back to harbor.\nLine 19: Dolphins leap playfully through the sparkling sea, delighting passengers aboard the passing ferry boat.\nLine 20: The sea's color shifts from turquoise to deep navy as the water grows deeper.\n"
+          },
+          "toolResult": "File created/updated at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-Zhv1zC/sea-lines.md",
+          "toolError": null,
+          "media": null,
+          "ts": 1791610271.573
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "",
+          "media": null,
+          "ts": 1791610280.97
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_01R6KWkmkHkDtfuxv7JdhcwR",
+          "role": null,
+          "content": "",
+          "toolName": "run_bash",
+          "toolArgs": {
+            "command": "cat >> sea-lines.md <<'EOF'\nLine 21: Plastic pollution threatens the health of the sea and the creatures that call it home.\nLine 22: On foggy mornings, the sea disappears behind a soft gray curtain of drifting mist.\nLine 23: Surfers paddle eagerly into the sea, waiting patiently for the perfect wave to arrive.\nLine 24: The sea has inspired poets, painters, and musicians throughout the long history of humanity.\nLine 25: Jellyfish drift silently through the open sea, their translucent bodies glowing in sunlight.\nLine 26: Old shipwrecks rest quietly on the sea floor, slowly becoming homes for marine life.\nLine 27: The sea can appear peaceful one moment and dangerously wild only a few hours later.\nLine 28: Salt left behind by evaporating sea water forms crystals that sparkle along the shoreline.\nLine 29: Sea turtles return to the same beaches where they hatched to lay their own eggs.\nLine 30: Standing at the edge of the sea makes many people feel small yet strangely peaceful.\nLine 31: The sea provides most of the oxygen we breathe through tiny floating plants called phytoplankton.\nLine 32: Kelp forests sway beneath the cold sea like underwater trees moving in a gentle wind.\nLine 33: Harbor towns grew prosperous because the sea connected them to distant markets and cultures.\nLine 34: The sea at sunset glows orange and crimson as the sun sinks below the water.\nLine 35: Divers descend into the blue sea to witness a silent world full of strange beauty.\nLine 36: Rising sea levels threaten coastal cities and low islands all around the warming world.\nLine 37: The sea carries driftwood across great distances, depositing smooth weathered branches on remote beaches.\nLine 38: Octopuses hide cleverly among the rocks of the sea, changing color to match their surroundings.\nLine 39: A sailboat glides across the quiet sea, its white canvas filled with a steady breeze.\nLine 40: The deepest trenches of the sea plunge farther down than the tallest mountains rise up.\nEOF\nwc -l sea-lines.md"
+          },
+          "toolResult": {
+            "exitCode": 0,
+            "effectiveCwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-Zhv1zC",
+            "stdout": "      40 sea-lines.md\n"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1791610281.116
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "",
+          "media": null,
+          "ts": 1791610290.864
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_01J1BPMAvzLHGYXtbj6DiXGt",
+          "role": null,
+          "content": "",
+          "toolName": "run_bash",
+          "toolArgs": {
+            "command": "cat >> sea-lines.md <<'EOF'\nLine 41: Bioluminescent plankton make the night sea glow with an eerie blue light along the waves.\nLine 42: The sea has swallowed many ships, leaving their stories to legends told by sailors.\nLine 43: Pelicans dive headfirst into the sea, scooping up fish with their large stretchy beaks.\nLine 44: Winter storms push the cold sea far up the beach, reshaping dunes and coastlines.\nLine 45: The sea teaches patience, as its tides come and go on their own steady schedule.\nLine 46: Seals lounge on rocks beside the sea, basking lazily in the afternoon sunshine together.\nLine 47: Scientists study the sea to understand currents that move heat and nutrients around the globe.\nLine 48: The Gulf Stream is a powerful current that carries warm sea water toward northern Europe.\nLine 49: Smooth pebbles tumble endlessly in the sea, polished over centuries by the moving water.\nLine 50: A walk along the sea at low tide reveals starfish, crabs, and colorful anemones.\nLine 51: The vast sea covers more than seventy percent of the surface of planet Earth.\nLine 52: Sharks patrol the open sea as skilled predators that keep marine ecosystems in balance.\nLine 53: The sea smells especially strong after a storm churns seaweed up from the depths.\nLine 54: Many cultures honor the sea with festivals, prayers, and offerings for safe passage home.\nLine 55: Icebergs drift slowly through the frigid northern sea, hiding most of their mass underwater.\nLine 56: The sea glitters like scattered diamonds when sunlight strikes its rippling surface at noon.\nLine 57: Fishing boats leave the harbor before dawn, heading out to sea for the day's catch.\nLine 58: Tiny seahorses cling to sea grass with their tails, swaying gently in the current.\nLine 59: The sea has shaped human history through trade routes, naval battles, and great migrations.\nLine 60: Listening to a seashell, children imagine they can hear the distant roar of the sea.\nEOF\nwc -l sea-lines.md"
+          },
+          "toolResult": {
+            "exitCode": 0,
+            "effectiveCwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-Zhv1zC",
+            "stdout": "      60 sea-lines.md\n"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1791610291.02
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "",
+          "media": null,
+          "ts": 1791610300.949
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_01Mrw2MG8kBp5S4LodYRNhMr",
+          "role": null,
+          "content": "",
+          "toolName": "run_bash",
+          "toolArgs": {
+            "command": "cat >> sea-lines.md <<'EOF'\nLine 61: The sea becomes a sheet of glass on windless days, perfectly still and impossibly blue.\nLine 62: Albatrosses glide over the southern sea for weeks without ever needing to land anywhere.\nLine 63: Tsunamis are giant sea waves caused by underwater earthquakes that can devastate coastal regions.\nLine 64: The sea gently rocks anchored boats in the harbor, their masts clinking softly at night.\nLine 65: Marine reserves protect sections of the sea so fish populations can recover and thrive again.\nLine 66: The sea's surface sparkles with foam as strong winds whip the waves into whitecaps.\nLine 67: Coastal villages often paint their houses bright colors that stand out against the sea.\nLine 68: Sea otters float on their backs, cracking open shellfish with stones held on their bellies.\nLine 69: The sea erodes cliffs slowly, carving dramatic arches and caves along the rugged coastline.\nLine 70: Many travelers cross the sea by ferry, watching islands appear and fade into the distance.\nLine 71: The sea at night feels vast and mysterious, its dark waters stretching beyond all sight.\nLine 72: Mangrove forests grow where the sea meets land, protecting shores from erosion and storms.\nLine 73: Salt spray from the sea slowly corrodes metal railings, boats, and buildings near the shore.\nLine 74: Flying fish burst from the warm sea, gliding above the waves to escape hungry predators.\nLine 75: The sea holds countless undiscovered species waiting quietly in its dark and freezing depths.\nLine 76: Artists often struggle to capture the sea's ever changing light and movement on canvas.\nLine 77: Tidal energy harnesses the movement of the sea to generate clean and renewable electricity.\nLine 78: The sea welcomes swimmers on hot afternoons, offering cool relief from the blazing summer heat.\nLine 79: Sandbars form just beneath the sea's surface, creating shallow spots where waves break early.\nLine 80: The sea's endless motion reminds us that nothing in nature ever truly stands perfectly still.\nEOF\nwc -l sea-lines.md"
+          },
+          "toolResult": {
+            "exitCode": 0,
+            "effectiveCwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-Zhv1zC",
+            "stdout": "      80 sea-lines.md\n"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1791610301.095
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "",
+          "media": null,
+          "ts": 1791610312.519
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_019j4TsZEQbbhzExu53jyCdZ",
+          "role": null,
+          "content": "",
+          "toolName": "run_bash",
+          "toolArgs": {
+            "command": "cat >> sea-lines.md <<'EOF'\nLine 81: Crabs scuttle sideways along the wet sand as the sea retreats during the falling tide.\nLine 82: The sea carries messages in bottles across oceans, sometimes delivering them decades after being sent.\nLine 83: Puffins nest on steep cliffs above the cold northern sea, diving deep to catch fish.\nLine 84: The sea turns a milky green after heavy rains wash sediment down from nearby rivers.\nLine 85: Submarines explore the hidden sea depths, mapping underwater mountains and long volcanic ridges.\nLine 86: The sea's horizon seems to curve gently, hinting at the round shape of our planet.\nLine 87: Lobster fishermen set their traps in the cold sea and check them every single morning.\nLine 88: The warm tropical sea fuels hurricanes that gather strength as they travel toward land.\nLine 89: A quiet cove sheltered from the open sea offers calm water perfect for beginner swimmers.\nLine 90: The sea's tides are controlled mainly by the gravitational pull of the moon above us.\nLine 91: Manta rays glide gracefully through the sea, their wide fins moving like slow underwater wings.\nLine 92: The sea erases footprints on the beach, leaving the sand smooth and fresh once again.\nLine 93: Hydrothermal vents on the sea floor support strange creatures that live without any sunlight.\nLine 94: The sea often appears gray and brooding beneath heavy clouds on a cold winter day.\nLine 95: Sea glass, worn smooth by waves, is treasured by collectors who comb the beaches daily.\nLine 96: The sea links continents together, making it a highway for ships carrying goods worldwide.\nLine 97: Penguins dart swiftly through the icy sea, chasing krill and small fish beneath the surface.\nLine 98: The sea's gentle murmur at night lulls coastal residents into deep and peaceful sleep.\nLine 99: Protecting the sea today ensures that future generations can enjoy its beauty and abundance.\nLine 100: Whatever our troubles, the timeless sea keeps rolling onward, steady, patient, and endlessly beautiful.\nEOF\nwc -l sea-lines.md\nawk '{n=NF-2; if(n<12||n>16) print NR, n} {if($2!=NR\":\") print \"bad label\", NR}' sea-lines.md\nsort sea-lines.md | cut -d: -f2- | sort | uniq -d"
+          },
+          "toolResult": {
+            "exitCode": 0,
+            "effectiveCwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-Zhv1zC",
+            "stdout": "     100 sea-lines.md\n"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1791610312.671
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "I created `sea-lines.md` with exactly 100 lines. Each line starts with \"Line N: \" (N from 1 to 100) and is followed by a different sentence about the sea. A check confirmed every line is numbered correctly, every sentence is 12 to 16 words long, and no sentence is repeated.\n\ndone",
+          "media": null,
+          "ts": 1791610314.671
+        }
+      ],
+      "usageCallIds": [
+        "turn_0001:llm:1",
+        "turn_0001:llm:2",
+        "turn_0001:llm:3",
+        "turn_0001:llm:4",
+        "turn_0001:llm:5",
+        "turn_0001:llm:6",
+        "turn_0001:llm:7"
+      ]
+    },
+    "at": "2026-10-10T05:31:54.724Z"
+  },
+  {
+    "case": "OLR-E2E-002",
+    "name": "OLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": {
+        "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+        "message": "The model's response hit the output limit of 1200 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again.",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 7,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 111,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 8,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 1200,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 9,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 1200,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 10,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 1200,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 11,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 1200,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+          "message": "The model's response hit the output limit of 1200 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again."
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "recoveryMessages": [
+        {
+          "role": "assistant",
+          "text": "",
+          "toolUses": 1,
+          "toolResults": []
+        },
+        {
+          "role": "user",
+          "text": "",
+          "toolUses": 0,
+          "toolResults": [
+            "\"1: Topic: the sea. Tone: calm. Each line names a different sea creature or coastal feature.\\n\""
+          ]
+        },
+        {
+          "role": "user",
+          "text": "System note: your previous response hit the output limit of 1200 tokens before producing any visible output, so nothing was kept. Answer again from the start, breaking the work into smaller pieces.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ],
+      "fileLineCount": null
+    },
+    "at": "2026-10-10T05:32:47.235Z"
+  },
+  {
+    "case": "OLR-E2E-009b",
+    "name": "OLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": null,
+      "calls": [
+        {
+          "index": 12,
+          "phase": "OLR-009b",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 384000
+          },
+          "rewritten": true,
+          "status": 200,
+          "stopSignals": [
+            "tool_calls"
+          ],
+          "maxReportedOutputTokens": 101,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 13,
+          "phase": "OLR-009b",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 384000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_calls"
+          ],
+          "maxReportedOutputTokens": 101,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 14,
+          "phase": "OLR-009b",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 384000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_calls"
+          ],
+          "maxReportedOutputTokens": 85,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 15,
+          "phase": "OLR-009b",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 384000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "stop"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "error": "Your tool call was malformed and could not be parsed (Unexpected token '@', \"@@{\"path\":\"... is not valid JSON). Please retry.",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "failed"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "retryToolResults": [
+        "Error: Your tool call was malformed and could not be parsed (Unexpected token '@', \"@@{\"path\":\"... is not valid JSON). Please retry."
+      ],
+      "fileContent": "hello"
+    },
+    "at": "2026-10-10T05:32:52.457Z"
+  },
+  {
+    "case": "OLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected",
+    "name": "OLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected",
+    "state": "fail",
+    "errors": [
+      "Test timed out in 1200000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\"."
+    ],
+    "details": null,
+    "at": "2026-10-10T05:52:52.481Z"
+  }
+]

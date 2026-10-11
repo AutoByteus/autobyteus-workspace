@@ -1,0 +1,51 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-ts[39m
+
+[90mstdout[2m | tests/_ac003_sonnet-tonly/ac003-compare.test.ts[2m > [22m[2mAC-003 cached vs transcript summary on one real history[2m > [22m[2mproduces both summaries, both compacted contexts and both continuations
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstderr[2m | tests/_ac003_sonnet-tonly/ac003-compare.test.ts[2m > [22m[2mAC-003 cached vs transcript summary on one real history[2m > [22m[2mproduces both summaries, both compacted contexts and both continuations
+[22m[39mTool 'get_handoff_rules' not found in registry.
+
+ [31m❯[39m tests/_ac003_sonnet-tonly/ac003-compare.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 165677[2mms[22m[39m
+[31m     [31m×[31m produces both summaries, both compacted contexts and both continuations[39m[33m 165676[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/_ac003_sonnet-tonly/ac003-compare.test.ts[2m > [22mAC-003 cached vs transcript summary on one real history[2m > [22mproduces both summaries, both compacted contexts and both continuations
+[31m[1mAssertionError[22m: CompactionSummaryValidationError: Expected exactly one complete compaction_summary block.: expected null to be truthy[39m
+
+[32m- Expected:[39m 
+true
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/_ac003_sonnet-tonly/ac003-compare.test.ts:[2m306:79[22m[39m
+    [90m304| [39m    fs.writeFileSync(path.join(OUT, 'ac003-results.json'), JSON.string…
+    [90m305| [39m    if (!transcriptOnly) expect(results.cached.summary, String(results…
+    [90m306| [39m    expect(results.transcript.summary, String(results.transcript.parse…
+    [90m   | [39m                                                                              [31m^[39m
+    [90m307| [39m  }[33m,[39m [34m3_600_000[39m)[33m;[39m
+    [90m308| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m   Start at [22m 12:17:47
+[2m   Duration [22m 166.73s[2m (transform 519ms, setup 16ms, import 948ms, tests 165.68s, environment 0ms)[22m
+
+exit 1

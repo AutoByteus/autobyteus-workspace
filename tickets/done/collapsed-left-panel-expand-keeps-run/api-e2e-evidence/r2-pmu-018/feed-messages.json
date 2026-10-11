@@ -1,0 +1,92 @@
+[
+  {
+    "at": 1791480257481,
+    "type": "connected"
+  },
+  {
+    "at": 1791480269797,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1791480269918,
+    "type": "task_upserted",
+    "taskId": "project_task_fec494a7-fcf2-4918-9f04-2510d69301fe"
+  },
+  {
+    "at": 1791480269918,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1791480270386,
+    "type": "task_upserted",
+    "taskId": "project_task_fec494a7-fcf2-4918-9f04-2510d69301fe",
+    "status": "initializing"
+  },
+  {
+    "at": 1791480270386,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1791480270621,
+    "type": "task_worker_status",
+    "taskId": "project_task_fec494a7-fcf2-4918-9f04-2510d69301fe",
+    "status": "running"
+  },
+  {
+    "at": 1791480270625,
+    "type": "task_worker_status",
+    "taskId": "project_task_fec494a7-fcf2-4918-9f04-2510d69301fe",
+    "status": "idle"
+  },
+  {
+    "at": 1791480270632,
+    "type": "task_upserted",
+    "taskId": "project_task_fec494a7-fcf2-4918-9f04-2510d69301fe",
+    "status": "idle"
+  },
+  {
+    "at": 1791480270632,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1791480284227,
+    "type": "task_upserted",
+    "taskId": "project_task_ac54d227-1e74-4da8-9efd-603ba62a73f2"
+  },
+  {
+    "at": 1791480284231,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1791480284486,
+    "type": "task_upserted",
+    "taskId": "project_task_ac54d227-1e74-4da8-9efd-603ba62a73f2",
+    "status": "initializing"
+  },
+  {
+    "at": 1791480284487,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1791480284634,
+    "type": "task_worker_status",
+    "taskId": "project_task_ac54d227-1e74-4da8-9efd-603ba62a73f2",
+    "status": "running"
+  },
+  {
+    "at": 1791480284636,
+    "type": "task_worker_status",
+    "taskId": "project_task_ac54d227-1e74-4da8-9efd-603ba62a73f2",
+    "status": "idle"
+  },
+  {
+    "at": 1791480284644,
+    "type": "task_upserted",
+    "taskId": "project_task_ac54d227-1e74-4da8-9efd-603ba62a73f2",
+    "status": "idle"
+  },
+  {
+    "at": 1791480284644,
+    "type": "project_upserted"
+  }
+]

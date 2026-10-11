@@ -1,7 +1,3 @@
-import type { CompressionStrategy } from './compression-strategy.js';
-import type { CompactionCompressionExecution } from './compaction-execution.js';
-
-export type CompressionStrategyFactory = (execution: CompactionCompressionExecution) => CompressionStrategy;
 import { CompactionPolicy } from '../policies/compaction-policy.js';
 
 export type DisabledMemoryCompactionConfiguration = Readonly<{
@@ -11,7 +7,6 @@ export type DisabledMemoryCompactionConfiguration = Readonly<{
 export type EnabledMemoryCompactionConfiguration = Readonly<{
   kind: 'enabled';
   policy: CompactionPolicy;
-  createCompressionStrategy: CompressionStrategyFactory;
 }>;
 
 export type MemoryCompactionConfiguration =
@@ -26,15 +21,11 @@ export const createDisabledMemoryCompactionConfiguration = (
 
 export const createEnabledMemoryCompactionConfiguration = (
   policy: CompactionPolicy,
-  createCompressionStrategy: CompressionStrategyFactory,
 ): EnabledMemoryCompactionConfiguration => {
   if (!(policy instanceof CompactionPolicy)) {
     throw new TypeError('Enabled memory compaction requires a CompactionPolicy instance.');
   }
-  if (typeof createCompressionStrategy !== 'function') {
-    throw new TypeError('Enabled memory compaction requires a compression strategy factory.');
-  }
-  return Object.freeze({ kind: 'enabled', policy, createCompressionStrategy });
+  return Object.freeze({ kind: 'enabled', policy });
 };
 
 export const copyMemoryCompactionConfiguration = (
@@ -49,6 +40,5 @@ export const copyMemoryCompactionConfiguration = (
       maxItemChars: configuration.policy.maxItemChars,
       safetyMarginTokens: configuration.policy.safetyMarginTokens,
     }),
-    configuration.createCompressionStrategy,
   );
 };

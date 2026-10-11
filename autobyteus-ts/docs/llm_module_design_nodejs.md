@@ -21,12 +21,17 @@ under the same provider-centered model contract.
   Each provider adapter is the only builder and renderer of its own requests:
   callers pass `Message[]`, never a pre-rendered payload, and never read a
   provider's private `_renderer`.
-- **`LLMInvocationOptions`**: per-call `signal`, `turnId`, `retryMode` and
-  `promptCacheScope`. `promptCacheScope: 'conversation'` declares that the call
+- **`LLMInvocationOptions`**: per-call `signal`, `turnId`, `retryMode`,
+  `promptCacheScope` and `maxOutputTokens`. `promptCacheScope: 'conversation'` declares that the call
   is one step of a growing agent conversation whose next call resends its
-  prefix (set by the agent loop). Absent means a one-shot call (for example the
-  compaction summarizer); providers with explicit prompt caching must not
-  request caching for it.
+  prefix (set by the agent loop; the cached compaction summary request sets it too). Absent means a one-shot call (for example the
+  transcript compaction summary); providers with explicit prompt caching must not
+  request caching for it. `maxOutputTokens` replaces the resolved output limit for
+  that call only; every adapter reads it through `resolveMaxOutputTokens(options)`
+  (Anthropic's non-streaming path also honours it before its bounded default).
+- **`LLMModel.compactionSummaryMode`**: `'cached_conversation'` or `'transcript'`
+  (default, also for dynamic and custom models), set per catalog model. It decides
+  whether compaction tries the cached summary request first.
 - **Provider-native assistant turns** (`src/llm/provider-native/`): a provider's
   own record of one assistant response, stored on the assistant message under
   `metadata.provider_native_assistant_turn` as an opaque `{ provider, ... }`
@@ -110,7 +115,9 @@ Two OpenAI-style paths coexist:
   provider credential resolver.
 - OpenAI-compatible Chat Completions payloads are built through
   `OpenAICompatibleRequestBuilder`, which maps `LLMConfig` generation controls,
-  merges provider-specific `extraParams`, uses the shared provider-request
+  sends the resolved output limit (configured, else the model maximum) under
+  the adapter's `outputLimitParameter` (`max_tokens` for DeepSeek/GLM,
+  `max_completion_tokens` otherwise), merges provider-specific `extraParams`, uses the shared provider-request
   kwarg sanitizer for framework-internal kwargs, owns `tools` placement, and
   preserves explicit lower-level `tool_choice` pass-through. The default
   agent/server path leaves `tool_choice` unset.
@@ -274,7 +281,8 @@ The current latest-model support set is summarized in
 - Anthropic `claude-opus-5-5` (verified 2026-09-23),
   `claude-opus-5` (verified 2026-07-31; standard pricing effective
   2026-07-24), `claude-fable-5-1` (verified 2026-09-22), `claude-fable-5`,
-  `claude-opus-4.8`, and `claude-sonnet-5`
+  `claude-opus-4.8`, `claude-sonnet-5-5` and `claude-haiku-5-5` (verified
+  2026-10-09), and `claude-sonnet-5`
   with exact Claude API values and no
   `claude-sonnet-4.8` alias. Fable 5 is catalog-available only, not a default
   or fallback.
@@ -298,14 +306,21 @@ Provider adapters own request-shape differences:
 - `OpenAILLM` keeps Astra, Sol, Luna and GPT-5.6 on the official Responses path. The
   shared OpenAI usage normalizer preserves gross input while mapping documented
   `cache_write_tokens` detail fields into generic cache-creation input usage.
+- `AnthropicLLM` shapes requests from one exact-value per-model table,
+  `anthropic-model-request-policy.ts` (thinking mode, toggle-off shape, forced
+  `tool_choice` rejection); every catalog row has an explicit entry, including
+  the fixed-budget `claude-sonnet-4-6`.
+  Sonnet 5.5 with thinking off sends `{ type: "between_tools" }` and rejects a
+  forced `tool_choice` locally; Haiku 5.5 and Sonnet 5 send `{ type: "disabled" }`.
 - `AnthropicLLM` maps current Claude adaptive-thinking config for Opus 5,
-  Opus 4.8, Opus 4.7, Sonnet 5, and Fable 5 without sending fixed thinking budgets,
+  Opus 4.8, Opus 4.7, Sonnet 5.5, Sonnet 5, Haiku 5.5, and Fable 5 without sending fixed thinking budgets,
   manual-budget overrides, or unsupported sampling fields (`temperature`,
   `top_p`, `top_k`). It also filters AutoByteus-internal invocation kwargs
   before Anthropic Messages API calls. Older Claude rows keep the legacy
   fixed-budget path unless a separate provider migration changes them.
-- Opus 5.5 uses an adaptive-only schema and preflight: fixed-budget thinking and
-  unsupported sampling parameters are rejected before the Messages SDK call.
+- Opus 5.5 uses an adaptive-only schema and preflight: fixed-budget thinking,
+  unsupported sampling parameters and forced `tool_choice` are rejected before
+  the Messages SDK call.
   Its streaming adapter assembles the complete ordered native assistant turn,
   including signed or redacted thinking and tool-use blocks, and retains it
   privately for an active tool continuation rather than exposing it as an

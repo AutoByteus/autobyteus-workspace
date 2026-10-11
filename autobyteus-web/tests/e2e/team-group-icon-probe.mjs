@@ -18,6 +18,7 @@ import net from 'node:net';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { chromium } from 'playwright-core';
+import { routeTaskWorkerBoundaries } from './fixtures/task-worker-boundaries.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const web = path.resolve(here, '../..'), root = path.resolve(web, '..');
@@ -99,6 +100,8 @@ try {
       : query.includes('agentTeamDefinitions') ? { agentTeamDefinitions: [] } : query.includes('workspaces') ? { workspaces: [] } : {};
     return route.fulfill({ contentType: 'application/json', body: JSON.stringify({ data }) });
   });
+  // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
+  await routeTaskWorkerBoundaries(page);
   await page.goto(url);
   await page.locator('[data-preview="team-icons"]').waitFor();
   await page.locator('[data-team-icon="temporary-task-team"] svg').first().waitFor();

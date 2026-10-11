@@ -112,28 +112,22 @@ contracts.
 
 Settings -> Server Settings -> Basics contains the node-bound Compaction card:
 
-- optional model selection and generation configuration are one persisted JSON
-  tuple, `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` (`modelIdentifier`, `llmConfig`);
-- null/missing model means the then-current parent model identifier; null config
-  means selected-model defaults, not a copy of the parent's mutable LLM instance;
-- trigger ratio, active-context token override and detailed logs remain separate
-  existing settings.
+- trigger ratio, active-context token override and detailed logs are the card's
+  settings;
+- there is no compaction model choice: compaction always summarizes with the
+  agent's own model, because a different model can never reuse the agent's prompt
+  cache. A value saved earlier under `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` has no
+  effect and is not shown on this card.
 
-Reading an absent tuple or saving unrelated controls does not materialize model
-settings. Editing/saving or clearing model selection is explicit. Model/config
-validation follows the bound server catalog; stale node responses must not
-replace current drafts. A failed initial settings read exposes Retry rather than
-claiming a clean usable configuration.
+Stale node responses must not replace current drafts. A failed initial settings
+read exposes Retry rather than claiming a clean usable configuration.
 
 Save sends changed valid fields sequentially through the existing per-setting
 mutation, stopping on the first failure. Prior successful writes remain saved;
 failed/unsent fields stay dirty for remaining-only retry. This is not a transaction
-across all controls. The model/config pair is saved as a single setting value.
+across all controls.
 
-There is no strategy or compactor-agent selector. The server creates a fresh
-isolated tool-free LLM for each direct summary attempt and enforces its prompt,
-output cap and request controls; credential-bearing values are not accepted as
-arbitrary model overrides. The active-context token override has an explicit
+There is no strategy or compactor-agent selector. The active-context token override has an explicit
 public numeric-setting exception; other credential-name checks stay in force.
 Old strategy settings and old Memory Compactor files are not imported/deleted.
 The card retains full-width controls and stacked navigation on narrow screens.
@@ -487,6 +481,9 @@ the depth-first execution projection and derives sibling continuation metadata.
 `WorkspaceHierarchyBranches.vue` renders continuous ancestor rails and a
 right-only current elbow from that metadata; the current vertical continues to
 the next sibling or stops at the current row midpoint for the last sibling.
+A two-line Task-worker row (with its [Task summary](./projects.md#task-summaries-in-the-workspaces-tree))
+uses `anchor="name-line"`: the elbow, and a last sibling's vertical, meet the
+name line instead of the row midpoint.
 These branches are presentation-only and do not create or rewrite topology.
 Selecting either a stable or transient Workspaces row uses the existing
 team-member inspection path. `TeamExecutionViewState` is the sole authority for

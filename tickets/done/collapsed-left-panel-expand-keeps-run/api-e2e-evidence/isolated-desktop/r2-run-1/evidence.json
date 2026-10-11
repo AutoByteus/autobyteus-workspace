@@ -1,0 +1,88 @@
+{
+  "startedAt": "2026-10-08T17:36:24.193Z",
+  "controlEndpoint": "http://127.0.0.1:63466",
+  "backendUrl": "http://127.0.0.1:63467",
+  "cases": {},
+  "errors": [],
+  "seed": {
+    "names": {
+      "manager": "Manager Dsk cbad",
+      "worker": "Release Notes Writer Dsk cbad",
+      "helper": "Fact Checker Dsk cbad",
+      "squad": "Docs Review Team Dsk cbad",
+      "team": "Delivery Team Dsk cbad",
+      "org": "Delivery Org Dsk cbad"
+    },
+    "ids": {
+      "manager": "manager-dsk-cbad",
+      "worker": "release-notes-writer-dsk-cbad",
+      "helper": "fact-checker-dsk-cbad",
+      "squad": "docs-review-team-dsk-cbad",
+      "team": "delivery-team-dsk-cbad",
+      "org": "delivery-org-dsk-cbad"
+    },
+    "projectId": "project_6323bf89-0114-4155-bb4c-4a11b212a4fc",
+    "agentTask": "project_task_ecbc8513-fab6-4e7f-9c78-3b8f89af5ae5",
+    "teamTask": "project_task_5c61abac-5566-49e9-8b5f-7f3b24d503eb",
+    "orgTask": "project_task_c0052366-1678-454a-bdbb-06dbf65c55fe",
+    "agentRoot": {
+      "kind": "agent",
+      "rootId": "manager_dsk_cbad_36b57b3de1bf449f815d195da2038cc3",
+      "managerRunId": "manager_dsk_cbad_36b57b3de1bf449f815d195da2038cc3"
+    },
+    "teamRoot": {
+      "kind": "team",
+      "rootId": "delivery_team_dsk_cbad_c2a53811f3ad42b984742790ca9e233a",
+      "managerRunId": "manager_dsk_cbad_8d9ea67ad1d7465c8ec73173ce500d8f"
+    },
+    "orgRoot": {
+      "kind": "org",
+      "rootId": "delivery_org_dsk_cbad_f2dc9d83d6f748f68c12cce3ef31ab87",
+      "managerRunId": "manager_dsk_cbad_f703ff982ac74c55ad99b8bd3ff57179"
+    },
+    "agentWorker": {
+      "kind": "agent",
+      "recipientAddress": "/release_notes_writer_dsk_cbad",
+      "ingressAgentRunId": "release_notes_writer_dsk_cbad_5f61dc555c5c426292573101729b6393",
+      "teamRunId": null,
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent",
+        "runId": "manager_dsk_cbad_36b57b3de1bf449f815d195da2038cc3"
+      }
+    },
+    "teamWorker": {
+      "kind": "team",
+      "recipientAddress": "/docs_review_team_dsk_cbad",
+      "ingressAgentRunId": "release_notes_writer_dsk_cbad_550ea95841f749669c41aea33a4ea6d6",
+      "teamRunId": "docs_review_team_dsk_cbad_b84c2700b7ef4e259ec87508add48e8d",
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent_team",
+        "runId": "delivery_team_dsk_cbad_c2a53811f3ad42b984742790ca9e233a"
+      }
+    },
+    "orgWorker": {
+      "kind": "agent",
+      "recipientAddress": "/worker",
+      "ingressAgentRunId": "release_notes_writer_dsk_cbad_8178a99700e948b29d35bfaafd1aec89",
+      "teamRunId": null,
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent_org",
+        "runId": "delivery_org_dsk_cbad_f2dc9d83d6f748f68c12cce3ef31ab87"
+      }
+    }
+  },
+  "window": {
+    "width": 1200,
+    "height": 768,
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) autobyteus/1.4.99-beta.2 Chrome/1",
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"
+  },
+  "result": "Fail",
+  "failure": {
+    "message": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"right-side-tab-list\"]:visible [data-tab-name]').first() to be visible\n"
+  },
+  "finishedAt": "2026-10-08T17:37:27.047Z"
+}

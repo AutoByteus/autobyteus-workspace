@@ -201,3 +201,28 @@
 - Unresolved blocker: `None`
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to `/solution_designer`: `Yes`, after this record is pushed (DR-003)
+
+## Stable Release v1.5.0 (DR-004)
+
+- Trigger: on 2026-10-10 the user asked: "now release a stable version … its just about releasing."
+- Prompt caching itself had already shipped in stable `v1.4.99` (2026-10-09, composer-context-file-removal DR-003).
+  - `v1.5.0` is therefore the next stable release. After X.Y.99 the version moves to the next minor, because the Android versionCode cannot encode patch 100.
+  - It contains every ticket merged since `v1.4.99` that was previously only in `v1.5.0-beta.1`: anthropic-incomplete-content-block, draft-run-id-validation and skill-sources-dialog-redesign, plus the release-tooling fix.
+- Notes: `release-notes-v1.5.0.md`, curated from those tickets' release notes (commit `5c2dd480e`).
+- Helper: `scripts/desktop-release.sh release 1.5.0 --release-notes tickets/done/anthropic-prompt-caching/release-notes-v1.5.0.md --branch release-v1.5.0 --no-push`, run in a temporary clean worktree at `e50826755`.
+- Release commit `305685451` (1.5.0-beta.1 → 1.5.0, notes synced to `.github/release-notes/release-notes.md`).
+- Pushes: `e50826755..305685451 HEAD -> personal` and the tag `v1.5.0`, after re-checking that `personal` had not moved (`delivery-evidence/v1.5.0-release.log`).
+- Checks on the tagged tree: licensing and hygiene both exit 0 (`delivery-evidence/v1.5.0-hygiene.log`).
+- Workflows, all succeeded on attempt 1 (`delivery-evidence/workflows-v1.5.0.json`):
+  - Desktop `38044620382`
+  - iOS `38044620385`
+  - Server Docker `38044620378`
+  - Android `38044620367`
+- GitHub release `v1.5.0`: **Latest** (`releases/latest` = `v1.5.0`), not a pre-release, not a draft, published 2026-10-10T10:26:20Z, with 17 assets and the curated notes (`delivery-evidence/github-release-v1.5.0.json`).
+- Updater metadata: all 4 `latest*.yml` report `version: 1.5.0` (`delivery-evidence/v1.5.0-updater-metadata/`).
+- Docker: `:1.5.0`, `:latest` and `:beta` share `sha256:6b76d613…a06d` (amd64, arm64) (`delivery-evidence/v1.5.0-docker-tags.txt`).
+- Release-helper check: with `v1.5.0` stable, `release_versions.py next-beta` gives `1.5.1-beta.1`.
+  - Simulated: 1.4.99 → 1.5.0-beta.1; 1.5.99 → 1.6.0-beta.1.
+  - `android-version-code` refuses 1.4.100 and 1.4.100-beta.1.
+- Cleanup: the release helper worktree `autobyteus-worktrees/release-v1.5.0` and branch `release-v1.5.0` are removed after this record is pushed.
+- Result: `Completed`.

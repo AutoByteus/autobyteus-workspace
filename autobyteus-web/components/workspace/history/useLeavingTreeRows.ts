@@ -11,6 +11,7 @@ export const useLeavingTreeRows = (runRowOf: (tree: HTMLElement) => HTMLElement 
   const onBeforeLeave = (element: Element): void => {
     leaving.value += 1
     const row = element as HTMLElement
+    row.style.setProperty('--tree-row-leave-height', `${row.offsetHeight}px`)
     const hadFocus = row.contains(document.activeElement)
     row.setAttribute('aria-hidden', 'true')
     row.inert = true

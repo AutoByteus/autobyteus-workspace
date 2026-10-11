@@ -14,6 +14,24 @@ The non-immersive default-layout routes share one desktop-capability shell that 
 
 The first left-panel item is **Chat** (`/chat`), with a pencil action that starts a New chat. `/` redirects to `/chat`. Kept New chats with typed text are listed as Draft rows directly under the Chat row; while a Draft row is selected the Chat row is not active (see [Chat — Draft rows](./chat.md#draft-rows)).
 
+### Collapsed strip: pages and Workspaces
+
+The collapsed left strip (`LeftSidebarStrip.vue`) shows the page icons (Chat … Nodes), then a light divider and a **Workspaces** icon (`ph:tree-view`, `data-nav-key="workspaces"`), with Settings pinned at the bottom. On windows up to 540 px tall the divider is hidden and the icons sit 4 px apart so Settings still fits.
+
+- A page icon docks the panel (or opens the drawer when there is no room) and goes to its page.
+- **Workspaces** only shows the panel, docked or as the drawer. It never changes the route, the selected run, the center, an open draft or the right panel. After docking, focus moves to the panel's Workspaces section and then onto the open run's row; closing the drawer returns focus to Workspaces.
+- The docked panel's collapse button collapses it and moves focus to the strip's Workspaces icon.
+
+**The lit icon is where you are.** `useShellPrimaryNavigation` owns every strip and panel highlight:
+
+- Chat (strip icon and docked Chat row) is lit only on New chat: `/chat` with no run id.
+- Workspaces (`isWorkspacesActive`, `aria-current="location"`) is lit while the center shows a run: a registered Agent run on `/chat?id=…`, an Org run on `/workspace` (`isAgentOrgRunRoute`), or a selected Team run on `/workspace`. It is not lit on New chat, the Org launch page, an empty `/workspace`, or while a run is still opening.
+- Other pages light their own icon.
+
+The route predicates (`chatRouteRunId`, `isAgentOrgRunRoute`, `isAgentOrgLaunchRoute`) live in `services/workspace/workspaceNavigationService.ts`, so the center and the highlight read the same route meaning.
+
+**Revealing the open run when the panel appears.** Each time the tree panel mounts (docked expand, drawer open, app start), `useWorkspaceHistoryTreeState` expands the selected run's ancestry, including a Team's focused member inside nested sub-team rows. The Team reveal stays pending until that member's row exists. `components/workspace/history/useRevealSelectedTreeRow.ts` then watches the tree for up to 3 s: once the selected row (the last `[aria-current="true"], [aria-selected="true"]`) renders, it is centred if it is not fully visible; a visible row does not move. The first wheel, press or key in the tree ends the window. It acts only while a run is shown: `AppLeftPanel` passes `isWorkspacesActive` to the tree as `runShown`, so on New chat or another page a row still marked by an earlier selection is neither scrolled to nor focused, and focus stays on the Workspaces section. The reveal only scrolls and focuses; it never selects or expands anything. Opening a run while the panel is already docked does not scroll the tree.
+
 `layouts/default.vue` owns the outer app shell. It provides the shared `useResponsiveWorkspaceShell()` state, which composes viewport capacity, left/right panel preferences, preferred widths, effective presentations, and presentation sources through the single `resolveResponsiveWorkspaceShellState()` policy boundary:
 
 - **Docked**: wide desktop space keeps the full left panel visible and resizable.

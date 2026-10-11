@@ -88,7 +88,6 @@ export class AutobyteusLLM extends BaseLLM {
     const tokenUsage = toTokenUsage(responseRecord.token_usage, this.model);
 
     return new CompleteResponse({
-      completionStatus: 'unknown', completionReason: null,
       content: assistantMessage,
       usage: tokenUsage
     });
@@ -144,6 +143,14 @@ export class AutobyteusLLM extends BaseLLM {
 
   private getGenerationConfig(): Record<string, unknown> {
     return { ...(this.config.extraParams ?? {}) };
+  }
+
+  /** Ends the remote session of one conversation this LLM used (e.g. an isolated compaction request). */
+  override async releaseConversation(conversationId: string, options: { signal?: AbortSignal } = {}): Promise<void> {
+    if (!this.usedConversationIds.has(conversationId)) return;
+    const client = await this.getClient();
+    await client.cleanup(conversationId, options);
+    this.usedConversationIds.delete(conversationId);
   }
 
   async cleanup(options: { signal?: AbortSignal } = {}): Promise<void> {

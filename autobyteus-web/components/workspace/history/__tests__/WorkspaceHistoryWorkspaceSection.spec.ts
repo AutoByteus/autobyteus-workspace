@@ -6,6 +6,8 @@ import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState
 import WorkspaceHistoryWorkspaceSection from '../WorkspaceHistoryWorkspaceSection.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { buildRunHistoryTeamExecutionRows } from '~/stores/runHistoryTeamExecutionRows';
+import { useTaskWorkerTaskStore } from '~/stores/taskWorkerTaskStore';
+import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import type {
   AgentOrgHistoryDefinitionGroup,
   TeamMemberTreeRow,
@@ -112,6 +114,8 @@ const mountSubject = (options: {
   teamExpanded?: boolean;
   selectedTeamRunId?: string | null;
   selectedType?: 'agent' | 'team' | null;
+  agents?: unknown[];
+  stubs?: Record<string, unknown>;
 } = {}) => {
   const worker = stableAgent('/worker', { agentRunId: 'worker-run' });
   const stableChildren = options.stableChildren ?? [worker];
@@ -148,7 +152,7 @@ const mountSubject = (options: {
     onRemoveWorkspace: vi.fn(), onCreateRun: vi.fn(), onSelectRun: vi.fn(),
     onTerminateRun: vi.fn(), onArchiveRun: vi.fn(), onDeleteRun: vi.fn(),
     onSelectTeam: vi.fn(), onTerminateTeam: vi.fn(), onArchiveTeam: vi.fn(),
-    onDeleteTeam: vi.fn(), onSelectTeamMember: vi.fn(),
+    onDeleteTeam: vi.fn(), onSelectTeamMember: vi.fn(), onOpenTeamRun: vi.fn(),
     onOpenAgentOrgRun: vi.fn(), onSelectAgentOrgMember: vi.fn(), onTerminateAgentOrg: vi.fn(),
   };
   const expandedTeamMembers = reactive<Record<string, boolean>>({});
@@ -165,7 +169,7 @@ const mountSubject = (options: {
     isWorkspaceRemoving: () => false, isWorkspaceHistoryLoading: () => false,
     workspaceHistoryError: () => null, formatRelativeTime: () => 'now',
     isWorkspaceExpanded: () => true, toggleWorkspace: vi.fn(),
-    isAgentExpanded: () => false, toggleAgent: vi.fn(),
+    isAgentExpanded: () => Boolean(options.agents?.length), toggleAgent: vi.fn(),
     isTeamDefinitionExpanded: () => true, toggleTeamDefinition: vi.fn(),
     isTeamExpanded: () => options.teamExpanded ?? true,
     isTeamMemberExpanded: vi.fn((workspaceId: string, teamRunId: string, rowKey: string) =>
@@ -191,7 +195,7 @@ const mountSubject = (options: {
     props: {
       workspaceNode: {
         workspaceId: 'workspace:/ws/a', workspaceRootPath: '/ws/a', workspaceName: 'Workspace A',
-        workspaceKind: 'filesystem', canRemoveFromWorkspaces: false, agents: [],
+        workspaceKind: 'filesystem', canRemoveFromWorkspaces: false, agents: (options.agents ?? []) as any,
         stableKey: 'workspace:/ws/a', agentOrgDefinitions: options.agentOrgDefinitions ?? [],
       },
       workspaceTeams: options.workspaceTeams ?? [team], workspaceTeamHistoryGroups: [], state,
@@ -204,6 +208,7 @@ const mountSubject = (options: {
       actions,
     },
     global: {
+      stubs: options.stubs ?? {},
       mocks: { $t: (key: string) => ({
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title': 'Temporary task execution',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_runs': 'Active team runs',
@@ -635,5 +640,38 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(nestedAgentRow.find('[data-test="workspace-hierarchy-branches"] [data-ancestor-depth="0"]').exists()).toBe(true);
     expect(nestedAgentRow.get('[data-test="workspace-hierarchy-branches"] [data-has-following-sibling]').attributes('data-has-following-sibling'))
       .toBe('false');
+  });
+});
+
+/** delegated-copy-task-locator REQ-012: a Task summary on a page without a right panel opens the row's run. */
+describe('WorkspaceHistoryWorkspaceSection Task summary run opening', () => {
+  it('opens the Team run (never collapsing it) when a Team host Task summary is located without a right panel', async () => {
+    const workerTasks = useTaskWorkerTaskStore();
+    vi.spyOn(workerTasks, 'retain').mockReturnValue(() => undefined);
+    vi.spyOn(workerTasks, 'taskOf').mockImplementation((worker) => worker.kind === 'agent' && worker.agentRunId === 'task-agent-run-1'
+      ? { taskId: 't1', projectId: null, description: 'Write the notes', status: 'TODO' } : null);
+    const { wrapper, actions, team } = mountSubject();
+    const summary = wrapper.get('[data-agent-run-id="task-agent-run-1"] [data-test="workspace-task-worker-task-summary"]');
+    expect(summary.text()).toBe('Write the notes');
+    await summary.trigger('click');
+    expect(actions.onOpenTeamRun).toHaveBeenCalledWith(team, 'workspace:/ws/a');
+    expect(actions.onSelectTeam).not.toHaveBeenCalled();
+    expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
+
+  it('opens the Agent run\'s own conversation (as its run row does) for an Agent host\'s open-run', async () => {
+    const run = { runId: 'agent-run-1', summary: 'Manager run', currentStatus: AgentStatus.Idle, lastActivityAt: '2026-06-30T00:00:00.000Z',
+      isActive: true, hasCollaboration: true, source: 'history', isDraft: false };
+    const selectChild = vi.spyOn(useAgentRunCollaborationStore(), 'selectChild');
+    const { wrapper, actions } = mountSubject({
+      workspaceTeams: [],
+      agents: [{ agentDefinitionId: 'manager', agentName: 'Manager', runs: [run] }],
+      stubs: { AgentRunTaskRows: { emits: ['open-run', 'select-run'], template: '<button data-test="stub-open-run" @click="$emit(\'open-run\')" />' } },
+    });
+    await wrapper.get('[data-test="stub-open-run"]').trigger('click');
+    expect(selectChild).toHaveBeenCalledWith('agent-run-1', null);
+    expect(actions.onSelectRun).toHaveBeenCalledWith(run);
+    wrapper.unmount();
   });
 });

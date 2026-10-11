@@ -1,0 +1,184 @@
+[
+  {
+    "index": 0,
+    "phase": "CCR3-T1",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 13164,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 1,
+    "phase": "CCR3-T2",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 21877,
+      "cacheRead": 12023,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 2,
+    "phase": "CCR3-T3",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 30590,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 3,
+    "phase": "CCR3-T4",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 39705,
+      "cacheRead": 28314,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 4,
+    "phase": "CCR3-T5",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 39716,
+      "cacheRead": 36395,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 5,
+    "phase": "CCR3-T5",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1081,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 40472,
+      "cacheRead": 36395,
+      "cacheWrite": 0,
+      "output": 1081
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 6,
+    "phase": "CCR3-T6",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5922,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 4
+    },
+    "strictInjected": false
+  }
+]

@@ -63,7 +63,7 @@ import { AgentTurnRunner } from '../../../../src/agent/loop/agent-turn-runner.js
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import {
   LLMUserMessageReadyEvent,
-  ToolContinuationReadyEvent,
+  TurnContinuationReadyEvent,
   UserMessageReceivedEvent
 } from '../../../../src/agent/events/agent-events.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
@@ -206,7 +206,7 @@ describe('AgentTurnRunner interruption fences', () => {
     const appliedEvents = mocks.applyEventAndDeriveStatus.mock.calls.map(([event]) => event);
     expect(
       appliedEvents.some(
-        (event) => event instanceof ToolContinuationReadyEvent && event.turnId === 'turn-1'
+        (event) => event instanceof TurnContinuationReadyEvent && event.turnId === 'turn-1'
       )
     ).toBe(true);
     expect(

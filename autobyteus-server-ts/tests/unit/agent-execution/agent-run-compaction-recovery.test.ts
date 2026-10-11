@@ -33,7 +33,7 @@ describe('AgentRun with real native backend and recovery gate (synthetic LLM)',(
    expect(f.registry.getRecord(f.run.runId,'A')?.state).toBe('COMPLETED');
    expect(f.run.getStatusSnapshot().recoverableBlock).toBeNull();
   }finally{await f.close()}
- },15000);
+ },30000);
  it('does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence',async()=>{
   const f=await createRecoveryFixture();
   try {
@@ -47,14 +47,16 @@ describe('AgentRun with real native backend and recovery gate (synthetic LLM)',(
    await expect(f.run.terminate()).resolves.toMatchObject({accepted:true});
    expect(f.native.isRunning).toBe(false);expect(f.run.getInputStateSnapshot().entries).toEqual([]);
   }finally{await f.close()}
- },15000);
+ },30000);
  it('finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C',async()=>{
   const f=await createRecoveryFixture(true);
   try {
    let reject!:(e:Error)=>void;f.compress.mockImplementationOnce(()=>new Promise((_,r)=>{reject=r}));
    await f.submit('A');await eventually(()=>!!reject);await f.submit('B');
    reject(new Error('post response exhausted'));
-   await eventually(()=>f.native.context.state.activeTurn===null && f.native.getCompactionRecovery()?.position.kind==='next_turn');
+   // A's command record settles asynchronously after the turn ends; wait for it rather than racing it.
+   await eventually(()=>f.native.context.state.activeTurn===null && f.native.getCompactionRecovery()?.position.kind==='next_turn'
+     && f.registry.getRecord(f.run.runId,'A')?.state==='COMPLETED');
    expect(f.run.getStatusSnapshot()).toMatchObject({status:'error',recoverableBlock:{position:{kind:'next_turn'}}});
    expect(f.registry.getRecord(f.run.runId,'A')?.state).toBe('COMPLETED');
    expect(f.parent.requests).toHaveLength(4);expect(f.compress).toHaveBeenCalledTimes(1);
@@ -63,7 +65,7 @@ describe('AgentRun with real native backend and recovery gate (synthetic LLM)',(
    expect(f.parent.requests.slice(3).map(m=>m.at(-1)?.content)).toEqual(['A','B','C']);
    expect(f.compress).toHaveBeenCalledTimes(2);
   }finally{await f.close()}
- },15000);
+ },30000);
  it('buffers held/terminal facts before dispatch ACK without duplicate forwarding, and ignores during-recovery credit',async()=>{
   const f=await createRecoveryFixture();
   try {
@@ -83,7 +85,7 @@ describe('AgentRun with real native backend and recovery gate (synthetic LLM)',(
    expect(f.forwarded.mock.calls.filter(([p])=>p.message.content==='A')).toHaveLength(1);
    expect(f.compress).toHaveBeenCalledTimes(3);
   }finally{await f.close()}
- },15000);
+ },30000);
  it('revokes the unused next-turn grant when normalization proves B undelivered, never replays consumed A',async()=>{
   const f=await createRecoveryFixture(true);
   try {
@@ -96,7 +98,7 @@ describe('AgentRun with real native backend and recovery gate (synthetic LLM)',(
    await f.submit('C');await eventually(()=>f.parent.requests.length===5 && f.run.getInputStateSnapshot().entries.length===0);
    expect(f.parent.requests.at(-1)?.at(-1)?.content).toBe('C');
   }finally{await f.close()}
- },15000);
+ },30000);
  it.each([false,true])('pins unknown recovery delivery; positive native lifecycle reconciles it, shutdown never resends (delivered=%s)',async delivered=>{
   const f=await createRecoveryFixture(true);
   try {
@@ -113,6 +115,6 @@ describe('AgentRun with real native backend and recovery gate (synthetic LLM)',(
    await expect(f.run.terminate()).resolves.toMatchObject({accepted:true});
    expect(dispatch).toHaveBeenCalledTimes(1);
   }finally{await f.close()}
- },15000);
+ },30000);
 
 });

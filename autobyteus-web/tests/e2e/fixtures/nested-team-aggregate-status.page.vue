@@ -299,6 +299,7 @@ const actions: WorkspaceHistorySectionActions = {
   onArchiveTeam: () => {},
   onDeleteTeam: () => {},
   onSelectTeam: () => { teamSelectionCount.value += 1; },
+  onOpenTeamRun: () => {},
   onSelectTeamMember: () => { memberSelectionCount.value += 1; },
 };
 

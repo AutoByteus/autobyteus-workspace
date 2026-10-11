@@ -13,14 +13,59 @@ const { apiPostMock } = vi.hoisted(() => ({
 vi.mock('~/services/api', () => ({
   default: {
     post: apiPostMock,
-    delete: vi.fn(),
   },
+}));
+
+vi.mock('~/stores/windowNodeContextStore', () => ({
+  useWindowNodeContextStore: () => ({ initialized: true, nodeBaseUrl: 'http://127.0.0.1:31000/' }),
 }));
 
 describe('contextFileUploadStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  const collaborationDraft = createUploadedContextAttachment({
+    storedFilename: 'ctx_cafe__screen shot.png',
+    locator: '/rest/drafts/agent-collaborations/host-1/agent-runs/child-1/context-files/ctx_cafe__screen%20shot.png',
+    displayName: 'screen shot.png',
+    phase: 'draft',
+    type: 'Image',
+  });
+
+  it('deletes a draft at its own locator on the bound node and counts the request as in flight', async () => {
+    const store = useContextFileUploadStore();
+    let inFlightDuringRequest = false;
+    const fetchMock = vi.fn(async () => {
+      inFlightDuringRequest = store.isUploading;
+      return new Response(null, { status: 204 });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await store.deleteDraftAttachment(collaborationDraft);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://127.0.0.1:31000/rest/drafts/agent-collaborations/host-1/agent-runs/child-1/context-files/ctx_cafe__screen%20shot.png',
+      expect.objectContaining({ method: 'DELETE' }),
+    );
+    expect(inFlightDuringRequest).toBe(true);
+    expect(store.isUploading).toBe(false);
+  });
+
+  it('throws the server detail when a draft delete fails', async () => {
+    const store = useContextFileUploadStore();
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ detail: 'agentRunId must be a safe non-empty identity.' }), {
+      status: 400,
+      headers: { 'content-type': 'application/json' },
+    })));
+
+    await expect(store.deleteDraftAttachment(collaborationDraft)).rejects.toThrow('agentRunId must be a safe non-empty identity.');
+    expect(store.isUploading).toBe(false);
+
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('gateway down', { status: 502 })));
+    await expect(store.deleteDraftAttachment(collaborationDraft)).rejects.toThrow('Delete failed (502).');
   });
 
   it('preserves uploaded display names when finalizing sanitized stored filenames', async () => {

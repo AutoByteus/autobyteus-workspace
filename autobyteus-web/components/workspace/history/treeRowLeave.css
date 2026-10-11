@@ -9,9 +9,10 @@
   overflow: hidden;
   transition: opacity 200ms ease-out, max-height 200ms ease-out, margin-top 200ms ease-out, transform 200ms ease-out;
 }
+/* A two-line row (a Task summary under the name) starts from its own measured height. */
 .tree-row-leave-from {
   opacity: 1;
-  max-height: 2rem;
+  max-height: var(--tree-row-leave-height, 2rem);
 }
 .tree-row-leave-to {
   opacity: 0;

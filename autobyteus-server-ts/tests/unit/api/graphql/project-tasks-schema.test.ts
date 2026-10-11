@@ -15,6 +15,7 @@ const mockProjectTaskService = vi.hoisted(() => ({
   createTask: vi.fn(),
   updateTask: vi.fn(),
   deleteTask: vi.fn(),
+  currentTasksOfTaskWorkers: vi.fn(),
 }));
 
 vi.mock("../../../../src/projects/services/project-service.js", () => ({
@@ -81,6 +82,28 @@ describe("Project Tasks GraphQL schema", () => {
     expect(result.errors).toBeUndefined();
     expect(result.data).toEqual({ projectTasks: [taskView] });
     expect(mockProjectTaskService.listTasks).toHaveBeenCalledWith("project_1");
+  });
+
+  it("answers taskWorkerTasks from typed agent and team run-ID lists in one service call", async () => {
+    mockProjectTaskService.currentTasksOfTaskWorkers.mockResolvedValue([
+      { execution: { agentRunId: "a1" }, task: { taskId: "project_task_1", projectId: "project_1", description: "Ship it", status: "IN_PROGRESS" } },
+      { execution: { teamRunId: "t1" }, task: { taskId: "ad_hoc_task_1", projectId: null, description: "Review it", status: "CANCELLED" } },
+      { execution: { teamRunId: "t2" }, task: null },
+    ]);
+
+    const result = await graphql({
+      schema,
+      source: `query { taskWorkerTasks(agentRunIds: ["a1"], teamRunIds: ["t1", "t2"]) { workerKind workerRunId task { taskId projectId description status } } }`,
+    });
+
+    expect(result.errors).toBeUndefined();
+    expect(result.data).toEqual({ taskWorkerTasks: [
+      { workerKind: "agent", workerRunId: "a1", task: { taskId: "project_task_1", projectId: "project_1", description: "Ship it", status: "IN_PROGRESS" } },
+      { workerKind: "team", workerRunId: "t1", task: { taskId: "ad_hoc_task_1", projectId: null, description: "Review it", status: "CANCELLED" } },
+      { workerKind: "team", workerRunId: "t2", task: null },
+    ] });
+    expect(mockProjectTaskService.currentTasksOfTaskWorkers).toHaveBeenCalledTimes(1);
+    expect(mockProjectTaskService.currentTasksOfTaskWorkers).toHaveBeenCalledWith([{ agentRunId: "a1" }, { teamRunId: "t1" }, { teamRunId: "t2" }]);
   });
 
   it("forwards create, update and delete inputs", async () => {

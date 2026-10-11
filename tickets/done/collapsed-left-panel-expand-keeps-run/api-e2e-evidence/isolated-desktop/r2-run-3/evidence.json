@@ -1,0 +1,88 @@
+{
+  "startedAt": "2026-10-08T17:38:01.026Z",
+  "controlEndpoint": "http://127.0.0.1:63466",
+  "backendUrl": "http://127.0.0.1:63467",
+  "cases": {},
+  "errors": [],
+  "seed": {
+    "names": {
+      "manager": "Manager Dsk 525b",
+      "worker": "Release Notes Writer Dsk 525b",
+      "helper": "Fact Checker Dsk 525b",
+      "squad": "Docs Review Team Dsk 525b",
+      "team": "Delivery Team Dsk 525b",
+      "org": "Delivery Org Dsk 525b"
+    },
+    "ids": {
+      "manager": "manager-dsk-525b",
+      "worker": "release-notes-writer-dsk-525b",
+      "helper": "fact-checker-dsk-525b",
+      "squad": "docs-review-team-dsk-525b",
+      "team": "delivery-team-dsk-525b",
+      "org": "delivery-org-dsk-525b"
+    },
+    "projectId": "project_f38e7e73-0349-421e-819b-f5fb4905482e",
+    "agentTask": "project_task_482494c4-5fa9-4b12-bdf4-23cc0155f55a",
+    "teamTask": "project_task_32a322df-d936-4d47-93ee-30fcb7044a7c",
+    "orgTask": "project_task_87a0f7d4-bbb3-4c81-8b47-4194cf9b9b4d",
+    "agentRoot": {
+      "kind": "agent",
+      "rootId": "manager_dsk_525b_58c13468ef96487b9e2fb31217e00e06",
+      "managerRunId": "manager_dsk_525b_58c13468ef96487b9e2fb31217e00e06"
+    },
+    "teamRoot": {
+      "kind": "team",
+      "rootId": "delivery_team_dsk_525b_3c395411f5394890903cf1f3a725afab",
+      "managerRunId": "manager_dsk_525b_fcb60cfa859a4b0d97e19fdd60d230a8"
+    },
+    "orgRoot": {
+      "kind": "org",
+      "rootId": "delivery_org_dsk_525b_b3c306844a034b0bbe53ed4510dd85f1",
+      "managerRunId": "manager_dsk_525b_f7fde9a8c417467085e11386f9aed621"
+    },
+    "agentWorker": {
+      "kind": "agent",
+      "recipientAddress": "/release_notes_writer_dsk_525b",
+      "ingressAgentRunId": "release_notes_writer_dsk_525b_94307d154d4e43ee8fd03af3ed80d6c1",
+      "teamRunId": null,
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent",
+        "runId": "manager_dsk_525b_58c13468ef96487b9e2fb31217e00e06"
+      }
+    },
+    "teamWorker": {
+      "kind": "team",
+      "recipientAddress": "/docs_review_team_dsk_525b",
+      "ingressAgentRunId": "release_notes_writer_dsk_525b_713ca8d6021445b486149d90f60e3063",
+      "teamRunId": "docs_review_team_dsk_525b_e5d0dcda5d4742b3a85118df0011a978",
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent_team",
+        "runId": "delivery_team_dsk_525b_3c395411f5394890903cf1f3a725afab"
+      }
+    },
+    "orgWorker": {
+      "kind": "agent",
+      "recipientAddress": "/worker",
+      "ingressAgentRunId": "release_notes_writer_dsk_525b_a52358b57c7d4a77966f0e158f4d8e29",
+      "teamRunId": null,
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent_org",
+        "runId": "delivery_org_dsk_525b_b3c306844a034b0bbe53ed4510dd85f1"
+      }
+    }
+  },
+  "window": {
+    "width": 1200,
+    "height": 768,
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) autobyteus/1.4.99-beta.2 Chrome/1",
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=manager_dsk_cbad_36b57b3de1bf449f815d195da2038cc3"
+  },
+  "result": "Fail",
+  "failure": {
+    "message": "cdpSession.send: Protocol error (Browser.getWindowForTarget): 'Browser.getWindowForTarget' wasn't found"
+  },
+  "finishedAt": "2026-10-08T17:38:02.383Z"
+}

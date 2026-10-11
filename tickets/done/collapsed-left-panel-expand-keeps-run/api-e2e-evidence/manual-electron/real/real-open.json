@@ -1,0 +1,76 @@
+{
+  "phase": "open",
+  "startedAt": "2026-10-08T18:30:25.354Z",
+  "steps": {
+    "task": {
+      "taskId": "project_task_bc7bb252-8d45-473c-9685-48611f549e77",
+      "description": "Write a two-line poem about trees and reply with it.",
+      "status": "TODO",
+      "root": {
+        "kind": "agent",
+        "recipientAddress": "/research_engineer",
+        "ingressAgentRunId": "research_engineer_d8a40aa5850d4305af91e21afd9c4259",
+        "start": "started",
+        "status": "idle",
+        "hostRoot": {
+          "kind": "agent",
+          "runId": "project_task_manager_97d4e6493c444dccb998ea5be09d3826"
+        }
+      }
+    },
+    "onManager": {
+      "strip": true,
+      "workspacesLit": true,
+      "stripChatLit": false,
+      "focus": "TEXTAREA",
+      "hash": "#/chat?id=project_task_manager_97d4e6493c444dccb998ea5be09d3826"
+    },
+    "workerOpen": {
+      "before": {
+        "strip": true,
+        "workspacesLit": true,
+        "stripChatLit": false,
+        "focus": "BUTTON",
+        "hash": "#/chat?id=project_task_manager_97d4e6493c444dccb998ea5be09d3826"
+      },
+      "selBefore": {
+        "hash": "#/chat?id=project_task_manager_97d4e6493c444dccb998ea5be09d3826",
+        "subject": "{\"kind\":\"agent_run\",\"runId\":\"project_task_manager_97d4e6493c444dccb998ea5be09d3826\"}"
+      },
+      "center": "RE\nresearch engineer\nIdle\nRE\nresearch engineer\n\nTask delegator address: /project_task_manager\nTask delegator AgentRun ID: project_task_manager_97d4e6493c444dccb998ea5be09d3826\n\nDescription:\nWrite a two-line poem about trees and reply with it.\n\nI’ll compose a two-line poem about trees for you:\n\nRoots"
+    },
+    "afterWorkspaces": {
+      "row": {
+        "agentRunId": "research_engineer_d8a40aa5850d4305af91e21afd9c4259",
+        "test": "workspace-team-transient-execution-row",
+        "text": "REresearch engineerTemporary task agent · research engineer · /research_engineer",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      },
+      "settled": {
+        "agentRunId": "research_engineer_d8a40aa5850d4305af91e21afd9c4259",
+        "test": "workspace-team-transient-execution-row",
+        "text": "REresearch engineerTemporary task agent · research engineer · /research_engineer",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      },
+      "selAfter": {
+        "hash": "#/chat?id=project_task_manager_97d4e6493c444dccb998ea5be09d3826",
+        "subject": "{\"kind\":\"agent_run\",\"runId\":\"project_task_manager_97d4e6493c444dccb998ea5be09d3826\"}"
+      },
+      "center": "RE\nresearch engineer\nIdle\nRE\nresearch engineer\n\nTask delegator address: /project_task_manager\nTask delegator AgentRun ID: project_task_manager_97d4e6493c444dccb998ea5be09d3826\n\nDescription:\nWrite a two-line poem about trees and reply with it.\n\nI’ll compose a two-line poem about trees for you:\n\nRoots",
+      "projectsTabSelected": "true"
+    }
+  },
+  "errors": [],
+  "window": {
+    "width": 1512,
+    "height": 917
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-08T18:30:27.298Z"
+}

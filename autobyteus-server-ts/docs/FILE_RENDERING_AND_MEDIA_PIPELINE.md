@@ -62,6 +62,43 @@ The actual artifact/output files remain where the runtime wrote them.
 
 - Managed media URLs are based on `AppConfig.getBaseUrl()` and are typically served from `/rest/files/...`.
 - Draft uploaded context files are served from `/rest/drafts/.../context-files/:storedFilename` until send-time finalization.
+  A draft locator is the attachment's identity and its address. One draft locator codec in
+  `context-files/domain/context-file-owner-types.ts` (`buildDraftContextFileLocator` plus its
+  exact inverse `parseDraftContextFileLocator`) owns the path shape of every draft owner kind
+  (`agent_draft`, `team_member_draft`, `org_member_draft`,
+  `agent_collaboration_member_draft`). The REST layer registers exactly one
+  `GET /rest/drafts/*` and one `DELETE /rest/drafts/*`, which parse the raw request path
+  with that codec. `ContextFileLocalPathResolver` resolves draft locators through the same
+  codec. Every draft owner kind is therefore both readable and deletable. A new owner kind
+  added to the codec gets both routes, and no route or resolver may hold per-kind draft path
+  patterns. Both routes share one error mapping:
+  - a path that is not a draft locator → `404`
+  - an invalid descriptor (`ContextFileDescriptorError`, including
+    `ContextFilePathContainmentError`, or `CollaborationContractError`) → `400 {detail}`
+  - an unknown owner → `404`
+  - a GET for a missing file → `404`
+  - a DELETE → `204` whether or not the file existed
+  - any other fault → `500`
+
+  Finalized-file routes are still registered per owner kind; they have no delete operation.
+- **Owner identity and stored filename rules.** The owner descriptor parsers
+  (`parseDraftContextFileOwnerDescriptor`, `parseFinalContextFileOwnerDescriptor`) are the
+  trust boundary for every context-file entry point: upload, finalize, draft GET/DELETE,
+  final GETs and runtime locator resolution.
+  - Every owner ID of every draft and final owner kind (`draftRunId`, `teamDraftId`,
+    `runId`, `teamRunId`, `orgRunId`, `hostRunId`, `agentRunId`) is a safe identity. It
+    must be non-empty, have no surrounding whitespace, contain no `/`, `\` or control
+    characters, and not be `.` or `..`. IDs are never trimmed into validity. `memberAddress`
+    keeps its canonical team-address validation.
+  - A descriptor with fields that its owner kind does not define is rejected.
+  - A stored filename may contain only `A-Z a-z 0-9 . _ -`. It must not be dot-only or
+    contain `..`. The server generates every stored filename (`ctx_<token>__<stem>.<ext>`)
+    within that set.
+  - Malformed input is answered `400 {detail}`, including on the agent-final route
+    `/rest/runs/:runId/context-files/:storedFilename`. Nothing is read, written, moved or
+    deleted. Runtime locator resolution treats a malformed locator as unresolved.
+  - `resolveSafeChildPath` in `ContextFileLayout` remains as defence in depth. An escaping
+    path throws `ContextFilePathContainmentError`, which is answered 400, never 500.
 - Finalized uploaded context files are served from
   `/rest/runs/:runId/context-files/:storedFilename` or
   `/rest/team-runs/:teamRunId/agent-runs/:agentRunId/context-files/:storedFilename`.

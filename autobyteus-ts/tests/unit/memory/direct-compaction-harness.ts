@@ -11,6 +11,14 @@ import { WorkingContextFinalizer, createNaturalUserMessageProvenance } from '../
 import { resolveCompactionPlanningBudget } from '../../../src/memory/compaction/compaction-planning-budget.js';
 import { PendingCompactionExecutor } from '../../../src/memory/compaction/pending-compaction-executor.js';
 import { COMPACTION_SUMMARY_HEADINGS } from '../../../src/memory/compaction/compaction-summary-parser.js';
+import type { CompactionSummarizer, CompactionSummaryInput } from '../../../src/memory/compaction/compaction-summarizer.js';
+import type { ConversationSummaryPort } from '../../../src/memory/compaction/conversation-summary-port.js';
+
+const unusedSummaryPort: ConversationSummaryPort = {
+  requestCachedSummary: () => { throw new Error('unused'); },
+  requestTranscriptSummary: () => { throw new Error('unused'); },
+  fitsInputBudget: () => { throw new Error('unused'); },
+};
 
 export const summary = COMPACTION_SUMMARY_HEADINGS.map((h) => `## ${h}\n- Preserve the approved scope; /repo/check.ts is unrun.`).join('\n\n');
 export const makeHarness = () => {
@@ -30,11 +38,14 @@ export const makeHarness = () => {
   const request = () => manager.requestCompaction({ requestedTurnId: 'turn-request', requestKind: 'threshold_crossing',
     planningBudget: resolveCompactionPlanningBudget({ inputBudget: 10000, triggerThresholdTokens: 8000 }, 0) });
   const operationId = request();
-  const compress = vi.fn(async (_content: string) => summary);
+  // Summary production is CompactionSummarizer's concern (own tests); here it returns the body.
+  const summarize = vi.fn(async (_input: CompactionSummaryInput) => summary);
   const emitStatus = vi.fn();
-  const executor = new PendingCompactionExecutor(manager, { createCompressionStrategy: () => ({ compress }), reporter: { emitStatus } as any });
+  const executor = new PendingCompactionExecutor(manager, {
+    summaryPort: unusedSummaryPort, summarizer: { summarize } as unknown as CompactionSummarizer, reporter: { emitStatus } as any,
+  });
   const controller = new AbortController();
-  const input = { executionSite: 'before_parent_request' as const, turnId: 'execute-1', getParentModelIdentifier: () => 'parent', signal: controller.signal };
-  return { dir, store, snapshotStore, manager, executor, compress, emitStatus, input, controller, operationId, request,
+  const input = { executionSite: 'before_parent_request' as const, turnId: 'execute-1', signal: controller.signal };
+  return { dir, store, snapshotStore, manager, executor, summarize, emitStatus, input, controller, operationId, request,
     dispose: () => fs.rmSync(dir, { recursive: true, force: true }) };
 };

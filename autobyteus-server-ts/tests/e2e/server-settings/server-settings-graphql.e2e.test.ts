@@ -23,7 +23,8 @@ import {
   STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
 } from "../../../src/config/streaming-content-flush-interval-setting.js";
 
-import { COMPACTION_MODEL_SETTINGS_KEY } from "../../../src/config/compaction-model-settings.js";
+// Saved by the removed compaction-model setting; may linger in an existing .env.
+const COMPACTION_MODEL_SETTINGS_KEY = "AUTOBYTEUS_COMPACTION_MODEL_SETTINGS";
 
 const AUTOBYTEUS_STREAM_PARSER_SETTING_KEY = "AUTOBYTEUS_STREAM_PARSER";
 
@@ -654,66 +655,28 @@ describe("Server settings GraphQL e2e", () => {
     appConfigProvider.config.initialize();
   };
 
-  it("lists inherited compaction without persisting a default selection", async () => {
+  it("keeps a compaction-model value saved before its removal inert, deletable, and not a compaction setting", async () => {
     initializeOwnedSettingsConfig();
-    const before = fs.readFileSync(path.join(tempDir, ".env"), "utf8");
-    const listed = await execGraphql<{ getServerSettings: Array<{ key: string; value: string }> }>(
-      "{ getServerSettings { key value } }",
-    );
-    expect(listed.getServerSettings.find(item => item.key === COMPACTION_MODEL_SETTINGS_KEY)).toBeUndefined();
-    expect(appConfigProvider.config.get(COMPACTION_MODEL_SETTINGS_KEY)).toBeUndefined();
-    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(before);
-    expect(before).not.toContain(COMPACTION_MODEL_SETTINGS_KEY);
-  });
+    const leftover = JSON.stringify({ modelIdentifier: "old-compaction-model", llmConfig: null });
+    fs.appendFileSync(path.join(tempDir, ".env"), `\n${COMPACTION_MODEL_SETTINGS_KEY}='${leftover}'\n`);
+    // Restart from the persisted file: startup is unaffected by the leftover value.
+    appConfigProvider.resetForTests();
+    delete process.env[COMPACTION_MODEL_SETTINGS_KEY];
+    appConfigProvider.config.setCustomAppDataDir(tempDir);
+    initializeOwnedSettingsConfig();
+    const query = `{ getServerSettings { key value description isEditable isDeletable } }`;
+    const listed = await execGraphql<{ getServerSettings: Array<{ key: string; value: string; description: string; isEditable: boolean; isDeletable: boolean }> }>(query);
+    const current = listed.getServerSettings.find(item => item.key === COMPACTION_MODEL_SETTINGS_KEY);
+    expect(current).toMatchObject({ value: leftover, description: "Custom user-defined setting", isEditable: true, isDeletable: true });
+    expect(current!.description).not.toMatch(/compaction/i);
 
-  it("durably round-trips the current compaction tuple, including inherit and an unavailable explicit model", async () => {
-    initializeOwnedSettingsConfig();
-    const mutation = `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`;
-    const query = `{ getServerSettings { key value isEditable isDeletable } }`;
-    for (const selection of [
-      { modelIdentifier: null, llmConfig: null },
-      { modelIdentifier: " unavailable-fixture-model ", llmConfig: { temperature: 0.2, max_tokens: 4096 } },
-      { modelIdentifier: null, llmConfig: null, schema_version: 999, obsolete: "ignored" },
-    ]) {
-      const expected = { modelIdentifier: selection.modelIdentifier?.trim() ?? null, llmConfig: selection.llmConfig };
-      const updated = await execGraphql<{ updateServerSetting: string }>(mutation, {
-        key: COMPACTION_MODEL_SETTINGS_KEY, value: JSON.stringify(selection),
-      });
-      expect(updated.updateServerSetting).toContain("updated successfully");
-      const beforeRestart = fs.readFileSync(path.join(tempDir, ".env"), "utf8");
-      expect(beforeRestart).toContain(COMPACTION_MODEL_SETTINGS_KEY);
-      // Reload from persisted AppConfig, not process.env or a mocked settings store.
-      appConfigProvider.resetForTests();
-      delete process.env[COMPACTION_MODEL_SETTINGS_KEY];
-      appConfigProvider.config.setCustomAppDataDir(tempDir);
-      initializeOwnedSettingsConfig();
-      const listed = await execGraphql<{ getServerSettings: Array<{ key: string; value: string; isEditable: boolean; isDeletable: boolean }> }>(query);
-      const current = listed.getServerSettings.find(item => item.key === COMPACTION_MODEL_SETTINGS_KEY);
-      expect(current).toMatchObject({ isEditable: true, isDeletable: false });
-      expect(JSON.parse(current!.value)).toEqual(expected);
-      expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(beforeRestart);
-    }
-  });
-
-  it("rejects invalid compaction tuples without changing the durable baseline or exposing retired strategy queries", async () => {
-    initializeOwnedSettingsConfig();
-    const mutation = `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`;
-    const baseline = JSON.stringify({ modelIdentifier: "fixture-model", llmConfig: { temperature: 0.1 } });
-    expect((await execGraphql<{ updateServerSetting: string }>(mutation, { key: COMPACTION_MODEL_SETTINGS_KEY, value: baseline })).updateServerSetting).toContain("updated successfully");
-    const persisted = fs.readFileSync(path.join(tempDir, ".env"), "utf8");
-    for (const value of ["not-json", "{}", JSON.stringify({ modelIdentifier: null, llmConfig: { api_key: "synthetic-not-a-secret" } })]) {
-      const result = await execGraphql<{ updateServerSetting: string }>(mutation, { key: COMPACTION_MODEL_SETTINGS_KEY, value });
-      expect(result.updateServerSetting).toContain("Invalid AUTOBYTEUS_COMPACTION_MODEL_SETTINGS");
-      expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(persisted);
-      expect(appConfigProvider.config.get(COMPACTION_MODEL_SETTINGS_KEY)).toBe(baseline);
-    }
     const deleted = await execGraphql<{ deleteServerSetting: string }>(
       `mutation Delete($key: String!) { deleteServerSetting(key: $key) }`, { key: COMPACTION_MODEL_SETTINGS_KEY },
     );
-    expect(deleted.deleteServerSetting).toContain("managed by the system");
+    expect(deleted.deleteServerSetting).not.toContain("managed by the system");
+    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).not.toContain(COMPACTION_MODEL_SETTINGS_KEY);
     expect(schema.getQueryType()?.getFields()).not.toHaveProperty("getWorkingContextCompactionStrategies");
     expect(schema.getQueryType()?.getFields()).not.toHaveProperty("getEffectiveWorkingContextCompactionStrategyId");
-    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(persisted);
   });
 
   it("saves the numeric compaction context ceiling through ordinary settings", async () => {

@@ -1,3 +1,7 @@
+// AGY native tool-argument capture through the real Studio HTTP/WebSocket, recorder, history and restore paths;
+// only the external CLI is scripted. Skips without the gate (a skip is not argument-capture proof). From the repo root:
+//   RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND="$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs" \
+//   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts --no-watch
 import "reflect-metadata";
 import fs from "node:fs/promises";
 import path from "node:path";

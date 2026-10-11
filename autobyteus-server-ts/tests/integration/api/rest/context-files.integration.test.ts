@@ -1,5 +1,6 @@
 import { writeAttachmentSidecars, writeAttachmentAgentMetadata } from "../../../fixtures/current-attachment-package-fixtures.js";
 import fs from "node:fs";
+import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import fastify, { type FastifyInstance } from "fastify";
@@ -410,6 +411,47 @@ describe("REST context-files routes", () => {
       const taskRead = await app.inject({ method: "GET", url: final.locator.replace("/configured/", "/task/") });
       expect(taskRead.body).toBe("retained task bytes");
     }
+  });
+
+  it("answers 400 with detail for a malformed agent-final run ID or stored filename", async () => {
+    const draftOwner = { kind: "agent_draft", draftRunId: "draft-final-validation" };
+    const uploaded = await uploadDraftAttachment(app, draftOwner, "notes.txt", "final bytes");
+    const finalized = await finalizeAttachment(app, draftOwner, { kind: "agent_final", runId: "run-A" }, uploaded);
+    expect((await app.inject({ method: "GET", url: finalized.locator })).body).toBe("final bytes");
+
+    // A raw socket keeps `%2E%2E` intact; app.inject and URL clients collapse it before routing.
+    await app.listen({ port: 0, host: "127.0.0.1" });
+    const { port } = app.server.address() as { port: number };
+    const rawGet = (rawPath: string) => new Promise<{ statusCode: number; body: string }>((resolve, reject) => {
+      http.get({ host: "127.0.0.1", port, path: rawPath }, (response) => {
+        let body = "";
+        response.setEncoding("utf8");
+        response.on("data", (chunk) => { body += chunk; });
+        response.on("end", () => resolve({ statusCode: response.statusCode ?? 0, body }));
+      }).on("error", reject);
+    });
+    for (const rawPath of [
+      `/rest/runs/%2E%2E/context-files/${uploaded.storedFilename}`,
+      `/rest/runs/..%2Fagents%2Frun-A/context-files/${uploaded.storedFilename}`,
+      `/rest/runs/%20run-A/context-files/${uploaded.storedFilename}`,
+      "/rest/runs/run-A/context-files/ctx_a__b%00.txt",
+      "/rest/runs/run-A/context-files/ctx_a__b%20c.txt",
+      "/rest/runs/run-A/context-files/%2E",
+    ]) {
+      const response = await rawGet(rawPath);
+      expect({ rawPath, status: response.statusCode, detail: typeof (JSON.parse(response.body) as { detail?: unknown }).detail })
+        .toEqual({ rawPath, status: 400, detail: "string" });
+    }
+    expect((await rawGet("/rest/runs/run-unknown/context-files/ctx_a__b.txt")).statusCode).toBe(404);
+  });
+
+  it("keeps the legitimate server run ID format through upload, finalize and read", async () => {
+    const runId = "solution_designer_0123456789abcdef0123456789abcdef";
+    writeAttachmentAgentMetadata(memoryDir, runId);
+    const draftOwner = { kind: "agent_draft", draftRunId: "temp-1728555555555-3" };
+    const uploaded = await uploadDraftAttachment(app, draftOwner, "notes.txt", "legitimate bytes");
+    const finalized = await finalizeAttachment(app, draftOwner, { kind: "agent_final", runId }, uploaded);
+    expect((await app.inject({ method: "GET", url: finalized.locator })).body).toBe("legitimate bytes");
   });
 
   it("preserves the original display name while sanitizing the stored filename", async () => {

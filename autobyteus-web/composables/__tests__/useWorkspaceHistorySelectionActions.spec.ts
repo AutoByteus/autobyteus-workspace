@@ -121,6 +121,31 @@ describe('useWorkspaceHistorySelectionActions current AgentRun identity', () => 
     expect(presentTeamStreamRecoveryFeedback).toHaveBeenCalledWith(feedback);
   });
 
+  // delegated-copy-task-locator REQ-012: a Task summary opens its Team run without collapsing it.
+  it.each([
+    ['onSelectTeam', true],
+    ['onOpenTeamRun', false],
+  ] as const)('%s on the already-selected Team run toggles=%s and navigates to it', async (action, toggles) => {
+    const toggleTeam = vi.fn(), emitRunSelected = vi.fn(), selectTreeRun = vi.fn()
+    const actions = useWorkspaceHistorySelectionActions({
+      runHistoryStore: { selectTreeRun },
+      selectionStore: { beginSelectionIntent: () => ({ isCurrent: () => true }), selectedType: 'team', selectedRunId: 'team-1', selectRun: vi.fn() },
+      setTeamExpanded: vi.fn(), toggleTeam, emitRunSelected, startPresetChat: vi.fn(), presentTeamStreamRecoveryFeedback: vi.fn(),
+    } as any)
+    await actions[action](buildTeamNode('program-manager-run'))
+    expect(toggleTeam).toHaveBeenCalledTimes(toggles ? 1 : 0)
+    expect(selectTreeRun).not.toHaveBeenCalled()
+    expect(emitRunSelected).toHaveBeenCalledWith({ type: 'team', runId: 'team-1' })
+  })
+
+  it('onOpenTeamRun opens a Team run that is not selected exactly like onSelectTeam', async () => {
+    const { actions, runHistoryStore } = buildActions()
+    await actions.onOpenTeamRun(buildTeamNode('build-review-lead-run'), 'workspace-1')
+    expect(runHistoryStore.selectTreeRun).toHaveBeenCalledWith(
+      expect.objectContaining({ memberAddress: '/BuildSquad/review_lead' }), expect.objectContaining({ selectionIntent: expect.any(Object) }),
+    )
+  })
+
   it('starts a New chat preset to the agent and workspace from the agent row plus', async () => {
     const startPresetChat = vi.fn(async () => undefined)
     const actions = useWorkspaceHistorySelectionActions({

@@ -1,0 +1,423 @@
+[
+  {
+    "case": "OLR-E2E-010",
+    "name": "OLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "settingMessages": [
+        "Server setting 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE' has been updated successfully.",
+        "Server setting 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO' has been updated successfully."
+      ],
+      "sendsMade": 2,
+      "modes": [
+        "cached",
+        "cached",
+        "transcript",
+        "transcript",
+        "transcript"
+      ],
+      "operationIds": [
+        "compaction_operation_mv3cnl0n_1"
+      ],
+      "errors": [
+        {
+          "code": "LLM_IMMEDIATE_COMPACTION_FAILED",
+          "message": "Memory compaction failed before dispatch [incomplete_summary]: Provider reported incomplete compaction output.",
+          "details": "CompactionPreparationError: Memory compaction failed before dispatch [incomplete_summary]: Provider reported incomplete compaction output.",
+          "error_scope": "turn",
+          "error_effect": "diagnostic",
+          "turn_id": "turn_0002"
+        }
+      ],
+      "compactionFrames": [
+        {
+          "type": "COMPACTION_STATUS",
+          "phase": "requested",
+          "turn_id": "turn_0002",
+          "compaction_operation_id": "compaction_operation_mv3cnl0n_1",
+          "requested_turn_id": "turn_0002"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0002",
+          "compaction_operation_id": "compaction_operation_mv3cnl0n_1",
+          "requested_turn_id": "turn_0002",
+          "execution_turn_id": "turn_0002",
+          "selected_block_count": 3,
+          "raw_trace_count": 3,
+          "phase": "started"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0002",
+          "compaction_operation_id": "compaction_operation_mv3cnl0n_1",
+          "requested_turn_id": "turn_0002",
+          "execution_turn_id": "turn_0002",
+          "selected_block_count": 3,
+          "raw_trace_count": 3,
+          "compaction_model_identifier": "deepseek-v4-flash",
+          "summarizer_provider": "DEEPSEEK",
+          "compaction_invocation_id": "compaction_compaction_operation_mv3cnl0n_1_5",
+          "completion_status": "incomplete",
+          "completion_reason": "length",
+          "phase": "failed",
+          "error_message": "Memory compaction failed before dispatch [incomplete_summary]: Provider reported incomplete compaction output."
+        },
+        {
+          "type": "COMPACTION_BLOCKED",
+          "block": {
+            "operationId": "compaction_operation_mv3cnl0n_1",
+            "failureEpoch": 1
+          },
+          "recovery": {
+            "operationId": "compaction_operation_mv3cnl0n_1",
+            "failureEpoch": 1,
+            "position": {
+              "kind": "next_turn",
+              "failedTurnId": "turn_0002"
+            },
+            "state": "awaiting_user",
+            "code": "incomplete_summary",
+            "message": "Compaction failed — send a message to retry"
+          }
+        },
+        {
+          "type": "COMPACTION_BLOCKED",
+          "block": {
+            "operationId": "compaction_operation_mv3cnl0n_1",
+            "failureEpoch": 1
+          },
+          "recovery": {
+            "operationId": "compaction_operation_mv3cnl0n_1",
+            "failureEpoch": 1,
+            "position": {
+              "kind": "next_turn",
+              "failedTurnId": "turn_0002"
+            },
+            "state": "awaiting_user",
+            "code": "incomplete_summary",
+            "message": "Compaction failed — send a message to retry"
+          }
+        }
+      ],
+      "compactionCalls": [
+        {
+          "index": 2,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 96
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 96,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 29947,
+            "cacheRead": 29568,
+            "cacheWrite": 0,
+            "output": 96
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 3,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 96
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 96,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 29947,
+            "cacheRead": 29696,
+            "cacheWrite": 0,
+            "output": 96
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 4,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 96
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 96,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 24952,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "output": 96
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 5,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 96
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 96,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 24952,
+            "cacheRead": 24704,
+            "cacheWrite": 0,
+            "output": 96
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 6,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 96
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 96,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 24952,
+            "cacheRead": 24704,
+            "cacheWrite": 0,
+            "output": 96
+          },
+          "strictInjected": false
+        }
+      ],
+      "turnCalls": [
+        {
+          "index": 0,
+          "phase": "OLR-010-T1",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 96
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "stop"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 17204,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "output": 1
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 1,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 96
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "stop"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 29618,
+            "cacheRead": 17152,
+            "cacheWrite": 0,
+            "output": 1
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 2,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 96
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 96,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 29947,
+            "cacheRead": 29568,
+            "cacheWrite": 0,
+            "output": 96
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 3,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 96
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 96,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 29947,
+            "cacheRead": 29696,
+            "cacheWrite": 0,
+            "output": 96
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 4,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 96
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 96,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 24952,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "output": 96
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 5,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 96
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 96,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 24952,
+            "cacheRead": 24704,
+            "cacheWrite": 0,
+            "output": 96
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 6,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 96
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 96,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 24952,
+            "cacheRead": 24704,
+            "cacheWrite": 0,
+            "output": 96
+          },
+          "strictInjected": false
+        }
+      ]
+    },
+    "at": "2026-10-11T04:55:27.782Z"
+  }
+]

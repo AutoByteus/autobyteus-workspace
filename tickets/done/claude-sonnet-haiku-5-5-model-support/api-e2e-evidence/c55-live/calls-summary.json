@@ -1,0 +1,420 @@
+[
+  {
+    "index": 0,
+    "phase": "C55-E2E-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 145,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 1,
+    "phase": "C55-E2E-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 316,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null
+  },
+  {
+    "index": 2,
+    "phase": "C55-E2E-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 563,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null
+  },
+  {
+    "index": 3,
+    "phase": "C55-E2E-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 418,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 4,
+    "phase": "C55-E2E-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 98,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 5,
+    "phase": "C55-E2E-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 183,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 6,
+    "phase": "C55-E2E-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 111,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null
+  },
+  {
+    "index": 7,
+    "phase": "C55-E2E-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 350,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 8,
+    "phase": "C55-E2E-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 661,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 9,
+    "phase": "C55-E2E-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 779,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null
+  },
+  {
+    "index": 10,
+    "phase": "C55-E2E-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 542,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 11,
+    "phase": "C55-E2E-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 122,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 12,
+    "phase": "C55-E2E-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 432,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 13,
+    "phase": "C55-E2E-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 431,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 14,
+    "phase": "C55-E2E-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 570,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 15,
+    "phase": "C55-E2E-005",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 198,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null
+  },
+  {
+    "index": 16,
+    "phase": "C55-E2E-005",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 524,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 17,
+    "phase": "C55-E2E-005",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 2301,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 18,
+    "phase": "C55-E2E-005",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 1010,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 19,
+    "phase": "C55-E2E-005",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 572,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 20,
+    "phase": "C55-006",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 151,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  },
+  {
+    "index": 21,
+    "phase": "C55-006",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 12,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null
+  }
+]

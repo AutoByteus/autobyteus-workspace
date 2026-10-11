@@ -21,13 +21,14 @@ describe('current supported model definitions', () => {
       'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna', 'gpt-5.5', 'gpt-5.4', 'gpt-5.4-mini',
       'mistral-large-3', 'devstral-2', 'grok-4.7',
       'claude-fable-5-1', 'claude-fable-5', 'claude-opus-5', 'claude-opus-5-5',
-      'claude-opus-4.8', 'claude-opus-4.7', 'claude-sonnet-5', 'claude-sonnet-4.6',
+      'claude-opus-4.8', 'claude-opus-4.7', 'claude-sonnet-5-5', 'claude-sonnet-5', 'claude-sonnet-4.6',
+      'claude-haiku-5-5',
       'deepseek-v4-flash', 'deepseek-v4-pro', 'gemini-3.1-pro-preview', 'gemini-3.8-flash',
       'kimi-k3', 'qwen3.7-max', 'qwen3.8-max', 'DeepSeek V4 Pro (Qwen)',
       'DeepSeek V4 Flash 0731 (Qwen)', 'GLM-5.2 (Qwen)', 'qwen3-max', 'glm-5.3', 'minimax-m3',
     ]);
     expect(new Set(supportedModelDefinitions.map(({ name }) => name)).size).toBe(supportedModelDefinitions.length);
-    expect(supportedModelDefinitions.slice(12, 20)).toEqual(anthropicSupportedModelDefinitions);
+    expect(supportedModelDefinitions.slice(12, 22)).toEqual(anthropicSupportedModelDefinitions);
     expect(supportedModelDefinitions.filter(({ provider }) => provider === LLMProvider.ANTHROPIC))
       .toEqual(anthropicSupportedModelDefinitions);
     expect(pricing(1, 2).toDict()).toMatchObject({
@@ -72,6 +73,47 @@ describe('current supported model definitions', () => {
     expect(sonnet[0]!.defaultConfig.pricingConfig).toMatchObject({
       inputTokenPricing: 2, outputTokenPricing: 10, cachedInputReadTokenPricing: 0.2,
       cachedInputWrite5mTokenPricing: 2.5, cachedInputWrite1hTokenPricing: 4,
+    });
+  });
+
+  it('registers Claude Sonnet 5.5 and Haiku 5.5 with limits, thinking schemas and Standard prices', () => {
+    for (const id of ['claude-sonnet-5-5', 'claude-haiku-5-5']) {
+      const rows = supportedModelDefinitions.filter((item) => item.value === id);
+      expect(rows).toHaveLength(1);
+      expect(rows[0]).toMatchObject({ name: id, canonicalName: id, provider: LLMProvider.ANTHROPIC });
+      expect(rows[0]!.staticMetadata).toMatchObject({
+        maxContextTokens: 1_000_000, maxInputTokens: 1_000_000, maxOutputTokens: 128_000,
+        multimodalCapabilities: { image: 'supported' },
+      });
+      const schema = rows[0]!.configSchema?.toJsonSchema() as { properties: Record<string, unknown> };
+      expect(Object.keys(schema.properties).sort()).toEqual(['thinking_display', 'thinking_enabled']);
+    }
+    const [sonnet] = supportedModelDefinitions.filter((item) => item.value === 'claude-sonnet-5-5');
+    expect(sonnet!.configSchema?.toJsonSchema()).toMatchObject({ properties: {
+      thinking_enabled: { default: false },
+      thinking_display: { enum: ['omitted', 'summarized'], default: 'summarized' },
+    } });
+    expect(sonnet!.defaultConfig.pricingConfig).toMatchObject({
+      inputTokenPricing: 2, outputTokenPricing: 10, cachedInputReadTokenPricing: 0.1,
+      cachedInputWrite5mTokenPricing: 2.5, cachedInputWrite1hTokenPricing: 4,
+      pricingEffectiveDate: '2026-09-28', inputTokenPricingTiers: [],
+    });
+
+    const [haiku] = supportedModelDefinitions.filter((item) => item.value === 'claude-haiku-5-5');
+    expect(haiku!.configSchema?.toJsonSchema()).toMatchObject({ properties: {
+      thinking_enabled: { default: false },
+      thinking_display: { enum: ['omitted', 'summarized'], default: 'omitted' },
+    } });
+    expect(haiku!.defaultConfig.pricingConfig).toMatchObject({
+      inputTokenPricing: 0.1, outputTokenPricing: 0.5, cachedInputReadTokenPricing: 0.01,
+      cachedInputWrite5mTokenPricing: 0.125, cachedInputWrite1hTokenPricing: 0.2,
+      pricingEffectiveDate: '2026-10-07',
+      inputTokenPricingTiers: [
+        { tierId: 'prompt_le_100k', maxInputTokens: 100_000, inputTokenPricing: 0.1, outputTokenPricing: 0.5,
+          cachedInputReadTokenPricing: 0.01, cachedInputWrite5mTokenPricing: 0.125, cachedInputWrite1hTokenPricing: 0.2 },
+        { tierId: 'prompt_gt_100k', maxInputTokens: null, inputTokenPricing: 0.5, outputTokenPricing: 2.5,
+          cachedInputReadTokenPricing: 0.05, cachedInputWrite5mTokenPricing: 0.625, cachedInputWrite1hTokenPricing: 1 },
+      ],
     });
   });
 

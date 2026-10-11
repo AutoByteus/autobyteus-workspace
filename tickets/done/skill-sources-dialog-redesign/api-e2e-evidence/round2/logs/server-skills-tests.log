@@ -1,0 +1,768 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:34983) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mimports root/support files, reuses equivalent URLs, and retains all fields on query and Reload
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-0NLVRd/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-0NLVRd/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mchecks without replacement, retains offline availability, and updates a collection with disabled choices
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-MMmpzy/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-MMmpzy/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mmaps conflicts with both paths and rejects the whole source without partial publication
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-sO7mc1/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-sO7mc1/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mretains REMOVING after deletion fault and retries through the API after owner reconstruction
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-S2fqOe/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-S2fqOe/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mkeeps local mutations and Reload usable with a malformed managed registry without rewriting it
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-XCkLKk/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-XCkLKk/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mkeeps local mutations and Reload usable with a malformed managed registry without rewriting it
+[22m[39mInitialized server settings service with 21 predefined settings
+Added new custom server setting: AUTOBYTEUS_SKILLS_PATHS
+Server setting 'AUTOBYTEUS_SKILLS_PATHS' updated
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mkeeps local mutations and Reload usable with a malformed managed registry without rewriting it
+[22m[39mServer setting 'AUTOBYTEUS_SKILLS_PATHS' updated
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'codex'/'CONFIGURED' retain=false reverse=false
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-MQoEZU/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-MQoEZU/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'codex'/'CONFIGURED' retain=false reverse=true
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-iFQM5g/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-iFQM5g/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'codex'/'CONFIGURED' retain=true reverse=false
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-qVKeSJ/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-qVKeSJ/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'codex'/'CONFIGURED' retain=true reverse=true
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-q6abME/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-q6abME/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'codex'/'ALL_INSTALLED' retain=false reverse=false
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-W1A9SP/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-W1A9SP/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'codex'/'ALL_INSTALLED' retain=false reverse=true
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-PaV3FG/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-PaV3FG/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'codex'/'ALL_INSTALLED' retain=true reverse=false
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-zesnWW/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-zesnWW/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'codex'/'ALL_INSTALLED' retain=true reverse=true
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-wMADXj/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-wMADXj/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'claude'/'CONFIGURED' retain=false reverse=false
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-TVlrYA/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-TVlrYA/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'claude'/'CONFIGURED' retain=false reverse=true
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-CMT9T2/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-CMT9T2/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'claude'/'CONFIGURED' retain=true reverse=false
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-j83Y7V/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-j83Y7V/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'claude'/'CONFIGURED' retain=true reverse=true
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-gIKNcG/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-gIKNcG/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'claude'/'ALL_INSTALLED' retain=false reverse=false
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-Nr6ylC/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-Nr6ylC/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'claude'/'ALL_INSTALLED' retain=false reverse=true
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-liGYab/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-liGYab/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'claude'/'ALL_INSTALLED' retain=true reverse=false
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-SCqZsC/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-SCqZsC/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'claude'/'ALL_INSTALLED' retain=true reverse=true
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-vuOE3D/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-vuOE3D/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'grok'/'CONFIGURED' retain=false reverse=false
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-9rSneK/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-9rSneK/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'grok'/'CONFIGURED' retain=false reverse=true
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-z62tNm/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-z62tNm/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'grok'/'CONFIGURED' retain=true reverse=false
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-7NU2Ld/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-7NU2Ld/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'grok'/'CONFIGURED' retain=true reverse=true
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-IotYUT/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-IotYUT/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=false reverse=false
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-U1NfmY/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-U1NfmY/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=false reverse=true
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-xpl6Gd/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-xpl6Gd/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=true reverse=false
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-CW89wV/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-CW89wV/data/.env
+
+[90mstdout[2m | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts[2m > [22m[2mGitHub skill sources through production GraphQL documents[2m > [22m[2mprepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=true reverse=true
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-DESUXg/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-DESUXg/data/.env
+
+ [32m✓[39m tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts [2m([22m[2m29 tests[22m[2m)[22m[33m 3131[2mms[22m[39m
+     [33m[2m✓[22m[39m prepares later run after real API update: 'grok'/'CONFIGURED' retain=false reverse=false [33m 451[2mms[22m[39m
+[90mstdout[2m | tests/e2e/skills/skills-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:35040) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/skills/skills-graphql.e2e.test.ts[2m > [22m[2mSkills GraphQL e2e[2m > [22m[2mcreates and queries a skill
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-SQDdh9
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-SQDdh9/.env
+
+[90mstdout[2m | tests/e2e/skills/skills-graphql.e2e.test.ts[2m > [22m[2mSkills GraphQL e2e[2m > [22m[2mdoes not expose removed skill history fields, operations, or types
+[22m[39mCustom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-hTRmPT
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-hTRmPT/.env
+
+[90mstdout[2m | tests/e2e/skills/skills-graphql.e2e.test.ts[2m > [22m[2mSkills GraphQL e2e[2m > [22m[2muploads a file and reads content/tree
+[22m[39mCustom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-kdGQtC
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-kdGQtC/.env
+
+[90mstdout[2m | tests/e2e/skills/skills-graphql.e2e.test.ts[2m > [22m[2mSkills GraphQL e2e[2m > [22m[2muploads a file and reads content/tree
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-kdGQtC/skills/file_skill' with max_depth=null
+
+[90mstdout[2m | tests/e2e/skills/skills-graphql.e2e.test.ts[2m > [22m[2mSkills GraphQL e2e[2m > [22m[2muploads a file and reads content/tree
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-kdGQtC/skills/file_skill' completed in 0.0030 seconds.
+
+[90mstdout[2m | tests/e2e/skills/skills-graphql.e2e.test.ts[2m > [22m[2mSkills GraphQL e2e[2m > [22m[2mreloads the skill catalog after external file edits and returns refreshed sources
+[22m[39mCustom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-PQ8zxQ
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-PQ8zxQ/.env
+
+[90mstdout[2m | tests/e2e/skills/skills-graphql.e2e.test.ts[2m > [22m[2mSkills GraphQL e2e[2m > [22m[2mdeletes a skill
+[22m[39mCustom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-JiRg4X
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-JiRg4X/.env
+
+ [32m✓[39m tests/e2e/skills/skills-graphql.e2e.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 681[2mms[22m[39m
+[90mstdout[2m | tests/unit/skills/github/runtime-generation.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/skills/github/runtime-generation.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 662[2mms[22m[39m
+[90mstdout[2m | tests/unit/skills/github/source-lifecycle.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/skills/github/source-lifecycle.test.ts[2m > [22m[2mGitHub skill source lifecycle through its public owner[2m > [22m[2mrejects conflicts as one operation, while runtime defaults remain notices
+[22m[39mSkill 'writer': '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-unit-jyg8Y8/data/skill-sources/github/88cb0ade-891a-4832-a810-42cc92cef629/generations/4eb9e920-a08f-4496-85bb-6b1ef4fc00e5/repository' takes precedence; ignoring the runtime default copy '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-unit-jyg8Y8/runtime-default/writer'.
+
+[90mstderr[2m | tests/unit/skills/github/source-lifecycle.test.ts[2m > [22m[2mGitHub skill source lifecycle through its public owner[2m > [22m[2mrejects conflicts as one operation, while runtime defaults remain notices
+[22m[39mSkill name 'writer' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-unit-jyg8Y8/data/skill-sources/github/88cb0ade-891a-4832-a810-42cc92cef629/generations/4eb9e920-a08f-4496-85bb-6b1ef4fc00e5/repository', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-unit-jyg8Y8/runtime-default/writer'.
+
+ [32m✓[39m tests/unit/skills/github/source-lifecycle.test.ts [2m([22m[2m26 tests[22m[2m)[22m[33m 384[2mms[22m[39m
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:35062) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-10T05:16:55.101Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+[22m[39mSkill name 'shared-skill' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/data/agents/pkg-agent/skills/shared-skill', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias/shared-skill'.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+[22m[39mAgent definition cache populated with 45 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+[22m[39m[2026-10-10T05:16:55.197Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+[22m[39m[2026-10-10T05:16:55.213Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill name 'shared-skill' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/data/skills/shared-skill', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills/shared-skill'.
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mAgent definition cache populated with 45 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39m[2026-10-10T05:16:55.241Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39m[2026-10-10T05:16:55.248Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-yYYiCC/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-yYYiCC/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[22m[39mAgent definition cache populated with 45 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[22m[39m[2026-10-10T05:16:55.268Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[22m[39m[2026-10-10T05:16:55.274Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill name 't4-only' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/data/skills/t4-only', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills/t4-only'.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39mAgent definition cache populated with 45 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39m[2026-10-10T05:16:55.296Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39m[2026-10-10T05:16:55.303Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill name 'desk-beta' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/ok-package/agents/beta-helper/skills/desk-beta', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills/desk-beta'.
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mAgent definition cache populated with 45 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39m[2026-10-10T05:16:55.338Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39m[2026-10-10T05:16:55.344Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-uuBByz/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-uuBByz/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+Skill name 'desk-alpha' (conflict): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-uuBByz/data/skills/desk-alpha', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-uuBByz/local-package/agents/desk-helper/skills/desk-alpha'.
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39mAgent definition cache populated with 45 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39m[2026-10-10T05:16:55.370Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39m[2026-10-10T05:16:55.376Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-c2phb3/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-c2phb3/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+Skill name 'desk-alpha' (conflict): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-c2phb3/data/skills/desk-alpha', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-c2phb3/github-data/agent-packages/github/autobyteus__upd-repo/agents/gh-helper/skills/desk-alpha'.
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mAgent definition cache populated with 45 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39m[2026-10-10T05:16:55.439Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39m[2026-10-10T05:16:55.445Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-SDiq9D/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-SDiq9D/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+Skill name 'org-writer-skill' (conflict): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-SDiq9D/data/skills/org-writer-skill', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-SDiq9D/data/agent-orgs/org-desk/agents/org-writer/skills/org-writer-skill'.
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39mAgent definition cache populated with 45 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39m[2026-10-10T05:16:55.465Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39m[2026-10-10T05:16:55.471Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-JkaPcm/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-JkaPcm/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-UTmNuT/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-oZ54iD/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-EaQNn4/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-DVB4Zz/codex-home/skills
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[22m[39mAgent definition cache populated with 45 items.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[22m[39m[2026-10-10T05:16:55.501Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[22m[39m[2026-10-10T05:16:55.506Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+ [32m✓[39m tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 406[2mms[22m[39m
+[90mstderr[2m | tests/unit/skills/services/skill-service.test.ts[2m > [22m[2mSkillService[2m > [22m[2mreturns resolved skills by configured names and skips unknown entries
+[22m[39mSkill 'missing' could not be resolved via SkillService. Skipping.
+
+[90mstderr[2m | tests/unit/skills/services/skill-service.test.ts[2m > [22m[2mSkillService[2m > [22m[2mprefers standalone skills over bundled canonical agent package skills when names collide
+[22m[39mSkill name 'requirements-engineer' (conflict): using '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-7awCEa/skills/requirements-engineer', ignoring '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-7awCEa/package-root/agents/requirements-engineer/skills/requirements-engineer'.
+
+[90mstdout[2m | tests/unit/skills/services/skill-service.test.ts[2m > [22m[2mSkillService[2m > [22m[2mreturns a skill file tree
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-1XFWEs/skills/tree_skill' with max_depth=null
+
+[90mstdout[2m | tests/unit/skills/services/skill-service.test.ts[2m > [22m[2mSkillService[2m > [22m[2mreturns a skill file tree
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-1XFWEs/skills/tree_skill' completed in 0.0020 seconds.
+
+ [32m✓[39m tests/unit/skills/services/skill-service.test.ts [2m([22m[2m42 tests[22m[2m)[22m[32m 102[2mms[22m[39m
+[90mstdout[2m | tests/unit/skills/github/archive-boundary.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/skills/github/archive-boundary.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 118[2mms[22m[39m
+[90mstderr[2m | tests/unit/skills/services/skill-service-all-installed-scope.test.ts[2m > [22m[2mSkillService ALL_INSTALLED skill scope[2m > [22m[2mkeeps listSkills precedence: a global skill wins over a bundled skill with the same name
+[22m[39mSkill name 'global-writer' (conflict): using '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-all-installed-64PdRn/skills/global-writer', ignoring '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-all-installed-64PdRn/autobyteus-agents/agents/research-engineer/skills/global-writer'.
+
+ [32m✓[39m tests/unit/skills/services/skill-service-all-installed-scope.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 121[2mms[22m[39m
+ [32m✓[39m tests/unit/skills/services/skill-catalog-agent-orgs.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 63[2mms[22m[39m
+[90mstdout[2m | tests/unit/skills/services/skill-catalog-one-per-name.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/skills/services/skill-catalog-one-per-name.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 73[2mms[22m[39m
+[90mstderr[2m | tests/unit/skills/disabled-skills-store.test.ts[2m > [22m[2mDisabledSkillsStore[2m > [22m[2mhandles corrupted file gracefully
+[22m[39mFailed to parse disabled_skills.json: SyntaxError: Unexpected token 'o', "not valid json {{{" is not valid JSON. Starting with empty list.
+
+ [32m✓[39m tests/unit/skills/disabled-skills-store.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+[90mstdout[2m | tests/unit/skills/services/skill-sources-management.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/skills/services/skill-sources-management.test.ts
+[22m[39mInitialized server settings service with 21 predefined settings
+
+[90mstderr[2m | tests/unit/skills/services/skill-sources-management.test.ts[2m > [22m[2mSkillService skill source management[2m > [22m[2mprefers the default directory when duplicates exist
+[22m[39mSkill name 'shared_skill' (conflict): using '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-src-Ceo1Tr/default_skills/shared_skill', ignoring '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-src-Ceo1Tr/extra_skills/shared_skill'.
+
+ [32m✓[39m tests/unit/skills/services/skill-sources-management.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m tests/unit/skills/github/github-client.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m tests/unit/skills/loader.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/integration/skills/skill-integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/skills/domain/models.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m16 passed[39m[22m[90m (16)[39m
+[2m      Tests [22m [1m[32m220 passed[39m[22m[90m (220)[39m
+[2m   Start at [22m 07:16:39
+[2m   Duration [22m 20.78s[2m (transform 4.18s, setup 154ms, import 12.94s, tests 5.82s, environment 1ms)[22m
+

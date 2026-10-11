@@ -1,0 +1,325 @@
+{
+  "startedAt": "2026-10-08T16:33:03.199Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-017": {
+      "result": "Pass",
+      "description": "Collapsed strip Workspaces: a worker opened from a Task card (Agent, Team with nested task Team, Org host) lights Workspaces; it docks the panel without navigating and reveals the row with focus; narrow drawer, short window, New chat",
+      "durationMs": 18478,
+      "details": {
+        "agent": {
+          "worker": {
+            "ingressAgentRunId": "release_notes_writer_pmustrip_2d25_76cd30d4e479424cb509fc2425c1e339",
+            "hostRoot": {
+              "kind": "agent",
+              "runId": "manager_pmustrip_2d25_1e5d47cdbc164a5db63ca5478837e81c"
+            }
+          },
+          "afterCollapse": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "workspace-left-strip-workspaces"
+          },
+          "before": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "BUTTON"
+          },
+          "revealed": {
+            "agentRunId": "release_notes_writer_pmustrip_2d25_76cd30d4e479424cb509fc2425c1e339",
+            "test": "workspace-team-transient-execution-row",
+            "text": "RNrelease notes writer pmustrip 2d25Temporary task agent · release notes writer ",
+            "visible": true,
+            "scrollTop": 0,
+            "scrollHeight": 186,
+            "clientHeight": 186,
+            "centreOffset": 53,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "settled": {
+            "agentRunId": "release_notes_writer_pmustrip_2d25_76cd30d4e479424cb509fc2425c1e339",
+            "test": "workspace-team-transient-execution-row",
+            "text": "RNrelease notes writer pmustrip 2d25Temporary task agent · release notes writer ",
+            "visible": true,
+            "scrollTop": 0,
+            "scrollHeight": 186,
+            "clientHeight": 186,
+            "centreOffset": 53,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "after": {
+            "strip": false,
+            "workspacesLit": null,
+            "stripChatLit": null,
+            "panelChatLit": false,
+            "focus": "workspace-team-transient-execution-row"
+          },
+          "url": "http://127.0.0.1:53940/chat?id=manager_pmustrip_2d25_1e5d47cdbc164a5db63ca5478837e81c",
+          "selectionBefore": {
+            "route": "/chat?id=manager_pmustrip_2d25_1e5d47cdbc164a5db63ca5478837e81c",
+            "subject": "{\"kind\":\"agent_run\",\"runId\":\"manager_pmustrip_2d25_1e5d47cdbc164a5db63ca5478837e81c\"}",
+            "focusedMember": "",
+            "focusedRunId": null
+          },
+          "centerUnchanged": true
+        },
+        "team": {
+          "worker": {
+            "ingressAgentRunId": "release_notes_writer_pmustrip_2d25_cc2cc1c86b26487b9ca349161d5bc65a",
+            "hostRoot": {
+              "kind": "agent_team",
+              "runId": "delivery_team_pmustrip_2d25_353d3e1359c842f0923016e2d71bf9e9"
+            }
+          },
+          "afterCollapse": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "workspace-left-strip-workspaces"
+          },
+          "before": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "BUTTON"
+          },
+          "revealed": {
+            "agentRunId": "release_notes_writer_pmustrip_2d25_cc2cc1c86b26487b9ca349161d5bc65a",
+            "test": "workspace-team-transient-execution-row",
+            "text": "RreviewerTemporary task agent · reviewer · /docs_review_team_pmustrip_2d25/revie",
+            "visible": true,
+            "scrollTop": 235,
+            "scrollHeight": 421,
+            "clientHeight": 186,
+            "centreOffset": 41,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "settled": {
+            "agentRunId": "release_notes_writer_pmustrip_2d25_cc2cc1c86b26487b9ca349161d5bc65a",
+            "test": "workspace-team-transient-execution-row",
+            "text": "RreviewerTemporary task agent · reviewer · /docs_review_team_pmustrip_2d25/revie",
+            "visible": true,
+            "scrollTop": 187,
+            "scrollHeight": 373,
+            "clientHeight": 186,
+            "centreOffset": 41,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "after": {
+            "strip": false,
+            "workspacesLit": null,
+            "stripChatLit": null,
+            "panelChatLit": false,
+            "focus": "workspace-team-transient-execution-row"
+          },
+          "url": "http://127.0.0.1:53940/workspace",
+          "selectionBefore": {
+            "route": "/workspace",
+            "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_pmustrip_2d25_353d3e1359c842f0923016e2d71bf9e9\"}",
+            "focusedMember": "/docs_review_team_pmustrip_2d25/reviewer",
+            "focusedRunId": "release_notes_writer_pmustrip_2d25_cc2cc1c86b26487b9ca349161d5bc65a"
+          },
+          "centerUnchanged": true
+        },
+        "org": {
+          "worker": {
+            "ingressAgentRunId": "release_notes_writer_pmustrip_2d25_2346c4fe7f4248319e77c611b7fe1d49",
+            "hostRoot": {
+              "kind": "agent_org",
+              "runId": "delivery_org_pmustrip_2d25_4cd8e8489f46441e8169678b4a79f54b"
+            }
+          },
+          "afterCollapse": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "workspace-left-strip-workspaces"
+          },
+          "before": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "BUTTON"
+          },
+          "revealed": {
+            "agentRunId": "release_notes_writer_pmustrip_2d25_2346c4fe7f4248319e77c611b7fe1d49",
+            "test": "agent-org-task-agent-row-release_notes_writer_pmustrip_2d25_2346c4fe7f4248319e77c611b7fe1d49",
+            "text": "Wworker",
+            "visible": true,
+            "scrollTop": 185,
+            "scrollHeight": 371,
+            "clientHeight": 186,
+            "centreOffset": 71,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "settled": {
+            "agentRunId": "release_notes_writer_pmustrip_2d25_2346c4fe7f4248319e77c611b7fe1d49",
+            "test": "agent-org-task-agent-row-release_notes_writer_pmustrip_2d25_2346c4fe7f4248319e77c611b7fe1d49",
+            "text": "Wworker",
+            "visible": true,
+            "scrollTop": 185,
+            "scrollHeight": 371,
+            "clientHeight": 186,
+            "centreOffset": 71,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "after": {
+            "strip": false,
+            "workspacesLit": null,
+            "stripChatLit": null,
+            "panelChatLit": false,
+            "focus": "agent-org-task-agent-row-release_notes_writer_pmustrip_2d25_2346c4fe7f4248319e77c611b7fe1d49"
+          },
+          "url": "http://127.0.0.1:53940/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmustrip-2d25&orgRunId=delivery_org_pmustrip_2d25_4cd8e8489f46441e8169678b4a79f54b&mode=active&agentRunId=release_notes_writer_pmustrip_2d25_2346c4fe7f4248319e77c611b7fe1d49",
+          "selectionBefore": {
+            "route": "/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmustrip-2d25&orgRunId=delivery_org_pmustrip_2d25_4cd8e8489f46441e8169678b4a79f54b&mode=active&agentRunId=release_notes_writer_pmustrip_2d25_2346c4fe7f4248319e77c611b7fe1d49",
+            "subject": "null",
+            "focusedMember": "",
+            "focusedRunId": null
+          },
+          "centerUnchanged": true
+        },
+        "narrow": {
+          "drawerRow": {
+            "agentRunId": "release_notes_writer_pmustrip_2d25_2346c4fe7f4248319e77c611b7fe1d49",
+            "test": "agent-org-task-agent-row-release_notes_writer_pmustrip_2d25_2346c4fe7f4248319e77c611b7fe1d49",
+            "text": "Wworker",
+            "visible": true,
+            "scrollTop": 0,
+            "scrollHeight": 466,
+            "clientHeight": 466,
+            "centreOffset": 164,
+            "focused": false,
+            "selectedRows": 1
+          },
+          "drawerClosed": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "workspace-left-strip-workspaces"
+          }
+        },
+        "short": {
+          "dividerDisplay": "none",
+          "settingsBottom": 484,
+          "viewport": 500
+        },
+        "newChat": {
+          "onNewChat": {
+            "strip": true,
+            "workspacesLit": false,
+            "stripChatLit": true,
+            "panelChatLit": null,
+            "focus": "chat-message-input"
+          },
+          "kept": {
+            "route": "/chat",
+            "text": "Keep this draft text",
+            "selection": {
+              "route": "/chat",
+              "subject": "null",
+              "focusedMember": "",
+              "focusedRunId": null
+            },
+            "tree": {
+              "selected": [],
+              "scrollTop": 0,
+              "scrollHeight": 578,
+              "clientHeight": 578
+            },
+            "nav": {
+              "strip": false,
+              "workspacesLit": null,
+              "stripChatLit": null,
+              "panelChatLit": false,
+              "focus": "app-left-panel-run-history"
+            }
+          }
+        }
+      }
+    },
+    "PMU-018": {
+      "result": "Fail",
+      "description": "Collapsed strip Workspaces, other entries: nested task-Team member from the right Team tab, New chat first send, far-down Org worker (large scroll), slow history load with and without a user scroll first; highlight on the Org launch page, empty /workspace and /agents; page icon docks and navigates",
+      "durationMs": 33454,
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[role=\"tree\"][aria-label]').filter({ has: locator('button[role=\"treeitem\"]') }).last().locator('button[role=\"treeitem\"][aria-expanded]').filter({ hasText: /docs.review.team/i }).first() to be visible\n",
+      "pages": [
+        {
+          "url": "http://127.0.0.1:53940/workspace",
+          "center": "M\nmanager\nIdle\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/docs_review_team_pmustripmore_6e3f\",\"task_id\":\"project_task_36c330aa-8827-4d3d-9189-e9243ac48dea\"}}\nM\nmanager\n\nCALLED:{“content”:[{“type”:“text”,“text”:“{\\n \"target_agent_run_id\": \"release_notes_writer_pmustripmore_6e3f_5b4953660212476ea688e8b68356043a\",\\n \"target_kind\": \"team\"\\n}”}],“structuredContent”:{“target_agent_run_id”:“release_notes_writer_pmustripmore_6e3f_5b4953660212476ea688e8b68356043a”,“target_kind”:“team”}}\n\nContext Files (0)\n(drag, paste, or upload)",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:53939/ws/terminal/45e4081c-f9fe-401d-adda-6f32afa8cbdf",
+            "log: [useTerminalSession] Connected",
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected",
+            "log: Team WebSocket transport connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 77113,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 75397,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-018",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[role=\"tree\"][aria-label]').filter({ has: locator('button[role=\"treeitem\"]') }).last().locator('button[role=\"treeitem\"][aria-expanded]').filter({ hasText: /docs.review.team/i }).first() to be visible\n"
+    }
+  ],
+  "feed": {
+    "total": 35,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 14,
+      "task_upserted": 12,
+      "task_worker_status": 8
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:53939",
+    "frontendUrl": "http://127.0.0.1:53940",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-q57Fa4"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-08T16:34:15.896Z"
+}

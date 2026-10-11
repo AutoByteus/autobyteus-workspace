@@ -508,6 +508,23 @@ the same calls. One-shot calls such as the compaction summarizer stay uncached.
 for new observations (Anthropic's standard price since the cancelled 2026-09-01
 increase); stored records keep the price captured when they were observed.
 
+`ANTHROPIC` + `claude-sonnet-5-5` (effective 2026-09-28) uses `2` input, `10`
+output, `0.10` cache read, `2.50` five-minute cache write and `4` one-hour
+cache write per million tokens. `ANTHROPIC` + `claude-haiku-5-5` (effective
+2026-10-07) is tiered at 100,000 prompt tokens, counted as gross input
+including cache reads and writes (the basis the calculator already uses to
+select a tier):
+
+| Exact model | Tier | Input | Output | Cache read | 5m cache write | 1h cache write |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| `claude-haiku-5-5` | `prompt_le_100k` | 0.10 | 0.50 | 0.01 | 0.125 | 0.20 |
+| `claude-haiku-5-5` | `prompt_gt_100k`, entire request | 0.50 | 2.50 | 0.05 | 0.625 | 1 |
+
+Both rows come from the `autobyteus-ts` catalog (see
+`autobyteus-ts/docs/provider_model_catalogs.md`); the server calculator code is
+unchanged, and a calculator test prices a Haiku 5.5 call on each side of the
+boundary.
+
 These are Standard estimates only. Fast, Batch, Flex, regional/data-residency,
 partner, subscription/credit, private, and negotiated variants are not inferred
 from an identity that does not record billing mode. No aliases or family-price

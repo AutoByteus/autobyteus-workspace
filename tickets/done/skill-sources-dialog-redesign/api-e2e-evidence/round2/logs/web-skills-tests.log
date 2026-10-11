@@ -1,0 +1,226 @@
+
+> autobyteus@1.4.99 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/skills components/common/__tests__/ToastContainer.spec.ts utils/skills stores/__tests__/skillStore.spec.ts stores/__tests__/skillSourcesStore.spec.ts localization --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-web
+
+stderr | components/skills/SkillsList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillNameConflictDialog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/common/__tests__/ToastContainer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillSourcesModal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/runtime/__tests__/localizationRuntime.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillSourceRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/skills/SkillsList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/common/__tests__/ToastContainer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/runtime/__tests__/localizationRuntime.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillNameConflictDialog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillSourceRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillSourcesModal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/runtime/__tests__/localizationRuntime.spec.ts (4 tests) 148ms
+ ✓ localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts (2 tests) 83ms
+ ✓ components/common/__tests__/ToastContainer.spec.ts (2 tests) 129ms
+ ✓ components/skills/SkillNameConflictDialog.spec.ts (3 tests) 53ms
+ ✓ components/skills/SkillSourceRow.spec.ts (27 tests) 115ms
+ ✓ components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts (1 test) 37ms
+ ✓ components/skills/SkillsList.spec.ts (6 tests) 95ms
+ ✓ components/skills/SkillDetail.spec.ts (4 tests) 42ms
+ ✓ components/skills/SkillSourcesModal.spec.ts (41 tests) 1275ms
+stderr | scripts/__tests__/localizationLiteralAudit.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/app/__tests__/AppLocalizationGate.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/skills/__tests__/skillRequestInstruction.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/skillSourcesStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/runSettingsCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/skillStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/projectsCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | scripts/__tests__/localizationLiteralAudit.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/skills/__tests__/skillRequestInstruction.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/app/__tests__/AppLocalizationGate.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/skills/__tests__/skillRequestInstruction.spec.ts (6 tests) 4ms
+stdout | stores/__tests__/skillSourcesStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/app/__tests__/AppLocalizationGate.spec.ts (2 tests) 14ms
+stdout | localization/messages/__tests__/runSettingsCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/skillSourcesStore.spec.ts (4 tests) 7ms
+ ✓ scripts/__tests__/localizationLiteralAudit.spec.ts (6 tests) 32ms
+stdout | stores/__tests__/skillStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/runSettingsCatalog.spec.ts (3 tests) 4ms
+stderr | utils/skills/__tests__/skillNames.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | localization/messages/__tests__/projectsCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/projectsCatalog.spec.ts (6 tests) 4ms
+stdout | localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts (3 tests) 5ms
+ ✓ stores/__tests__/skillStore.spec.ts (5 tests) 27ms
+stdout | utils/skills/__tests__/skillNames.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/skills/__tests__/skillNames.spec.ts (4 tests) 9ms
+stderr | localization/runtime/__tests__/systemLocaleResolver.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/skills/__tests__/skillSourceDisplay.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/workspaceHistorySkillImprovementCleanup.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/shellCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | localization/runtime/__tests__/systemLocaleResolver.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/runtime/__tests__/systemLocaleResolver.spec.ts (4 tests) 3ms
+stdout | localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/skills/__tests__/skillSourceDisplay.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts (2 tests) 8ms
+ ✓ localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts (1 test) 2ms
+stdout | localization/messages/__tests__/workspaceHistorySkillImprovementCleanup.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/skills/__tests__/skillSourceDisplay.spec.ts (11 tests) 3ms
+ ✓ localization/messages/__tests__/workspaceHistorySkillImprovementCleanup.spec.ts (1 test) 2ms
+stdout | localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts (1 test) 2ms
+stdout | localization/messages/__tests__/shellCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/shellCatalog.spec.ts (1 test) 1ms
+stdout | localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts (1 test) 2ms
+
+ Test Files  26 passed (26)
+      Tests  151 passed (151)
+   Start at  07:16:13
+   Duration  17.73s (transform 5.90s, setup 123.39s, collect 7.05s, tests 2.10s, environment 9.27s, prepare 5.35s)
+

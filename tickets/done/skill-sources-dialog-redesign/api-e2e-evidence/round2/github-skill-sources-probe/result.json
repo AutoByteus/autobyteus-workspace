@@ -1,0 +1,993 @@
+{
+  "startedAt": "2026-10-10T05:17:31.809Z",
+  "cases": {
+    "WEB-001-import-explorer": {
+      "result": "Pass",
+      "observed": {
+        "sourceId": "d8eb8455-c3d6-4a3e-8d10-8e38463f97f2",
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/d6606800-0d3a-44a6-a34c-3ee272f161d7/repository",
+        "skillCount": 2,
+        "github": {
+          "installedRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "latestRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "status": "UP_TO_DATE"
+        }
+      }
+    },
+    "WEB-CHAT-A": {
+      "result": "Pass",
+      "observed": {
+        "runA": "daily_assistant_e44478fec1f9488eaf81113e11fbdf77",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace"
+      }
+    },
+    "WEB-002-check-cancel": {
+      "result": "Pass"
+    },
+    "WEB-003-failed-update-retains-install": {
+      "result": "Pass"
+    },
+    "WEB-004-retry-update-and-reopen": {
+      "result": "Pass",
+      "observed": {
+        "sourceId": "d8eb8455-c3d6-4a3e-8d10-8e38463f97f2",
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/e4b57d63-6fa0-4cf4-92f1-ea8bf5db8602/repository",
+        "skillCount": 2,
+        "github": {
+          "installedRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "latestRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "status": "UP_TO_DATE"
+        }
+      }
+    },
+    "WEB-CHAT-B-header-plus-after-update": {
+      "result": "Pass",
+      "observed": {
+        "runA": "daily_assistant_e44478fec1f9488eaf81113e11fbdf77",
+        "runB": "daily_assistant_503ff1ff49a94ba8bf5db6dd948aa4e0",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace",
+        "provider": "scripted external CLI; real Codex adapter and transport"
+      }
+    },
+    "WEB-INTERRUPT-download-restart": {
+      "result": "Pass",
+      "observed": {
+        "killedPid": 36143,
+        "restartedPid": 36301,
+        "preservedPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/e4b57d63-6fa0-4cf4-92f1-ea8bf5db8602/repository"
+      }
+    },
+    "WEB-005-reload-restart-remove": {
+      "result": "Pass"
+    }
+  },
+  "requests": [
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillSources",
+      "variables": {},
+      "query": "query GetSkillSources {\n  skillSources {\n    ...SkillSourceFields\n    __typename\n  }\n  skillSourceRegistryError\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ImportGitHubSkillSource",
+      "variables": {
+        "repositoryUrl": "https://github.com/api-e2e/skills"
+      },
+      "query": "mutation ImportGitHubSkillSource($repositoryUrl: String!) {\n  importGitHubSkillSource(repositoryUrl: $repositoryUrl) {\n    sources {\n      ...SkillSourceFields\n      __typename\n    }\n    warnings\n    __typename\n  }\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkill",
+      "variables": {
+        "name": "web-writer"
+      },
+      "query": "query GetSkill($name: String!) {\n  skill(name: $name) {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "skill_ws_web-writer",
+        "folderPath": ""
+      },
+      "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {},
+      "query": "query GetRuntimeAvailabilityKinds {\n  runtimeAvailabilityKinds\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "CreateWorkspace",
+      "variables": {
+        "input": {
+          "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace"
+        }
+      },
+      "query": "mutation CreateWorkspace($input: CreateWorkspaceInput!) {\n  createWorkspace(input: $input) {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "PrepareAgentRun",
+      "variables": {
+        "input": {
+          "agentDefinitionId": "autobyteus-daily-assistant",
+          "workspaceId": "agent_ws_c4a4926b2d5a9c9df5fb1d7f3627f65b3e989055e223057e5f208df422236747",
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace",
+          "llmModelIdentifier": "skill-fixture-model",
+          "autoExecuteTools": true,
+          "llmConfig": null,
+          "runtimeKind": "codex_app_server",
+          "initialSummary": "Report the exposed skill version"
+        }
+      },
+      "query": "mutation PrepareAgentRun($input: CreateAgentRunInput!) {\n  prepareAgentRun(input: $input) {\n    success\n    message\n    runId\n    activationState\n    preparedExpiresAt\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillImprovementCapability",
+      "variables": {},
+      "query": "query GetSkillImprovementCapability {\n  skillImprovementCapability {\n    ...SkillImprovementCapabilityFields\n    __typename\n  }\n}\n\nfragment SkillImprovementCapabilityFields on SkillImprovementCapability {\n  enabled\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRunProjection",
+      "variables": {
+        "runId": "daily_assistant_e44478fec1f9488eaf81113e11fbdf77"
+      },
+      "query": "query GetRunProjection($runId: String!) {\n  getRunProjection(runId: $runId) {\n    runId\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "daily_assistant_e44478fec1f9488eaf81113e11fbdf77"
+      },
+      "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRunFileChanges",
+      "variables": {
+        "runId": "daily_assistant_e44478fec1f9488eaf81113e11fbdf77"
+      },
+      "query": "query GetRunFileChanges($runId: String!) {\n  getRunFileChanges(runId: $runId) {\n    id\n    runId\n    path\n    type\n    status\n    sourceTool\n    sourceInvocationId\n    content\n    createdAt\n    updatedAt\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillSources",
+      "variables": {},
+      "query": "query GetSkillSources {\n  skillSources {\n    ...SkillSourceFields\n    __typename\n  }\n  skillSourceRegistryError\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "CheckGitHubSkillSourceUpdates",
+      "variables": {},
+      "query": "mutation CheckGitHubSkillSourceUpdates($sourceIds: [String!]) {\n  checkGitHubSkillSourceUpdates(sourceIds: $sourceIds) {\n    sources {\n      ...SkillSourceFields\n      __typename\n    }\n    warnings\n    __typename\n  }\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "UpdateGitHubSkillSource",
+      "variables": {
+        "sourceId": "d8eb8455-c3d6-4a3e-8d10-8e38463f97f2"
+      },
+      "query": "mutation UpdateGitHubSkillSource($sourceId: String!) {\n  updateGitHubSkillSource(sourceId: $sourceId) {\n    sources {\n      ...SkillSourceFields\n      __typename\n    }\n    warnings\n    __typename\n  }\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkillSources",
+      "variables": {},
+      "query": "query GetSkillSources {\n  skillSources {\n    ...SkillSourceFields\n    __typename\n  }\n  skillSourceRegistryError\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "UpdateGitHubSkillSource",
+      "variables": {
+        "sourceId": "d8eb8455-c3d6-4a3e-8d10-8e38463f97f2"
+      },
+      "query": "mutation UpdateGitHubSkillSource($sourceId: String!) {\n  updateGitHubSkillSource(sourceId: $sourceId) {\n    sources {\n      ...SkillSourceFields\n      __typename\n    }\n    warnings\n    __typename\n  }\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkill",
+      "variables": {
+        "name": "web-writer"
+      },
+      "query": "query GetSkill($name: String!) {\n  skill(name: $name) {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "skill_ws_web-writer",
+        "folderPath": ""
+      },
+      "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+    },
+    {
+      "operationName": "GetRunProjection",
+      "variables": {
+        "runId": "daily_assistant_e44478fec1f9488eaf81113e11fbdf77"
+      },
+      "query": "query GetRunProjection($runId: String!) {\n  getRunProjection(runId: $runId) {\n    runId\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "daily_assistant_e44478fec1f9488eaf81113e11fbdf77"
+      },
+      "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRunFileChanges",
+      "variables": {
+        "runId": "daily_assistant_e44478fec1f9488eaf81113e11fbdf77"
+      },
+      "query": "query GetRunFileChanges($runId: String!) {\n  getRunFileChanges(runId: $runId) {\n    id\n    runId\n    path\n    type\n    status\n    sourceTool\n    sourceInvocationId\n    content\n    createdAt\n    updatedAt\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace"
+      },
+      "query": "query GetWorkspaceMetadata($rootPath: String!) {\n  workspaceMetadata(rootPath: $rootPath) {\n    __typename\n    workspaceId\n    workspaceRootPath\n    displayName\n    kind\n  }\n}"
+    },
+    {
+      "operationName": "GetRunProjection",
+      "variables": {
+        "runId": "daily_assistant_e44478fec1f9488eaf81113e11fbdf77"
+      },
+      "query": "query GetRunProjection($runId: String!) {\n  getRunProjection(runId: $runId) {\n    runId\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "daily_assistant_e44478fec1f9488eaf81113e11fbdf77"
+      },
+      "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRunFileChanges",
+      "variables": {
+        "runId": "daily_assistant_e44478fec1f9488eaf81113e11fbdf77"
+      },
+      "query": "query GetRunFileChanges($runId: String!) {\n  getRunFileChanges(runId: $runId) {\n    id\n    runId\n    path\n    type\n    status\n    sourceTool\n    sourceInvocationId\n    content\n    createdAt\n    updatedAt\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillImprovementCapability",
+      "variables": {},
+      "query": "query GetSkillImprovementCapability {\n  skillImprovementCapability {\n    ...SkillImprovementCapabilityFields\n    __typename\n  }\n}\n\nfragment SkillImprovementCapabilityFields on SkillImprovementCapability {\n  enabled\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {},
+      "query": "query GetRuntimeAvailabilityKinds {\n  runtimeAvailabilityKinds\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "PrepareAgentRun",
+      "variables": {
+        "input": {
+          "agentDefinitionId": "autobyteus-daily-assistant",
+          "workspaceId": "agent_ws_c4a4926b2d5a9c9df5fb1d7f3627f65b3e989055e223057e5f208df422236747",
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace",
+          "llmModelIdentifier": "skill-fixture-model",
+          "autoExecuteTools": true,
+          "llmConfig": null,
+          "runtimeKind": "codex_app_server",
+          "initialSummary": "Report the exposed skill version"
+        }
+      },
+      "query": "mutation PrepareAgentRun($input: CreateAgentRunInput!) {\n  prepareAgentRun(input: $input) {\n    success\n    message\n    runId\n    activationState\n    preparedExpiresAt\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentRunCollaboration",
+      "variables": {
+        "runId": "daily_assistant_503ff1ff49a94ba8bf5db6dd948aa4e0"
+      },
+      "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ReloadSkillCatalog",
+      "variables": {},
+      "query": "mutation ReloadSkillCatalog {\n  reloadSkillCatalog {\n    skills {\n      name\n      description\n      content\n      rootPath\n      fileCount\n      isReadonly\n      isDisabled\n      __typename\n    }\n    skillSources {\n      ...SkillSourceFields\n      __typename\n    }\n    skillSourceRegistryError\n    __typename\n  }\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillSources",
+      "variables": {},
+      "query": "query GetSkillSources {\n  skillSources {\n    ...SkillSourceFields\n    __typename\n  }\n  skillSourceRegistryError\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "CheckGitHubSkillSourceUpdates",
+      "variables": {},
+      "query": "mutation CheckGitHubSkillSourceUpdates($sourceIds: [String!]) {\n  checkGitHubSkillSourceUpdates(sourceIds: $sourceIds) {\n    sources {\n      ...SkillSourceFields\n      __typename\n    }\n    warnings\n    __typename\n  }\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "RemoveGitHubSkillSource",
+      "variables": {
+        "sourceId": "d8eb8455-c3d6-4a3e-8d10-8e38463f97f2"
+      },
+      "query": "mutation RemoveGitHubSkillSource($sourceId: String!) {\n  removeGitHubSkillSource(sourceId: $sourceId) {\n    sources {\n      ...SkillSourceFields\n      __typename\n    }\n    warnings\n    __typename\n  }\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkillSources",
+      "variables": {},
+      "query": "query GetSkillSources {\n  skillSources {\n    ...SkillSourceFields\n    __typename\n  }\n  skillSourceRegistryError\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillSources",
+      "variables": {},
+      "query": "query GetSkillSources {\n  skillSources {\n    ...SkillSourceFields\n    __typename\n  }\n  skillSourceRegistryError\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "RemoveGitHubSkillSource",
+      "variables": {
+        "sourceId": "d8eb8455-c3d6-4a3e-8d10-8e38463f97f2"
+      },
+      "query": "mutation RemoveGitHubSkillSource($sourceId: String!) {\n  removeGitHubSkillSource(sourceId: $sourceId) {\n    sources {\n      ...SkillSourceFields\n      __typename\n    }\n    warnings\n    __typename\n  }\n}\n\nfragment SkillSourceFields on SkillSource {\n  sourceId\n  sourceKind\n  path\n  skillCount\n  isDefault\n  github {\n    repositoryUrl\n    defaultBranch\n    installedRevision\n    latestRevision\n    latestCheckedAt\n    status\n    lastError\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetSkillNameIssues",
+      "variables": {},
+      "query": "query GetSkillNameIssues {\n  skillNameIssues {\n    name\n    usedPath\n    ignoredPaths\n    kind\n    __typename\n  }\n}"
+    }
+  ],
+  "sockets": [
+    {
+      "url": "ws://127.0.0.1:51864/_nuxt/?token=FxWlVx9sAAW3",
+      "closed": true,
+      "connected": false
+    },
+    {
+      "url": "ws://127.0.0.1:51863/ws/file-explorer/skill_ws_web-writer",
+      "closed": true,
+      "connected": true
+    },
+    {
+      "url": "ws://127.0.0.1:51864/_nuxt/?token=FxWlVx9sAAW3",
+      "closed": true,
+      "connected": false
+    },
+    {
+      "url": "ws://127.0.0.1:51863/ws/agent/daily_assistant_e44478fec1f9488eaf81113e11fbdf77",
+      "closed": true,
+      "connected": true
+    },
+    {
+      "url": "ws://127.0.0.1:51863/ws/agent-collaboration/daily_assistant_e44478fec1f9488eaf81113e11fbdf77",
+      "closed": true,
+      "connected": true
+    },
+    {
+      "url": "ws://127.0.0.1:51864/_nuxt/?token=FxWlVx9sAAW3",
+      "closed": true,
+      "connected": false
+    },
+    {
+      "url": "ws://127.0.0.1:51863/ws/agent/daily_assistant_e44478fec1f9488eaf81113e11fbdf77",
+      "closed": true,
+      "connected": true
+    },
+    {
+      "url": "ws://127.0.0.1:51863/ws/file-explorer/skill_ws_web-writer",
+      "closed": true,
+      "connected": true
+    },
+    {
+      "url": "ws://127.0.0.1:51864/_nuxt/?token=FxWlVx9sAAW3",
+      "closed": true,
+      "connected": false
+    },
+    {
+      "url": "ws://127.0.0.1:51863/ws/agent/daily_assistant_e44478fec1f9488eaf81113e11fbdf77",
+      "closed": true,
+      "connected": true
+    },
+    {
+      "url": "ws://127.0.0.1:51863/ws/agent-collaboration/daily_assistant_e44478fec1f9488eaf81113e11fbdf77",
+      "closed": true,
+      "connected": true
+    },
+    {
+      "url": "ws://127.0.0.1:51863/ws/agent/daily_assistant_503ff1ff49a94ba8bf5db6dd948aa4e0",
+      "closed": true,
+      "connected": true
+    },
+    {
+      "url": "ws://127.0.0.1:51863/ws/agent-collaboration/daily_assistant_503ff1ff49a94ba8bf5db6dd948aa4e0",
+      "closed": true,
+      "connected": true
+    },
+    {
+      "url": "ws://127.0.0.1:51864/_nuxt/?token=FxWlVx9sAAW3",
+      "closed": true,
+      "connected": false
+    },
+    {
+      "url": "ws://127.0.0.1:51864/_nuxt/?token=FxWlVx9sAAW3",
+      "closed": true,
+      "connected": false
+    },
+    {
+      "url": "ws://127.0.0.1:51864/_nuxt/?token=FxWlVx9sAAW3",
+      "closed": true,
+      "connected": false
+    },
+    {
+      "url": "ws://127.0.0.1:51864/_nuxt/?token=FxWlVx9sAAW3",
+      "closed": false,
+      "connected": false
+    }
+  ],
+  "pageErrors": [],
+  "cleanup": {
+    "browserClosed": true,
+    "childrenStopped": true,
+    "backendPortReleased": true,
+    "frontendPortReleased": true,
+    "dataRemoved": true
+  },
+  "isolation": {
+    "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH",
+    "data": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data",
+    "backendUrl": "http://127.0.0.1:51863",
+    "frontendUrl": "http://127.0.0.1:51864"
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-10T05:17:59.542Z"
+}

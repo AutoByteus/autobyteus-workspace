@@ -369,7 +369,8 @@ defineCase('D02', 'SCN-001 Team (AC-001/002, VIS-002/004): row at the first char
   await atSize(page, 800, 738, () => shot(page, 'VIS-002-first-text-draft-row-selected-800x738'))
   await openSeedRun(page)
   const onRun = { rows: await readRows(page), chatSelected: await chatRowSelected(page) }
-  assert(onRun.rows.length === 1 && !onRun.rows[0].selected && onRun.rows[0].xOpacity === '0' && onRun.chatSelected, 'On a run: row not kept unselected / Chat row not as for a chat run (VIS-003)', onRun)
+  // Chat is lit only on New chat; on a run the strip's Workspaces icon is lit instead (collapsed-left-panel-expand-keeps-run REQ-008).
+  assert(onRun.rows.length === 1 && !onRun.rows[0].selected && onRun.rows[0].xOpacity === '0' && !onRun.chatSelected, 'On a run: row not kept unselected / Chat row lit on a run (VIS-003, REQ-008)', onRun)
   await openRow(page, T.team)
   await delay(800)
   const s2 = await snapshotNewChat(page)
@@ -448,7 +449,8 @@ defineCase('D04', 'SCN-002 (AC-003/004): Chat, pencil, catalog Run, Team Run, ru
   await page.locator(`${RUN_VIEW} button[aria-label="New Agent"]`).first().click(); await waitForNewChat(page); await delay(500)
   await check('run header +', 'Daily Assistant')
   await openSeedRun(page)
-  await page.locator('[data-test="workspace-agent-row"][data-agent-definition-id="autobyteus-daily-assistant"]').first().locator('xpath=..').locator('button').nth(1).click()
+  // The header's "+" by its name: the group's Archive-all button now sits before it.
+  await page.locator('[data-test="workspace-agent-row"][data-agent-definition-id="autobyteus-daily-assistant"]').first().locator('xpath=..').getByRole('button', { name: 'New run with this agent', exact: true }).click()
   await waitForNewChat(page); await delay(500)
   await check('workspace tree +', 'Daily Assistant')
   await openRow(page, T.agent)
@@ -727,7 +729,8 @@ defineCase('D11', 'AC-008/009 (VIS-003/006/007): seven long drafts, one line eac
   for (let i = 0; i < 5; i += 1) { await page.keyboard.press('Tab'); order.push(await page.evaluate(() => { const a = document.activeElement; return a.getAttribute('data-test') ?? a.getAttribute('title') ?? a.innerText.trim() })) }
   await page.keyboard.press('Shift+Tab'); await page.keyboard.press('Shift+Tab')
   const ring = await page.evaluate(() => ({ test: document.activeElement.getAttribute('data-test'), shadow: getComputedStyle(document.activeElement).boxShadow }))
-  assert(order.join('|') === 'app-left-panel-new-chat|Collapse left panel|chat-draft-row|chat-draft-discard|chat-draft-row', 'Keyboard order differs', order)
+  // The collapse control is now named by its data-test (collapsed-left-panel-expand-keeps-run), so it reads as app-left-panel-collapse.
+  assert(order.join('|') === 'app-left-panel-new-chat|app-left-panel-collapse|chat-draft-row|chat-draft-discard|chat-draft-row', 'Keyboard order differs', order)
   assert(ring.test === 'chat-draft-row' && ring.shadow.includes(TOKENS.indigo500), 'No indigo focus ring on a keyboard-focused row', ring)
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await watchRowMotion(page)
@@ -755,10 +758,13 @@ defineCase('D11', 'AC-008/009 (VIS-003/006/007): seven long drafts, one line eac
   })
   await shot(page, 'VIS-007-collapsed-strip-unchanged-800x738')
   assert(!strip.digits && strip.chat.text === 'Chat' && strip.chat.tags === strip.agents.tags, 'The collapsed strip shows a draft indicator', strip)
-  await page.locator(`${sel('workspace-left-navigation-strip')} [data-nav-key="chat"]`).click()
+  // The strip's Workspaces icon reopens the panel on the open run without navigating
+  // (collapsed-left-panel-expand-keeps-run); Chat would open New chat instead.
+  const routeBeforeReopen = routeOf(page)
+  await page.locator(`${sel('workspace-left-navigation-strip')} [data-nav-key="workspaces"]`).click()
   await delay(800)
   const reopened = { route: routeOf(page), rows: (await readRows(page)).length, panel: await page.locator(sel('app-left-panel-chat')).isVisible() }
-  if (!reopened.panel) { await page.locator('[data-test="workspace-left-strip-open"]').first().click().catch(() => {}); await delay(500) }
+  assert(reopened.panel && reopened.route === routeBeforeReopen, 'Workspaces did not reopen the panel on the open run', { routeBeforeReopen, reopened })
   state.texts = [...(state.texts ?? []), ...long]
   return { problems, geo: geo.rows[0], enter: enter.slice(0, 2), enterCount: enter.length, rowsAddedWhileTyping: reinsertsWhileTyping, section, resized, order, ring, reduced, stripBefore, strip, reopened }
 })

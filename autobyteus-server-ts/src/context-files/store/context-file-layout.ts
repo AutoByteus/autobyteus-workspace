@@ -5,13 +5,13 @@ import type {
   ContextFileDraftOwnerDescriptor,
   ContextFileResolvedFinalOwnerDescriptor,
 } from "../domain/context-file-owner-types.js";
-import { assertStoredFilename } from "../domain/context-file-owner-types.js";
+import { assertStoredFilename, ContextFilePathContainmentError } from "../domain/context-file-owner-types.js";
 
 const resolveSafeChildPath = (rootDir: string, ...segments: string[]): string => {
   const resolvedRoot = path.resolve(rootDir);
   const candidate = path.resolve(resolvedRoot, ...segments);
   if (candidate !== resolvedRoot && !candidate.startsWith(`${resolvedRoot}${path.sep}`)) {
-    throw new Error("Invalid context-file path.");
+    throw new ContextFilePathContainmentError("Context-file path escapes its owner folder.");
   }
   return candidate;
 };

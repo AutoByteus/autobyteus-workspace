@@ -65,7 +65,6 @@ describe('Server settings Compaction failure journey', () => {
         MediaDefaultModelsCard: true,
         CodexFullAccessCard: true,
         LiveResponseStreamingCard: true,
-        CompactionModelSettings: true,
         FeaturedCatalogItemsCard: true,
         WebSearchConfigurationCard: true,
       },

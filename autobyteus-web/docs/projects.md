@@ -160,7 +160,7 @@ Every Projects page (list, board, Task page, Temp tasks) retains the node's
 keeps one socket while any page retains it, reconnects with backoff (1 s, 2 s, …
 capped at 10 s) and reopens on the newly bound node. Messages (see the server's
 [Live Change Feed](../../autobyteus-server-ts/docs/modules/projects.md#live-change-feed-and-task-roots))
-go to both stores in arrival order:
+go to the stores in arrival order:
 - `projectStore`: Project upserts (with the server's counts) and removals, once
   the list was fetched.
 - `projectTaskStore`: Task upserts/removals/worker status for each **loaded**
@@ -173,6 +173,10 @@ go to both stores in arrival order:
   missed.
 - A Task that arrives, or moves to another lane, is highlighted for 2.4 s
   (`liveChanges`; reduced motion keeps only the tint).
+- `taskWorkerTaskStore`: the Workspaces tree's
+  [Task summaries](#task-summaries-in-the-workspaces-tree). It also retains the
+  feed while the tree shows any Task worker, so summaries stay live outside the
+  Projects pages.
 
 ### Task root line
 
@@ -226,6 +230,59 @@ conversation:
   context or reference files, and Assigned to, live. A back arrow returns to the
   board with its search kept, and **Open in Projects** opens the full Task page,
   where editing stays.
+
+### Task summaries in the Workspaces tree
+
+Under Agent runs (`AgentRunTaskRows`) and Team runs
+(`WorkspaceTeamExecutionTree`), a delegated copy row that is a **Task worker**
+(its Task's root) shows a second line under its name: the summary of its current
+Task (`TaskWorkerTaskSummary`, text from `taskSummaryLabel`), gray, indigo when
+the row is selected or on hover. Team members, sub-work copies and `@`
+collaborators keep one line. Agent Org rows are unchanged (not in scope). The
+row's elbow and chevron align with the name line
+(`WorkspaceHierarchyBranches` `anchor="name-line"`). Summaries exist only where
+the Projects tab does (`isFeatureAvailableInRuntime('projects')`).
+
+- **Data** (`stores/taskWorkerTaskStore.ts`): the single client authority for
+  "which Task is this worker on". `useTaskWorkerTasks` maps a host's listed rows
+  to worker references (a task Agent row → its agent run, a task Team row → its
+  team run) and holds interest while they are listed. Newly listed workers are
+  read in one batched `GetTaskWorkerTasks` query per microtask (server
+  [`taskWorkerTasks`](../../autobyteus-server-ts/docs/modules/projects.md#current-task-of-a-task-worker));
+  components never run the query or scan Task lists. The feed decides who is
+  re-read: `connected` → every interested worker; `task_upserted` → the worker
+  its `root` names and any worker caching that Task (so a follow-up Task
+  replaces the summary, while a rename of an older Task does not steal it);
+  `task_removed` → workers caching that Task; `project_removed` → workers whose
+  Task is in that Project. A key's answer applies only when it answers that
+  key's latest read (per-key epochs), and a node rebinding clears and re-reads.
+  A failed read leaves no summary until the next successful read; there is no
+  fallback.
+- **Row behavior**: the summary is its own button. Click, Enter or Space shows
+  the Task in Projects and never opens, selects or toggles the row; a row click
+  still opens the copy. `aria-current` / `aria-selected` stay on the row, whose
+  accessible name adds "Task: …"; the summary's tooltip and accessible name are
+  "Show Task in Projects: …" (`workspace.history.copyTask.*`).
+- **Locate** (`stores/taskLocatorStore.ts`): one request at a time, advanced
+  `pending` → `revealed` → `visible` → done by the surface that owns each step.
+  `locate` saves the picker choice for the Task's Project or Temp tasks (as a
+  manual pick) and places the request. `WorkspaceToolShell` registers while
+  mounted and reveals the Projects tab like the strip does (docked, reopening a
+  hidden panel, or the drawer; a start surface opens its tools first).
+  `ProjectsPanel` leaves an open Task for the board. The compact board for that
+  scope waits until no read of its list is in flight, then makes the Task
+  visible: shows the Cancelled lane for a Cancelled Task, clears a search that
+  hides it, and on Temp tasks shows all Done when needed. The `select` card
+  then scrolls to the centre (instant under reduced motion), takes focus (Enter
+  opens the Task) and completes the request, which highlights only that card
+  for 2.4 s with the `task-live` styling. A newer request replaces the previous
+  one and its highlight; a request not done within 10 s (for example the Task is
+  not on its board) expires.
+- **Pages without a right panel** (for example Agents or Projects): with no
+  shell registered, the host opens its run first, the way a run-row click does
+  (Agent host: `selectAgentRun`, the run's own conversation; Team host:
+  `onOpenTeamRun`, which never collapses an already-selected team). The request
+  waits for the opened route's shell and continues from the reveal.
 
 ### Left panel task rows (F-006)
 
@@ -467,6 +524,30 @@ paragraph and a long multi-line brief) on a Project board and on Temp tasks at
 - the picker choice is remembered after reload;
 - at a constrained width, the collapsed strip and the drawer list Projects
   first, and the drawer board does not overflow.
+
+**PMU-018–019** cover the collapsed strip's Workspaces icon after a worker is
+opened from a Task card (Agent, Team and Org hosts), plus the other ways a run
+is opened while the panel is collapsed. See [Workspace Layout — Collapsed
+strip](./workspace_layout.md#collapsed-strip-pages-and-workspaces) and
+`TESTING.md`.
+
+**PMU-020–025** (`project-manager-ux-task-locator-cases.mjs`) cover the
+[Task summaries](#task-summaries-in-the-workspaces-tree):
+- summaries under Agent- and Team-hosted Task workers (agent, task Team and
+  Temp-task copies), one line for members, sub-work and the `@` collaborator,
+  and batched reads with no Task-list reads;
+- locate docked: picker switch, centred/focused/highlighted card, search kept or
+  cleared, keyboard, only the latest highlighted, a row click still opening the
+  copy;
+- reveal variants: a hidden panel reopened, the 900×800 drawer with reduced
+  motion, and the New chat start surface;
+- pages with no right panel (Agents, Projects) opening the run first;
+- live rename, reconnect, follow-up Task, Cancelled lane, Task and Project
+  delete, without reload;
+- zh-CN names and tooltips.
+
+Fixture probes that render the Workspaces tree route the `taskWorkerTasks`
+query and `/ws/projects` through `tests/e2e/fixtures/task-worker-boundaries.mjs`.
 
 A raw `/ws/projects` client records message volume. The wire contract itself is
 covered by the server's `tests/e2e/projects/project-change-feed.e2e.test.ts`

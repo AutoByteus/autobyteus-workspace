@@ -12,7 +12,7 @@ const fixture = () => {
   h.manager.beginPendingCompactionAttempt({ operationId: h.operationId, turnId: h.input.turnId });
   const baseline = h.manager.captureCompactionBaseline();
   const source = baseline.context.copy();
-  const plan = new WorkingContextMessageWindowPlanner().plan({ messages: source.buildMessages(), planningBudget: h.manager.requirePendingCompactionRequest().planningBudget });
+  const plan = new WorkingContextMessageWindowPlanner().plan({ messages: source.buildMessages(), planningBudget: h.manager.getPendingCompactionRequest()!.planningBudget });
   const accepted = h.manager.prepareCompaction(baseline, { summary, selectedNewRawTraceIds: plan.rawTraceIdsToArchive, retainedMessages: plan.retainedMessages, budgetAssessment: plan.budgetAssessment });
   return { h, baseline, source, plan, accepted,
     validate: () => new WorkingContextCompactionOutputValidator().assertValid(baseline.context, source, accepted, plan) };

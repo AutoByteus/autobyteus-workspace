@@ -1,0 +1,6 @@
+Error: Collapsed Product Team must hide the deep configured Team row
+    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:77:19)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:481:7
+    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:168:21)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:466:3
+Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes/nested-team-aggregate-status/evidence.json
