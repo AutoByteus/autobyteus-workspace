@@ -34,7 +34,7 @@ const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/projec
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012', 'PMU-013', 'PMU-014', 'PMU-015', 'PMU-016', 'PMU-017'];
+const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012', 'PMU-013', 'PMU-014', 'PMU-015', 'PMU-016', 'PMU-017', 'PMU-018', 'PMU-019'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -1242,7 +1242,11 @@ const cancelledTasksJourney = async () => {
     details.lanesNarrow = await until('lanes stacked at 390 px', async () => { const l = await laneBoxes(page, 'project-task-column-'); return stacked(l) ? l : null; }, 5000)
       .catch(async () => { throw Object.assign(new Error('lanes not stacked at 390 px'), { details: await laneBoxes(page, 'project-task-column-') }); });
     assert(details.lanesNarrow.at(-1).id === 'project-task-column-CANCELLED', 'Cancelled is the last stacked lane at 390 px', details.lanesNarrow);
-    details.narrowOverflow = await noHorizontalOverflow(page);
+    // The lanes can already stack while the shell still shows the docked left panel (a 70 px board stacks too); the
+    // panel turns into the strip a frame later. Measure once the layout has settled; overflow that persists still fails.
+    details.narrowOverflow = await until('no horizontal overflow at 390 px once the layout settles', async () => {
+      const o = await noHorizontalOverflow(page); return o.ok ? o : null;
+    }, 5000).catch(async () => noHorizontalOverflow(page));
     assert(details.narrowOverflow.ok, 'no horizontal overflow at 390 px with Cancelled shown', details.narrowOverflow);
     await page.getByTestId('project-task-column-CANCELLED').scrollIntoViewIfNeeded();
     await shot(page, 'pmu-017-board-cancelled-lane-narrow');
@@ -1335,6 +1339,490 @@ const cancelledTasksJourney = async () => {
   } finally { input.close(); }
 };
 
+// ---------------------------------------------------------------- collapsed-left-panel-expand-keeps-run (PMU-018)
+const stripWorkspaces = (page) => page.locator('[data-test="workspace-left-strip-workspaces"]');
+/** What the strip and the docked panel light, and where focus is. */
+const shellNavState = (page) => page.evaluate(() => {
+  const strip = document.querySelector('[data-test="workspace-left-navigation-strip"]');
+  const workspaces = document.querySelector('[data-test="workspace-left-strip-workspaces"]');
+  const chatRow = document.querySelector('[data-test="app-left-panel-chat"]');
+  return {
+    strip: Boolean(strip),
+    workspacesLit: workspaces ? workspaces.getAttribute('aria-current') === 'location' && workspaces.classList.contains('bg-gray-100') : null,
+    stripChatLit: strip?.querySelector('[data-nav-key="chat"]')?.classList.contains('bg-gray-100') ?? null,
+    panelChatLit: chatRow ? chatRow.classList.contains('bg-gray-100') : null,
+    focus: document.activeElement?.getAttribute('data-test') ?? document.activeElement?.tagName ?? null,
+  };
+});
+/** The deepest selected tree row and whether it is fully inside the tree's scroll container. */
+const revealedTreeRow = (page) => page.evaluate(() => {
+  const scrollers = [...document.querySelectorAll('[data-test="workspace-history-tree-scroll"]')].filter((e) => e.getBoundingClientRect().height > 0);
+  const scroller = scrollers.at(-1);
+  const rows = scroller ? scroller.querySelectorAll('[aria-current="true"], [aria-selected="true"]') : [];
+  const row = rows[rows.length - 1];
+  if (!scroller || !row) return null;
+  const box = scroller.getBoundingClientRect(); const rect = row.getBoundingClientRect();
+  return {
+    // Task/Team/Org rows carry `data-agent-run-id`; a standalone Agent run row carries `data-run-id`.
+    agentRunId: row.getAttribute('data-agent-run-id') ?? row.getAttribute('data-run-id'), test: row.getAttribute('data-test'), text: row.textContent.replace(/\s+/g, ' ').trim().slice(0, 80),
+    visible: rect.height > 0 && rect.top >= box.top - 0.5 && rect.bottom <= box.bottom + 0.5,
+    scrollTop: Math.round(scroller.scrollTop), scrollHeight: scroller.scrollHeight, clientHeight: scroller.clientHeight,
+    centreOffset: Math.round(rect.top + rect.height / 2 - (box.top + box.height / 2)),
+    focused: document.activeElement === row, selectedRows: rows.length,
+  };
+});
+/** What the center shows and what is selected (AC-008: Workspaces changes neither). */
+const selectionState = (page) => page.evaluate(() => {
+  const pinia = document.querySelector('#__nuxt')?.__vue_app__?.config.globalProperties.$pinia;
+  const selection = pinia?._s.get('agentSelection'); const teams = pinia?._s.get('agentTeamContexts');
+  const u = new URL(location.href);
+  return { route: `${u.pathname}${u.search}`, subject: JSON.stringify(selection?.subject ?? null),
+    focusedMember: teams?.activeExecutionFocusedMemberAddress ?? null, focusedRunId: teams?.focusedMemberContext?.state?.runId ?? null };
+});
+/** The visible tree's selected rows and its scroll geometry. */
+const treeSummary = (page) => page.evaluate(() => {
+  const scroller = [...document.querySelectorAll('[data-test="workspace-history-tree-scroll"]')].filter((e) => e.getBoundingClientRect().height > 0).at(-1);
+  if (!scroller) return null;
+  return { selected: [...scroller.querySelectorAll('[aria-current="true"], [aria-selected="true"]')].map((e) => e.getAttribute('data-test')),
+    scrollTop: Math.round(scroller.scrollTop), scrollHeight: scroller.scrollHeight, clientHeight: scroller.clientHeight };
+});
+const collapseLeftPanel = async (page) => {
+  await page.locator('[data-test="app-left-panel-collapse"]').click();
+  await stripWorkspaces(page).waitFor({ timeout: 15000 });
+  await sleep(200);
+};
+
+/**
+ * REQ-001..REQ-010: with the left panel collapsed, a worker opened from a Task card lights Workspaces (not Chat);
+ * Workspaces docks the panel without changing the route, the center or the Projects tab, and the worker's row is
+ * selected, its ancestors open (a task Team nested in a Team run included) and fully in view, with focus on it.
+ * Also: narrow drawer + Escape focus return, the short-window strip, and New chat with typed text.
+ */
+const collapsedStripWorkspaces = async () => {
+  const { ids, names } = await createDefinitions('PmuStrip');
+  const projectId = await createProject(`Strip Board ${randomUUID().slice(0, 6)}`);
+  const { page, errors } = await newPage({ width: 1440, height: 620 });
+  const panel = page.locator('[data-test="right-side-projects-panel"]');
+  const tabList = page.locator('[data-test="right-side-tab-list"] [data-tab-name]');
+  const details = {};
+  const inputs = [];
+  try {
+    // Team host: the Manager delegates to a task Team, so the worker (its coordinator) sits in a nested sub-team row.
+    const hosts = [
+      { kind: 'agent', recipient: `/${segment(names.worker)}`, activate: 'click' },
+      { kind: 'team', recipient: `/${segment(names.squad)}`, activate: 'click' },
+      { kind: 'org', recipient: '/worker', activate: 'Enter' },
+    ];
+    for (const host of hosts) {
+      const taskId = await createTask(projectId, `Strip journey hosted by the ${host.kind} run`);
+      const root = await createRoot(host.kind, ids);
+      const input = await managerInput(root); inputs.push(input);
+      input.send(callTool('delegate_task', { recipient_address: host.recipient, task_id: taskId }));
+      await until(`${host.kind}: worker started`, async () => (await rootOf(projectId, taskId))?.start === 'started', 60000);
+      const worker = await rootOf(projectId, taskId);
+      // Open the host conversation as a user does, with the panel docked.
+      if (host.kind === 'agent') {
+        await goto(page, `/chat?id=${encodeURIComponent(root.rootId)}`);
+      } else {
+        await goto(page, '/workspace');
+        await expandWorkspace(page);
+        if (host.kind === 'team') {
+          await page.locator(`[data-test="workspace-team-definition-row-${slug(names.team)}"]`).click();
+          await page.locator(`[data-test="workspace-team-row-${root.rootId}"]`).click();
+        } else {
+          await page.locator(`[data-test="agent-org-definition-${slug(names.org)}"]`).click();
+          await page.locator(`[data-test="agent-org-run-open-${root.rootId}"]`).click();
+        }
+      }
+      await tabList.first().waitFor({ timeout: 60000 });
+      // AC-012: collapsing moves focus to Workspaces.
+      await collapseLeftPanel(page);
+      const afterCollapse = await shellNavState(page);
+      assert(afterCollapse.strip && afterCollapse.focus === 'workspace-left-strip-workspaces', `${host.kind}: focus on Workspaces after collapse`, afterCollapse);
+      // Open the worker from the Task card in the right Projects tab.
+      if (await tabList.first().getAttribute('aria-selected') !== 'true') await tabList.first().click();
+      await panel.getByTestId('projects-panel-picker-select').selectOption(`project:${projectId}`);
+      const line = panel.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`);
+      await line.waitFor({ timeout: 60000 });
+      await line.click();
+      await until(`${host.kind}: worker conversation in the center`, async () => /Task delegator address/.test(await centerText(page)), 30000);
+      // AC-001/AC-011: Workspaces is lit, Chat is not.
+      const before = await until(`${host.kind}: Workspaces lit for the open worker`, async () => { const n = await shellNavState(page); return n.workspacesLit ? n : null; }, 15000);
+      assert(before.stripChatLit === false, `${host.kind}: Chat is not lit on an open run`, before);
+      // The open finishes with its own route write (an Org worker adds `agentRunId`); record the settled route.
+      const url = await until(`${host.kind}: route settled after opening the worker`, async () => {
+        const seen = page.url(); await sleep(750); return page.url() === seen ? seen : null;
+      }, 15000);
+      const center = await centerText(page);
+      const selectionBefore = await selectionState(page);
+      await shot(page, `pmu-018-${host.kind}-collapsed-worker-open`);
+      // Workspaces: click, or keyboard Enter (AC-012).
+      if (host.activate === 'Enter') { await stripWorkspaces(page).focus(); await page.keyboard.press('Enter'); } else await stripWorkspaces(page).click();
+      await page.locator('[data-test="app-left-panel-run-history"]').waitFor({ timeout: 15000 });
+      assert(worker.ingressAgentRunId, `${host.kind}: the Task root reports its worker run`, worker);
+      // The selected (deepest) row must be exactly the worker's row.
+      const revealed = await until(`${host.kind}: worker row selected and in view`, async () => {
+        const r = await revealedTreeRow(page);
+        return r?.visible && r.agentRunId === worker.ingressAgentRunId ? r : null;
+      }, 15000);
+      await sleep(400);
+      const settled = await revealedTreeRow(page);
+      const after = await shellNavState(page);
+      const selectionAfter = await selectionState(page);
+      assert(page.url() === url, `${host.kind}: Workspaces changed the route`, { url, now: page.url() });
+      // AC-008: the same worker is still shown and nothing else was selected or opened.
+      assert(JSON.stringify(selectionAfter) === JSON.stringify(selectionBefore), `${host.kind}: Workspaces changed the selection`, { selectionBefore, selectionAfter });
+      assert(/Task delegator address/.test(await centerText(page)), `${host.kind}: the center no longer shows the worker`);
+      assert(await tabList.first().getAttribute('aria-selected') === 'true', `${host.kind}: the Projects tab stays selected`);
+      assert(after.panelChatLit === false, `${host.kind}: the docked Chat row is not lit on a run`, after);
+      assert(settled?.visible && settled.focused && settled.agentRunId === worker.ingressAgentRunId && settled.selectedRows === 1,
+        `${host.kind}: the worker row keeps focus, stays in view and is the only selected row`, settled);
+      await shot(page, `pmu-018-${host.kind}-workspaces-revealed`);
+      details[host.kind] = { worker: { ingressAgentRunId: worker.ingressAgentRunId, hostRoot: worker.hostRoot }, afterCollapse, before, revealed, settled, after, url,
+        selectionBefore, centerUnchanged: (await centerText(page)) === center };
+    }
+
+    // AC-005: narrow window — Workspaces opens the drawer with the run revealed; Escape returns focus to it.
+    await page.setViewportSize({ width: 760, height: 900 });
+    await stripWorkspaces(page).waitFor({ timeout: 15000 });
+    await sleep(400);
+    const narrowUrl = page.url();
+    assert(await page.locator('[data-test="workspace-left-navigation-strip"]').getAttribute('data-strip-activation') === 'open-drawer', 'narrow strip opens the drawer');
+    await stripWorkspaces(page).click();
+    await page.locator('[data-test="app-left-navigation-drawer"]').waitFor({ timeout: 15000 });
+    const drawerRow = await until('drawer: run row in view', async () => { const r = await revealedTreeRow(page); return r?.visible ? r : null; }, 15000);
+    await shot(page, 'pmu-018-narrow-drawer-revealed');
+    await page.keyboard.press('Escape');
+    await page.locator('[data-test="app-left-navigation-drawer"]').waitFor({ state: 'detached', timeout: 15000 });
+    const drawerClosed = await shellNavState(page);
+    assert(drawerClosed.focus === 'workspace-left-strip-workspaces' && page.url() === narrowUrl, 'drawer: Escape returns focus to Workspaces, route unchanged', drawerClosed);
+    details.narrow = { drawerRow, drawerClosed };
+
+    // AC-010 / REQ-010: short window — divider hidden, Settings still visible.
+    await page.setViewportSize({ width: 1440, height: 500 });
+    await sleep(600);
+    // The docked preference returns on a wide window; collapse it to show the strip.
+    if (await page.locator('[data-test="app-left-panel-collapse"]').isVisible().catch(() => false)) await collapseLeftPanel(page);
+    await until('short-window strip', async () => page.locator('[data-test="workspace-left-strip-workspaces-divider"]').count(), 15000);
+    const short = await page.evaluate(() => {
+      const divider = document.querySelector('[data-test="workspace-left-strip-workspaces-divider"]');
+      const settings = document.querySelector('[data-test="workspace-left-navigation-strip"] [data-nav-key="settings"]')?.getBoundingClientRect();
+      return { dividerDisplay: divider ? getComputedStyle(divider).display : null, settingsBottom: settings ? Math.round(settings.bottom) : null, viewport: window.innerHeight };
+    });
+    await shot(page, 'pmu-018-short-window-strip');
+    assert(short.dividerDisplay === 'none' && short.settingsBottom !== null && short.settingsBottom <= short.viewport, 'short window: divider hidden, Settings visible', short);
+    details.short = short;
+
+    // AC-009 / REQ-006: New chat with typed text — Chat lit; Workspaces shows the panel and keeps the text and route.
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await goto(page, '/chat');
+    const input = page.locator('[data-test="chat-composer"] textarea').first();
+    await input.waitFor({ timeout: 60000 });
+    if (await page.locator('[data-test="app-left-panel-collapse"]').isVisible().catch(() => false)) await collapseLeftPanel(page);
+    await input.click(); await input.type('Keep this draft text', { delay: 5 });
+    const onNewChat = await shellNavState(page);
+    assert(onNewChat.stripChatLit === true && onNewChat.workspacesLit === false, 'New chat: Chat lit, Workspaces not', onNewChat);
+    const newChatSelection = await selectionState(page);
+    await stripWorkspaces(page).click();
+    await page.locator('[data-test="app-left-panel-run-history"]').waitFor({ timeout: 15000 });
+    await until('New chat: tree rows loaded', async () => (await page.locator('[data-test="workspace-row"]').count()) > 0, 15000);
+    await sleep(600);
+    const kept = { route: new URL(page.url()).pathname + new URL(page.url()).search, text: await input.inputValue(),
+      selection: await selectionState(page), tree: await treeSummary(page), nav: await shellNavState(page) };
+    assert(kept.route === '/chat' && kept.text === 'Keep this draft text', 'New chat: route and draft text kept', kept);
+    // AC-009: no run is newly selected (the typed text's Draft row, not a run, marks where the user is).
+    assert(kept.tree && kept.tree.selected.length === 0 && JSON.stringify(kept.selection) === JSON.stringify(newChatSelection),
+      'New chat: nothing selected in the tree, selection unchanged', { kept, newChatSelection });
+    await shot(page, 'pmu-018-new-chat-workspaces');
+    details.newChat = { onNewChat, kept };
+    assertNoBrowserErrors(errors);
+    return details;
+  } finally { for (const input of inputs) input.close(); }
+};
+
+// ---------------------------------------------------------------- PMU-019: the other ways a run is opened while collapsed
+/** Opens a Team run from the docked left panel, as a user does. */
+const openTeamRunFromPanel = async (page, names, root) => {
+  await goto(page, '/workspace');
+  await expandWorkspace(page);
+  await page.locator(`[data-test="workspace-team-definition-row-${slug(names.team)}"]`).click();
+  await page.locator(`[data-test="workspace-team-row-${root.rootId}"]`).click();
+};
+const openOrgRunFromPanel = async (page, names, root) => {
+  await goto(page, '/workspace');
+  await expandWorkspace(page);
+  await page.locator(`[data-test="agent-org-definition-${slug(names.org)}"]`).click();
+  await page.locator(`[data-test="agent-org-run-open-${root.rootId}"]`).click();
+};
+/** Waits for Workspaces to light and the route to settle, then records what the center shows. */
+const settledOpenRun = async (page, label) => {
+  const nav = await until(`${label}: Workspaces lit`, async () => { const n = await shellNavState(page); return n.workspacesLit ? n : null; }, 30000);
+  const url = await until(`${label}: route settled`, async () => { const seen = page.url(); await sleep(750); return page.url() === seen ? seen : null; }, 15000);
+  return { nav, url, selection: await selectionState(page) };
+};
+/** Workspaces, then the given run's row selected and fully in view; route and selection unchanged. */
+const workspacesReveals = async (page, label, runId, before) => {
+  await stripWorkspaces(page).click();
+  await page.locator('[data-test="app-left-panel-run-history"]').waitFor({ timeout: 15000 });
+  const revealed = await until(`${label}: row ${runId} selected and in view`, async () => {
+    const r = await revealedTreeRow(page); return r?.visible && r.agentRunId === runId ? r : null;
+  }, 15000);
+  await sleep(500);
+  const settled = await revealedTreeRow(page);
+  const selection = await selectionState(page);
+  assert(page.url() === before.url, `${label}: Workspaces changed the route`, { before: before.url, now: page.url() });
+  assert(JSON.stringify(selection) === JSON.stringify(before.selection), `${label}: Workspaces changed the selection`, { before: before.selection, selection });
+  assert(settled?.visible && settled.focused && settled.agentRunId === runId && settled.selectedRows === 1, `${label}: the row keeps focus, stays in view and is the only selected row`, settled);
+  return { revealed, settled };
+};
+/** Every GraphQL response held for `ms` (a slow backend); returns the function that ends it. */
+const slowGraphql = async (page, ms) => {
+  const handler = async (route) => { await sleep(ms); await route.continue().catch(() => undefined); };
+  await page.route('**/graphql', handler);
+  return () => page.unroute('**/graphql', handler);
+};
+
+/**
+ * REQ-003/REQ-005, AC-002, AC-004, AC-006, AC-011 in a real browser with the panel collapsed:
+ * A. a non-coordinator member of a nested task Team (selected, collapsed, Workspaces); B. a New chat first send;
+ * C. an Org worker far down a long tree (large centring scroll); D. a slow history load where the user scrolls the tree
+ * before the worker's row arrives (no later jump), and the same load without user input (the row is revealed when it arrives);
+ * E. highlight on the Org launch page (with a Team run still selected), an empty /workspace and /agents; F. a page icon docks and navigates.
+ */
+const collapsedStripOtherEntries = async () => {
+  const { ids, names } = await createDefinitions('PmuStripMore');
+  const projectId = await createProject(`Strip More ${randomUUID().slice(0, 6)}`);
+  const { page, errors } = await newPage({ width: 1440, height: 620 });
+  const tabList = page.locator('[data-test="right-side-tab-list"] [data-tab-name]');
+  const projectsPanel = page.locator('[data-test="right-side-projects-panel"]');
+  const details = {};
+  const inputs = [];
+  const openWorkerFromCard = async (label, taskId) => {
+    if (await tabList.first().getAttribute('aria-selected') !== 'true') await tabList.first().click();
+    await projectsPanel.getByTestId('projects-panel-picker-select').selectOption(`project:${projectId}`);
+    const line = projectsPanel.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`);
+    await line.waitFor({ timeout: 60000 });
+    await line.click();
+    await until(`${label}: worker conversation in the center`, async () => /Task delegator address/.test(await centerText(page)), 30000);
+  };
+  try {
+    // A. A non-coordinator member inside a nested task Team (AC-002, D-5). The right Team tab shows only messages in this
+    // product (no member list), so the user reaches the member in the docked tree, collapses the panel and comes back with
+    // Workspaces: the panel remounts with fresh tree state, which must reopen the member's sub-team rows.
+    const teamTask = await createTask(projectId, 'Nested member journey');
+    const teamRoot = await createRoot('team', ids);
+    const teamInput = await managerInput(teamRoot); inputs.push(teamInput);
+    teamInput.send(callTool('delegate_task', { recipient_address: `/${segment(names.squad)}`, task_id: teamTask }));
+    const squad = await until('team: task Team started', async () => { const r = await rootOf(projectId, teamTask); return r?.start === 'started' && r.teamRunId ? r : null; }, 60000);
+    await openTeamRunFromPanel(page, names, teamRoot);
+    await tabList.first().waitFor({ timeout: 60000 });
+    // Task-Team member rows carry the host Team run and the member's address under the task Team.
+    const editorRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-team-run-id="${teamRoot.rootId}"][data-member-address="${squad.recipientAddress}/editor"][data-agent-run-id]`).first();
+    await until('nested task Team member row', async () => {
+      if (await editorRow.count()) return true;
+      const closed = page.locator('[data-test="workspace-team-transient-disclosure"][aria-expanded="false"]');
+      if (await closed.count()) await closed.first().click();
+      return false;
+    }, 30000, 500).catch(async (error) => {
+      error.details = { squad, rows: await page.locator('[data-test="workspace-team-transient-execution-row"]').evaluateAll((es) => es.map((e) => ({
+        team: e.getAttribute('data-team-run-id'), agent: e.getAttribute('data-agent-run-id'), address: e.getAttribute('data-member-address'),
+        kind: e.getAttribute('data-node-kind'), depth: e.getAttribute('data-tree-depth'), expanded: e.getAttribute('aria-expanded'), text: e.textContent.replace(/\s+/g, ' ').trim().slice(0, 60) }))) };
+      throw error;
+    });
+    const nestedMember = { agentRunId: await editorRow.getAttribute('data-agent-run-id'), address: await editorRow.getAttribute('data-member-address'), depth: await editorRow.getAttribute('data-tree-depth') };
+    await editorRow.click();
+    await until('nested member selected', async () => (await selectionState(page)).focusedRunId === nestedMember.agentRunId, 30000);
+    await collapseLeftPanel(page);
+    const nestedOpen = await settledOpenRun(page, 'nested member');
+    assert(nestedOpen.nav.stripChatLit === false, 'nested member: Chat not lit', nestedOpen.nav);
+    await shot(page, 'pmu-019-nested-member-collapsed');
+    details.nestedMember = { nestedMember, open: nestedOpen, ...(await workspacesReveals(page, 'nested member', nestedMember.agentRunId, nestedOpen)) };
+    await shot(page, 'pmu-019-nested-member-workspaces-revealed');
+
+    // B. New chat first send while collapsed (REQ-005).
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await goto(page, '/chat');
+    const composerInput = page.locator('[data-test="chat-composer"] textarea').first();
+    await composerInput.waitFor({ timeout: 60000 });
+    await page.locator('[data-test="run-target-switcher-trigger"]').click();
+    await page.locator('[data-test="run-target-switcher-search"]').fill(names.worker.slice(0, 18));
+    await page.locator(`[data-test="run-target-switcher-option-${ids.worker}"]`).click();
+    await page.locator('[data-test="run-target-switcher-menu"]').waitFor({ state: 'detached', timeout: 30000 });
+    await page.locator('[data-test="chat-model-trigger"]').click();
+    const runtimeList = page.locator('[data-test="chat-model-list-antigravity_cli"]');
+    const runtimeRow = page.locator('[data-test="chat-runtime-antigravity_cli"]');
+    for (let attempt = 0; attempt < 6 && !(await runtimeList.isVisible().catch(() => false)); attempt += 1) {
+      await runtimeRow.hover().catch(() => undefined); await sleep(400);
+      if (!(await runtimeList.isVisible().catch(() => false))) { await runtimeRow.click().catch(() => undefined); await sleep(700); }
+    }
+    await runtimeList.locator('button[role="menuitemradio"][data-test^="chat-model-option-"]').first().click();
+    await page.keyboard.press('Escape').catch(() => undefined);
+    await composerInput.click(); await composerInput.type('Say hello from a collapsed panel', { delay: 5 });
+    if (await page.locator('[data-test="app-left-panel-collapse"]').isVisible().catch(() => false)) await collapseLeftPanel(page);
+    await page.locator('[data-test="chat-primary-action"]').first().click();
+    await page.waitForURL((u) => u.pathname === '/chat' && Boolean(u.searchParams.get('id')) && !u.searchParams.get('id').startsWith('temp-'), { timeout: 120000 });
+    const sentRunId = new URL(page.url()).searchParams.get('id');
+    const firstSend = await settledOpenRun(page, 'first send');
+    assert(firstSend.nav.stripChatLit === false, 'first send: Chat not lit once the run opens', firstSend.nav);
+    await shot(page, 'pmu-019-first-send-collapsed');
+    details.firstSend = { sentRunId, open: firstSend, ...(await workspacesReveals(page, 'first send', sentRunId, firstSend)) };
+    await shot(page, 'pmu-019-first-send-workspaces-revealed');
+
+    // C. An Org worker far down a long tree: many Agent rows above the Orgs (AC-004 large scroll).
+    for (let i = 0; i < 24; i += 1) {
+      const id = (await gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}',
+        { input: { name: `Filler Agent ${String(i).padStart(2, '0')} ${randomUUID().slice(0, 4)}`, role: 'assistant', description: 'filler', instructions: 'Follow the request.', toolNames: [] } })).createAgentDefinition.id;
+      const r = (await gql('mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}', { input: { agentDefinitionId: id, ...config() } })).createAgentRun;
+      assert(r.success, r.message);
+    }
+    await page.setViewportSize({ width: 1440, height: 620 });
+    const orgRoot = await createRoot('org', ids);
+    const orgInput = await managerInput(orgRoot); inputs.push(orgInput);
+    const farTask = await createTask(projectId, 'Far-down Org worker');
+    orgInput.send(callTool('delegate_task', { recipient_address: '/worker', task_id: farTask }));
+    const farWorker = await until('org: worker started', async () => { const r = await rootOf(projectId, farTask); return r?.start === 'started' ? r : null; }, 60000);
+    await openOrgRunFromPanel(page, names, orgRoot);
+    await tabList.first().waitFor({ timeout: 60000 });
+    const longTree = await treeSummary(page);
+    await collapseLeftPanel(page);
+    await openWorkerFromCard('far org', farTask);
+    const far = await settledOpenRun(page, 'far org');
+    const farReveal = await workspacesReveals(page, 'far org', farWorker.ingressAgentRunId, far);
+    const s = farReveal.settled;
+    const maxScroll = s.scrollHeight - s.clientHeight;
+    assert(s.scrollTop >= 300 && (Math.abs(s.centreOffset) <= s.clientHeight / 4 || s.scrollTop >= maxScroll - 1),
+      'far org: the tree scrolled a long way and the row is roughly centred', { settled: s, maxScroll, longTree });
+    await shot(page, 'pmu-019-far-org-workspaces-revealed');
+    details.farOrg = { longTree, open: far, ...farReveal, maxScroll };
+
+    // D. Rows that arrive after the panel appears. With the panel shown, an open Org worker's row is already rendered from
+    // the live Org projection, so rows arrive late when the app starts on the worker with a slow backend: the docked panel
+    // mounts before the history and the Org run load. D1: the user scrolls the tree before they arrive → no later jump or
+    // focus move (AC-004). D2: the same start without user input → the row is revealed when it arrives (QR-002).
+    const slowStart = async (label, ms, userScrolls) => {
+      let quietSince = Date.now();
+      await until(`${label}: no GraphQL read in flight`, async () => {
+        if (page.graphqlInFlight.size) quietSince = Date.now(); return Date.now() - quietSince >= 750;
+      }, 15000, 50).catch(() => undefined);
+      const endSlow = await slowGraphql(page, ms);
+      await page.goto(far.url, { waitUntil: 'domcontentloaded', timeout: 120000 });
+      const scroller = page.locator('[data-test="workspace-history-tree-scroll"]').last();
+      await scroller.waitFor({ timeout: 60000 });
+      const atMount = { row: await revealedTreeRow(page), workerRows: await page.locator(`[data-agent-run-id="${farWorker.ingressAgentRunId}"]`).count() };
+      let afterWheel = null;
+      if (userScrolls) {
+        const box = await scroller.boundingBox();
+        await page.mouse.move(box.x + box.width / 2, box.y + Math.min(box.height / 2, 40));
+        await page.mouse.wheel(0, 160);
+        await sleep(200);
+        afterWheel = await treeSummary(page);
+      }
+      await endSlow();
+      await until(`${label}: worker row arrived`, async () => (await page.locator(`[data-agent-run-id="${farWorker.ingressAgentRunId}"]`).count()) > 0, 60000);
+      await sleep(3500);
+      return { atMount, afterWheel, end: { tree: await treeSummary(page), row: await revealedTreeRow(page), url: page.url() } };
+    };
+    const takeover = await slowStart('slow start, user scrolls', 3000, true);
+    assert(takeover.atMount.workerRows === 0, 'slow start: precondition — the worker row is not rendered when the panel appears', takeover.atMount);
+    assert(takeover.end.row?.agentRunId === farWorker.ingressAgentRunId && takeover.end.tree.scrollTop === takeover.afterWheel.scrollTop
+      && takeover.end.row.focused !== true && !takeover.end.row.visible,
+      'slow start, user scrolls: no jump to the row and no focus move after the user scrolled', takeover);
+    await shot(page, 'pmu-019-slow-start-user-scrolled');
+    const waited = await slowStart('slow start, no input', 800, false);
+    assert(waited.atMount.workerRows === 0, 'slow start (no input): precondition — the worker row is not rendered when the panel appears', waited.atMount);
+    assert(waited.end.row?.agentRunId === farWorker.ingressAgentRunId && waited.end.row.visible && waited.end.tree.scrollTop >= 300 && waited.end.url === far.url,
+      'slow start, no input: the row is revealed once it arrives', waited);
+    await shot(page, 'pmu-019-slow-start-revealed');
+    details.slowStart = { takeover, waited };
+
+    // E. Highlight: the Org launch page while a Team run is still selected, an empty /workspace, /agents (AC-011).
+    await openTeamRunFromPanel(page, names, teamRoot);
+    await tabList.first().waitFor({ timeout: 60000 });
+    await collapseLeftPanel(page);
+    // What the Org run view's "+" does (useRunStart): an in-app push, so the Team selection stays in the store.
+    await page.evaluate((to) => document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$router.push(to),
+      { path: '/workspace', query: { rootSubjectKind: 'agent_org', definitionId: ids.org, mode: 'configuration' } });
+    await until('org launch page', async () => new URL(page.url()).searchParams.get('mode') === 'configuration', 15000);
+    await sleep(800);
+    const onLaunch = { nav: await shellNavState(page), selection: await selectionState(page) };
+    assert(onLaunch.nav.workspacesLit === false && onLaunch.nav.stripChatLit === false, 'Org launch page: neither Workspaces nor Chat lit', onLaunch);
+    await goto(page, '/workspace');
+    if (await page.locator('[data-test="app-left-panel-collapse"]').isVisible().catch(() => false)) await collapseLeftPanel(page);
+    await sleep(500);
+    const onEmpty = { nav: await shellNavState(page), selection: await selectionState(page) };
+    assert(onEmpty.nav.workspacesLit === false, 'empty /workspace: Workspaces not lit', onEmpty);
+    await goto(page, '/agents');
+    if (await page.locator('[data-test="app-left-panel-collapse"]').isVisible().catch(() => false)) await collapseLeftPanel(page);
+    const onAgents = await page.evaluate(() => {
+      const strip = document.querySelector('[data-test="workspace-left-navigation-strip"]');
+      return { agentsLit: strip?.querySelector('[data-nav-key="agents"]')?.classList.contains('bg-gray-100') ?? null,
+        workspacesLit: strip?.querySelector('[data-nav-key="workspaces"]')?.getAttribute('aria-current') === 'location' };
+    });
+    assert(onAgents.agentsLit === true && onAgents.workspacesLit === false, '/agents: Agents lit, Workspaces not', onAgents);
+    // F. A page icon still docks the panel and goes to its page (AC-006).
+    await page.locator('[data-test="workspace-left-navigation-strip"] [data-nav-key="projects"]').click();
+    await until('page icon: docked on /projects', async () => new URL(page.url()).pathname.startsWith('/projects')
+      && await page.locator('[data-test="app-left-panel-collapse"]').isVisible().catch(() => false), 15000);
+    details.highlight = { onLaunch, onEmpty, onAgents, pageIcon: new URL(page.url()).pathname };
+
+    // G. New chat reached in-app after viewing a Team run (the Team selection stays in the store): Workspaces only shows the
+    // panel and focus lands on the Workspaces section, not on a run row (REQ-006, REQ-009, AC-009).
+    await openTeamRunFromPanel(page, names, teamRoot);
+    await tabList.first().waitFor({ timeout: 60000 });
+    await page.locator('[data-test="app-left-panel-chat"]').click();
+    await page.waitForURL((u) => u.pathname === '/chat' && !u.searchParams.get('id'), { timeout: 30000 });
+    const draftInput = page.locator('[data-test="chat-composer"] textarea').first();
+    await draftInput.waitFor({ timeout: 60000 });
+    const dockedOnNewChat = await treeSummary(page);
+    await collapseLeftPanel(page);
+    await draftInput.click(); await draftInput.type('Draft after a Team run', { delay: 5 });
+    const inAppBefore = { nav: await shellNavState(page), selection: await selectionState(page) };
+    await stripWorkspaces(page).click();
+    await page.locator('[data-test="app-left-panel-run-history"]').waitFor({ timeout: 15000 });
+    await sleep(1000);
+    const inAppAfter = { focus: await page.evaluate(() => document.activeElement?.getAttribute('data-test') ?? document.activeElement?.tagName ?? null),
+      route: new URL(page.url()).pathname + new URL(page.url()).search, text: await draftInput.inputValue(), selection: await selectionState(page), tree: await treeSummary(page) };
+    details.newChatInApp = { dockedOnNewChat, inAppBefore, inAppAfter };
+    assert(inAppBefore.nav.stripChatLit === true && inAppBefore.nav.workspacesLit === false, 'in-app New chat: Chat lit, Workspaces not', inAppBefore);
+    assert(inAppAfter.route === '/chat' && inAppAfter.text === 'Draft after a Team run' && JSON.stringify(inAppAfter.selection) === JSON.stringify(inAppBefore.selection),
+      'in-app New chat: route, draft text and selection kept', details.newChatInApp);
+    assert(inAppAfter.focus === 'app-left-panel-run-history' && inAppAfter.tree.scrollTop === 0,
+      'in-app New chat: Workspaces scrolled to or focused a run row although no run is open (REQ-009)', details.newChatInApp);
+    await shot(page, 'pmu-019-new-chat-in-app-workspaces');
+
+    // H. Other pages reached in-app after a run (its selection stays in the store): /agents after an Agent run and
+    // /projects after a Team run. Workspaces only shows the panel; nothing is scrolled to or focused (REQ-006, REQ-009).
+    const workspacesOnPageAfterRun = async (label, openRun, navLabel, pathPrefix) => {
+      await openRun();
+      await page.locator('[data-test="app-left-panel-collapse"]').waitFor({ timeout: 60000 });
+      await sleep(500);
+      await navTo(page, navLabel);
+      await until(`${label}: on ${pathPrefix}`, async () => new URL(page.url()).pathname.startsWith(pathPrefix), 30000);
+      await sleep(800);
+      const docked = await treeSummary(page);
+      await collapseLeftPanel(page);
+      const before = { nav: await shellNavState(page), selection: await selectionState(page) };
+      await stripWorkspaces(page).click();
+      await page.locator('[data-test="app-left-panel-run-history"]').waitFor({ timeout: 15000 });
+      await sleep(1000);
+      const after = { focus: await page.evaluate(() => document.activeElement?.getAttribute('data-test') ?? document.activeElement?.tagName ?? null),
+        selection: await selectionState(page), tree: await treeSummary(page) };
+      const result = { docked, before, after };
+      assert(before.nav.workspacesLit === false, `${label}: Workspaces not lit off a run`, result);
+      assert(JSON.stringify(after.selection) === JSON.stringify(before.selection), `${label}: route or selection changed`, result);
+      assert(after.focus === 'app-left-panel-run-history' && after.tree.scrollTop === 0, `${label}: Workspaces scrolled to or focused a run row off a run (REQ-009)`, result);
+      await shot(page, `pmu-019-${label.replace(/[^a-z]+/gi, '-')}-workspaces`);
+      return result;
+    };
+    details.agentsAfterAgentRun = await workspacesOnPageAfterRun('agents after an Agent run',
+      () => goto(page, `/chat?id=${encodeURIComponent(sentRunId)}`), 'Agents', '/agents');
+    details.projectsAfterTeamRun = await workspacesOnPageAfterRun('projects after a Team run',
+      () => openTeamRunFromPanel(page, names, teamRoot), 'Projects', '/projects');
+    assertNoBrowserErrors(errors);
+    return details;
+  } finally { for (const input of inputs) input.close(); }
+};
+
 const CASES = {
   'PMU-001': ['Projects list and board follow writes live (arrival highlight, counts)', listAndBoardLive],
   'PMU-002': ['Agent root: live status, live move highlight, opening the worker, DONE → Offline muted', agentRootOnBoard],
@@ -1353,6 +1841,8 @@ const CASES = {
   'PMU-015': ['Projects tab in the right panel: first tab, live board beside the chat, worker opens in the center and the tab stays, card → detail → back, choice remembered after reload (projects-always-on AC-006..010)', projectsTab],
   'PMU-016': ['Projects tab in Team and Org conversations (worker opens, tab kept); constrained width: strip and drawer list Projects first', projectsTabOtherRootsAndNarrow],
   'PMU-017': ['Cancelled Tasks (task-closed-status): agent cancel hides the row behind "Cancelled (N)" beside Refresh, Cancelled as the last column (stacked last when narrow), keyboard, muted Cancelled pill vs Done, open counts, live reopen; Temp board/header/page; right-panel board and detail', cancelledTasksJourney],
+  'PMU-018': ['Collapsed strip Workspaces: a worker opened from a Task card (Agent, Team with nested task Team, Org host) lights Workspaces; it docks the panel without navigating and reveals the row with focus; narrow drawer, short window, New chat', collapsedStripWorkspaces],
+  'PMU-019': ['Collapsed strip Workspaces, other entries: nested task-Team member (non-coordinator) after a collapse, New chat first send, far-down Org worker (large scroll), slow history load with and without a user scroll first; highlight on the Org launch page, empty /workspace and /agents; page icon docks and navigates; in-app New chat, /agents and /projects after a run (no reveal off a run)', collapsedStripOtherEntries],
 };
 
 let result = 'Pass';

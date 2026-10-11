@@ -58,6 +58,7 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 import { useShellPrimaryNavigation } from '~/composables/useShellPrimaryNavigation';
+import { isAgentOrgRunRoute } from '~/services/workspace/workspaceNavigationService';
 
 defineProps<{
   showFileContent: boolean
@@ -76,9 +77,7 @@ const responsiveWorkspaceShellState = useResponsiveWorkspaceShellState();
 
 const isAgentSelected = computed(() => selectionStore.selectedType === 'agent');
 const isTeamSelected = computed(() => selectionStore.selectedType === 'team');
-const showAgentOrgActive = computed(() => route.query?.rootSubjectKind === 'agent_org'
-  && (route.query.mode === 'active' || route.query.mode === 'history')
-  && Boolean(route.query.orgRunId));
+const showAgentOrgActive = computed(() => isAgentOrgRunRoute(route.query ?? {}));
 const showSelectedRunConfig = computed(() =>
   Boolean(selectionStore.selectedRunId) && workspaceCenterViewStore.isConfigMode,
 );

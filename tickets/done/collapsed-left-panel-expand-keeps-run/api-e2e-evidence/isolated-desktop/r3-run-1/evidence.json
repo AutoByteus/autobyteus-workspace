@@ -1,0 +1,253 @@
+{
+  "startedAt": "2026-10-10T04:17:29.270Z",
+  "controlEndpoint": "http://127.0.0.1:62032",
+  "backendUrl": "http://127.0.0.1:62033",
+  "cases": {
+    "agent": {
+      "afterCollapse": {
+        "strip": true,
+        "activation": "redock-panel",
+        "workspacesLit": true,
+        "workspacesIcon": true,
+        "workspacesLabel": "Workspaces",
+        "stripChatLit": false,
+        "focus": "workspace-left-strip-workspaces",
+        "hash": "#/chat?id=manager_dsk_ab9f_1ce042d286604f05b9ce3f8ae4b9e999"
+      },
+      "before": {
+        "strip": true,
+        "activation": "redock-panel",
+        "workspacesLit": true,
+        "workspacesIcon": true,
+        "workspacesLabel": "Workspaces",
+        "stripChatLit": false,
+        "focus": "BUTTON",
+        "hash": "#/chat?id=manager_dsk_ab9f_1ce042d286604f05b9ce3f8ae4b9e999"
+      },
+      "sel": {
+        "hash": "#/chat?id=manager_dsk_ab9f_1ce042d286604f05b9ce3f8ae4b9e999",
+        "subject": "{\"kind\":\"agent_run\",\"runId\":\"manager_dsk_ab9f_1ce042d286604f05b9ce3f8ae4b9e999\"}",
+        "focusedRunId": null
+      },
+      "row": {
+        "agentRunId": "release_notes_writer_dsk_ab9f_9dba6641fb5346f58b8d69b46c7dfa9f",
+        "test": "workspace-team-transient-execution-row",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      },
+      "settled": {
+        "agentRunId": "release_notes_writer_dsk_ab9f_9dba6641fb5346f58b8d69b46c7dfa9f",
+        "test": "workspace-team-transient-execution-row",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      }
+    },
+    "team": {
+      "afterCollapse": {
+        "strip": true,
+        "activation": "redock-panel",
+        "workspacesLit": true,
+        "workspacesIcon": true,
+        "workspacesLabel": "Workspaces",
+        "stripChatLit": false,
+        "focus": "workspace-left-strip-workspaces",
+        "hash": "#/workspace"
+      },
+      "before": {
+        "strip": true,
+        "activation": "redock-panel",
+        "workspacesLit": true,
+        "workspacesIcon": true,
+        "workspacesLabel": "Workspaces",
+        "stripChatLit": false,
+        "focus": "BUTTON",
+        "hash": "#/workspace"
+      },
+      "sel": {
+        "hash": "#/workspace",
+        "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_dsk_ab9f_9682ba97b46b44d2856ea49bbc0222c4\"}",
+        "focusedRunId": "release_notes_writer_dsk_ab9f_fc9df82792d74e0ab48e2d0e964cc5b9"
+      },
+      "row": {
+        "agentRunId": "release_notes_writer_dsk_ab9f_fc9df82792d74e0ab48e2d0e964cc5b9",
+        "test": "workspace-team-transient-execution-row",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      },
+      "settled": {
+        "agentRunId": "release_notes_writer_dsk_ab9f_fc9df82792d74e0ab48e2d0e964cc5b9",
+        "test": "workspace-team-transient-execution-row",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      }
+    },
+    "org": {
+      "afterCollapse": {
+        "strip": true,
+        "activation": "redock-panel",
+        "workspacesLit": true,
+        "workspacesIcon": true,
+        "workspacesLabel": "Workspaces",
+        "stripChatLit": false,
+        "focus": "workspace-left-strip-workspaces",
+        "hash": "#/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-dsk-ab9f&orgRunId=delivery_org_dsk_ab9f_8f9356ff340747f0903a60dcc2cb0876&mode=active"
+      },
+      "before": {
+        "strip": true,
+        "activation": "redock-panel",
+        "workspacesLit": true,
+        "workspacesIcon": true,
+        "workspacesLabel": "Workspaces",
+        "stripChatLit": false,
+        "focus": "BUTTON",
+        "hash": "#/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-dsk-ab9f&orgRunId=delivery_org_dsk_ab9f_8f9356ff340747f0903a60dcc2cb0876&mode=active&agentRunId=release_notes_writer_dsk_ab9f_6a8656ca91e24643b72d91921b728849"
+      },
+      "sel": {
+        "hash": "#/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-dsk-ab9f&orgRunId=delivery_org_dsk_ab9f_8f9356ff340747f0903a60dcc2cb0876&mode=active&agentRunId=release_notes_writer_dsk_ab9f_6a8656ca91e24643b72d91921b728849",
+        "subject": "null",
+        "focusedRunId": null
+      },
+      "row": {
+        "agentRunId": "release_notes_writer_dsk_ab9f_6a8656ca91e24643b72d91921b728849",
+        "test": "agent-org-task-agent-row-release_notes_writer_dsk_ab9f_6a8656ca91e24643b72d91921b728849",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      },
+      "settled": {
+        "agentRunId": "release_notes_writer_dsk_ab9f_6a8656ca91e24643b72d91921b728849",
+        "test": "agent-org-task-agent-row-release_notes_writer_dsk_ab9f_6a8656ca91e24643b72d91921b728849",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      }
+    },
+    "newChat": {
+      "onNew": {
+        "strip": true,
+        "activation": "redock-panel",
+        "workspacesLit": false,
+        "workspacesIcon": true,
+        "workspacesLabel": "Workspaces",
+        "stripChatLit": true,
+        "focus": "chat-message-input",
+        "hash": "#/chat"
+      },
+      "newSel": {
+        "hash": "#/chat",
+        "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_dsk_ab9f_9682ba97b46b44d2856ea49bbc0222c4\"}",
+        "focusedRunId": "release_notes_writer_dsk_ab9f_fc9df82792d74e0ab48e2d0e964cc5b9"
+      },
+      "newAfter": {
+        "sel": {
+          "hash": "#/chat",
+          "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_dsk_ab9f_9682ba97b46b44d2856ea49bbc0222c4\"}",
+          "focusedRunId": "release_notes_writer_dsk_ab9f_fc9df82792d74e0ab48e2d0e964cc5b9"
+        },
+        "text": "Desktop draft text",
+        "row": {
+          "agentRunId": "release_notes_writer_dsk_ab9f_fc9df82792d74e0ab48e2d0e964cc5b9",
+          "test": "workspace-team-transient-execution-row",
+          "visible": true,
+          "scrollTop": 0,
+          "focused": false,
+          "selectedRows": 1
+        },
+        "focus": "app-left-panel-run-history"
+      }
+    }
+  },
+  "errors": [],
+  "seed": {
+    "names": {
+      "manager": "Manager Dsk ab9f",
+      "worker": "Release Notes Writer Dsk ab9f",
+      "helper": "Fact Checker Dsk ab9f",
+      "squad": "Docs Review Team Dsk ab9f",
+      "team": "Delivery Team Dsk ab9f",
+      "org": "Delivery Org Dsk ab9f"
+    },
+    "ids": {
+      "manager": "manager-dsk-ab9f",
+      "worker": "release-notes-writer-dsk-ab9f",
+      "helper": "fact-checker-dsk-ab9f",
+      "squad": "docs-review-team-dsk-ab9f",
+      "team": "delivery-team-dsk-ab9f",
+      "org": "delivery-org-dsk-ab9f"
+    },
+    "projectId": "project_d10767c3-9fde-4525-ae4c-2e625e390d0f",
+    "agentTask": "project_task_76b52cb5-03ef-4371-8e73-b4acd575c734",
+    "teamTask": "project_task_21978b7b-4b76-4040-b8dd-fcc1f14be7d1",
+    "orgTask": "project_task_a450816a-717c-4e5d-87ae-5c45e5fb1dad",
+    "agentRoot": {
+      "kind": "agent",
+      "rootId": "manager_dsk_ab9f_1ce042d286604f05b9ce3f8ae4b9e999",
+      "managerRunId": "manager_dsk_ab9f_1ce042d286604f05b9ce3f8ae4b9e999"
+    },
+    "teamRoot": {
+      "kind": "team",
+      "rootId": "delivery_team_dsk_ab9f_9682ba97b46b44d2856ea49bbc0222c4",
+      "managerRunId": "manager_dsk_ab9f_0b29beb12216403d8b3a0f6f05147be8"
+    },
+    "orgRoot": {
+      "kind": "org",
+      "rootId": "delivery_org_dsk_ab9f_8f9356ff340747f0903a60dcc2cb0876",
+      "managerRunId": "manager_dsk_ab9f_93b69cd97f4a4882adf7f11f573047f3"
+    },
+    "agentWorker": {
+      "kind": "agent",
+      "recipientAddress": "/release_notes_writer_dsk_ab9f",
+      "ingressAgentRunId": "release_notes_writer_dsk_ab9f_9dba6641fb5346f58b8d69b46c7dfa9f",
+      "teamRunId": null,
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent",
+        "runId": "manager_dsk_ab9f_1ce042d286604f05b9ce3f8ae4b9e999"
+      }
+    },
+    "teamWorker": {
+      "kind": "team",
+      "recipientAddress": "/docs_review_team_dsk_ab9f",
+      "ingressAgentRunId": "release_notes_writer_dsk_ab9f_fc9df82792d74e0ab48e2d0e964cc5b9",
+      "teamRunId": "docs_review_team_dsk_ab9f_909170be96b441f794bca963d2ff2d41",
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent_team",
+        "runId": "delivery_team_dsk_ab9f_9682ba97b46b44d2856ea49bbc0222c4"
+      }
+    },
+    "orgWorker": {
+      "kind": "agent",
+      "recipientAddress": "/worker",
+      "ingressAgentRunId": "release_notes_writer_dsk_ab9f_6a8656ca91e24643b72d91921b728849",
+      "teamRunId": null,
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent_org",
+        "runId": "delivery_org_dsk_ab9f_8f9356ff340747f0903a60dcc2cb0876"
+      }
+    }
+  },
+  "window": {
+    "width": 1512,
+    "height": 913,
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) autobyteus/1.4.99 Chrome/148.0.77",
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"
+  },
+  "windowSize": {
+    "width": 1512,
+    "height": 913
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-10T04:17:41.852Z"
+}

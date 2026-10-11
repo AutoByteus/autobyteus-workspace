@@ -468,6 +468,12 @@ paragraph and a long multi-line brief) on a Project board and on Temp tasks at
 - at a constrained width, the collapsed strip and the drawer list Projects
   first, and the drawer board does not overflow.
 
+**PMU-018–019** cover the collapsed strip's Workspaces icon after a worker is
+opened from a Task card (Agent, Team and Org hosts), plus the other ways a run
+is opened while the panel is collapsed. See [Workspace Layout — Collapsed
+strip](./workspace_layout.md#collapsed-strip-pages-and-workspaces) and
+`TESTING.md`.
+
 A raw `/ws/projects` client records message volume. The wire contract itself is
 covered by the server's `tests/e2e/projects/project-change-feed.e2e.test.ts`
 (see `TESTING.md`).

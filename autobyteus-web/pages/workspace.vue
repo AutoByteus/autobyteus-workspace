@@ -17,7 +17,7 @@
 import { computed, onMounted, provide, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
-import { buildAgentRunChatRoute } from '~/services/workspace/workspaceNavigationService';
+import { buildAgentRunChatRoute, isAgentOrgLaunchRoute } from '~/services/workspace/workspaceNavigationService';
 import { useServerSettingsStore } from '~/stores/serverSettings';
 import { useWorkspaceRouteSelection } from '~/composables/workspace/useWorkspaceRouteSelection';
 import { useWorkspaceFileContentVisible } from '~/composables/workspace/useWorkspaceFileContentVisible';
@@ -46,7 +46,7 @@ watch(
 );
 
 const showFileContent = useWorkspaceFileContentVisible();
-const showOrgLaunch = computed(() => route.query.rootSubjectKind === 'agent_org' && route.query.mode === 'configuration');
+const showOrgLaunch = computed(() => isAgentOrgLaunchRoute(route.query));
 const orgLaunchDrafts = useAgentOrgLaunchDraftStore();
 // On the Org launch page, Files and Terminal use the workspace chosen on its card.
 provide(START_SURFACE_WORKSPACE, computed(() => (showOrgLaunch.value ? startSurfaceWorkspaceOf(orgLaunchDrafts.draft?.root.workspace) : null)));
