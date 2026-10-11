@@ -12,6 +12,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-004 | Architecture Reviewer pass handoff, ARCH-REV-005 (SR-009), from CRR-005 | CRR-005 F-3, F-4, F-5 | `Solution Revision` (reviewed) | SR-008, SR-009, ARCH-REV-005, CRR-004, CRR-005 | Per-model summary mode, summary output-limit override (REQ-009), instruction v5; back to Code Review |
 | IR-005 | Architecture Reviewer pass handoff, ARCH-REV-006 (SR-010), from CRR-006 | CRR-006 CR-004 | `Solution Revision` (reviewed) | SR-010, ARCH-REV-006, CRR-006 | Summary output limit fitted to each request's room; both paths accept with the agent budget; back to Code Review |
 | IR-006 | Architecture Reviewer pass handoff, ARCH-REV-007 (SR-011), from code-review Round 8 | F-6, F-7, F-8 | `Solution Revision` (reviewed) | SR-011, ARCH-REV-007 | Unwrapped valid summary accepted; DeepSeek cached mode final; back to Code Review |
+| IR-007 | Architecture Reviewer pass handoff, ARCH-REV-008 (SR-012), from CRR-010 | F-9 | `Solution Revision` (reviewed) | SR-012, ARCH-REV-008, CRR-009, CRR-010 | Explained empty section accepted; back to Code Review |
 
 ## Revision Entries
 
@@ -200,4 +201,29 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Remaining limitations or risks:
   - N-3: truncation inside the last section is undetectable without the closing marker on providers that report `'unknown'` completion (accepted, non-blocking; API/E2E to note it if seen).
   - Open items owned by API/E2E: CR-003, AC-010, the AC-003 SR-011 bar (transcript-only on Sonnet 5 and DeepSeek, histories A and B).
+  - The uncommitted API/E2E edits and the other roles' ticket docs were not touched or committed.
+
+### IR-007 — Explained empty section accepted (SR-012, F-9)
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-review-report.md`, ARCH-REV-008 (SR-012, Pass). Applied on top of IR-006 (`090353579`).
+- Triggering finding IDs: CRR-010 F-9. Sonnet 5 writes `(none) — reason` or `(none — reason)` for the legitimately empty "Files created or changed", so its transcript summary of history B was rejected 6 of 6 times.
+- Classification: `Solution Revision` (reviewed).
+- Prior authoritative result: IR-006 (CRR-009 Pass).
+- Current authoritative result: implemented; local checks pass; returning to Code Review.
+- Related solution revision IDs: SR-012 (SR-013 is a separate pending proposal, not implemented). Related architecture-review revision IDs: ARCH-REV-008. Related code-review revision IDs: CRR-009, CRR-010. Related API/E2E revision IDs: see `api-e2e-revision-record.md`. Related delivery revision IDs: N/A.
+- Why this implementation revision is recorded: it widens the empty-section rule of the shared output contract, so an explained empty section no longer blocks compaction.
+- Approved behavior or requirement IDs affected: REQ-003; AC-003 (Sonnet 5 transcript-only rerun).
+- Implementation delta: `EMPTY_SECTION = /^\(none(\)|[\s\u2013\u2014-])/i` is tested against the first line of each trimmed section; any other section still needs a bullet. Nothing else changes.
+- Changed files or areas: `autobyteus-ts/src/memory/compaction/compaction-summary-parser.ts`, `tests/unit/memory/compaction-summary-prompt.test.ts`, `tests/unit/memory/compaction-summarizer.test.ts`, `autobyteus-ts/docs/agent_memory_design.md`.
+- Local validation and result:
+  - core production typecheck: pass;
+  - core unit: 307 files, 2045/2045;
+  - runtime compaction integration 6/6;
+  - server `prepare:shared` + typecheck: pass; server unit: 5232 passed;
+  - one-off check: the 3 recorded Sonnet 5 history B replies that include their text now parse.
+- Next recipient or routing: Code Review (`get_handoff_rules`, Large/High).
+- Remaining limitations or risks:
+  - N-3 still applies.
+  - A section starting with `(none)` and then listing bullets is accepted (harmless per N-4).
+  - Delivery should note that the server test `native-compaction-terminal-drain.test.ts` is load-sensitive.
   - The uncommitted API/E2E edits and the other roles' ticket docs were not touched or committed.

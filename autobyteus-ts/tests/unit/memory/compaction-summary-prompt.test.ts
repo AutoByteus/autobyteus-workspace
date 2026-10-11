@@ -42,6 +42,24 @@ describe('compaction summary prompt and contract', () => {
     expect(parseCompactionSummary(`<compaction_summary>${empty}</compaction_summary>`)).toBe(empty);
     expect(validateCompactionSummaryBody(`\n${body}\n`)).toBe(body);
   });
+  describe('an empty section, optionally explained on its first line (SR-012)', () => {
+    const withFiles = (section: string) => body.replace('## Files created or changed\n- Keep /repo/check.ts; approval pending.', `## Files created or changed\n${section}`);
+    it.each([
+      '(none)', '(None)', '(NONE)', '(none) — this has been a read-only investigation.', '(none — this has been a read-only investigation)',
+      '(none) - nothing was written', '(none – nothing was written)', '(none)\n- a later bullet is harmless',
+    ])('accepts %s', (section) => {
+      const value = withFiles(section);
+      expect(value).not.toBe(body);
+      expect(validateCompactionSummaryBody(value)).toBe(value);
+      expect(parseCompactionSummary(`<compaction_summary>\n${value}\n</compaction_summary>`)).toBe(value);
+    });
+    it.each([
+      ['(nonexistent files were not checked)'], ['none'], ['none — read-only'], [''], ['Nothing was written in this conversation.'],
+      ['The agent wrote nothing. (none)'],
+    ])('rejects %j', (section) => {
+      expect(() => validateCompactionSummaryBody(withFiles(section))).toThrow(CompactionSummaryValidationError);
+    });
+  });
   it('accepts an unwrapped reply with neither marker as the body (SR-011)', () => {
     expect(parseCompactionSummary(body)).toBe(body);
     expect(parseCompactionSummary(`\n\n${body}\n`)).toBe(body);

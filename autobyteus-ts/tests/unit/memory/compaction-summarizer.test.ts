@@ -83,6 +83,20 @@ describe('CompactionSummarizer', () => {
     expect(port.requestTranscriptSummary).toHaveBeenCalledOnce();
   });
 
+  it('accepts the recorded round-4 Sonnet 5 transcript reply shape: an explained empty section (SR-012)', async () => {
+    // "Files created or changed" sections exactly as Sonnet 5 wrote them on history B (api-e2e-evidence/round4/ac003-sonnet-tonly-B).
+    const replies = [
+      '(none) — this has been a read-only investigation; no files have been created, edited, or deleted.',
+      '(none — this has been a read-only investigation; no files were created or modified by the target agent.)',
+    ].map((section) => body.replace('## Files created or changed\n- Keep /repo/check.ts; approval pending.', `## Files created or changed\n${section}`));
+    for (const reply of replies) {
+      const port = fakePort({ usesCachedSummary: vi.fn(() => false), requestTranscriptSummary: vi.fn(async () => result('transcript', `<compaction_summary>\n${reply}\n</compaction_summary>`)) });
+      const { promise } = run(port);
+      await expect(promise).resolves.toBe(reply);
+      expect(port.requestTranscriptSummary).toHaveBeenCalledOnce();
+    }
+  });
+
   it('rejects an incomplete reply before parsing, even when it is unwrapped and otherwise valid', async () => {
     const incomplete = result('transcript', body, { metadata: { ...result('transcript', '').metadata, completionStatus: 'incomplete' } });
     const port = fakePort({ usesCachedSummary: vi.fn(() => false), requestTranscriptSummary: vi.fn(async () => incomplete) });

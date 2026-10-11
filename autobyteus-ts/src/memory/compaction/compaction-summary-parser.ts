@@ -18,6 +18,11 @@ export class CompactionSummaryValidationError extends Error {
 
 const open = '<compaction_summary>';
 const close = '</compaction_summary>';
+/**
+ * A section is recorded as empty when its first line starts with `(none)` or `(none` followed by
+ * a space or dash, e.g. `(none) — read-only investigation` or `(none — read-only investigation)` (SR-012).
+ */
+const EMPTY_SECTION = /^\(none(\)|[\s\u2013\u2014-])/i;
 const fail = (message: string): never => { throw new CompactionSummaryValidationError(message); };
 
 export const validateCompactionSummaryBody = (content: string): string => {
@@ -33,7 +38,7 @@ export const validateCompactionSummaryBody = (content: string): string => {
   if (body.slice(0, headings[0]!.index).trim()) fail('Summary must begin with its first heading.');
   headings.forEach((heading, i) => {
     const section = body.slice(heading.index! + heading[0].length, headings[i + 1]?.index ?? body.length).trim();
-    if (section !== '(none)' && !/^\s*[-*+]\s+\S/m.test(section)) {
+    if (!EMPTY_SECTION.test(section.split(/\r?\n/, 1)[0]!) && !/^\s*[-*+]\s+\S/m.test(section)) {
       fail(`Summary section '${heading[1]}' requires specific bullets or (none).`);
     }
   });

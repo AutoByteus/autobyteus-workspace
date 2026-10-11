@@ -133,7 +133,9 @@ Both paths share this one contract (`COMPACTION_SUMMARY_HEADINGS`) and one parse
 Stored summaries are never re-parsed, so older six-heading summaries need no reader.
 
 The body starts with the first heading. Each section must contain specific
-bullets or `(none)`; duplicate/missing/reordered headings or envelope markers
+bullets, or record that it is empty with a first line starting `(none)` or `(none`
+plus a space or dash (an explanation may follow, e.g. `(none) — read-only
+investigation`); duplicate/missing/reordered headings or envelope markers
 inside the body fail validation. There is no six-array JSON schema, corrective
 child run, numeric word/bullet quota or prompt-level target-summary budget.
 Provider output caps and final WorkingContext fit checks still apply. Structural
