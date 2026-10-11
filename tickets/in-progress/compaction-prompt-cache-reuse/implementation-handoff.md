@@ -22,7 +22,7 @@
    - `createEnabledMemoryCompactionConfiguration(policy)` is policy-only.
    - Deleted: `DirectLlmCompressionStrategy`, `CompressionStrategy`, `CompressionStrategyFactory`, `CompactionLlmFactory`, `CompactionCompressionExecution`. Exports are updated.
 2. **Cached summary first, same-model fallback (2 and 3).**
-   - `summarize` sends the cached request if `fitsInputBudget(baseline, instruction)` passes. That request is the baseline conversation plus `COMPACTION_SUMMARY_INSTRUCTION` (`COMPACTION_SUMMARY_PROMPT` plus a suffix: summarize the whole conversation, do not restate system instructions, no tools, do not continue the task). It gets up to 2 attempts with no backoff.
+   - `summarize` sends the cached request if `fitsInputBudget(baseline, instruction)` passes. That request is the baseline conversation plus `COMPACTION_SUMMARY_INSTRUCTION`, which is written to the agent in second person (IR-002). It says the context is nearly full and the earlier conversation will be replaced by its own summary; lists what to keep; forbids tools and continuing the task; and ends with the same six-heading block as the transcript prompt. It gets up to 2 attempts with no backoff.
    - After that comes the transcript request (summary prompt as system, rendered transcript as user): up to 3 attempts with today's 1 s and 2 s backoffs.
    - These count as failed attempts: tool calls, an `incomplete` completion, a parse failure, or a provider error.
    - Attempt numbers are unique across both modes (1..5).
@@ -50,12 +50,12 @@
    - Web: deleted `CompactionModelSettings.vue`, `utils/compactionModelSettings.ts` and its spec; removed the model parts from `CompactionConfigCard.vue`; removed 9 model i18n keys in en and zh-CN; updated the card description.
    - `CompactionExecutionMetadata` and `CompressionAttemptObservation` gained `mode: 'cached' | 'transcript'`.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, user-requested wording change after CRR-001 Pass)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (IR-002 rewrites the cached summary instruction in the agent's own voice, approved directly by the user; see the revision record)
 - Related solution revision IDs: `SR-004` (design), `SR-005` (AC-003 requirements update; no design change)
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` (Pass, for IR-001)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A` (implementation note N-1 applied)

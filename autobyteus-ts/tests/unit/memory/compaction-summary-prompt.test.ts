@@ -10,13 +10,18 @@ describe('compaction summary prompt and contract', () => {
   it('ships the exact approved v5 literal', () => {
     expect(createHash('sha256').update(COMPACTION_SUMMARY_PROMPT).digest('hex')).toBe('2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7');
   });
-  it('builds the cached-request instruction from the same prompt plus the conversation suffix', () => {
-    expect(COMPACTION_SUMMARY_INSTRUCTION.startsWith(COMPACTION_SUMMARY_PROMPT)).toBe(true);
-    const suffix = COMPACTION_SUMMARY_INSTRUCTION.slice(COMPACTION_SUMMARY_PROMPT.length);
-    expect(suffix).toContain('entire conversation so far');
-    expect(suffix).toContain('do not restate them');
-    expect(suffix).toContain('Do not call any tools and do not continue the task');
-    expect(createHash('sha256').update(COMPACTION_SUMMARY_INSTRUCTION).digest('hex')).toBe('a199ce3d9edb4ccb5e4b6bac987185242d7b2b2000907e41e8088d3a2166f45f');
+  it('asks the agent, in its own voice, for a summary of its own conversation', () => {
+    expect(COMPACTION_SUMMARY_INSTRUCTION.startsWith('Your context window is nearly full')).toBe(true);
+    expect(COMPACTION_SUMMARY_INSTRUCTION).not.toMatch(/target agent|supplied (conversation )?history/i);
+    expect(COMPACTION_SUMMARY_INSTRUCTION).toContain('Do not call any tools and do not continue the task in this reply.');
+    expect(COMPACTION_SUMMARY_INSTRUCTION).toContain('Your system instructions stay in place, so do not repeat them.');
+    expect(createHash('sha256').update(COMPACTION_SUMMARY_INSTRUCTION).digest('hex')).toBe('536583bcef6ca2389e9ae984ffcc5ee09f0812f73c2b88132d26c809348de98f');
+  });
+  it('requests the same output contract as the transcript prompt, so one parser validates both', () => {
+    const block = (text: string) => text.slice(text.indexOf('<compaction_summary>'), text.indexOf('</compaction_summary>') + '</compaction_summary>'.length);
+    expect(block(COMPACTION_SUMMARY_INSTRUCTION)).toBe(block(COMPACTION_SUMMARY_PROMPT));
+    expect([...block(COMPACTION_SUMMARY_INSTRUCTION).matchAll(/^## (.+)$/gm)].map(([, heading]) => heading)).toEqual([...COMPACTION_SUMMARY_HEADINGS]);
+    expect(COMPACTION_SUMMARY_INSTRUCTION).toContain('concise bullets starting with "- ", or "(none)"');
   });
   it('extracts one inner body, ignores exterior, and preserves Markdown/CRLF', () => {
     expect(parseCompactionSummary(`outside\n${tagged}\noutside`)).toBe(body);

@@ -52,10 +52,16 @@ LLM, the tools or the notifier, and there is no compaction-model setting.
   compaction baseline — same LLM and settings, same tools, same leading system run,
   same sanitized messages in the same order (built with the shared
   `conversation-request.ts` arguments), sent with `promptCacheScope: 'conversation'`
-  — plus one appended user message, `COMPACTION_SUMMARY_INSTRUCTION`
-  (`COMPACTION_SUMMARY_PROMPT` plus a suffix: summarize the entire conversation so
-  far, do not restate the system instructions, do not call tools or continue the
-  task). The provider reads nearly the whole history from its prompt cache. The
+  — plus one appended user message, `COMPACTION_SUMMARY_INSTRUCTION`. It is written
+  to the agent in second person: its context is nearly full, the earlier conversation
+  is about to be replaced by a summary it writes now, and it will continue from that
+  summary and the recent messages only. It lists what to keep (goal, constraints and
+  preferences, decisions, done/in progress/open work, current state and next step,
+  exact references), asks it to keep requests close to their original wording without
+  inventing anything, and forbids tool calls or continuing the task in that reply. It
+  requests the same six-heading block as `COMPACTION_SUMMARY_PROMPT`, which stays the
+  transcript fallback prompt. The provider reads nearly the whole history from its
+  prompt cache. The
   summary covers the whole conversation while the planned recent tail is still kept
   word for word. Up to **two** attempts; skipped when the request plus the model's
   output reservation would not fit the input budget.
