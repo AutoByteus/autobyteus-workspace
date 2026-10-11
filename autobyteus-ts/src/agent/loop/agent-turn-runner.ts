@@ -65,85 +65,25 @@ export class AgentTurnRunner {
         const llmOutcome = await this.llmPhase.run(nextInput, this.context, this.turn, this.notifier);
         this.turn.executionScope.throwIfAborted({ kind: 'post_llm_phase' });
 
-        if (llmOutcome.kind === 'output_limited') {
-          consecutiveOutputLimitStops += 1;
-          if (consecutiveOutputLimitStops > MAX_OUTPUT_LIMIT_RECOVERIES) {
-            return await this.completeWithOutputLimitExhausted(llmOutcome.outputTokenLimit);
+        switch (llmOutcome.kind) {
+          case 'output_limited': {
+            consecutiveOutputLimitStops += 1;
+            const step = await this.handleOutputLimited(llmOutcome, consecutiveOutputLimitStops, nextInput);
+            if (step.kind === 'completed') return step.outcome;
+            nextInput = step.nextInput;
+            continue;
           }
-          this.recordOutputLimitRecoveryNote(llmOutcome);
-          this.turn.beginContinuation();
-          // Built here, not by the input pipeline: no processors and no user-message notification.
-          // The source event is carried only for the type and is not re-applied as a status event.
-          nextInput = { llmUserMessage: null, turnId, sourceEvent: nextInput.sourceEvent };
-          continue;
+          case 'compaction_blocked':
+            consecutiveOutputLimitStops = 0;
+            await this.waitForCompactionRetry();
+            continue; // Same prepared input and turn; never rerun the external input pipeline.
+          case 'final':
+            return await this.completeWithFinalResponse(llmOutcome.response, llmOutcome.isError ?? false);
+          case 'tool_invocations':
+            consecutiveOutputLimitStops = 0;
+            nextInput = await this.runToolStep(llmOutcome, completedToolResultsForInterruptedProjection);
+            continue;
         }
-        consecutiveOutputLimitStops = 0;
-
-        if (llmOutcome.kind === 'compaction_blocked') {
-          const recovery = this.context.state.compactionRecovery;
-          if (!recovery) throw new Error('Compaction recovery controller is unavailable.');
-          await this.turn.executionScope.runAbortable({ kind: 'compaction_recovery_wait' },
-            () => recovery.waitForRetry(turnId, this.turn.executionScope.signal));
-          continue; // Same prepared input and turn; never rerun the external input pipeline.
-        }
-
-        if (llmOutcome.kind === 'final') {
-          return await this.completeWithFinalResponse(llmOutcome.response, llmOutcome.isError ?? false);
-        }
-
-        // The runner owns the tool-batch lifecycle: started here, cleared after the results.
-        this.turn.startToolInvocationBatch(llmOutcome.toolInvocations);
-        for (const invocation of llmOutcome.toolInvocations) {
-          this.turn.executionScope.throwIfAborted({ kind: 'pending_tool_invocation' });
-          await this.applyStatusEvent(new PendingToolInvocationEvent(invocation));
-        }
-
-        const rawResults = await this.toolPhase.run(llmOutcome.toolInvocations, this.context, this.turn, this.notifier, {
-          onToolResult: (event) => {
-            completedToolResultsForInterruptedProjection.push(event);
-          }
-        });
-        this.turn.executionScope.throwIfAborted({ kind: 'post_tool_phase' });
-        const processedResults: ToolResultEvent[] = [];
-        for (const rawResult of rawResults) {
-          const processed = await this.toolResultPipeline.process(rawResult, this.context);
-          this.turn.executionScope.throwIfAborted({
-            kind: 'post_tool_result_pipeline',
-            operationId: processed.toolInvocationId
-          });
-          processedResults.push(processed);
-          await this.applyStatusEvent(processed);
-          this.turn.executionScope.throwIfAborted({
-            kind: 'pre_tool_terminal_lifecycle',
-            operationId: processed.toolInvocationId
-          });
-          this.emitToolTerminalLifecycle(processed);
-        }
-
-        this.turn.executionScope.throwIfAborted({ kind: 'post_tool_terminal_lifecycle' });
-        const activeBatch = this.turn.activeToolInvocationBatch;
-        if (activeBatch) {
-          this.turn.clearActiveToolInvocationBatch(activeBatch);
-        }
-
-        const memoryManager = this.context.state.memoryManager;
-        if (!memoryManager) {
-          throw new Error(`Agent '${this.context.agentId}' requires a memory manager to ingest tool results.`);
-        }
-        memoryManager.ingestToolResults(processedResults, turnId, {
-          source: 'native_api_ordered_batch'
-        });
-        const continuationInput = this.continuationInputBuilder.build(processedResults, turnId);
-        this.turn.beginContinuation();
-        nextInput = await this.inputPipeline.processToolContinuation(
-          continuationInput,
-          this.context,
-          this.turn,
-          this.notifier
-        );
-        this.turn.executionScope.throwIfAborted({ kind: 'post_tool_continuation_pipeline' });
-        await this.applyStatusEvent(nextInput.sourceEvent);
-        this.turn.executionScope.throwIfAborted({ kind: 'tool_continuation_status' });
       }
     } catch (error) {
       if (isAgentInterruptionError(error)) {
@@ -210,6 +150,97 @@ export class AgentTurnRunner {
         return { kind: 'failed', turnId, error: recoveryError };
       }
     }
+  }
+
+  /**
+   * Output-limit recovery: below the limit, record the hidden note and continue the turn with
+   * a runner-built input; on the stop after the last recovery, end the turn with a clear error.
+   */
+  private async handleOutputLimited(
+    outcome: Extract<LlmPhaseOutcome, { kind: 'output_limited' }>,
+    consecutiveStops: number,
+    previousInput: AgentInputPipelineResult,
+  ): Promise<{ kind: 'continue'; nextInput: AgentInputPipelineResult } | { kind: 'completed'; outcome: TurnOutcome }> {
+    if (consecutiveStops > MAX_OUTPUT_LIMIT_RECOVERIES) {
+      return { kind: 'completed', outcome: await this.completeWithOutputLimitExhausted(outcome.outputTokenLimit) };
+    }
+    this.recordOutputLimitRecoveryNote(outcome);
+    this.turn.beginContinuation();
+    // Built here, not by the input pipeline: no processors and no user-message notification.
+    // The source event is carried only for the type and is not re-applied as a status event.
+    return { kind: 'continue', nextInput: { llmUserMessage: null, turnId: this.turn.turnId, sourceEvent: previousInput.sourceEvent } };
+  }
+
+  private async waitForCompactionRetry(): Promise<void> {
+    const recovery = this.context.state.compactionRecovery;
+    if (!recovery) throw new Error('Compaction recovery controller is unavailable.');
+    await this.turn.executionScope.runAbortable({ kind: 'compaction_recovery_wait' },
+      () => recovery.waitForRetry(this.turn.turnId, this.turn.executionScope.signal));
+  }
+
+  /**
+   * One tool step: the runner owns the tool batch (started here, cleared after the results),
+   * runs the tools, processes and records the results, and builds the continuation input.
+   * Completed results are also pushed to `completedResults` for the interruption projection.
+   */
+  private async runToolStep(
+    outcome: Extract<LlmPhaseOutcome, { kind: 'tool_invocations' }>,
+    completedResults: ToolResultEvent[],
+  ): Promise<AgentInputPipelineResult> {
+    const turnId = this.turn.turnId;
+    this.turn.startToolInvocationBatch(outcome.toolInvocations);
+    for (const invocation of outcome.toolInvocations) {
+      this.turn.executionScope.throwIfAborted({ kind: 'pending_tool_invocation' });
+      await this.applyStatusEvent(new PendingToolInvocationEvent(invocation));
+    }
+
+    const rawResults = await this.toolPhase.run(outcome.toolInvocations, this.context, this.turn, this.notifier, {
+      onToolResult: (event) => {
+        completedResults.push(event);
+      }
+    });
+    this.turn.executionScope.throwIfAborted({ kind: 'post_tool_phase' });
+    const processedResults: ToolResultEvent[] = [];
+    for (const rawResult of rawResults) {
+      const processed = await this.toolResultPipeline.process(rawResult, this.context);
+      this.turn.executionScope.throwIfAborted({
+        kind: 'post_tool_result_pipeline',
+        operationId: processed.toolInvocationId
+      });
+      processedResults.push(processed);
+      await this.applyStatusEvent(processed);
+      this.turn.executionScope.throwIfAborted({
+        kind: 'pre_tool_terminal_lifecycle',
+        operationId: processed.toolInvocationId
+      });
+      this.emitToolTerminalLifecycle(processed);
+    }
+
+    this.turn.executionScope.throwIfAborted({ kind: 'post_tool_terminal_lifecycle' });
+    const activeBatch = this.turn.activeToolInvocationBatch;
+    if (activeBatch) {
+      this.turn.clearActiveToolInvocationBatch(activeBatch);
+    }
+
+    const memoryManager = this.context.state.memoryManager;
+    if (!memoryManager) {
+      throw new Error(`Agent '${this.context.agentId}' requires a memory manager to ingest tool results.`);
+    }
+    memoryManager.ingestToolResults(processedResults, turnId, {
+      source: 'native_api_ordered_batch'
+    });
+    const continuationInput = this.continuationInputBuilder.build(processedResults, turnId);
+    this.turn.beginContinuation();
+    const nextInput = await this.inputPipeline.processToolContinuation(
+      continuationInput,
+      this.context,
+      this.turn,
+      this.notifier
+    );
+    this.turn.executionScope.throwIfAborted({ kind: 'post_tool_continuation_pipeline' });
+    await this.applyStatusEvent(nextInput.sourceEvent);
+    this.turn.executionScope.throwIfAborted({ kind: 'tool_continuation_status' });
+    return nextInput;
   }
 
   private recordOutputLimitRecoveryNote(outcome: Extract<LlmPhaseOutcome, { kind: 'output_limited' }>): void {
