@@ -81,11 +81,26 @@
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (pending)
-- Initial verification / acceptance reference: —
-- Renewed verification required after later re-integration: —
-- Renewed verification received: —
+- Initial explicit user completion/verification received: `Yes` (2026-10-11)
+- Initial verification / acceptance reference: `user-verification.md`.
+  - User's words: "i tested. i think this user experience is better. lets ask delivery engineer to finalize and release a new beta. i already verified"
+  - Relayed at the user's request by `/software_engineering_team/api_e2e_engineer`.
+  - The user tested a packaged build at `c708178d3` in isolated instance `iso-62896-0865`. API/E2E stopped that instance after the user's test.
+- Renewed verification required after later re-integration: `No`. See "Post-verification re-integration (DR-006)" below.
+- Renewed verification received: `Not needed`
 - Renewed verification / acceptance reference: —
+
+### Post-verification re-integration (DR-006, 2026-10-11)
+
+- Target refreshed after verification: `origin/personal@ff227eb72` (v1.5.0 stable). It is 37 commits beyond `d28c56d5d`.
+- Delivery-owned and pending ticket edits protected first: checkpoint `c4510bdda`. It holds the Solution Designer's `requirements-doc.md` and `investigation-notes.md` (Product spec restored at `6fdf576`), plus the user-test instance receipts `start-4.json` and `ui-import-4.json`.
+- Integration: `Merge` as `65cc72483`, with no conflicts.
+- Base-only change set (`d28c56d5d..ff227eb72`): the skills dialog, release scripts (`desktop-release.sh`, `release_versions.py`), README/TESTING/release notes, and server and `autobyteus-ts` LLM code. It has **no overlap** with any file of this ticket, so the verified behavior is unchanged.
+- Checks rerun:
+  - `pnpm install --frozen-lockfile`, then a server prebuild and build: EXIT=0
+  - `pnpm -C autobyteus-web test:nuxt --run`: 595 passed / 2 skipped files, 4137 passed / 3 skipped tests (`delivery-evidence/dr006-web-unit-full.log`)
+  - Full `test:e2e:project-manager-ux`: PMU-001..PMU-019 pass, with cleanup clean (`delivery-evidence/dr006-pmu-full/evidence.json`)
+- Result: `Passed`
 
 ## Docs Sync Result
 
@@ -99,8 +114,8 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No` (pending verification)
-- Archived ticket path: —
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes` (DR-006)
+- Archived ticket path: `tickets/done/collapsed-left-panel-expand-keeps-run/`
 
 ## Version / Tag / Release Commit
 
