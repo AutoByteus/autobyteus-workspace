@@ -106,13 +106,18 @@ export class DefinitionCatalog {
     return changed;
   }
 
-  /** Keeps the whole unit (last good) and records that its package folder is missing. */
-  markSourceMissing(subject: DefinitionSubject, unitId: string): boolean {
+  /**
+   * Keeps the whole unit (last good) and records that its package folder is missing, or present
+   * but unreadable (`unreadableReason`).
+   */
+  markSourceUnavailable(subject: DefinitionSubject, unitId: string, unreadableReason: string | null): boolean {
     const unit = this.units[subject].get(unitId);
     if (!unit) return false;
     const issue: DefinitionCatalogIssue = Object.freeze({
       code: "DEFINITION_SOURCE_MISSING",
-      reason: `The package folder '${unit.location.packageRoot}' is missing; the last loaded version is kept until it returns.`,
+      reason: unreadableReason
+        ? `The package folder '${unit.location.packageRoot}' could not be read (${unreadableReason}); the last loaded version is kept until it can be read again.`
+        : `The package folder '${unit.location.packageRoot}' is missing; the last loaded version is kept until it returns.`,
       definitionPath: unit.location.unitDir,
       packageRoot: unit.location.packageRoot,
     });

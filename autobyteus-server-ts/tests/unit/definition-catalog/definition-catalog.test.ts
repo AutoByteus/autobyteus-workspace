@@ -89,12 +89,23 @@ describe("DefinitionCatalog reconcile rules", () => {
   it("keeps a unit whose package folder is missing and records the source issue", () => {
     const catalog = new DefinitionCatalog();
     catalog.apply("agent", "a", read(valid("a")));
-    expect(catalog.markSourceMissing("agent", "a")).toBe(true);
-    expect(catalog.markSourceMissing("agent", "a")).toBe(false);
+    expect(catalog.markSourceUnavailable("agent", "a", null)).toBe(true);
+    expect(catalog.markSourceUnavailable("agent", "a", null)).toBe(false);
     expect(catalog.getDefinition("agent", "a")?.instructions).toBe("v1");
     expect(catalog.getEntry("agent", "a")?.issue?.code).toBe("DEFINITION_SOURCE_MISSING");
     expect(catalog.apply("agent", "a", read(valid("a")))).toBe(true);
     expect(catalog.getEntry("agent", "a")?.issue).toBeNull();
+  });
+
+  it("names the read error when a package folder is present but unreadable", () => {
+    const catalog = new DefinitionCatalog();
+    catalog.apply("agent", "a", read(valid("a")));
+    expect(catalog.markSourceUnavailable("agent", "a", "EACCES: permission denied")).toBe(true);
+    expect(catalog.getDefinition("agent", "a")?.instructions).toBe("v1");
+    expect(catalog.getEntry("agent", "a")?.issue).toMatchObject({
+      code: "DEFINITION_SOURCE_MISSING",
+      reason: expect.stringContaining("could not be read (EACCES: permission denied)"),
+    });
   });
 
   it("reconciles nested nodes independently with last good, and indexes them to their unit", () => {

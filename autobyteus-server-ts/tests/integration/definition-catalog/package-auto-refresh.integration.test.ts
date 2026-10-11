@@ -327,6 +327,23 @@ describe("package auto-refresh: the next delegation sees current definitions", {
     expect(definitionFrames().map((frame) => frame.subjects)).toContainEqual(["agent", "agent_team", "agent_org", "agent_package"]);
   });
 
+  it("CR-001/REQ-015: an unreadable package folder at startup does not block startup or other packages", async () => {
+    const unreadable = path.join(base, "locked-package");
+    await writeAgent(path.join(unreadable, "agents", "locked"), "Locked");
+    registered.push(unreadable);
+    await fs.chmod(path.join(unreadable, "agents"), 0o000);
+    try {
+      await start();
+      expect(await listAvailable()).toContain("agent:Planner");
+      expect(feed!.monitor.getRootWatchStatus(unreadable)).toMatchObject({ state: "UNAVAILABLE", message: expect.stringContaining("EACCES") });
+      expect(feed!.monitor.getRootWatchStatus(packageRoot)?.state).toBe("WATCHING");
+      await writeAgent(path.join(packageRoot, "agents", "still-live"), "Still Live");
+      await waitFor(listAvailable, (names) => names.includes("agent:Still Live"));
+    } finally {
+      await fs.chmod(path.join(unreadable, "agents"), 0o755);
+    }
+  });
+
   it("AR-001: a Team created before its agent becomes available once the agent appears, and its list is told to reload", async () => {
     await start();
     await teamFiles(path.join(packageRoot, "agent-teams", "early"), "Early", [{ memberName: "lead", ref: "late", refScope: "shared" }]);

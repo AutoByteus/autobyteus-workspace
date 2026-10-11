@@ -20,8 +20,8 @@ describe('DefinitionCatalogIssueBadge', () => {
     expect(text).toContain('Unexpected end of JSON input')
   })
 
-  it('explains a missing package folder', () => {
+  it('explains a missing or unreadable package folder', () => {
     const wrapper = mount(DefinitionCatalogIssueBadge, { props: { issue: issue('DEFINITION_SOURCE_MISSING') } })
-    expect(wrapper.text()).toContain('Package folder missing')
+    expect(wrapper.text()).toContain('Package folder unavailable')
   })
 })

@@ -10,19 +10,19 @@
 - Supplemental task artifacts: probes in `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/probes/` (evidence only); implementation evidence in `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/implementation-evidence/`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/design-review-report.md` (ARCH-REV-002 Pass)
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: N/A (initial implementation)
+- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/code-review-report.md` and `code-review-revision-record.md` (CRR-001, Fail — Local Fix: CR-001, CR-002, CR-003; non-blocking R-1)
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (Local Fix after CRR-001)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (IR-001 baseline + CRR-001 local fixes)
 - Related solution revision IDs: `SR-005` (approval), `SR-007` (design)
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`, `CR-002`, `CR-003`; recommendation `R-1`
 - Branch / commits: `codex/agent-package-auto-refresh`, fast-forwarded to `origin/personal@359d2c0ef` before any change (no source changes existed; the 52 upstream commits did not touch the definition subsystems), then:
   - `9777af682` feat(server): definition catalog with package monitor and change feed
   - `0cd763fd0` fix(server): drop the removed fresh definition read from the bootstrap smoke and live harness
@@ -82,7 +82,8 @@ What exists now:
 
 - **Implementation refinements beyond the spec text (no contract change):**
   1. *Parent-folder presence watch.* On macOS, renaming a root away emits **no** chokidar events and leaves the old watcher dead (verified). The monitor therefore watches each armed root's parent folder one level deep (Node `fs.watch`, filtered to the root's own entry). This is the design's "ancestor presence watch" applied while armed as well as while missing. Linux and macOS both transition in ≈ 25 ms.
-  2. *Trailing re-check after a read-triggered flush.* chokidar drops a second `change` event for the same file within 5 ms, so a truncate-then-write can be reported once; if a read flushes at that moment, the unit can be applied mid-write. Units applied early by a read are re-read once after the quiet window. This is local to the sync and never publishes when nothing changed.
+  2. *Trailing re-check after a read-triggered flush.* chokidar drops a second `change` event for the same file within 5 ms, so a truncate-then-write can be reported once; if a read flushes at that moment, the unit can be applied mid-write. Units applied early by a read are re-read once after the quiet window. Since IR-002 (R-1) only read-triggered flushes arm it; a flush fired by the quiet-window timer does not. This is local to the sync and never publishes when nothing changed.
+  4. *Unreadable registered folder (IR-002, CR-001).* Each reconcile checks that the present roots' kind folders can be listed and enumerates units per root; a root that cannot be listed (at the check or during enumeration) is treated like a missing root for that reconcile: its units keep their last loaded version with a `DEFINITION_SOURCE_MISSING` issue whose reason names the folder and the read error, and every other root reconciles normally. The monitor reports such a root as `UNAVAILABLE` ("not auto-refreshing") and re-arms it on the next full reconcile. The startup admission scan is also guarded, so startup is never blocked by the catalog. The web badge for this code now reads "Package folder unavailable" ("could not be found or read").
   3. *One catalog with subject-keyed units* instead of three catalog instances; nested nodes are indexed by `(nodeSubject, canonicalId)`. Ownership and the reconcile rule are as designed.
 - **DSN-002 visible effect (for delivery docs):** a Team or Org ID present in more than one registered package is no longer offered by `list_available_agents` / `@` (launch already rejected it). Its team-local agents are not listed either, because a duplicated unit is issue-only.
 - **Behavior notes worth a reviewer's eye:** a present agent folder without `agent.md` (but with `agent-config.json`) is now an issue (`agent.md is missing.`) instead of silently absent; malformed application-owned agents become catalog issues instead of failing the whole list; the agents list, Teams list and exact reads no longer see disk writes until the monitor (or a Reload) reports them — in the studio server this is within the settle window.
@@ -126,6 +127,9 @@ What exists now:
 - A throwaway base worktree (`/tmp/apar/basewt`, deps symlinked) was used only to confirm pre-existing E2E failures and was removed.
 
 ## Local Implementation Checks Run
+
+IR-002 (CRR-001 local fixes) — see `implementation-revision-record.md` IR-002 for the round's results; the IR-001 results below remain the baseline record.
+
 
 - `pnpm -C autobyteus-server-ts typecheck` — pass.
 - `pnpm -C autobyteus-server-ts test:unit` — 672 files / 5312 tests pass, 4 skipped (baseline before the change: 669 / 5255).

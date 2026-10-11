@@ -164,6 +164,22 @@ describe("PackageDefinitionMonitor", () => {
     expect(monitor.getRootWatchStatus(rootPath)?.state).toBe("WATCHING");
   });
 
+  it("reports UNAVAILABLE for a root whose definition folder cannot be listed, and re-arms once it can", async () => {
+    const rootPath = path.join(base, "pkg");
+    await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
+    await fs.chmod(path.join(rootPath, "agents"), 0o000);
+    const recorded = recordingSink();
+    monitor = new PackageDefinitionMonitor({ sink: recorded.sink });
+    try {
+      await monitor.syncRoots([rootAt(rootPath)]);
+      expect(monitor.getRootWatchStatus(rootPath)).toEqual({ state: "UNAVAILABLE", message: expect.stringContaining("EACCES") });
+    } finally {
+      await fs.chmod(path.join(rootPath, "agents"), 0o755);
+    }
+    await monitor.syncRoots([rootAt(rootPath)]);
+    expect(monitor.getRootWatchStatus(rootPath)?.state).toBe("WATCHING");
+  });
+
   it("reports UNAVAILABLE when a running watcher fails", async () => {
     const rootPath = path.join(base, "pkg");
     await fs.mkdir(rootPath, { recursive: true });

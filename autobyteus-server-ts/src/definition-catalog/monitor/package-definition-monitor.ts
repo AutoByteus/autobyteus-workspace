@@ -187,6 +187,12 @@ export class PackageDefinitionMonitor {
       return;
     }
     entry.identity = identity;
+    // A kind folder that cannot be listed is not watched; Settings shows the root as not auto-refreshing.
+    const unreadable = await this.unreadableKindDirError(root);
+    if (unreadable) {
+      this.becomeUnavailable(entry, unreadable);
+      return;
+    }
     const generation = ++entry.generation;
     const ancestorsOfKindDirs = new Set<string>([path.resolve(root.rootPath)]);
     for (const kindDir of Object.values(root.kindDirs)) {
@@ -237,6 +243,18 @@ export class PackageDefinitionMonitor {
     } catch (error) {
       this.logger.warn(`PACKAGE_DEFINITION_PRESENCE_WATCH_FAILED:${parent}`, error);
     }
+  }
+
+  private async unreadableKindDirError(root: RegisteredPackageRoot): Promise<unknown | null> {
+    for (const kindDir of Object.values(root.kindDirs)) {
+      try {
+        await fsPromises.readdir(kindDir);
+      } catch (error) {
+        const code = (error as NodeJS.ErrnoException).code;
+        if (code !== "ENOENT" && code !== "ENOTDIR") return error;
+      }
+    }
+    return null;
   }
 
   private handleEvent(entry: RootEntry, eventName: string, filePath: string): void {

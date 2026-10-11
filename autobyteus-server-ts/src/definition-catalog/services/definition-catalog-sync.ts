@@ -52,12 +52,36 @@ const unitKey = (subject: DefinitionSubject, unitId: string): string => `${subje
 const defaultIsRootPresent = async (rootPath: string): Promise<boolean> =>
   fs.stat(rootPath).then((stats) => stats.isDirectory()).catch(() => false);
 
-type RootContext = Readonly<{
+/**
+ * The registered roots of one reconcile. `readable` roots are present and listable; every other
+ * registered root is in `unavailable` with the reason (missing, or unreadable), and its units keep
+ * their last loaded version (DEC-005) while other roots reconcile normally.
+ */
+type RootContext = {
   registered: readonly RegisteredPackageRoot[];
-  present: readonly RegisteredPackageRoot[];
+  readable: RegisteredPackageRoot[];
   registeredPaths: ReadonlySet<string>;
-  presentPaths: ReadonlySet<string>;
-}>;
+  unavailable: Map<string, string | null>;
+};
+
+const errorText = (error: unknown): string => {
+  const code = (error as NodeJS.ErrnoException | null)?.code;
+  const message = error instanceof Error ? error.message : String(error);
+  return code && !message.includes(code) ? `${code}: ${message}` : message;
+};
+
+/** Null when every existing kind folder of the root can be listed; otherwise why it cannot. */
+const kindDirsUnreadableReason = async (root: RegisteredPackageRoot): Promise<string | null> => {
+  for (const kindDir of Object.values(root.kindDirs)) {
+    try {
+      await fs.readdir(kindDir);
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code !== "ENOENT" && code !== "ENOTDIR") return errorText(error);
+    }
+  }
+  return null;
+};
 
 type PendingUnit = Readonly<{ subject: DefinitionSubject; unitId: string }>;
 
@@ -196,7 +220,11 @@ export class DefinitionCatalogSync {
     const delay = Math.max(0, Math.min(this.quietMs, this.firstPendingAt + this.capMs - now));
     this.timer = setTimeout(() => {
       this.timer = null;
-      this.settle().catch((error) => this.logger.warn("DEFINITION_CATALOG_SETTLE_FAILED", error));
+      if (this.closed) return;
+      // The quiet window has passed: apply the burst without a trailing re-check.
+      this.ensurePopulated()
+        .then(() => { if (this.pendingUnits.size > 0 || this.pendingRoots.size > 0) this.flushPending(); })
+        .catch((error) => this.logger.warn("DEFINITION_CATALOG_SETTLE_FAILED", error));
     }, delay);
     this.timer.unref?.();
   }
@@ -229,14 +257,41 @@ export class DefinitionCatalogSync {
 
   private async rootContext(): Promise<RootContext> {
     const registered = [...this.options.listPackageRoots()];
-    const presence = await Promise.all(registered.map((root) => this.isRootPresent(root.rootPath)));
-    const present = registered.filter((_, index) => presence[index]);
-    return Object.freeze({
+    const context: RootContext = {
       registered,
-      present,
+      readable: [],
       registeredPaths: new Set(registered.map((root) => root.rootPath)),
-      presentPaths: new Set(present.map((root) => root.rootPath)),
-    });
+      unavailable: new Map(),
+    };
+    for (const root of registered) {
+      if (!await this.isRootPresent(root.rootPath)) {
+        context.unavailable.set(root.rootPath, null);
+        continue;
+      }
+      const unreadable = await kindDirsUnreadableReason(root);
+      if (unreadable) this.markRootUnreadable(context, root, unreadable);
+      else context.readable.push(root);
+    }
+    return context;
+  }
+
+  private markRootUnreadable(context: RootContext, root: RegisteredPackageRoot, reason: string): void {
+    this.logger.warn(`DEFINITION_CATALOG_ROOT_UNREADABLE:${root.rootPath}: ${reason}`);
+    context.unavailable.set(root.rootPath, reason);
+    context.readable = context.readable.filter((candidate) => candidate.rootPath !== root.rootPath);
+  }
+
+  /** Unit IDs of one subject under the readable roots; a root that cannot be listed becomes unavailable. */
+  private async enumerateUnits(subject: DefinitionSubject, roots: readonly RegisteredPackageRoot[], context: RootContext): Promise<string[]> {
+    const ids: string[] = [];
+    for (const root of roots) {
+      try {
+        ids.push(...await this.options.readers[subject].listUnitIds([root]));
+      } catch (error) {
+        this.markRootUnreadable(context, root, errorText(error));
+      }
+    }
+    return ids;
   }
 
   private async reconcileBatch(units: ReadonlyMap<string, PendingUnit>, roots: ReadonlySet<string>): Promise<void> {
@@ -251,9 +306,9 @@ export class DefinitionCatalogSync {
               targets.set(unitKey(subject, unitId), { subject, unitId });
             }
           }
-          const root = context.present.find((candidate) => candidate.rootPath === rootPath);
+          const root = context.readable.find((candidate) => candidate.rootPath === rootPath);
           if (!root) continue;
-          for (const unitId of await this.options.readers[subject].listUnitIds([root])) {
+          for (const unitId of await this.enumerateUnits(subject, [root], context)) {
             targets.set(unitKey(subject, unitId), { subject, unitId });
           }
         }
@@ -277,13 +332,16 @@ export class DefinitionCatalogSync {
     this.pendingUnits.clear();
     this.pendingRoots.clear();
     this.clearTimer();
+    const idsBySubject = new Map<DefinitionSubject, Set<string>>();
     for (const subject of DEFINITION_SUBJECTS) {
-      const reader = this.options.readers[subject];
-      const ids = new Set<string>([
+      idsBySubject.set(subject, new Set<string>([
         ...this.options.catalog.unitIds(subject),
-        ...await reader.listUnitIds(context.present),
-        ...await reader.listApplicationOwnedUnitIds(),
-      ]);
+        ...await this.enumerateUnits(subject, context.readable, context),
+        ...await this.listApplicationOwnedUnitIds(subject),
+      ]));
+    }
+    // Enumeration is complete before any read, so every read sees the final readable roots.
+    for (const [subject, ids] of idsBySubject) {
       for (const unitId of ids) await this.reconcileUnit(subject, unitId, context);
     }
     this.populated = true;
@@ -295,17 +353,28 @@ export class DefinitionCatalogSync {
     if (publish) this.publish(ALL_CHANGE_SUBJECTS);
   }
 
+  private async listApplicationOwnedUnitIds(subject: DefinitionSubject): Promise<readonly string[]> {
+    try {
+      return await this.options.readers[subject].listApplicationOwnedUnitIds();
+    } catch (error) {
+      // Application-owned list entries keep their current state; package roots are unaffected.
+      this.logger.warn(`DEFINITION_CATALOG_APPLICATION_SOURCES_FAILED:${subject}`, error);
+      return this.options.catalog.unitIds(subject)
+        .filter((unitId) => this.options.catalog.unitLocation(subject, unitId)?.fromRegisteredRoot === false);
+    }
+  }
+
   private async reconcileUnit(subject: DefinitionSubject, unitId: string, context: RootContext): Promise<boolean> {
     const catalog = this.options.catalog;
     try {
       const location = catalog.unitLocation(subject, unitId);
       if (location?.fromRegisteredRoot
         && context.registeredPaths.has(location.packageRoot)
-        && !context.presentPaths.has(location.packageRoot)) {
-        return catalog.markSourceMissing(subject, unitId);
+        && context.unavailable.has(location.packageRoot)) {
+        return catalog.markSourceUnavailable(subject, unitId, context.unavailable.get(location.packageRoot) ?? null);
       }
       const outcome = await this.options.readers[subject].readUnit(unitId, {
-        roots: context.present,
+        roots: context.readable,
         previousRoot: catalog.unitRootDefinition(subject, unitId) as never,
       });
       return catalog.apply(subject, unitId, outcome);

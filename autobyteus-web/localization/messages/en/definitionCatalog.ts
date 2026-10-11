@@ -2,10 +2,10 @@ import type { TranslationCatalog } from '../../runtime/types';
 
 const messages = {
   'definitionCatalog.issue.usingLastGood': 'Using last working version',
-  'definitionCatalog.issue.sourceMissing': 'Package folder missing',
+  'definitionCatalog.issue.sourceMissing': 'Package folder unavailable',
   'definitionCatalog.issue.detailsLabel': 'Show what is wrong',
   'definitionCatalog.issue.lastGoodExplanation': 'The definition file could not be read, so the last working version stays in use until the file is fixed.',
-  'definitionCatalog.issue.sourceMissingExplanation': 'The package folder could not be found, so the last loaded version stays in use until the folder returns.',
+  'definitionCatalog.issue.sourceMissingExplanation': 'The package folder could not be found or read, so the last loaded version stays in use until it is available again.',
   'definitionCatalog.issue.file': 'File: {{path}}',
   'definitionCatalog.issue.reason': 'Reason: {{reason}}',
   'definitionCatalog.notice.agentsTitle': '{{count}} agent definition(s) could not be loaded',

@@ -5,12 +5,9 @@ import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth'
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport'
 import type { ProjectChangeMessage } from '~/types/project'
-import { NodeChangeFeed, nodeChangeRetryDelayMs, type NodeChangeSocket } from '~/services/nodeChangeFeed/nodeChangeFeed'
+import { NodeChangeFeed, type NodeChangeSocket } from '~/services/nodeChangeFeed/nodeChangeFeed'
 
 const MESSAGE_TYPES = new Set(['connected', 'project_upserted', 'project_removed', 'task_upserted', 'task_removed', 'task_worker_status'])
-/** Reconnect delays: 1 s, 2 s, 4 s, … capped at 10 s. */
-export const projectChangeRetryDelayMs = nodeChangeRetryDelayMs
-
 export const parseProjectChangeMessage = (raw: string): ProjectChangeMessage | null => {
   try {
     const value = JSON.parse(raw) as { type?: unknown }

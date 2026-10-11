@@ -193,10 +193,15 @@ export const buildStudioServer = async (input: {
     hostDefinitionServices.close();
     throw error;
   }
-  const definitionDiagnostics = (await hostDefinitionServices.definitionAdmissionService.scan())
-    .filter((result) => result.status === "unavailable");
-  for (const diagnostic of definitionDiagnostics) {
-    console.warn(`DEFINITION_ADMISSION_UNAVAILABLE:${diagnostic.subjectKind}:${diagnostic.definitionId ?? "unknown"}:${diagnostic.code}:${diagnostic.definitionPath}`);
+  // Startup logs unavailable definitions; it is never blocked by the definition catalog (BEH-008).
+  try {
+    const definitionDiagnostics = (await hostDefinitionServices.definitionAdmissionService.scan())
+      .filter((result) => result.status === "unavailable");
+    for (const diagnostic of definitionDiagnostics) {
+      console.warn(`DEFINITION_ADMISSION_UNAVAILABLE:${diagnostic.subjectKind}:${diagnostic.definitionId ?? "unknown"}:${diagnostic.code}:${diagnostic.definitionPath}`);
+    }
+  } catch (error) {
+    console.warn("DEFINITION_ADMISSION_STARTUP_SCAN_FAILED", error);
   }
   let agentToolsMcpHost: AgentToolsMcpHost | null = null;
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
