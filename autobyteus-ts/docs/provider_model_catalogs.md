@@ -246,8 +246,9 @@ schemas expose adaptive thinking where the provider supports a manual toggle:
 
 Per-model request rules live in one exact-value table,
 `src/llm/api/anthropic-model-request-policy.ts`. Every Anthropic catalog row
-has an explicit entry; a unit test pins each row's policy. Each row records the thinking mode, the shape sent when the thinking toggle is off, and
-whether a forced `tool_choice` (`any`/`tool`) fails locally:
+has an explicit entry; a unit test pins each row's policy. Each row records
+the thinking mode, the shape sent when the thinking toggle is off, and whether
+a forced `tool_choice` (`any`/`tool`) fails locally:
 
 | Model value | Thinking mode | Toggle off sends | Forced `tool_choice` |
 | --- | --- | --- | --- |
