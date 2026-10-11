@@ -1,0 +1,72 @@
+import "reflect-metadata";
+import { beforeEach, expect, it, vi } from "vitest";
+import { buildSchema } from "type-graphql";
+import { createRequire } from "node:module";
+import type { GraphQLObjectType } from "graphql";
+// Match type-graphql's native CommonJS GraphQL realm under Vitest.
+const { graphql } = createRequire(import.meta.url)("graphql") as typeof import("graphql");
+const services = vi.hoisted(() => ({
+  scan: vi.fn(),
+  agentIssues: vi.fn(),
+  teamIssues: vi.fn(),
+  orgIssues: vi.fn(),
+}));
+vi.mock("../../../../../src/api/graphql/studio-application-api-services.js", () => ({
+  getStudioDefinitionAdmissionService: () => ({ scan: services.scan }),
+  getStudioAgentDefinitionService: () => ({ listDefinitionIssues: services.agentIssues }),
+  getStudioAgentTeamDefinitionService: () => ({ listDefinitionIssues: services.teamIssues }),
+  getStudioAgentOrgDefinitionService: () => ({ listDefinitionIssues: services.orgIssues }),
+}));
+import { DefinitionDiagnosticsResolver } from "../../../../../src/api/graphql/types/definition-diagnostics.js";
+
+const issue = (code: string, path: string) => ({ code, reason: `${code} reason`, definitionPath: path, packageRoot: "/package" });
+const query = `query Q($subject: DefinitionSubject!) { definitionDiagnostics(subject: $subject) {
+  subject definitionId code reason definitionPath packageRoot usingLastGood dependencyChain } }`;
+
+beforeEach(() => {
+  Object.values(services).forEach((mock) => mock.mockReset());
+});
+
+it("exposes one diagnostics query per subject with an explicit subject enum", async () => {
+  const schema = await buildSchema({ resolvers: [DefinitionDiagnosticsResolver], validate: false });
+  const fields = (schema.getType("DefinitionDiagnostic") as GraphQLObjectType).getFields();
+  expect(Object.keys(fields).sort()).toEqual([
+    "subject", "definitionId", "code", "reason", "definitionPath", "packageRoot", "usingLastGood", "dependencyChain",
+  ].sort());
+  expect(schema.getQueryType()?.getFields()).not.toHaveProperty("definitionAdmissionDiagnostics");
+});
+
+it("lists agent catalog issues, last good or not", async () => {
+  services.agentIssues.mockResolvedValue([
+    { definitionId: "writer", issue: issue("DEFINITION_CONTRACT_INVALID", "/package/agents/writer/agent-config.json"), usingLastGood: true },
+    { definitionId: "draft", issue: issue("DEFINITION_CONTRACT_INVALID", "/package/agents/draft/agent.md"), usingLastGood: false },
+  ]);
+  const schema = await buildSchema({ resolvers: [DefinitionDiagnosticsResolver], validate: false });
+  const response = await graphql({ schema, source: query, variableValues: { subject: "AGENT" } });
+  expect(response.errors).toBeUndefined();
+  expect(response.data?.definitionDiagnostics).toEqual([
+    { subject: "AGENT", definitionId: "writer", code: "DEFINITION_CONTRACT_INVALID", reason: "DEFINITION_CONTRACT_INVALID reason",
+      definitionPath: "/package/agents/writer/agent-config.json", packageRoot: "/package", usingLastGood: true, dependencyChain: [] },
+    { subject: "AGENT", definitionId: "draft", code: "DEFINITION_CONTRACT_INVALID", reason: "DEFINITION_CONTRACT_INVALID reason",
+      definitionPath: "/package/agents/draft/agent.md", packageRoot: "/package", usingLastGood: false, dependencyChain: [] },
+  ]);
+});
+
+it("combines admission unavailability with last-good issues for Teams, without double-listing", async () => {
+  services.scan.mockResolvedValue([
+    { status: "unavailable", subjectKind: "agent_team", definitionId: "crew", code: "DEFINITION_REFERENCE_UNRESOLVED",
+      reason: "member 'lead' references missing Agent", definitionPath: "/package/agent-teams/crew", packageRoot: "/package", dependencyChain: [] },
+    { status: "unavailable", subjectKind: "agent_org", definitionId: "org", code: "DEFINITION_DEPENDENCY_UNAVAILABLE",
+      reason: "x", definitionPath: "/package/agent-orgs/org", packageRoot: "/package", dependencyChain: ["agent_org:org"] },
+    { status: "available", subjectKind: "agent_team", definitionId: "ok", definition: {} },
+  ]);
+  services.teamIssues.mockResolvedValue([
+    { definitionId: "ok", issue: issue("DEFINITION_CONTRACT_INVALID", "/package/agent-teams/ok/team-config.json"), usingLastGood: true },
+    { definitionId: "broken", issue: issue("DEFINITION_CONTRACT_INVALID", "/package/agent-teams/broken/team.md"), usingLastGood: false },
+  ]);
+  const schema = await buildSchema({ resolvers: [DefinitionDiagnosticsResolver], validate: false });
+  const response = await graphql({ schema, source: query, variableValues: { subject: "AGENT_TEAM" } });
+  expect(response.errors).toBeUndefined();
+  expect((response.data?.definitionDiagnostics as Array<{ definitionId: string; usingLastGood: boolean }>)
+    .map((entry) => [entry.definitionId, entry.usingLastGood])).toEqual([["crew", false], ["ok", true]]);
+});

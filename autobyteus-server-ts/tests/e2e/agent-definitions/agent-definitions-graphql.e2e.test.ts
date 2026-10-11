@@ -338,6 +338,8 @@ describe("Agent definitions GraphQL e2e", () => {
       "utf-8",
     );
 
+    // No package monitor runs in this test: the Reload mutation reconciles the files written above.
+    await execGraphql(`mutation { refreshAgentDefinitionCatalog }`);
     const listed = await execGraphql<{
       agentDefinitions: Array<{
         id: string;

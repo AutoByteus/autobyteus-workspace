@@ -65,6 +65,14 @@ export type AgentPackageUpdateInfo = {
   lastError: string | null;
 };
 
+export const AGENT_PACKAGE_AUTO_REFRESH_STATES = ["WATCHING", "ROOT_MISSING", "UNAVAILABLE"] as const;
+
+/** Whether the server is watching this package's definition folders (null when no monitor runs). */
+export type AgentPackageAutoRefresh = {
+  state: (typeof AGENT_PACKAGE_AUTO_REFRESH_STATES)[number];
+  message: string | null;
+};
+
 export type AgentPackage = AgentPackageSummary & {
   packageId: string;
   displayName: string;
@@ -75,6 +83,7 @@ export type AgentPackage = AgentPackageSummary & {
   isRemovable: boolean;
   managedInstallPath: string | null;
   updateInfo: AgentPackageUpdateInfo;
+  autoRefresh: AgentPackageAutoRefresh | null;
 };
 
 export type AgentPackageRecord = {

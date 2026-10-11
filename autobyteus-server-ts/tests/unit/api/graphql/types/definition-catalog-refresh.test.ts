@@ -4,6 +4,8 @@ import { buildGraphqlSchema } from "../../../../../src/api/graphql/schema.js";
 import { configureStudioApplicationApiServices } from "../../../../../src/api/graphql/studio-application-api-services.js";
 import { AgentDefinitionResolver } from "../../../../../src/api/graphql/types/agent-definition.js";
 import { AgentTeamDefinitionResolver } from "../../../../../src/api/graphql/types/agent-team-definition.js";
+import { AgentOrgDefinitionResolver } from "../../../../../src/api/graphql/types/agent-org-definition.js";
+import type { AgentOrgDefinitionService } from "../../../../../src/agent-org-definition/services/agent-org-definition-service.js";
 import { AgentDefinitionService } from "../../../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import type { ApplicationBundleService } from "../../../../../src/application-bundles/services/application-bundle-service.js";
@@ -19,12 +21,16 @@ describe("definition catalog refresh GraphQL boundary", () => {
   const agentTeamDefinitionService = {
     refreshCache: refreshTeamCache,
   } as unknown as AgentTeamDefinitionService;
+  const refreshOrgCache = vi.fn<AgentOrgDefinitionService["refreshCache"]>();
+  const agentOrgDefinitionService = {
+    refreshCache: refreshOrgCache,
+  } as unknown as AgentOrgDefinitionService;
 
   beforeAll(() => {
     const handle = configureStudioApplicationApiServices({
       agentDefinitionService,
       agentTeamDefinitionService,
-      agentOrgDefinitionService: {} as never,
+      agentOrgDefinitionService,
       agentRunService: {} as never,
       teamRunService: {} as never,
       agentOrgRunService: {} as never,
@@ -44,8 +50,10 @@ describe("definition catalog refresh GraphQL boundary", () => {
   beforeEach(() => {
     refreshAgentCache.mockReset();
     refreshTeamCache.mockReset();
+    refreshOrgCache.mockReset();
     refreshAgentCache.mockResolvedValue(undefined);
     refreshTeamCache.mockResolvedValue(undefined);
+    refreshOrgCache.mockResolvedValue(undefined);
   });
 
   it("exposes subject-owned catalog refresh mutations and removes node sync fields", async () => {
@@ -55,6 +63,7 @@ describe("definition catalog refresh GraphQL boundary", () => {
 
     expect(mutationFields).toHaveProperty("refreshAgentDefinitionCatalog");
     expect(mutationFields).toHaveProperty("refreshAgentTeamDefinitionCatalog");
+    expect(mutationFields).toHaveProperty("refreshAgentOrgDefinitionCatalog");
     expect(mutationFields).not.toHaveProperty("runNodeSync");
     expect(mutationFields).not.toHaveProperty("importSyncBundle");
     expect(queryFields).not.toHaveProperty("exportSyncBundle");
@@ -68,20 +77,18 @@ describe("definition catalog refresh GraphQL boundary", () => {
     expect(refreshTeamCache).not.toHaveBeenCalled();
   });
 
-  it("refreshes the exact Studio agent authority before its paired team authority", async () => {
-    const calls: string[] = [];
-    refreshAgentCache.mockImplementation(async () => {
-      calls.push("agent");
-    });
-    refreshTeamCache.mockImplementation(async () => {
-      calls.push("team");
-    });
-
+  it("refreshes the shared definition catalog once from the Teams page", async () => {
     const result = await new AgentTeamDefinitionResolver().refreshAgentTeamDefinitionCatalog();
 
     expect(result).toBe(true);
-    expect(calls).toEqual(["agent", "team"]);
-    expect(refreshAgentCache).toHaveBeenCalledTimes(1);
     expect(refreshTeamCache).toHaveBeenCalledTimes(1);
+    expect(refreshAgentCache).not.toHaveBeenCalled();
+  });
+
+  it("refreshes the shared definition catalog from the Orgs page", async () => {
+    const result = await new AgentOrgDefinitionResolver().refreshAgentOrgDefinitionCatalog();
+
+    expect(result).toBe(true);
+    expect(refreshOrgCache).toHaveBeenCalledTimes(1);
   });
 });

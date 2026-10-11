@@ -7,6 +7,8 @@ export type DefinitionExpectedFamily = "agent_team" | "agent_org";
 export type DefinitionAdmissionDiagnosticCode =
   | "DEFINITION_FAMILY_MISMATCH"
   | "DEFINITION_CONTRACT_INVALID"
+  | "DEFINITION_IDENTITY_DUPLICATED"
+  | "DEFINITION_SOURCE_MISSING"
   | "DEFINITION_REFERENCE_UNRESOLVED"
   | "DEFINITION_DEPENDENCY_UNAVAILABLE";
 

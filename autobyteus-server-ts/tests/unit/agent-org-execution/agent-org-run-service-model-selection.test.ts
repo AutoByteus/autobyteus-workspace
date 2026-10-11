@@ -36,8 +36,8 @@ const harness = (large = false) => {
   const service = new AgentOrgRunService({
     manager: { create },
     admission: { requireAvailable: async () => ({ definition }) },
-    agentDefinitions: { getFreshAgentDefinitionById: async (id: string) => ({ id }) },
-    teamDefinitions: { getFreshDefinitionById: async () => team },
+    agentDefinitions: { getAgentDefinitionById: async (id: string) => ({ id }) },
+    teamDefinitions: { getDefinitionById: async () => team },
     agentIdentities: { allocateForAgentDefinition: allocate },
     teamIdentities: { allocateForTeamDefinitionName: () => `team-run-${++identitySequence}` },
     workspaces: { ensureWorkspaceByRootPath: async (path: string) => ({ getBasePath: () => path }) },

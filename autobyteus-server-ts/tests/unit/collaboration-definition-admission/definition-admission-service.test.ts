@@ -1,12 +1,13 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { AgentDefinition } from '../../../src/agent-definition/domain/models.js';
-import { AgentOrgDefinition, AgentOrgMember } from '../../../src/agent-org-definition/domain/agent-org-definition.js';
-import { AgentTeamDefinition, TeamMember } from '../../../src/agent-team-definition/domain/agent-team-definition.js';
+import { afterEach, describe, expect, it } from 'vitest';
+import { AgentDefinitionService } from '../../../src/agent-definition/services/agent-definition-service.js';
+import { AgentTeamDefinitionService } from '../../../src/agent-team-definition/services/agent-team-definition-service.js';
+import { AgentOrgDefinitionService } from '../../../src/agent-org-definition/services/agent-org-definition-service.js';
 import { DefinitionSourceRegistry } from '../../../src/collaboration-definition-admission/providers/definition-source-registry.js';
 import { DefinitionAdmissionService } from '../../../src/collaboration-definition-admission/services/definition-admission-service.js';
+import { createDefinitionCatalogRuntime } from '../../../src/definition-catalog/services/definition-catalog-runtime.js';
 
 const temporaryRoots: string[] = [];
 afterEach(async () => {
@@ -14,7 +15,7 @@ afterEach(async () => {
 });
 
 const temporaryRoot = async (): Promise<string> => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'definition-admission-'));
+  const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'definition-admission-')));
   temporaryRoots.push(root);
   return root;
 };
@@ -35,44 +36,41 @@ const writePackage = async (root: string, family: 'agent-teams' | 'agent-orgs', 
   await fs.writeFile(path.join(packagePath, family === 'agent-teams' ? 'team-config.json' : 'org-config.json'), JSON.stringify(config));
   return packagePath;
 };
+const writeAgent = async (root: string, id = 'agent-1'): Promise<void> => {
+  await fs.mkdir(path.join(root, 'agents', id), { recursive: true });
+  await fs.writeFile(path.join(root, 'agents', id, 'agent.md'), `---\nname: ${id}\ndescription: Test\n---\n\nAct.`);
+};
 
-const teamDefinition = (id = 'team-1', agentId = 'agent-1') => new AgentTeamDefinition({
-  id, name: id, description: '', instructions: '', coordinatorMemberName: 'coordinator',
-  nodes: [new TeamMember({ memberName: 'coordinator', ref: agentId, refScope: 'shared' })],
-});
-const orgDefinition = (id = 'org-1', teamId = 'team-1', refScope: 'shared' | 'org_local' = 'shared') => new AgentOrgDefinition({
-  id, name: id, description: '', instructions: '',
-  members: [new AgentOrgMember({ memberName: 'team', ref: teamId, refType: 'agent_team', refScope })],
-});
-const agentDefinition = (id = 'agent-1') => new AgentDefinition({ id, name: id, description: '', instructions: '' });
-
-const build = (input: {
-  dataRoot: string
-  implementationRoots?: string[]
-  externalRoots?: string[]
-  team?: AgentTeamDefinition | null
-  org?: AgentOrgDefinition | null
-}) => {
-  const teams = { getFreshDefinitionById: vi.fn(async (id: string) => input.team?.id === id ? input.team : null) };
-  const orgs = { getDefinitionById: vi.fn(async (id: string) => input.org?.id === id ? input.org : null) };
-  const agents = { getFreshAgentDefinitionById: vi.fn(async (id: string) => id === 'agent-1' ? agentDefinition() : null) };
-  const registry = new DefinitionSourceRegistry({
+/** Admission over a real definition catalog of the given package roots (the first is the default package). */
+const build = (input: { dataRoot: string; externalRoots?: string[] }) => {
+  const runtime = createDefinitionCatalogRuntime({
     appConfig: {
+      getAgentsDir: () => path.join(input.dataRoot, 'agents'),
       getAgentTeamsDir: () => path.join(input.dataRoot, 'agent-teams'),
       getAgentOrgsDir: () => path.join(input.dataRoot, 'agent-orgs'),
-      getAdditionalAgentPackageRoots: () => input.externalRoots ?? [],
+      getRegisteredAgentPackageRoots: () => input.externalRoots ?? [],
     },
-    implementationPackageRoots: input.implementationRoots,
+    applicationOwnedSources: {
+      listApplicationOwnedAgentSources: async () => [],
+      getApplicationOwnedAgentSourceById: async () => null,
+      listApplicationOwnedTeamSources: async () => [],
+      getApplicationOwnedTeamSourceById: async () => null,
+    },
   });
-  return { service: new DefinitionAdmissionService({ registry, teams, orgs, agents }), teams, orgs, agents };
+  const agents = new AgentDefinitionService({ fileStore: {} as never, catalogRuntime: runtime });
+  const teams = new AgentTeamDefinitionService({ fileStore: {} as never, catalogRuntime: runtime, agentDefinitionService: agents });
+  const orgs = new AgentOrgDefinitionService({} as never, agents, teams, runtime);
+  const registry = new DefinitionSourceRegistry({ listImplementationOwnedTeamSources: async () => [] });
+  return { service: new DefinitionAdmissionService({ registry, teams, orgs, agents }), runtime };
 };
 
 describe('DefinitionAdmissionService', () => {
   it('admits valid Team and Org targets with resolved dependencies', async () => {
     const dataRoot = await temporaryRoot();
+    await writeAgent(dataRoot);
     await writePackage(dataRoot, 'agent-teams', 'team-1', teamConfig());
     await writePackage(dataRoot, 'agent-orgs', 'org-1', orgConfig());
-    const { service } = build({ dataRoot, team: teamDefinition(), org: orgDefinition() });
+    const { service } = build({ dataRoot });
     expect((await service.requireAvailable('agent_team', 'team-1')).definition.id).toBe('team-1');
     expect((await service.requireAvailable('agent_org', 'org-1')).definition.id).toBe('org-1');
   });
@@ -84,22 +82,26 @@ describe('DefinitionAdmissionService', () => {
     const configPath = path.join(packagePath, 'org-config.json'), before = await fs.readFile(configPath);
     const { service } = build({ dataRoot, externalRoots: [externalRoot] });
     const result = (await service.scan()).find((r) => r.definitionId === 'versioned');
-    expect(result).toMatchObject({ status: 'unavailable', expectedFamily: subjectKind, definitionPath: packagePath,
-      code: 'DEFINITION_CONTRACT_INVALID', reason: expect.stringContaining('Unsupported keys: schemaVersion'),
+    expect(result).toMatchObject({ status: 'unavailable', expectedFamily: subjectKind, definitionPath: configPath,
+      packageRoot: externalRoot, code: 'DEFINITION_CONTRACT_INVALID', reason: expect.stringContaining('Unsupported keys: schemaVersion'),
       ownerAction: expect.stringContaining('current definition format') });
     expect(result).not.toHaveProperty('expectedSchemaVersion'); expect(await fs.readFile(configPath)).toEqual(before);
   });
 
-  it('marks every same-identity physical package unavailable without selecting a precedence winner', async () => {
+  it('marks a Team identity present in two packages unavailable without selecting a precedence winner', async () => {
     const dataRoot = await temporaryRoot();
-    const implementationRoot = await temporaryRoot();
-    await writePackage(dataRoot, 'agent-teams', 'team-1', teamConfig());
-    await writePackage(implementationRoot, 'agent-teams', 'team-1', teamConfig());
-    const { service, teams } = build({ dataRoot, implementationRoots: [implementationRoot], team: teamDefinition() });
+    const externalRoot = await temporaryRoot();
+    await writeAgent(dataRoot);
+    const first = await writePackage(dataRoot, 'agent-teams', 'team-1', teamConfig());
+    const second = await writePackage(externalRoot, 'agent-teams', 'team-1', teamConfig());
+    const { service } = build({ dataRoot, externalRoots: [externalRoot] });
     const matches = (await service.scan()).filter((item) => item.subjectKind === 'agent_team' && item.definitionId === 'team-1');
-    expect(matches).toHaveLength(2);
-    expect(matches.every((item) => item.status === 'unavailable' && item.code === 'DEFINITION_CONTRACT_INVALID')).toBe(true);
-    expect(teams.getFreshDefinitionById).not.toHaveBeenCalled();
+    expect(matches).toHaveLength(1);
+    expect(matches[0]).toMatchObject({
+      status: 'unavailable',
+      code: 'DEFINITION_IDENTITY_DUPLICATED',
+      reason: expect.stringContaining(`${first}, ${second}`),
+    });
   });
 
   it('does not modify an incompatible external package while reporting target-only unavailability', async () => {
@@ -108,7 +110,7 @@ describe('DefinitionAdmissionService', () => {
     const packagePath = await writePackage(externalRoot, 'agent-teams', 'legacy', { coordinatorMemberName: 'coordinator', members: [] });
     const configPath = path.join(packagePath, 'team-config.json');
     const before = { bytes: await fs.readFile(configPath, 'base64'), stats: await fs.stat(configPath) };
-    const { service } = build({ dataRoot, externalRoots: [externalRoot], team: null });
+    const { service } = build({ dataRoot, externalRoots: [externalRoot] });
     const result = (await service.scan()).find((item) => item.definitionId === 'legacy');
     expect(result).toMatchObject({ status: 'unavailable', sourceClass: 'external_read_only', expectedFamily: 'agent_team', code: 'DEFINITION_CONTRACT_INVALID' });
     expect(result).not.toHaveProperty('expectedSchemaVersion');
@@ -120,23 +122,37 @@ describe('DefinitionAdmissionService', () => {
 
   it('reports an unavailable Team dependency with both physical definition paths', async () => {
     const dataRoot = await temporaryRoot();
+    await writeAgent(dataRoot);
     const teamPath = await writePackage(dataRoot, 'agent-teams', 'team-1', { ...teamConfig(), avatarUrl: false });
     const orgPath = await writePackage(dataRoot, 'agent-orgs', 'org-1', orgConfig());
-    const { service } = build({ dataRoot, team: teamDefinition(), org: orgDefinition() });
+    const { service } = build({ dataRoot });
     const result = (await service.scan()).find((item) => item.subjectKind === 'agent_org');
     expect(result).toMatchObject({ status: 'unavailable', code: 'DEFINITION_DEPENDENCY_UNAVAILABLE' });
     if (result?.status === 'unavailable') {
-      expect(result.dependencyChain).toEqual([`agent_org:org-1@${orgPath}`, `agent_team:team-1@${teamPath}`]);
+      expect(result.dependencyChain).toEqual([`agent_org:org-1@${orgPath}`, `agent_team:team-1@${path.join(teamPath, 'team-config.json')}`]);
     }
   });
 
   it('keeps unrelated scanning available when an Org-owned reference has no exact physical mapping', async () => {
     const dataRoot = await temporaryRoot();
+    await writeAgent(dataRoot);
     await writePackage(dataRoot, 'agent-teams', 'team-1', teamConfig());
     await writePackage(dataRoot, 'agent-orgs', 'org-1', orgConfig('opaque-owned-team', 'org_local'));
-    const { service } = build({ dataRoot, team: teamDefinition(), org: orgDefinition('org-1', 'opaque-owned-team', 'org_local') });
+    const { service } = build({ dataRoot });
     const results = await service.scan();
     expect(results.find((item) => item.subjectKind === 'agent_team')).toMatchObject({ status: 'available' });
     expect(results.find((item) => item.subjectKind === 'agent_org')).toMatchObject({ status: 'unavailable' });
+  });
+
+  it('keeps a working Team available with its last good version when its file breaks (DEC-001)', async () => {
+    const dataRoot = await temporaryRoot();
+    await writeAgent(dataRoot);
+    const teamPath = await writePackage(dataRoot, 'agent-teams', 'team-1', teamConfig());
+    const { service, runtime } = build({ dataRoot });
+    expect((await service.requireAvailable('agent_team', 'team-1')).definition.id).toBe('team-1');
+    await fs.writeFile(path.join(teamPath, 'team-config.json'), '{ "coordinatorMemberName": ');
+    runtime.sync.noteUnitChange('agent_team', 'team-1');
+    expect((await service.requireAvailable('agent_team', 'team-1')).definition.id).toBe('team-1');
+    runtime.sync.close();
   });
 });

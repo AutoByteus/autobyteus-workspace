@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { AppConfig } from "../../config/app-config.js";
@@ -9,21 +8,13 @@ import {
   createDefinitionSourceDescriptor,
   type DefinitionSourceDescriptor,
 } from "../../collaboration-definition-admission/domain/definition-source-descriptor.js";
-import { AgentOrgDefinition, AgentOrgMember } from "../domain/agent-org-definition.js";
-import { parseOrgMd, serializeOrgMd, OrgMdParseError } from "../utils/org-md-parser.js";
+import { AgentOrgDefinition } from "../domain/agent-org-definition.js";
+import { parseOrgMd, serializeOrgMd } from "../utils/org-md-parser.js";
 import {
-  AgentOrgDefinitionConfigParseError,
   buildAgentOrgDefinitionConfig,
   parseAgentOrgDefinitionConfig,
-  readAgentOrgDefinitionConfig,
 } from "./agent-org-definition-config.js";
-
-const FILES = ["org.md", "org-config.json"] as const;
-const hashFiles = (files: Readonly<Record<string, string>>): string => {
-  const hash = createHash("sha256");
-  for (const name of [...FILES].sort()) hash.update(name).update("\0").update(files[name]!).update("\0");
-  return hash.digest("hex");
-};
+import { buildAgentOrgDefinitionFromFiles } from "./agent-org-definition-node-reader.js";
 const slug = (value: string): string => value.toLowerCase().trim().replace(/[_\s]+/g, "-")
   .replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-").replace(/^-+|-+$/g, "") || "agent-org";
 
@@ -74,48 +65,21 @@ export class FileAgentOrgDefinitionProvider {
   }
   private async read(source: Source): Promise<AgentOrgDefinition | null> {
     try {
-      const md = await fs.readFile(source.mdPath, "utf8");
-      const json = await fs.readFile(source.configPath, "utf8");
-      const authored = parseOrgMd(md, source.mdPath);
-      const config = readAgentOrgDefinitionConfig(JSON.parse(json));
-      return new AgentOrgDefinition({
-        id: source.id, name: authored.name, description: authored.description,
-        category: authored.category, instructions: authored.instructions,
-        members: config.members.map((member) => new AgentOrgMember(member)),
-        handoffs: config.handoffs, avatarUrl: config.avatarUrl,
-        defaultLaunchConfig: config.defaultLaunchConfig,
-        revision: hashFiles({ "org.md": md, "org-config.json": json }), source: this.descriptor(source),
+      const mdContent = await fs.readFile(source.mdPath, "utf8");
+      const configContent = await fs.readFile(source.configPath, "utf8");
+      return buildAgentOrgDefinitionFromFiles({
+        definitionId: source.id, mdPath: source.mdPath, mdContent, configContent, descriptor: this.descriptor(source),
       });
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
       throw error;
     }
   }
+  /** Exact disk read used for write results; readers go through the definition catalog. */
   async getById(id: string): Promise<AgentOrgDefinition | null> {
     if (!id || id.startsWith("_")) return null;
     const source = await this.locate(id);
     return source ? this.read(source) : null;
-  }
-  async getAll(): Promise<AgentOrgDefinition[]> {
-    const output: AgentOrgDefinition[] = [];
-    const seen = new Set<string>();
-    for (const root of this.roots()) {
-      const entries = await fs.readdir(root, { withFileTypes: true }).catch(() => []);
-      for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
-        if (!entry.isDirectory() || entry.name.startsWith("_") || seen.has(entry.name)) continue;
-        try {
-          const definition = await this.read(this.source(root, entry.name));
-          if (definition) { output.push(definition); seen.add(entry.name); }
-        } catch (error) {
-          if (error instanceof OrgMdParseError || error instanceof AgentOrgDefinitionConfigParseError || error instanceof SyntaxError) {
-            console.warn(`DEFINITION_CONTRACT_INVALID: skipped AgentOrg '${entry.name}' at '${root}'; expected current Org Definition Config: ${(error as Error).message}`);
-            continue;
-          }
-          throw error;
-        }
-      }
-    }
-    return output;
   }
   async create(definition: AgentOrgDefinition): Promise<AgentOrgDefinition> {
     const base = slug(definition.name);

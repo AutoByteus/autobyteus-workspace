@@ -33,7 +33,7 @@ import { AppDataMigrationResolver } from './types/app-data-migrations.js';
 import { SkillImprovementResolver } from './types/skill-improvement.js';
 import { DateTimeScalar } from './scalars/date-time.js';
 import { SecretStorageResolver } from './types/secret-storage.js';
-import { DefinitionAdmissionResolver } from './types/definition-admission.js';
+import { DefinitionDiagnosticsResolver } from './types/definition-diagnostics.js';
 import { CollaborationRootHistoryResolver } from './types/collaboration-root-history.js';
 import { ProjectResolver } from './types/projects.js';
 import { ProjectTaskResolver } from './types/project-tasks.js';
@@ -74,7 +74,7 @@ export async function buildGraphqlSchema() {
       AppDataMigrationResolver,
       SkillImprovementResolver,
       SecretStorageResolver,
-      DefinitionAdmissionResolver,
+      DefinitionDiagnosticsResolver,
       CollaborationRootHistoryResolver,
       ProjectResolver,
       ProjectTaskResolver,

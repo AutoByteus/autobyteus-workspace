@@ -16,8 +16,8 @@ import {
 const TEMPLATES_DIR = fileURLToPath(new URL("./templates/", import.meta.url));
 
 type AgentDefinitionLookup = {
-  getFreshAgentDefinitionById: (definitionId: string) => Promise<AgentDefinition | null>;
-  refreshCache?: () => Promise<void>;
+  getAgentDefinitionById: (definitionId: string) => Promise<AgentDefinition | null>;
+  refreshCache: () => Promise<void>;
 };
 
 type BuiltInAgentSettingsPersistence = Pick<
@@ -75,31 +75,44 @@ export class BuiltInAgentBootstrapper {
     this.logger = options.logger ?? logger;
   }
 
+  /** Writes every built-in agent's files, reconciles the catalog once, then resolves each and seeds its setting. */
   async bootstrap(): Promise<BuiltInAgentsBootstrapResult> {
     const agentsDir = this.getAgentsDir();
     await fs.mkdir(agentsDir, { recursive: true });
 
-    const builtInAgents: BuiltInAgentBootstrapResult[] = [];
+    const synced = [];
     for (const definition of this.agentDefinitions) {
-      builtInAgents.push(await this.bootstrapBuiltInAgent(agentsDir, definition));
+      synced.push({ definition, ...await this.syncBuiltInAgentFiles(agentsDir, definition) });
     }
 
-    const refreshedCache = builtInAgents.some((result) => result.resolved);
-    if (refreshedCache) {
-      await this.refreshDefinitionCache();
+    await this.getAgentDefinitionService().refreshCache();
+
+    const builtInAgents: BuiltInAgentBootstrapResult[] = [];
+    for (const { definition, ...files } of synced) {
+      const resolved = (await this.resolveBuiltInDefinition(definition)) !== null;
+      const initializedSetting = resolved
+        ? await this.initializeSettingDefaultIfNeeded(definition)
+        : false;
+      builtInAgents.push({
+        agentDefinitionId: definition.id,
+        displayName: definition.displayName,
+        ...files,
+        resolved,
+        initializedSetting,
+      });
     }
 
     return {
       agentsDir,
       builtInAgents,
-      refreshedCache,
+      refreshedCache: true,
     };
   }
 
-  private async bootstrapBuiltInAgent(
+  private async syncBuiltInAgentFiles(
     agentsDir: string,
     definition: BuiltInAgentDefinition,
-  ): Promise<BuiltInAgentBootstrapResult> {
+  ): Promise<Pick<BuiltInAgentBootstrapResult, "agentDir" | "templateDir" | "syncedAgentMd" | "syncedAgentConfig" | "syncedSkills">> {
     const agentDir = path.join(agentsDir, definition.id);
     const templateDir = this.getTemplateDir(definition);
 
@@ -115,23 +128,7 @@ export class BuiltInAgentBootstrapper {
         path.join(agentDir, "skills"),
       ),
     ]);
-
-    const resolved = (await this.resolveBuiltInDefinition(definition)) !== null;
-    const initializedSetting = resolved
-      ? await this.initializeSettingDefaultIfNeeded(definition)
-      : false;
-
-    return {
-      agentDefinitionId: definition.id,
-      displayName: definition.displayName,
-      agentDir,
-      templateDir,
-      syncedAgentMd,
-      syncedAgentConfig,
-      syncedSkills,
-      resolved,
-      initializedSetting,
-    };
+    return { agentDir, templateDir, syncedAgentMd, syncedAgentConfig, syncedSkills };
   }
 
   private getAgentsDir(): string {
@@ -186,7 +183,7 @@ export class BuiltInAgentBootstrapper {
     definition: BuiltInAgentDefinition,
   ): Promise<AgentDefinition | null> {
     try {
-      const agentDefinition = await this.getAgentDefinitionService().getFreshAgentDefinitionById(
+      const agentDefinition = await this.getAgentDefinitionService().getAgentDefinitionById(
         definition.id,
       );
       if (!agentDefinition) {
@@ -224,13 +221,6 @@ export class BuiltInAgentBootstrapper {
 
     this.logger.info(`Initialized '${settingDefault.key}' with '${definition.id}'.`);
     return true;
-  }
-
-  private async refreshDefinitionCache(): Promise<void> {
-    const refreshCache = this.getAgentDefinitionService().refreshCache;
-    if (typeof refreshCache === "function") {
-      await refreshCache.call(this.getAgentDefinitionService());
-    }
   }
 }
 

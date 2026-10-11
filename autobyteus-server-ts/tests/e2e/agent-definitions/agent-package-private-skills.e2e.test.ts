@@ -60,7 +60,7 @@ const createTestRootSettingsStore = (defaultRoot: string): AgentPackageRootSetti
   new AgentPackageRootSettingsStore(
     {
       getAppDataDir: () => defaultRoot,
-      getAdditionalAgentPackageRoots: () => parseAdditionalRoots(),
+      getRegisteredAgentPackageRoots: () => parseAdditionalRoots(),
       get: (key: string, defaultValue?: string) => process.env[key] ?? defaultValue,
     },
     {

@@ -95,7 +95,7 @@ describe("application platform runtime isolation", () => {
           get, setDurably,
         } as never,
         bundleService: bundleService as never,
-        agentDefinitionService: { getFreshAgentDefinitionById: vi.fn(async () => null) } as never,
+        agentDefinitionService: { getAgentDefinitionById: vi.fn(async () => null), refreshCache: vi.fn(async () => undefined) } as never,
         agentTeamDefinitionService: {} as never,
         agentToolMcpSessionAuthorities:
           agentToolsMcpHost.sessionAuthorities,

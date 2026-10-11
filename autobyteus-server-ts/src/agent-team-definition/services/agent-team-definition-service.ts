@@ -4,35 +4,47 @@ import {
   TeamMember,
   type TeamMemberRefScope,
 } from "../domain/agent-team-definition.js";
-import { AgentTeamDefinitionPersistenceProvider } from "../providers/agent-team-definition-persistence-provider.js";
-import { CachedAgentTeamDefinitionProvider } from "../providers/cached-agent-team-definition-provider.js";
+import { FileAgentTeamDefinitionProvider } from "../providers/file-agent-team-definition-provider.js";
 import { normalizeDefaultLaunchConfigInput } from "../../launch-preferences/default-launch-config.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { assertValidFlatTeamDefinition } from "./flat-team-definition-validator.js";
 import { FlatTeamDefinitionResolver } from "./flat-team-definition-resolver.js";
 import { DefinitionEndpointCatalog, type DefinitionEndpointCatalogProjection } from "../../agent-collaboration/definition/definition-endpoint-catalog.js";
+import { parseCanonicalApplicationOwnedTeamId } from "../../application-bundles/utils/application-bundle-identity.js";
+import {
+  getDefaultDefinitionCatalogRuntime,
+  type DefinitionCatalogRuntime,
+} from "../../definition-catalog/services/definition-catalog-runtime.js";
+import type { DefinitionCatalogIssue } from "../../definition-catalog/domain/definition-catalog-types.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
-type AgentTeamDefinitionProvider = {
-  create: (definition: AgentTeamDefinition) => Promise<AgentTeamDefinition>;
-  getById: (id: string) => Promise<AgentTeamDefinition | null>;
-  getAll: () => Promise<AgentTeamDefinition[]>;
-  getTemplates: () => Promise<AgentTeamDefinition[]>;
-  update: (definition: AgentTeamDefinition) => Promise<AgentTeamDefinition>;
-  delete: (id: string) => Promise<boolean>;
-  refresh?: () => Promise<void>;
-};
+/** File writes, templates and application-owned exact reads (registered package roots are catalog reads). */
+export type AgentTeamDefinitionFileStore = Pick<
+  FileAgentTeamDefinitionProvider,
+  "create" | "getById" | "getTemplates" | "update" | "delete"
+>;
 
-type AgentTeamDefinitionFreshProvider = Pick<AgentTeamDefinitionPersistenceProvider, "getById">;
+/**
+ * One Team admission subject from the catalog: a shared Team unit or an org-owned Team node.
+ * `definition` is the last good version (null when it never read as valid).
+ */
+export type AgentTeamAdmissionEntry = Readonly<{
+  definitionId: string;
+  definition: AgentTeamDefinition | null;
+  issue: DefinitionCatalogIssue | null;
+  definitionPath: string;
+  packageRoot: string;
+  sourceClass: "server_data" | "implementation_repository" | "external_read_only";
+}>;
 
 type AgentTeamDefinitionServiceOptions = {
-  provider?: AgentTeamDefinitionProvider;
-  persistenceProvider?: AgentTeamDefinitionPersistenceProvider;
-  agentDefinitionService?: Pick<AgentDefinitionService, "getAgentDefinitionById" | "getFreshAgentDefinitionById">;
+  fileStore?: AgentTeamDefinitionFileStore;
+  catalogRuntime?: DefinitionCatalogRuntime;
+  agentDefinitionService?: Pick<AgentDefinitionService, "getAgentDefinitionById">;
 };
 
 const normalizeOptionalString = (value: unknown): string | null => {
@@ -144,15 +156,13 @@ export class AgentTeamDefinitionService {
     }
   }
 
-  readonly provider: AgentTeamDefinitionProvider;
-  private readonly freshProvider: AgentTeamDefinitionFreshProvider;
-  private readonly agentDefinitionService: Pick<AgentDefinitionService, "getAgentDefinitionById" | "getFreshAgentDefinitionById">;
+  private readonly fileStore: AgentTeamDefinitionFileStore;
+  private readonly catalogRuntime: DefinitionCatalogRuntime;
+  private readonly agentDefinitionService: Pick<AgentDefinitionService, "getAgentDefinitionById">;
 
   constructor(options: AgentTeamDefinitionServiceOptions = {}) {
-    const persistenceProvider =
-      options.persistenceProvider ?? new AgentTeamDefinitionPersistenceProvider();
-    this.provider = options.provider ?? new CachedAgentTeamDefinitionProvider(persistenceProvider);
-    this.freshProvider = options.persistenceProvider ?? persistenceProvider;
+    this.fileStore = options.fileStore ?? new FileAgentTeamDefinitionProvider();
+    this.catalogRuntime = options.catalogRuntime ?? getDefaultDefinitionCatalogRuntime();
     this.agentDefinitionService = options.agentDefinitionService ?? AgentDefinitionService.getInstance();
   }
 
@@ -173,35 +183,71 @@ export class AgentTeamDefinitionService {
     });
     await assertValidFlatTeamDefinition({
       rootDefinition: validationCandidate,
-      lookup: { getAgentById: async (id) => this.agentDefinitionService.getFreshAgentDefinitionById(id) },
+      lookup: { getAgentById: async (id) => this.agentDefinitionService.getAgentDefinitionById(id) },
     });
-    const created = await this.provider.create(definition);
+    const created = await this.fileStore.create(definition);
+    if (created.id) await this.catalogRuntime.sync.reconcileNow("agent_team", [created.id]);
     logger.info(`Agent Team Definition created successfully with ID: ${created.id}`);
     return created;
   }
 
+  /** Shared and org-owned Team IDs are catalog reads (last good honored); application-owned IDs read their bundle. */
   async getDefinitionById(definitionId: string): Promise<AgentTeamDefinition | null> {
-    return this.provider.getById(definitionId);
+    if (parseCanonicalApplicationOwnedTeamId(definitionId)) return this.fileStore.getById(definitionId);
+    await this.catalogRuntime.sync.settle();
+    return this.catalogRuntime.catalog.getDefinition("agent_team", definitionId);
   }
 
-  async getFreshDefinitionById(definitionId: string): Promise<AgentTeamDefinition | null> {
-    return this.freshProvider.getById(definitionId);
-  }
-
+  /** Shared Teams plus application-owned Teams. A duplicated Team identity is not listed. */
   async getAllDefinitions(): Promise<AgentTeamDefinition[]> {
-    return this.provider.getAll();
+    await this.catalogRuntime.sync.settle();
+    return this.catalogRuntime.catalog.listUnitRoots("agent_team")
+      .flatMap((entry) => entry.definition ? [entry.definition] : []);
+  }
+
+  /** Team admission subjects from registered package roots: shared Team units and org-owned Team nodes. */
+  async listAdmissionEntries(): Promise<AgentTeamAdmissionEntry[]> {
+    await this.catalogRuntime.sync.settle();
+    const catalog = this.catalogRuntime.catalog;
+    const entries = [
+      ...catalog.listUnitRoots("agent_team").filter((entry) => entry.location.fromRegisteredRoot),
+      ...catalog.listNestedNodes("agent_org", "agent_team"),
+    ];
+    return entries.map((entry) => Object.freeze({
+      definitionId: entry.id,
+      definition: entry.definition,
+      issue: entry.issue,
+      definitionPath: entry.definition?.source?.definitionPath ?? entry.issue?.definitionPath ?? entry.location.unitDir,
+      packageRoot: entry.location.packageRoot,
+      sourceClass: entry.location.sourceClass,
+    }));
+  }
+
+  /** Catalog issues of Team definitions (shared and org-owned), last good or not. */
+  async listDefinitionIssues(): Promise<Array<Readonly<{ definitionId: string; issue: DefinitionCatalogIssue; usingLastGood: boolean }>>> {
+    await this.catalogRuntime.sync.settle();
+    return this.catalogRuntime.catalog.listIssueEntries("agent_team").map((entry) => Object.freeze({
+      definitionId: entry.id,
+      issue: entry.issue!,
+      usingLastGood: entry.definition !== null,
+    }));
+  }
+
+  async getDefinitionIssue(definitionId: string): Promise<DefinitionCatalogIssue | null> {
+    await this.catalogRuntime.sync.settle();
+    return this.catalogRuntime.catalog.getEntry("agent_team", definitionId)?.issue ?? null;
   }
 
   async getTemplateDefinitions(): Promise<AgentTeamDefinition[]> {
-    return this.provider.getTemplates();
+    return this.fileStore.getTemplates();
   }
 
   async getEndpointCatalog(definitionId: string): Promise<DefinitionEndpointCatalogProjection> {
-    const definition = await this.provider.getById(definitionId);
+    const definition = await this.getDefinitionById(definitionId);
     if (!definition) throw new Error(`Agent Team Definition with ID ${definitionId} not found.`);
     const topology = await new FlatTeamDefinitionResolver().resolve({
       rootDefinition: definition,
-      lookup: { getAgentById: (id) => this.agentDefinitionService.getFreshAgentDefinitionById(id) },
+      lookup: { getAgentById: (id) => this.agentDefinitionService.getAgentDefinitionById(id) },
     });
     return new DefinitionEndpointCatalog().projectTeam(topology);
   }
@@ -210,7 +256,7 @@ export class AgentTeamDefinitionService {
     definitionId: string,
     updateData: AgentTeamDefinitionUpdate,
   ): Promise<AgentTeamDefinition> {
-    const existing = await this.provider.getById(definitionId);
+    const existing = await this.getDefinitionById(definitionId);
     if (!existing) {
       throw new Error(`Agent Team Definition with ID ${definitionId} not found.`);
     }
@@ -228,24 +274,26 @@ export class AgentTeamDefinitionService {
     await assertValidFlatTeamDefinition({
       rootDefinition: candidate,
       lookup: {
-        getAgentById: async (id) => this.agentDefinitionService.getFreshAgentDefinitionById(id),
+        getAgentById: async (id) => this.agentDefinitionService.getAgentDefinitionById(id),
       },
     });
 
-    const updated = await this.provider.update(candidate);
+    const updated = await this.fileStore.update(candidate);
+    await this.reconcileOwningUnit(definitionId);
     logger.info(`Agent Team Definition with ID ${definitionId} updated successfully.`);
     return updated;
   }
 
   async deleteDefinition(definitionId: string): Promise<boolean> {
-    const existing = await this.provider.getById(definitionId);
+    const existing = await this.getDefinitionById(definitionId);
     if (!existing) {
       throw new Error(`Agent Team Definition with ID ${definitionId} not found.`);
     }
     if ((existing.ownershipScope ?? "shared") !== "shared") {
       throw new Error("Deleting application-owned team definitions is not supported.");
     }
-    const success = await this.provider.delete(definitionId);
+    const success = await this.fileStore.delete(definitionId);
+    await this.reconcileOwningUnit(definitionId);
     if (success) {
       logger.info(`Agent Team Definition with ID ${definitionId} deleted successfully.`);
     } else {
@@ -254,10 +302,14 @@ export class AgentTeamDefinitionService {
     return success;
   }
 
+  /** Full reconcile of the definition catalog (manual Reload, package changes, application readiness). */
   async refreshCache(): Promise<void> {
-    if (typeof this.provider.refresh === "function") {
-      await this.provider.refresh();
-    }
+    await this.catalogRuntime.sync.reloadAll();
   }
 
+  private async reconcileOwningUnit(definitionId: string): Promise<void> {
+    const unit = this.catalogRuntime.catalog.unitOf("agent_team", definitionId)
+      ?? { subject: "agent_team" as const, unitId: definitionId };
+    await this.catalogRuntime.sync.reconcileNow(unit.subject, [unit.unitId]);
+  }
 }

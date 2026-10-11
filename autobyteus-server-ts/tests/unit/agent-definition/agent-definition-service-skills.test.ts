@@ -1,22 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
+import { createInMemoryCatalogRuntime } from "../../helpers/definition-catalog-test-runtime.js";
 
 describe("AgentDefinitionService skill names", () => {
   let provider: {
     create: ReturnType<typeof vi.fn>;
     getById: ReturnType<typeof vi.fn>;
-    getAll: ReturnType<typeof vi.fn>;
-    getAllVisible: ReturnType<typeof vi.fn>;
+    getTemplates: ReturnType<typeof vi.fn>;
+    listApplicationOwnedTeamLocalAgents: ReturnType<typeof vi.fn>;
     update: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
   };
-  let mappingProvider: {
-    getByAgentDefinitionId: ReturnType<typeof vi.fn>;
-    upsert: ReturnType<typeof vi.fn>;
-    deleteByAgentDefinitionId: ReturnType<typeof vi.fn>;
-  };
-  let promptService: { findAllByNameAndCategory: ReturnType<typeof vi.fn> };
+  let catalog: ReturnType<typeof createInMemoryCatalogRuntime>;
 
   beforeEach(() => {
     provider = {
@@ -25,28 +21,18 @@ describe("AgentDefinitionService skill names", () => {
         return definition;
       }),
       getById: vi.fn(async () => null),
-      getAll: vi.fn(async () => []),
-      getAllVisible: vi.fn(async () => []),
+      getTemplates: vi.fn(async () => []),
+      listApplicationOwnedTeamLocalAgents: vi.fn(async () => []),
       update: vi.fn(async (definition: AgentDefinition) => definition),
       delete: vi.fn(async () => true),
     };
-
-    mappingProvider = {
-      getByAgentDefinitionId: vi.fn(async () => null),
-      upsert: vi.fn(async () => null),
-      deleteByAgentDefinitionId: vi.fn(async () => true),
-    };
-
-    promptService = {
-      findAllByNameAndCategory: vi.fn(async () => ["prompt"]),
-    };
+    catalog = createInMemoryCatalogRuntime();
   });
 
   const buildService = () =>
     new AgentDefinitionService({
-      provider,
-      mappingProvider,
-      promptService,
+      fileStore: provider as never,
+      catalogRuntime: catalog.runtime,
     });
 
   it("persists skill names on create", async () => {
@@ -79,7 +65,7 @@ describe("AgentDefinitionService skill names", () => {
       description: "Old",
       id: "test-id",
     });
-    provider.getById.mockResolvedValue(existing);
+    catalog.seed("agent", existing);
     provider.update.mockImplementation(async (definition: AgentDefinition) => definition);
 
     const updated = await service.updateAgentDefinition("test-id", {

@@ -68,6 +68,7 @@ import {
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "./project-task-execution-resource-composition.js";
+import { composeDefinitionCatalogFeed, type DefinitionCatalogFeed } from "./definition-catalog-feed-composition.js";
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
@@ -80,6 +81,7 @@ type StudioApiHandle = ReturnType<typeof configureStudioApplicationApiServices>;
 
 const closeStudioProcessResources = async (input: {
   hostDefinitionServices: HostDefinitionServices;
+  definitionCatalogFeed: DefinitionCatalogFeed | null;
   agentToolsMcpHost: AgentToolsMcpHost | null;
   generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null;
   generalProcessRunSupervisor: GeneralProcessRunSupervisor | null;
@@ -104,7 +106,11 @@ const closeStudioProcessResources = async (input: {
             await stopDefaultAgentRunEventPipeline();
           } finally {
             try {
-              input.hostDefinitionServices.close();
+              try {
+                await input.definitionCatalogFeed?.close();
+              } finally {
+                input.hostDefinitionServices.close();
+              }
             } finally {
               try {
                 await getSecretVaultRuntime().close();
@@ -180,6 +186,13 @@ export const buildStudioServer = async (input: {
     appConfig: input.appConfig,
     bundleService: packages.bundleService,
   });
+  let definitionCatalogFeed: DefinitionCatalogFeed | null = null;
+  try {
+    definitionCatalogFeed = await composeDefinitionCatalogFeed({ sync: hostDefinitionServices.definitionCatalogSync });
+  } catch (error) {
+    hostDefinitionServices.close();
+    throw error;
+  }
   const definitionDiagnostics = (await hostDefinitionServices.definitionAdmissionService.scan())
     .filter((result) => result.status === "unavailable");
   for (const diagnostic of definitionDiagnostics) {
@@ -197,6 +210,7 @@ export const buildStudioServer = async (input: {
     processResourcesClosed = true;
     await closeStudioProcessResources({
       hostDefinitionServices,
+      definitionCatalogFeed,
       agentToolsMcpHost,
       generalProcessAuthority,
       generalProcessRunSupervisor,
@@ -321,6 +335,7 @@ export const buildStudioServer = async (input: {
         lifecycleReadiness: currentApplicationRuntime.lifecycle,
         application: currentApplicationRuntime.realtime,
         agentOrgRunService: generalProcessRunSupervisor.agentOrgRunService,
+        definitionCatalogChangeHub: definitionCatalogFeed.hub,
       });
       await registerGraphql(app);
       return Object.freeze({

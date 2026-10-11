@@ -7,6 +7,7 @@ import { createRequire } from "node:module";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { resetDefaultDefinitionCatalogRuntimeForTests } from "../../../src/definition-catalog/services/definition-catalog-runtime.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { parseAgentMd, serializeAgentMd } from "../../../src/agent-definition/utils/agent-md-parser.js";
 import { bootstrapBuiltInAgents } from "../../../src/built-in-agents/built-in-agent-bootstrapper.js";
@@ -33,6 +34,7 @@ describe("Daily Assistant bootstrap → GraphQL identity (AC-001–006)", () => 
     root = await fs.mkdtemp(path.join(os.tmpdir(), "general-agent-api-"));
     appConfigProvider.resetForTests();
     appConfigProvider.initialize({ appDataDir: root });
+    resetDefaultDefinitionCatalogRuntimeForTests();
     definitions = new AgentDefinitionService();
     closeServices = configureE2eStudioApplicationApiServices({ agentDefinitionService: definitions }).close;
     schema = await buildGraphqlSchema();

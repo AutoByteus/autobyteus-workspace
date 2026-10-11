@@ -51,6 +51,25 @@ registerEnumType(AgentPackageUpdateStatusEnum, {
   name: "AgentPackageUpdateStatus",
 });
 
+enum AgentPackageAutoRefreshStateEnum {
+  WATCHING = "WATCHING",
+  ROOT_MISSING = "ROOT_MISSING",
+  UNAVAILABLE = "UNAVAILABLE",
+}
+
+registerEnumType(AgentPackageAutoRefreshStateEnum, {
+  name: "AgentPackageAutoRefreshState",
+});
+
+@ObjectType()
+export class AgentPackageAutoRefresh {
+  @Field(() => AgentPackageAutoRefreshStateEnum)
+  state!: AgentPackageAutoRefreshStateEnum;
+
+  @Field(() => String, { nullable: true })
+  message!: string | null;
+}
+
 @ObjectType()
 export class AgentPackageUpdateInfo {
   @Field(() => AgentPackageUpdateStatusEnum)
@@ -118,6 +137,9 @@ export class AgentPackage {
 
   @Field(() => AgentPackageUpdateInfo)
   updateInfo!: AgentPackageUpdateInfo;
+
+  @Field(() => AgentPackageAutoRefresh, { nullable: true })
+  autoRefresh!: AgentPackageAutoRefresh | null;
 }
 
 @InputType()
@@ -156,6 +178,9 @@ const mapAgentPackage = (pkg: AgentPackageModel): AgentPackage => ({
   isDefault: pkg.isDefault,
   isRemovable: pkg.isRemovable,
   updateInfo: mapAgentPackageUpdateInfo(pkg.updateInfo),
+  autoRefresh: pkg.autoRefresh
+    ? { state: pkg.autoRefresh.state as AgentPackageAutoRefreshStateEnum, message: pkg.autoRefresh.message }
+    : null,
 });
 
 const mapImportInput = (

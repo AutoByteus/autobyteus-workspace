@@ -6,10 +6,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 import type { AppConfig } from '../../../src/config/app-config.js';
 import type { ApplicationBundleService } from '../../../src/application-bundles/services/application-bundle-service.js';
 import { FileAgentTeamDefinitionProvider } from '../../../src/agent-team-definition/providers/file-agent-team-definition-provider.js';
-import { FileAgentDefinitionProvider } from '../../../src/agent-definition/providers/file-agent-definition-provider.js';
-import { FileAgentOrgDefinitionProvider } from '../../../src/agent-org-definition/providers/file-agent-org-definition-provider.js';
-import { DefinitionSourceRegistry } from '../../../src/collaboration-definition-admission/providers/definition-source-registry.js';
-import { DefinitionAdmissionService } from '../../../src/collaboration-definition-admission/services/definition-admission-service.js';
+import { createDiskDefinitionServices } from '../../helpers/definition-catalog-test-runtime.js';
 import { AgentTeamDefinitionResolver } from '../../../src/api/graphql/types/agent-team-definition.js';
 import { TeamRunService } from '../../../src/agent-team-execution/services/team-run-service.js';
 const bound = vi.hoisted(() => ({ admission: null as any, teams: null as any }));
@@ -33,8 +30,6 @@ it('reads mixed external packages through real scoped providers, admission, cata
   const config = { getAgentTeamsDir: () => path.join(owned, 'agent-teams'), getAgentOrgsDir: () => path.join(owned, 'agent-orgs'), getAgentsDir: () => path.join(owned, 'agents'), getAdditionalAgentPackageRoots: () => [external] } as AppConfig;
   const apps = { getApplicationOwnedTeamSourceById: async () => null, getApplicationOwnedAgentSourceById: async () => null } as unknown as ApplicationBundleService;
   const teams = new FileAgentTeamDefinitionProvider({ appConfig: config, applicationBundleService: apps });
-  const agents = new FileAgentDefinitionProvider({ appConfig: config, applicationBundleService: apps });
-  const orgs = new FileAgentOrgDefinitionProvider(config);
   await write(external, 'agent', 'writer', {});
   const files = [await write(external, 'team', 'flat', team('writer')),
     await write(external, 'team', 'null-defaults', { ...team('writer'), defaultLaunchConfig: null }),
@@ -44,9 +39,9 @@ it('reads mixed external packages through real scoped providers, admission, cata
     await write(external, 'team', 'missing-avatar', { coordinatorMemberName: 'lead', members: team('writer').members, handoffs: [] })];
   await write(path.join(external, 'agent-teams', 'local'), 'agent', 'writer', {});
   const before = await Promise.all(files.map(file => fs.readFile(file)));
-  const admission = new DefinitionAdmissionService({ registry: new DefinitionSourceRegistry({ appConfig: config, implementationPackageRoots: [] }),
-    teams: { getFreshDefinitionById: id => teams.getById(id) }, orgs: { getDefinitionById: id => orgs.getById(id) }, agents: { getFreshAgentDefinitionById: id => agents.getById(id) } });
-  bound.admission = admission; bound.teams = teams;
+  const services = createDiskDefinitionServices({ ...config, externalRoots: [external] });
+  const admission = services.admission;
+  bound.admission = admission; bound.teams = services.teams;
   const rows = await admission.scan();
   expect(rows.filter(r => r.status === 'available').map(r => r.definitionId).sort()).toEqual(['flat', 'local', 'missing-avatar', 'null-defaults']);
   expect(rows.find(r => r.definitionId === 'nested-parent')).toMatchObject({ status: 'unavailable', code: 'DEFINITION_REFERENCE_UNRESOLVED' });
@@ -68,4 +63,5 @@ it('reads mixed external packages through real scoped providers, admission, cata
   expect(create).not.toHaveBeenCalled(); expect(allocate).not.toHaveBeenCalled();
   await expect(teams.update(flat!)).rejects.toThrow(); // external-read-only ownership remains enforced
   for (let i = 0; i < files.length; i++) expect(await fs.readFile(files[i]!)).toEqual(before[i]);
+  services.close();
 });

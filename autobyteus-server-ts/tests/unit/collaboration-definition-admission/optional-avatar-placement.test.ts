@@ -12,8 +12,7 @@ import { FileAgentOrgDefinitionProvider } from "../../../src/agent-org-definitio
 import { listAgentOrgOwnedDefinitionSources } from "../../../src/agent-org-definition/providers/agent-org-owned-definition-source-index.js";
 import { buildAgentOrgOwnedDefinitionId } from "../../../src/agent-org-definition/utils/agent-org-owned-definition-id.js";
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
-import { DefinitionSourceRegistry } from "../../../src/collaboration-definition-admission/providers/definition-source-registry.js";
-import { DefinitionAdmissionService } from "../../../src/collaboration-definition-admission/services/definition-admission-service.js";
+import { createDiskDefinitionServices } from "../../helpers/definition-catalog-test-runtime.js";
 
 const roots: string[] = [];
 afterEach(async () => { await Promise.all(roots.splice(0).map(root => fs.rm(root, { recursive: true, force: true }))); });
@@ -61,12 +60,8 @@ it.each(["omitted", "null", "supplied"])("reads %s avatars across shared, Org-ow
   ];
   const before = await hashes(files);
   const expectedAvatar = mode === "supplied" ? avatar(mode).avatarUrl : null;
-  const registry = new DefinitionSourceRegistry({ appConfig: config, implementationPackageRoots: [] });
-  const admission = new DefinitionAdmissionService({ registry,
-    agents: { getFreshAgentDefinitionById: id => agents.getById(id) },
-    teams: { getFreshDefinitionById: id => teams.getById(id) },
-    orgs: { getDefinitionById: id => orgs.getById(id) },
-  });
+  const services = createDiskDefinitionServices({ ...config, externalRoots: [external] });
+  const admission = services.admission;
   const revision = (await orgs.getById("org"))!.revision;
   for (let reload = 0; reload < 2; reload++) {
     for (const [id, ownershipScope] of [["independent", "shared"], ["shared", "shared"], [directId, "agent_org_owned"], [localId, "team_local"]]) {
@@ -87,16 +82,20 @@ it.each(["omitted", "null", "supplied"])("reads %s avatars across shared, Org-ow
   expect(await agents.getById(buildAgentOrgOwnedDefinitionId("agent", "other-org", "direct"))).toBeNull();
   expect(await hashes(files)).toEqual(before);
 
-  // A malformed present parent value must still be rejected at all three Org reads.
+  // A malformed present parent value is still rejected by the strict readers. The catalog keeps
+  // the last working Org available (DEC-001) and reports the issue.
   const orgFile = path.join(external, "agent-orgs", "org", "org-config.json");
   const raw = JSON.parse(await fs.readFile(orgFile, "utf8"));
   await fs.writeFile(orgFile, JSON.stringify({ ...raw, avatarUrl: 42 }));
   await expect(orgs.getById("org")).rejects.toThrow(/avatarUrl/);
-  await expect(admission.requireAvailable("agent_org", "org")).rejects.toThrow(/avatarUrl/);
+  services.runtime.sync.noteUnitChange("agent_org", "org");
+  expect((await admission.requireAvailable("agent_org", "org")).definition.avatarUrl).toBe(expectedAvatar);
+  expect(await services.orgs.getDefinitionIssue("org")).toMatchObject({ code: "DEFINITION_CONTRACT_INVALID", reason: expect.stringMatching(/avatarUrl/) });
   for (const subject of ["agent", "agent_team"] as const) {
     expect(await listAgentOrgOwnedDefinitionSources({ subject, orgRoots: [path.join(external, "agent-orgs")] })).toEqual([]);
   }
   // A rejected parent must not poison unrelated valid siblings.
   expect((await admission.requireAvailable("agent_team", "local-team")).status).toBe("available");
+  services.close();
 
 });

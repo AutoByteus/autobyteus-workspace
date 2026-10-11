@@ -3,7 +3,10 @@ import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import path from "node:path";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
-import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import {
+  PackageDefinitionMonitor,
+  type RootWatchStatus,
+} from "../../definition-catalog/monitor/package-definition-monitor.js";
 import { GitHubAgentPackageInstaller } from "../installers/github-agent-package-installer.js";
 import {
   AgentPackageRecord,
@@ -28,7 +31,8 @@ import {
   mapLocalPackage,
 } from "./agent-package-mappers.js";
 
-type RefreshCachesFn = () => Promise<void>;
+type ReloadDefinitionCatalogFn = () => Promise<void>;
+type RootWatchStatusFn = (rootPath: string) => RootWatchStatus | null;
 
 /** The skill-name check each import path runs before it commits (REQ-023). */
 type SkillNameGuard = Pick<SkillService, "assertNoIncomingSkillNameConflicts">;
@@ -59,8 +63,8 @@ export class AgentPackageService {
   private readonly registryStore: AgentPackageRegistryStore;
   private readonly githubClient: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">;
   private readonly installer: GitHubAgentPackageInstaller;
-  private readonly refreshAgentDefinitions: RefreshCachesFn;
-  private readonly refreshAgentTeams: RefreshCachesFn;
+  private readonly reloadDefinitionCatalog: ReloadDefinitionCatalogFn;
+  private readonly rootWatchStatus: RootWatchStatusFn;
   private readonly skillNames: SkillNameGuard;
 
   constructor(dependencies: {
@@ -68,8 +72,8 @@ export class AgentPackageService {
     registryStore?: AgentPackageRegistryStore;
     installer?: GitHubAgentPackageInstaller;
     githubClient?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">;
-    refreshAgentDefinitions?: RefreshCachesFn;
-    refreshAgentTeams?: RefreshCachesFn;
+    reloadDefinitionCatalog?: ReloadDefinitionCatalogFn;
+    rootWatchStatus?: RootWatchStatusFn;
     skillNames?: SkillNameGuard;
   } = {}) {
     this.rootSettingsStore =
@@ -79,12 +83,12 @@ export class AgentPackageService {
     this.githubClient = dependencies.githubClient ?? new GitHubRepositoryClient();
     this.installer =
       dependencies.installer ?? new GitHubAgentPackageInstaller();
-    this.refreshAgentDefinitions =
-      dependencies.refreshAgentDefinitions ??
+    this.reloadDefinitionCatalog =
+      dependencies.reloadDefinitionCatalog ??
       (() => AgentDefinitionService.getInstance().refreshCache());
-    this.refreshAgentTeams =
-      dependencies.refreshAgentTeams ??
-      (() => AgentTeamDefinitionService.getInstance().refreshCache());
+    this.rootWatchStatus =
+      dependencies.rootWatchStatus ??
+      ((rootPath) => PackageDefinitionMonitor.getProcessInstance()?.getRootWatchStatus(rootPath) ?? null);
     this.skillNames = dependencies.skillNames ?? SkillService.getInstance();
   }
 
@@ -98,18 +102,19 @@ export class AgentPackageService {
       recordByRootPath.set(path.resolve(record.rootPath), record);
     }
 
-    const packages: AgentPackage[] = [mapBuiltInPackage(defaultRootPath)];
+    const packages: AgentPackage[] = [mapBuiltInPackage(defaultRootPath, this.rootWatchStatus(defaultRootPath))];
 
     for (const rootPath of additionalRootPaths) {
       const resolvedRootPath = path.resolve(rootPath);
       const record = recordByRootPath.get(resolvedRootPath);
 
+      const autoRefresh = this.rootWatchStatus(resolvedRootPath);
       if (record?.sourceKind === GITHUB_SOURCE_KIND) {
-        packages.push(mapGitHubPackage(record));
+        packages.push(mapGitHubPackage(record, autoRefresh));
         continue;
       }
 
-      packages.push(mapLocalPackage(resolvedRootPath, record));
+      packages.push(mapLocalPackage(resolvedRootPath, record, autoRefresh));
     }
 
     return this.sortPackageEntries(packages);
@@ -489,9 +494,9 @@ export class AgentPackageService {
     this.skillNames.assertNoIncomingSkillNameConflicts({ path: rootPath, layout: "definition_root", tier: 2 });
   }
 
+  /** One full catalog reconcile; it also re-syncs root watching and notifies connected clients. */
   private async refreshCatalogCaches(): Promise<void> {
-    await this.refreshAgentDefinitions();
-    await this.refreshAgentTeams();
+    await this.reloadDefinitionCatalog();
   }
 
   private safeRemoveAdditionalRootPath(rootPath: string): void {

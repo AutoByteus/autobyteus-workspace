@@ -95,10 +95,8 @@ describe("GitHub agent package import integration (live)", () => {
         rootSettingsStore,
         registryStore,
         installer,
-        refreshAgentDefinitions: () =>
+        reloadDefinitionCatalog: () =>
           AgentDefinitionService.getInstance().refreshCache(),
-        refreshAgentTeams: () =>
-          AgentTeamDefinitionService.getInstance().refreshCache(),
       });
 
       const importedPackages = await service.importAgentPackage({

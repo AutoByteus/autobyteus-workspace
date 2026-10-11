@@ -10,6 +10,7 @@ import { FileAgentDefinitionProvider } from "../../../src/agent-definition/provi
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { ApplicationBundleService } from "../../../src/application-bundles/services/application-bundle-service.js";
 import { buildCanonicalApplicationOwnedAgentId } from "../../../src/application-bundles/utils/application-bundle-identity.js";
+import { createDiskDefinitionServices } from "../../helpers/definition-catalog-test-runtime.js";
 
 function uniqueId(prefix: string): string {
   return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
@@ -235,7 +236,7 @@ describe("md-centric provider integration", () => {
     });
   });
 
-  it("does not silently skip malformed application-owned agents during catalog reads", async () => {
+  it("reports a malformed application-owned agent as a catalog issue instead of skipping it silently", async () => {
     const packageId = uniqueId("pkg");
     const localApplicationId = "brief-studio";
     const localAgentId = "researcher";
@@ -276,8 +277,27 @@ describe("md-centric provider integration", () => {
       ),
     } as unknown as ApplicationBundleService;
 
-    const provider = new FileAgentDefinitionProvider({ applicationBundleService });
-    await expect(provider.getAll()).rejects.toBeInstanceOf(AgentMdParseError);
+    const services = createDiskDefinitionServices({
+      getAgentsDir: () => appConfigProvider.config.getAgentsDir(),
+      getAgentTeamsDir: () => appConfigProvider.config.getAgentTeamsDir(),
+      getAgentOrgsDir: () => appConfigProvider.config.getAgentOrgsDir(),
+    }, applicationBundleService);
+    try {
+      await services.agents.refreshCache();
+      expect((await services.agents.getAllAgentDefinitions()).map((definition) => definition.id)).not.toContain(definitionId);
+      expect(await services.agents.listDefinitionIssues()).toContainEqual({
+        definitionId,
+        usingLastGood: false,
+        issue: expect.objectContaining({
+          code: "DEFINITION_CONTRACT_INVALID",
+          definitionPath: path.join(agentDir, "agent.md"),
+        }),
+      });
+      await expect(new FileAgentDefinitionProvider({ applicationBundleService }).getById(definitionId))
+        .rejects.toBeInstanceOf(AgentMdParseError);
+    } finally {
+      services.close();
+    }
   });
 
   it("updates application-owned agent defaultLaunchConfig in place", async () => {

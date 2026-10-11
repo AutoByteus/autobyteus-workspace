@@ -30,7 +30,7 @@ export class SkillImprovementTargetContextResolver {
 
   constructor(private readonly deps: {
     agentRunMetadataService?: AgentRunMetadataService;
-    agentDefinitionService?: Pick<AgentDefinitionService, "getFreshAgentDefinitionById">;
+    agentDefinitionService?: Pick<AgentDefinitionService, "getAgentDefinitionById">;
     memoryLocationService?: AgentMemoryLocationService;
     memoryDir?: string;
   } = {}) {
@@ -98,7 +98,7 @@ export class SkillImprovementTargetContextResolver {
   }
 
   private async loadAgentDefinition(agentDefinitionId: string): Promise<AgentDefinition> {
-    const definition = await this.agentDefinitionService.getFreshAgentDefinitionById(agentDefinitionId);
+    const definition = await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
     if (!definition) {
       throw new Error(`Agent definition '${agentDefinitionId}' was not found.`);
     }
@@ -109,7 +109,7 @@ export class SkillImprovementTargetContextResolver {
     return this.deps.agentRunMetadataService ?? getAgentRunMetadataService();
   }
 
-  private get agentDefinitionService(): Pick<AgentDefinitionService, "getFreshAgentDefinitionById"> {
+  private get agentDefinitionService(): Pick<AgentDefinitionService, "getAgentDefinitionById"> {
     return this.deps.agentDefinitionService ?? AgentDefinitionService.getInstance();
   }
 }

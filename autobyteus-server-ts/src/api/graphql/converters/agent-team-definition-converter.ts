@@ -9,6 +9,8 @@ import {
   TeamMember as GraphqlTeamMember,
 } from "../types/agent-team-definition.js";
 import { toGraphqlDefaultLaunchConfig } from "../types/default-launch-config.js";
+import { toGraphqlDefinitionCatalogIssue } from "../types/definition-diagnostics.js";
+import type { DefinitionCatalogIssue } from "../../../definition-catalog/domain/definition-catalog-types.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -39,7 +41,10 @@ const toGraphqlOwnershipScope = (
 };
 
 export class AgentTeamDefinitionConverter {
-  static toGraphql(domainDefinition: DomainAgentTeamDefinition): GraphqlAgentTeamDefinition {
+  static toGraphql(
+    domainDefinition: DomainAgentTeamDefinition,
+    catalogIssue: DefinitionCatalogIssue | null = null,
+  ): GraphqlAgentTeamDefinition {
     try {
       const graphqlNodes: GraphqlTeamMember[] = domainDefinition.nodes.map((member) => ({
         memberName: member.memberName,
@@ -74,6 +79,7 @@ export class AgentTeamDefinitionConverter {
         ownerPackageId: domainDefinition.ownerPackageId ?? null,
         ownerLocalApplicationId: domainDefinition.ownerLocalApplicationId ?? null,
         defaultLaunchConfig: toGraphqlDefaultLaunchConfig(domainDefinition.defaultLaunchConfig),
+        catalogIssue: toGraphqlDefinitionCatalogIssue(catalogIssue),
         revision: domainDefinition.revision,
       };
     } catch (error) {

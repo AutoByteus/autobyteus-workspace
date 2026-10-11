@@ -9,14 +9,10 @@ import type { ApplicationBundleService } from '../../../src/application-bundles/
 import { FileAgentDefinitionProvider } from '../../../src/agent-definition/providers/file-agent-definition-provider.js';
 import { FileAgentTeamDefinitionProvider } from '../../../src/agent-team-definition/providers/file-agent-team-definition-provider.js';
 import { FileAgentOrgDefinitionProvider } from '../../../src/agent-org-definition/providers/file-agent-org-definition-provider.js';
-import { CachedAgentTeamDefinitionProvider } from '../../../src/agent-team-definition/providers/cached-agent-team-definition-provider.js';
-import { AgentTeamDefinitionPersistenceProvider } from '../../../src/agent-team-definition/providers/agent-team-definition-persistence-provider.js';
-import { AgentTeamDefinitionService } from '../../../src/agent-team-definition/services/agent-team-definition-service.js';
 import { buildAgentOrgOwnedDefinitionId, isAgentOrgOwnedTeamDefinitionId } from '../../../src/agent-org-definition/utils/agent-org-owned-definition-id.js';
 import { buildTeamLocalAgentDefinitionId } from '../../../src/agent-team-definition/utils/team-local-definition-id.js';
 import { findTeamSourcePaths } from '../../../src/agent-team-definition/providers/team-definition-source-paths.js';
-import { DefinitionSourceRegistry } from '../../../src/collaboration-definition-admission/providers/definition-source-registry.js';
-import { DefinitionAdmissionService } from '../../../src/collaboration-definition-admission/services/definition-admission-service.js';
+import { createDiskDefinitionServices } from '../../helpers/definition-catalog-test-runtime.js';
 import { AgentOrgExecutionScopeBuilder } from '../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js';
 import { validateAgentOrgStatePackage } from '../../../src/agent-org-execution/services/agent-org-state-package-validator.js';
 import type { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/local/flat-team-execution-factory.js';
@@ -28,7 +24,8 @@ import { AgentOrgDefinitionResolver } from '../../../src/agent-org-definition/se
 import { CollaborationHandoffCompiler } from '../../../src/agent-collaboration/definition/collaboration-handoff-compiler.js';
 import { buildCanonicalApplicationId, buildCanonicalApplicationOwnedTeamId } from '../../../src/application-bundles/utils/application-bundle-identity.js';
 const roots: string[] = [];
-afterEach(async () => { vi.restoreAllMocks(); await Promise.all(roots.splice(0).map(root => fs.rm(root, { recursive: true, force: true }))); });
+const closers: Array<() => void> = [];
+afterEach(async () => { vi.restoreAllMocks(); closers.splice(0).forEach(close => close()); await Promise.all(roots.splice(0).map(root => fs.rm(root, { recursive: true, force: true }))); });
 const launch = { llmModelIdentifier: 'fixture-model', runtimeKind: RuntimeKind.AUTOBYTEUS, llmConfig: { temperature: 0.2 } };
 const write = async (base: string, family: 'agent' | 'team' | 'org', id: string, config: unknown, instructions: string) => {
   const dir = path.join(base, `agent${family === 'agent' ? 's' : `-${family}s`}`, id);
@@ -59,7 +56,7 @@ const fixture = async (placement: 'data' | 'external' = 'data') => {
   const appRoot = path.join(root, 'application');
   const applicationId = buildCanonicalApplicationId('test-package', 'test-app');
   const applicationTeamId = buildCanonicalApplicationOwnedTeamId('test-package', 'test-app', 'squad');
-  const appSource = { definitionId: applicationTeamId, localDefinitionId: 'squad', applicationRootPath: appRoot, applicationId, applicationName: 'Test application', packageId: 'test-package', localApplicationId: 'test-app' };
+  const appSource = { definitionId: applicationTeamId, localDefinitionId: 'squad', applicationRootPath: appRoot, packageRootPath: appRoot, applicationId, applicationName: 'Test application', packageId: 'test-package', localApplicationId: 'test-app' };
   const apps = { getApplicationOwnedAgentSourceById: async () => null, getApplicationOwnedTeamSourceById: async (id: string) => id === applicationTeamId ? appSource : null, listApplicationOwnedTeamSources: async () => [appSource], listApplicationOwnedAgentSources: async () => [] } as unknown as ApplicationBundleService;
   const agents = new FileAgentDefinitionProvider({ appConfig, applicationBundleService: apps });
   const teams = new FileAgentTeamDefinitionProvider({ appConfig, applicationBundleService: apps });
@@ -78,10 +75,11 @@ const fixture = async (placement: 'data' | 'external' = 'data') => {
     await write(orgDir, 'team', 'squad', teamConfig, `${org} Team instructions`);
     await write(path.join(orgDir, 'agent-teams/squad'), 'agent', 'worker', agentConfig, `${org} Agent instructions`);
   }
-  const persistence = new AgentTeamDefinitionPersistenceProvider(teams), cache = new CachedAgentTeamDefinitionProvider(persistence);
-  const service = new AgentTeamDefinitionService({ provider: cache, persistenceProvider: persistence, agentDefinitionService: { getAgentDefinitionById: id => agents.getById(id), getFreshAgentDefinitionById: id => agents.getById(id) } });
-  const admission = new DefinitionAdmissionService({ registry: new DefinitionSourceRegistry({ appConfig }), agents: { getFreshAgentDefinitionById: id => agents.getById(id) }, teams: { getFreshDefinitionById: id => teams.getById(id) }, orgs: { getDefinitionById: id => orgs.getById(id) } });
-  return { root, data, base, appConfig, apps, agents, teams, orgs, cache, service, admission, ids, applicationTeamId };
+  // The production read path: one definition catalog over the default and external packages.
+  const services = createDiskDefinitionServices({ ...appConfig, externalRoots: [external] }, apps);
+  closers.push(services.close);
+  const service = services.teams, admission = services.admission;
+  return { root, data, base, appConfig, apps, agents, teams, orgs, runtime: services.runtime, service, admission, ids, applicationTeamId };
 };
 describe('Org-owned Team -> Team-local Agent production reads', () => {
   it.each(['data', 'external'] as const)('reads/admit %s authored packages with exact immediate owner, metadata and unchanged bytes', async (placement) => {
@@ -99,16 +97,17 @@ describe('Org-owned Team -> Team-local Agent production reads', () => {
       }
     expect(await treeHash(f.root)).toEqual(before);
   });
-  it('normal cached Team service reads work before/after catalog fill and refresh without catalog insertion', async () => {
-    const f = await fixture(), id = f.ids('alpha').team, all = vi.spyOn(f.teams, 'getAll');
+  it('serves the Org-owned Team from its Org unit (never listed as a shared Team) and picks up an edit once detected', async () => {
+    const f = await fixture(), id = f.ids('alpha').team;
     expect((await f.service.getDefinitionById(id))?.instructions).toBe('alpha Team instructions\n');
-    expect(all).not.toHaveBeenCalled();
     const listed = await f.service.getAllDefinitions();
     expect(listed.map(t => t.id)).not.toContain(id);
     const file = path.join(f.base, 'agent-orgs/alpha/agent-teams/squad/team.md');
     await fs.writeFile(file, (await fs.readFile(file, 'utf8')).replace('alpha Team instructions', 'Updated instructions'));
+    // The package monitor reports the change as the owning Org unit; the next read applies it.
+    f.runtime.sync.noteUnitChange('agent_org', 'alpha');
     expect((await f.service.getDefinitionById(id))?.instructions).toBe('Updated instructions\n');
-    await f.cache.refresh();
+    await f.service.refreshCache();
     expect((await f.service.getDefinitionById(id))?.instructions).toBe('Updated instructions\n');
     expect((await f.service.getAllDefinitions()).map(t => t.id)).not.toContain(id);
     expect((await f.service.getEndpointCatalog(id)).from[0]?.address).toBe('/lead');

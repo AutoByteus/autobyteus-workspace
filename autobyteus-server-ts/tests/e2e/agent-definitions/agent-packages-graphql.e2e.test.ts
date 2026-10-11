@@ -9,6 +9,7 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { AgentOrgDefinitionService } from "../../../src/agent-org-definition/services/agent-org-definition-service.js";
+import { resetDefaultDefinitionCatalogRuntimeForTests } from "../../../src/definition-catalog/services/definition-catalog-runtime.js";
 import { DefinitionSourceRegistry } from "../../../src/collaboration-definition-admission/providers/definition-source-registry.js";
 import { DefinitionAdmissionService } from "../../../src/collaboration-definition-admission/services/definition-admission-service.js";
 import { GitHubAgentPackageInstaller } from "../../../src/agent-packages/installers/github-agent-package-installer.js";
@@ -135,7 +136,7 @@ const createTestRootSettingsStore = (defaultRoot: string): AgentPackageRootSetti
   new AgentPackageRootSettingsStore(
     {
       getAppDataDir: () => defaultRoot,
-      getAdditionalAgentPackageRoots: () => parseAdditionalRoots(),
+      getRegisteredAgentPackageRoots: () => parseAdditionalRoots(),
       get: (key: string, defaultValue?: string) =>
         process.env[key] ?? defaultValue,
     },
@@ -242,13 +243,14 @@ describe("Agent packages GraphQL e2e", () => {
     vi.stubEnv("AUTOBYTEUS_AGENT_PACKAGE_ROOTS", "");
     appConfigProvider.resetForTests();
     appConfigProvider.initialize({ appDataDir: suiteRoot });
+    resetDefaultDefinitionCatalogRuntimeForTests();
     const agents = AgentDefinitionService.getInstance();
     const teams = AgentTeamDefinitionService.getInstance({ agentDefinitionService: agents });
     const orgs = new AgentOrgDefinitionService(undefined, agents, teams);
     // Exercise the same concrete source/admission authorities as the host composition,
     // scoped to this owned root and the package roots changed by these transactions.
     const admission = new DefinitionAdmissionService({
-      registry: new DefinitionSourceRegistry({ appConfig: appConfigProvider.config }),
+      registry: new DefinitionSourceRegistry({ listImplementationOwnedTeamSources: async () => [] }),
       agents, teams, orgs,
     });
     closeStudioServices = configureE2eStudioApplicationApiServices({
@@ -1198,14 +1200,11 @@ describe("Agent packages GraphQL e2e", () => {
           [newRevision]: newFixtureRoot,
         },
       }),
-      refreshAgentDefinitions: async () => {
+      reloadDefinitionCatalog: async () => {
         if (failRefresh) {
           throw new Error("cache refresh failed");
         }
         await AgentDefinitionService.getInstance().refreshCache();
-      },
-      refreshAgentTeams: async () => {
-        await AgentTeamDefinitionService.getInstance().refreshCache();
       },
     });
 

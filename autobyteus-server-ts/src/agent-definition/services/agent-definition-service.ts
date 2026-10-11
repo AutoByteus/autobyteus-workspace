@@ -11,10 +11,19 @@ import {
   type AgentDefinitionDefaultLaunchConfig,
   type AgentSkillScope,
 } from "../domain/models.js";
-import { AgentDefinitionPersistenceProvider } from "../providers/agent-definition-persistence-provider.js";
-import { CachedAgentDefinitionProvider } from "../providers/cached-agent-definition-provider.js";
+import { FileAgentDefinitionProvider } from "../providers/file-agent-definition-provider.js";
 import { filterOptionalProcessorNames } from "../utils/processor-defaults.js";
 import { normalizeDefaultLaunchConfigInput } from "../../launch-preferences/default-launch-config.js";
+import { parseTeamLocalDefinitionId } from "../../agent-team-definition/utils/team-local-definition-id.js";
+import {
+  parseCanonicalApplicationOwnedAgentId,
+  parseCanonicalApplicationOwnedTeamId,
+} from "../../application-bundles/utils/application-bundle-identity.js";
+import {
+  getDefaultDefinitionCatalogRuntime,
+  type DefinitionCatalogRuntime,
+} from "../../definition-catalog/services/definition-catalog-runtime.js";
+import type { DefinitionCatalogIssue } from "../../definition-catalog/domain/definition-catalog-types.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -35,18 +44,25 @@ type ProcessorRegistries = {
   lifecycle: ProcessorRegistry;
 };
 
-type AgentDefinitionProvider = {
-  create: (definition: AgentDefinition) => Promise<AgentDefinition>;
-  getById: (id: string) => Promise<AgentDefinition | null>;
-  getAll: () => Promise<AgentDefinition[]>;
-  getAllVisible: () => Promise<AgentDefinition[]>;
-  getTemplates: () => Promise<AgentDefinition[]>;
-  update: (definition: AgentDefinition) => Promise<AgentDefinition>;
-  delete: (id: string) => Promise<boolean>;
-  refresh?: () => Promise<void>;
-};
+/** File writes, templates and application-owned exact reads (registered package roots are catalog reads). */
+export type AgentDefinitionFileStore = Pick<
+  FileAgentDefinitionProvider,
+  "create" | "getById" | "getTemplates" | "update" | "delete" | "listApplicationOwnedTeamLocalAgents"
+>;
 
-type AgentDefinitionFreshProvider = Pick<AgentDefinitionPersistenceProvider, "getById">;
+/** One definition's catalog issue, for diagnostics. */
+export type AgentDefinitionIssueEntry = Readonly<{
+  definitionId: string;
+  issue: DefinitionCatalogIssue;
+  usingLastGood: boolean;
+}>;
+
+/** Application-owned definitions are read from their bundle, not from the package catalog. */
+const isApplicationOwnedAgentId = (definitionId: string): boolean => {
+  if (parseCanonicalApplicationOwnedAgentId(definitionId)) return true;
+  const teamLocal = parseTeamLocalDefinitionId(definitionId);
+  return Boolean(teamLocal && parseCanonicalApplicationOwnedTeamId(teamLocal.ownerTeamId));
+};
 
 const normalizeOptionalString = (value: unknown): string | null => {
   if (typeof value !== "string") {
@@ -77,8 +93,8 @@ export type AgentDefinitionCreateInput = {
 export type AgentDefinitionUpdateInput = Partial<AgentDefinitionCreateInput>;
 
 type AgentDefinitionServiceOptions = {
-  provider?: AgentDefinitionProvider;
-  persistenceProvider?: AgentDefinitionPersistenceProvider;
+  fileStore?: AgentDefinitionFileStore;
+  catalogRuntime?: DefinitionCatalogRuntime;
   registries?: Partial<ProcessorRegistries>;
 };
 
@@ -108,15 +124,13 @@ export class AgentDefinitionService {
     }
   }
 
-  readonly provider: AgentDefinitionProvider;
-  private readonly freshProvider: AgentDefinitionFreshProvider;
+  private readonly fileStore: AgentDefinitionFileStore;
+  private readonly catalogRuntime: DefinitionCatalogRuntime;
   private registries: ProcessorRegistries;
 
   constructor(options: AgentDefinitionServiceOptions = {}) {
-    const persistenceProvider =
-      options.persistenceProvider ?? new AgentDefinitionPersistenceProvider();
-    this.provider = options.provider ?? new CachedAgentDefinitionProvider(persistenceProvider);
-    this.freshProvider = options.persistenceProvider ?? persistenceProvider;
+    this.fileStore = options.fileStore ?? new FileAgentDefinitionProvider();
+    this.catalogRuntime = options.catalogRuntime ?? getDefaultDefinitionCatalogRuntime();
     this.registries = {
       input: options.registries?.input ?? defaultInputProcessorRegistry,
       llmResponse: options.registries?.llmResponse ?? defaultLlmResponseProcessorRegistry,
@@ -194,37 +208,63 @@ export class AgentDefinitionService {
       defaultLaunchConfig: normalizeDefaultLaunchConfigInput(data.defaultLaunchConfig) ?? null,
     });
 
-    const created = await this.provider.create(definition);
+    const created = await this.fileStore.create(definition);
+    if (created.id) await this.catalogRuntime.sync.reconcileNow("agent", [created.id]);
     logger.info(`Agent Definition created successfully with ID: ${String(created.id)}`);
     return this.stripMandatoryProcessors(created) ?? created;
   }
 
+  /** The current stored definition (a copy), before mandatory-processor stripping. */
+  private async readStoredDefinition(definitionId: string): Promise<AgentDefinition | null> {
+    if (isApplicationOwnedAgentId(definitionId)) return this.fileStore.getById(definitionId);
+    await this.catalogRuntime.sync.settle();
+    return this.catalogRuntime.catalog.getDefinition("agent", definitionId);
+  }
+
+  /** Shared, team-local and org-owned IDs are catalog reads (last good honored); application-owned IDs read their bundle. */
   async getAgentDefinitionById(definitionId: string): Promise<AgentDefinition | null> {
-    const definition = await this.provider.getById(definitionId);
-    return this.stripMandatoryProcessors(definition);
+    return this.stripMandatoryProcessors(await this.readStoredDefinition(definitionId));
   }
 
-  async getFreshAgentDefinitionById(definitionId: string): Promise<AgentDefinition | null> {
-    const definition = await this.freshProvider.getById(definitionId);
-    return this.stripMandatoryProcessors(definition);
-  }
-
+  /** Shared agents (first registered root wins) plus application-owned agents. */
   async getAllAgentDefinitions(): Promise<AgentDefinition[]> {
-    const definitions = await this.provider.getAll();
-    return definitions
-      .map((definition) => this.stripMandatoryProcessors(definition))
-      .filter((item): item is AgentDefinition => item !== null);
+    await this.catalogRuntime.sync.settle();
+    return this.catalogRuntime.catalog.listUnitRoots("agent")
+      .flatMap((entry) => entry.definition ? [entry.definition] : [])
+      .map((definition) => this.stripMandatoryProcessors(definition) ?? definition);
   }
 
+  /** All agents plus the team-local agents of shared and application-owned Teams. */
   async getVisibleAgentDefinitions(): Promise<AgentDefinition[]> {
-    const definitions = await this.provider.getAllVisible();
-    return definitions
-      .map((definition) => this.stripMandatoryProcessors(definition))
-      .filter((item): item is AgentDefinition => item !== null);
+    const definitions = await this.getAllAgentDefinitions();
+    const seenIds = new Set(definitions.map((definition) => definition.id));
+    const teamLocal = this.catalogRuntime.catalog.listNestedNodes("agent_team", "agent")
+      .flatMap((entry) => entry.definition ? [entry.definition] : []);
+    for (const definition of [...teamLocal, ...await this.fileStore.listApplicationOwnedTeamLocalAgents()]) {
+      if (seenIds.has(definition.id)) continue;
+      seenIds.add(definition.id);
+      definitions.push(this.stripMandatoryProcessors(definition) ?? definition);
+    }
+    return definitions;
+  }
+
+  /** Catalog issues of agent definitions (shared and nested), last good or not. */
+  async listDefinitionIssues(): Promise<AgentDefinitionIssueEntry[]> {
+    await this.catalogRuntime.sync.settle();
+    return this.catalogRuntime.catalog.listIssueEntries("agent").map((entry) => Object.freeze({
+      definitionId: entry.id,
+      issue: entry.issue!,
+      usingLastGood: entry.definition !== null,
+    }));
+  }
+
+  async getDefinitionIssue(definitionId: string): Promise<DefinitionCatalogIssue | null> {
+    await this.catalogRuntime.sync.settle();
+    return this.catalogRuntime.catalog.getEntry("agent", definitionId)?.issue ?? null;
   }
 
   async getAgentTemplates(): Promise<AgentDefinition[]> {
-    const definitions = await this.provider.getTemplates();
+    const definitions = await this.fileStore.getTemplates();
     return definitions
       .map((definition) => this.stripMandatoryProcessors(definition))
       .filter((item): item is AgentDefinition => item !== null);
@@ -234,7 +274,7 @@ export class AgentDefinitionService {
     definitionId: string,
     data: AgentDefinitionUpdateInput,
   ): Promise<AgentDefinition> {
-    const existing = await this.provider.getById(definitionId);
+    const existing = await this.readStoredDefinition(definitionId);
     if (!existing) {
       throw new Error(`Agent Definition with ID ${definitionId} not found.`);
     }
@@ -292,20 +332,22 @@ export class AgentDefinitionService {
       updateRecord[key] = nextValue;
     }
 
-    const updated = await this.provider.update(existing);
+    const updated = await this.fileStore.update(existing);
+    await this.reconcileOwningUnit(definitionId);
     logger.info(`Agent Definition with ID ${definitionId} updated successfully.`);
     return this.stripMandatoryProcessors(updated) ?? updated;
   }
 
   async deleteAgentDefinition(definitionId: string): Promise<boolean> {
-    const existing = await this.provider.getById(definitionId);
+    const existing = await this.readStoredDefinition(definitionId);
     if (!existing) {
       throw new Error(`Agent Definition with ID ${definitionId} not found.`);
     }
     if (existing.ownershipScope !== "shared") {
       throw new Error("Deleting non-shared agent definitions is not supported.");
     }
-    const success = await this.provider.delete(definitionId);
+    const success = await this.fileStore.delete(definitionId);
+    await this.reconcileOwningUnit(definitionId);
     if (success) {
       logger.info(`Agent Definition with ID ${definitionId} deleted successfully.`);
     } else {
@@ -314,13 +356,17 @@ export class AgentDefinitionService {
     return success;
   }
 
+  /** Full reconcile of the definition catalog (manual Reload, package changes, application readiness). */
   async refreshCache(): Promise<void> {
-    if (typeof this.provider.refresh === "function") {
-      await this.provider.refresh();
-    }
+    await this.catalogRuntime.sync.reloadAll();
   }
 
-  async refresh(): Promise<void> {
-    return this.refreshCache();
+  /** An in-app write reconciles the unit that owns the definition (its Team or Org for nested agents). */
+  private async reconcileOwningUnit(definitionId: string): Promise<void> {
+    // Application-owned team-local agents are not catalog nodes.
+    if (isApplicationOwnedAgentId(definitionId) && !parseCanonicalApplicationOwnedAgentId(definitionId)) return;
+    const unit = this.catalogRuntime.catalog.unitOf("agent", definitionId)
+      ?? { subject: "agent" as const, unitId: definitionId };
+    await this.catalogRuntime.sync.reconcileNow(unit.subject, [unit.unitId]);
   }
 }

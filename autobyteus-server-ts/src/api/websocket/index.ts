@@ -2,6 +2,8 @@ import type { FastifyInstance } from "fastify";
 import { registerFileExplorerWebsocket } from "./file-explorer.js";
 import { registerTerminalWebsocket } from "./terminal.js";
 import { registerProjectChangesWebsocket } from "./projects.js";
+import { registerDefinitionCatalogWebsocket } from "./definition-catalog.js";
+import type { DefinitionCatalogChangeHub } from "../../definition-catalog/changes/definition-catalog-change-hub.js";
 import { registerAgentWebsocket } from "./agent.js";
 import { registerApplicationBackendNotificationWebsocket } from "./application-backend-notifications.js";
 import { registerApplicationBackendWebsocket } from "./application-backends.js";
@@ -18,11 +20,13 @@ export async function registerWebsocketRoutes(
     lifecycleReadiness: ApplicationPlatformLifecycleReadiness;
     application: ApplicationPlatformRealtimeContracts;
     agentOrgRunService: Pick<AgentOrgRunService, "getActive" | "recordRunActivity">;
+    definitionCatalogChangeHub: DefinitionCatalogChangeHub;
   },
 ): Promise<void> {
   await registerFileExplorerWebsocket(app);
   await registerTerminalWebsocket(app);
   await registerProjectChangesWebsocket(app);
+  await registerDefinitionCatalogWebsocket(app, dependencies.definitionCatalogChangeHub);
   await registerAgentWebsocket(
     app,
     undefined,
