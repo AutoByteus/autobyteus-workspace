@@ -7,6 +7,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-012 Pass from `/software_engineering_team/code_reviewer` | N/A | Blocked: Local Fix. The base merge left two new Anthropic catalog models without `compactionSummaryMode` | `delivery-revision-record.md`, `delivery-evidence/dr1-*.log` |
+| DR-002 | CRR-014 (N/A) after IR-008, CRR-013 Pass and API-REV-006 Pass | DR-001 Blocked (Local Fix) | Integrated and checked; docs synced; handoff summary issued; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, live suite header, `delivery-evidence/dr2-*.log` |
 
 ## Revision Entries
 
@@ -43,3 +44,27 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Remaining blockers, rollback concerns, or untested scope:
   - Haiku 5.5 and Sonnet 5.5 summary quality is not covered by AC-003. That round used Opus 5.5 plus one family check; the approved rule covers all Anthropic catalog models.
   - The residual risks reported in CRR-012 still apply.
+
+### DR-002 — Local Fix verified; waiting for user verification
+
+- Delivery round and trigger: the DR-001 Local Fix was resolved by IR-008 `71b15db4f`, followed by CRR-013 Pass, API-REV-006 Pass (94%) and CRR-014 N/A.
+- Prior authoritative result: DR-001 (Blocked, Local Fix).
+- Current authoritative result: ready for user verification.
+  - The base was unchanged (`6314c4ee2`).
+  - Checkpoint `e02909845` holds the review and API/E2E records and the round-6 evidence.
+  - Core typecheck: clean. Core unit: 2072/2072.
+  - Docs synced: the live suite header now carries its command.
+  - Handoff summary and release notes are issued.
+- Docs sync report: `docs-sync-report.md`
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- User verification/finalization state: requested.
+  - AC-003, including C-022.
+  - AC-007.
+  - The SR-013 timing and release-type decisions.
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Next recipient/action: the user.
+- Remaining blockers, rollback concerns, or untested scope:
+  - User verification.
+  - Haiku 5.5's live cached path was not exercised (C-022).
+  - The residual risks listed in `handoff-summary.md`.

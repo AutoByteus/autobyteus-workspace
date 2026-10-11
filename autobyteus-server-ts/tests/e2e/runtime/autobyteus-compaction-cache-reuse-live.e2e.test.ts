@@ -33,6 +33,10 @@
  *
  * Gate and environment: RUN_COMPACTION_CACHE_E2E=1 plus provider keys as credential aliases (ANTHROPIC_API_KEY,
  * VERTEX_AI_API_KEY), saved into the test-owned vault; run with a clean `env -i` so no live-app variable leaks in.
+ * A case whose key is missing is skipped. From `autobyteus-server-ts`:
+ *   env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_COMPACTION_CACHE_E2E=1 ANTHROPIC_API_KEY=<key> VERTEX_AI_API_KEY=<key> ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts --no-watch
+ * Optional: COMPACTION_CACHE_E2E_ANTHROPIC_MODEL (default claude-opus-5-5; any cached-mode Anthropic catalog model),
+ * COMPACTION_CACHE_E2E_GEMINI_MODEL (default gemini-3.8-flash), COMPACTION_CACHE_E2E_STEP_TIMEOUT_MS (default 600000).
  * COMPACTION_CACHE_E2E_EVIDENCE_DIR keeps case results, call summaries and full request bodies. The compaction settings
  * are predefined and cannot be deleted, so every case sets its own trigger at its start instead of relying on cleanup.
  * Cost: small (about 30 short Opus calls, mostly cache reads; a few Gemini calls).
