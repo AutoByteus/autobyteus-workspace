@@ -31,13 +31,9 @@ export class LLMResponsePipeline {
     response: CompleteResponse,
     context: AgentContext,
     notifier: AgentExternalEventNotifier | null,
-    options: { isError?: boolean; turnId?: string | null } = {}
+    options: { isError?: boolean; turnId: string }
   ): Promise<void> {
-    const event = new LLMCompleteResponseReceivedEvent(
-      response,
-      options.isError ?? false,
-      options.turnId ?? context.state.activeTurn?.turnId ?? null
-    );
+    const event = new LLMCompleteResponseReceivedEvent(response, options.isError ?? false, options.turnId);
 
     if (!options.isError) {
       const processors = (context.config.llmResponseProcessors as unknown[]).filter(isLLMResponseProcessor);
@@ -48,14 +44,11 @@ export class LLMResponsePipeline {
           console.error(
             `Agent '${context.agentId}': Error while using LLMResponseProcessor '${processor.getName()}': ${error}.`
           );
-          const turnId = options.turnId ?? context.state.activeTurn?.turnId ?? null;
-          if (turnId) {
-            notifier?.notifyAgentErrorOutputGeneration({
-              code: `LLMResponseProcessor.${processor.getName()}`,
-              message: String(error),
-              classification: { scope: 'turn', effect: 'diagnostic', turnId }
-            });
-          }
+          notifier?.notifyAgentErrorOutputGeneration({
+            code: `LLMResponseProcessor.${processor.getName()}`,
+            message: String(error),
+            classification: { scope: 'turn', effect: 'diagnostic', turnId: options.turnId }
+          });
         }
       }
     }

@@ -91,6 +91,8 @@ export class AgentTurnRunner {
           return await this.completeWithFinalResponse(llmOutcome.response, llmOutcome.isError ?? false);
         }
 
+        // The runner owns the tool-batch lifecycle: started here, cleared after the results.
+        this.turn.startToolInvocationBatch(llmOutcome.toolInvocations);
         for (const invocation of llmOutcome.toolInvocations) {
           this.turn.executionScope.throwIfAborted({ kind: 'pending_tool_invocation' });
           await this.applyStatusEvent(new PendingToolInvocationEvent(invocation));

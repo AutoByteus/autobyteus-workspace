@@ -35,7 +35,6 @@ export class AgentTurn {
   turnId: string;
   readonly toolInputPort: TurnToolInputPort;
   readonly executionScope: TurnExecutionScope;
-  toolInvocationBatches: ToolInvocationBatch[] = [];
   activeToolInvocationBatch: ToolInvocationBatch | null = null;
   private readonly pendingToolApprovals = new Map<string, ToolInvocation>();
   private llmCallSequence = 0;
@@ -327,7 +326,6 @@ export class AgentTurn {
       })
     );
 
-    this.toolInvocationBatches.push(batch);
     this.activeToolInvocationBatch = batch;
     this.toolInputPort.registerToolInvocations(batch.getExpectedInvocationIds());
     return batch;

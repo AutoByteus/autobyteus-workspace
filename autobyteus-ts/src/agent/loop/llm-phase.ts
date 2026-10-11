@@ -268,7 +268,6 @@ export class LlmPhase {
 
     if (toolInvocations.length) {
       turn.executionScope.throwIfAborted({ kind: 'llm_tool_intents' });
-      turn.startToolInvocationBatch(toolInvocations);
       memoryManager.ingestAssistantToolResponse(response, toolInvocations, turn.turnId, 'LlmPhase');
     } else {
       turn.executionScope.throwIfAborted({ kind: 'llm_assistant_response' });
