@@ -50,3 +50,11 @@
   - The overlap with the unmerged aggregate-status branch is resolved at integration.
   - Route-redirect timing.
   - The Cancelled race can't be clicked.
+
+## Review Notifications (informational)
+
+- 2026-10-11: CRR-001 **Pass** for IR-001 (`code-review-report.md`). Non-blocking notes:
+  - C-001: `project-task-service.ts` is at 499 of 500 effective lines.
+  - C-002: the e2e fixture action objects lack `onOpenTeamRun`; handed to API/E2E.
+
+  The code reviewer forwarded the package to `/software_engineering_team/api_e2e_engineer`. No implementation action.
