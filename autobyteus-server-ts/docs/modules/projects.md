@@ -949,8 +949,8 @@ Real temporary byte fixtures and HTTP, default MCP and native tests are
 distinct from injected fault contracts. Run
 `pnpm -C autobyteus-server-ts prepare:shared` before source-level server checks.
 The node-locality suite requires current server `prebuild` and `build` as well;
-see [Project mutation regressions](../../../TESTING.md#project-mutation-regressions)
-for commands, fixture ownership and evidence limits.
+see the header of [project-mutation-node-locality.e2e.test.ts](../../tests/e2e/projects/project-mutation-node-locality.e2e.test.ts)
+for commands and fixture ownership.
 
 - [Frontend Projects](../../../autobyteus-web/docs/projects.md)
 - [Workspaces](workspaces.md)

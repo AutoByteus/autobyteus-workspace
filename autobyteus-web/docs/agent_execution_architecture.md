@@ -1172,7 +1172,7 @@ Org-root/addressed-member and saved-config owners retain draft, registration,
 locking and explicit Send/Run/Save policy. Saved roots do not become editable.
 This replaces the shared form's text-only presentation, not its owners or the
 retired configuration-form stack. See [workspace settings](./settings.md#run-workspace-choice-on-start-surfaces)
-and the [native-picker regression runbook](../../TESTING.md#native-workspace-folder-picker-regression)
+and the [native-picker regression probe](../tests/e2e/workspace-folder-picker-probe.mjs)
 for user behavior and the separate native/controlled test boundaries.
 
 The Existing workspace picker used elsewhere is the shared
