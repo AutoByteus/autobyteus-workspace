@@ -34,8 +34,10 @@
         :expanded="isRowExpanded(displayRow.row.rowKey)"
         :continuing-ancestor-depths="displayRow.continuingAncestorDepths"
         :has-following-sibling="displayRow.hasFollowingSibling"
+        :task="taskOf(displayRow.row)"
         @select="$emit('select', $event)"
         @toggle="$emit('toggle', $event)"
+        @locate-task="(task: TaskWorkerTask) => locate(task, () => emit('open-run'))"
       />
     </template>
   </TransitionGroup>
@@ -49,6 +51,8 @@ import { useLeavingTreeRows } from '~/components/workspace/history/useLeavingTre
 import { aggregateTeamBranchAgentStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useLocalization } from '~/composables/useLocalization';
+import { useTaskWorkerTasks } from '~/composables/projects/useTaskWorkerTasks';
+import type { TaskWorkerTask } from '~/types/project';
 import type { WorkspaceHistoryAvatarBindings } from '~/components/workspace/history/workspaceHistorySectionContracts';
 import type {
   RunHistoryStableExecutionRow,
@@ -75,6 +79,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'select', row: RunHistoryTeamExecutionRow): void;
   (e: 'toggle', row: RunHistoryTeamExecutionRow): void;
+  /** Open this Team run without collapsing it (a Task summary located from a page without a right panel, REQ-012). */
+  (e: 'open-run'): void;
 }>();
 
 const { t } = useLocalization();
@@ -114,6 +120,9 @@ const visibleRows = computed<VisibleTeamExecutionRow[]>(() => {
     hasFollowingSibling: hasFollowingSiblingAtDepth(index, entry.row.depth),
   }));
 });
+
+// Task workers show their current Task's summary; it locates the Task in Projects.
+const { taskOf, locate } = useTaskWorkerTasks(() => visibleRows.value.map((displayRow) => displayRow.row));
 
 const isSelected = (row: RunHistoryTeamExecutionRow): boolean =>
   props.isTeamSelected

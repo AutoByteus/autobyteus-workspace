@@ -233,6 +233,8 @@ const messages = {
   "workspace.history.hierarchy.tree_label": "{{name}}组织树",
   "workspace.history.hierarchy.role.agent_team": "智能体团队",
   "workspace.history.hierarchy.role.agent": "智能体",
+  "workspace.history.copyTask.locate": "在项目中显示任务：{{title}}",
+  "workspace.history.copyTask.accessible": "任务：{{title}}",
   "workspace.history.hierarchy.role.temporary_task_team": "临时任务团队",
   "workspace.history.hierarchy.role.temporary_task_agent": "临时任务智能体",
   "workspace.history.hierarchy.identity": "{{role}} · {{name}} · {{address}}",
