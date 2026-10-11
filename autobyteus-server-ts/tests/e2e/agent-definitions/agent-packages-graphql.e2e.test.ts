@@ -13,6 +13,7 @@ import { resetDefaultDefinitionCatalogRuntimeForTests } from "../../../src/defin
 import { DefinitionSourceRegistry } from "../../../src/collaboration-definition-admission/providers/definition-source-registry.js";
 import { DefinitionAdmissionService } from "../../../src/collaboration-definition-admission/services/definition-admission-service.js";
 import { GitHubAgentPackageInstaller } from "../../../src/agent-packages/installers/github-agent-package-installer.js";
+import { GitHubRepositoryClient } from "../../../src/integrations/github/github-repository-client.js";
 import { AgentPackageService } from "../../../src/agent-packages/services/agent-package-service.js";
 import { AgentPackageRegistryStore } from "../../../src/agent-packages/stores/agent-package-registry-store.js";
 import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/stores/agent-package-root-settings-store.js";
@@ -157,48 +158,29 @@ const createTestRegistryStore = (registryRoot: string): AgentPackageRegistryStor
     getAppDataDir: () => registryRoot,
   });
 
-const createRevisionBackedGitHubInstaller = (input: {
+type RevisionBackedGitHubInput = {
   dataRoot: string;
   owner: string;
   repo: string;
   getRevision: () => string;
   fixtureRootsByRevision: Record<string, string>;
   defaultBranch?: string;
-}): GitHubAgentPackageInstaller => {
+};
+
+/** The controlled GitHub API (repository metadata and branch head) shared by the installer and the service's revision client. */
+const createRevisionBackedGitHubFetch = (input: RevisionBackedGitHubInput): typeof fetch => {
   const defaultBranch = input.defaultBranch ?? "main";
+  return (async (resource: string | URL | Request) => {
+    const requestUrl = typeof resource === "string"
+      ? resource
+      : resource instanceof URL
+        ? resource.toString()
+        : resource.url;
 
-  return new GitHubAgentPackageInstaller({
-    config: {
-      getAppDataDir: () => input.dataRoot,
-      getDownloadDir: () => path.join(input.dataRoot, "downloads"),
-    },
-    fetchImpl: async (resource) => {
-      const requestUrl = typeof resource === "string"
-        ? resource
-        : resource instanceof URL
-          ? resource.toString()
-          : resource.url;
-
-      if (requestUrl.includes("/branches/")) {
-        return new Response(
-          JSON.stringify({
-            commit: { sha: input.getRevision() },
-          }),
-          {
-            status: 200,
-            statusText: "OK",
-            headers: { "Content-Type": "application/json" },
-          },
-        );
-      }
-
+    if (requestUrl.includes("/branches/")) {
       return new Response(
         JSON.stringify({
-          default_branch: defaultBranch,
-          html_url: `https://github.com/${input.owner}/${input.repo}`,
-          private: false,
-          name: input.repo,
-          owner: { login: input.owner },
+          commit: { sha: input.getRevision() },
         }),
         {
           status: 200,
@@ -206,7 +188,32 @@ const createRevisionBackedGitHubInstaller = (input: {
           headers: { "Content-Type": "application/json" },
         },
       );
+    }
+
+    return new Response(
+      JSON.stringify({
+        default_branch: defaultBranch,
+        html_url: `https://github.com/${input.owner}/${input.repo}`,
+        private: false,
+        name: input.repo,
+        owner: { login: input.owner },
+      }),
+      {
+        status: 200,
+        statusText: "OK",
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }) as typeof fetch;
+};
+
+const createRevisionBackedGitHubInstaller = (input: RevisionBackedGitHubInput): GitHubAgentPackageInstaller =>
+  new GitHubAgentPackageInstaller({
+    config: {
+      getAppDataDir: () => input.dataRoot,
+      getDownloadDir: () => path.join(input.dataRoot, "downloads"),
     },
+    fetchImpl: createRevisionBackedGitHubFetch(input),
     downloadFileFromUrlImpl: async (archiveUrl, downloadDir) => {
       await fs.mkdir(downloadDir, { recursive: true });
       const revision = decodeURIComponent(
@@ -229,7 +236,15 @@ const createRevisionBackedGitHubInstaller = (input: {
       });
     },
   });
-};
+
+/**
+ * Package-service GitHub dependencies over one controlled upstream: the installer (download) and the
+ * revision client that Check/Update use (`githubClient`, added by c6c4afbf4), so no request reaches GitHub.
+ */
+const createRevisionBackedGitHubDependencies = (input: RevisionBackedGitHubInput) => ({
+  installer: createRevisionBackedGitHubInstaller(input),
+  githubClient: new GitHubRepositoryClient(createRevisionBackedGitHubFetch(input)),
+});
 
 describe("Agent packages GraphQL e2e", () => {
   let schema: GraphQLSchema;
@@ -830,7 +845,7 @@ describe("Agent packages GraphQL e2e", () => {
     AgentPackageService.getInstance({
       rootSettingsStore: createTestRootSettingsStore(defaultRoot),
       registryStore: createTestRegistryStore(registryRoot),
-      installer: createRevisionBackedGitHubInstaller({
+      ...createRevisionBackedGitHubDependencies({
         dataRoot,
         owner,
         repo,
@@ -1058,7 +1073,7 @@ describe("Agent packages GraphQL e2e", () => {
     AgentPackageService.getInstance({
       rootSettingsStore: createTestRootSettingsStore(defaultRoot),
       registryStore,
-      installer: createRevisionBackedGitHubInstaller({
+      ...createRevisionBackedGitHubDependencies({
         dataRoot,
         owner,
         repo,
@@ -1190,7 +1205,7 @@ describe("Agent packages GraphQL e2e", () => {
     AgentPackageService.getInstance({
       rootSettingsStore: createTestRootSettingsStore(defaultRoot),
       registryStore: createTestRegistryStore(registryRoot),
-      installer: createRevisionBackedGitHubInstaller({
+      ...createRevisionBackedGitHubDependencies({
         dataRoot,
         owner,
         repo,
