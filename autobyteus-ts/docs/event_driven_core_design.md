@@ -180,8 +180,9 @@ terminal states.
 
 - Add turn-start input behavior with an `AgentInputProcessor` or by extending
   `AgentInputPipeline` semantics.
-- Add LLM streaming behavior in `LlmPhase`, `LlmStreamingResponseHandler`, or
-  provider adapters.
+- Add LLM call behavior in `LlmPhase` (request, settlement, outcome), stream
+  consumption in `LlmResponseStreamCollector` / `LlmStreamingResponseHandler`,
+  per-call compaction in `LlmCallCompaction`, or provider adapters.
 - Add tool execution/result behavior in `BaseTool.prepareExecution(...)`,
   `ToolPhase`, `ToolResultPipeline`, `MemoryManager`, or
   `ToolContinuationInputBuilder` according to the owning responsibility.
