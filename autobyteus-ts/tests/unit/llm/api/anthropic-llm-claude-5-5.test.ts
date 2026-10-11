@@ -25,7 +25,7 @@ vi.mock('@anthropic-ai/sdk', () => {
   return { default: Anthropic };
 });
 
-type ModelId = 'claude-sonnet-5-5' | 'claude-haiku-5-5';
+type ModelId = 'claude-sonnet-5-5' | 'claude-haiku-5-5' | 'claude-opus-5-5';
 
 const catalogRow = (id: ModelId) => {
   const row = anthropicSupportedModelDefinitions.find((definition) => definition.value === id);
@@ -172,6 +172,21 @@ describe.each(['sync', 'stream'] as const)('AnthropicLLM Claude 5.5 request shap
   it('allows forced tool choice for Haiku 5.5', async () => {
     const params = await sendWith(transport, buildLlm('claude-haiku-5-5'), { tool_choice: { type: 'any' } });
     expect(params.tool_choice).toEqual({ type: 'any' });
+  });
+});
+
+describe('AnthropicLLM adaptive-required local errors', () => {
+  beforeEach(() => mockCreate.mockReset());
+
+  it('names the model value in the Opus 5.5 thinking and sampling errors', async () => {
+    const opus = buildLlm('claude-opus-5-5');
+    await expect(opus.sendMessages(userMessages, { thinking: { type: 'disabled' } })).rejects.toThrow(
+      'Anthropic model claude-opus-5-5 supports adaptive thinking only; disabled and manual thinking are unavailable.',
+    );
+    await expect(opus.sendMessages(userMessages, { temperature: 0.5 })).rejects.toThrow(
+      'Anthropic model claude-opus-5-5 does not support explicit sampling parameters.',
+    );
+    expect(mockCreate).not.toHaveBeenCalled();
   });
 });
 

@@ -245,9 +245,8 @@ schemas expose adaptive thinking where the provider supports a manual toggle:
   `temperature`, `top_p`, and `top_k` request fields for these models.
 
 Per-model request rules live in one exact-value table,
-`src/llm/api/anthropic-model-request-policy.ts`. A model value without a row
-(including a dated snapshot ID) uses the older fixed-budget policy. Each row
-records the thinking mode, the shape sent when the thinking toggle is off, and
+`src/llm/api/anthropic-model-request-policy.ts`. Every Anthropic catalog row
+has an explicit entry; a unit test pins each row's policy. Each row records the thinking mode, the shape sent when the thinking toggle is off, and
 whether a forced `tool_choice` (`any`/`tool`) fails locally:
 
 | Model value | Thinking mode | Toggle off sends | Forced `tool_choice` |
@@ -257,7 +256,7 @@ whether a forced `tool_choice` (`any`/`tool`) fails locally:
 | `claude-haiku-5-5` | adaptive | `{ type: "disabled" }` | allowed |
 | `claude-sonnet-5` | adaptive | `{ type: "disabled" }` | allowed |
 | `claude-opus-5`, `claude-opus-4-8`, `claude-opus-4-7`, `claude-fable-5`, `claude-fable-5-1` | adaptive | nothing | allowed |
-| any other value (e.g. `claude-sonnet-4-6`) | fixed budget | nothing (`temperature: 0` default) | allowed |
+| `claude-sonnet-4-6` | fixed budget | nothing (`temperature: 0` default) | allowed |
 
 An explicit caller `thinking` value reaches an adaptive model only when its type
 is `adaptive` or that model's own off shape (`between_tools` is reduced to

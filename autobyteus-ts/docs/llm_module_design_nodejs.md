@@ -303,7 +303,8 @@ Provider adapters own request-shape differences:
   `cache_write_tokens` detail fields into generic cache-creation input usage.
 - `AnthropicLLM` shapes requests from one exact-value per-model table,
   `anthropic-model-request-policy.ts` (thinking mode, toggle-off shape, forced
-  `tool_choice` rejection); unknown values use the legacy fixed-budget policy.
+  `tool_choice` rejection); every catalog row has an explicit entry, including
+  the fixed-budget `claude-sonnet-4-6`.
   Sonnet 5.5 with thinking off sends `{ type: "between_tools" }` and rejects a
   forced `tool_choice` locally; Haiku 5.5 and Sonnet 5 send `{ type: "disabled" }`.
 - `AnthropicLLM` maps current Claude adaptive-thinking config for Opus 5,

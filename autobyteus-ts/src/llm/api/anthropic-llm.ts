@@ -122,10 +122,12 @@ const validateStrictRequestRules = (
   if (policy.thinkingMode === 'adaptive_required') {
     if (configExtraParams?.thinking_enabled === false || configExtraParams?.thinking_budget_tokens !== undefined ||
         (explicitThinking !== undefined && (!isObjectRecord(explicitThinking) || explicitThinking.type !== 'adaptive'))) {
-      throw new Error('Claude Opus 5.5 supports adaptive thinking only; disabled and manual thinking are unavailable.');
+      throw new Error(
+        `Anthropic model ${modelValue} supports adaptive thinking only; disabled and manual thinking are unavailable.`
+      );
     }
     if ([...ANTHROPIC_SAMPLING_PARAM_KEYS].some((key) => request[key] !== undefined)) {
-      throw new Error('Claude Opus 5.5 does not support explicit sampling parameters.');
+      throw new Error(`Anthropic model ${modelValue} does not support explicit sampling parameters.`);
     }
   }
   if (policy.rejectsForcedToolChoice && isForcedToolChoice(request.tool_choice)) {
