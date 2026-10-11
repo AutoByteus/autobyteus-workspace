@@ -487,6 +487,9 @@ the depth-first execution projection and derives sibling continuation metadata.
 `WorkspaceHierarchyBranches.vue` renders continuous ancestor rails and a
 right-only current elbow from that metadata; the current vertical continues to
 the next sibling or stops at the current row midpoint for the last sibling.
+A two-line Task-worker row (with its [Task summary](./projects.md#task-summaries-in-the-workspaces-tree))
+uses `anchor="name-line"`: the elbow, and a last sibling's vertical, meet the
+name line instead of the row midpoint.
 These branches are presentation-only and do not create or rewrite topology.
 Selecting either a stable or transient Workspaces row uses the existing
 team-member inspection path. `TeamExecutionViewState` is the sole authority for

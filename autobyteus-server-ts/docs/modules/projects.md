@@ -301,6 +301,31 @@ every ownership question reads it:
 Two open entries for one copy can only come from damaged data: the latest is
 used and `TASK_AGENT_RESOURCE_CONFLICT` is logged.
 
+### Current Task of a Task worker
+
+A **Task worker** is a copy that is its current Task's
+[root](#task-roots) (that Task's latest `assigned` entry). Sub-work copies
+(`delegated`, `broughtIn`) and `@` collaborators are no Task's root.
+`TaskExecutionResourceService.rootTaskLocationOf(execution)` answers a copy's
+current Task location only when the copy is that Task's root, from the
+in-memory index (no scan of Task files); otherwise null. It never throws.
+
+`ProjectTaskService.currentTasksOfTaskWorkers(workers)` is the only Projects
+read built on it (delegated-copy-task-locator). It waits for `load()`, then for
+each `{agentRunId}` or `{teamRunId}` reads the Task's change view and answers
+`{execution, task: {taskId, projectId, description, status} | null}`
+(`TaskWorkerTaskResult` / `TaskWorkerTaskView` in `domain/models.ts`;
+`projectId` null means a Task with no Project). `task` is null when the copy is
+no Task's root, or when its Task or that Task's Project no longer exists. A
+closed (DONE or CANCELLED) current Task is still answered. One worker never
+fails the batch: an unexpected read error is logged as
+`TASK_WORKER_TASK_READ_FAILED` and that worker answers null. The read never
+writes, wakes or starts anything. GraphQL exposes it as
+[`taskWorkerTasks`](#graphql-and-rest); clients keep the answer live from the
+[change feed](#live-change-feed-and-task-roots) (a `task_upserted` whose `root`
+names the worker, or any change to the cached Task or its Project, means
+re-read), so no new feed message exists for it.
+
 ### Damaged file (Q-3)
 
 A damaged file is one that is unreadable, invalid, or whose `taskId` does not
@@ -894,6 +919,13 @@ Project queries and mutations keep their names; there is no Projects capability 
 - `tasksWithoutProject` returns the Tasks with no Project (Temp tasks), latest
   change first: `taskId, description, status, referenceFiles, createdAt,
   updatedAt, root`. There is no mutation for them.
+- `taskWorkerTasks(agentRunIds: [String!]!, teamRunIds: [String!]!)` returns
+  `[TaskWorkerTask!]!`, one per listed run (agents first, then teams):
+  `workerKind` (`agent` | `team`), `workerRunId` and a nullable `task`
+  `{taskId, projectId, description, status}`. It is the batched
+  [current Task of a Task worker](#current-task-of-a-task-worker) read used by
+  the web app's Workspaces tree; an ID that is no Task's root answers
+  `task: null`.
 - `createProjectTask({projectId, description, contextDraft?})` creates a TODO
   Task.
 - `updateProjectTask({projectId, taskId, description, contextChanges?})` edits
@@ -932,8 +964,11 @@ Read [workspace TESTING.md](../../../TESTING.md) first.
 
 Coverage:
 - `tests/unit/projects`: per-folder store, services, Task agent run resources,
-  change publication (`project-change-{publisher,publication,hub}.test.ts`) and
-  Task roots (`task-root-view.test.ts`).
+  change publication (`project-change-{publisher,publication,hub}.test.ts`),
+  Task roots (`task-root-view.test.ts`) and the current Task of Task workers
+  (`task-worker-current-tasks.test.ts`).
+- `tests/unit/api/graphql/project-tasks-schema.test.ts`: the GraphQL Task
+  schema, including `taskWorkerTasks`.
 - `tests/unit/agent-collaboration/task-execution-status.test.ts`: the live
   status of task executions in actual Agent, Team and Org roots.
 - `tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts`
