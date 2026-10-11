@@ -13,6 +13,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-005 | Architecture Reviewer pass handoff, ARCH-REV-006 (SR-010), from CRR-006 | CRR-006 CR-004 | `Solution Revision` (reviewed) | SR-010, ARCH-REV-006, CRR-006 | Summary output limit fitted to each request's room; both paths accept with the agent budget; back to Code Review |
 | IR-006 | Architecture Reviewer pass handoff, ARCH-REV-007 (SR-011), from code-review Round 8 | F-6, F-7, F-8 | `Solution Revision` (reviewed) | SR-011, ARCH-REV-007 | Unwrapped valid summary accepted; DeepSeek cached mode final; back to Code Review |
 | IR-007 | Architecture Reviewer pass handoff, ARCH-REV-008 (SR-012), from CRR-010 | F-9 | `Solution Revision` (reviewed) | SR-012, ARCH-REV-008, CRR-009, CRR-010 | Explained empty section accepted; back to Code Review |
+| IR-008 | Delivery Engineer DR-001 (after base merge `fffdc5c2f`) | DR-001 | `Local Fix` | SR-012 (REQ-002 unchanged), DR-001 | New Anthropic catalog entries set to the cached summary; back to Code Review |
 
 ## Revision Entries
 
@@ -227,3 +228,19 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - A section starting with `(none)` and then listing bullets is accepted (harmless per N-4).
   - Delivery should note that the server test `native-compaction-terminal-drain.test.ts` is load-sensitive.
   - The uncommitted API/E2E edits and the other roles' ticket docs were not touched or committed.
+
+### IR-008 — New Anthropic catalog entries use the cached summary (DR-001)
+
+- Triggering role, report path, and round: `/software_engineering_team/delivery_engineer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/delivery-revision-record.md`, DR-001. Delivery merged `origin/personal@6314c4ee2` (merge `fffdc5c2f`), which brought in base commit `bc1777e02` adding `claude-sonnet-5-5` and `claude-haiku-5-5` without `compactionSummaryMode`.
+- Triggering finding IDs: DR-001. The core unit test `per-model summary mode (REQ-002)` failed on the merged code.
+- Classification: `Local Fix`. The approved REQ-002 and design § 10 already cover every Anthropic catalog model, so intended behavior does not change.
+- Prior authoritative result: IR-007 (CRR-011 Pass).
+- Current authoritative result: fixed; core unit 2072/2072; returning to Code Review.
+- Related solution revision IDs: SR-012 (REQ-002 unchanged). Related architecture-review revision IDs: ARCH-REV-008. Related code-review revision IDs: CRR-011. Related API/E2E revision IDs: see `api-e2e-revision-record.md`. Related delivery revision IDs: DR-001.
+- Why this implementation revision is recorded: the merge added catalog entries that the ticket's per-model rule must cover.
+- Approved behavior or requirement IDs affected: REQ-002.
+- Implementation delta: `compactionSummaryMode: 'cached_conversation'` on `claude-sonnet-5-5` and `claude-haiku-5-5`. All 10 Anthropic entries are now cached.
+- Changed files or areas: `autobyteus-ts/src/llm/anthropic-supported-model-definitions.ts`; `implementation-handoff.md`. No code doc names the Anthropic models individually; they say "the Anthropic models".
+- Local validation and result: core production typecheck passes; core unit 309 files, 2072/2072.
+- Next recipient or routing: Code Review (`get_handoff_rules`: implementation-owned Local Fix on the Large/High route), then delivery resumes with DR-002.
+- Remaining limitations or risks: AC-003 measured Opus 5.5 plus one family check (Sonnet 5). Sonnet 5.5 and Haiku 5.5 inherit the cached mode by the approved per-provider-catalog rule without their own quality run; the Solution Designer may want to note that. The delivery-owned uncommitted files (`delivery-revision-record.md`, `delivery-evidence/`) were not touched or committed.

@@ -63,7 +63,7 @@
    - Effect: the transcript fallback's `COMPACTION_SUMMARY_PROMPT` now reaches Gemini as its system instruction. A normal agent request is unchanged in content, because its leading SYSTEM message is the same text it configures.
 11. **Per-model summary mode (IR-004, design § Intended Change 10, REQ-002, CRR-005 F-5).**
    - `LLMModel.compactionSummaryMode: 'cached_conversation' | 'transcript'` (type `CompactionSummaryRequestMode`) defaults to `'transcript'`. That default covers dynamic and custom models (Ollama, LM Studio, the AutoByteus server, OpenAI-compatible endpoints) and any catalog entry without the field.
-   - The eight Anthropic catalog entries set `'cached_conversation'`, and so do the two DeepSeek-provider entries (`deepseek-v4-flash`, `deepseek-v4-pro`). The DeepSeek value is final since SR-011, and its "pending rerun" comment was removed in IR-006. The Qwen-hosted `deepseek-v4-pro` entry stays on `'transcript'`; it belongs to the Qwen provider.
+   - All ten Anthropic catalog entries set `'cached_conversation'`, including `claude-sonnet-5-5` and `claude-haiku-5-5`, which came in with the base merge `fffdc5c2f` and were set in IR-008. So and so do the two DeepSeek-provider entries (`deepseek-v4-flash`, `deepseek-v4-pro`). The DeepSeek value is final since SR-011, and its "pending rerun" comment was removed in IR-006. The Qwen-hosted `deepseek-v4-pro` entry stays on `'transcript'`; it belongs to the Qwen provider.
    - New `ConversationSummaryPort.usesCachedSummary()`, implemented by `LlmPhaseSummaryPort` from the model. `CompactionSummarizer` checks it before `fitsInputBudget`. When it returns false, the summarizer goes straight to the transcript request with the full 3-attempt budget, so attempt numbers start at 1.
    - Memory and agent code name no provider (checked by grep over the diff).
 12. **Summary output-limit override (IR-004, design § Intended Change 11, REQ-009, CRR-005 F-3).**
@@ -74,14 +74,14 @@
    - **Fitted limit (IR-005).** Each summary request sends `L_eff = max(R, min(L, context − E − safetyMarginTokens))`. `E` is the estimate of exactly what that request sends, made with the same estimator and contents as its input check (N-2): for the cached request, the messages given, the instruction and the tool schemas (`estimateCachedRequest`, shared with `fitsInputBudget`); for the transcript request, the system prompt and the transcript messages (the same array its check uses). With an unknown context, `L_eff = L`. Without an override, no `maxOutputTokens` is sent. This lives in one private `summaryOutputLimit(estimatedInputTokens)`, used through `withOutputLimit` by both request methods. The port holds `R` (`agentOutputLimit`) and `L` (`outputLimitCeiling`). No interface, summarizer or adapter change.
 13. **Instruction v5 (IR-004, design § Intended Change 12, CRR-005 F-4/F-5).** `COMPACTION_SUMMARY_INSTRUCTION` was extracted by script from the named section "Cached summary instruction v5 — normative text" and is byte-equal to it (SHA-256 `43da1ce9d9df6b1a00f76d17cc146077d7d9be9699fbef83b023457f445af666`). A diff against v4 shows exactly the five approved sentence edits. The v6 fallback was re-extracted and is byte-identical to the shipped literal. The opening sentence is unchanged, so API/E2E's `assertNoInstructionEcho` marker still matches.
 
-- Implementation cycle: `Rework` (IR-007, reviewed solution revision SR-012 after CRR-010 F-9)
+- Implementation cycle: `Local Fix` (IR-008, delivery DR-001 after the base merge `fffdc5c2f`)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/implementation-revision-record.md`
-- Current implementation revision ID: `IR-007`. It accepts an explained empty section (SR-012). IR-006 accepted an unwrapped valid summary and makes the DeepSeek cached mode final (SR-011). IR-005 fitted the summary output limit to each request's room and returns both paths to the agent's input budget (SR-010). IR-004 added the per-model summary mode, the summary output-limit override and instruction v5 (IR-003 added the nine-heading contract, prompt v6 and Gemini `systemInstruction`); see the revision record.
+- Current implementation revision ID: `IR-008`. It sets `compactionSummaryMode: 'cached_conversation'` on the two Anthropic catalog entries the base merge added (DR-001; the approved REQ-002 rule covers every Anthropic catalog model). IR-007 accepted an explained empty section (SR-012). IR-006 accepted an unwrapped valid summary and makes the DeepSeek cached mode final (SR-011). IR-005 fitted the summary output limit to each request's room and returns both paths to the agent's input budget (SR-010). IR-004 added the per-model summary mode, the summary output-limit override and instruction v5 (IR-003 added the nine-heading contract, prompt v6 and Gemini `systemInstruction`); see the revision record.
 - Related solution revision IDs: `SR-004` (design), `SR-005` (AC-003), `SR-006` (IR-002 wording), `SR-007` (IR-003 scope), `SR-008`/`SR-009` (IR-004 scope), `SR-010` (IR-005 scope), `SR-011` (IR-006 scope), `SR-012` (IR-007 scope; SR-013 is a separate pending proposal and is not implemented)
 - Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-005`, `ARCH-REV-006`, `ARCH-REV-007`, `ARCH-REV-008`
 - Related code-review revision IDs: `CRR-001` (Pass, IR-001), `CRR-002` (Pass, IR-002), `CRR-004` (Pass, IR-003), `CRR-005` (failure-origin: F-3, F-4, F-5), `CRR-006` (CR-004), `CRR-007` (Pass, IR-005), Round 8 (F-6, F-7, F-8), `CRR-009` (Pass, IR-006), `CRR-010` (F-9)
 - Related API/E2E revision IDs: see `api-e2e-revision-record.md` (API/E2E-owned; AC-003 runs on IR-001/IR-002)
-- Related delivery revision IDs: `N/A`
+- Related delivery revision IDs: `DR-001` (see `delivery-revision-record.md`)
 - Triggering finding IDs: CRR-010 `F-9` (through SR-012); Round 8 `F-6`, `F-7`, `F-8` (through SR-011); CRR-006 `CR-004` (through SR-010); before that CRR-005 `F-3`, `F-4`, `F-5` (through SR-009). N-1 is still applied. ARCH-004 is respected: no test requires the transcript fallback to cover the kept tail.
 
 ## Routing Classification (Mandatory)
@@ -230,7 +230,12 @@
 
 ## Local Implementation Checks Run
 
-**IR-007 (current code, HEAD `090353579` plus the IR-007 commit):**
+**IR-008 (current code, merge `fffdc5c2f` plus the IR-008 commit):**
+- autobyteus-ts production typecheck: pass.
+- autobyteus-ts `pnpm exec vitest run tests/unit --no-watch --maxWorkers=4`: 309 files, **2072/2072 passed**. The DR-001 failure (`per-model summary mode (REQ-002)`: `ANTHROPIC/claude-sonnet-5-5: expected 'transcript' to be 'cached_conversation'`) is fixed.
+- Server and web are not affected (a catalog value only). Delivery's DR-001 run on `fffdc5c2f` already passed: server 5242, web test:nuxt 4175.
+
+**IR-007 (HEAD `090353579` plus the IR-007 commit):**
 - autobyteus-ts production typecheck: pass; the changed test files have no type errors.
 - autobyteus-ts `vitest run tests/unit --maxWorkers=4`: 307 files, **2045 tests, all passed**. Runtime compaction integration: 6/6.
 - Server: `prepare:shared` and `typecheck` pass. `vitest run tests/unit --maxWorkers=4`: 666 files passed, 4 skipped; 5232 tests passed.

@@ -161,6 +161,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-sonnet-5-5',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
+    compactionSummaryMode: 'cached_conversation',
     canonicalName: 'claude-sonnet-5-5',
     staticMetadata: createStaticModelMetadata(1_000_000, 1_000_000, 128_000, 'https://platform.claude.com/docs/en/models/sonnet-5-5/overview', '2026-10-09'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(2, 10, {
@@ -205,6 +206,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-haiku-5-5',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
+    compactionSummaryMode: 'cached_conversation',
     canonicalName: 'claude-haiku-5-5',
     staticMetadata: createStaticModelMetadata(1_000_000, 1_000_000, 128_000, 'https://platform.claude.com/docs/en/models/haiku-5-5/overview', '2026-10-09'),
     // Prompt size for the tier counts all input tokens, including cache reads and writes.
