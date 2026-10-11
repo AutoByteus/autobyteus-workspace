@@ -1,4 +1,5 @@
 import { CompleteResponse, type ChunkResponse } from '../../llm/utils/response-types.js';
+import type { LlmRequestCapacity } from '../token-budget.js';
 import { BaseLLM } from '../../llm/base.js';
 import { LlmResponseStreamCollector } from './llm-response-stream-collector.js';
 import { ToolSchemaProvider } from '../../tools/usage/providers/tool-schema-provider.js';
@@ -52,6 +53,36 @@ const percentOf = (numerator: number | null, denominator: number | null | undefi
   return (numerator / denominator) * 100;
 };
 
+/** One LLM call (one request attempt): what every step of the call needs. */
+type LlmCall = {
+  agentId: string;
+  context: AgentContext;
+  turn: AgentTurn;
+  notifier: AgentExternalEventNotifier | null;
+  llm: BaseLLM;
+  memoryManager: NonNullable<AgentContext['state']['memoryManager']>;
+  callSequence: number;
+  callId: string;
+  requestCapacity: LlmRequestCapacity | null;
+  toolCallsEnabled: boolean;
+  toolSchemas: Array<Record<string, unknown>>;
+  compaction: LlmCallCompaction | null;
+  assembler: LLMRequestAssembler;
+  systemPrompt: string | null;
+  /** The request's recovery snapshot was committed or restored. */
+  recoverySettled: boolean;
+};
+
+type LlmCallSettlement =
+  | { kind: 'completed'; response: CompleteResponse; toolInvocations: ToolInvocation[] }
+  | { kind: 'output_limited'; response: CompleteResponse; truncatedToolNames: string[] };
+
+/**
+ * Owns one LLM call: request preparation, starting the stream, settling the call's recovery
+ * snapshot (commit or rollback), memory ingestion and token usage per outcome, finish
+ * classification and the outcome. Stream consumption and segments belong to
+ * `LlmResponseStreamCollector`; the call's automatic compaction to `LlmCallCompaction`.
+ */
 export class LlmPhase {
   async run(
     input: AgentInputPipelineResult,
@@ -59,9 +90,29 @@ export class LlmPhase {
     turn: AgentTurn,
     notifier: AgentExternalEventNotifier | null
   ): Promise<LlmPhaseOutcome> {
+    const call = this.beginCall(context, turn, notifier);
+    const request = await this.assembleRequest(call, input);
+    if (!request) return { kind: 'compaction_blocked' };
+
+    const collector = new LlmResponseStreamCollector({ turnId: turn.turnId, notifier, toolCallsEnabled: call.toolCallsEnabled });
+    let settlement: LlmCallSettlement;
+    try {
+      await collector.consume(this.startStream(call, request), turn.executionScope);
+      settlement = this.settle(call, request, collector);
+    } catch (error) {
+      if (isAgentInterruptionError(error)) {
+        this.settleInterrupted(call, request, collector, error.reason);
+        throw error;
+      }
+      return this.settleFailed(call, request, collector, error);
+    }
+    return this.finishCall(call, request, collector, settlement);
+  }
+
+  private beginCall(context: AgentContext, turn: AgentTurn, notifier: AgentExternalEventNotifier | null): LlmCall {
     const agentId = context.agentId;
-    const llmInstance = context.state.llmInstance as BaseLLM | null;
-    if (!llmInstance) {
+    const llm = context.state.llmInstance as BaseLLM | null;
+    if (!llm) {
       const errorMessage = `Agent '${agentId}' requires an initialized LLM instance.`;
       notifier?.notifyAgentErrorOutputGeneration({
         code: 'LLM_NOT_INITIALIZED',
@@ -70,8 +121,6 @@ export class LlmPhase {
       });
       throw new Error(errorMessage);
     }
-
-    const activeTurnId = turn.turnId;
     const memoryManager = context.state.memoryManager;
     if (!memoryManager) {
       throw new Error(`Agent '${agentId}' requires a memory manager to assemble LLM requests.`);
@@ -81,8 +130,8 @@ export class LlmPhase {
     const runtimeSettings = runtimeSettingsResolver.resolve();
     const automaticCompaction = memoryManager.getAutomaticCompactionConfiguration();
     const requestCapacity = resolveLlmRequestCapacity(
-      llmInstance.model,
-      llmInstance.config,
+      llm.model,
+      llm.config,
       runtimeSettings,
       automaticCompaction.kind === 'enabled'
         ? automaticCompaction.policy.safetyMarginTokens
@@ -90,19 +139,16 @@ export class LlmPhase {
     );
     const toolNames = resolveTurnToolNames(context);
     const toolCallsEnabled = toolNames.length > 0;
-    const provider = llmInstance.model?.provider ?? null;
-    const collector = new LlmResponseStreamCollector({ turnId: activeTurnId, notifier, toolCallsEnabled });
     const toolSchemas = toolCallsEnabled
-      ? new ToolSchemaProvider().buildSchema(toolNames, provider)
+      ? new ToolSchemaProvider().buildSchema(toolNames, llm.model?.provider ?? null)
       : [];
-
     const compaction = automaticCompaction.kind === 'enabled'
       ? LlmCallCompaction.create({
           automaticCompaction,
           agentId,
           context,
           memoryManager,
-          llm: llmInstance,
+          llm,
           toolSchemas,
           requestCapacity,
           runtimeSettingsResolver,
@@ -113,202 +159,243 @@ export class LlmPhase {
     const assembler = new LLMRequestAssembler(
       memoryManager,
       compaction?.executor ?? null,
-      llmInstance.model.multimodalCapabilities,
+      llm.model.multimodalCapabilities,
     );
-    const systemPrompt = context.state.processedSystemPrompt ?? llmInstance.config.systemMessage ?? null;
-    const llmCallSequence = turn.nextLlmCallSequence();
-    const llmCallId = `${activeTurnId}:llm:${llmCallSequence}`;
+    const callSequence = turn.nextLlmCallSequence();
+    return {
+      agentId,
+      context,
+      turn,
+      notifier,
+      llm,
+      memoryManager,
+      callSequence,
+      callId: `${turn.turnId}:llm:${callSequence}`,
+      requestCapacity,
+      toolCallsEnabled,
+      toolSchemas,
+      compaction,
+      assembler,
+      systemPrompt: context.state.processedSystemPrompt ?? llm.config.systemMessage ?? null,
+      recoverySettled: false,
+    };
+  }
 
-    let request: RequestPackage;
+  /** The prepared request, or `null` when pre-request compaction blocked the call. */
+  private async assembleRequest(call: LlmCall, input: AgentInputPipelineResult): Promise<RequestPackage | null> {
+    const { turn } = call;
     try {
-      request = await turn.executionScope.runAbortable(
+      return await turn.executionScope.runAbortable(
         { kind: 'llm_request_assembly' },
-        () => assembler.prepareRequest(
+        () => call.assembler.prepareRequest(
           input.llmUserMessage,
-          { turnId: activeTurnId, requestId: llmCallId, isTurnContinuation: turn.isContinuation, signal: turn.executionScope.signal },
-          systemPrompt ?? undefined,
-          toolSchemas,
+          { turnId: turn.turnId, requestId: call.callId, isTurnContinuation: turn.isContinuation, signal: turn.executionScope.signal },
+          call.systemPrompt ?? undefined,
+          call.toolSchemas,
         )
       );
     } catch (error) {
       if (error instanceof CompactionPreparationError) {
         turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
-        notifier?.notifyAgentErrorOutputGeneration({
+        call.notifier?.notifyAgentErrorOutputGeneration({
           code: 'LLM_REQUEST_PREPARATION_FAILED',
           message: error.message,
           details: String(error.cause ?? error),
-          classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
+          classification: { scope: 'turn', effect: 'diagnostic', turnId: turn.turnId }
         });
-        return { kind: 'compaction_blocked' };
+        return null;
       }
       throw error;
     }
+  }
 
-    let recoverySettled = false;
-    const restoreRequest = (reason: string, sourceEvent: string): void => {
-      memoryManager.restoreLlmRequestRecoverySnapshot(
-        request.recoverySnapshot,
-        { reason, sourceEvent },
-      );
-      recoverySettled = true;
-    };
-    const releaseRequest = (): void => {
-      memoryManager.commitLlmRequestRecoverySnapshot(request.recoverySnapshot);
-      recoverySettled = true;
-    };
+  /** Starts the provider stream with the shared conversation-request definition (CON-001). */
+  private startStream(call: LlmCall, request: RequestPackage): AsyncIterable<ChunkResponse> {
+    const scope = call.turn.executionScope;
+    scope.throwIfAborted({ kind: 'llm_request_assembly' });
+    scope.throwIfAborted({ kind: 'llm_stream_start' });
+    return call.llm.streamMessages(
+      request.outboundMessages,
+      conversationRequestKwargs(call.agentId, request.tools),
+      conversationRequestOptions({ signal: scope.signal, turnId: call.turn.turnId }),
+    ) as AsyncIterable<ChunkResponse>;
+  }
 
-    let parsedToolInvocations: ToolInvocation[] = [];
-    let completeResponse: CompleteResponse;
-    let truncatedToolNames: string[] | null = null;
-    const notifyTokenUsage = (): void => {
-      const tokenUsage = collector.usage;
-      if (!tokenUsage) return;
-      const latestPromptTokens = resolveLatestPromptTokens(tokenUsage);
-      notifier?.notifyAgentTokenUsageUpdated({
-        usage: tokenUsage,
-        turn_id: activeTurnId,
-        llm_call_id: llmCallId,
-        call_sequence: llmCallSequence,
-        runtime_kind: 'autobyteus',
-        ingestion_kind: 'autobyteus_llm_phase',
-        idempotency_key: `${agentId}:${llmCallId}`,
-        latest_prompt_tokens: latestPromptTokens,
-        effective_context_window_tokens: requestCapacity?.effectiveContextCapacity ?? null,
-        context_window_usage_percent: percentOf(latestPromptTokens, requestCapacity?.effectiveContextCapacity)
-      });
-    };
-
-    try {
-      turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
-      turn.executionScope.throwIfAborted({ kind: 'llm_stream_start' });
-      const stream = llmInstance.streamMessages(
-        request.outboundMessages,
-        conversationRequestKwargs(agentId, request.tools),
-        conversationRequestOptions({ signal: turn.executionScope.signal, turnId: activeTurnId }),
-      );
-
-      await collector.consume(stream as AsyncIterable<ChunkResponse>, turn.executionScope);
-
-      turn.executionScope.throwIfAborted({ kind: 'llm_stream_finalize' });
-      const reportedFinish = collector.finish;
-      if (reportedFinish?.reason === 'content_filter' || reportedFinish?.reason === 'context_window_exceeded') {
-        throw buildResponseStopError(reportedFinish);
-      }
-      if (reportedFinish?.reason === 'output_limit') {
-        // Settle as output-limited: commit the input, keep only the partial text (no reasoning,
-        // no native turn), discard every tool call. Nothing below can be interrupted.
-        turn.executionScope.throwIfAborted({ kind: 'post_llm_stream' });
-        releaseRequest();
-        if (collector.text) {
-          memoryManager.ingestAssistantResponse(
-            new CompleteResponse({ content: collector.text, reasoning: null, providerNativeAssistantTurn: null }),
-            activeTurnId,
-            'LlmPhaseOutputLimited'
-          );
-        }
-        truncatedToolNames = collector.completeOutputLimited(OUTPUT_LIMIT_DISCARDED_TOOL_CALL_ERROR);
-        completeResponse = new CompleteResponse({ content: collector.text, usage: collector.usage, finish: reportedFinish });
-        notifyTokenUsage();
-      } else {
-        const toolInvocations = collector.completeNormally();
-        turn.executionScope.throwIfAborted({ kind: 'post_llm_stream' });
-        completeResponse = collector.buildResponse();
-        notifyTokenUsage();
-
-        if (toolCallsEnabled && toolInvocations.length) {
-          parsedToolInvocations = toolInvocations;
-          turn.executionScope.throwIfAborted({ kind: 'llm_tool_intents' });
-          turn.startToolInvocationBatch(toolInvocations);
-          memoryManager.ingestAssistantToolResponse(completeResponse, toolInvocations, activeTurnId, 'LlmPhase');
-        }
-
-        if (parsedToolInvocations.length === 0) {
-          turn.executionScope.throwIfAborted({ kind: 'llm_assistant_response' });
-          memoryManager.ingestAssistantResponse(completeResponse, activeTurnId, 'LlmPhase');
-        }
-        releaseRequest();
-      }
-    } catch (error) {
-      if (isAgentInterruptionError(error)) {
-        collector.abandonInterrupted(error.reason);
-        try {
-          if (collector.text || collector.reasoning) {
-            memoryManager.ingestAssistantResponse(
-              new CompleteResponse({
-                content: collector.text,
-                reasoning: collector.reasoning || null,
-                usage: null
-              }),
-              activeTurnId,
-              'LlmPhaseInterruptedPartial'
-            );
-          }
-        } finally {
-          if (!recoverySettled) releaseRequest();
-        }
-        throw error;
-      }
-
-      const evidence = error instanceof MissingApiKeyError
-        ? { message: error.message, providerCode: error.kind }
-        : extractProviderErrorEvidence(error);
-      const errorMessage = evidence.message;
-      const errorCode = error instanceof MissingApiKeyError
-        ? error.kind
-        : evidence.providerCode || 'LLM_PROVIDER_ERROR';
-      if (!recoverySettled) {
-        restoreRequest('provider or response ingestion failed before a usable response', 'LlmPhase.stream');
-      }
-      collector.abandonFailed(errorMessage);
-      notifier?.notifyAgentErrorOutputGeneration({
-        code: errorCode,
-        message: errorMessage,
-        ...(evidence.details ? { details: evidence.details } : {}),
-        ...(evidence.providerStatus !== undefined ? { provider_status: evidence.providerStatus } : {}),
-        ...(evidence.providerCode ? { provider_code: evidence.providerCode } : {}),
-        ...(evidence.providerRequestId ? { provider_request_id: evidence.providerRequestId } : {}),
-        classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
-      });
-      return {
-        kind: 'final',
-        isError: true,
-        response: new CompleteResponse({ content: errorMessage, usage: null })
-      };
+  /** Classifies the finish of a fully consumed stream and settles the call. */
+  private settle(call: LlmCall, request: RequestPackage, collector: LlmResponseStreamCollector): LlmCallSettlement {
+    call.turn.executionScope.throwIfAborted({ kind: 'llm_stream_finalize' });
+    const finish = collector.finish;
+    if (finish?.reason === 'content_filter' || finish?.reason === 'context_window_exceeded') {
+      throw buildResponseStopError(finish);
     }
+    return finish?.reason === 'output_limit'
+      ? this.settleOutputLimited(call, request, collector, finish)
+      : this.settleCompleted(call, request, collector);
+  }
 
+  /**
+   * Output-limited: commit the input, keep only the partial text (no reasoning, no native
+   * turn), discard every tool call. Nothing after the fence can be interrupted.
+   */
+  private settleOutputLimited(
+    call: LlmCall,
+    request: RequestPackage,
+    collector: LlmResponseStreamCollector,
+    finish: LlmResponseFinish,
+  ): LlmCallSettlement {
+    call.turn.executionScope.throwIfAborted({ kind: 'post_llm_stream' });
+    this.commitRequest(call, request);
+    if (collector.text) {
+      call.memoryManager.ingestAssistantResponse(
+        new CompleteResponse({ content: collector.text, reasoning: null, providerNativeAssistantTurn: null }),
+        call.turn.turnId,
+        'LlmPhaseOutputLimited'
+      );
+    }
+    const truncatedToolNames = collector.completeOutputLimited(OUTPUT_LIMIT_DISCARDED_TOOL_CALL_ERROR);
+    const response = new CompleteResponse({ content: collector.text, usage: collector.usage, finish });
+    this.notifyTokenUsage(call, collector.usage);
+    return { kind: 'output_limited', response, truncatedToolNames };
+  }
+
+  /** A normal finish: ingest the answer or its tool calls, then commit the input. */
+  private settleCompleted(call: LlmCall, request: RequestPackage, collector: LlmResponseStreamCollector): LlmCallSettlement {
+    const { turn, memoryManager } = call;
+    const toolInvocations = collector.completeNormally();
+    turn.executionScope.throwIfAborted({ kind: 'post_llm_stream' });
+    const response = collector.buildResponse();
+    this.notifyTokenUsage(call, collector.usage);
+
+    if (toolInvocations.length) {
+      turn.executionScope.throwIfAborted({ kind: 'llm_tool_intents' });
+      turn.startToolInvocationBatch(toolInvocations);
+      memoryManager.ingestAssistantToolResponse(response, toolInvocations, turn.turnId, 'LlmPhase');
+    } else {
+      turn.executionScope.throwIfAborted({ kind: 'llm_assistant_response' });
+      memoryManager.ingestAssistantResponse(response, turn.turnId, 'LlmPhase');
+    }
+    this.commitRequest(call, request);
+    return { kind: 'completed', response, toolInvocations };
+  }
+
+  /** Keeps whatever text/reasoning was produced and commits the input; the caller rethrows. */
+  private settleInterrupted(call: LlmCall, request: RequestPackage, collector: LlmResponseStreamCollector, reason: string): void {
+    collector.abandonInterrupted(reason);
+    try {
+      if (collector.text || collector.reasoning) {
+        call.memoryManager.ingestAssistantResponse(
+          new CompleteResponse({
+            content: collector.text,
+            reasoning: collector.reasoning || null,
+            usage: null
+          }),
+          call.turn.turnId,
+          'LlmPhaseInterruptedPartial'
+        );
+      }
+    } finally {
+      if (!call.recoverySettled) this.commitRequest(call, request);
+    }
+  }
+
+  /** Rolls the input back (unless already settled) and ends the turn with a clear error. */
+  private settleFailed(
+    call: LlmCall,
+    request: RequestPackage,
+    collector: LlmResponseStreamCollector,
+    error: unknown,
+  ): LlmPhaseOutcome {
+    const evidence = error instanceof MissingApiKeyError
+      ? { message: error.message, providerCode: error.kind }
+      : extractProviderErrorEvidence(error);
+    const errorMessage = evidence.message;
+    const errorCode = error instanceof MissingApiKeyError
+      ? error.kind
+      : evidence.providerCode || 'LLM_PROVIDER_ERROR';
+    if (!call.recoverySettled) {
+      this.restoreRequest(call, request, 'provider or response ingestion failed before a usable response', 'LlmPhase.stream');
+    }
+    collector.abandonFailed(errorMessage);
+    call.notifier?.notifyAgentErrorOutputGeneration({
+      code: errorCode,
+      message: errorMessage,
+      ...(evidence.details ? { details: evidence.details } : {}),
+      ...(evidence.providerStatus !== undefined ? { provider_status: evidence.providerStatus } : {}),
+      ...(evidence.providerCode ? { provider_code: evidence.providerCode } : {}),
+      ...(evidence.providerRequestId ? { provider_request_id: evidence.providerRequestId } : {}),
+      classification: { scope: 'turn', effect: 'diagnostic', turnId: call.turn.turnId }
+    });
+    return {
+      kind: 'final',
+      isError: true,
+      response: new CompleteResponse({ content: errorMessage, usage: null })
+    };
+  }
+
+  /** Evaluates compaction after the response, runs after-final compaction, returns the outcome. */
+  private async finishCall(
+    call: LlmCall,
+    request: RequestPackage,
+    collector: LlmResponseStreamCollector,
+    settlement: LlmCallSettlement,
+  ): Promise<LlmPhaseOutcome> {
+    const { turn } = call;
     turn.executionScope.throwIfAborted({ kind: 'llm_compaction' });
-    const compactionDecision = compaction?.evaluateAfterResponse({
+    const compactionDecision = call.compaction?.evaluateAfterResponse({
       usage: collector.usage,
       observedPromptTokens: collector.usage ? resolveLatestPromptTokens(collector.usage) : null,
-      turnId: activeTurnId,
+      turnId: turn.turnId,
     }) ?? null;
 
-    if (truncatedToolNames) {
+    if (settlement.kind === 'output_limited') {
       // The turn continues, so the compaction threshold is evaluated but nothing runs after it.
       return {
         kind: 'output_limited',
-        response: completeResponse,
-        truncatedToolNames,
-        outputTokenLimit: resolveRequestMaxOutputTokens(llmInstance.model, llmInstance.config),
+        response: settlement.response,
+        truncatedToolNames: settlement.truncatedToolNames,
+        outputTokenLimit: resolveRequestMaxOutputTokens(call.llm.model, call.llm.config),
       };
     }
-
-    const toolInvocations = turn.activeToolInvocationBatch && parsedToolInvocations.length > 0
-      ? parsedToolInvocations
-      : [];
-    if (!toolInvocations.length && compactionDecision?.kind === 'requested' && compaction) {
-      await compaction.executeAfterFinalResponse({
-        assembler,
+    if (settlement.toolInvocations.length) {
+      return { kind: 'tool_invocations', response: settlement.response, toolInvocations: settlement.toolInvocations };
+    }
+    if (compactionDecision?.kind === 'requested' && call.compaction) {
+      await call.compaction.executeAfterFinalResponse({
+        assembler: call.assembler,
         requestTools: request.tools,
-        turnId: activeTurnId,
+        turnId: turn.turnId,
         scope: turn.executionScope,
-        context,
-        notifier,
+        context: call.context,
+        notifier: call.notifier,
       });
     }
-    if (toolInvocations.length) {
-      return { kind: 'tool_invocations', response: completeResponse, toolInvocations };
-    }
-    return { kind: 'final', response: completeResponse };
+    return { kind: 'final', response: settlement.response };
+  }
+
+  private commitRequest(call: LlmCall, request: RequestPackage): void {
+    call.memoryManager.commitLlmRequestRecoverySnapshot(request.recoverySnapshot);
+    call.recoverySettled = true;
+  }
+
+  private restoreRequest(call: LlmCall, request: RequestPackage, reason: string, sourceEvent: string): void {
+    call.memoryManager.restoreLlmRequestRecoverySnapshot(request.recoverySnapshot, { reason, sourceEvent });
+    call.recoverySettled = true;
+  }
+
+  private notifyTokenUsage(call: LlmCall, tokenUsage: LlmTokenUsageObservation | null): void {
+    if (!tokenUsage) return;
+    const latestPromptTokens = resolveLatestPromptTokens(tokenUsage);
+    call.notifier?.notifyAgentTokenUsageUpdated({
+      usage: tokenUsage,
+      turn_id: call.turn.turnId,
+      llm_call_id: call.callId,
+      call_sequence: call.callSequence,
+      runtime_kind: 'autobyteus',
+      ingestion_kind: 'autobyteus_llm_phase',
+      idempotency_key: `${call.agentId}:${call.callId}`,
+      latest_prompt_tokens: latestPromptTokens,
+      effective_context_window_tokens: call.requestCapacity?.effectiveContextCapacity ?? null,
+      context_window_usage_percent: percentOf(latestPromptTokens, call.requestCapacity?.effectiveContextCapacity)
+    });
   }
 }
