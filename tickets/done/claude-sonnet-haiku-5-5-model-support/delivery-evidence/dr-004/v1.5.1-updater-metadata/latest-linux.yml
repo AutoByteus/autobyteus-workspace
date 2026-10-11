@@ -1,0 +1,9 @@
+version: 1.5.1
+files:
+  - url: AutoByteus_personal_linux-x64-1.5.1.AppImage
+    sha512: nbHNLZYI5FxijMySTLWzMnNrqTPcCLmE0Y6a1FqSfCRacc2E43SlxSAwe63Wmuz7vXLgrS2ud9fqPsh7VrlPAw==
+    size: 460912608
+    blockMapSize: 481268
+path: AutoByteus_personal_linux-x64-1.5.1.AppImage
+sha512: nbHNLZYI5FxijMySTLWzMnNrqTPcCLmE0Y6a1FqSfCRacc2E43SlxSAwe63Wmuz7vXLgrS2ud9fqPsh7VrlPAw==
+releaseDate: '2026-10-11T10:32:58.433Z'

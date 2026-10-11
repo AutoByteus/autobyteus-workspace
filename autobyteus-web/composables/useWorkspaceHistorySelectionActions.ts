@@ -66,18 +66,12 @@ export const useWorkspaceHistorySelectionActions = (params: {
     return true;
   };
 
-  const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): Promise<void> => {
-    const intent = params.selectionStore.beginSelectionIntent();
-    const isAlreadySelectedTeam =
-      params.selectionStore.selectedType === 'team'
-      && params.selectionStore.selectedRunId === team.teamRunId;
+  const isSelectedTeam = (team: TeamTreeNode): boolean =>
+    params.selectionStore.selectedType === 'team'
+    && params.selectionStore.selectedRunId === team.teamRunId;
 
-    if (isAlreadySelectedTeam) {
-      params.toggleTeam(team.teamRunId);
-      params.emitRunSelected({ type: 'team', runId: team.teamRunId });
-      return;
-    }
-
+  /** Expands a Team run that is not selected yet and opens its focused (else first) member. */
+  const openTeam = async (team: TeamTreeNode, workspaceId: string, intent: WorkspaceSelectionIntent): Promise<void> => {
     params.setTeamExpanded(team.teamRunId, true);
     const targetMember = resolveTeamTargetMember(team);
     if (!targetMember) {
@@ -101,6 +95,21 @@ export const useWorkspaceHistorySelectionActions = (params: {
     } catch (error) {
       if (intent.isCurrent() && !presentRecoveryFeedback(error)) console.error('Failed to open team:', error);
     }
+  };
+
+  /** The Team run row: an already-selected Team run toggles its tree; otherwise it opens. */
+  const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): Promise<void> => {
+    const intent = params.selectionStore.beginSelectionIntent();
+    if (!isSelectedTeam(team)) return openTeam(team, workspaceId, intent);
+    params.toggleTeam(team.teamRunId);
+    params.emitRunSelected({ type: 'team', runId: team.teamRunId });
+  };
+
+  /** Opens the Team run without collapsing it: an already-selected one only navigates to it (REQ-012). */
+  const onOpenTeamRun = async (team: TeamTreeNode, workspaceId = ''): Promise<void> => {
+    const intent = params.selectionStore.beginSelectionIntent();
+    if (!isSelectedTeam(team)) return openTeam(team, workspaceId, intent);
+    params.emitRunSelected({ type: 'team', runId: team.teamRunId });
   };
 
   const onSelectTeamMember = async (
@@ -135,6 +144,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
   return {
     onSelectRun,
     onSelectTeam,
+    onOpenTeamRun,
     onSelectTeamMember,
     onCreateRun,
   };

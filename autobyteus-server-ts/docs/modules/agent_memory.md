@@ -140,20 +140,25 @@ runtime memory provider.
 
 Native AutoByteus runs use the core `MemoryManager`. The canonical
 [core memory design](../../../autobyteus-ts/docs/agent_memory_design.md) owns
-planning, provider-safe content construction, direct `compress(content)` output,
-validation, snapshot publication and repair. Server composition uses
-`src/agent-execution/compaction/compaction-llm-factory.ts` to construct an isolated
-tool-free LLM per attempt, not a visible child agent. There is no strategy catalog,
-registered algorithm selector, category-output projector or live lineage head.
+planning, provider-safe content construction, summary production on the agent's
+own model, validation, snapshot publication and repair. Server composition only
+enables compaction with its policy (`createEnabledMemoryCompactionConfiguration(new
+CompactionPolicy())`); it creates no compaction LLM and no visible child agent.
+There is no strategy catalog, registered algorithm selector, category-output
+projector or live lineage head.
 
-`AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` is the optional current model/config tuple.
-Missing/null selection uses the then-current parent model identifier and selected-
-model defaults without a settings write. Controlled prompt/tool/transport fields
-are excluded; the parent instance and its ordinary retry policy stay unchanged.
-The existing trigger-ratio, active-context override and diagnostic settings remain.
-Old built-in Memory Compactor definitions/settings are not imported or deleted.
+There is no compaction-model setting. The summary is the agent's own cached
+conversation request plus a summary instruction (falling back to a transcript
+request on the same model); each attempt runs on an isolated
+`compaction_<operationId>_<attempt>` provider conversation that is released
+afterwards, and its usage is ingested as `autobyteus_compaction` token usage of the
+run. A value saved under the removed `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` key is
+inert (listed only as a deletable custom setting). The existing trigger-ratio,
+active-context override and diagnostic settings remain. Old built-in Memory
+Compactor definitions/settings are not imported or deleted.
 
-One strategy execution permits at most three isolated generation attempts.
+One summary operation permits at most two cached and three transcript attempts,
+each one provider call.
 Planning/input construction happens before generation. Exhaustion retains the
 same pending operation and exposes a fresh failure epoch. A later accepted user
 message supplies one retry permit; pre-failure queued input and agent/system

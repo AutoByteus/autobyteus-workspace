@@ -52,7 +52,6 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
   let agentFactory: AgentFactory;
   let backendFactory: AutoByteusAgentRunBackendFactory;
   let persistedAgentDefinition: AgentDefinition;
-  let compactionLlmFactory: ReturnType<typeof vi.fn>;
 
   const createPreparedConfig = (runId: string): AgentRunConfig =>
     new AgentRunConfig({
@@ -81,7 +80,6 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     const activeIds = agentFactory.listActiveAgentIds();
     await Promise.all(activeIds.map((id) => agentFactory.removeAgent(id).catch(() => false)));
 
-    compactionLlmFactory = vi.fn(async () => new DummyLLM(model, new LLMConfig()));
     backendFactory = new AutoByteusAgentRunBackendFactory({
       agentFactory: agentFactory as any,
       agentDefinitionService: {
@@ -100,7 +98,6 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
         getSkill: () => null,
         hasEffectiveSkills: () => false,
       } as any,
-      compactionLlmFactory,
     });
     persistedAgentDefinition = new AgentDefinition({
       id: "def-autobyteus-backend",
@@ -151,9 +148,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       ?.getAutomaticCompactionConfiguration()).toMatchObject({
         kind: "enabled",
         policy: expect.any(Object),
-        createCompressionStrategy: expect.any(Function),
       });
-    expect(compactionLlmFactory).not.toHaveBeenCalled();
 
     const unsubscribe = backend.subscribeToSourceEventBatches(async () => undefined);
     const commandResult = await backend.dispatchUserInput({
@@ -251,9 +246,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       ?.getAutomaticCompactionConfiguration()).toMatchObject({
         kind: "enabled",
         policy: expect.any(Object),
-        createCompressionStrategy: expect.any(Function),
       });
-    expect(compactionLlmFactory).not.toHaveBeenCalled();
 
     const unsubscribeRestored = restored.subscribeToSourceEventBatches(async () => undefined);
     const secondResult = await restored.dispatchUserInput({

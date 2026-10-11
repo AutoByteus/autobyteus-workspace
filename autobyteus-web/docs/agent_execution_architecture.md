@@ -480,6 +480,9 @@ the depth-first execution projection and derives sibling continuation metadata.
 `WorkspaceHierarchyBranches.vue` renders continuous ancestor rails and a
 right-only current elbow from that metadata; the current vertical continues to
 the next sibling or stops at the current row midpoint for the last sibling.
+A two-line Task-worker row (with its [Task summary](./projects.md#task-summaries-in-the-workspaces-tree))
+uses `anchor="name-line"`: the elbow, and a last sibling's vertical, meet the
+name line instead of the row midpoint.
 These branches are presentation-only and do not create or rewrite topology.
 Selecting either a stable or transient Workspaces row uses the existing
 team-member inspection path. `TeamExecutionViewState` is the sole authority for
@@ -1172,7 +1175,7 @@ Org-root/addressed-member and saved-config owners retain draft, registration,
 locking and explicit Send/Run/Save policy. Saved roots do not become editable.
 This replaces the shared form's text-only presentation, not its owners or the
 retired configuration-form stack. See [workspace settings](./settings.md#run-workspace-choice-on-start-surfaces)
-and the [native-picker regression runbook](../../TESTING.md#native-workspace-folder-picker-regression)
+and the [native-picker regression probe](../tests/e2e/workspace-folder-picker-probe.mjs)
 for user behavior and the separate native/controlled test boundaries.
 
 The Existing workspace picker used elsewhere is the shared
@@ -1363,7 +1366,7 @@ other); choosing another model resets both. Thinking semantics stay in
 `llmThinkingConfigAdapter`; `service_tier` is not a thinking key.
 
 `ModelConfigSection` / `RuntimeModelConfigFields` remain only for mobile run
-setup, definition launch preferences and compaction model settings.
+setup and definition launch preferences.
 
 
 ### Skill Improvement Manual Composer Action

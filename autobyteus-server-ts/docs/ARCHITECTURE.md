@@ -147,12 +147,16 @@ under "Production data migrations" in the server `README.md`.
 
 ## Native Working-Context Compaction
 
-Native memory now compresses selected WorkingContext content with one isolated,
-tool-free LLM strategy (`compress(content): Promise<string>`). The executor owns
-planning and provider-safe input construction; the strategy owns up to three
-single-attempt provider generations and exact six-heading Markdown-envelope
-validation. It does not launch a child agent, select a registered strategy, repair
-JSON category arrays or write episodic/semantic/lineage output.
+Native memory compacts selected WorkingContext content on the agent's own model.
+The executor owns planning and provider-safe input construction; the
+`CompactionSummarizer` first sends the agent's own (prompt-cached) conversation
+request plus a summary instruction when the model's catalog entry selects it
+(`compactionSummaryMode`), and otherwise or on failure a tool-free transcript
+summary. Every attempt is a single-attempt provider generation validated against
+the exact nine-heading Markdown envelope (see
+`autobyteus-ts/docs/agent_memory_design.md`). It does not launch a child agent,
+select a registered strategy, repair JSON category arrays or write
+episodic/semantic/lineage output. There is no separate compaction-model setting.
 
 The accepted snapshot `{agent_id, messages}` is the continuation authority. Raw
 archive preparation precedes atomic snapshot replacement; in-memory installation
@@ -171,9 +175,10 @@ replaying work. Root termination and client terminal activity reconciliation are
 identity-scoped, retain facts and reject late output. Native in-memory terminal
 retention is not native cold replay or a general immediate shutdown guarantee.
 
-Server composition uses the optional `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` tuple,
-falling back to the then-current parent model identifier and selected-model
-defaults. Old strategy/compactor-agent settings are inert. Ordinary parent and
+Server composition enables compaction with the policy only; the core summarizer
+always uses the agent's own model (cached summary request first, transcript
+fallback). A value saved under the removed `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS`
+key is inert, as are old strategy/compactor-agent settings. Ordinary parent and
 external-provider request/session policies are not replaced.
 
 See [core memory design](../../autobyteus-ts/docs/agent_memory_design.md),

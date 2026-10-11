@@ -228,7 +228,7 @@ Argument capture is producer-owned: history and the frontend do not retry a
 provider lookup to repair an already recorded summary. See
 [recorded native inputs](./run_history.md#recorded-antigravity-native-tool-inputs)
 for the saved-data boundary and the
-[native argument regression](../../../TESTING.md#antigravity-native-argument-capture-regression)
+[native argument regression](../../tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts)
 for deterministic transport/restore coverage and the separate real-provider
 and rendered-validation requirements.
 

@@ -1,0 +1,95 @@
+{
+  "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-EEFEEA",
+  "backendUrl": "http://127.0.0.1:56054",
+  "frontendUrl": "http://127.0.0.1:56055",
+  "backendPid": 77675,
+  "frontendPid": 77699,
+  "names": {
+    "manager": "Project Task Manager",
+    "worker": "Agent Package Creator",
+    "helper": "Fact Checker",
+    "squad": "Software Engineering Team",
+    "team": "Delivery Team"
+  },
+  "projects": {
+    "desktop": "project_769cfd82-e73d-401a-b7cf-61d41b66617e",
+    "launch": "project_9de5123f-f262-4056-9895-45819d8889df"
+  },
+  "tasks": {
+    "agentCopy": "project_task_2de6372a-a715-4439-8ec3-8b67f82c0279",
+    "teamCopy": "project_task_ec822412-5bb4-4600-883d-5426bcd4e684",
+    "teamHosted": "project_task_7dc9b6d2-be1e-443e-bbcc-2a5a96f3dab5",
+    "filler": "project_task_a252adfc-7a3c-4db7-b2c8-8bfe07466c18"
+  },
+  "tempTaskId": "ad_hoc_task_4730e30e-e447-4afb-ba65-a2f2cca59ef2",
+  "agentRunId": "project_task_manager_4b51c26a4f9545c380024c45a866e688",
+  "teamRunId": "delivery_team_adad2c09aec3414e9770eb6d8d9dcfd9",
+  "roots": {
+    "agentCopy": {
+      "kind": "agent",
+      "ingressAgentRunId": "agent_package_creator_aaad0a81fb3244adb7d1d2e87713209e",
+      "teamRunId": null,
+      "start": "started"
+    },
+    "teamCopy": {
+      "kind": "team",
+      "ingressAgentRunId": "agent_package_creator_0599d63729244170a2f01b8955fb86ef",
+      "teamRunId": "software_engineering_team_5584aebac3e847e89d73be1ab6b94c1c",
+      "start": "started"
+    },
+    "temp": {
+      "kind": "agent",
+      "ingressAgentRunId": "fact_checker_5789b4a21c0b47de92c3113253c47cf5",
+      "teamRunId": null,
+      "start": "started"
+    },
+    "teamHosted": {
+      "kind": "agent",
+      "ingressAgentRunId": "agent_package_creator_712f7174de20402cabe63523cedb792f",
+      "teamRunId": null,
+      "start": "started"
+    }
+  },
+  "serverAnswers": [
+    {
+      "workerKind": "agent",
+      "workerRunId": "agent_package_creator_aaad0a81fb3244adb7d1d2e87713209e",
+      "task": {
+        "taskId": "project_task_2de6372a-a715-4439-8ec3-8b67f82c0279",
+        "projectId": "project_769cfd82-e73d-401a-b7cf-61d41b66617e",
+        "description": "Ship the copy Task summary in the Workspaces tree\nUse server data; keep it live.",
+        "status": "TODO"
+      }
+    },
+    {
+      "workerKind": "agent",
+      "workerRunId": "fact_checker_5789b4a21c0b47de92c3113253c47cf5",
+      "task": {
+        "taskId": "ad_hoc_task_4730e30e-e447-4afb-ba65-a2f2cca59ef2",
+        "projectId": null,
+        "description": "Check the FAQ links.\nReport broken ones.",
+        "status": "TODO"
+      }
+    },
+    {
+      "workerKind": "agent",
+      "workerRunId": "agent_package_creator_712f7174de20402cabe63523cedb792f",
+      "task": {
+        "taskId": "project_task_7dc9b6d2-be1e-443e-bbcc-2a5a96f3dab5",
+        "projectId": "project_9de5123f-f262-4056-9895-45819d8889df",
+        "description": "Draft the release notes for the beta",
+        "status": "TODO"
+      }
+    },
+    {
+      "workerKind": "team",
+      "workerRunId": "software_engineering_team_5584aebac3e847e89d73be1ab6b94c1c",
+      "task": {
+        "taskId": "project_task_ec822412-5bb4-4600-883d-5426bcd4e684",
+        "projectId": "project_769cfd82-e73d-401a-b7cf-61d41b66617e",
+        "description": "Review the locate journey with the software engineering team and report back on every edge case we found during the session",
+        "status": "TODO"
+      }
+    }
+  ]
+}

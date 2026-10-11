@@ -1,0 +1,20 @@
+nested-team-hierarchy exit=1
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-hierarchy-probe.mjs:710:9
+Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes/nested-team-hierarchy/evidence.json
+nested-team-aggregate-status exit=1
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:466:3
+Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes/nested-team-aggregate-status/evidence.json
+background-agent-renderer-contention exit=1
+Background contention browser probe failed. See /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes/background-agent-renderer-contention/evidence.json
+team-group-icon exit=1
+  }
+}
+task-agent-peer-sidebar exit=1
+Task Agent peer sidebar browser probe failed. See /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes/task-agent-peer-sidebar/evidence.json
+composer-mention-discoverability exit=0
+B03 Pass: keyboard dismissal/no-match, slash skills and completed upload held rejection/acceptance
+B04 Pass: layout at 1512/1024/300 panel, scroll/resize, locale, forced colors and context isolation
+standalone-agent-error-stop exit=0
+Standalone Error Stop browser probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes/standalone-agent-error-stop/evidence.json
+team-activity-presentation exit=1
+Team activity presentation browser probe failed. See /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes/team-activity-presentation/evidence.json

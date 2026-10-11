@@ -18,6 +18,7 @@ import { randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { createTaskLocatorCases } from './project-manager-ux-task-locator-cases.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -34,7 +35,7 @@ const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/projec
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012', 'PMU-013', 'PMU-014', 'PMU-015', 'PMU-016', 'PMU-017', 'PMU-018', 'PMU-019'];
+const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012', 'PMU-013', 'PMU-014', 'PMU-015', 'PMU-016', 'PMU-017', 'PMU-018', 'PMU-019', 'PMU-020', 'PMU-021', 'PMU-022', 'PMU-023', 'PMU-024', 'PMU-025'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -218,8 +219,8 @@ const rootOf = async (projectId, taskId) => (await projectTasks(projectId)).find
 // ---------------------------------------------------------------- browser helpers
 let browser;
 const openPages = [];
-const newPage = async ({ width = 1440, height = 1000 } = {}) => {
-  const context = await browser.newContext({ viewport: { width, height }, locale: 'en-US' });
+const newPage = async ({ width = 1440, height = 1000, locale = 'en-US' } = {}) => {
+  const context = await browser.newContext({ viewport: { width, height }, locale });
   const page = await context.newPage();
   openPages.push({ context, page });
   const errors = [];
@@ -1843,6 +1844,9 @@ const CASES = {
   'PMU-017': ['Cancelled Tasks (task-closed-status): agent cancel hides the row behind "Cancelled (N)" beside Refresh, Cancelled as the last column (stacked last when narrow), keyboard, muted Cancelled pill vs Done, open counts, live reopen; Temp board/header/page; right-panel board and detail', cancelledTasksJourney],
   'PMU-018': ['Collapsed strip Workspaces: a worker opened from a Task card (Agent, Team with nested task Team, Org host) lights Workspaces; it docks the panel without navigating and reveals the row with focus; narrow drawer, short window, New chat', collapsedStripWorkspaces],
   'PMU-019': ['Collapsed strip Workspaces, other entries: nested task-Team member (non-coordinator) after a collapse, New chat first send, far-down Org worker (large scroll), slow history load with and without a user scroll first; highlight on the Org launch page, empty /workspace and /agents; page icon docks and navigates; in-app New chat, /agents and /projects after a run (no reveal off a run)', collapsedStripOtherEntries],
+  // delegated-copy-task-locator: Task summaries under delegated copy rows and "Show Task in Projects".
+  ...createTaskLocatorCases({ gql, createDefinitions, createProject, createTask, createRoot, managerInput, rootOf, projectTasks, tempTasks,
+    newPage, goto, shot, until, sleep, assert, callTool, segment, slug, expandWorkspace, centerText, selectionState, navTo, assertNoBrowserErrors }),
 };
 
 let result = 'Pass';

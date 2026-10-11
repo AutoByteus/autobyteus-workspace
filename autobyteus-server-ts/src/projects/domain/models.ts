@@ -1,5 +1,6 @@
 import type { ProjectTaskContextFile, ProjectTaskContextFileView, ProjectTaskContextDraft, ProjectTaskContextChanges } from "./project-task-context.js";
 import type { ProjectTaskStatus } from "./task-status.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 
 /** A workspace link as persisted inside a Project record. */
 export interface ProjectWorkspaceLink {
@@ -95,6 +96,20 @@ export interface TaskWithoutProjectView {
   createdAt: string;
   updatedAt: string;
   root: TaskRootView | null;
+}
+
+/** The current Task of a Task worker (the copy that is that Task's root); `projectId` null means a Temp task. */
+export interface TaskWorkerTaskView {
+  taskId: string;
+  projectId: string | null;
+  description: string;
+  status: ProjectTaskStatus;
+}
+
+/** One Task worker's answer: null when it is no Task's root, or its Task (or that Task's Project) no longer exists. */
+export interface TaskWorkerTaskResult {
+  execution: TaskExecutionReference;
+  task: TaskWorkerTaskView | null;
 }
 
 export interface ProjectWorkspaceInput { workspaceRootPath: string; description?: string | null }

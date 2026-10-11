@@ -1,0 +1,22 @@
+{
+  "aiStudio": {
+    "agent": {
+      "error": "ApiError: {\"error\":{\"message\":\"{\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"Quota exceeded for quota metric 'Generate Content API requests per minute' and limit 'GenerateContent request limit per minute for a region' of service 'generativelanguage.googleapis.com' for consumer 'project_number:303290304011'.\\\",\\n    \\\"status\\\": \\\"RESOURCE_EXHAUSTED\\\",\\n    \\\"details\\\": [\\n      {\\n     "
+    },
+    "transcript": {
+      "error": "CompactionInvocationError: {\"error\":{\"message\":\"{\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"Quota exceeded for quota metric 'Generate Content API requests per minute' and limit 'GenerateContent request limit per minute for a region' of service 'generativelanguage.googleapis.com' for consumer 'project_number:303290304011'.\\\",\\n    \\\"status\\\": \\\"RESOURCE_EXHAUSTED\\\",\\n    \\\"details\\\": "
+    },
+    "agentBodies": [],
+    "transcriptBodies": [],
+    "statuses": [
+      "aiStudio-agent:429",
+      "aiStudio-agent:429",
+      "aiStudio-agent:429",
+      "aiStudio-agent:429",
+      "aiStudio-transcript:429",
+      "aiStudio-transcript:429",
+      "aiStudio-transcript:429",
+      "aiStudio-transcript:429"
+    ]
+  }
+}

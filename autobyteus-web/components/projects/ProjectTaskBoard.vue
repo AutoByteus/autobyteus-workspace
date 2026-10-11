@@ -33,6 +33,7 @@ import ProjectTaskRow from './ProjectTaskRow.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { useTaskLocatorStore } from '~/stores/taskLocatorStore'
 import type { ProjectTask, ProjectTaskStatus } from '~/types/project'
 import { BOARD_OPEN_LANES, TASK_STATUS_LABEL_KEYS } from '~/utils/projects/taskStatusPresentation'
 /**
@@ -56,7 +57,8 @@ const showCancelled = ref(false)
 watch(cancelledCount, (count) => { if (count === 0) showCancelled.value = false })
 const shownLanes = computed<readonly ProjectTaskStatus[]>(() => showCancelled.value ? [...BOARD_OPEN_LANES, 'CANCELLED'] : BOARD_OPEN_LANES)
 const visibleTasks = computed(() => showCancelled.value ? tasks.value : tasks.value.filter((task) => task.status !== 'CANCELLED'))
-const matchingTasks = computed(() => visibleTasks.value.filter((task) => !searchQuery.value.trim() || task.description.toLocaleLowerCase().includes(searchQuery.value.trim().toLocaleLowerCase())))
+const matchesSearch = (task: ProjectTask) => !searchQuery.value.trim() || task.description.toLocaleLowerCase().includes(searchQuery.value.trim().toLocaleLowerCase())
+const matchingTasks = computed(() => visibleTasks.value.filter(matchesSearch))
 const columns = computed(() => {
   const grouped: Record<ProjectTaskStatus, ProjectTask[]> = {TODO: [], IN_PROGRESS: [], DONE: [], CANCELLED: []}
   for (const task of matchingTasks.value) grouped[task.status].push(task)
@@ -66,10 +68,24 @@ const isNoMatch = computed(() => visibleTasks.value.length > 0 && matchingTasks.
 const load = (force = false) => { void store.fetchTasks(props.projectId, force).catch(() => undefined) }
 const refresh = () => { void store.refreshTasks(props.projectId).catch(() => undefined) }
 const clearSearch = () => {searchQuery.value = ''; document.getElementById(searchId)?.focus()}
-onMounted(() => load(true))
+const mountReadStarted = ref(false)
+onMounted(() => { load(true); mountReadStarted.value = true })
 onBeforeUnmount(() => store.releaseRead(props.projectId))
 watch(() => props.projectId, (id, previous) => {store.releaseRead(previous); load(true)})
 watch(() => node.bindingRevision, () => load(true)) // Preserve the existing watcher; not an interactive switching journey.
+// "Show Task in Projects" (compact only): once Projects is revealed on this Project, make the Task visible
+// (Cancelled lane, a hiding search cleared) and hand it to its card. It decides only on a settled list:
+// never before its own mount read started nor while a read is in flight. A Task absent from it is left
+// alone (the request expires).
+const locator = useTaskLocatorStore()
+const settled = computed(() => mountReadStarted.value && Boolean(list.value?.hasLoaded) && !list.value?.initialPending && !list.value?.refreshPending)
+watch(() => props.compact && settled.value && locator.request?.step === 'revealed' && locator.request.task.projectId === props.projectId ? locator.request : null, (request) => {
+  const task = request && tasks.value.find((item) => item.taskId === request.task.taskId)
+  if (!request || !task) return
+  if (task.status === 'CANCELLED') showCancelled.value = true
+  if (!matchesSearch(task)) searchQuery.value = ''
+  locator.markVisible(request.seq)
+}, {immediate: true})
 </script>
 <style scoped>
 .project-task-board { container-type: inline-size; container-name: project-task-board; }

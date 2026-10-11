@@ -1,23 +1,21 @@
-## Fixes
-- **Claude no longer stops with "Anthropic content block is incomplete."** on long answers or long tool calls, such as writing a large file with `write_file`. Requests were capped at 8,192 output tokens; they now allow the model's full output limit (128,000 tokens for Claude Opus 5.5).
-- **Automatic recovery when a response hits the output limit.** A tool call that was cut off is discarded and never run, and the agent continues in smaller pieces. Text that was cut off is kept, and the agent picks up where it stopped. This happens up to 3 times in a row. After that, the turn stops with a clear error that names the limit, and your next message works normally.
-- A tool call whose arguments the model garbled is no longer run with empty arguments. The model is told the call was malformed and tries again.
-- **Security:** a crafted owner ID in a context-file request could reach another agent's attached files. Every context-file request now rejects such IDs and filenames, and a malformed request no longer touches any file.
-- With a Gemini model, memory compaction makes only one attempt again, as intended.
-
-## Improvements
-- If you don't set Max Tokens, every AutoByteus-runtime provider now uses the model's own maximum output limit. A value you set yourself is still sent unchanged. DeepSeek and GLM now receive it under the parameter name they support.
-- When the model refuses, a content filter stops a response, or the conversation is too long for the model's context window, the turn ends with a clear error that says which one happened. No tool is run.
-- Each automatic recovery attempt gets its own entry in the Token Meter.
-- **New Manage Skill Sources dialog** (Skills → Sources):
-  - Each source is one compact row with its skill count and a copy button for the path or URL.
-  - One **Add skill source** box takes a folder path or a GitHub URL.
-  - In the desktop app, **Browse…** fills in a folder path.
-  - GitHub sources are checked when the dialog opens, and **Update** appears only when an update is available.
-  - Focus stays inside the dialog, and Esc closes it.
+## New
+- **Claude Sonnet 5.5 and Claude Haiku 5.5** are available in the model picker, with 1M context and 128K output.
+  - Thinking is **Off** by default. You can turn it **On** for each run. The display then defaults to **Summarized** on Sonnet 5.5 and **Omitted** on Haiku 5.5, and you can change it.
+  - The Token Meter prices both models at Anthropic Standard rates. Haiku 5.5 uses its prompt-size tiers (up to 100K and above 100K tokens, with cache tokens counted).
+- **See each delegated copy's Task in the Workspaces tree.** Under Agent runs and Agent Team runs, a delegated Agent or Team copy shows a one-line summary of its current Task under its name.
+  - Click the summary, or press Enter or Space on it, to open that Task in the right panel's Projects tab. The card is scrolled into view and briefly highlighted, and your conversation stays where it is.
+  - Summaries update without a reload when a Task is renamed, closed, deleted or replaced by a follow-up Task.
+- **New Workspaces icon on the collapsed left strip.** It opens the left panel without leaving the run you have open. The open run's row is selected, expanded and focused in the tree.
 
 ## Changed
-- For integrations: malformed context-file requests (traversal or padded owner IDs, unknown descriptor fields, invalid filenames) now get `400` with a `detail` message instead of 200, 204, 404 or 500. The app's own requests are unaffected.
+- On the collapsed strip, **Workspaces is lit while a run is shown**. Chat is lit only on New chat. Before, clicking Chat on an open run replaced the run with a New chat.
+- Collapsing the docked left panel, or closing the drawer, moves keyboard focus to the strip's Workspaces icon.
+- AutoByteus now builds each Claude request from a fixed set of rules per model. Existing Claude models send the same requests as before. Like Opus 5.5, Sonnet 5.5 refuses a forced tool choice before sending the request.
+
+## Fixes
+- The Cancelled status pill shows its intended light slate ring.
+- A two-line row in the Workspaces tree now collapses smoothly instead of jumping first.
+- The Server Docker image builds reliably again. The Antigravity CLI installer was sometimes downloaded in compressed form and failed to run.
 
 ## Notes
 - No reset or data migration is needed.

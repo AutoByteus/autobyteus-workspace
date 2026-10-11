@@ -395,17 +395,8 @@ const settingsMessages = {
   'settings.components.settings.DockerNodeStartGuideCard.copyFailed': 'Could not copy command: {{error}}',
   'settings.components.settings.DockerNodeStartGuideCard.nextStep': 'After new-container prints Backend, paste that URL into Add Remote Node and open the Docker node window over your trusted private network. For Phone Access, create the QR there with a verified phone-facing HTTPS or acknowledged trusted private HTTP /mobile URL that the phone can reach.',
 
-  "settings.components.settings.CompactionConfigCard.description": "Choose the summarization model and when context compaction runs.",
-  "settings.components.settings.CompactionConfigCard.model": "Summary model",
-  "settings.components.settings.CompactionConfigCard.inheritModel": "Use current parent model",
-  "settings.components.settings.CompactionConfigCard.modelHelp": "Each attempt uses a fresh direct model call. Inherit follows the current parent; explicit selection stays fixed.",
-  "settings.components.settings.CompactionConfigCard.loadingModels": "Loading models…",
-  "settings.components.settings.CompactionConfigCard.unavailableModel": "Saved model is unavailable; it will not be silently replaced:",
-  "settings.components.settings.CompactionConfigCard.modelError": "Could not load available models.",
-  "settings.components.settings.CompactionConfigCard.resetModelConfig": "Use model defaults",
-  "settings.components.settings.CompactionConfigCard.invalidModelConfig": "Check the model configuration values.",
+  "settings.components.settings.CompactionConfigCard.description": "Choose when context compaction runs. Compaction always summarizes with the agent's own model.",
   "settings.components.settings.CompactionConfigCard.settingsError": "Could not load compaction settings.",
-  "settings.components.settings.CompactionConfigCard.invalidModelSettings": "The saved model settings are invalid. Choose a model or inherit and save to replace them.",
   "settings.components.settings.CompactionConfigCard.nodeChanged": "The selected node changed; remaining settings were not saved.",
 } satisfies TranslationCatalog;
 

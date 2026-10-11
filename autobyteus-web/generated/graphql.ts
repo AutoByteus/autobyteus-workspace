@@ -2340,6 +2340,7 @@ export type Query = {
   skillSourceRegistryError?: Maybe<Scalars['String']['output']>;
   skillSources: Array<SkillSource>;
   skills: Array<Skill>;
+  taskWorkerTasks: Array<TaskWorkerTask>;
   tasksWithoutProject: Array<TaskWithoutProject>;
   teamRunModelOptions: Array<TeamScopeModelOptionsObject>;
   tokenUsageAnalytics: TokenUsageAnalyticsResultGraphql;
@@ -2733,6 +2734,12 @@ export type QuerySkillFileContentArgs = {
 
 export type QuerySkillFileTreeArgs = {
   name: Scalars['String']['input'];
+};
+
+
+export type QueryTaskWorkerTasksArgs = {
+  agentRunIds: Array<Scalars['String']['input']>;
+  teamRunIds: Array<Scalars['String']['input']>;
 };
 
 
@@ -3143,6 +3150,21 @@ export type TaskWithoutProject = {
   status: ProjectTaskStatus;
   taskId: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
+};
+
+export type TaskWorkerTask = {
+  __typename?: 'TaskWorkerTask';
+  task?: Maybe<TaskWorkerTaskView>;
+  workerKind: Scalars['String']['output'];
+  workerRunId: Scalars['String']['output'];
+};
+
+export type TaskWorkerTaskView = {
+  __typename?: 'TaskWorkerTaskView';
+  description: Scalars['String']['output'];
+  projectId?: Maybe<Scalars['String']['output']>;
+  status: ProjectTaskStatus;
+  taskId: Scalars['String']['output'];
 };
 
 export type TeamCommunicationMessageObject = {
@@ -4753,6 +4775,14 @@ export type GetProjectTasksQueryVariables = Exact<{
 
 
 export type GetProjectTasksQuery = { __typename?: 'Query', projectTasks: Array<{ __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null }> };
+
+export type GetTaskWorkerTasksQueryVariables = Exact<{
+  agentRunIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+  teamRunIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+
+export type GetTaskWorkerTasksQuery = { __typename?: 'Query', taskWorkerTasks: Array<{ __typename?: 'TaskWorkerTask', workerKind: string, workerRunId: string, task?: { __typename?: 'TaskWorkerTaskView', taskId: string, projectId?: string | null, description: string, status: ProjectTaskStatus } | null }> };
 
 export type GetTasksWithoutProjectQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -10783,6 +10813,44 @@ export function useGetProjectTasksLazyQuery(variables?: GetProjectTasksQueryVari
   return VueApolloComposable.useLazyQuery<GetProjectTasksQuery, GetProjectTasksQueryVariables>(GetProjectTasksDocument, variables, options);
 }
 export type GetProjectTasksQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProjectTasksQuery, GetProjectTasksQueryVariables>;
+export const GetTaskWorkerTasksDocument = gql`
+    query GetTaskWorkerTasks($agentRunIds: [String!]!, $teamRunIds: [String!]!) {
+  taskWorkerTasks(agentRunIds: $agentRunIds, teamRunIds: $teamRunIds) {
+    workerKind
+    workerRunId
+    task {
+      taskId
+      projectId
+      description
+      status
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTaskWorkerTasksQuery__
+ *
+ * To run a query within a Vue component, call `useGetTaskWorkerTasksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTaskWorkerTasksQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTaskWorkerTasksQuery({
+ *   agentRunIds: // value for 'agentRunIds'
+ *   teamRunIds: // value for 'teamRunIds'
+ * });
+ */
+export function useGetTaskWorkerTasksQuery(variables: GetTaskWorkerTasksQueryVariables | VueCompositionApi.Ref<GetTaskWorkerTasksQueryVariables> | ReactiveFunction<GetTaskWorkerTasksQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>(GetTaskWorkerTasksDocument, variables, options);
+}
+export function useGetTaskWorkerTasksLazyQuery(variables?: GetTaskWorkerTasksQueryVariables | VueCompositionApi.Ref<GetTaskWorkerTasksQueryVariables> | ReactiveFunction<GetTaskWorkerTasksQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>(GetTaskWorkerTasksDocument, variables, options);
+}
+export type GetTaskWorkerTasksQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>;
 export const GetTasksWithoutProjectDocument = gql`
     query GetTasksWithoutProject {
   tasksWithoutProject {

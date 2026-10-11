@@ -37,16 +37,21 @@
  *                it, OpenAI and Gemini both recovered to 100/100 lines (ticket evidence `olr-popular2`).
  *   OLR-E2E-013  OpenAI and Gemini: a text-only cut keeps the partial text and resumes; reload shows only assistant
  *                parts after the request and no note (AC-005, AC-011)
- *   OLR-E2E-010  Compaction summary under a small limit (DeepSeek, non-streaming): completion_status `incomplete` with
- *                the provider reason; the summary is rejected (AR-004)
+ *   OLR-E2E-010  A small run output limit no longer cuts the compaction summary (DeepSeek, run `max_tokens` 96): every
+ *                summary request on the agent's own model carries the raised, fitted limit of REQ-009/SR-010
+ *                (L_eff = max(R, min(L, room)), L = max(R, min(16384, model max, floor(context / 4))); here the room is far
+ *                above L, so exactly L), the first is the cached request (DeepSeek catalog mode, REQ-002), compaction
+ *                completes, the agent's own requests keep `max_tokens` 96, and the agent recalls a fact from before
+ *                compaction (AC-011, REQ-009). The length-cut rejection itself (AR-004) and the boundary rows of the
+ *                fitted limit are unit-proven; a live cut would need an input within a few hundred tokens of the context.
  * OLR-E2E-006..008 and 009b use a one-shot rewrite of the REAL provider response text (the request still goes to the
  * provider) to produce stream shapes that real use produces but that cannot be requested on demand: a refusal or
  * context-window stop (Anthropic `stop_reason`), a network cut before `message_stop`, and DeepSeek tool-call arguments
  * that are not JSON.
  *
  * Gate and environment: as `autobyteus-native-output-limit-live.e2e.test.ts` (RUN_NATIVE_OUTPUT_LIMIT_E2E=1, keys as
- * credential aliases, clean `env -i`). OLR-E2E-010 temporarily sets three server settings through `updateServerSetting`
- * and deletes them afterwards. Cost: small (≤ ~25 short Opus calls, a few DeepSeek calls).
+ * credential aliases, clean `env -i`). OLR-E2E-010 sets two server settings (context override, trigger ratio) through
+ * `updateServerSetting` and resets them to high values afterwards (predefined settings cannot be deleted). Cost: small (≤ ~25 short Opus calls, a few DeepSeek calls).
  */
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
@@ -59,6 +64,7 @@ import {
   frameDigest,
   NativeRuntimeLiveHarness,
   requestMessages,
+  summaryRequestMode,
   type CapturedCall,
   type RunSession,
   type WsMessage,
@@ -518,23 +524,29 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
     await harness.stopRun(session);
   }, STEP_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("DEEPSEEK_API_KEY"))("OLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected", async () => {
+  it.skipIf(!hasKey("DEEPSEEK_API_KEY"))("OLR-E2E-010: a small run output limit does not cut the summary: summary requests carry the fitted raised limit and compaction completes", async () => {
     const model = await harness.catalogModel("DEEPSEEK", DEEPSEEK_MODEL);
+    const RUN_LIMIT = 96;
+    const CONTEXT = 60_000;
     const settings: Record<string, string> = {
-      AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE: "60000",
+      AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE: String(CONTEXT),
       AUTOBYTEUS_COMPACTION_TRIGGER_RATIO: "0.3",
-      AUTOBYTEUS_COMPACTION_MODEL_SETTINGS: JSON.stringify({ modelIdentifier: null, llmConfig: { max_tokens: 24 } }),
     };
+    // REQ-009 / SR-010 with R = 96 (< 16384): the ceiling L; each request sends max(R, min(L, room)).
+    const ceiling = Math.max(RUN_LIMIT, Math.min(16_384, model.maxOutputTokens ?? 16_384, Math.floor(CONTEXT / 4)));
     const settingMessages: string[] = [];
     try {
       for (const [key, value] of Object.entries(settings)) settingMessages.push(await harness.updateServerSetting(key, value));
-      const session = await harness.startRun(chatDefinitionId, model.modelIdentifier, { max_tokens: 1024, extra_params: { thinking_type: "disabled" } });
-      const notes = (from: number) => Array.from({ length: 600 }, (_, index) =>
-        `Note ${from + index}: warehouse bin ${from + index} holds ${(from + index) * 7} units of part P-${1000 + from + index}.`).join("\n");
-      // Long turns grow the history past the trigger (~17.6K of a ~58.7K input budget); the send after that compacts.
-      // A rejected summary blocks compaction and holds the input, so each send ends at TURN_COMPLETED or COMPACTION_BLOCKED.
+      const session = await harness.startRun(chatDefinitionId, model.modelIdentifier, { max_tokens: RUN_LIMIT, extra_params: { thinking_type: "disabled" } });
+      // Filler that a correct note summarizes in one line (nothing to list verbatim) plus one fact to recall afterwards.
+      const logs = (from: number) => Array.from({ length: 600 }, (_, index) =>
+        `Log line ${from + index}: nightly job ${from + index} finished; service healthy; no action needed.`).join("\n");
       const ended = (frame: WsMessage) => frame.type === "COMPACTION_BLOCKED" || frame.type === "TURN_COMPLETED";
-      const sends = [`${notes(1)}\n\nReply with only the word ok.`, `${notes(601)}\n\nReply with only the word ok.`, "Reply with only the word ok again."];
+      const sends = [
+        `Remember this: the vault access code is VX-4471.\n${logs(1)}\n\nReply with only the word ok.`,
+        `${logs(601)}\n\nReply with only the word ok.`,
+        "What is the vault access code I gave you at the start? Reply with the code only.",
+      ];
       const sendFrames: WsMessage[][] = [];
       for (const [index, content] of sends.entries()) {
         const frames = await harness.sendAndWaitFor(session, `OLR-010-T${index + 1}`, content, ended, `OLR-010-T${index + 1} outcome`);
@@ -542,34 +554,42 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
         if (has(frames, (frame) => frame.type === "COMPACTION_BLOCKED")) break;
         await harness.waitFor(session, 0, (frame) => frame.type === "AGENT_STATUS" && frame.payload.status === "idle", "idle");
       }
-      const third = sendFrames.at(-1)!;
       const allFrames = sendFrames.flat();
       const statuses = allFrames.filter((frame) => frame.type.startsWith("COMPACTION_"));
       const turnCalls = ["OLR-010-T1", "OLR-010-T2", "OLR-010-T3"].flatMap((phase) => harness.callsOf(phase));
-      const compactionCalls = turnCalls.filter((call) => !call.stream);
+      const compactionCalls = turnCalls.filter((call) => summaryRequestMode(call.body) !== null);
+      const agentCalls = turnCalls.filter((call) => summaryRequestMode(call.body) === null);
+      const modes = compactionCalls.map((call) => summaryRequestMode(call.body));
+      const answer = (sendFrames[2] ?? []).filter((frame) => frame.type === "SEGMENT_CONTENT").map((frame) => String(frame.payload.delta ?? "")).join("");
       harness.recordCase("OLR-E2E-010", {
-        settingMessages, sendsMade: sendFrames.length,
+        settingMessages, sendsMade: sendFrames.length, modes, ceiling, answer: answer.slice(0, 100),
+        summaryMaxTokens: compactionCalls.map((call) => call.body.max_tokens), agentMaxTokens: [...new Set(agentCalls.map((call) => call.body.max_tokens))],
         errors: allFrames.filter((frame) => frame.type === "ERROR").map((frame) => frame.payload),
         compactionFrames: statuses.map((frame) => ({ type: frame.type, ...frame.payload })),
         compactionCalls: compactionCalls.map((call) => harness.summarize(call)), turnCalls: turnCalls.map((call) => harness.summarize(call)),
       });
+      expect(has(allFrames, (frame) => frame.type === "COMPACTION_BLOCKED"), "compaction is not blocked by the small run limit").toBe(false);
       expect(compactionCalls.length, "compaction summary calls were made").toBeGreaterThan(0);
+      // REQ-002: DeepSeek's catalog mode is the cached summary request first; fallback attempts are transcript requests.
+      expect(modes[0], "cached summary request first").toBe("cached");
+      const firstTranscript = modes.indexOf("transcript");
+      if (firstTranscript >= 0) expect(modes.slice(firstTranscript).every((mode) => mode === "transcript"), JSON.stringify(modes)).toBe(true);
       for (const call of compactionCalls) {
-        harness.assertLimit(call, "max_tokens", 24, "OLR-010 compaction");
-        expect(call.stopSignals).toContain("length");
+        expect(call.stream, `summary call ${call.index} is streamed on the agent's model`).toBe(true);
+        // Room = context - input - margin; the provider-reported input (x1.5 for the estimate) leaves far more than L.
+        expect(CONTEXT - Math.ceil(1.5 * (call.usage?.inputTotal ?? CONTEXT)) - 256, `summary call ${call.index} room`).toBeGreaterThan(ceiling);
+        harness.assertLimit(call, "max_tokens", ceiling, "OLR-010 compaction (fitted raised limit)");
+        expect(call.stopSignals, `summary call ${call.index} is not cut`).not.toContain("length");
       }
-      const reported = statuses.filter((frame) => frame.payload.completion_status !== undefined && frame.payload.completion_status !== null);
-      expect(reported.length, "compaction status frames report a completion status").toBeGreaterThan(0);
-      for (const frame of reported) {
-        expect(frame.payload.completion_status).toBe("incomplete");
-        expect(frame.payload.completion_reason).toBe("length");
-      }
-      // The output-limited summary is rejected: the compaction does not complete; the run holds the input instead.
-      expect(has(third, (frame) => frame.type === "COMPACTION_BLOCKED"), "compaction blocked after the rejected summaries").toBe(true);
-      expect(statuses.some((frame) => frame.payload.phase === "failed"), "the compaction attempt failed").toBe(true);
+      expect(statuses.some((frame) => frame.payload.phase === "completed"), "compaction completed").toBe(true);
+      // The agent's own requests keep the run limit; the fact from before compaction is still known.
+      expect(agentCalls.length).toBeGreaterThan(0);
+      for (const call of agentCalls) harness.assertLimit(call, "max_tokens", RUN_LIMIT, "OLR-010 agent request");
+      expect(answer, "the agent recalls the fact after compaction").toContain("VX-4471");
       await harness.stopRun(session);
     } finally {
-      for (const key of Object.keys(settings)) await harness.deleteServerSetting(key);
+      await harness.updateServerSetting("AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE", "1000000").catch(() => undefined);
+      await harness.updateServerSetting("AUTOBYTEUS_COMPACTION_TRIGGER_RATIO", "0.95").catch(() => undefined);
     }
   }, STEP_TIMEOUT_MS);
 });

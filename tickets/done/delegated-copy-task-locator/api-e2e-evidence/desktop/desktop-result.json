@@ -1,0 +1,39 @@
+{
+  "startedAt": "2026-10-11T08:47:38.798Z",
+  "instanceId": "iso-63441-b1f0",
+  "checks": {
+    "summary": {
+      "text": "Ship the desktop summary check",
+      "title": "Show Task in Projects: Ship the desktop summary check",
+      "style": {
+        "fontSize": "11px",
+        "color": "rgb(128, 128, 128)"
+      },
+      "rowHeight": 46
+    },
+    "before": {
+      "viewport": [
+        1512,
+        917
+      ],
+      "projectsPanel": false
+    },
+    "located": {
+      "picker": "project:project_811e6e48-e049-402e-aa42-77d2ba142d50",
+      "drawer": false,
+      "docked": true,
+      "background": "rgb(238, 242, 255)"
+    },
+    "pickerSwitched": true
+  },
+  "setup": {
+    "runId": "desk_manager_82e4_cc976a43f4c04aa4a81484a6d9b9ba37",
+    "workerRunId": "desk_writer_82e4_b86709ed181c4432b43a397337dbefd8",
+    "projectA": "project_811e6e48-e049-402e-aa42-77d2ba142d50",
+    "projectB": "project_5d2c7eb2-5c22-45af-bbec-3f9c68abbc33",
+    "taskId": "project_task_20dcfcec-2ffb-4fd2-b45b-1918aec7a596"
+  },
+  "appUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=desk_manager_c7c6_de2c9c93117e48eb8236fef4dfe9df33",
+  "pageErrors": [],
+  "result": "Pass"
+}

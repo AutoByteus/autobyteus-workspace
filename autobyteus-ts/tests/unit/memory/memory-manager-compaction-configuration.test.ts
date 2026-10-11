@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { resolveCompactionPlanningBudget } from '../../../src/memory/compaction/compaction-planning-budget.js';
 import { createEnabledMemoryCompactionConfiguration } from '../../../src/memory/compaction/memory-compaction-configuration.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
@@ -47,8 +47,7 @@ describe('MemoryManager automatic-compaction configuration', () => {
 
   it('owns and applies the supplied complete enabled configuration', () => {
     const policy = new CompactionPolicy({ triggerRatio: 0.2 });
-    const createCompressionStrategy = () => ({ compress: vi.fn() });
-    const configuration = createEnabledMemoryCompactionConfiguration(policy, createCompressionStrategy);
+    const configuration = createEnabledMemoryCompactionConfiguration(policy);
     const { manager, tempDir } = makeManager(configuration);
     try {
       expect(manager.getAutomaticCompactionConfiguration()).toBe(configuration);
@@ -60,7 +59,6 @@ describe('MemoryManager automatic-compaction configuration', () => {
       expect(manager.getAutomaticCompactionConfiguration()).toMatchObject({
         kind: 'enabled',
         policy,
-        createCompressionStrategy,
       });
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });

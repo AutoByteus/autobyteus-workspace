@@ -155,7 +155,7 @@ export class OpenAICompatibleLLM extends BaseLLM {
       model: this.model.value,
       messages: formattedMessages,
       config: this.getRequestConfig(kwargs),
-      maxOutputTokens: this.resolveMaxOutputTokens(),
+      maxOutputTokens: this.resolveMaxOutputTokens(options),
       outputLimitParameter: this.outputLimitParameter,
       kwargs
     });
@@ -188,7 +188,7 @@ export class OpenAICompatibleLLM extends BaseLLM {
       messages: formattedMessages,
       stream: true,
       config: this.getRequestConfig(kwargs),
-      maxOutputTokens: this.resolveMaxOutputTokens(),
+      maxOutputTokens: this.resolveMaxOutputTokens(options),
       outputLimitParameter: this.outputLimitParameter,
       kwargs
     });

@@ -1,0 +1,29 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-ts[39m
+
+[90mstdout[2m | tests/_ac003_opus-tonly/ac003-compare.test.ts[2m > [22m[2mAC-003 cached vs transcript summary on one real history[2m > [22m[2mproduces both summaries, both compacted contexts and both continuations
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstderr[2m | tests/_ac003_opus-tonly/ac003-compare.test.ts[2m > [22m[2mAC-003 cached vs transcript summary on one real history[2m > [22m[2mproduces both summaries, both compacted contexts and both continuations
+[22m[39mTool 'send_message_to' not found in registry.
+
+ [32m✓[39m tests/_ac003_opus-tonly/ac003-compare.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 59331[2mms[22m[39m
+     [33m[2m✓[22m[39m produces both summaries, both compacted contexts and both continuations [33m 59330[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m   Start at [22m 13:07:38
+[2m   Duration [22m 60.34s[2m (transform 503ms, setup 14ms, import 911ms, tests 59.33s, environment 0ms)[22m
+
+exit 0

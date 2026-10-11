@@ -341,6 +341,7 @@ const {
 const {
   onSelectRun,
   onSelectTeam,
+  onOpenTeamRun,
   onSelectTeamMember,
   onCreateRun,
 } = useWorkspaceHistorySelectionActions({
@@ -470,6 +471,7 @@ const sectionActions: WorkspaceHistorySectionActions = {
   onArchiveRun,
   onDeleteRun,
   onSelectTeam,
+  onOpenTeamRun,
   onTerminateTeam,
   onArchiveTeam,
   onDeleteTeam,
