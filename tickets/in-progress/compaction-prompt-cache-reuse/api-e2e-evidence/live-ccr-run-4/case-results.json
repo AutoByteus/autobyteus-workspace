@@ -1,0 +1,12 @@
+[
+  {
+    "case": "CCR-E2E-001: Opus 5.5 compacts with a cached summary request (>= 90 % cache read), continues, and meters the call",
+    "name": "CCR-E2E-001: Opus 5.5 compacts with a cached summary request (>= 90 % cache read), continues, and meters the call",
+    "state": "fail",
+    "errors": [
+      "Timed out waiting for CCR1-T4 idle. Recent frames: AGENT_STATUS:{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"compaction_cache_auditor_41183dba_802cc3d2196e4591a84641d408a8d730\"} | AGENT_COMMAND_ACK:{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"compaction_cache_auditor_41183dba_802cc3d2196e4591a84641d408a8d730\",\"message_id\":\"e2e-13175484-a10e-4bd8-8ab3-38adf1865 | AGENT_STATUS:{\"status\":\"error\",\"recoverableBlock\":{\"operationId\":\"compaction_operation_mv3bb9bs_1\",\"failureEpoch\":1,\"position\":{\"kind\":\"held_turn\",\"turnId\":\"turn_0004\"},\"sta | TURN_STARTED:{\"turn_id\":\"turn_0004\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"7f6aafc4-795b-418d-96b4-716ec4b7b7f3\",\"revision\":16,\"entries\":[{\"sequence\":4,\"message_id\":\"e2e-13175484-a10e-4bd8-8ab3-38adf186524f\",\"dedupe | AGENT_INPUT_STATE:{\"run_instance_id\":\"7f6aafc4-795b-418d-96b4-716ec4b7b7f3\",\"revision\":16,\"entries\":[{\"sequence\":4,\"message_id\":\"e2e-13175484-a10e-4bd8-8ab3-38adf186524f\",\"dedupe | AGENT_INPUT_STATE:{\"run_instance_id\":\"7f6aafc4-795b-418d-96b4-716ec4b7b7f3\",\"revision\":16,\"entries\":[{\"sequence\":4,\"message_id\":\"e2e-13175484-a10e-4bd8-8ab3-38adf186524f\",\"dedupe | AGENT_INPUT_STATE:{\"run_instance_id\":\"7f6aafc4-795b-418d-96b4-716ec4b7b7f3\",\"revision\":16,\"entries\":[{\"sequence\":4,\"message_id\":\"e2e-13175484-a10e-4bd8-8ab3-38adf186524f\",\"dedupe | COMPACTION_STATUS:{\"turn_id\":\"turn_0004\",\"compaction_operation_id\":\"compaction_operation_mv3bb9bs_1\",\"requested_turn_id\":\"turn_0003\",\"execution_turn_id\":\"turn_0004\",\"phase\":\"fail | AGENT_IN"
+    ],
+    "details": null,
+    "at": "2026-10-11T04:24:54.810Z"
+  }
+]

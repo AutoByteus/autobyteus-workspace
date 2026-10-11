@@ -2,12 +2,12 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-004` (revised for ARCH-REV-001: ARCH-001, ARCH-002, ARCH-003)
-- Approved requirements baseline / revision and user-approval reference: `requirements-doc.md` SR-002, approved by the user on 2026-10-09 (quotes in Document Status).
-- Behavior-defining supplements and their approval references: None (probe evidence only).
+- Current solution revision ID: `SR-012` (revised after CRR-010 F-9; SR-011 after CRR-008 F-6/F-7/F-8; SR-010 after CRR-006 CR-004; SR-009 after ARCH-REV-004: ARCH-005, ARCH-006; SR-008 after CRR-005)
+- Approved requirements baseline / revision and user-approval reference: `requirements-doc.md` SR-008 (SR-002 approved 2026-10-09; SR-007 approved and SR-008 explicitly delegated by the user, both 2026-10-11; quotes in Document Status).
+- Behavior-defining supplements and their approval references: `supplements/cached-summary-instruction.md`. It holds the normative text of `COMPACTION_SUMMARY_INSTRUCTION` **v5** (SR-008/SR-009) and `COMPACTION_SUMMARY_PROMPT` v6. User-approved/delegated 2026-10-11.
 - Design status: `Ready`
 - Canonical investigation-notes path: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/investigation-notes.md`
-- Authorities read (design reading gate): `references/architecture-design.md`, `design-principles.md`, repository `DESIGN.md`, the data-migration checklist (section 2 of `autobyteus-server-ts/docs/design/data_migration_guideline.md`). All were read in full earlier in this conversation on 2026-10-09 and are not re-read, as the skill allows. `design-examples.md` was not used.
+- Authorities read (design reading gate): `references/architecture-design.md`, `design-principles.md`, repository `DESIGN.md`, the data-migration checklist (section 2 of `autobyteus-server-ts/docs/design/data_migration_guideline.md`). All were read in full on 2026-10-09. For SR-010, `architecture-design.md`, `design-principles.md` and the repository `DESIGN.md` were re-read in full on 2026-10-11. `design-examples.md` was not used.
 - Project design-principle conflicts or discrepancies: None.
 
 ## Current-State Read
@@ -89,7 +89,96 @@ The live probe shows the cached summary request works: fork read 9.4k–10.9k vs
 5. **Compaction request isolation (ARCH-001).** Every summary attempt, cached or transcript, uses its own conversation id `compaction_<operationId>_<attempt>`, never the agent id. After the attempt the port releases that id through a new provider-neutral `BaseLLM.releaseConversation(id, {signal})`, bounded to 10 s as today's cleanup. The default is a no-op; `AutobyteusLLM` overrides it to call `AutobyteusClient.cleanup(id)` and drop the id from `usedConversationIds`. The agent's own LLM is never cleaned up by compaction. API providers ignore the id (`INTERNAL_PROVIDER_REQUEST_KWARG_KEYS`), so cache reuse is unaffected, and agent/memory need no provider branch.
 6. **One provider call per attempt (ARCH-003).** Both port requests pass `retryMode: 'single_attempt'`, as today, so the attempt budget and metering stay exact.
 7. **Compaction metering.** Each summary attempt's usage is emitted as a token-usage event of the agent run (`ingestion_kind: 'autobyteus_compaction'`).
-8. **Remove the compaction-model setting:**
+8. **One nine-heading output contract and normative texts (SR-007, F-2).**
+   - `COMPACTION_SUMMARY_HEADINGS` becomes the nine headings: Task and constraints; Requests and instructions received; Decisions and findings; Unverified points and open conflicts; Files created or changed; Completed work; Current state; Open work and next steps; Essential references.
+   - `validateCompactionSummaryBody` keeps its rules: exact headings in order, `- ` bullets or `(none)`.
+   - `COMPACTION_SUMMARY_INSTRUCTION` and `COMPACTION_SUMMARY_PROMPT` (v6) are set **verbatim** from `supplements/cached-summary-instruction.md`.
+   - One parser and one contract serve both paths.
+   - **Explained empty section accepted (SR-012, F-9).** In `validateCompactionSummaryBody`, a section counts as empty when its first line starts with `(none` (case-insensitive), followed by `)` or by a space or dash and an explanation. Examples: `(none)`, `(none) — read-only investigation`, `(none — read-only investigation)`. Otherwise the section still needs at least one `-`/`*`/`+` bullet. All other checks are unchanged: no text before the first heading, the nine exact headings in order, and the marker rules. Sonnet 5 explains the legitimately empty "Files created or changed" section on read-only histories in 6 of 6 replies; the bare-`(none)` rule rejected all of them and blocked compaction. Prompt texts are unchanged.
+   - **Unwrapped reply accepted (SR-011, F-6).** `parseCompactionSummary(content)`:
+     - a reply with exactly one opening and one closing marker is handled as today;
+     - a reply with **no** marker at all is passed whole (trimmed) to `validateCompactionSummaryBody`, which already requires the reply to start with the first heading, to have the nine exact headings in order, and bullets or `(none)` under each;
+     - anything else (one marker only, two blocks, markers out of order, text before the first heading of an unwrapped reply, a code fence) fails as today.
+
+     The prompts keep asking for the block; the texts do not change. Reasons:
+     - Sonnet 5 and DeepSeek wrote complete nine-heading summaries without the markers, and the parser rejected them until compaction blocked.
+     - 5 of the 6 rejected replies recorded in round 3 pass the existing body validation unchanged. The sixth wrote `(none — …)` and is rejected on that attempt; the other attempts cover it.
+     - Accepting the summary on its own shape works on every model, with no per-model prompt tuning.
+     - The markers carry no information when the reply is only the summary. A false accept would need the nine exact headings in order from the first line, which is itself a summary.
+9. **System prompt from the request's own messages, for every adapter (SR-007, F-1).**
+   - `GeminiLLM` builds `systemInstruction` from `leadingSystemMessages(messages)` (content joined with `\n`, as Anthropic does) instead of `this.systemMessage`. When the request has no leading SYSTEM message, it sends no `systemInstruction`.
+   - `GeminiPromptRenderer` keeps skipping SYSTEM messages in `contents`. Late system notes stay out of scope (pre-existing).
+   - Applies to both sync and stream paths, Gemini API and Vertex.
+   - Normal agent requests carry the same text as today: the leading SYSTEM message is the processed system prompt. System notes carried to the front by compaction now also reach Gemini (accepted).
+   - The other adapters already comply (inventory in the investigation notes).
+10. **Per-model summary mode (SR-008, F-5).** The cached summary is turned on per model, not per provider.
+   - `LLMModel` gets `compactionSummaryMode: 'cached_conversation' | 'transcript'`. Its value comes from the static catalog definition; when absent, and for all dynamic or custom models, it is `'transcript'`.
+   - The Anthropic catalog entries (`anthropic-supported-model-definitions.ts`) set `'cached_conversation'`.
+   - The DeepSeek catalog entries set `'cached_conversation'` (SR-011, final). The cached notes are accepted 6 of 6 and reuse the cache. Gap A goes to the follow-up Task. Remove the "pending rerun" comment. Gemini and all other models stay `'transcript'`.
+   - `ConversationSummaryPort` gets `usesCachedSummary(): boolean`, implemented by `LlmPhaseSummaryPort` from `llm.model.compactionSummaryMode`.
+   - `CompactionSummarizer` sends the cached request only when that returns true. Otherwise it goes straight to the transcript request, with the existing attempt budget.
+   - No provider names appear in memory or agent code: the model owns the decision, as with `defaultCompactionRatio`.
+11. **Output-limit floor for summary requests (SR-008/SR-009/SR-010, F-3, ARCH-005, CR-004).**
+   - **Override mechanism.** `LLMInvocationOptions` gets `maxOutputTokens?: number`, a per-request override. `BaseLLM.resolveMaxOutputTokens(options?)` returns `options.maxOutputTokens` when set, and `resolveRequestMaxOutputTokens(model, config)` otherwise. The adapters already call this shared resolver; they pass the invocation options through. Anthropic's non-streaming path honours it too. The agent's own requests never set it.
+   - **Rule** (owned by `LlmPhaseSummaryPort`, the same for both summary paths):
+     - `R = resolveRequestMaxOutputTokens(model, config)`: the agent's resolved limit, possibly `null`.
+     - If `R === null` or `R >= FLOOR` (16,384): no override. The summary uses exactly the agent's limit and reservation, as today.
+     - Otherwise: `L = max(R, min(FLOOR, model.maxOutputTokens ?? FLOOR, contextCapacity !== null ? floor(contextCapacity / 4) : FLOOR))`, where `contextCapacity` is the agent's effective context capacity (`resolveLlmRequestCapacity(...).effectiveContextCapacity`). `L` is the **ceiling** of the raised limit and is computed once per port (`resolveSummaryOutputTokenOverride`, unchanged).
+     - **Fitted to each request (SR-010, CR-004).** Each summary request, cached or transcript, sends `L_eff = max(R, min(L, room))`, where `room = contextCapacity − E − safetyMarginTokens` and `E` is the estimate of exactly what that request sends:
+       - cached: messages + instruction + tool schemas, as `fitsInputBudget` estimates today;
+       - transcript: the system prompt + transcript messages, as the transcript input check estimates today.
+
+       When `contextCapacity` is `null`, `room` is unbounded and `L_eff = L`. Because `L ≤ ⌊context ÷ 4⌋` already, this only matters near the end of the context.
+   - **Budget (SR-010, replaces "reserve L").** Both paths accept a request with the agent's own input budget, `requestCapacity.inputBudget` (which reserves the agent's output as today):
+     - `fitsInputBudget` returns `E ≤ inputBudget`;
+     - the transcript check stays `E > inputBudget → input_budget_exceeded`.
+
+     `cachedSummaryInputBudget` (the "reserve L" budget) is removed. An accepted request has `E ≤ context − R − margin`, so `room ≥ R`, and `L_eff ≤ room` whenever `L_eff > R`. Input plus output therefore stays within `context − margin`, the same tolerance as the agent's own requests. (When `config.maxTokens` exceeds the model maximum, the agent reserves less than `R`. `L_eff = R` is then exactly today's request and today's behavior.)
+   - **Why not reserve L (the SR-009 rule).** Reserving `L` on the transcript path turns every input in `(context − L − margin, context − R − margin]` into `input_budget_exceeded`, so a compaction that works today is blocked. Leaving the transcript check as it was overflows the context in the same window (CR-004). On the cached path, reserving `L` sends such inputs to the transcript fallback and gives up the cache although the agent's own request fits. Fitting the limit to the room keeps both today's input acceptance and today's minimum output.
+   - **Owner.** The port owns the whole rule. It holds `R` and `L` and computes `L_eff` per request from its own estimate. This is one private method used by both request methods, for example `summaryOutputLimit(estimatedInputTokens): number | null`, which returns `null` when there is no override. The summarizer, the `ConversationSummaryPort` interface and the adapters do not change. `maxOutputTokens` stays a plain per-request option.
+   - **Why this never makes compaction impossible:**
+     - it only raises a *known* limit that is too small;
+     - it is never above the model maximum;
+     - it is never above a quarter of the context;
+     - it is never above the room the request leaves (SR-010);
+     - it is never below the agent's own limit;
+     - it accepts exactly the inputs the agent's own budget accepts (SR-010).
+
+     Budget-thinking models are safe: when the agent's limit is valid for its thinking budget, raising it keeps it valid, and an unset limit resolves to the model maximum (≥ the floor), so there is no override.
+   - **Cache.** The output limit is not part of the cached prompt prefix: on Anthropic, `max_tokens` lies outside system/tools/messages, and thinking budgets come from `extraParams` (`anthropic-llm.ts:160–170`).
+   - **Worked examples** (unit-tested):
+
+     | Case | R | Model max | Context | Override L |
+     | --- | --- | --- | --- | --- |
+     | Opus 5.5, `maxTokens` 1,024 | 1,024 | 128,000 | 1,000,000 | 16,384 |
+     | Opus 5.5, no `maxTokens` | 128,000 | 128,000 | 1,000,000 | none |
+     | Ollama, no output metadata, no `maxTokens`, `num_ctx` 8,192 | null | null | 8,192 | none (today) |
+     | Ollama, `maxTokens` 1,024, `num_ctx` 8,192 | 1,024 | null | 8,192 | 2,048 |
+     | Ollama, `maxTokens` 1,024, `num_ctx` 32,768 | 1,024 | null | 32,768 | 8,192 |
+     | Sonnet 4.6, budget thinking 20,000, no `maxTokens` | 64,000 | 64,000 | 1,000,000 | none |
+     | Sonnet 4.6, `maxTokens` 8,192, budget 4,096 | 8,192 | 64,000 | 1,000,000 | 16,384 (> budget, valid) |
+     | DeepSeek scenario, `maxTokens` 1,024 | 1,024 | catalog value | catalog value | min(16,384, model max, context ÷ 4) |
+
+     **Boundary examples (SR-010, CR-004).** These use the default safety margin of 256 and an input estimate `E`; the limit sent is `L_eff`. Each must be unit-tested on the **transcript** path, and one row on the cached path.
+
+     | Case | R | L | Agent input budget | E | room | Limit sent | Result |
+     | --- | --- | --- | --- | --- | --- | --- | --- |
+     | Ollama, `maxTokens` 1,024, `num_ctx` 8,192 | 1,024 | 2,048 | 6,912 | 4,000 | 3,936 | 2,048 | sent (well inside) |
+     | same | 1,024 | 2,048 | 6,912 | 6,500 | 1,436 | 1,436 | sent; 6,500 + 1,436 = 7,936 = context − margin (CR-004 window) |
+     | same | 1,024 | 2,048 | 6,912 | 6,912 | 1,024 | 1,024 | sent with today's limit |
+     | same | 1,024 | 2,048 | 6,912 | 7,000 | — | — | `input_budget_exceeded`, as today |
+     | Ollama, `maxTokens` 1,024, `num_ctx` 32,768 | 1,024 | 8,192 | 31,488 | 26,000 | 6,512 | 6,512 | sent (CR-004 window) |
+     | Opus 5.5, `maxTokens` 1,024 (cached path) | 1,024 | 16,384 | 998,720 | 990,000 | 9,744 | 9,744 | cached request sent; under SR-009 it would have dropped to the transcript fallback |
+     | Ollama, no `maxTokens`, `num_ctx` 8,192 | null | none | — | any | — | not set | today's request, unchanged |
+12. **Instruction v5 (SR-008, F-4/F-5).** `COMPACTION_SUMMARY_INSTRUCTION` = the v5 normative text in `supplements/cached-summary-instruction.md`. It adds:
+   - the self-exclusion sentence;
+   - "earlier decisions and corrections that still apply";
+   - "keep every open doubt";
+   - commit hashes and IDs among the references;
+   - "do not write names or paths you did not actually see".
+
+   The `COMPACTION_SUMMARY_PROMPT` v6 fallback is unchanged. The durable `assertNoInstructionEcho` test stays.
+13. **Remove the compaction-model setting:**
    - server: the config key, parser, settings-service entry and LLM factory;
    - wiring: the backend and provider builders;
    - web: the model UI and its i18n.
@@ -98,7 +187,7 @@ The live probe shows the cached summary request works: fork read 9.4k–10.9k vs
 
 | Behavior ID | Kind | Requirement / AC IDs | Trigger | Existing Behavior | Approved Change / Preserved | Target Path / Spine |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | System | REQ-001..004, REQ-006; AC-001..004, AC-006, AC-008 | Compaction trigger at a settled point | Separate uncached summarizer | Cached summary request on the agent's LLM; same-model fallback; plan, validator and commit preserved | DS-001, DS-002 |
+| BEH-001 | System | REQ-001..004, REQ-006, REQ-008; AC-001..004, AC-006, AC-008, AC-010 | Compaction trigger at a settled point | Separate uncached summarizer | Cached summary request on the agent's LLM; same-model fallback; plan, validator and commit preserved | DS-001, DS-002 |
 | BEH-002 | User | REQ-005; AC-005 | Settings → Compaction | Model choice | Removed | DS-004 |
 | BEH-003 | System | REQ-007; AC-007 | Compaction attempt | Not metered | Metered | DS-003 |
 | BEH-004 | Contract | REQ-006; AC-006 | Preserved thinking | Guard after compaction | Guard before **and** after compaction | DS-001 |
@@ -151,6 +240,7 @@ The live probe shows the cached summary request works: fork read 9.4k–10.9k vs
 - Change: the key is no longer read, written or listed.
 - Normal reader/writer behavior: after the change, no code reads the key. A leftover value stays inert in the config store.
 - Required semantics: none. Compaction always uses the agent's model (approved).
+- Summary format change (SR-007): stored compaction summaries (six-heading) live as plain messages in working contexts and are never re-parsed. The parser runs only on newly generated summaries. So the nine-heading contract needs no transition, and old six-heading summaries stay readable as context (ARCH-REV-003).
 - Decision: `Directly Usable — No Migration`, because an inert leftover key is tolerated. Compaction output and working-context snapshots: `Not Affected`. Usage events: new rows through the existing pipeline; schema `Not Affected`.
 - Rationale: there is no meaning to preserve, and deleting the value has no benefit. The data-migration guideline prefers tolerant readers. If the settings page lists unknown keys generically, the implementer verifies the leftover is not shown as an editable compaction setting, or hides it there. Data-migration checklist:
   1. No migration.
@@ -251,7 +341,7 @@ ensure system
 
 | Concern | Spine | Serves | Responsibility | Why | Risk If Misplaced |
 | --- | --- | --- | --- | --- | --- |
-| Summary instruction text (`COMPACTION_SUMMARY_INSTRUCTION`) | DS-002 | `CompactionSummarizer` | `COMPACTION_SUMMARY_PROMPT` + fork suffix (summarize the whole conversation above; do not restate the system instructions, which remain in place; do not call tools or continue the task; reply only with the summary block) | Single versioned prompt source | Prompt drift between paths |
+| Summary instruction text (`COMPACTION_SUMMARY_INSTRUCTION`) | DS-002 | `CompactionSummarizer` | Normative text from `supplements/cached-summary-instruction.md` (**v5**): a handover note in the agent's own voice, covering the conversation from the first user message, without restating system instructions, with the nine headings, the evidence rule, full paths, and requests marked open/done/cancelled | Single versioned prompt source | Prompt drift between paths |
 | Input-budget check | DS-002 | `CompactionSummarizer` via port | `estimateMessagesTokens(baseline + instruction)` + tool overhead + the output reservation ≤ the agent model's request capacity (`resolveLlmRequestCapacity`, whose input budget already excludes the output reservation) | Fits the window | — |
 | Compaction conversation id + release | DS-002 | port | Unique id per attempt; `releaseConversation` after the attempt (bounded, best-effort, logged like today) | Never touch the agent's provider session; no session leak | Using the agent id posts into the agent's remote session (AutoByteus) |
 | Usage emission | DS-003 | port | Token-usage event per attempt | Meter | Emitting from memory would couple memory to the notifier |
@@ -312,7 +402,7 @@ ensure system
 | Need | Existing Capability | Decision | Why | If New, Why |
 | --- | --- | --- | --- | --- |
 | Agent request construction | `LlmPhase` stream call, `sanitizeMediaInputMessages`, `request.tools` | Reuse via port | Byte-identical prefix | — |
-| Summary format and parse | `COMPACTION_SUMMARY_PROMPT`, `parseCompactionSummary` | Reuse | Contract unchanged | — |
+| Summary format and parse | `COMPACTION_SUMMARY_PROMPT`, `parseCompactionSummary` | Reuse | Same nine-heading contract; the parser also accepts an unwrapped summary (SR-011) | — |
 | Transcript content | `CompactionContentBuilder` | Reuse (fallback only) | — | — |
 | Metering | `notifyAgentTokenUsageUpdated` | Reuse | — | — |
 | Summarizer | — | Create `CompactionSummarizer` | Replaces Direct strategy | Direct strategy is tied to LLM creation |
@@ -349,7 +439,11 @@ As final.
 | --- | --- | --- | --- |
 | `autobyteus-ts/src/memory/compaction/compaction-summarizer.ts` (new) | memory | `CompactionSummarizer` | Fork → fallback, attempts, budget, parse, observe |
 | `autobyteus-ts/src/memory/compaction/conversation-summary-port.ts` (new) | memory | contract | `ConversationSummaryPort`, `SummaryAttemptResult` |
-| `autobyteus-ts/src/memory/compaction/compaction-summary-prompt.ts` | memory | prompt | Add `COMPACTION_SUMMARY_INSTRUCTION` (prompt + fork suffix); update the approved fixture/test |
+| `autobyteus-ts/src/memory/compaction/compaction-summary-prompt.ts` | memory | prompt | `COMPACTION_SUMMARY_INSTRUCTION` (**v5**) and `COMPACTION_SUMMARY_PROMPT` (v6), verbatim from the supplement's two normative blocks; `COMPACTION_SUMMARY_HEADINGS` = nine headings; update the approved fixture and `compaction-summary-prompt.test.ts` |
+| `autobyteus-ts/src/llm/api/gemini-llm.ts` | llm/api | `GeminiLLM` | `systemInstruction` from `leadingSystemMessages(messages)` (sync + stream); none when absent |
+| `autobyteus-ts/src/llm/models.ts`, `supported-model-definition.ts`, `anthropic-supported-model-definitions.ts`, DeepSeek catalog definitions | llm | catalog | `compactionSummaryMode` (default `'transcript'`); Anthropic and DeepSeek `'cached_conversation'` (SR-011) |
+| `autobyteus-ts/src/llm/base.ts` + adapters (`anthropic-llm.ts`, `gemini-llm.ts`, `mistral-llm.ts`, `ollama-llm.ts`, `openai-compatible-llm.ts`, `openai-responses-llm.ts`) | llm | `BaseLLM` | `LLMInvocationOptions.maxOutputTokens`; `resolveMaxOutputTokens(options)` |
+| `autobyteus-ts/src/memory/compaction/conversation-summary-port.ts`, `compaction-summarizer.ts`, `agent/loop/llm-phase-summary-port.ts` | memory/agent | port/summarizer | `usesCachedSummary()`; summary output-limit floor fitted per request (SR-010); both paths use the agent's input budget |
 | `autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts` | memory | executor | Take `summaryPort`; call the summarizer with baseline messages + transcript content |
 | `autobyteus-ts/src/memory/compaction/compaction-execution.ts` | memory | types | Remove the factory-based execution input if unused; add `mode` to metadata |
 | `autobyteus-ts/src/memory/compaction/memory-compaction-configuration.ts`, `memory/index.ts` | memory | config | Policy-only configuration; exports |
@@ -411,11 +505,26 @@ N/A.
 
 ## Key Tradeoffs
 
+- **Per-model enablement over one rule for all (SR-008).** The cached summary is turned on where it is proven better (Anthropic; DeepSeek if its rerun passes). Other models keep today's transcript summary, so no provider gets worse. Model-specific compression strategies, for example for Gemini, are a follow-up Task. The architecture, the cache correctness and the provider-neutral seams are the same for every model.
+- **A per-request output limit, after all.** SR-007 had declined this because it touches every adapter. Since the incomplete-content-block fix, all adapters use one shared resolver, so the override is a small change in a single owner. The F-3 evidence (a permanent `COMPACTION_BLOCKED` at a supported 1,024-token setting) outweighs that cost.
+
+- **Cost premise corrected (SR-007).** The transcript path sends only the older, compacted part, truncated to 2,000 characters per item. Measured on Opus 5.5:
+
+  | History | Transcript path | Cached path |
+  | --- | --- | --- |
+  | A | $0.08 | $0.12 |
+  | B | $0.37 | $0.10 |
+
+  The cached path is roughly the same cost or lower, and its main value is summary quality: the full, untruncated conversation in its original form. The user confirmed continuing (2026-10-11).
+
 - The summary covers the whole conversation, while the kept tail overlaps it (approved). This is simpler and safer than asking the model to stop at a boundary.
 - The fallback costs a full-price request when the fork fails, which is rare and preferable to a blocked turn.
 - `tool_choice` is unchanged to avoid model-specific cache effects; we rely on the instruction plus the parser.
 
 ## Risks
+
+- **OBS-1 (superseded by SR-008 Intended Change 11).** The summary inherits the agent's `max_tokens`. The default is the catalog output limit (128k on Opus 5.5) since the incomplete-content-block fix. A very small agent-configured limit can truncate both summary modes and block compaction. No separate summary limit is added: that would touch every adapter for an edge configuration.
+- **Nine-heading contract on non-Anthropic models:** covered by the AC-003 rerun and the AC-008/AC-010 Gemini runs.
 
 - **Large-context fork near the window limit:** the budget check runs first, with the fallback after it.
 - **Providers that do not follow the instruction:** the parser rejects the output and the fallback runs. Validate one non-Anthropic provider.
@@ -425,6 +534,78 @@ N/A.
 - **Summary overlap with the kept tail grows the post-compaction context slightly:** the existing `post_compaction_target_exceeded` validation still applies, and on failure the existing recovery handles it.
 
 ## Guidance For Implementation
+
+**SR-012 additions (F-9):**
+- `compaction-summary-parser.ts` `validateCompactionSummaryBody`: accept a section whose first line matches `/^\(none(\)|[\s\u2013\u2014-])/i`. Otherwise keep the bullet requirement. Nothing else changes.
+- Unit tests:
+  - accept `(none)`;
+  - accept `(none) — explanation`;
+  - accept `(none — explanation)`;
+  - accept `(None)`;
+  - reject `none` without the parenthesis, `(nonexistent …)`, and a section with prose only;
+  - the summarizer accepts the recorded round-4 Sonnet B reply shape.
+- API/E2E: rerun Sonnet 5 transcript-only on history B, and on A as a regression check.
+
+**SR-011 additions (F-6, F-7, F-8):**
+- `compaction-summary-parser.ts`, `parseCompactionSummary`:
+  - when the reply contains neither marker, return `validateCompactionSummaryBody(content)`;
+  - all other marker handling is unchanged;
+  - `validateCompactionSummaryBody` itself is unchanged.
+- `pending-compaction-executor.ts` keeps calling `validateCompactionSummaryBody` on the summary text; nothing changes there.
+- Unit tests:
+  - an unwrapped valid nine-heading reply is accepted and equals the body;
+  - an unwrapped reply with text before the first heading, a missing or reordered heading, or a section with no bullets is rejected;
+  - a reply with one marker only is rejected;
+  - a fenced reply is rejected;
+  - the wrapped cases are unchanged;
+  - the summarizer accepts an unwrapped transcript reply on the first attempt.
+- Catalog: DeepSeek stays `'cached_conversation'`; drop its "pending rerun" comment.
+- No prompt or instruction text changes. `assertNoInstructionEcho` stays.
+- API/E2E (AC-003 SR-011 bar): rerun the transcript-only path on Sonnet 5 and DeepSeek, histories A and B. An accepted summary within 3 attempts is required. A quality comparison is not required for these models.
+
+**SR-010 additions (CR-004):**
+- `LlmPhaseSummaryPort`:
+  - keep `resolveSummaryOutputTokenOverride` (L) as it is, and also hold `R`;
+  - add one private per-request limit, `L_eff = max(R, min(L, context − E − margin))`, with no bound when the context is unknown, and `null` when there is no override;
+  - both request methods send `maxOutputTokens = L_eff` computed from the estimate of what they send;
+  - `fitsInputBudget` goes back to `requestCapacity.inputBudget`; remove `cachedSummaryInputBudget`;
+  - the transcript check stays as it is.
+- To estimate `E` in the cached request, use the same estimate as `fitsInputBudget`: messages + instruction + tool schemas. The media-sanitized messages may be used; they are never larger.
+- Unit tests:
+  - every row of the Intended Change 11 boundary table;
+  - transcript requests near the limit carry the fitted limit;
+  - an input at the agent budget carries R;
+  - an input above it gives `input_budget_exceeded`;
+  - a cached request between `context − L − margin` and the agent budget is still sent as cached, with the fitted limit;
+  - no override → no `maxOutputTokens` on either path.
+- Update the existing tests that assert "`fitsInputBudget` reserves L".
+- API/E2E's OLR-E2E-010 must assert the REQ-009 limit, not `SUMMARY_CUT_LIMIT` (CR-001 / C-020, API/E2E-owned).
+
+**SR-008 additions:**
+- Catalog: add `compactionSummaryMode` to the definition type and to `LLMModel`. Anthropic entries → cached. DeepSeek entries → cached, flipped back to transcript if the SR-008 rerun fails. Everything else defaults to transcript.
+- Summarizer and port: `usesCachedSummary()`. Test both branches.
+- Output limit:
+  - `LLMInvocationOptions.maxOutputTokens`;
+  - `resolveMaxOutputTokens(options)` at every adapter call site;
+  - request-body unit tests per adapter showing the override wins and agent requests are unchanged;
+  - port tests for the floor and the cap (fitted per request since SR-010).
+- Instruction: v5 verbatim; update the prompt fixture and test.
+- AC-011 live: the 1,024-token DeepSeek compaction scenario succeeds. On Anthropic, the cache read is unchanged with the floor.
+- AC-003 rerun with v5: Opus 5.5, one more Anthropic model and DeepSeek. If DeepSeek fails, API/E2E reports back to the Solution Designer. It does not flip the catalog value itself (ARCH-REV-004).
+- AC-011 unit cases: every row of the Intended Change 11 worked-examples table.
+
+
+**SR-007 additions:**
+- Copy both texts verbatim from `supplements/cached-summary-instruction.md`.
+- Update `COMPACTION_SUMMARY_HEADINGS`, the parser tests and the prompt fixture to the nine headings.
+- Gemini: unit-test the request bodies (sync and stream; API and Vertex):
+  - a leading SYSTEM message becomes `systemInstruction`;
+  - a normal agent request has the same `systemInstruction` text as before;
+  - with no SYSTEM message there is no `systemInstruction`;
+  - the transcript fallback request carries `COMPACTION_SUMMARY_PROMPT`.
+- AC-003 rerun: on histories A and B with the new texts; the pass conditions are in requirements AC-003.
+- AC-010: a live Gemini fallback run.
+
 
 Unit tests:
 - **Summarizer:**

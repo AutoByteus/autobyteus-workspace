@@ -1,0 +1,12 @@
+[
+  {
+    "case": "CCR-E2E-001: Opus 5.5 compacts with a cached summary request (>= 90 % cache read), continues, and meters the call",
+    "name": "CCR-E2E-001: Opus 5.5 compacts with a cached summary request (>= 90 % cache read), continues, and meters the call",
+    "state": "fail",
+    "errors": [
+      "Timed out waiting for CCR1-T3 idle. Recent frames: AGENT_INPUT_STATE:{\"run_instance_id\":\"2296d78a-a2d0-4b9f-81da-7cb424a82ac4\",\"revision\":12,\"entries\":[{\"sequence\":3,\"message_id\":\"e2e-3f734486-2286-4977-8108-e70b9f2d6383\",\"dedupe | SEGMENT_CONTENT:{\"id\":\"toolu_01Uk16RTWnQk1ARRh4Yq9cDC\",\"turn_id\":\"turn_0003\",\"segment_type\":\"tool_call\",\"delta\":\"hunk-13\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"2296d78a-a2d0-4b9f-81da-7cb424a82ac4\",\"revision\":12,\"entries\":[{\"sequence\":3,\"message_id\":\"e2e-3f734486-2286-4977-8108-e70b9f2d6383\",\"dedupe | SEGMENT_CONTENT:{\"id\":\"toolu_01Uk16RTWnQk1ARRh4Yq9cDC\",\"turn_id\":\"turn_0003\",\"segment_type\":\"tool_call\",\"delta\":\".txt\\\"}\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"2296d78a-a2d0-4b9f-81da-7cb424a82ac4\",\"revision\":12,\"entries\":[{\"sequence\":3,\"message_id\":\"e2e-3f734486-2286-4977-8108-e70b9f2d6383\",\"dedupe | SEGMENT_END:{\"id\":\"toolu_01Uk16RTWnQk1ARRh4Yq9cDC\",\"turn_id\":\"turn_0003\",\"metadata\":{\"tool_name\":\"read_file\",\"arguments\":{\"path\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r00 | AGENT_INPUT_STATE:{\"run_instance_id\":\"2296d78a-a2d0-4b9f-81da-7cb424a82ac4\",\"revision\":12,\"entries\":[{\"sequence\":3,\"message_id\":\"e2e-3f734486-2286-4977-8108-e70b9f2d6383\",\"dedupe | SEGMENT_END:{\"id\":\"segment_fde71e9e8d9f438a9684379deb7928ff:reasoning_e160aa40b4504e38b71b28e135da93e9\",\"turn_id\":\"turn_0003\",\"metadata\":null,\"interrupted\":false,\"reason\":n | AGENT_INPUT_STATE:{\"run_instance_id\":\"2296d78a-a2d0-4b9f-81da-7cb424a82ac4\",\"revision\":12,\"entries\":[{\"sequence\":3,\"message_i"
+    ],
+    "details": null,
+    "at": "2026-10-10T11:31:19.781Z"
+  }
+]

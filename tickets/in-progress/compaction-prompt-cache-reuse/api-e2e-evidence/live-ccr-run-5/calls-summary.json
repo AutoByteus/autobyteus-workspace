@@ -1,0 +1,1536 @@
+[
+  {
+    "index": 0,
+    "phase": "CCR1-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 190,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8716,
+      "cacheRead": 0,
+      "cacheWrite": 8712,
+      "output": 190
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 1,
+    "phase": "CCR1-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 419,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 9617,
+      "cacheRead": 8712,
+      "cacheWrite": 903,
+      "output": 419
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 2,
+    "phase": "CCR1-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 328,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 10747,
+      "cacheRead": 9615,
+      "cacheWrite": 1130,
+      "output": 328
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 3,
+    "phase": "CCR1-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 164,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 11786,
+      "cacheRead": 10745,
+      "cacheWrite": 1039,
+      "output": 164
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 4,
+    "phase": "CCR1-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 12661,
+      "cacheRead": 11784,
+      "cacheWrite": 875,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 5,
+    "phase": "CCR1-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 13506,
+      "cacheRead": 12659,
+      "cacheWrite": 845,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 6,
+    "phase": "CCR1-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 14351,
+      "cacheRead": 13504,
+      "cacheWrite": 845,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 7,
+    "phase": "CCR1-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 15196,
+      "cacheRead": 14349,
+      "cacheWrite": 845,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 8,
+    "phase": "CCR1-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 16041,
+      "cacheRead": 15194,
+      "cacheWrite": 845,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 9,
+    "phase": "CCR1-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 16886,
+      "cacheRead": 16039,
+      "cacheWrite": 845,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 10,
+    "phase": "CCR1-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 17731,
+      "cacheRead": 16884,
+      "cacheWrite": 845,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 11,
+    "phase": "CCR1-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 18576,
+      "cacheRead": 17729,
+      "cacheWrite": 845,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 12,
+    "phase": "CCR1-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 169,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 19421,
+      "cacheRead": 18574,
+      "cacheWrite": 845,
+      "output": 169
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 13,
+    "phase": "CCR1-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 19641,
+      "cacheRead": 19419,
+      "cacheWrite": 218,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 14,
+    "phase": "CCR1-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 152,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 20486,
+      "cacheRead": 19637,
+      "cacheWrite": 847,
+      "output": 152
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 15,
+    "phase": "CCR1-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 151,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 21349,
+      "cacheRead": 20484,
+      "cacheWrite": 863,
+      "output": 151
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 16,
+    "phase": "CCR1-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 150,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 22211,
+      "cacheRead": 21347,
+      "cacheWrite": 862,
+      "output": 150
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 17,
+    "phase": "CCR1-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 23072,
+      "cacheRead": 22209,
+      "cacheWrite": 861,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 18,
+    "phase": "CCR1-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 23917,
+      "cacheRead": 23070,
+      "cacheWrite": 845,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 19,
+    "phase": "CCR1-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 118,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 24762,
+      "cacheRead": 23915,
+      "cacheWrite": 845,
+      "output": 118
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 20,
+    "phase": "CCR1-T3",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 24964,
+      "cacheRead": 24760,
+      "cacheWrite": 200,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 21,
+    "phase": "CCR1-T3",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 25809,
+      "cacheRead": 24960,
+      "cacheWrite": 847,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 22,
+    "phase": "CCR1-T3",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 74,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 26654,
+      "cacheRead": 25807,
+      "cacheWrite": 845,
+      "output": 74
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 23,
+    "phase": "CCR1-T4",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 775,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 27181,
+      "cacheRead": 26652,
+      "cacheWrite": 525,
+      "output": 775
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 24,
+    "phase": "CCR1-T4",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 15668,
+      "cacheRead": 8543,
+      "cacheWrite": 7121,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 25,
+    "phase": "CCR1-T4",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 16513,
+      "cacheRead": 15664,
+      "cacheWrite": 847,
+      "output": 134
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 26,
+    "phase": "CCR1-T4",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 102,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 17358,
+      "cacheRead": 16511,
+      "cacheWrite": 845,
+      "output": 102
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 27,
+    "phase": "CCR2-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 152,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8716,
+      "cacheRead": 0,
+      "cacheWrite": 8712,
+      "output": 152
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 28,
+    "phase": "CCR2-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 439,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 9579,
+      "cacheRead": 8712,
+      "cacheWrite": 865,
+      "output": 439
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 29,
+    "phase": "CCR2-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 439,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 10729,
+      "cacheRead": 9577,
+      "cacheWrite": 1150,
+      "output": 439
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 30,
+    "phase": "CCR2-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 903,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 11879,
+      "cacheRead": 10727,
+      "cacheWrite": 1150,
+      "output": 903
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 31,
+    "phase": "CCR2-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 672,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 13493,
+      "cacheRead": 11877,
+      "cacheWrite": 1614,
+      "output": 672
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 32,
+    "phase": "CCR2-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 291,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 14876,
+      "cacheRead": 13491,
+      "cacheWrite": 1383,
+      "output": 291
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 33,
+    "phase": "CCR2-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 241,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 15878,
+      "cacheRead": 14874,
+      "cacheWrite": 1002,
+      "output": 241
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 34,
+    "phase": "CCR2-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 358,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 16830,
+      "cacheRead": 15876,
+      "cacheWrite": 952,
+      "output": 358
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 35,
+    "phase": "CCR2-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 437,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 17899,
+      "cacheRead": 16828,
+      "cacheWrite": 1069,
+      "output": 437
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 36,
+    "phase": "CCR2-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 411,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 19047,
+      "cacheRead": 17897,
+      "cacheWrite": 1148,
+      "output": 411
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 37,
+    "phase": "CCR2-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 441,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 20169,
+      "cacheRead": 19045,
+      "cacheWrite": 1122,
+      "output": 441
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 38,
+    "phase": "CCR2-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 321,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 21321,
+      "cacheRead": 20167,
+      "cacheWrite": 1152,
+      "output": 321
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 39,
+    "phase": "CCR2-T1",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 290,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 22353,
+      "cacheRead": 21319,
+      "cacheWrite": 1032,
+      "output": 290
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 40,
+    "phase": "CCR2-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 112,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 22627,
+      "cacheRead": 22351,
+      "cacheWrite": 272,
+      "output": 112
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 41,
+    "phase": "CCR2-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 154,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 23450,
+      "cacheRead": 22623,
+      "cacheWrite": 825,
+      "output": 154
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 42,
+    "phase": "CCR2-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 127,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 24315,
+      "cacheRead": 23448,
+      "cacheWrite": 865,
+      "output": 127
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 43,
+    "phase": "CCR2-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 142,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 25153,
+      "cacheRead": 24313,
+      "cacheWrite": 838,
+      "output": 142
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 44,
+    "phase": "CCR2-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 270,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 26039,
+      "cacheRead": 25151,
+      "cacheWrite": 884,
+      "output": 270
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 45,
+    "phase": "CCR2-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 207,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 27088,
+      "cacheRead": 26035,
+      "cacheWrite": 1049,
+      "output": 207
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 46,
+    "phase": "CCR2-T2",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 245,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 28061,
+      "cacheRead": 27084,
+      "cacheWrite": 973,
+      "output": 245
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 47,
+    "phase": "CCR2-T3",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 1250,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 28646,
+      "cacheRead": 28057,
+      "cacheWrite": 585,
+      "output": 1250
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 48,
+    "phase": "CCR2-T3",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 112,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 15595,
+      "cacheRead": 8543,
+      "cacheWrite": 7048,
+      "output": 112
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 49,
+    "phase": "CCR2-T3",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 224,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 16418,
+      "cacheRead": 15591,
+      "cacheWrite": 825,
+      "output": 224
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 50,
+    "phase": "CCR2-T3",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 116,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 17429,
+      "cacheRead": 16416,
+      "cacheWrite": 1009,
+      "output": 116
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 51,
+    "phase": "CCR2-T4",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 112,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 17314,
+      "cacheRead": 0,
+      "cacheWrite": 17310,
+      "output": 112
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 52,
+    "phase": "CCR2-T4",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 193,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 18137,
+      "cacheRead": 17310,
+      "cacheWrite": 825,
+      "output": 193
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 53,
+    "phase": "CCR2-T4",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 375,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 19092,
+      "cacheRead": 18135,
+      "cacheWrite": 953,
+      "output": 375
+    },
+    "strictInjected": true
+  },
+  {
+    "index": 54,
+    "phase": "CCR3-T1",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 21862,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 55,
+    "phase": "CCR3-T2",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 39676,
+      "cacheRead": 20234,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 56,
+    "phase": "CCR3-T2",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 401,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 40007,
+      "cacheRead": 36417,
+      "cacheWrite": 0,
+      "output": 401
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 57,
+    "phase": "CCR3-T3",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5221,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 58,
+    "phase": "CCR3-T4",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5240,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 4
+    },
+    "strictInjected": false
+  }
+]

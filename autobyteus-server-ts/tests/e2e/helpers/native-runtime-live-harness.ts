@@ -8,6 +8,12 @@
  * requested on demand (a network cut before `message_stop`, a refusal stop, an OpenAI-compatible tool call whose arguments are not JSON;
  * Anthropic validates buffered tool input, so it has no malformed-argument shape). The
  * rewrite only edits the real provider response text; the request still goes to the provider.
+ *
+ * Opt-in options (off by default): `strictAnthropicThinking` sends every Anthropic `/v1/messages` call with the strict
+ * preserved-thinking check (`anthropic-beta: thinking-binding-controls-2026-08-01`,
+ * `thinking.block_binding.prefix_mismatch_behavior: "error"`), a validation harness only: a kept thinking block whose
+ * request prefix changed is rejected with a 400 instead of being dropped silently. The recorded body stays exactly as
+ * production built it. `writeBodies` also writes every recorded request body to the evidence directory.
  */
 import "reflect-metadata";
 import { randomUUID } from "node:crypto";
@@ -17,6 +23,7 @@ import path from "node:path";
 import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { expect } from "vitest";
+import { COMPACTION_SUMMARY_INSTRUCTION, COMPACTION_SUMMARY_PROMPT } from "autobyteus-ts/memory/compaction/compaction-summary-prompt.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { closeLiveRuntimeSecretVault, initializeLiveRuntimeSecretVaultFromEnvironment } from "./live-runtime-secret-vault-helpers.js";
 import { startStudioE2eRuntimeServer } from "./studio-runtime-test-server.js";
@@ -47,14 +54,26 @@ export type CapturedCall = {
   /** The response streamed visible (non-reasoning) text: Anthropic `text_delta`, OpenAI chat `content`, Responses `output_text`, Gemini text parts. */
   responseHasVisibleText: boolean;
   errorBody: string | null;
+  /** Provider-reported usage of the response (largest value per field across the stream); null when not reported. */
+  usage: ProviderUsage | null;
+  /** The call was sent with the strict preserved-thinking check (`strictAnthropicThinking`). */
+  strictInjected: boolean;
   settled: Promise<void>;
 };
+/**
+ * Provider usage normalized for cache checks. `inputTotal` is every input token of the request: Anthropic
+ * `input_tokens + cache_read_input_tokens + cache_creation_input_tokens`; OpenAI-compatible `prompt_tokens`;
+ * Gemini `promptTokenCount`. `cacheRead` is the cached part (Anthropic `cache_read_input_tokens`, DeepSeek
+ * `prompt_cache_hit_tokens`, OpenAI `cached_tokens`, Gemini `cachedContentTokenCount`).
+ */
+export type ProviderUsage = { inputTotal: number; cacheRead: number; cacheWrite: number; output: number };
 export type WsMessage = { type: string; payload: Json };
 export type RunSession = { runId: string; socket: WebSocket; frames: WsMessage[]; workspaceRootPath: string };
 export type CatalogModel = { modelIdentifier: string; value: string; maxOutputTokens: number | null };
 /** Edits one real provider response body; return the text unchanged when the rewrite does not apply. */
 export type ResponseRewrite = (text: string) => string;
 
+const STRICT_THINKING_BETA = "thinking-binding-controls-2026-08-01";
 const LIMIT_FIELD_NAMES: Array<keyof LimitFields> = ["max_tokens", "max_completion_tokens", "max_output_tokens", "maxOutputTokens", "num_predict"];
 
 export const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
@@ -89,6 +108,55 @@ export const readResponseSignals = (text: string) => {
     || /"delta"\s*:\s*\{[^}]*"content"\s*:\s*"[^"]/.test(text)
     || /"parts"\s*:\s*\[\s*\{\s*"text"\s*:\s*"[^"]/.test(text);
   return { stopSignals: [...stopSignals], maxReportedOutputTokens: maxTokens, responseHasToolCall, responseHasVisibleText };
+};
+
+const maxOf = (text: string, field: string): number | null => {
+  let max: number | null = null;
+  for (const match of text.matchAll(new RegExp(`"${field}"\\s*:\\s*(\\d+)`, "g"))) max = Math.max(max ?? 0, Number(match[1]));
+  return max;
+};
+
+/** Usage from a (streamed or plain) provider response, normalized as `ProviderUsage`; null when nothing is reported. */
+export const readResponseUsage = (text: string): ProviderUsage | null => {
+  const anthropicInput = maxOf(text, "input_tokens");
+  const anthropicRead = maxOf(text, "cache_read_input_tokens");
+  if (anthropicInput !== null && anthropicRead !== null) {
+    const write = maxOf(text, "cache_creation_input_tokens") ?? 0;
+    return { inputTotal: anthropicInput + anthropicRead + write, cacheRead: anthropicRead, cacheWrite: write, output: maxOf(text, "output_tokens") ?? 0 };
+  }
+  const prompt = maxOf(text, "prompt_tokens");
+  if (prompt !== null) {
+    return { inputTotal: prompt, cacheRead: maxOf(text, "prompt_cache_hit_tokens") ?? maxOf(text, "cached_tokens") ?? 0,
+      cacheWrite: 0, output: maxOf(text, "completion_tokens") ?? 0 };
+  }
+  const geminiPrompt = maxOf(text, "promptTokenCount");
+  if (geminiPrompt !== null) {
+    return { inputTotal: geminiPrompt, cacheRead: maxOf(text, "cachedContentTokenCount") ?? 0, cacheWrite: 0,
+      output: maxOf(text, "candidatesTokenCount") ?? 0 };
+  }
+  return null;
+};
+
+const CACHED_SUMMARY_MARKER = COMPACTION_SUMMARY_INSTRUCTION.trim().split("\n")[0]!.slice(0, 80);
+const TRANSCRIPT_SUMMARY_MARKER = COMPACTION_SUMMARY_PROMPT.split("\n")[0]!.slice(0, 80);
+/**
+ * Which compaction summary request a provider request is: `cached` (the agent's conversation + the summary instruction
+ * as the last user message), `transcript` (the summary prompt + the rendered history), or null (not a summary request).
+ * Read from the request body as the provider receives it, so it is independent of the conversation id (API providers
+ * never receive it). Only the positions the summarizer uses count: the instruction in the request's last message
+ * (`messages`, or Gemini `contents`), the prompt in the request's system part (Anthropic `system`, Gemini
+ * `systemInstruction`, a `system`/`developer` message). A later agent request whose compacted summary quotes either
+ * text is therefore not mistaken for a summary request.
+ */
+export const summaryRequestMode = (body: Json): "cached" | "transcript" | null => {
+  if (!CACHED_SUMMARY_MARKER || !TRANSCRIPT_SUMMARY_MARKER) throw new Error("summary request markers must not be empty");
+  const list = Array.isArray(body.messages) ? body.messages as Json[] : Array.isArray(body.contents) ? body.contents as Json[] : [];
+  if (JSON.stringify(list.at(-1) ?? null).includes(CACHED_SUMMARY_MARKER)) return "cached";
+  const generationConfig = isRecord(body.generationConfig) ? body.generationConfig : {};
+  const systemPart = JSON.stringify([body.system ?? null, body.systemInstruction ?? null, generationConfig.systemInstruction ?? null,
+    ...list.filter((message) => message.role === "system" || message.role === "developer")]);
+  if (systemPart.includes(TRANSCRIPT_SUMMARY_MARKER)) return "transcript";
+  return null;
 };
 
 type RequestMessage = { role: string; text: string; toolUses: number; toolResults: string[] };
@@ -163,7 +231,8 @@ export class NativeRuntimeLiveHarness {
   phase = "setup";
   private currentCase: { id: string; details: Json } | null = null;
 
-  constructor(private readonly options: { evidenceDir: string | null; stepTimeoutMs: number; tempPrefix: string }) {}
+  constructor(private readonly options: { evidenceDir: string | null; stepTimeoutMs: number; tempPrefix: string;
+    strictAnthropicThinking?: boolean; writeBodies?: boolean }) {}
 
   async start(): Promise<void> {
     this.installRecorder();
@@ -218,14 +287,24 @@ export class NativeRuntimeLiveHarness {
       try { body = JSON.parse(init.body) as Json; } catch { return originalFetch(input, init); }
       const rewrite = this.pendingRewrite;
       this.pendingRewrite = null;
+      let sendInit = init;
+      const strictInjected = this.options.strictAnthropicThinking === true && parsedUrl.hostname === "api.anthropic.com"
+        && parsedUrl.pathname === "/v1/messages" && isRecord(body.thinking);
+      if (strictInjected) {
+        const headers = new Headers(init.headers);
+        const beta = headers.get("anthropic-beta");
+        headers.set("anthropic-beta", beta ? `${beta},${STRICT_THINKING_BETA}` : STRICT_THINKING_BETA);
+        const strictBody = { ...body, thinking: { ...(body.thinking as Json), block_binding: { prefix_mismatch_behavior: "error" } } };
+        sendInit = { ...init, headers, body: JSON.stringify(strictBody) };
+      }
       const record: CapturedCall = {
         index: this.calls.length, phase: this.phase, host: parsedUrl.hostname, pathname: parsedUrl.pathname,
         stream: body.stream === true || parsedUrl.pathname.includes("streamGenerateContent"),
         limits: readLimitFields(body), body, rewritten: false, status: null, stopSignals: [], maxReportedOutputTokens: null, responseHasToolCall: false, responseHasVisibleText: false,
-        errorBody: null, settled: Promise.resolve(),
+        errorBody: null, usage: null, strictInjected, settled: Promise.resolve(),
       };
       this.calls.push(record);
-      let response = await originalFetch(input, init);
+      let response = await originalFetch(input, sendInit);
       if (rewrite && response.ok) {
         const original = await response.text();
         const edited = rewrite(original);
@@ -237,6 +316,7 @@ export class NativeRuntimeLiveHarness {
       record.settled = finalResponse.clone().text().then((text) => {
         if (!finalResponse.ok) { record.errorBody = text.slice(0, 1500); return; }
         Object.assign(record, readResponseSignals(text));
+        record.usage = readResponseUsage(text);
       }).catch((error: unknown) => { record.errorBody = `response read failed: ${String(error)}`; });
       return finalResponse;
     }) as typeof fetch;
@@ -250,7 +330,7 @@ export class NativeRuntimeLiveHarness {
       index: call.index, phase: call.phase, host: call.host, pathname: call.pathname, stream: call.stream, limits: call.limits,
       rewritten: call.rewritten, status: call.status, stopSignals: call.stopSignals, maxReportedOutputTokens: call.maxReportedOutputTokens,
       responseHasToolCall: call.responseHasToolCall, responseHasVisibleText: call.responseHasVisibleText,
-      errorBody: call.errorBody,
+      errorBody: call.errorBody, usage: call.usage, strictInjected: call.strictInjected,
     };
   }
 
@@ -272,6 +352,9 @@ export class NativeRuntimeLiveHarness {
     await this.settleCalls();
     await writeFile(path.join(dir, "calls-summary.json"), JSON.stringify(this.calls.map((call) => this.summarize(call)), null, 2));
     await writeFile(path.join(dir, "case-results.json"), JSON.stringify(this.caseResults, null, 2));
+    if (this.options.writeBodies) {
+      await writeFile(path.join(dir, "calls-full.json"), JSON.stringify(this.calls.map((call) => ({ ...this.summarize(call), body: call.body })), null, 2));
+    }
   }
 
   async gql<T>(query: string, variables: Json = {}): Promise<T> {

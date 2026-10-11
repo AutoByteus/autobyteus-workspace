@@ -11,7 +11,7 @@
 - Finalization target: `origin` / `personal`
 - Bootstrap result: worktree created; `pnpm install --frozen-lockfile --prefer-offline --ignore-scripts` succeeded.
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-004`
+- Current solution revision ID: `SR-008`
 - Authorities read: `references/requirements-engineering.md` and templates (read earlier in this conversation, 2026-10-09; per the skill not re-read); repository `AGENTS.md`, `DESIGN.md`, `TESTING.md` (read earlier, 2026-10-09).
 - Investigation status: requirements and architecture investigation complete through SR-004 (architecture review ARCH-REV-001 resolved).
 
@@ -97,6 +97,106 @@ Findings:
 - Today `DirectLlmCompressionStrategy` uses an isolated LLM per attempt with id `compaction_<uuid>`, cleaned up within a 10 s bound (`direct-llm-compression-strategy.ts:76, 85–99`).
 - API providers drop `logicalConversationId` (`INTERNAL_PROVIDER_REQUEST_KWARG_KEYS`), so a distinct compaction id does not affect cache reuse.
 - Today's strategy passes `retryMode: 'single_attempt'`, which the Anthropic, OpenAI-compatible, OpenAI Responses and Gemini adapters map to one provider call.
+
+## Validation Findings And Follow-Up (SR-007, after CRR-003)
+
+**Where each adapter takes its system prompt** (source read 2026-10-11; F-1):
+- Anthropic: `leadingSystemMessages(messages)`, placed in the top-level `system`.
+- OpenAI chat family: `OpenAIChatRenderer` renders SYSTEM messages with role `system`. This covers openai-compatible, deepseek, kimi, glm, qwen, lmstudio, minimax and grok; grok only copies `config.systemMessage` into its config, and requests come from the messages.
+- OpenAI Responses, Ollama, Mistral and AutoByteus renderers pass SYSTEM roles through.
+- **Gemini is the outlier:** `GeminiLLM` sends `systemInstruction: this.systemMessage` (the agent's prompt, set at bootstrap; `gemini-llm.ts:142, 182`), and `GeminiPromptRenderer` skips SYSTEM messages (`gemini-prompt-renderer.ts:46-54`).
+- Effect: the transcript fallback's summary prompt never reaches Gemini, and its reply fails the parser (`api-e2e-evidence/ac003/run-4-ir002-A/ac003-results.json`, `c010`, `geminiBodies`).
+- On normal requests the stored prompt and the leading SYSTEM message hold the same text, which is why nothing was visible.
+
+**AC-003 results** (`ac003-summary-quality-report.md`):
+- **Quality:** the cached summary is better or equal on most items, but worse on two:
+  - gap A: an unverified "pre-existing / unrelated, tests verified" claim kept as fact;
+  - gap B: the early "Skill Improver intentionally visible" finding dropped (it conflicts with the later "hide it").
+  - The IR-001 wording shows the same gaps.
+- **Cost, Opus 5.5:**
+
+  | History | Transcript path | Cached path (warm) |
+  | --- | --- | --- |
+  | A | $0.08 | $0.12 |
+  | B | $0.37 | $0.10 |
+
+  The transcript path sends only the compactable older units, each truncated to 2,000 characters. The original "$3.20 → $0.16" premise was wrong.
+- **Live passes:** Opus 5.5 98.58 % cache read under the strict check; Gemini cached path 90.9 %; desktop compaction 99.44 % with the Token Meter correct.
+
+**Instruction refinement with the user** (2026-10-11, `supplements/`):
+- v2 → nine headings;
+- v3 → "start from the first user message, do not restate system instructions", because the v2 example restated the role and process;
+- v4 → full paths, requests marked open/done/cancelled, each point once, open items specific, because the v3 example had 8 shortened paths, only 1 request with a status, and repetition.
+- Mechanical comparison: v3 had 8 shortened paths and 1 request with a status; v4 has 0 and 13.
+
+**OBS-1:** the summary inherits the agent's `max_tokens`. After the delivered incomplete-content-block fix the default is the catalog output limit (128k on Opus 5.5). `max_tokens` is not part of the cached prefix. Decision: no separate summary output limit; recorded as a risk.
+
+## Round 2 Validation (SR-008, after CRR-005)
+
+- **F-3 (output limit).** The real-provider compaction scenario sets `max_tokens: 1_024` (`test-support/live-e2e/live-e2e-harness.ts:762`). With the nine-heading note, 5/5 attempts were cut off (`completionReason: length` ×9, `incomplete`), ending in COMPACTION_BLOCKED ×3 (`api-e2e-evidence/round2/real-e2e-deepseek-compaction.log`). At 4,096 tokens it passes 3/3 (`…-probe-4096.log`). The old compactor had its own limit (8,192 default).
+- **Output limits in the code.** Since the delivered incomplete-content-block fix, every adapter takes its limit from `BaseLLM.resolveMaxOutputTokens()` → `resolveRequestMaxOutputTokens(model, config)` (base.ts:61). Call sites: anthropic 1, gemini 2, mistral 2, ollama 1, openai-compatible 2, openai-responses 2.
+- **F-4 (instruction echo).** In 2 of 3 Gemini runs (0 of 6 on Opus) the note recorded the compaction instruction as an open request (`round2/live-ccr-r1/calls-full.json` call 55).
+- **F-5, per provider:** Opus is better (one name that is not in the history); DeepSeek is equal or better, parsing 4/4 vs 2/3 for the transcript path (gap A in 1 of 2; one wrong path); Gemini continues equally well but its note is thinner.
+- **Live passes:** the F-1 Gemini fix is confirmed on Vertex Express; Opus 96.9 % cache read with the strict check.
+- **Tested models:** claude-opus-5-5, deepseek-v4-flash, gemini-3.8-flash. Per-model catalog data already carries compaction defaults (`LLMModel.defaultCompactionRatio`), which supports a per-model summary mode.
+
+## CR-004 Evidence (SR-010, after CRR-006)
+
+Sources read on 2026-10-11 at `13648b147`: `autobyteus-ts/src/agent/token-budget.ts`, `agent/loop/llm-phase-summary-port.ts`, `memory/compaction/compaction-summarizer.ts:43,71-72`, `conversation-summary-port.ts`, `llm/models.ts:160`.
+
+- **Agent input budget.** `resolveLlmRequestCapacity`:
+  - `reservedOutputTokens = min(config.maxTokens, model.maxOutputTokens)`, else whichever is known, else 0;
+  - `inputBudget = min(context − reserved, providerInputCap) − safetyMargin`;
+  - the default margin is 256 (`models.ts:160`).
+- **IR-004 port:**
+  - `fitsInputBudget` (cached) uses `min(context − L, cap) − margin`;
+  - `requestTranscriptSummary` checks `E > inputBudget` (which reserves R) and sends `maxOutputTokens = L`.
+- **Overflow window.** A transcript input `E` in `(context − L − margin, context − R − margin]` passes the check but `E + L > context − margin`:
+  - Ollama with `maxTokens` 1,024 and `num_ctx` 8,192 (L = 2,048): 1,024 tokens wide;
+  - with `num_ctx` 32,768 (L = 8,192): 7,168 tokens wide.
+
+  Dynamic and local models are transcript-only (REQ-002), so these inputs reach exactly this path. Before IR-004 the request sent R, and `E + R ≤ context − margin`.
+- **Cached-path side effect of "reserve L".** An input that fits the agent's own budget but not `context − L − margin` skips the cached request and goes to the transcript fallback. This gives up the cache and the full-history quality although the agent's own request fits.
+- **Room is always at least R for an accepted input.** If `E ≤ inputBudget ≤ context − reserved − margin`, then `context − E − margin ≥ reserved`. In the override case `reserved = R`, except when `config.maxTokens` exceeds the model maximum; then `reserved` is smaller and sending R is exactly today's request.
+- **`max_tokens` is outside the cached prefix on Anthropic** (design Intended Change 11, "Cache"), so a per-request value does not affect the cache read.
+
+## Round 3 Findings (SR-011, after CRR-008)
+
+Sources:
+- `api-e2e-evidence/round3/ac003-*-tonly-*/ac003-results.json` (`transcriptAttempts`);
+- `api-e2e-evidence/round3/ac003-side-by-side-round3.md` (the RAW REPLY blocks);
+- `autobyteus-ts/src/memory/compaction/compaction-summary-parser.ts`.
+
+- **F-6, the markers are dropped.**
+  - Sonnet 5 dropped `<compaction_summary>` in 8 of 8 transcript replies; DeepSeek in 6 of 9 (rounds 2–3). Every reply was `complete`.
+  - With the pre-ticket v5 prompt, Sonnet kept the markers 3 of 3.
+  - Opus and Gemini always keep them.
+  - The cached instruction v5, which ends with "Reply with only this block:" and the block, is followed by Sonnet and DeepSeek.
+- **Offline check of the 6 recorded rejected replies against the unchanged `validateCompactionSummaryBody` rules** (Solution Designer, 2026-10-11, Python re-implementation of the same rules):
+
+  | Reply | Result |
+  | --- | --- |
+  | sonnet A (round 3 normal run) | valid |
+  | sonnet-tonly A | valid |
+  | sonnet-tonly B | valid |
+  | deepseek B | valid |
+  | deepseek-tonly A | valid |
+  | sonnet B | invalid: `(none — this has been a read-only investigation …)` is neither `(none)` nor a bullet |
+
+  So the replies are good summaries rejected only for the missing wrapper.
+- **F-7 / F-8, quality.** DeepSeek cached notes were accepted 6 of 6 across rounds, with no wrong paths in round 3; gap A appeared in 2 of 3 samples. Sonnet 5 cached notes were accepted 2 of 2, with gap A in "Completed work" and in the continuation. Opus has no gap A (round 3).
+
+## Round 4 Finding F-9 (SR-012, after CRR-010)
+
+- Source: `api-e2e-evidence/round4/ac003-sonnet-tonly-B/ac003-results.json` (`transcriptAttempts[].rawContent`), checked by the Solution Designer.
+- On history B (a read-only investigation), Sonnet 5 wrote the "Files created or changed" section as:
+  - attempt 1: `(none) — this has been a read-only investigation; …`;
+  - attempts 2–3: `(none — this has been a read-only investigation; …)`.
+
+  The round-4 total is 6 of 6 replies in this form. Each was otherwise a complete nine-heading summary.
+- `validateCompactionSummaryBody` (rule older than this ticket) accepts only an exact `(none)` or a bullet, so every reply was rejected.
+- **Correction of SR-011:** the SR-011 offline check already showed this form in 1 of 6 replies, and I assumed "the other attempts cover it". Round 4 shows it is systematic for Sonnet 5 on read-only histories, not occasional.
+- All other SR-011 bar items passed live (CRR-010).
 
 ## Requirement Implications
 
