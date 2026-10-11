@@ -12,6 +12,7 @@ import process from 'node:process';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { routeTaskWorkerBoundaries } from './fixtures/task-worker-boundaries.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -241,6 +242,8 @@ try {
     });
   });
 
+  // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
+  await routeTaskWorkerBoundaries(page);
   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
   await page.locator('[data-test="peer-sidebar-probe"]').waitFor({ state: 'visible' });
   await page.waitForFunction(() => Boolean(window.__peerSidebarProbe));

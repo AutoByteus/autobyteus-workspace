@@ -489,6 +489,7 @@ const actions: WorkspaceHistorySectionActions = {
   onTerminateRun: () => {}, onArchiveRun: () => {}, onDeleteRun: () => {},
   onTerminateTeam: () => {}, onArchiveTeam: () => {}, onDeleteTeam: () => {},
   onSelectTeam: (team) => { if (expandedTeams.has(team.teamRunId)) expandedTeams.delete(team.teamRunId); else expandedTeams.add(team.teamRunId); },
+  onOpenTeamRun: (team) => { expandedTeams.add(team.teamRunId); },
   onSelectTeamMember: (row: RunHistoryTeamExecutionRow) => {
     if (!row.agentRunId) return;
     const result = richTeam.view.focusAgent(row.agentRunId);
