@@ -149,6 +149,8 @@ const graphQlData = (operationName, query) => {
   }
   if (operationName === 'GetAllWorkspaces' || query.includes('workspaces')) return { workspaces: [] };
   if (operationName === 'GetServerSettings' || query.includes('serverSettings')) return { serverSettings: [] };
+  // The opened run's Files tab reads its file changes (added after this probe); the fixture runs have none.
+  if (operationName === 'GetRunFileChanges' || query.includes('getRunFileChanges')) return { getRunFileChanges: [] };
   return {};
 };
 
