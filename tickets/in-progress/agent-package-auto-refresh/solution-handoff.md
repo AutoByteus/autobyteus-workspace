@@ -91,3 +91,14 @@ Architecture re-review (ARCH-REV-002) of the SR-007 package, focused on AR-001�
 - The reviewer delivered the primary handoff to `/software_engineering_team/implementation_engineer`, with implementation notes N-1 (mandatory: admission enumeration includes org-owned team nodes of org units), N-2, N-3 and N-4.
 - Report: `design-review-report.md`; record: `architecture-review-revision-record.md`.
 - No Solution Designer forwarding required.
+
+## SR-008 Revision (CR-004, 2026-10-11)
+
+- Trigger: code reviewer CRR-003, failure-origin `Design Impact` for API-REV-001 DESK-002 (nested last-good issue had no web surface).
+- Decision (DSN-004): nested issues render on the **owning Team/Org card**. Team/Org GraphQL `catalogIssue` → unit-wide `catalogIssues` (root plus nested, `usingLastGood`). The badge takes a list. The notice stays for unusable definitions only.
+- FU-001 (out of scope; follow-up candidate): collaborator candidates are not filtered by admission availability (same at base).
+- Verification additions are in `design-spec.md` § "SR-008 Verification Additions".
+- Current implementation branch `codex/agent-package-auto-refresh` @ `a28465175`. Test commits `a28465175`/`6b3a10822` await proportional test review after a passing run (per CRR-003).
+- Downstream artifacts (reviewer/implementation/validation-owned) at the same folder: `code-review-report.md`, `code-review-revision-record.md`, `implementation-handoff.md`, `implementation-revision-record.md`, `api-e2e-*.md`, `api-e2e-evidence/`, `implementation-evidence/`.
+- Route applied (SR-008): `get_handoff_rules` → the revised Large/High package matches the architecture-review rule → `/software_engineering_team/architecture_reviewer` (delta review of SR-008). After that review, the route continues implementation → source review → API/E2E, as CRR-003 noted.
+- 2026-10-11: ARCH-REV-003 **Pass** (informational) on the SR-008 delta. CR-004 is resolved by design; DSN-004 and `catalogIssues` are within REQ-009; FU-001 is out of scope. The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer` with notes N-5 (unit issues via the services) and N-6 (one `DefinitionUnitIssue` mapper). No Solution Designer forwarding required.

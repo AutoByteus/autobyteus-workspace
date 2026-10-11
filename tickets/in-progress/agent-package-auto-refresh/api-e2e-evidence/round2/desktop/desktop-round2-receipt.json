@@ -1,0 +1,13 @@
+{
+  "instance": {"instanceId": "iso-58692-7f20", "build": "pnpm --silent isolated-app start --build at worktree HEAD 33d290187 (product = 214836c83, IR-003 bd4c63796)", "backend": "http://127.0.0.1:58693", "controlPort": 58692},
+  "packages": ["/tmp/apar-desk2/run/autobyteus-agents (copy)", "/tmp/apar-desk2/run/autobyteus-private-agents (copy)"],
+  "pageMarkerKeptThroughout": "r2-1791738695649 (no renderer reload in any case)",
+  "cases": {
+    "DESK-002_nested_team_local (APE-001 recheck)": {"result": "Pass", "surface": "Evidence-Driven Delivery Team card on the Teams page", "badge": "Using last working version (1)", "entry": "validator; File …/agent-teams/evidence-driven-delivery-team/agents/validator/agent.md; Reason: agent.md must start with '---' frontmatter delimiter", "visibleAfterBrokenWriteMs": 1344, "clearedAfterFixMs": 1046, "teamStillListed": true},
+    "DESK-006_org_owned": {"result": "Pass", "surface": "Nested Classroom Test Org card on the Orgs page", "twoEntries": {"badge": "Using last working version (2)", "entries": ["Test Teacher — agents/teacher/agent-config.json — Invalid JSON: Unexpected end of JSON input", "Student One — agent-teams/student-study-group/agents/student-one/agent.md — frontmatter"], "visibleMs": 1302}, "threeEntriesPathOrder": {"badge": "Using last working version (3)", "entries": ["Test Teacher (org-owned agent)", "Student Study Group (org-owned Team)", "Student One (its local agent)"], "visibleMs": 983}, "orgUnavailableDiagnostics": [], "clearedAfterRestoreMs": 1088},
+    "DESK-002_shared_agent_regression": {"result": "Pass", "badge": "Using last working version (1) — AudioTranscriber — agent-config.json — Invalid JSON", "visibleMs": 865, "clearedAfterFix": true},
+    "DESK-007_unusable_new_nested_member": {"result": "Pass", "badge": "Some members couldn't be loaded (1) — apar-new-broken · No working version", "alsoInListNotice": true, "clearedAfterRemoval": true},
+    "DESK-001_live_team_list_regression": {"result": "Pass", "teamVisibleMs": 1010, "teamGoneMs": 1119}
+  },
+  "notRerun": "Real-model SCN-012 journey, reconnect, Settings row, second client and idle CPU from API-REV-001: IR-003 changed only Team/Org issue projection (services, converters, GraphQL types), the badge/cards and the Team/Org stores' issue mapping. The live-list, badge and delegation paths were re-exercised here and by DCF-E2E-001…009."
+}

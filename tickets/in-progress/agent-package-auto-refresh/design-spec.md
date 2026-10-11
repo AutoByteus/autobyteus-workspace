@@ -2,12 +2,12 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-007`. This revises SR-006 after ARCH-REV-001 (Fail — Design Impact): AR-001…AR-006 and the residual notes.
+- Current solution revision ID: `SR-008`. SR-007 revised SR-006 after ARCH-REV-001 (AR-001…AR-006). SR-008 resolves CR-004 (CRR-003 failure-origin review of API-REV-001 DESK-002, `Design Impact`): there was no web surface for nested last-good issues.
 - Approved requirements baseline / revision and user-approval reference: `requirements-doc.md` approved at `SR-005` (user, 2026-10-10: "I think this is reasonable approach."), DEC-001…DEC-006 as recommended, DEC-007 = (A), REQ-018/AC-016 recorded within that approval. SR-007 changes no approved behavior:
   - AR-004 is resolved by **extending** last good to nested definitions, matching the plain reading of REQ-007. It is not narrowed.
   - Requirements edits in SR-007 are editorial: two wording contradictions with REQ-011 are fixed, and DSN-001/DSN-002 are recorded as solution details.
 - Behavior-defining supplements and their approval references: None.
-- Design status: `Ready` (resubmitted for ARCH-REV-002)
+- Design status: `Ready` (SR-008 — CR-004 surface decided; returns to implementation → source review → API/E2E)
 - Canonical investigation-notes path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/investigation-notes.md`
 - Authorities read (design reading gate; file and date): `references/architecture-design.md` (2026-10-10), `references/design-principles.md` (2026-10-10; unchanged at the 2026-10-11 skills update), root `DESIGN.md` (2026-10-10), `TESTING.md` (2026-10-11), `autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md` (2026-10-11), `autobyteus-server-ts/docs/modules/file_explorer.md` § Watcher Runtime Isolation (2026-10-11). `design-examples.md` not used.
 - Review basis: `design-review-report.md` (ARCH-REV-001) and `architecture-review-revision-record.md`.
@@ -100,7 +100,7 @@ How it works:
 | BEH-001 | System | REQ-001–004, REQ-010, REQ-018; AC-001–003, AC-006, AC-015, AC-016 | File add/change/remove under a registered root | Not observed; caches stale; admission reads disk | Detected, settled, reconciled per definition (nested included); every reader, including admission, reads the catalog | DS-001, DS-002, DS-003 |
 | BEH-002 | User | REQ-017; AC-013 | Reload, package Reload/Update | Clears and repopulates caches | Full reconcile, published | DS-004 |
 | BEH-003 | User | REQ-005, REQ-006; AC-001, AC-003, AC-009, AC-010 | Catalog change; client (re)connect | Stores fetch once | Dependency-aware subject publication → loaded stores reload; `connected` → re-read | DS-002, DS-005 |
-| BEH-004 | System | REQ-007–009; AC-004, AC-005 | Invalid or half-written files (shared or nested) | Dropped, catalog bricked, or team made unavailable | Last good kept plus issue at every level; first-seen invalid → issue only; diagnostics visible | DS-002, DS-005 |
+| BEH-004 | System | REQ-007–009; AC-004, AC-005 | Invalid or half-written files (shared or nested) | Dropped, catalog bricked, or team made unavailable | Last good kept plus issue at every level; first-seen invalid → issue only. Rendered surfaces: shared agent → its Agents-page card; nested node → its owning Team/Org card (unit-wide `catalogIssues`); unusable definitions → list notice (SR-008) | DS-002, DS-005 |
 | BEH-005 | Contract | REQ-012; AC-008 | Run create/restore | Reads definition at start | Preserved; reads current (last good) | DS-003 |
 | BEH-006 | User | REQ-013; AC-009 | GitHub Update | Explicit; rename swap | Preserved; Update's reconcile is published; the monitor re-arms the replaced root | DS-004, DS-001 |
 | BEH-007 | User | REQ-011; AC-007 | Skill edits | Server fresh | **No change**: not watched, not published | DS-001 (allow-list) |
@@ -243,6 +243,7 @@ How it works:
 | Disk exact reads of team-local / org-owned IDs belonging to registered package roots | Catalog nodes hold them with last good (AR-004) | Catalog node lookup | In This Change | Application-owned team-local IDs stay disk reads |
 | `AgentPackageService` deps `refreshAgentDefinitions` / `refreshAgentTeams` | One full reconcile (orgs were missing) | `reloadDefinitionCatalog` | In This Change | — |
 | Web `ProjectChangeFeed` socket lifecycle | Needed twice | `NodeChangeFeed<TMessage>` | In This Change | Public API unchanged |
+| GraphQL `AgentTeamDefinition.catalogIssue` / `AgentOrgDefinition.catalogIssue` (root-only, implemented in `9777af682`/`f7fcf9055`) | Root-only issues hide nested nodes (CR-004) | `catalogIssues` (unit-wide list) | In This Change (SR-008) | Update the converters, web queries, stores and card tests; `AgentDefinition.catalogIssue` stays |
 
 ## Return Or Event Spine(s) (If Applicable)
 
@@ -349,7 +350,8 @@ watchAncestor(root): nearest existing ancestor, depth 0, watching only the next 
 | `DefinitionAdmissionService.scan()` / `requireAvailable(kind, id)` | Team/org admission | Over catalog units plus application-owned team sources | `agent_team` / `agent_org` + ID | Duplicate results come from reader issues |
 | `DefinitionCatalogSync.noteUnitChange(subject, unitId)` / `noteRootChanged(root)` / `settle()` / `reloadAll()` / `reconcileNow(subject, unitIds)` | Change application | — | — | — |
 | `PackageDefinitionMonitor.syncRoots(roots)` / `getRootWatchStatus(root)` / `close()` | Watch lifecycle | — | Absolute roots | — |
-| GraphQL `AgentDefinition.catalogIssue`, `AgentTeamDefinition.catalogIssue`, `AgentOrgDefinition.catalogIssue` | Per subject | Issue on a last-good node (nested included) | — | Nullable `DefinitionCatalogIssue {code, reason, definitionPath, packageRoot}` |
+| GraphQL `AgentDefinition.catalogIssue` | Agent | Issue on a last-good shared agent (an agent is one node) | — | Nullable `DefinitionCatalogIssue {code, reason, definitionPath, packageRoot}` |
+| GraphQL `AgentTeamDefinition.catalogIssues`, `AgentOrgDefinition.catalogIssues` (SR-008; **replace** the root-only `catalogIssue` on these two types) | Team unit / org unit | **Every** issue in the unit: the root node plus each nested node (team-local agents; org-owned agents, org-owned teams and their local agents). Root first, then nested nodes in path order | — | Non-null list of `DefinitionUnitIssue {subject: DefinitionSubject!, definitionId, name (nullable; last-good name when known), code, reason, definitionPath, packageRoot, usingLastGood}`. Empty list when the unit is clean |
 | GraphQL `definitionDiagnostics(subject: DefinitionSubject!)` | Per subject | **The** web diagnostics surface: definitions not usable (issue-only, admission-unavailable) plus last-good issues (`usingLastGood: true`) | Enum `AGENT \| AGENT_TEAM \| AGENT_ORG` | Replaces `definitionAdmissionDiagnostics`. Type `DefinitionDiagnostic {subject, definitionId, code, reason, definitionPath, packageRoot, usingLastGood, dependencyChain}` |
 | GraphQL `AgentPackage.autoRefresh { state, message }` | Package root | Root watch status | — | `WATCHING \| ROOT_MISSING \| UNAVAILABLE` |
 | WS `/ws/definition-catalog` | Catalog changes | Frames above | — | Remote-access auth |
@@ -426,7 +428,8 @@ watchAncestor(root): nearest existing ancestor, depth 0, watching only the next 
 | Web `services/nodeChangeFeed/nodeChangeFeed.ts`; `services/projects/projectChangeFeed.ts` | Web | Extracted lifecycle; projects unchanged behavior |
 | Web `services/definitionCatalog/definitionCatalogChangeFeed.ts`, `composables/definitionCatalog/useDefinitionCatalogChangeFeed.ts`, `utils/nodeEndpoints.ts` | Web | Feed, app-layout retention, endpoint `definitionCatalogWs` |
 | Web stores `agentDefinitionStore.ts`, `agentTeamDefinitionStore.ts`, `agentOrgDefinitionStore.ts`, `agentPackagesStore.ts` (+ a small `definitionDiagnosticsStore.ts` or per-store diagnostics) | Web | `reloadIfLoaded()`; `catalogIssue`; `definitionDiagnostics(subject)` |
-| Web `components/agents/AgentCard.vue`, `agentTeams/AgentTeamCard.vue`, org card in `agentOrgs/AgentOrgExperience.vue`, `AgentList.vue`, `AgentTeamList.vue`, `settings/AgentPackagesManager.vue` | UI | Issue badge (file plus reason, "using last working version"); list notice for unusable definitions (reason, dependency chain); package row auto-refresh state |
+| Web `components/definitions/DefinitionCatalogIssueBadge.vue` | UI | SR-008: accepts a list of issues (the agent card passes its single issue as a one-item list). Summary shows the count. Status text: "Using last working version" when all entries have `usingLastGood`; "Some members couldn't be loaded" when any entry is not usable; the existing source-missing text when the root issue is `DEFINITION_SOURCE_MISSING`. The expanded body lists each entry: the name or definition folder, the file, and the reason |
+| Web `components/agents/AgentCard.vue`, `agentTeams/AgentTeamCard.vue` (uses `teamDef.catalogIssues`), `agentOrgs/AgentOrgCatalogCard.vue` (uses `org.catalogIssues`), `AgentList.vue`, `AgentTeamList.vue`, `settings/AgentPackagesManager.vue`, `definitions/DefinitionDiagnosticsNotice.vue` (unchanged role: unusable definitions only) | UI | Issue badge on the affected card. Nested definitions surface on their **owning** team/org card, because team-local agents are intentionally not listed on the Agents page (`AgentList.vue` filter, existing behavior). List notice for unusable definitions; package row auto-refresh state |
 | Web GraphQL documents, `generated/graphql.ts`, `localization/messages/{en,zh-CN}/*` | Web | Contract and strings |
 
 ## Reconcile Rules (`DefinitionCatalog.apply`, applied to every node of a unit)
@@ -496,7 +499,7 @@ The monitor arms `<root>/agents`, `<root>/agent-teams` and `<root>/agent-orgs`. 
 | --- | --- | --- | --- |
 | Delegation read | collaborator catalog → `agentService.getAgentDefinitionById(id)` → `settle()` → catalog copy | Collaboration calling file providers, or keeping `getFresh…` | One authority |
 | Team created before its agents (AR-001) | Team files settle → `agent_team` changed → publish `agent_team, agent_org, agent` → Teams list: unavailable (diagnostic "member X unresolved"). Agent files settle → `agent` changed → publish `agent, agent_team, agent_org` → Teams store reloads → team now available | Publishing only `agent`, so the Teams page never shows the team | Dependent lists |
-| Nested last good (AR-004) | `agent-teams/t/agents/a/agent-config.json` broken → unit `(agent_team, t)` reconciled → node `t/a` keeps last good plus issue → `requireAvailable(team t)` succeeds; the Agents page card for `a` shows the badge | Team `t` becomes unavailable; `a` silently disappears | DEC-001 |
+| Nested last good (AR-004, surface per SR-008/CR-004) | `agent-teams/t/agents/a/agent-config.json` broken → unit `(agent_team, t)` reconciled → node `t/a` keeps last good plus issue → `requireAvailable(team t)` succeeds → publish `agent_team, agent_org, agent` → the Teams page card for `t` shows the badge ("Using last working version (1)"), and expanding it shows `a`, `…/agents/a/agent-config.json` and the reason. For an org-owned agent/team, the badge is on the owning org's card on the Orgs page | Team `t` becomes unavailable; `a` silently disappears; or the issue exists only in the API, with no rendered surface (the CR-004 defect: SR-007 wrongly assumed an Agents-page card for team-local agents) | DEC-001, REQ-009 |
 | Missing root (AR-002/005) | Root renamed away → `unlinkDir(<root>/agents)` → stat: missing → ancestor watch, `ROOT_MISSING`, `noteRootChanged` → units kept with `DEFINITION_SOURCE_MISSING` → admission (catalog) keeps teams/orgs listed and launchable; the package row shows "Folder not found". Renamed back → ancestor event → arm → `WATCHING` → reconcile → issues cleared | Admission `readdir` returning nothing, so teams vanish while `list_available_agents` still lists them | One inventory |
 | GitHub Update (AR-005) | Rename swap → `unlinkDir`/identity change → re-arm; Update's own `reloadAll()` → `syncRoots` identity check → re-arm (idempotent) | Watches left on the moved backup with `WATCHING` shown | Truthful status |
 | In-app save | `service.update → fileProvider.update → sync.reconcileNow` → return a copy | Mutating the catalog's stored object | Last-good integrity |
@@ -548,6 +551,16 @@ N/A.
 - **Catalog object identity:** the catalog must return copies. `stripMandatoryProcessors` and `updateAgentDefinition` mutate objects today, so they must operate on copies; a failed write must leave last good untouched.
 - Test churn: about 14 files for the fresh/cache APIs, plus admission and registry tests (the `implementationPackageRoots` users) and the diagnostics GraphQL test.
 - Reconciling a large org unit reads all its nested files (tens of small files): negligible.
+
+## SR-008 Verification Additions (CR-004)
+
+- **Source review** must trace each nested kind to a rendered surface:
+  - team-local agent → Team card;
+  - org-owned agent → Org card;
+  - org-owned team and its local agent → Org card.
+- **Web component tests:** the badge with one-item and multi-item lists; mixed `usingLastGood` text; the Team and Org cards render nested issues.
+- **Server:** a GraphQL test that `catalogIssues` contains root plus nested nodes, in order, and is empty when clean.
+- **API/E2E:** re-run DESK-002 nested and add the org-owned case. Expect the badge to appear within 5 s of breaking and to clear after the fix.
 
 ## Guidance For Implementation
 

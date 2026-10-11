@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-007`
+- Current solution revision ID: `SR-008`
 - Package identifier: `agent-package-auto-refresh`
 - Request / ticket: Project Task from `/project_task_manager`; user problem statement 2026-10-10
 - Requirements owner: Solution Designer
@@ -220,6 +220,8 @@
 | DSN-001 | Do GitHub-managed package folders get watched? | Uniform watching vs. source-kind branching | **Decided (Solution Designer, 2026-10-11): yes, every registered root is watched uniformly.** No polling or download is added. A GitHub-managed folder changes only during an explicit Update, so watching it only makes the post-Update state converge through the same path. Consistent with DEC-005/REQ-013 intent. | Solution Designer | Decided (solution detail; no change to approved behavior) |
 | DSN-002 | Duplicate team/org identity across packages: which policy do all readers follow? | REQ-002 (readers agree). Today admission (lists, team/org launch) marks a duplicated ID unavailable, while the cache (delegation, `list_available_agents`) used first-root-wins. | **Decided (Solution Designer, 2026-10-11, ARCH-REV-001 AR-002):** keep the established admission rule (flat-agent-organization-model REQ-027 lineage) for every reader. A team/org ID present in more than one registered package is unavailable everywhere, with a `DEFINITION_IDENTITY_DUPLICATED` diagnostic listing the paths. Agents keep first-root-wins, as today. Effect: delegation stops offering a duplicated team that launch already rejected. This is a consistency fix, not new product policy. | Solution Designer | Decided (solution detail) |
 | DSN-003 | Do nested definitions (team-local agents, org-owned agents/teams) get last good? | ARCH-REV-001 AR-004; REQ-007 plain reading; 111/156 of the user's agents are nested | **Decided (Solution Designer): yes.** REQ-007/REQ-009 apply to every definition under a registered root, nested ones included. Implemented by reconciling a team or org together with its nested definitions as one unit. No requirement narrowing. | Solution Designer | Decided (solution detail; matches the approved requirement) |
+| DSN-004 | Where is a nested definition's error shown in the web (REQ-009 "on the affected card or row")? | CR-004: team-local agents are intentionally not listed on the Agents page (existing `AgentList.vue` filter), so the SR-007 assumption of an Agents-page card was wrong | **Decided (Solution Designer, 2026-10-11):** the affected card is the **owning** Team card (team-local agents) or Org card (org-owned agents, org-owned teams and their agents). The card's issue badge lists every issue in the unit with the name/folder, file and reason. Unusable definitions stay in the list notice. Consistent with the approved UI section; no new product surface. | Solution Designer | Decided (solution detail) |
+| FU-001 | `list_available_agents` (and `@`) lists a team whose member agent is missing, while the Teams page hides it as admission-unavailable. Seen in API/E2E; identical at base. | Readers agree on disk content; they differ on the admission-availability policy that predates this ticket. REQ-002 concerns freshness and agreement with disk, not adding admission filtering to collaborator candidates. | **Out of scope; separate-ticket candidate:** filter collaborator candidates by admission availability. Delegating to such a team already fails at launch with the existing error. | Solution Designer → user | Recorded for follow-up |
 
 ## Traceability
 

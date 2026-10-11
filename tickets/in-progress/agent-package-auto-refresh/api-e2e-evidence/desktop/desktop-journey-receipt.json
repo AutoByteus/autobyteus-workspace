@@ -1,0 +1,18 @@
+{
+  "instance": {"instanceId": "iso-53228-c43b", "build": "pnpm --silent isolated-app start --build from worktree HEAD a28465175 (product code = 3cc17135f)", "app": "AutoByteus_enterprise 1.5.1-beta.1 (worktree build)", "backend": "http://127.0.0.1:53229", "controlPort": 53228},
+  "packages": ["/tmp/apar-desk/run-9dys/autobyteus-agents (copy of the user's package, .git/tickets/task-plans excluded)", "/tmp/apar-desk/run-9dys/autobyteus-private-agents (copy)"],
+  "runtime": "Codex App Server, GPT-6.1-Sol (low) for Project Task Manager and every delegated copy",
+  "cases": {
+    "DESK-001a_editor_new_agent_live": {"result": "Pass", "seenAfterWriteMs": 1048, "pageMarkerKept": true},
+    "DESK-002_AC004_badge": {"result": "Pass", "badgeAfterBrokenWriteMs": 691, "badgeDetails": "File: .../agents/apar-desk-scout/agent-config.json; Reason: Invalid JSON: Unexpected end of JSON input", "clearedAfterFixMs": 683},
+    "DESK-002_nested_team_local_broken": {"result": "Fail (REQ-009)", "teamStillListed": true, "backendDiagnostic": "team-local-agent:evidence-driven-delivery-team:validator DEFINITION_CONTRACT_INVALID usingLastGood=true", "visibleIndicatorAnywhere": false, "checked": ["Agents page (team-local filtered out)", "Agent Teams list (no notice; notice filters usingLastGood)", "Team detail page (no badge strings)"]},
+    "DESK-001b_SCN012_create": {"result": "Pass", "creatorWroteFilesAt": 1791720436.917, "agentCardVisibleAt": 1791720438.051, "teamOnTeamsPage": true, "listAvailableAgents": "APAR Haiku Poet and APAR Poetry Duo listed", "agentCopy": "apar_haiku_poet_7d5b… system instruction MARK_POET_V1, Codex (codex_app_server), replied 'Gold leaves drift softly … MARK_POET_V1'", "teamCopy": "apar_poetry_duo_d72e… members /poet,/researcher; coordinator replied MARK_POET_V1"},
+    "DESK-001c_SCN012_edit_delete": {"result": "Pass", "creatorChangedAt": 1791721355.642, "deletedCardGoneAt": 1791721356.931, "listAvailableAgents": "Poet and Duo listed; APAR Desk Scout not listed", "deletedDelegation": "{delegated:false, message:\"'/apar_desk_scout' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\"}", "agentCopyAfterEdit": "apar_haiku_poet_5a8e… system instruction MARK_POET_V2", "teamCopyAfterEdit": "apar_poetry_duo_871c… members /lead,/analyst; coordinator (lead) instruction MARK_POET_V2; replied MARK_POET_V2", "earlierCopyKeepsSnapshot": "apar_haiku_poet_7d5b… still MARK_POET_V1"},
+    "DESK-001d_at_menus": {"result": "Pass", "liveRunAtMenu": ["APAR Haiku Poet", "APAR Poetry Duo"], "newChatAtMenu": ["APAR Haiku Poet", "APAR Poetry Duo"], "deletedAbsent": true},
+    "DESK-004_AC010_restart_reconnect": {"result": "Pass", "trigger": "Settings > Server Settings > Advanced > Server Status & Logs > Restart server", "backendDownAt": 1791722351, "agentWrittenWhileDown": 1791722351, "backendUpAt": 1791722361, "visibleOnAgentsPageAfterNavMs": 259, "storeDoesNotRefetchOnMount": true, "windowMarkerKept": true},
+    "DESK-005_settings_row": {"result": "Pass", "folderNotFoundAfterRenameMs": 818, "definitionsKeptWithIssue": 37, "autoRefreshingAfterRestoreMs": 717, "issuesAfterRestore": 0},
+    "DESK-003_second_client": {"result": "Pass", "trigger": "createAgentDefinition from another GraphQL client on the node", "visibleInDesktopMs": 449, "windowMarkerKept": true},
+    "MEAS-001_desktop_idle_cpu": {"result": "Pass", "embeddedServerCpu": "0.03 s over 60 s (0.05 %)", "openFds": 442}
+  },
+  "observations": ["Codex runtime: one Project Task Manager turn showed 'Stop generation' for ~11 min after its last tool call with no further trace (after a delegated copy's report); Stop + resend recovered. Not catalog-related."]
+}

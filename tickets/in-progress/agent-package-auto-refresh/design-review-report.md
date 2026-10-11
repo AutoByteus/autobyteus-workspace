@@ -5,15 +5,23 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/requirements-doc.md` (Approved SR-005; editorial SR-007)
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/investigation-notes.md`
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/design-spec.md` (SR-007)
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/design-spec.md` (SR-008)
 - Supplemental Task Artifacts Reviewed: `probes/apar-cache-probe.test.ts`, `probes/apar-watch-probe.test.ts`, `probes/apar-watch-probe2.test.ts` (evidence only)
-- Relevant Solution Revision IDs: SR-005 (approval), SR-006 (design), SR-007 (revision for ARCH-REV-001)
+- Relevant Solution Revision IDs: SR-005 (approval), SR-006 (design), SR-007 (revision for ARCH-REV-001), SR-008 (CR-004 web surface for nested last-good issues)
+- Triggering downstream evidence: `code-review-report.md` CRR-003, CR-004 (failure-origin `Design Impact` from API-REV-001 DESK-002)
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: `Revised Architecture Design Complete` (SR-007) from `/software_engineering_team/solution_designer`
-- Prior Review Round Reviewed: 1 (ARCH-REV-001, `Fail — Design Impact`, AR-001…AR-006)
-- Latest Authoritative Round: 2
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3 (delta review of SR-008)
+- Trigger: `Revised Architecture Design Complete` (SR-008) from `/software_engineering_team/solution_designer`
+- Prior Review Round Reviewed: 2 (ARCH-REV-002, `Pass`). Round 1: ARCH-REV-001, `Fail — Design Impact`, AR-001…AR-006, resolved in round 2.
+- Latest Authoritative Round: 3
+- Round-3 evidence (implementation branch `codex/agent-package-auto-refresh` @ `a28465175`):
+  - `autobyteus-web/components/agents/AgentList.vue:170` filters `TEAM_LOCAL` agents from the Agents page (existing behavior).
+  - `AgentTeamCard.vue:31` and `AgentOrgCatalogCard.vue:8` pass only the root `catalogIssue`.
+  - `DefinitionDiagnosticsNotice.vue` shows unusable entries only.
+  - `DefinitionCatalog.listIssueEntries(subject)` walks nested nodes by node subject. Agent-subject diagnostics therefore include unusable team-local and org-owned agents.
+  - The team list resolver maps issues by root ID only (`agent-team-definition.ts:297`).
+  Unaffected round-2 verdicts carry forward.
 - Current-State Evidence Basis: Round-1 code reads still hold (base `56530dfc6`, no source changes). Additional files read in round 2:
   - `agent-org-definition/services/agent-org-definition-resolver.ts` (owned team refs are resolved through admission's preliminary results);
   - `collaboration-definition-admission/providers/definition-source-registry.ts` (org-owned team enumeration, `implementationPackageRoots` users);
@@ -38,6 +46,9 @@
   - DSN-002 and DSN-003 are recorded as solution details.
   - DSN-003 applies REQ-007 as written.
   - DSN-002 aligns delegation listing with launch's existing duplicate rejection. It falls under REQ-002 ("every reader agrees"), not a new policy.
+- SR-008 requirements edits do not change intended behavior:
+  - **DSN-004** puts a nested definition's error on its owning Team/Org card. Team-local agents have no Agents-page card (existing `AgentList.vue` filter), and org-owned definitions are listed only within their org, so the owning card is the only card on which they appear. This applies REQ-009 ("on the affected card or row") and the approved UI section ("error indicator on the affected agent/team/org card, with the file path and reason"). No new product surface or policy.
+  - **FU-001** (collaborator candidates are not filtered by admission availability) is identical at base. It concerns the admission-availability policy, not freshness or agreement with disk (REQ-002). Recording it as an out-of-scope follow-up is correct.
 - Relevant existing behavior and evidence confirmed: Yes.
 - Scope guardrail confirmed: Yes.
 - Approved change, preserved behavior, and outside scope understood: Yes.
@@ -49,7 +60,7 @@
 | BEH-001 | System | Pass | Pass | Pass. Every reader, admission included, uses the catalog (implementation note N-1). | Confirmed | N-1 |
 | BEH-002 | User | Pass | Pass | Pass | Confirmed | — |
 | BEH-003 | User | Pass | Pass | Pass (dependency-aware expansion) | Confirmed | — |
-| BEH-004 | System | Pass | Pass | Pass (definition units cover nested nodes) | Confirmed | — |
+| BEH-004 | System | Pass | Pass | Pass. Definition units cover nested nodes. SR-008 surface trace:<br>- shared agent → Agents card;<br>- team-local agent with last good → owning Team card;<br>- org-owned agent/team or its local agent → owning Org card;<br>- unusable node (first-seen invalid) → list notice of its node subject, through `listIssueEntries` over nested nodes, with file and reason. | Confirmed | N-5 |
 | BEH-005 | Contract | Pass | Pass | Pass | Confirmed | — |
 | BEH-006 | User | Pass | Pass | Pass (identity re-arm after the rename swap) | Confirmed | — |
 | BEH-007 | User | Pass | Pass | Pass | Confirmed | — |
@@ -106,7 +117,8 @@
 | Service `get…ById` (shared / nested → catalog; application-owned → disk) | Pass | Pass | Pass | Low | Pass |
 | `noteUnitChange` / `noteRootChanged` / `settle` / `reloadAll` / `reconcileNow` | Pass | Pass | Pass | Low | Pass |
 | `DefinitionAdmissionService.scan` / `requireAvailable` | Pass | Pass | Pass | Low | Pass |
-| GraphQL `catalogIssue` | Pass | Pass | Pass | Low | Pass |
+| GraphQL `AgentDefinition.catalogIssue` | Pass | Pass | Pass | Low | Pass |
+| GraphQL `AgentTeamDefinition.catalogIssues` / `AgentOrgDefinition.catalogIssues` (SR-008, replaces the root-only field) | Pass (team/org unit) | Pass (every issue in the unit, root first then path order) | Pass (each entry carries `subject`, `definitionId`, path) | Low | Pass (N-5: sourced per unit through the services) |
 | GraphQL `definitionDiagnostics(subject: DefinitionSubject!)` | Pass | Pass | Pass (enum) | Low | Pass |
 | GraphQL `AgentPackage.autoRefresh` | Pass | Pass | Pass | Low | Pass |
 | WS `/ws/definition-catalog` | Pass | Pass | Pass | Low | Pass |
@@ -145,6 +157,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | `DefinitionCatalogIssue` / `DefinitionDiagnostic` | Pass | Pass | Pass | Pass. The issue is the catalog-level core; the diagnostic is the web projection that adds admission codes, `usingLastGood` and `dependencyChain`. | Pass | Old `DefinitionAdmissionDiagnostic` removed |
 | `UnitReadOutcome` / `NodeReadOutcome<T>` | Pass | Pass | Pass | Pass | Pass | — |
+| `DefinitionUnitIssue` (SR-008) | Pass | Pass | Pass. It is the node identity (`subject`, `definitionId`, `name`) plus the `DefinitionCatalogIssue` fields plus `usingLastGood`. It is distinct from `DefinitionDiagnostic`, which is admission-level, with `dependencyChain` and no name. | Pass. Compose it from `DefinitionCatalogIssue` in one mapper (N-6). | Pass | — |
 
 ## File Responsibility Mapping Verdict
 
@@ -235,7 +248,7 @@ None.
 
 ## Review Decision
 
-`Pass`. SR-007 resolves AR-001…AR-006 in the canonical design spec (verification is in the revision record). The catalog is now the single inventory for shared and nested definitions. Admission enumerates it, publication follows list dependencies, one diagnostics surface replaces the unused admission query, and the monitor lifecycle is complete. The design is ready for implementation, subject to the implementation notes below.
+`Pass` (round 3, SR-008 delta). SR-008 resolves CR-004 within the approved REQ-009 and UI section. Nested last-good issues now have a rendered surface on the owning Team/Org card, through the unit-wide `catalogIssues`. Unusable nested nodes stay visible in the subject notice with file and reason. The contract change is limited to the two Team/Org GraphQL fields and their web consumers, and the verification additions are adequate (source-review surface trace, component, GraphQL and DESK-002 nested plus org-owned re-runs). Round-2 conclusions stand: SR-007 resolves AR-001…AR-006 in the canonical design spec (verification is in the revision record). The catalog is now the single inventory for shared and nested definitions. Admission enumerates it, publication follows list dependencies, one diagnostics surface replaces the unused admission query, and the monitor lifecycle is complete. The design is ready for implementation, subject to the implementation notes below.
 
 ## Findings
 
@@ -247,6 +260,8 @@ Implementation notes. Carry these in the handoff; they do not change the design:
 - **N-2:** `getVisibleAgentDefinitions()` must keep listing the team-local agents of **application-owned** teams, read from disk as application-owned. Today these come through `listTeamLocalAgentDefinitions({ applicationOwnedTeamSources })`. The design's "team-local nodes of shared team units" wording must not drop them (preserved out-of-scope behavior).
 - **N-3:** In-app writes of nested definitions call `reconcileNow` on their **owning unit**: the team or org ID derived through the existing ID helpers, not the nested ID.
 - **N-4:** Readers apply the team/org duplicate rule only after de-duplicating identical resolved paths, as admission's `seenPaths` does today, so one physical folder never reads as duplicated.
+- **N-5 (SR-008):** Source `catalogIssues` **per unit** through a team/org service accessor (for example `listUnitIssues()` returning issues grouped by unit ID, with `usingLastGood` and the last-good name). `DefinitionCatalog.listIssueEntries(subject)` groups by **node** subject, so filtering it by `agent_team` / `agent_org` would miss the team-local and org-owned agent nodes, the CR-004 defect again. Resolve once per list query, not once per card. Resolvers must not reach into the catalog directly.
+- **N-6 (SR-008):** Build `DefinitionUnitIssue` from `DefinitionCatalogIssue` in one mapper shared by the team and org converters. This keeps the code and reason fields from drifting from `AgentDefinition.catalogIssue`.
 
 ## Classification
 
@@ -263,9 +278,11 @@ Primary: `/software_engineering_team/implementation_engineer`. Informational: `/
 - **DSN-002 visible effect.** `list_available_agents` stops offering a duplicated team that launch already rejects. This is consistent with REQ-002; mention it in the delivery docs.
 - **Flush-on-read during long bursts.** It can split one burst into a few publications. AC-006 asserts a bound, not exactly one.
 - **U-001.** The restore-after-removal UX is validated under AC-008.
+- **FU-001** (out of scope; separate-ticket candidate). `list_available_agents` and `@` offer a team that admission rejects because a member is missing. This is the same at base, and the launch fails with the existing error.
+- **Superseded reviews.** CRR-001/002's source-review Pass is superseded per CRR-003. The SR-008 implementation returns through source review, which includes the nested-surface trace, and then API/E2E (DESK-002 nested plus org-owned).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
+- Review Decision: `Pass` (ARCH-REV-003, SR-008 delta)
 - Material-Premise Gate: `Pass`
-- Notes: Implementation must honor N-1 (mandatory) and N-2…N-4.
+- Notes: Implementation must honor N-1 (mandatory) and N-2…N-6.

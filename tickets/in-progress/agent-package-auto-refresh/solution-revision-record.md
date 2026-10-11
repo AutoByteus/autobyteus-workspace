@@ -11,6 +11,7 @@
 | SR-005 | Requirements | Explicit user approval (2026-10-10) | N/A | Ready for Approval | Approved | All; DEC-001–006 | Requirements approved as recommended; architecture design started |
 | SR-006 | Design (+ Evidence) | Architecture investigation and design (2026-10-11) | N/A | Approved / no design | Approved / Design Ready | All BEH/REQ mapped; DSN-001 added | Design spec complete; Large / High; catalog-bricking defect evidenced |
 | SR-007 | Design (+ Evidence, editorial requirements) | ARCH-REV-001 Fail — Design Impact (AR-001…AR-006) | AR-001…AR-006 | Design Ready (SR-006) | Design Ready (resubmitted) | BEH-003, BEH-004, BEH-006, BEH-008; REQ-002, REQ-005, REQ-007, REQ-009, REQ-015, REQ-016; DSN-002, DSN-003 | All findings resolved in design; no approved behavior changed |
+| SR-008 | Design | CRR-003 failure-origin review of API-REV-001 DESK-002 (Design Impact) | CR-004 | Design Ready (SR-007; ARCH-REV-002 Pass) | Design Ready (revised) | BEH-004; REQ-009; AC-004; DSN-004; FU-001 | Nested last-good issues surface on the owning Team/Org card via unit-wide `catalogIssues` |
 
 ## Revision Entries
 
@@ -122,3 +123,24 @@
 - Intended behavior changed: No. Approval basis remains SR-005.
 - Classification: Large / High (unchanged).
 - Next action: Resubmit to the architecture reviewer for ARCH-REV-002.
+
+### SR-008 — Web surface for nested last-good issues (CR-004)
+
+- Phase and classification: Design Impact resolution. No intended-behavior change.
+- Trigger: `/software_engineering_team/code_reviewer` CRR-003 (`code-review-report.md`), the failure-origin review of API-REV-001 DESK-002 nested case, finding CR-004.
+  - The server kept last good and returned the diagnostic, but no web surface rendered it.
+  - SR-007's example assumed an Agents-page card for team-local agents. `AgentList.vue` filters `TEAM_LOCAL` agents (existing behavior at base `359d2c0ef`).
+  - Team/Org `catalogIssue` carried only the root node's issue.
+- Resolution (`design-spec.md` Interface Mapping, File Mapping, Removal Plan, Examples, "SR-008 Verification Additions"):
+  - Team and Org GraphQL types replace root-only `catalogIssue` with the unit-wide `catalogIssues: [DefinitionUnitIssue!]!` (root plus nested nodes, with `usingLastGood`).
+  - `DefinitionCatalogIssueBadge` takes a list.
+  - Team and Org cards render nested issues.
+  - The notice keeps only unusable definitions.
+  - Agents keep `catalogIssue`.
+- Requirements: DSN-004 recorded (the owning card is the affected card); FU-001 recorded (out-of-scope observation: collaborator candidates are not filtered by admission availability, same at base).
+- Approval impact: None. REQ-009 intent and the approved UI section ("error indicator on the affected agent/team/org card with file path and reason") are unchanged. The user is informed in conversation.
+- Review impact:
+  - The ARCH-REV-002 Pass covered SR-007; the SR-008 delta is a contract change (Team/Org GraphQL field) and a UI surface.
+  - The CRR-001/002 source-review Pass is superseded per CRR-003.
+- Classification: Large / High (unchanged).
+- Next action: Apply handoff rules for the revised package.

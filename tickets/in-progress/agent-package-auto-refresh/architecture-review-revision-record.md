@@ -8,6 +8,7 @@ The latest `design-review-report.md` remains authoritative.
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (SR-006) | SR-005, SR-006 | N/A | Fail (Design Impact) | AR-001, AR-002, AR-003, AR-004, AR-005, AR-006 |
 | ARCH-REV-002 | Round 2 / Revised Architecture Design Complete (SR-007) | SR-005, SR-007 | Fail (Design Impact) | Pass | AR-001…AR-006 resolved; implementation notes N-1…N-4 |
+| ARCH-REV-003 | Round 3 / Revised Architecture Design Complete (SR-008; CR-004 from CRR-003) | SR-005, SR-008 | Pass | Pass | No new findings; implementation notes N-5, N-6 added |
 
 ## Revision Entries
 
@@ -71,3 +72,34 @@ None.
 - Material classification changes: None (Large / High).
 - Recommended recipient: `/software_engineering_team/implementation_engineer` (primary); `/software_engineering_team/solution_designer` (informational).
 - Remaining risks or uncertainty: the Linux root-rename event shape (run AC-012 on Linux); the Linux watch count; DSN-002's visible effect, to be documented.
+
+### ARCH-REV-003 — SR-008 nested-issue web surface (CR-004); Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/design-review-report.md`
+- Review round and trigger: Round 3, a delta review. `Revised Architecture Design Complete` (SR-008) from `/software_engineering_team/solution_designer`.
+- Triggering role, report path, and finding IDs: Code Reviewer, `code-review-report.md` CRR-003, CR-004. It is the failure-origin `Design Impact` from API-REV-001 DESK-002: a nested last-good issue had no web surface.
+- Relevant solution revision IDs: SR-005, SR-008
+- Prior authoritative decision: `Pass` (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - The SR-008 delta was reviewed against the implementation branch @ `a28465175`.
+  - It confirms that `AgentList.vue` filters `TEAM_LOCAL` agents (existing behavior), so ARCH-REV-002 accepted an SR-007 example that assumed a nonexistent Agents-page card. That acceptance was a review gap.
+  - DSN-004 (owning Team/Org card) applies REQ-009 and the approved UI section without new behavior.
+  - The unit-wide `catalogIssues` contract is tight and scoped to the Team and Org types.
+  - Unusable nested nodes stay visible in the subject notice, because `listIssueEntries` walks nested nodes.
+  - FU-001 is correctly out of scope.
+  - Implementation notes N-5 (source unit issues per unit through the services, not per node subject) and N-6 (one mapper) were added.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001…AR-006 | Resolved (ARCH-REV-002) | Resolved (unchanged) | SR-007 | Unaffected by SR-008 |
+| CR-004 (downstream, code review) | Open (CRR-003, Design Impact) | Design resolved; implementation and re-review pending | SR-008, DSN-004 | `design-spec.md` BEH-004 row, Interface Mapping (`catalogIssues`, `DefinitionUnitIssue`), File Mapping (badge list, Team/Org cards), Removal Plan, Examples, and § SR-008 Verification Additions |
+
+- New or remaining finding IDs: None. Implementation notes N-1…N-6 (N-1 mandatory).
+- Material classification changes: None (Large / High).
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (primary); `/software_engineering_team/solution_designer` (informational).
+- Remaining risks or uncertainty:
+  - FU-001 is a follow-up candidate.
+  - The CRR-001/002 source-review Pass is superseded. Source review (with the nested-surface trace) and API/E2E re-runs are required after implementation.
