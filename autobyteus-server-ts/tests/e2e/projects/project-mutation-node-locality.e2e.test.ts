@@ -1,3 +1,7 @@
+// Project mutation node locality: two private HOME/data/SQLite nodes on current dist, real registration/HTTP/GraphQL,
+// MCP Project tools and graceful restart. Rebuild first, then (from the repo root):
+//   pnpm -C autobyteus-server-ts prebuild && pnpm -C autobyteus-server-ts build
+//   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-task-boundaries.e2e.test.ts tests/e2e/projects/project-mutation-node-locality.e2e.test.ts --no-watch
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";

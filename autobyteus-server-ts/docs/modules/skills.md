@@ -70,7 +70,7 @@ package validation/extraction; the skill archive safety boundary does not
 retroactively change agent-package extraction.
 
 Reproducible source/API and real web-stack checks are documented in the root
-[testing guide](../../../TESTING.md#github-skill-sources-regression).
+[GitHub skill sources probe](../../../autobyteus-web/tests/e2e/github-skill-sources-probe.mjs) header.
 
 ## TS Source
 

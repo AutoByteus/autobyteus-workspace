@@ -1,0 +1,64 @@
+{
+  "startedAt": "2026-10-11T07:32:56.883Z",
+  "layer": "Renderer browser integration",
+  "source": "4de754ba7ecb1be359a94658b3a98056b885808a",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cases": {
+    "B01": {
+      "description": "Shared + Agent/Team parent icons, pointer/keyboard/disclosure/focus at normal/constrained widths",
+      "startedAt": "2026-10-11T07:33:10.325Z",
+      "result": "Fail",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: 'An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D'\n+   },\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: 'An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D'\n+   }\n+ ]\n- []\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:157:12\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:68:27)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:127:3"
+    }
+  },
+  "events": [
+    {
+      "kind": "error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "kind": "error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D"
+    }
+  ],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtExited": {
+      "pid": 65804,
+      "exitCode": 0,
+      "signal": null
+    },
+    "routeRemoved": true,
+    "portsReleased": true
+  },
+  "sourceFiles": {
+    "tests/e2e/team-group-icon-probe.mjs": "3e8d829ca1f43c0b12be2334f77fec486218cd6bfc13fa107f9ec3da1dddf120",
+    "tests/e2e/fixtures/team-group-icon.page.vue": "a473b3ca16fa20a3f5c1cbdcfc607b7065b5c85a7b9df5bdbb1e2940b6c616ea",
+    "components/workspace/history/WorkspaceTransientExecutionRow.vue": "4a3a39ecc27ec099cf447bcff418168232254c06f5925e6621f51aedc46af51d",
+    "components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue": "d4cdc1c6ae355cee71cad319933aef239a37ead999ffd69b9fd5b0b1392a6435",
+    "components/projects/ProjectTaskWorkers.vue": "83a752369c41a6f5e3232561fe02418e8968d980f7853c36c5a402b51e184726",
+    "components/memory/CollaborationMemoryDetail.vue": "ca77320d9c9742059c1f0d4a59bdf8d1112e62f8e4afe649abb1efe474798472"
+  },
+  "ports": {
+    "port": 60241,
+    "backendPort": 60242
+  },
+  "nuxtPid": 65804,
+  "browser": "154.0.8037.98",
+  "result": "Fail",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: 'An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D'\n+   },\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: 'An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D'\n+   }\n+ ]\n- []\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:157:12\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:68:27)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:127:3",
+  "finishedAt": "2026-10-11T07:33:11.371Z"
+}

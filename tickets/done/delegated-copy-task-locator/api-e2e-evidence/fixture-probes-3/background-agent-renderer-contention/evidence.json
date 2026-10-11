@@ -1,0 +1,455 @@
+{
+  "startedAt": "2026-10-11T08:34:14.722Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/pages/api-e2e-background-agent-renderer-contention.vue",
+  "routePath": "/api-e2e-background-agent-renderer-contention",
+  "scenarios": {
+    "BG-BROWSER-000": {
+      "description": "Production fixture seeds the approved 26-workspace/38-team topology",
+      "result": "Pass",
+      "startedAt": "2026-10-11T08:34:32.062Z",
+      "details": {
+        "topologyText": " workspaces=26 teams=38 topology=2 patches=0"
+      }
+    },
+    "BG-BROWSER-001A": {
+      "description": "Warmed foreground Files/Teams latency at idle",
+      "result": "Pass",
+      "startedAt": "2026-10-11T08:34:32.068Z",
+      "details": {
+        "mode": "idle",
+        "elapsedMs": 6501.699999988079,
+        "windows": 0,
+        "dispatches": 0,
+        "topologyDelta": 0,
+        "navigationReasons": [],
+        "patchDelta": 0,
+        "presentationRevisionDelta": 0,
+        "contentCharacterDelta": 0,
+        "statusValues": [
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running"
+        ],
+        "longTasks": [],
+        "actionLatencies": [
+          12.599999994039536,
+          11.799999982118607,
+          16.200000017881393,
+          13.299999982118607,
+          12.099999994039536,
+          12.200000017881393,
+          12.300000011920929,
+          14.300000011920929,
+          13.800000011920929,
+          12.900000005960464,
+          15.599999994039536,
+          8.200000017881393,
+          13.399999976158142,
+          11.900000005960464,
+          12.299999982118607,
+          13.800000011920929,
+          12.900000005960464,
+          13.699999988079071,
+          13.899999976158142,
+          15.900000005960464,
+          13.900000005960464,
+          14.799999982118607,
+          11.199999988079071,
+          12.900000005960464,
+          15.599999994039536,
+          13.700000017881393,
+          13.900000005960464,
+          13.099999994039536
+        ],
+        "latency": {
+          "count": 28,
+          "min": 8.200000017881393,
+          "mean": 13.292857142431396,
+          "p95": 15.900000005960464,
+          "max": 16.200000017881393
+        }
+      }
+    },
+    "BG-BROWSER-001B": {
+      "description": "One background run at two windows per second remains responsive",
+      "result": "Pass",
+      "startedAt": "2026-10-11T08:34:38.578Z",
+      "details": {
+        "mode": "one",
+        "elapsedMs": 6504.0999999940395,
+        "windows": 13,
+        "dispatches": 26,
+        "topologyDelta": 0,
+        "navigationReasons": [],
+        "patchDelta": 0,
+        "presentationRevisionDelta": 13,
+        "contentCharacterDelta": 42,
+        "statusValues": [
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running"
+        ],
+        "longTasks": [],
+        "actionLatencies": [
+          9.099999994039536,
+          12.299999982118607,
+          15.099999994039536,
+          13.400000005960464,
+          15.099999994039536,
+          15.199999988079071,
+          13.099999994039536,
+          16.099999994039536,
+          13.199999988079071,
+          15,
+          14.599999994039536,
+          14.400000005960464,
+          9.200000017881393,
+          11.400000005960464,
+          15.099999994039536,
+          14.099999994039536,
+          15.700000017881393,
+          12.799999982118607,
+          14.200000017881393,
+          11.600000023841858,
+          13.599999994039536,
+          14.400000005960464,
+          15.300000011920929,
+          12.900000005960464,
+          10.5,
+          14.699999988079071,
+          13.400000005960464,
+          12.199999988079071
+        ],
+        "latency": {
+          "count": 28,
+          "min": 9.099999994039536,
+          "mean": 13.489285713859967,
+          "p95": 15.700000017881393,
+          "max": 16.099999994039536
+        }
+      }
+    },
+    "BG-BROWSER-001C": {
+      "description": "Twenty-run aggregate-equivalent 40 windows/80 dispatches per second remains responsive",
+      "result": "Pass",
+      "startedAt": "2026-10-11T08:34:45.086Z",
+      "details": {
+        "mode": "aggregate",
+        "elapsedMs": 6502.300000011921,
+        "windows": 260,
+        "dispatches": 520,
+        "topologyDelta": 0,
+        "navigationReasons": [],
+        "patchDelta": 0,
+        "presentationRevisionDelta": 260,
+        "contentCharacterDelta": 1190,
+        "statusValues": [
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running"
+        ],
+        "longTasks": [],
+        "actionLatencies": [
+          13.100000023841858,
+          13.700000017881393,
+          10.799999982118607,
+          9.5,
+          8.300000011920929,
+          12.199999988079071,
+          12.699999988079071,
+          13.699999988079071,
+          9.599999994039536,
+          10.699999988079071,
+          12.400000005960464,
+          14.399999976158142,
+          15.300000011920929,
+          14.699999988079071,
+          12.600000023841858,
+          12.799999982118607,
+          12.299999982118607,
+          12.099999994039536,
+          11.699999988079071,
+          11.199999988079071,
+          14.5,
+          12.300000011920929,
+          11.399999976158142,
+          11,
+          11.599999994039536,
+          10.699999988079071,
+          6.799999982118607,
+          11.900000005960464
+        ],
+        "latency": {
+          "count": 28,
+          "min": 6.799999982118607,
+          "mean": 11.928571424313954,
+          "p95": 14.699999988079071,
+          "max": 15.300000011920929
+        }
+      }
+    },
+    "BG-BROWSER-002": {
+      "description": "CONNECTED and exact repeated status cause no presentation or navigation work",
+      "result": "Pass",
+      "startedAt": "2026-10-11T08:34:51.592Z",
+      "details": {
+        "topologyDelta": 0,
+        "patchDelta": 0,
+        "presentationRevisionDelta": 0,
+        "status": "running"
+      }
+    },
+    "BG-BROWSER-003": {
+      "description": "Latest-100 retention remains exact after 110 completed segment lifecycles",
+      "result": "Pass",
+      "startedAt": "2026-10-11T08:34:51.595Z",
+      "details": {
+        "visualCount": 100,
+        "segmentCount": 100,
+        "firstContent": "retained-10",
+        "lastContent": "retained-109",
+        "topologyRevision": 2,
+        "revisions": {
+          "before": {
+            "topology": 2,
+            "patch": 0
+          },
+          "after": {
+            "topology": 2,
+            "patch": 0
+          }
+        }
+      }
+    },
+    "BG-BROWSER-004": {
+      "description": "Collapsed/unfocused stable, task-agent, task-team, child, status, and focus survive sustained traffic",
+      "result": "Fail",
+      "startedAt": "2026-10-11T08:34:51.623Z",
+      "failure": {
+        "id": "BG-BROWSER-004",
+        "description": "Collapsed/unfocused stable, task-agent, task-team, child, status, and focus survive sustained traffic",
+        "message": "Exact hierarchy order/depth mismatch",
+        "details": {
+          "focusedAgentRunId": "rich-worker-run",
+          "rows": [
+            {
+              "kind": "stable_member",
+              "memberAddress": "/worker",
+              "agentRunId": "rich-worker-run",
+              "depth": 0,
+              "hasChildren": false,
+              "transientKind": null,
+              "status": "idle"
+            },
+            {
+              "kind": "transient_execution",
+              "memberAddress": "/worker",
+              "agentRunId": "rich-task-agent-run",
+              "depth": 0,
+              "hasChildren": false,
+              "transientKind": "task_agent",
+              "status": "running"
+            },
+            {
+              "kind": "stable_member",
+              "memberAddress": "/ReviewTeam",
+              "agentRunId": null,
+              "depth": 0,
+              "hasChildren": true,
+              "transientKind": null,
+              "status": null
+            },
+            {
+              "kind": "stable_member",
+              "memberAddress": "/ReviewTeam/reviewer",
+              "agentRunId": "rich-reviewer-run",
+              "depth": 1,
+              "hasChildren": false,
+              "transientKind": null,
+              "status": "idle"
+            },
+            {
+              "kind": "transient_execution",
+              "memberAddress": "/ReviewTeam",
+              "agentRunId": null,
+              "depth": 1,
+              "hasChildren": true,
+              "transientKind": "task_team",
+              "status": null
+            },
+            {
+              "kind": "transient_execution",
+              "memberAddress": "/ReviewTeam/reviewer",
+              "agentRunId": "rich-task-team-child-run",
+              "depth": 2,
+              "hasChildren": false,
+              "transientKind": "task_team_child",
+              "status": "running"
+            }
+          ]
+        },
+        "stack": "Error: Exact hierarchy order/depth mismatch\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:44:35)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:280:5\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:96:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:267:3"
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "failures": [
+    {
+      "id": "BG-BROWSER-004",
+      "description": "Collapsed/unfocused stable, task-agent, task-team, child, status, and focus survive sustained traffic",
+      "message": "Exact hierarchy order/depth mismatch",
+      "details": {
+        "focusedAgentRunId": "rich-worker-run",
+        "rows": [
+          {
+            "kind": "stable_member",
+            "memberAddress": "/worker",
+            "agentRunId": "rich-worker-run",
+            "depth": 0,
+            "hasChildren": false,
+            "transientKind": null,
+            "status": "idle"
+          },
+          {
+            "kind": "transient_execution",
+            "memberAddress": "/worker",
+            "agentRunId": "rich-task-agent-run",
+            "depth": 0,
+            "hasChildren": false,
+            "transientKind": "task_agent",
+            "status": "running"
+          },
+          {
+            "kind": "stable_member",
+            "memberAddress": "/ReviewTeam",
+            "agentRunId": null,
+            "depth": 0,
+            "hasChildren": true,
+            "transientKind": null,
+            "status": null
+          },
+          {
+            "kind": "stable_member",
+            "memberAddress": "/ReviewTeam/reviewer",
+            "agentRunId": "rich-reviewer-run",
+            "depth": 1,
+            "hasChildren": false,
+            "transientKind": null,
+            "status": "idle"
+          },
+          {
+            "kind": "transient_execution",
+            "memberAddress": "/ReviewTeam",
+            "agentRunId": null,
+            "depth": 1,
+            "hasChildren": true,
+            "transientKind": "task_team",
+            "status": null
+          },
+          {
+            "kind": "transient_execution",
+            "memberAddress": "/ReviewTeam/reviewer",
+            "agentRunId": "rich-task-team-child-run",
+            "depth": 2,
+            "hasChildren": false,
+            "transientKind": "task_team_child",
+            "status": "running"
+          }
+        ]
+      },
+      "stack": "Error: Exact hierarchy order/depth mismatch\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:44:35)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:280:5\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:96:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:267:3"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 58443,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "port": 62314,
+  "baseUrl": "http://127.0.0.1:62314",
+  "performanceComparison": {
+    "idleP95": 15.900000005960464,
+    "oneP95": 15.700000017881393,
+    "aggregateP95": 14.699999988079071,
+    "oneToIdle": 0.987421384402258,
+    "aggregateToIdle": 0.9245283007904688
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-11T08:35:05.893Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes-3/background-agent-renderer-contention/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes-3/background-agent-renderer-contention/nuxt.log",
+    "desktopScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes-3/background-agent-renderer-contention/desktop-hierarchy.png",
+    "mobileScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes-3/background-agent-renderer-contention/mobile-composer.png"
+  }
+}

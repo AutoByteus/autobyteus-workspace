@@ -1,0 +1,287 @@
+{
+  "rows": {
+    "result": "Pass",
+    "details": {
+      "rows": [
+        {
+          "kind": "task_agent",
+          "address": "/agent_package_creator",
+          "height": 46,
+          "summary": "Ship the copy Task summary in the Workspaces tree",
+          "label": "Temporary task agent, agent package creator, level 1, idle, Started by project task manager, /agent_package_creator, Task: Ship the copy Task summary in the Workspaces tree"
+        },
+        {
+          "kind": "task_team",
+          "address": "/software_engineering_team",
+          "height": 46,
+          "summary": "Review the locate journey with the software engineering team and report back on every edge case we found during the\u2026",
+          "label": "Temporary task team, software engineering team, level 1, offline, Started by project task manager, /software_engineering_team, Task: Review the locate journey with the software engineering team and report back on every edge case we found during the\u2026"
+        },
+        {
+          "kind": "task_team_child",
+          "address": "/software_engineering_team/reviewer",
+          "height": 28,
+          "summary": null,
+          "label": "Temporary task agent, reviewer, level 2, idle, /software_engineering_team/reviewer"
+        },
+        {
+          "kind": "task_team_child",
+          "address": "/software_engineering_team/editor",
+          "height": 28,
+          "summary": null,
+          "label": "Temporary task agent, editor, level 2, offline, /software_engineering_team/editor"
+        },
+        {
+          "kind": "task_agent",
+          "address": "/fact_checker",
+          "height": 46,
+          "summary": "Check the FAQ links.",
+          "label": "Temporary task agent, fact checker, level 1, idle, Started by project task manager, /fact_checker, Task: Check the FAQ links."
+        }
+      ],
+      "style": {
+        "fontSize": "11px",
+        "lineHeight": "16px",
+        "fontWeight": "400",
+        "color": "rgb(128, 128, 128)",
+        "height": 16,
+        "gapAbove": 2,
+        "textLeft": 112,
+        "nameLeft": 112,
+        "width": 196,
+        "nameColumnWidth": 196,
+        "overflow": "ellipsis"
+      },
+      "teamStyle": {
+        "fontWeight": "400",
+        "scrollWidth": 639,
+        "clientWidth": 210
+      },
+      "anchors": {
+        "elbowTop": "17.2px",
+        "chevronCentre": 14,
+        "nameCentre": 14,
+        "iconBoxTop": 4
+      },
+      "hover": {
+        "color": "rgb(67, 56, 202)",
+        "decoration": "underline",
+        "offset": "2px"
+      },
+      "treeBox": {
+        "x": 36,
+        "y": 513,
+        "width": 280,
+        "height": 202
+      },
+      "errors": []
+    }
+  },
+  "locate": {
+    "result": "Pass",
+    "details": {
+      "first": {
+        "activeTab": "Projects",
+        "docked": true,
+        "projectsPanel": true,
+        "picker": "project:project_a2de51e8-45e0-4790-b5c5-cbe97a2af9e3",
+        "located": [
+          "project-task-row-project_task_17406f3e-49b8-4f97-817a-74eabc84bfb5"
+        ],
+        "focused": "project-task-row-project_task_17406f3e-49b8-4f97-817a-74eabc84bfb5",
+        "path": "/chat?id=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e"
+      },
+      "centerUnchanged": true,
+      "centerBefore": "PT\nCALL_TOOL:{\"name\":\"delegate_task\",\"argume\u2026\nIdle\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/agent_package_creator\",\"task_id\":\"project_task_17406f3e-49b8-4f97-817a-74eab",
+      "centerAfter": "PT\nCALL_TOOL:{\"name\":\"delegate_task\",\"argume\u2026\nIdle\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/agent_package_creator\",\"task_id\":\"project_task_17406f3e-49b8-4f97-817a-74eab",
+      "selectedBefore": [
+        "workspace-agent-run-row:project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e",
+        "null:null"
+      ],
+      "selectedAfter": [
+        "workspace-agent-run-row:project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e",
+        "null:null"
+      ],
+      "cardInView": {
+        "cardCentre": 555,
+        "panelCentre": 505.5,
+        "inView": true
+      },
+      "highlight": {
+        "bg": "rgb(238, 242, 255)",
+        "shadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+        "animation": "task-live-f1a92bd3"
+      },
+      "temp": {
+        "activeTab": "Projects",
+        "docked": true,
+        "projectsPanel": true,
+        "picker": "temp",
+        "located": [
+          "project-task-row-ad_hoc_task_4049d146-8d47-4682-b679-df755c9682af"
+        ],
+        "focused": "project-task-row-ad_hoc_task_4049d146-8d47-4682-b679-df755c9682af",
+        "path": "/chat?id=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e"
+      },
+      "team": {
+        "activeTab": "Projects",
+        "docked": true,
+        "projectsPanel": true,
+        "picker": "project:project_a2de51e8-45e0-4790-b5c5-cbe97a2af9e3",
+        "located": [
+          "project-task-row-project_task_804d7357-5422-4d9c-8ffa-114716194e5e"
+        ],
+        "focused": "project-task-row-project_task_804d7357-5422-4d9c-8ffa-114716194e5e",
+        "path": "/chat?id=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e"
+      },
+      "twice": {
+        "activeTab": "Projects",
+        "docked": true,
+        "projectsPanel": true,
+        "picker": "project:project_a2de51e8-45e0-4790-b5c5-cbe97a2af9e3",
+        "located": [
+          "project-task-row-project_task_804d7357-5422-4d9c-8ffa-114716194e5e"
+        ],
+        "focused": "project-task-row-project_task_804d7357-5422-4d9c-8ffa-114716194e5e",
+        "path": "/chat?id=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e"
+      },
+      "errors": []
+    }
+  },
+  "keyboard": {
+    "result": "Superseded",
+    "note": "This later re-run happened after the live check deleted its fixture Task (no summary to focus). Re-recorded on a fresh stack: implementation-evidence/run2/drive-results.json (Pass). R11 is from the earlier passing run here."
+  },
+  "panels": {
+    "result": "Pass",
+    "details": {
+      "closeButtonFound": true,
+      "hiddenBefore": true,
+      "reopened": {
+        "activeTab": "Projects",
+        "docked": true,
+        "projectsPanel": true,
+        "picker": "project:project_a2de51e8-45e0-4790-b5c5-cbe97a2af9e3",
+        "located": [
+          "project-task-row-project_task_17406f3e-49b8-4f97-817a-74eabc84bfb5"
+        ],
+        "focused": "project-task-row-project_task_17406f3e-49b8-4f97-817a-74eabc84bfb5",
+        "path": "/chat?id=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e"
+      },
+      "drawer": {
+        "activeTab": null,
+        "docked": false,
+        "projectsPanel": true,
+        "picker": "project:project_a2de51e8-45e0-4790-b5c5-cbe97a2af9e3",
+        "located": [
+          "project-task-row-project_task_17406f3e-49b8-4f97-817a-74eabc84bfb5"
+        ],
+        "focused": "project-task-row-project_task_17406f3e-49b8-4f97-817a-74eabc84bfb5",
+        "path": "/chat?id=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e"
+      },
+      "drawerOpen": 1,
+      "reduced": {
+        "animation": "none",
+        "bg": "rgb(238, 242, 255)"
+      },
+      "errors": []
+    }
+  },
+  "noPanel": {
+    "result": "Pass",
+    "details": {
+      "opened": {
+        "activeTab": "Projects",
+        "docked": true,
+        "projectsPanel": true,
+        "picker": "temp",
+        "located": [
+          "project-task-row-ad_hoc_task_4049d146-8d47-4682-b679-df755c9682af"
+        ],
+        "focused": "project-task-row-ad_hoc_task_4049d146-8d47-4682-b679-df755c9682af",
+        "path": "/chat?id=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e"
+      },
+      "drawer": 0,
+      "runRowCurrent": 1,
+      "stillExpanded": 1,
+      "errors": []
+    }
+  },
+  "noPanelNarrow": {
+    "result": "Pass",
+    "details": {
+      "opened": {
+        "activeTab": null,
+        "docked": false,
+        "projectsPanel": true,
+        "picker": "temp",
+        "located": [
+          "project-task-row-ad_hoc_task_4049d146-8d47-4682-b679-df755c9682af"
+        ],
+        "focused": "project-task-row-ad_hoc_task_4049d146-8d47-4682-b679-df755c9682af",
+        "path": "/chat?id=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e"
+      },
+      "drawer": 1,
+      "runRowCurrent": 1,
+      "stillExpanded": 1,
+      "errors": []
+    }
+  },
+  "hidden": {
+    "result": "Pass",
+    "details": {
+      "kept": "ship the copy",
+      "cleared": {
+        "activeTab": "Projects",
+        "docked": true,
+        "projectsPanel": true,
+        "picker": "project:project_a2de51e8-45e0-4790-b5c5-cbe97a2af9e3",
+        "located": [
+          "project-task-row-project_task_17406f3e-49b8-4f97-817a-74eabc84bfb5"
+        ],
+        "focused": "project-task-row-project_task_17406f3e-49b8-4f97-817a-74eabc84bfb5",
+        "path": "/chat?id=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e"
+      },
+      "clearedValue": "",
+      "clickedBeforeLeave": false,
+      "cancelled": null,
+      "teamRowGone": true,
+      "errors": []
+    }
+  },
+  "cancelledLane": {
+    "result": "Pass",
+    "details": {
+      "activeTab": "Projects",
+      "docked": true,
+      "projectsPanel": true,
+      "picker": "project:project_a2de51e8-45e0-4790-b5c5-cbe97a2af9e3",
+      "located": [
+        "project-task-row-project_task_804d7357-5422-4d9c-8ffa-114716194e5e"
+      ],
+      "focused": "project-task-row-project_task_804d7357-5422-4d9c-8ffa-114716194e5e",
+      "path": "/chat?id=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e",
+      "pressed": "true",
+      "lane": "project-task-column-CANCELLED",
+      "errors": []
+    }
+  },
+  "live": {
+    "result": "Pass",
+    "details": {
+      "renamed": true,
+      "teamHostSummary": "Draft the release notes for the beta",
+      "removed": true,
+      "errors": []
+    }
+  },
+  "selected": {
+    "result": "Pass",
+    "details": {
+      "color": "rgb(67, 56, 202)",
+      "projectsShown": 0,
+      "located": [],
+      "errors": []
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "keyboard": {
+    "result": "Pass",
+    "details": {
+      "focused": "workspace-task-worker-task-summary",
+      "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "viaEnter": {
+        "activeTab": "Projects",
+        "docked": true,
+        "projectsPanel": true,
+        "picker": "project:project_769cfd82-e73d-401a-b7cf-61d41b66617e",
+        "located": [
+          "project-task-row-project_task_2de6372a-a715-4439-8ec3-8b67f82c0279"
+        ],
+        "focused": "project-task-row-project_task_2de6372a-a715-4439-8ec3-8b67f82c0279",
+        "path": "/chat?id=project_task_manager_4b51c26a4f9545c380024c45a866e688"
+      },
+      "viaSpace": {
+        "activeTab": "Projects",
+        "docked": true,
+        "projectsPanel": true,
+        "picker": "temp",
+        "located": [
+          "project-task-row-ad_hoc_task_4730e30e-e447-4afb-ba65-a2f2cca59ef2"
+        ],
+        "focused": "project-task-row-ad_hoc_task_4730e30e-e447-4afb-ba65-a2f2cca59ef2",
+        "path": "/chat?id=project_task_manager_4b51c26a4f9545c380024c45a866e688"
+      },
+      "centerUnchanged": true,
+      "errors": []
+    }
+  }
+}
