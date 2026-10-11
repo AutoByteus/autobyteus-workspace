@@ -24,7 +24,7 @@
 | Doc Path | Why It Was Reviewed | Result | Notes |
 | --- | --- | --- | --- |
 | `autobyteus-server-ts/docs/modules/token_usage.md` | Main token-usage contract; conflicting upstream AGY section | Updated | Upstream AGY section and this branch's AGY section merged into one. Claude/Codex/Grok/native/compaction sections from the implementation are kept. Pricing sections are left as upstream (REQ-011, caching tasks) |
-| `TESTING.md` | Live gates for the new suites | Updated | Two suites added; AGY fake-CLI description corrected |
+| `TESTING.md` | Live gates for the new suites | Updated in DR-001; superseded in DR-002 | Upstream `361804e45` rewrote TESTING.md as principles; suite gates and commands now belong in test file headers. The merge keeps upstream's file unchanged: `token-usage-runtime-graphql.e2e.test.ts`, `codex-compaction-token-reading.e2e.test.ts` and `agy-token-usage-transport.e2e.test.ts` carry their gate and command in their headers |
 | `autobyteus-web/docs/agent_execution_architecture.md` | Token Meter UI contract | Updated | Latest prompt meaning, threshold marker, over-window state, usage reports = model calls, Claude SDK per-call readings |
 | `autobyteus-web/docs/settings.md` | Duplicate Token Meter UI contract | Updated | Same edits (this copy has no Claude-result paragraph) |
 | `autobyteus-server-ts/docs/modules/agent_execution.md` | Claude SDK accounting paragraph | Updated | Result-derived window/percentage and read-repair replaced by per-call readings |
