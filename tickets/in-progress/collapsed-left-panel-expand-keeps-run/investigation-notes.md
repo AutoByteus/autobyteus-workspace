@@ -281,3 +281,8 @@ No closer `DESIGN*.md` exists under `autobyteus-web` (`find autobyteus-web -maxd
 - Recovery evidence: `git cat-file -t 900443b11` returned `commit`. `git worktree add -b codex/collapsed-left-panel-expand-keeps-run <worktree> 900443b11` restored the branch and all ticket artifacts.
 - `origin/personal@d28c56d5d` is 19 commits ahead; merge base `033a6d780`.
 - Product design repo: removal commit `8740ada`. The spec and VIS files are retrievable at `7a8e634`.
+- The Product spec was restored on 2026-10-10 by Product run `product_ui_ux_designer_7f2757f2f2aa47638f086d301753c83e`:
+  - Design repo `personal` = `origin/personal` @ `6fdf576`, which reverts `8740ada`.
+  - The spec, VIS-001..008 and UI-reference code are byte-identical to `7a8e634`. The only change is a "Cancellation And Restoration" section in `product-ticket.md`.
+  - Product's validation: `vue-tsc` passed, and the VIS-001/VIS-003 journey was re-run with 0 page errors.
+  - Canonical spec path: `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/collapsed-left-panel-expand-keeps-run/ui-ux-spec.md`.
