@@ -164,6 +164,9 @@ The fold applies three rules:
 - the latest context reading changes only when the latest observation carries a
   reading. An observation without a reading (a Claude turn-end remainder) leaves
   the previous reading in place instead of erasing it.
+  The one exception is an observation marked `context_reading_reset` (a native
+  compaction summary call): it makes the prompt and percentage unknown and keeps
+  the window and threshold.
 
 `usage_report_count` therefore means model calls. Claude Agent SDK rows written
 before token-meter-accuracy counted one report per turn; later increments count
@@ -415,6 +418,17 @@ Grok reports no window or threshold.
 prompt over the effective context capacity. When automatic memory compaction is
 enabled, it also reports `context_compaction_threshold_tokens` =
 `compactionTokenBudget.triggerThresholdTokens`.
+
+Each compaction summary attempt reports its own usage
+(`ingestion_kind: autobyteus_compaction`). It is a real provider call on the
+agent's own model, so its tokens and cost count and it is a model call. It is
+not a reading of the agent's context, and once a compaction applies the
+previous reading is stale. The native bridge therefore marks it with the
+server-internal fact `context_reading_reset`. The fold then sets the latest
+prompt and percentage to unknown and keeps the window and threshold, so the
+meter shows no reading until the agent's next call reports one. A failed
+summary attempt also resets the reading; unknown is never false. The fold never
+branches on the ingestion kind itself; the adapter owns that meaning.
 
 ### Compaction Per Runtime
 

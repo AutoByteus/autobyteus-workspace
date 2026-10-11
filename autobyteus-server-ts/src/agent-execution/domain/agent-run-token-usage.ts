@@ -110,6 +110,11 @@ export interface TokenUsageUpdatedPayload {
   usage_scope: TokenUsageScope;
   /** True when this observation reports exactly one provider model call (D-4). */
   reports_model_call: boolean;
+  /**
+   * Server-internal: the observation makes the latest context reading unknown (native compaction,
+   * D-11). Not part of the live contracts.
+   */
+  context_reading_reset: boolean;
   snapshot_series_key: string | null;
   previous_snapshot_event_id: string | null;
   input_token_semantic: InputTokenSemantic;
@@ -340,6 +345,7 @@ export const createTokenUsageUpdatedPayload = (input: {
     ingestion_kind: ingestionKind,
     usage_scope: usageScope,
     reports_model_call: source.reports_model_call === true,
+    context_reading_reset: source.context_reading_reset === true,
     snapshot_series_key: asString(source.snapshot_series_key),
     previous_snapshot_event_id: asString(source.previous_snapshot_event_id),
     input_token_semantic: inputTokenSemantic,
