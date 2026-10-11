@@ -4,19 +4,12 @@ import { LlmResponseStreamCollector } from './llm-response-stream-collector.js';
 import { ToolSchemaProvider } from '../../tools/usage/providers/tool-schema-provider.js';
 import { LLMRequestAssembler, type RequestPackage } from '../llm-request-assembler.js';
 import { CompactionPreparationError } from '../compaction/compaction-preparation-error.js';
-import { CompactionRuntimeReporter } from '../compaction/compaction-runtime-reporter.js';
 import { CompactionRuntimeSettingsResolver } from '../../memory/compaction/compaction-runtime-settings.js';
-import { PendingCompactionExecutor } from '../../memory/compaction/pending-compaction-executor.js';
 import { isAgentInterruptionError } from '../interruption/agent-interruption.js';
 import { resolveTurnToolNames } from './llm-phase-tools.js';
-import { evaluateLlmPhaseCompaction } from './llm-phase-compaction.js';
-import { LlmPhaseSummaryPort } from './llm-phase-summary-port.js';
+import { LlmCallCompaction } from './llm-phase-compaction.js';
 import { conversationRequestKwargs, conversationRequestOptions } from './conversation-request.js';
-import {
-  applyCompactionPolicy,
-  resolveCompactionTokenBudget,
-  resolveLlmRequestCapacity,
-} from '../token-budget.js';
+import { resolveLlmRequestCapacity } from '../token-budget.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
 import type { AgentInputPipelineResult } from '../pipelines/agent-input-pipeline.js';
@@ -95,19 +88,6 @@ export class LlmPhase {
         ? automaticCompaction.policy.safetyMarginTokens
         : undefined,
     );
-    const compactionTokenBudget = automaticCompaction.kind === 'enabled' && requestCapacity
-      ? resolveCompactionTokenBudget(
-          requestCapacity,
-          llmInstance.model,
-          llmInstance.config,
-          automaticCompaction.policy,
-          runtimeSettings,
-        )
-      : null;
-    if (automaticCompaction.kind === 'enabled' && compactionTokenBudget) {
-      applyCompactionPolicy(automaticCompaction.policy, compactionTokenBudget);
-    }
-
     const toolNames = resolveTurnToolNames(context);
     const toolCallsEnabled = toolNames.length > 0;
     const provider = llmInstance.model?.provider ?? null;
@@ -116,24 +96,23 @@ export class LlmPhase {
       ? new ToolSchemaProvider().buildSchema(toolNames, provider)
       : [];
 
-    let compactionReporter: CompactionRuntimeReporter | null = null;
-    let pendingCompactionExecutor: PendingCompactionExecutor | null = null;
-    if (automaticCompaction.kind === 'enabled') {
-      compactionReporter = new CompactionRuntimeReporter(
-        agentId,
-        context.statusManager?.notifier ?? null,
-      );
-      const reporter = compactionReporter;
-      pendingCompactionExecutor = new PendingCompactionExecutor(memoryManager, {
-        reporter,
-        summaryPort: new LlmPhaseSummaryPort({ agentId, llm: llmInstance, tools: toolSchemas, requestCapacity, notifier }),
-        maxItemChars: automaticCompaction.policy.maxItemChars,
-        onRecoveryStateChanged: (previous) => context.state.compactionRecovery?.publish(previous),
-      });
-    }
+    const compaction = automaticCompaction.kind === 'enabled'
+      ? LlmCallCompaction.create({
+          automaticCompaction,
+          agentId,
+          context,
+          memoryManager,
+          llm: llmInstance,
+          toolSchemas,
+          requestCapacity,
+          runtimeSettingsResolver,
+          runtimeSettings,
+          notifier,
+        })
+      : null;
     const assembler = new LLMRequestAssembler(
       memoryManager,
-      pendingCompactionExecutor,
+      compaction?.executor ?? null,
       llmInstance.model.multimodalCapabilities,
     );
     const systemPrompt = context.state.processedSystemPrompt ?? llmInstance.config.systemMessage ?? null;
@@ -298,17 +277,11 @@ export class LlmPhase {
     }
 
     turn.executionScope.throwIfAborted({ kind: 'llm_compaction' });
-    const compactionDecision = compactionReporter
-      ? evaluateLlmPhaseCompaction({
-          memoryManager,
-          tokenBudget: compactionTokenBudget,
-          tokenUsage: collector.usage,
-          observedPromptTokens: collector.usage ? resolveLatestPromptTokens(collector.usage) : null,
-          activeTurnId,
-          compactionReporter,
-          runtimeSettingsResolver,
-        })
-      : null;
+    const compactionDecision = compaction?.evaluateAfterResponse({
+      usage: collector.usage,
+      observedPromptTokens: collector.usage ? resolveLatestPromptTokens(collector.usage) : null,
+      turnId: activeTurnId,
+    }) ?? null;
 
     if (truncatedToolNames) {
       // The turn continues, so the compaction threshold is evaluated but nothing runs after it.
@@ -323,31 +296,15 @@ export class LlmPhase {
     const toolInvocations = turn.activeToolInvocationBatch && parsedToolInvocations.length > 0
       ? parsedToolInvocations
       : [];
-    if (
-      !toolInvocations.length
-      && compactionDecision?.kind === 'requested'
-      && pendingCompactionExecutor
-    ) {
-      try {
-        // The cached summary request replays the settled history under the current prefix.
-        assembler.bindRequestPrefix(request.tools);
-        await pendingCompactionExecutor.executeIfAuthorized({
-          executionSite: 'after_final_response',
-          turnId: activeTurnId,
-          signal: turn.executionScope.signal,
-        });
-      } catch (error) {
-        turn.executionScope.throwIfAborted({ kind: 'llm_compaction' });
-        context.state.compactionRecovery?.publish();
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        notifier?.notifyAgentErrorOutputGeneration({
-          code: 'LLM_IMMEDIATE_COMPACTION_FAILED',
-          message: errorMessage,
-          details: String(error),
-          classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
-        });
-        // The parent answer was already consumed. Preserve its response/hooks/completion once.
-      }
+    if (!toolInvocations.length && compactionDecision?.kind === 'requested' && compaction) {
+      await compaction.executeAfterFinalResponse({
+        assembler,
+        requestTools: request.tools,
+        turnId: activeTurnId,
+        scope: turn.executionScope,
+        context,
+        notifier,
+      });
     }
     if (toolInvocations.length) {
       return { kind: 'tool_invocations', response: completeResponse, toolInvocations };
