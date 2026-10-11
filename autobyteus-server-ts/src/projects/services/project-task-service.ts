@@ -8,7 +8,7 @@ import type { TaskExecutionReference } from "../../agent-collaboration/execution
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type {
   CreateProjectTaskCommand, CreateTaskWithLocalContextFilesCommand, DeleteProjectTaskCommand, ProjectTask, ProjectTaskStatus, ProjectTaskView,
-  TaskAcknowledgementView, TaskLocation, TaskRootStatus, TaskRootView, TaskWithoutProjectView, UpdateProjectTaskCommand, UpdateTaskByIdCommand,
+  TaskAcknowledgementView, TaskLocation, TaskRootStatus, TaskRootView, TaskWithoutProjectView, TaskWorkerTaskResult, UpdateProjectTaskCommand, UpdateTaskByIdCommand,
 } from "../domain/models.js";
 import { AD_HOC_TASK_ID_PREFIX, type AdHocTask } from "../domain/ad-hoc-task.js";
 import { projectTaskFileLocator, type ProjectTaskContextFile } from "../domain/project-task-context.js";
@@ -204,6 +204,16 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   workerStatusOf(location: TaskLocation): TaskRootStatus | null {
     const root = this.resources.latestAssignment(location.taskId);
     return root ? rootWorkerStatus(root, this.workerStatus) : null;
+  }
+  /** Each Task worker's current Task, when the worker is that Task's root (no scan); one worker never fails the batch. */
+  async currentTasksOfTaskWorkers(workers: readonly TaskExecutionReference[]): Promise<TaskWorkerTaskResult[]> {
+    await this.resources.load();
+    return Promise.all(workers.map(async (execution): Promise<TaskWorkerTaskResult> => {
+      const location = this.resources.rootTaskLocationOf(execution);
+      const view = location && await this.readTaskChangeView(location)
+        .catch((error: unknown) => { console.warn("TASK_WORKER_TASK_READ_FAILED", { execution, error: error instanceof Error ? error.message : String(error) }); return null; });
+      return { execution, task: view && { taskId: view.task.taskId, projectId: view.kind === "project" ? view.projectId : null, description: view.task.description, status: view.task.status } };
+    }));
   }
   async beginContextDraft(projectId: string, taskId?: string) {
     await this.assertOwner(projectId, taskId);
