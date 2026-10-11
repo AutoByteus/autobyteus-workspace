@@ -72,6 +72,17 @@ export interface TaskWithoutProject {
   root: TaskRootView | null
 }
 
+/** A Task worker: a delegated task Agent or task Team copy that is a Task's latest assignment (its root). */
+export type TaskWorkerRef = { kind: 'agent'; agentRunId: string } | { kind: 'team'; teamRunId: string }
+
+/** A Task worker's current Task, from the server; `projectId` null means a Temp task. */
+export interface TaskWorkerTask {
+  taskId: string
+  projectId: string | null
+  description: string
+  status: ProjectTaskStatus
+}
+
 /** Where a Task lives in the change feed. */
 export type TaskScope = { kind: 'project'; projectId: string } | { kind: 'no_project' }
 
