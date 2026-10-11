@@ -16,6 +16,21 @@ export interface DefinitionCatalogIssue {
 
 export type DefinitionDiagnosticSubject = 'AGENT' | 'AGENT_TEAM' | 'AGENT_ORG'
 
+/**
+ * One issue inside a Team or Org unit (the root or a nested definition), shown on the owning card.
+ * `name` is the last working version's name; `usingLastGood` says the definition still works.
+ */
+export interface DefinitionUnitIssue {
+  subject: DefinitionDiagnosticSubject
+  definitionId: string
+  name: string | null
+  code: string
+  reason: string
+  definitionPath: string
+  packageRoot: string
+  usingLastGood: boolean
+}
+
 /** A definition that is unusable, or usable only through its last working version. */
 export interface DefinitionDiagnostic {
   subject: DefinitionDiagnosticSubject

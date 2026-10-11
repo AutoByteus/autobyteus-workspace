@@ -24,6 +24,18 @@ export type DefinitionCatalogIssue = Readonly<{
   packageRoot: string;
 }>;
 
+/**
+ * One issue inside a definition unit (its root or a nested node), as shown on the owning card.
+ * `name` is the last good definition's name; `usingLastGood` says the node still works.
+ */
+export type DefinitionUnitIssueEntry = Readonly<{
+  subject: DefinitionSubject;
+  definitionId: string;
+  name: string | null;
+  issue: DefinitionCatalogIssue;
+  usingLastGood: boolean;
+}>;
+
 export type DefinitionBySubject = {
   agent: AgentDefinition;
   agent_team: AgentTeamDefinition;

@@ -12,7 +12,7 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 import { createLoadedListReloader } from '~/utils/definitionCatalog/loadedListReloader'
-import type { DefinitionCatalogIssue } from '~/types/definitionCatalog'
+import type { DefinitionUnitIssue } from '~/types/definitionCatalog'
 
 export type AgentTeamDefinitionOwnershipScope = 'SHARED' | 'APPLICATION_OWNED' | 'AGENT_ORG_OWNED'
 export type AgentMemberRefScope = 'SHARED' | 'TEAM_LOCAL' | 'APPLICATION_OWNED' | null
@@ -46,8 +46,8 @@ export interface AgentTeamDefinition {
   ownerPackageId?: string | null
   ownerLocalApplicationId?: string | null
   defaultLaunchConfig?: DefaultLaunchConfig | null
-  /** Set when the Team is served from its last working version (file and reason). */
-  catalogIssue?: DefinitionCatalogIssue | null
+  /** Issues of the Team and its team-local agents (Team first, then path order); empty when clean. */
+  catalogIssues?: DefinitionUnitIssue[]
 }
 
 export interface TeamDefinitionHandoff { from: string; to: string; rules: string[] }

@@ -1,8 +1,8 @@
 import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver, registerEnumType } from "type-graphql";
 import { GraphQLError } from "graphql";
 import { getStudioAgentOrgDefinitionService, getStudioDefinitionAdmissionService } from "../studio-application-api-services.js";
-import { DefinitionCatalogIssue, toGraphqlDefinitionCatalogIssue } from "./definition-diagnostics.js";
-import type { DefinitionCatalogIssue as DomainDefinitionCatalogIssue } from "../../../definition-catalog/domain/definition-catalog-types.js";
+import { DefinitionUnitIssue, toGraphqlDefinitionUnitIssues } from "./definition-diagnostics.js";
+import type { DefinitionUnitIssueEntry } from "../../../definition-catalog/domain/definition-catalog-types.js";
 import { AgentOrgDefinition as DomainOrg, AgentOrgDefinitionUpdate, AgentOrgMember as DomainMember } from "../../../agent-org-definition/domain/agent-org-definition.js";
 import { GraphqlDefaultLaunchConfig, GraphqlDefaultLaunchConfigInput, toDomainDefaultLaunchConfig, toGraphqlDefaultLaunchConfig } from "./default-launch-config.js";
 
@@ -37,7 +37,8 @@ registerEnumType(AgentOrgMemberScope, { name: "AgentOrgMemberScope" });
   @Field(() => GraphqlDefaultLaunchConfig, { nullable: true }) defaultLaunchConfig!: GraphqlDefaultLaunchConfig | null;
   @Field(() => String, { nullable: true }) revision!: string | null;
   /** Set when the AgentOrg is served from its last working version; names the file and reason. */
-  @Field(() => DefinitionCatalogIssue, { nullable: true }) catalogIssue!: DefinitionCatalogIssue | null;
+  /** Every issue in this Org's unit: the Org first, then its org-owned definitions in path order. */
+  @Field(() => [DefinitionUnitIssue]) catalogIssues!: DefinitionUnitIssue[];
 }
 @InputType() class CreateAgentOrgDefinitionInput {
   @Field(() => String) name!: string;
@@ -90,8 +91,8 @@ const member = (value: AgentOrgMemberInput): DomainMember => new DomainMember({
   refType: value.refType === AgentOrgMemberType.AGENT ? "agent" : "agent_team",
   refScope: toDomainScope(value.refScope),
 });
-const project = (value: DomainOrg, issue: DomainDefinitionCatalogIssue | null = null): AgentOrgDefinition => ({
-  catalogIssue: toGraphqlDefinitionCatalogIssue(issue),
+const project = (value: DomainOrg, issues: readonly DefinitionUnitIssueEntry[] = []): AgentOrgDefinition => ({
+  catalogIssues: toGraphqlDefinitionUnitIssues(issues),
   id: value.id ?? "", name: value.name, description: value.description, instructions: value.instructions,
   category: value.category, avatarUrl: value.avatarUrl, revision: value.revision,
   defaultLaunchConfig: toGraphqlDefaultLaunchConfig(value.defaultLaunchConfig),
@@ -110,15 +111,15 @@ const graphError = (error: unknown): GraphQLError => new GraphQLError(error inst
 export class AgentOrgDefinitionResolver {
   private readonly service = getStudioAgentOrgDefinitionService();
   @Query(() => [AgentOrgDefinition]) async agentOrgDefinitions(): Promise<AgentOrgDefinition[]> {
-    const issues = new Map((await this.service.listDefinitionIssues()).map((entry) => [entry.definitionId, entry.issue]));
+    const issues = await this.service.listUnitIssues();
     return (await getStudioDefinitionAdmissionService().scan())
       .flatMap((result) => result.status === "available" && result.subjectKind === "agent_org" ? [result.definition] : [])
       .filter((definition): definition is DomainOrg => "members" in definition)
-      .map((definition) => project(definition, issues.get(definition.id ?? "") ?? null));
+      .map((definition) => project(definition, issues.get(definition.id ?? "") ?? []));
   }
   @Query(() => AgentOrgDefinition, { nullable: true }) async agentOrgDefinition(@Arg("id", () => String) id: string): Promise<AgentOrgDefinition | null> {
     const admitted = await getStudioDefinitionAdmissionService().requireAvailable("agent_org", id).catch(() => null);
-    return admitted && "members" in admitted.definition ? project(admitted.definition, await this.service.getDefinitionIssue(id)) : null;
+    return admitted && "members" in admitted.definition ? project(admitted.definition, await this.service.getUnitIssues(id)) : null;
   }
   /** The Orgs page Reload: a full catalog reconcile that also notifies other connected clients. */
   @Mutation(() => Boolean) async refreshAgentOrgDefinitionCatalog(): Promise<boolean> {

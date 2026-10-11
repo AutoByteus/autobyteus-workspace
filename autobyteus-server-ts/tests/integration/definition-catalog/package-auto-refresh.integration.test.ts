@@ -367,5 +367,12 @@ describe("package auto-refresh: the next delegation sees current definitions", {
     expect((await services().agentDefinitionService.getAgentDefinitionById(localId))?.name).toBe("Crew Lead");
     expect((await services().definitionAdmissionService.requireAvailable("agent_team", "crew")).status).toBe("available");
     expect((await services().agentDefinitionService.getVisibleAgentDefinitions()).map((definition) => definition.id)).toContain(localId);
+    // SR-008 / CR-004: the nested issue is reported on the owning Team's unit (its card), not only by node subject.
+    const expectedIssue = expect.objectContaining({
+      subject: "agent", definitionId: localId, name: "Crew Lead", usingLastGood: true,
+      issue: expect.objectContaining({ definitionPath: expect.stringContaining(path.join("crew", "agents", "lead")) }),
+    });
+    expect((await services().agentTeamDefinitionService.listUnitIssues()).get("crew")).toEqual([expectedIssue]);
+    expect(await services().agentTeamDefinitionService.getUnitIssues("crew")).toEqual([expectedIssue]);
   });
 });

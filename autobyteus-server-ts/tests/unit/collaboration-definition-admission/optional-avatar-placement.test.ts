@@ -90,7 +90,7 @@ it.each(["omitted", "null", "supplied"])("reads %s avatars across shared, Org-ow
   await expect(orgs.getById("org")).rejects.toThrow(/avatarUrl/);
   services.runtime.sync.noteUnitChange("agent_org", "org");
   expect((await admission.requireAvailable("agent_org", "org")).definition.avatarUrl).toBe(expectedAvatar);
-  expect(await services.orgs.getDefinitionIssue("org")).toMatchObject({ code: "DEFINITION_CONTRACT_INVALID", reason: expect.stringMatching(/avatarUrl/) });
+  expect(await services.orgs.getUnitIssues("org")).toMatchObject([{ subject: "agent_org", definitionId: "org", usingLastGood: true, issue: { code: "DEFINITION_CONTRACT_INVALID", reason: expect.stringMatching(/avatarUrl/) } }]);
   for (const subject of ["agent", "agent_team"] as const) {
     expect(await listAgentOrgOwnedDefinitionSources({ subject, orgRoots: [path.join(external, "agent-orgs")] })).toEqual([]);
   }

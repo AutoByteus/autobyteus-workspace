@@ -3,8 +3,12 @@ import type { TranslationCatalog } from '../../runtime/types';
 const messages = {
   'definitionCatalog.issue.usingLastGood': 'Using last working version',
   'definitionCatalog.issue.sourceMissing': 'Package folder unavailable',
+  'definitionCatalog.issue.membersUnavailable': "Some members couldn't be loaded",
+  'definitionCatalog.issue.count': '({{count}})',
   'definitionCatalog.issue.detailsLabel': 'Show what is wrong',
   'definitionCatalog.issue.lastGoodExplanation': 'The definition file could not be read, so the last working version stays in use until the file is fixed.',
+  'definitionCatalog.issue.membersUnavailableExplanation': 'Some definitions below could not be read and have no working version to fall back on, so they cannot be used until their files are fixed.',
+  'definitionCatalog.issue.noWorkingVersion': 'No working version',
   'definitionCatalog.issue.sourceMissingExplanation': 'The package folder could not be found or read, so the last loaded version stays in use until it is available again.',
   'definitionCatalog.issue.file': 'File: {{path}}',
   'definitionCatalog.issue.reason': 'Reason: {{reason}}',

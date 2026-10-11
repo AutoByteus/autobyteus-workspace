@@ -6,7 +6,7 @@ import { CreateAgentOrgDefinition, DeleteAgentOrgDefinition, RefreshAgentOrgDefi
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 import type { DefinitionHandoff } from '~/types/collaboration/handoffs'
-import type { DefinitionCatalogIssue } from '~/types/definitionCatalog'
+import type { DefinitionUnitIssue } from '~/types/definitionCatalog'
 import { createLoadedListReloader } from '~/utils/definitionCatalog/loadedListReloader'
 
 export type AgentOrgMember = {
@@ -27,10 +27,10 @@ export type AgentOrgDefinition = {
   members: AgentOrgMember[]
   handoffs: DefinitionHandoff[]
   defaultLaunchConfig?: DefaultLaunchConfig | null
-  /** Set when the Org is served from its last working version (file and reason). */
-  catalogIssue?: DefinitionCatalogIssue | null
+  /** Issues of the Org and its org-owned definitions (Org first, then path order); empty when clean. */
+  catalogIssues?: DefinitionUnitIssue[]
 }
-export type AgentOrgDefinitionDraft = Omit<AgentOrgDefinition, 'id' | 'revision' | 'catalogIssue'>
+export type AgentOrgDefinitionDraft = Omit<AgentOrgDefinition, 'id' | 'revision' | 'catalogIssues'>
 
 type AgentOrgMemberInput = Omit<AgentOrgMember, '__typename'>
 

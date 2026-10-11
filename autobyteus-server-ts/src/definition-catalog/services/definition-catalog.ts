@@ -2,6 +2,7 @@ import type {
   DefinitionBySubject,
   DefinitionCatalogIssue,
   DefinitionSubject,
+  DefinitionUnitIssueEntry,
   DefinitionUnitLocation,
   NodeReadOutcome,
   SubjectNodeOutcome,
@@ -88,7 +89,8 @@ export class DefinitionCatalog {
       children = previous?.children ?? new Map();
     } else {
       children = new Map();
-      const ids = new Set<string>([...(previous?.children.keys() ?? []), ...outcome.children.keys()]);
+      // Reader order first (path order), so nested nodes stay in path order after edits.
+      const ids = new Set<string>([...outcome.children.keys(), ...(previous?.children.keys() ?? [])]);
       for (const id of ids) {
         const next = outcome.children.get(id);
         const result = next
@@ -193,6 +195,37 @@ export class DefinitionCatalog {
       }
     }
     return output;
+  }
+
+  /**
+   * Every issue of each unit of `unitSubject`, keyed by unit ID: the root node first, then nested
+   * nodes in path order. Units without issues are absent.
+   */
+  listUnitIssues(unitSubject: DefinitionSubject): Map<string, DefinitionUnitIssueEntry[]> {
+    const output = new Map<string, DefinitionUnitIssueEntry[]>();
+    for (const unit of this.units[unitSubject].values()) {
+      const issues = this.unitIssuesOf(unit);
+      if (issues.length > 0) output.set(unit.unitId, issues);
+    }
+    return output;
+  }
+
+  /** The issues of one unit (root first, then nested nodes in path order); empty when clean or unknown. */
+  getUnitIssues(unitSubject: DefinitionSubject, unitId: string): DefinitionUnitIssueEntry[] {
+    const unit = this.units[unitSubject].get(unitId);
+    return unit ? this.unitIssuesOf(unit) : [];
+  }
+
+  private unitIssuesOf(unit: CatalogUnit): DefinitionUnitIssueEntry[] {
+    return [unit.root, ...unit.children.values()].flatMap((node) => node.issue
+      ? [Object.freeze({
+          subject: node.subject,
+          definitionId: node.id,
+          name: node.definition?.name ?? null,
+          issue: node.issue,
+          usingLastGood: node.definition !== null,
+        })]
+      : []);
   }
 
   private applyNode(

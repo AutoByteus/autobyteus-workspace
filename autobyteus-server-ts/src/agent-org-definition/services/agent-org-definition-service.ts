@@ -6,7 +6,7 @@ import {
   getDefaultDefinitionCatalogRuntime,
   type DefinitionCatalogRuntime,
 } from "../../definition-catalog/services/definition-catalog-runtime.js";
-import type { DefinitionCatalogIssue } from "../../definition-catalog/domain/definition-catalog-types.js";
+import type { DefinitionCatalogIssue, DefinitionUnitIssueEntry } from "../../definition-catalog/domain/definition-catalog-types.js";
 import { AgentOrgDefinition, AgentOrgDefinitionUpdate } from "../domain/agent-org-definition.js";
 import { FileAgentOrgDefinitionProvider } from "../providers/file-agent-org-definition-provider.js";
 import { AgentOrgDefinitionResolver } from "./agent-org-definition-resolver.js";
@@ -76,9 +76,15 @@ export class AgentOrgDefinitionService {
     }));
   }
 
-  async getDefinitionIssue(id: string): Promise<DefinitionCatalogIssue | null> {
+  /** Every issue of each Org unit (the Org, its org-owned agents and Teams and their local agents), keyed by Org ID. */
+  async listUnitIssues(): Promise<Map<string, DefinitionUnitIssueEntry[]>> {
     await this.catalogRuntime.sync.settle();
-    return this.catalogRuntime.catalog.getEntry("agent_org", id)?.issue ?? null;
+    return this.catalogRuntime.catalog.listUnitIssues("agent_org");
+  }
+
+  async getUnitIssues(id: string): Promise<DefinitionUnitIssueEntry[]> {
+    await this.catalogRuntime.sync.settle();
+    return this.catalogRuntime.catalog.getUnitIssues("agent_org", id);
   }
 
   /** Full reconcile of the definition catalog (the Orgs page Reload). */

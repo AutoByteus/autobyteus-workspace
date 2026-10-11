@@ -15,7 +15,7 @@ import {
   getDefaultDefinitionCatalogRuntime,
   type DefinitionCatalogRuntime,
 } from "../../definition-catalog/services/definition-catalog-runtime.js";
-import type { DefinitionCatalogIssue } from "../../definition-catalog/domain/definition-catalog-types.js";
+import type { DefinitionCatalogIssue, DefinitionUnitIssueEntry } from "../../definition-catalog/domain/definition-catalog-types.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -233,9 +233,25 @@ export class AgentTeamDefinitionService {
     }));
   }
 
-  async getDefinitionIssue(definitionId: string): Promise<DefinitionCatalogIssue | null> {
+  /** Every issue of each shared Team unit (the Team plus its team-local agents), keyed by Team ID. */
+  async listUnitIssues(): Promise<Map<string, DefinitionUnitIssueEntry[]>> {
     await this.catalogRuntime.sync.settle();
-    return this.catalogRuntime.catalog.getEntry("agent_team", definitionId)?.issue ?? null;
+    return this.catalogRuntime.catalog.listUnitIssues("agent_team");
+  }
+
+  /**
+   * The issues shown on one Team's card: the whole unit for a shared Team; for an org-owned Team
+   * (a node of its Org's unit, whose card carries the rest) only its own issue.
+   */
+  async getUnitIssues(definitionId: string): Promise<DefinitionUnitIssueEntry[]> {
+    await this.catalogRuntime.sync.settle();
+    const catalog = this.catalogRuntime.catalog;
+    const unit = catalog.unitOf("agent_team", definitionId);
+    if (!unit) return [];
+    const issues = catalog.getUnitIssues(unit.subject, unit.unitId);
+    return unit.subject === "agent_team"
+      ? issues
+      : issues.filter((entry) => entry.subject === "agent_team" && entry.definitionId === definitionId);
   }
 
   async getTemplateDefinitions(): Promise<AgentTeamDefinition[]> {

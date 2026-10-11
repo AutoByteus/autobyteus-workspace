@@ -92,7 +92,7 @@ export type AgentMemoryView = {
 export type AgentOrgDefinition = {
   __typename?: 'AgentOrgDefinition';
   avatarUrl?: Maybe<Scalars['String']['output']>;
-  catalogIssue?: Maybe<DefinitionCatalogIssue>;
+  catalogIssues: Array<DefinitionUnitIssue>;
   category?: Maybe<Scalars['String']['output']>;
   defaultLaunchConfig?: Maybe<DefaultLaunchConfig>;
   description: Scalars['String']['output'];
@@ -394,7 +394,7 @@ export enum AgentSkillScope {
 export type AgentTeamDefinition = {
   __typename?: 'AgentTeamDefinition';
   avatarUrl?: Maybe<Scalars['String']['output']>;
-  catalogIssue?: Maybe<DefinitionCatalogIssue>;
+  catalogIssues: Array<DefinitionUnitIssue>;
   category?: Maybe<Scalars['String']['output']>;
   coordinatorMemberName: Scalars['String']['output'];
   defaultLaunchConfig?: Maybe<DefaultLaunchConfig>;
@@ -936,6 +936,18 @@ export enum DefinitionSubject {
   AgentOrg = 'AGENT_ORG',
   AgentTeam = 'AGENT_TEAM'
 }
+
+export type DefinitionUnitIssue = {
+  __typename?: 'DefinitionUnitIssue';
+  code: Scalars['String']['output'];
+  definitionId: Scalars['String']['output'];
+  definitionPath: Scalars['String']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  packageRoot: Scalars['String']['output'];
+  reason: Scalars['String']['output'];
+  subject: DefinitionSubject;
+  usingLastGood: Scalars['Boolean']['output'];
+};
 
 export type DeleteAgentDefinitionResult = {
   __typename?: 'DeleteAgentDefinitionResult';
@@ -4417,7 +4429,7 @@ export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions:
 export type GetAgentOrgDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentOrgDefinitionsQuery = { __typename?: 'Query', agentOrgDefinitions: Array<{ __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, catalogIssue?: { __typename?: 'DefinitionCatalogIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null }> };
+export type GetAgentOrgDefinitionsQuery = { __typename?: 'Query', agentOrgDefinitions: Array<{ __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, catalogIssues: Array<{ __typename?: 'DefinitionUnitIssue', subject: DefinitionSubject, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> }> };
 
 export type GetAgentOrgEndpointCatalogQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -4443,7 +4455,7 @@ export type GetAgentOrgReferencedTeamQuery = { __typename?: 'Query', agentTeamDe
 export type GetAgentTeamDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentTeamDefinitionsQuery = { __typename?: 'Query', agentTeamDefinitions: Array<{ __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }>, catalogIssue?: { __typename?: 'DefinitionCatalogIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null }> };
+export type GetAgentTeamDefinitionsQuery = { __typename?: 'Query', agentTeamDefinitions: Array<{ __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }>, catalogIssues: Array<{ __typename?: 'DefinitionUnitIssue', subject: DefinitionSubject, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> }> };
 
 export type GetAppDataMigrationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -8937,11 +8949,15 @@ export const GetAgentOrgDefinitionsDocument = gql`
       runtimeKind
       llmConfig
     }
-    catalogIssue {
+    catalogIssues {
+      subject
+      definitionId
+      name
       code
       reason
       definitionPath
       packageRoot
+      usingLastGood
     }
   }
 }
@@ -9142,11 +9158,15 @@ export const GetAgentTeamDefinitionsDocument = gql`
       ref
       refScope
     }
-    catalogIssue {
+    catalogIssues {
+      subject
+      definitionId
+      name
       code
       reason
       definitionPath
       packageRoot
+      usingLastGood
     }
   }
 }

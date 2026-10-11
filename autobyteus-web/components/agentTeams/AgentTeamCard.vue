@@ -28,7 +28,7 @@
           </span>
         </div>
         <p v-if="applicationLabel" class="mt-2 text-sm text-slate-500">Application: {{ applicationLabel }}</p>
-        <DefinitionCatalogIssueBadge :issue="teamDef.catalogIssue" />
+        <DefinitionCatalogIssueBadge :issues="teamDef.catalogIssues" />
       </div>
 
       <div class="flex w-full flex-col gap-2 sm:w-auto sm:items-end">

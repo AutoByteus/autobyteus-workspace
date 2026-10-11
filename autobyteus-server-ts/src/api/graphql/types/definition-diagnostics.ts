@@ -1,5 +1,9 @@
 import { Arg, Field, ObjectType, Query, Resolver, registerEnumType } from "type-graphql";
-import type { DefinitionCatalogIssue as DomainDefinitionCatalogIssue } from "../../../definition-catalog/domain/definition-catalog-types.js";
+import type {
+  DefinitionCatalogIssue as DomainDefinitionCatalogIssue,
+  DefinitionSubject as DomainDefinitionSubject,
+  DefinitionUnitIssueEntry,
+} from "../../../definition-catalog/domain/definition-catalog-types.js";
 import type { RootSubjectKind } from "../../../collaboration-definition-admission/domain/definition-admission-result.js";
 import {
   getStudioAgentDefinitionService,
@@ -30,6 +34,39 @@ export const toGraphqlDefinitionCatalogIssue = (
 ): DefinitionCatalogIssue | null => issue
   ? { code: issue.code, reason: issue.reason, definitionPath: issue.definitionPath, packageRoot: issue.packageRoot }
   : null;
+
+const SUBJECT_BY_DOMAIN: Record<DomainDefinitionSubject, DefinitionSubject> = {
+  agent: DefinitionSubject.AGENT,
+  agent_team: DefinitionSubject.AGENT_TEAM,
+  agent_org: DefinitionSubject.AGENT_ORG,
+};
+
+/**
+ * One issue inside a Team or Org unit: the root definition or a nested one (team-local agent,
+ * org-owned agent or Team, or its local agent). `name` is the last working version's name.
+ */
+@ObjectType()
+export class DefinitionUnitIssue {
+  @Field(() => DefinitionSubject) subject!: DefinitionSubject;
+  @Field(() => String) definitionId!: string;
+  @Field(() => String, { nullable: true }) name!: string | null;
+  @Field(() => String) code!: string;
+  @Field(() => String) reason!: string;
+  @Field(() => String) definitionPath!: string;
+  @Field(() => String) packageRoot!: string;
+  @Field(() => Boolean) usingLastGood!: boolean;
+}
+
+/** The one mapper for unit issues, shared by the Team and Org projections. */
+export const toGraphqlDefinitionUnitIssues = (
+  entries: readonly DefinitionUnitIssueEntry[] | null | undefined,
+): DefinitionUnitIssue[] => (entries ?? []).map((entry) => ({
+  subject: SUBJECT_BY_DOMAIN[entry.subject],
+  definitionId: entry.definitionId,
+  name: entry.name,
+  ...toGraphqlDefinitionCatalogIssue(entry.issue)!,
+  usingLastGood: entry.usingLastGood,
+}));
 
 /** One definition that is unusable, or usable only through its last working version. */
 @ObjectType()

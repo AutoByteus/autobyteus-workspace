@@ -9,8 +9,8 @@ import {
   TeamMember as GraphqlTeamMember,
 } from "../types/agent-team-definition.js";
 import { toGraphqlDefaultLaunchConfig } from "../types/default-launch-config.js";
-import { toGraphqlDefinitionCatalogIssue } from "../types/definition-diagnostics.js";
-import type { DefinitionCatalogIssue } from "../../../definition-catalog/domain/definition-catalog-types.js";
+import { toGraphqlDefinitionUnitIssues } from "../types/definition-diagnostics.js";
+import type { DefinitionUnitIssueEntry } from "../../../definition-catalog/domain/definition-catalog-types.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -43,7 +43,7 @@ const toGraphqlOwnershipScope = (
 export class AgentTeamDefinitionConverter {
   static toGraphql(
     domainDefinition: DomainAgentTeamDefinition,
-    catalogIssue: DefinitionCatalogIssue | null = null,
+    catalogIssues: readonly DefinitionUnitIssueEntry[] = [],
   ): GraphqlAgentTeamDefinition {
     try {
       const graphqlNodes: GraphqlTeamMember[] = domainDefinition.nodes.map((member) => ({
@@ -79,7 +79,7 @@ export class AgentTeamDefinitionConverter {
         ownerPackageId: domainDefinition.ownerPackageId ?? null,
         ownerLocalApplicationId: domainDefinition.ownerLocalApplicationId ?? null,
         defaultLaunchConfig: toGraphqlDefaultLaunchConfig(domainDefinition.defaultLaunchConfig),
-        catalogIssue: toGraphqlDefinitionCatalogIssue(catalogIssue),
+        catalogIssues: toGraphqlDefinitionUnitIssues(catalogIssues),
         revision: domainDefinition.revision,
       };
     } catch (error) {

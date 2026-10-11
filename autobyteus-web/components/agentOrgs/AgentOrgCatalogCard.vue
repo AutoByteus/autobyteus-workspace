@@ -5,7 +5,7 @@
       <div class="min-w-0">
         <h3 class="truncate text-xl font-semibold text-slate-900">{{ org.name }}</h3>
         <p class="mt-1 line-clamp-2 text-sm text-slate-600">{{ org.description }}</p>
-        <DefinitionCatalogIssueBadge :issue="org.catalogIssue" />
+        <DefinitionCatalogIssueBadge :issues="org.catalogIssues" />
       </div>
       <div class="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
         <button type="button" class="inline-flex min-w-[104px] justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2" @click="$emit('run', org.id)">{{ t('agentOrgs.experience.actions.run') }}</button>
@@ -24,7 +24,7 @@ import DefinitionCatalogIssueBadge from '~/components/definitions/DefinitionCata
 import { useLocalization } from '~/composables/useLocalization'
 import type { AgentOrgDefinition } from '~/stores/agentOrgDefinitionStore'
 
-/** One Org on the Orgs catalog page: identity, last-working-version issue, actions and member roles. */
+/** One Org on the Orgs catalog page: identity, catalog issues of the Org and its org-owned definitions, actions and member roles. */
 defineProps<{ org: AgentOrgDefinition }>()
 defineEmits<{ (event: 'run', id: string): void; (event: 'view-details', id: string): void }>()
 const { t } = useLocalization()

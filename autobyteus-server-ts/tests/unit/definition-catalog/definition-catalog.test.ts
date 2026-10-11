@@ -145,4 +145,22 @@ describe("DefinitionCatalog reconcile rules", () => {
     expect(catalog.getDefinition("agent", "a")?.instructions).toBe("v1");
     expect(catalog.getDefinition("agent", "a")?.toolNames).toEqual(["t"]);
   });
+
+  it("lists a unit's issues root first, then nested nodes in reader (path) order, even when a node is added later", () => {
+    const catalog = new DefinitionCatalog();
+    const team = { subject: "agent_team", outcome: { kind: "valid", definition: { id: "t", name: "T" }, fingerprint: "t1" } } as SubjectNodeOutcome;
+    catalog.apply("agent_team", "t", read(team, new Map([["t-b", valid("t-b")]])));
+    catalog.apply("agent_team", "t", read(
+      { subject: "agent_team", outcome: { kind: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: "team", definitionPath: "/pkg/t" } },
+      new Map([["t-a", invalid("a")], ["t-b", invalid("b")]]),
+    ));
+    expect(catalog.getUnitIssues("agent_team", "t").map((entry) => [entry.subject, entry.definitionId, entry.name, entry.usingLastGood]))
+      .toEqual([["agent_team", "t", "T", true], ["agent", "t-a", null, false], ["agent", "t-b", "t-b", true]]);
+    expect([...catalog.listUnitIssues("agent_team").keys()]).toEqual(["t"]);
+
+    catalog.apply("agent_team", "t", read(team, new Map([["t-a", valid("t-a")], ["t-b", valid("t-b")]])));
+    expect(catalog.getUnitIssues("agent_team", "t")).toEqual([]);
+    expect(catalog.listUnitIssues("agent_team").size).toBe(0);
+    expect(catalog.getUnitIssues("agent_team", "unknown")).toEqual([]);
+  });
 });
