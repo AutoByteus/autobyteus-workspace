@@ -76,6 +76,30 @@ describe('CompactionSummarizer', () => {
     expect(waits).toEqual([]);
   });
 
+  it('accepts an unwrapped transcript reply on the first attempt (SR-011)', async () => {
+    const port = fakePort({ usesCachedSummary: vi.fn(() => false), requestTranscriptSummary: vi.fn(async () => result('transcript', body)) });
+    const { promise } = run(port);
+    await expect(promise).resolves.toBe(body);
+    expect(port.requestTranscriptSummary).toHaveBeenCalledOnce();
+  });
+
+  it('rejects an incomplete reply before parsing, even when it is unwrapped and otherwise valid', async () => {
+    const incomplete = result('transcript', body, { metadata: { ...result('transcript', '').metadata, completionStatus: 'incomplete' } });
+    const port = fakePort({ usesCachedSummary: vi.fn(() => false), requestTranscriptSummary: vi.fn(async () => incomplete) });
+    const { promise, observe } = run(port);
+    await expect(promise).rejects.toMatchObject({ code: 'incomplete_summary' });
+    expect(port.requestTranscriptSummary).toHaveBeenCalledTimes(TRANSCRIPT_SUMMARY_ATTEMPTS);
+    expect(observe.mock.calls.filter(([event]) => event.outcome === 'failed').every(([event]) => event.code === 'incomplete_summary')).toBe(true);
+  });
+
+  it('rejects an unwrapped reply that answered with tool calls', async () => {
+    const port = fakePort({ requestCachedSummary: vi.fn(async () => result('cached', body, { hasToolCalls: true })) });
+    const { promise } = run(port);
+    await expect(promise).resolves.toBe(body);
+    expect(port.requestCachedSummary).toHaveBeenCalledTimes(CACHED_SUMMARY_ATTEMPTS);
+    expect(port.requestTranscriptSummary).toHaveBeenCalledOnce();
+  });
+
   it('skips the cached request when it would not fit the input budget', async () => {
     const port = fakePort({ fitsInputBudget: vi.fn(() => false) });
     const { promise } = run(port);

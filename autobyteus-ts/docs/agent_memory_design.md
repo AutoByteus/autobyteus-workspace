@@ -50,7 +50,7 @@ LLM, the tools or the notifier, and there is no compaction-model setting.
 
 - **Per model.** The cached request is used only when the agent's model selects it
   (`LLMModel.compactionSummaryMode === 'cached_conversation'`, from the catalog:
-  the Anthropic models and, pending their quality rerun, the DeepSeek models).
+  the Anthropic and DeepSeek models).
   The port answers `usesCachedSummary()`; memory and agent code name no provider.
   Every other model (and every dynamic or custom model) goes straight to the
   transcript request with its full attempt budget.
@@ -113,7 +113,11 @@ LLM, the tools or the notifier, and there is no compaction-model setting.
   accepted memory; it returns only the validated, untagged summary body.
 
 The parser accepts exactly one `<compaction_summary>...</compaction_summary>`
-block, ignores exterior prose, and requires these exact `##` headings in order:
+block (ignoring exterior prose) or, when the reply has neither marker, the whole
+reply as the body (a valid unwrapped summary is accepted; one marker only, two
+blocks, out-of-order markers, text before the first heading or a code fence still
+fail). Tool-call and `incomplete` replies are rejected before parsing. The body
+requires these exact `##` headings in order:
 
 1. Task and constraints
 2. Requests and instructions received

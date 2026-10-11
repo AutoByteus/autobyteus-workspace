@@ -11,6 +11,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-003 | Architecture Reviewer pass handoff, ARCH-REV-003 (SR-007) | N/A (ARCH-004 and N-1 respected) | `Solution Revision` (reviewed) | SR-007, ARCH-REV-003, CRR-002 | Nine-heading contract, instruction v4, prompt v6, Gemini `systemInstruction` from the request; back to Code Review |
 | IR-004 | Architecture Reviewer pass handoff, ARCH-REV-005 (SR-009), from CRR-005 | CRR-005 F-3, F-4, F-5 | `Solution Revision` (reviewed) | SR-008, SR-009, ARCH-REV-005, CRR-004, CRR-005 | Per-model summary mode, summary output-limit override (REQ-009), instruction v5; back to Code Review |
 | IR-005 | Architecture Reviewer pass handoff, ARCH-REV-006 (SR-010), from CRR-006 | CRR-006 CR-004 | `Solution Revision` (reviewed) | SR-010, ARCH-REV-006, CRR-006 | Summary output limit fitted to each request's room; both paths accept with the agent budget; back to Code Review |
+| IR-006 | Architecture Reviewer pass handoff, ARCH-REV-007 (SR-011), from code-review Round 8 | F-6, F-7, F-8 | `Solution Revision` (reviewed) | SR-011, ARCH-REV-007 | Unwrapped valid summary accepted; DeepSeek cached mode final; back to Code Review |
 
 ## Revision Entries
 
@@ -173,4 +174,30 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Remaining limitations or risks:
   - `E` is an estimate (characters ÷ 4 and so on). The limit is as accurate as the existing input checks, which use the same estimator.
   - Open items owned by API/E2E: CR-001/C-020 (OLR-E2E-010), CR-003, the DeepSeek AC-003 rerun, AC-010 and AC-011 live.
+  - The uncommitted API/E2E edits and the other roles' ticket docs were not touched or committed.
+
+### IR-006 — Unwrapped valid summary accepted; DeepSeek cached mode final (SR-011)
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-review-report.md`, ARCH-REV-007 (SR-011, Pass). Applied on top of IR-005 (`97fd9a814`).
+- Triggering finding IDs: code-review-report § Round 8, F-6, F-7, F-8.
+- Classification: `Solution Revision` (reviewed).
+- Prior authoritative result: IR-005 (CRR-007 Pass).
+- Current authoritative result: implemented; local checks pass; returning to Code Review.
+- Related solution revision IDs: SR-011. Related architecture-review revision IDs: ARCH-REV-007. Related code-review revision IDs: CRR-007, Round 8. Related API/E2E revision IDs: see `api-e2e-revision-record.md`. Related delivery revision IDs: N/A.
+- Why this implementation revision is recorded: some models return a valid nine-heading summary without the envelope markers. Those replies were failed attempts; they are now accepted, while partial or repeated markers still fail.
+- Approved behavior or requirement IDs affected: REQ-003 (output contract acceptance), REQ-002 (DeepSeek mode final); AC-003 (SR-011 bar).
+- Implementation delta:
+  - `parseCompactionSummary`: a reply with neither marker is validated as the body by the unchanged `validateCompactionSummaryBody`; all other marker handling is unchanged.
+  - DeepSeek catalog entries: the "pending rerun" comment is removed; the value stays `'cached_conversation'`.
+  - No prompt or instruction text changes.
+- Changed files or areas: `autobyteus-ts/src/memory/compaction/compaction-summary-parser.ts`, `autobyteus-ts/src/llm/supported-model-definitions.ts`, `tests/unit/memory/compaction-summary-prompt.test.ts`, `tests/unit/memory/compaction-summarizer.test.ts`, `autobyteus-ts/docs/agent_memory_design.md`.
+- Local validation and result:
+  - core production typecheck: pass;
+  - core unit: 307 files, 2030/2030;
+  - runtime compaction integration 6/6;
+  - server `prepare:shared` + typecheck: pass; server unit: 5232 passed; server compaction integration: 33/33.
+- Next recipient or routing: Code Review (`get_handoff_rules`, Large/High).
+- Remaining limitations or risks:
+  - N-3: truncation inside the last section is undetectable without the closing marker on providers that report `'unknown'` completion (accepted, non-blocking; API/E2E to note it if seen).
+  - Open items owned by API/E2E: CR-003, AC-010, the AC-003 SR-011 bar (transcript-only on Sonnet 5 and DeepSeek, histories A and B).
   - The uncommitted API/E2E edits and the other roles' ticket docs were not touched or committed.

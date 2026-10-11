@@ -40,8 +40,15 @@ export const validateCompactionSummaryBody = (content: string): string => {
   return body;
 };
 
-/** Extracts and validates the one summary block of a provider reply (cached or transcript path). */
+/**
+ * Extracts and validates the summary of a provider reply (cached or transcript path): the inner
+ * body of exactly one `<compaction_summary>` block, or, when the reply has neither marker, the
+ * whole reply as the body (SR-011). Partial or repeated markers fail.
+ */
 export const parseCompactionSummary = (content: string): string => {
+  if (typeof content === 'string' && !content.includes(open) && !content.includes(close)) {
+    return validateCompactionSummaryBody(content);
+  }
   if (typeof content !== 'string' || content.split(open).length !== 2 || content.split(close).length !== 2) {
     fail('Expected exactly one complete compaction_summary block.');
   }

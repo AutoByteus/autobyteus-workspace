@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { COMPACTION_SUMMARY_INSTRUCTION, COMPACTION_SUMMARY_PROMPT } from '../../../src/memory/compaction/compaction-summary-prompt.js';
-import { COMPACTION_SUMMARY_HEADINGS, parseCompactionSummary, validateCompactionSummaryBody } from '../../../src/memory/compaction/compaction-summary-parser.js';
+import { COMPACTION_SUMMARY_HEADINGS, CompactionSummaryValidationError, parseCompactionSummary, validateCompactionSummaryBody } from '../../../src/memory/compaction/compaction-summary-parser.js';
 
 const body = COMPACTION_SUMMARY_HEADINGS.map(h => `## ${h}\n- Keep /repo/check.ts; approval pending.`).join('\n\n');
 const tagged = `<compaction_summary>\n${body}\n</compaction_summary>`;
@@ -41,6 +41,26 @@ describe('compaction summary prompt and contract', () => {
     const empty = COMPACTION_SUMMARY_HEADINGS.map(h => `## ${h}\r\n(none)`).join('\r\n\r\n');
     expect(parseCompactionSummary(`<compaction_summary>${empty}</compaction_summary>`)).toBe(empty);
     expect(validateCompactionSummaryBody(`\n${body}\n`)).toBe(body);
+  });
+  it('accepts an unwrapped reply with neither marker as the body (SR-011)', () => {
+    expect(parseCompactionSummary(body)).toBe(body);
+    expect(parseCompactionSummary(`\n\n${body}\n`)).toBe(body);
+    const crlf = COMPACTION_SUMMARY_HEADINGS.map(h => `## ${h}\r\n(none)`).join('\r\n\r\n');
+    expect(parseCompactionSummary(crlf)).toBe(crlf);
+  });
+  it.each([
+    ['text before the first heading', `Here is my note:\n\n${body}`],
+    ['a code fence', '```markdown\n' + body + '\n```'],
+    ['a missing heading', body.replace(/## Current state\n- Keep \/repo\/check\.ts; approval pending\.\n\n/, '')],
+    ['reordered headings', body.replace('## Completed work', '## TMP').replace('## Current state', '## Completed work').replace('## TMP', '## Current state')],
+    ['a section without bullets', body.replace('## Current state\n- Keep /repo/check.ts; approval pending.', '## Current state\nSome prose.')],
+    ['the opening marker only', `<compaction_summary>\n${body}`],
+    ['the closing marker only', `${body}\n</compaction_summary>`],
+    ['markers out of order', `</compaction_summary>\n${body}\n<compaction_summary>`],
+    ['two blocks', tagged + '\n' + tagged],
+  ])('rejects an unwrapped or malformed reply with %s', (_label, value) => {
+    expect(value).not.toBe(body);
+    expect(() => parseCompactionSummary(value)).toThrow(CompactionSummaryValidationError);
   });
   it.each(['', 'plain summary', '<compaction_summary></compaction_summary>', tagged + tagged,
     tagged.replace('</compaction_summary>', ''), '</compaction_summary>' + tagged,
