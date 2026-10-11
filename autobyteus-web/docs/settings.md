@@ -239,6 +239,26 @@ Add a new per-node feature capability as another factory instance plus a card
 wrapper, never as a copied store or card. See `applications.md` and
 `projects.md` for feature-specific behavior.
 
+## Settings: Agent Packages Auto-Refresh
+
+`components/settings/AgentPackagesManager.vue` shows each package row's
+auto-refresh state from `AgentPackage.autoRefresh`:
+
+| State | Label | Meaning and user action |
+| --- | --- | --- |
+| `WATCHING` | Auto-refreshing | Edits to agent, team and org definition files in the folder appear without Reload |
+| `ROOT_MISSING` | Folder not found | The folder was moved or deleted. Its definitions stay usable on their last loaded version (cards show "Package folder unavailable"), and auto-refresh resumes when the folder is back |
+| `UNAVAILABLE` | Not auto-refreshing — *reason* | Watching failed, for example because the `agents`, `agent-teams` or `agent-orgs` folder is unreadable or a system watch limit was reached. The reason is shown inline and as the tooltip. Use the row's **Reload** after edits |
+
+No label is shown when the server reports no state (`autoRefresh: null`).
+GitHub-managed rows are watched too; they change only through **Update**, and
+the folder swap during Update is re-armed automatically. `agentPackagesStore`
+reloads its rows when the server publishes `agent_package` on
+`/ws/definition-catalog`, so a state change appears without reopening Settings.
+Skills inside a package are not watched; skill edits are read by new runs
+directly. See [Agent Packages](../../autobyteus-server-ts/docs/modules/agent_packages.md)
+and the [definition catalog](../../autobyteus-server-ts/docs/modules/definition_catalog.md).
+
 The data flow follows a top-down approach:
 
 1.  **Orchestration Layer (Stores)**: Manages lifecycle, user input, and WebSocket streaming connections.

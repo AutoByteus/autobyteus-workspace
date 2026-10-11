@@ -58,8 +58,27 @@ sources, but they still cannot contain Teams.
 
 Org-owned Team exact reads and their Team-local Agent reads share the indexed
 owner/source lookup. An unavailable owner does not fall back to a same-named
-shared Team, and exact reads do not populate the public Team cache. See
+shared Team, and org-owned Teams never enter the public Team list. See
 [Org-owned source resolution](./agent_orgs.md#exact-org-owned-team-and-team-local-agent-reads).
+
+### Catalog Inventory And Issues
+
+Package-root Teams are served from the
+[definition catalog](./definition_catalog.md) as **team units**: the Team plus
+its Team-local Agents. File edits are detected and applied automatically. Each
+node keeps its last good version when a later edit is invalid, so a broken
+Team-local Agent does not make its Team unavailable.
+
+- `AgentTeamDefinition.catalogIssues` lists every issue in the unit: the Team
+  first, then its Team-local Agents. Each entry has `subject`, `definitionId`,
+  `name`, `code`, `reason`, `definitionPath`, `packageRoot` and
+  `usingLastGood`. The list is empty when the unit is clean.
+- A Team ID present in more than one registered package root is an issue-only
+  `DEFINITION_IDENTITY_DUPLICATED` unit. Every reader treats it as unavailable:
+  the Teams list, launch, `list_available_agents` and `@`.
+- Admission enumerates catalog team units plus application-owned Team sources.
+  `definitionDiagnostics(subject: AGENT_TEAM)` lists the Teams that cannot be
+  used and the reason.
 
 Normal Team input readers extract supported root/member/handoff/default fields and
 ignore unused metadata, including `schemaVersion` and member `refType`. Missing

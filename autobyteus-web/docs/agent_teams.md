@@ -292,6 +292,27 @@ Agent, Team, and AgentOrg catalogs together. External/local package ownership
 remains source-authoritative; catalog refresh does not copy definitions between
 nodes or activate legacy formats.
 
+The Teams list also refreshes **live**. When Team or Agent definition files
+change under a registered package root, the server publishes `agent_team` (or
+`agent`, which also covers Teams) on `/ws/definition-catalog`, and a loaded Teams
+list reloads without Reload. A Team written before its member Agents appears
+first as not available, then becomes available once the Agents arrive. See
+[Agent Management](./agent_management.md#live-catalog-refresh).
+
+- **Card issue badge.** `AgentTeamCard.vue` passes `teamDef.catalogIssues` to
+  `DefinitionCatalogIssueBadge.vue`. The list covers the Team and every
+  Team-local Agent, because Team-local Agents have no Agents-page card. The
+  badge shows the count. Its text is "Using last working version" when every
+  entry still has a working version, and "Some members couldn't be loaded" when
+  any entry has none. Expanding it lists each entry's name or folder, file and
+  reason. A Team with a broken Team-local Agent stays usable on that Agent's
+  last working version.
+- **List notice.** `AgentTeamList.vue` shows `DefinitionDiagnosticsNotice.vue`
+  for `AGENT_TEAM`: "N team definition(s) are not available", with each Team's
+  reason and, for unavailable dependencies, "Depends on: …". This includes a
+  Team whose ID exists in more than one package. Such a Team is unavailable
+  everywhere and is not offered in `@` or `list_available_agents`.
+
 ### Agent Teams Reload And Member Inspection
 
 After a completed edit to a registered local package, **Reload** on the Agent
@@ -315,9 +336,10 @@ transactional snapshot guarantee. Retry uses the same Reload control.
 
 This is **definition-catalog freshness**, not live instruction hot reload.
 Reload does not rewrite package source/configuration or saved run/history state,
-and it does not replace instructions in existing executions. It does not watch
-files automatically, download GitHub changes, or guarantee one point-in-time
-snapshot when files are edited concurrently with Reload.
+and it does not replace instructions in existing executions. Reload is now the
+manual fallback: watched package roots already apply file edits automatically.
+Neither path downloads GitHub changes. Reload does not guarantee one
+point-in-time snapshot when files are edited concurrently with it.
 
 ## Featured Teams
 

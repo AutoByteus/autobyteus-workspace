@@ -11,6 +11,23 @@ independently launchable and keep their own coordinator and Team-local handoffs.
 
 `AgentOrgExperience.vue` provides list, detail, create, and edit views.
 
+- Catalog cards render through `AgentOrgCatalogCard.vue`. Each card shows
+  `DefinitionCatalogIssueBadge.vue` for `org.catalogIssues`. The list covers the
+  Org and every nested definition it owns: Org-owned Agents, Org-owned Teams
+  and their Team-local Agents, because none of these has a card of its own.
+  The badge text is "Using last working version" when every entry still has a
+  working version and "Some members couldn't be loaded" when any entry has
+  none. Expanding it lists each entry's name or folder, file and reason. An Org
+  whose nested definition breaks stays usable on the last working version.
+- The list shows `DefinitionDiagnosticsNotice.vue` for `AGENT_ORG` ("N org
+  definition(s) are not available", with reasons and "Depends on: …"). This
+  includes an Org whose ID exists in more than one package.
+- The Orgs list refreshes live from `/ws/definition-catalog` (`agent_org`,
+  and `agent`/`agent_team` changes that Orgs depend on). **Reload** now runs the
+  `refreshAgentOrgDefinitionCatalog` mutation (a full server catalog reconcile)
+  before re-reading the list. See
+  [Agent Management](./agent_management.md#live-catalog-refresh).
+
 - Catalog member chips use the readable Org-local `memberName` role (or localized
   type fallback) as their only label source. They do not read referenced Agent or
   Team definitions, and Reload updates a role label only when the refreshed Org

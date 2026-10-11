@@ -19,7 +19,8 @@ The TypeScript server follows a layered domain architecture:
 - Agent Tools MCP dedicated loopback listener and Streamable HTTP route:
   `src/agent-tools/mcp`
 - GraphQL schema/types: `src/api/graphql`
-- WebSocket routes: `src/api/websocket`
+- WebSocket routes: `src/api/websocket` (including the `/ws/projects` and
+  `/ws/definition-catalog` change feeds)
 - Startup orchestration: `src/startup`
 
 ## Startup Sequence
@@ -86,6 +87,10 @@ Persistence is subsystem-owned rather than selected through a global mode.
   service, bootstrap, and runtime code do not receive Prisma clients or
   transaction delegates.
 - Agent definitions, team definitions, and MCP server config remain file-backed through their own subsystem providers.
+  Package-root agent, team and org definitions are served from the in-memory
+  [definition catalog](modules/definition_catalog.md), which watches the
+  registered package roots, keeps the last good version of a broken definition,
+  and publishes changes on `/ws/definition-catalog`. It holds no persisted state.
 - Memory Sync hub/source config, source-state fingerprints, and hub credential
   metadata are file-backed under `<appDataDir>/memory-sync/`; imported memory
   corpus files are kept under the configured memory root at
