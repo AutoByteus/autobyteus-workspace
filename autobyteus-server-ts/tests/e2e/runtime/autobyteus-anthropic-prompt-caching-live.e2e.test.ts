@@ -30,8 +30,10 @@
  *     the restore.
  *
  * Gate: RUN_ANTHROPIC_CACHE_E2E=1 and ANTHROPIC_API_KEY (saved into the test-owned database vault, never logged).
- * Uses real Anthropic credits (about 40 Opus 5.5 calls; mostly cache reads). Run it with a clean environment
- * (`env -i PATH=… HOME=… TMPDIR=…`) so no live-app variable (memory/data dirs, compaction knobs) leaks in.
+ * Uses real Anthropic credits (about 40 Opus 5.5 calls; mostly cache reads). Run it with a clean environment so no
+ * live-app variable (memory/data dirs, compaction knobs) leaks in. From `autobyteus-server-ts`:
+ *   env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_ANTHROPIC_CACHE_E2E=1 ANTHROPIC_API_KEY=<key> ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts --no-watch
+ * (add ANTHROPIC_CACHE_E2E_MODEL=claude-sonnet-5-5 or claude-haiku-5-5 after the gate to run another model).
  * Optional: ANTHROPIC_CACHE_E2E_MODEL (default claude-opus-5-5), ANTHROPIC_CACHE_E2E_EVIDENCE_DIR (keeps the
  * per-call JSON, case results and frames), ANTHROPIC_CACHE_E2E_STEP_TIMEOUT_MS (default 600000).
  * ANTHROPIC_CACHE_E2E_MODEL may be any model in CATALOG_PRICES (claude-opus-5-5, claude-sonnet-5-5, claude-haiku-5-5).

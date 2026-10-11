@@ -20,9 +20,12 @@
  * Forced tool_choice (AC-008) has no supported trigger through the agent runtime; it is covered by unit tests.
  *
  * Gate: RUN_CLAUDE_5_5_E2E=1 and ANTHROPIC_API_KEY (saved into the test-owned database vault, never logged). Run it with
- * a clean environment (`env -i PATH=… HOME=<temp> TMPDIR=…`). Uses real credits: about a dozen short Sonnet/Haiku calls
- * and one ~130K-token Haiku call (a few cents). Optional: CLAUDE_5_5_E2E_EVIDENCE_DIR (per-call summaries and case
- * results), CLAUDE_5_5_E2E_STEP_TIMEOUT_MS (default 600000).
+ * a clean environment so no live-app variable leaks in. From `autobyteus-server-ts`:
+ *   env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_CLAUDE_5_5_E2E=1 ANTHROPIC_API_KEY=<key> ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts --no-watch
+ * Uses real credits: about 22 calls, i.e. about 20 short Sonnet/Haiku calls plus the two C55-E2E-006 Haiku calls, one of
+ * which is ~240K gross input tokens (about $0.24 for that call alone).
+ * Optional: CLAUDE_5_5_E2E_EVIDENCE_DIR (per-call summaries and case results), CLAUDE_5_5_E2E_STEP_TIMEOUT_MS
+ * (default 600000).
  */
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import {
