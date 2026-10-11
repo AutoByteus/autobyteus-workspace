@@ -1,0 +1,5 @@
+
+> autobyteus@1.5.1-beta.1 test:e2e:project-manager-ux /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web
+> node tests/e2e/project-manager-ux-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/pmu-full
+
+Project manager UX probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/pmu-full/evidence.json

@@ -1,0 +1,418 @@
+{
+  "startedAt": "2026-10-11T07:20:07.408Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-020": {
+      "result": "Pass",
+      "description": "Task summaries under delegated copy rows (Agent host: agent, task Team, Temp copies; Team host): one line for members, sub-work and the @ collaborator; spec values, hover; GraphQL answers; batched reads, no Task-list reads",
+      "durationMs": 8112,
+      "details": {
+        "listed": [
+          {
+            "kind": "task_agent",
+            "address": "/style_advisor_29e1",
+            "agentRunId": "style_advisor_29e1_1b1d178c553e47fcb4ef6a47855666f4",
+            "height": 28,
+            "summary": null,
+            "label": "Temporary task agent, style advisor 29e1, level 1, idle, Started by manager pmulocate a4fa, /style_advisor_29e1"
+          },
+          {
+            "kind": "task_agent",
+            "address": "/release_notes_writer_pmulocate_a4fa",
+            "agentRunId": "release_notes_writer_pmulocate_a4fa_15aba823e0fe42beb9ceebe917caa181",
+            "height": 46,
+            "summary": "Ship the copy Task summary in the tree",
+            "label": "Temporary task agent, release notes writer pmulocate a4fa, level 1, idle, Started by manager pmulocate a4fa, /release_notes_writer_pmulocate_a4fa, Task: Ship the copy Task summary in the tree"
+          },
+          {
+            "kind": "task_team",
+            "address": "/docs_review_team_pmulocate_a4fa",
+            "agentRunId": null,
+            "height": 46,
+            "summary": "Review the locate journey with the docs review team and report back on every edge case found during the whole session",
+            "label": "Temporary task team, docs review team pmulocate a4fa, level 1, offline, Started by manager pmulocate a4fa, /docs_review_team_pmulocate_a4fa, Task: Review the locate journey with the docs review team and report back on every edge case found during the whole session"
+          },
+          {
+            "kind": "task_team_child",
+            "address": "/docs_review_team_pmulocate_a4fa/reviewer",
+            "agentRunId": "release_notes_writer_pmulocate_a4fa_c8586a7ae88040028a41d1c35079df19",
+            "height": 28,
+            "summary": null,
+            "label": "Temporary task agent, reviewer, level 2, idle, /docs_review_team_pmulocate_a4fa/reviewer"
+          },
+          {
+            "kind": "task_team_child",
+            "address": "/docs_review_team_pmulocate_a4fa/editor",
+            "agentRunId": "fact_checker_pmulocate_a4fa_98d90a5666d0452bb1c41f7bd3a92403",
+            "height": 28,
+            "summary": null,
+            "label": "Temporary task agent, editor, level 2, offline, /docs_review_team_pmulocate_a4fa/editor"
+          },
+          {
+            "kind": "task_agent",
+            "address": "/link_verifier_29e1",
+            "agentRunId": "link_verifier_29e1_a1cd1c6f91644c70b1b8699f48fb9fbd",
+            "height": 28,
+            "summary": null,
+            "label": "Temporary task agent, link verifier 29e1, level 1, idle, Started by release notes writer pmulocate a4fa, /link_verifier_29e1"
+          },
+          {
+            "kind": "task_agent",
+            "address": "/fact_checker_pmulocate_a4fa",
+            "agentRunId": "fact_checker_pmulocate_a4fa_433b21ca639348ab918e8084f3304a31",
+            "height": 46,
+            "summary": "Check the FAQ links.",
+            "label": "Temporary task agent, fact checker pmulocate a4fa, level 1, idle, Started by manager pmulocate a4fa, /fact_checker_pmulocate_a4fa, Task: Check the FAQ links."
+          }
+        ],
+        "style": {
+          "fontSize": "11px",
+          "lineHeight": "16px",
+          "fontWeight": "400",
+          "color": "rgb(128, 128, 128)",
+          "gapAbove": 2,
+          "textLeftMinusName": 0,
+          "title": "Show Task in Projects: Ship the copy Task summary in the tree",
+          "ariaLabel": "Show Task in Projects: Ship the copy Task summary in the tree",
+          "ariaCurrent": null,
+          "ariaSelected": null,
+          "tag": "BUTTON"
+        },
+        "team": {
+          "weight": "400",
+          "ellipsis": "ellipsis",
+          "truncated": true,
+          "elbowFromRowTop": 14,
+          "chevronCentre": 14,
+          "nameCentre": 14
+        },
+        "hover": {
+          "color": "rgb(67, 56, 202)",
+          "line": "underline",
+          "offset": "2px"
+        },
+        "answers": [
+          {
+            "workerKind": "agent",
+            "workerRunId": "release_notes_writer_pmulocate_a4fa_15aba823e0fe42beb9ceebe917caa181",
+            "task": {
+              "taskId": "project_task_430c4497-1c64-43dc-b8c2-6c62a0a59d4c",
+              "projectId": "project_c996ca04-57cf-4f51-8146-b1199311d5a4",
+              "description": "Ship the copy Task summary in the tree\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/link_verifier_29e1\",\"description\":\"Check the links.\"}}",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "fact_checker_pmulocate_a4fa_433b21ca639348ab918e8084f3304a31",
+            "task": {
+              "taskId": "ad_hoc_task_8df1e8a0-46d6-40d1-a3c7-c04f4b063107",
+              "projectId": null,
+              "description": "Check the FAQ links.\nReport broken ones.",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "link_verifier_29e1_a1cd1c6f91644c70b1b8699f48fb9fbd",
+            "task": null
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "style_advisor_29e1_1b1d178c553e47fcb4ef6a47855666f4",
+            "task": null
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "release_notes_writer_pmulocate_a4fa_b6068b668e2e4dd1a6fdc9630572a765",
+            "task": {
+              "taskId": "project_task_f3e9811d-48ab-4760-a75e-282b6c84210f",
+              "projectId": "project_f46f7acd-c54c-4b96-beba-6931cb32ea32",
+              "description": "Draft the release notes for the beta",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "team",
+            "workerRunId": "docs_review_team_pmulocate_a4fa_f6e2424bb52947b18c3585f902d9486d",
+            "task": {
+              "taskId": "project_task_c1210f08-9d46-41c1-923c-4a2cbbe3c4b8",
+              "projectId": "project_c996ca04-57cf-4f51-8146-b1199311d5a4",
+              "description": "Review the locate journey with the docs review team and report back on every edge case found during the whole session",
+              "status": "TODO"
+            }
+          }
+        ],
+        "reads": [
+          {
+            "agentRunIds": [
+              "style_advisor_29e1_1b1d178c553e47fcb4ef6a47855666f4",
+              "release_notes_writer_pmulocate_a4fa_15aba823e0fe42beb9ceebe917caa181",
+              "link_verifier_29e1_a1cd1c6f91644c70b1b8699f48fb9fbd",
+              "fact_checker_pmulocate_a4fa_433b21ca639348ab918e8084f3304a31"
+            ],
+            "teamRunIds": [
+              "docs_review_team_pmulocate_a4fa_f6e2424bb52947b18c3585f902d9486d"
+            ]
+          },
+          {
+            "agentRunIds": [
+              "style_advisor_29e1_1b1d178c553e47fcb4ef6a47855666f4",
+              "release_notes_writer_pmulocate_a4fa_15aba823e0fe42beb9ceebe917caa181",
+              "link_verifier_29e1_a1cd1c6f91644c70b1b8699f48fb9fbd",
+              "fact_checker_pmulocate_a4fa_433b21ca639348ab918e8084f3304a31"
+            ],
+            "teamRunIds": [
+              "docs_review_team_pmulocate_a4fa_f6e2424bb52947b18c3585f902d9486d"
+            ]
+          }
+        ],
+        "listScopes": [],
+        "teamHostSummary": "Draft the release notes for the beta",
+        "subWorkRunId": "link_verifier_29e1_a1cd1c6f91644c70b1b8699f48fb9fbd",
+        "collaboratorRunId": "style_advisor_29e1_1b1d178c553e47fcb4ef6a47855666f4"
+      }
+    },
+    "PMU-021": {
+      "result": "Fail",
+      "description": "Show Task in Projects, docked: picker switch (remembered after reload), centred / focused / 2.4 s highlight, center and selection unchanged, Temp tasks, Enter opens, back from an open Task, only the latest highlighted, search kept / cleared, keyboard Tab / Enter / Space; a row click (agent copy, Team copy) opens the copy and locates nothing",
+      "durationMs": 39605,
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"right-side-projects-panel\"] [data-testid=\"projects-panel-picker-select\"]') to be visible\n",
+      "pages": [
+        {
+          "url": "http://127.0.0.1:57106/chat?id=manager_pmulocate_a4fa_924f5fbe43be4452ba3a6dcbee56499f",
+          "center": "MP\nCALL_TOOL:{\"name\":\"delegate_task\",\"argume…\nIdle\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer_pmulocate_a4fa\",\"task_id\":\"project_task_430c4497-1c64-43dc-b8c2-6c62a0a59d4c\"}}\nMP\nManager PmuLocate a4fa\n\nCALLED:{“content”:[{“type”:“text”,“text”:“{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"release_notes_writer_pmulocate_a4fa_15aba823e0fe42beb9ceebe917caa181\"\\n}”}],“structuredContent”:{“delegated”:true,“target_kind”:“agent”,“target_agent_run_id”:“release_notes_writer_pmulocate_a4fa_15aba823e0fe42beb9ceebe917caa181”}}\n",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:57105/ws/terminal/8c80d637-7d62-4e2d-9f20-cdb24ee0db77",
+            "log: [useTerminalSession] Connected",
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected",
+            "log: [useTerminalSession] Disconnected: 1005 ",
+            "log: [Workspace] Connecting to file system changes for workspace: agent_ws_57fda1270be61bf6f46694e0b0f2e81be40548295f3ed23acdaef606e218e274",
+            "log: [FileExplorerStreaming] Connecting to ws://127.0.0.1:57105/ws/file-explorer/agent_ws_57fda1270be61bf6f46694e0b0f2e81be40548295f3ed23acdaef606e218e274...",
+            "log: [FileExplorerStreaming] WebSocket connected",
+            "log: [FileExplorerStreaming] Disconnected",
+            "log: [Workspace] Disconnected from file system watcher for workspace: agent_ws_57fda1270be61bf6f46694e0b0f2e81be40548295f3ed23acdaef606e218e274",
+            "log: [FileExplorerStreaming] WebSocket disconnected: 1000 Client disconnect",
+            "log: serverStore: Checking server health at /rest/health",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "warning: [runHistorySync] Failed to hydrate active run 'manager_pmulocate_a4fa_924f5fbe43be4452ba3a6dcbee56499f'. Error: Agent run 'manager_pmulocate_a4fa_924f5fbe43be4452ba3a6dcbee56499f' changed before background hydration commit.\n    at hydrateLiveRunContext (http://127.0.0.1:57106/_nuxt/services/runHydration/runContextHydrationService.ts:114:11)\n    at async reconcileDiscoveredActiveRuns (http",
+            "log: Team WebSocket transport connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    },
+    "PMU-022": {
+      "result": "Pass",
+      "description": "Show Task in Projects: hidden panel reopened docked; 900×800 drawer with reduced motion (static highlight); New chat start surface opens its tools",
+      "durationMs": 11732,
+      "details": {
+        "reopened": {
+          "path": "/chat?id=manager_pmulocate_a4fa_924f5fbe43be4452ba3a6dcbee56499f",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_c996ca04-57cf-4f51-8146-b1199311d5a4",
+          "located": [
+            "project-task-row-project_task_430c4497-1c64-43dc-b8c2-6c62a0a59d4c"
+          ],
+          "focused": "project-task-row-project_task_430c4497-1c64-43dc-b8c2-6c62a0a59d4c"
+        },
+        "drawer": {
+          "path": "/chat?id=manager_pmulocate_a4fa_924f5fbe43be4452ba3a6dcbee56499f",
+          "docked": false,
+          "drawer": true,
+          "picker": "project:project_c996ca04-57cf-4f51-8146-b1199311d5a4",
+          "located": [
+            "project-task-row-project_task_430c4497-1c64-43dc-b8c2-6c62a0a59d4c"
+          ],
+          "focused": "project-task-row-project_task_430c4497-1c64-43dc-b8c2-6c62a0a59d4c"
+        },
+        "drawerGeometry": {
+          "centreOffset": 0,
+          "inView": true,
+          "atEdge": false,
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "animation": "none"
+        },
+        "drawerLate": {
+          "centreOffset": 0,
+          "inView": true,
+          "atEdge": false,
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "animation": "none"
+        },
+        "startSurfaceBefore": {
+          "path": "/chat",
+          "docked": false,
+          "drawer": false,
+          "picker": null,
+          "located": [],
+          "focused": null
+        },
+        "startSurface": {
+          "path": "/chat",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_c996ca04-57cf-4f51-8146-b1199311d5a4",
+          "located": [
+            "project-task-row-project_task_430c4497-1c64-43dc-b8c2-6c62a0a59d4c"
+          ],
+          "focused": "project-task-row-project_task_430c4497-1c64-43dc-b8c2-6c62a0a59d4c"
+        }
+      }
+    },
+    "PMU-025": {
+      "result": "Pass",
+      "description": "zh-CN: summary tooltip / accessible name and the row's accessible name; locate",
+      "durationMs": 3075,
+      "details": {
+        "text": "Ship the copy Task summary in the tree",
+        "title": "在项目中显示任务：Ship the copy Task summary in the tree",
+        "aria": "在项目中显示任务：Ship the copy Task summary in the tree",
+        "row": "临时任务智能体，release notes writer pmulocate a4fa，第 1 级，空闲, 由 manager pmulocate a4fa 启动，/release_notes_writer_pmulocate_a4fa, 任务：Ship the copy Task summary in the tree",
+        "located": {
+          "path": "/chat?id=manager_pmulocate_a4fa_924f5fbe43be4452ba3a6dcbee56499f",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_c996ca04-57cf-4f51-8146-b1199311d5a4",
+          "located": [
+            "project-task-row-project_task_430c4497-1c64-43dc-b8c2-6c62a0a59d4c"
+          ],
+          "focused": "project-task-row-project_task_430c4497-1c64-43dc-b8c2-6c62a0a59d4c"
+        }
+      }
+    },
+    "PMU-024": {
+      "result": "Pass",
+      "description": "Live summaries without reload: rename; feed lost then reconnect re-read; follow-up Task by run ID (earlier in Done); cancelled just before the click → Cancelled lane and slate-300 pill, then the row leaves; Task delete; Project delete",
+      "durationMs": 12699,
+      "details": {
+        "whileOffline": "Write the changelog for 1.6",
+        "followUp": {
+          "first": {
+            "taskId": "project_task_fd58fbeb-b97c-4803-a45a-5cf82123f756",
+            "status": "DONE",
+            "root": {
+              "kind": "agent",
+              "recipientAddress": "/release_notes_writer_pmulocate_a4fa",
+              "ingressAgentRunId": "release_notes_writer_pmulocate_a4fa_d4e72a6997e4473fbfef8c3682943e43",
+              "teamRunId": null,
+              "start": "started",
+              "closed": true,
+              "status": "offline",
+              "hostRoot": {
+                "kind": "agent",
+                "runId": "manager_pmulocate_a4fa_d7ef5d2157b64ddeb8fa7adbfc997926"
+              }
+            }
+          },
+          "followUp": {
+            "taskId": "project_task_a5adc73b-e5a4-4fbb-b832-3495120fe4af",
+            "status": "TODO",
+            "root": {
+              "kind": "agent",
+              "recipientAddress": "/release_notes_writer_pmulocate_a4fa",
+              "ingressAgentRunId": "release_notes_writer_pmulocate_a4fa_d4e72a6997e4473fbfef8c3682943e43",
+              "teamRunId": null,
+              "start": "starting",
+              "closed": false,
+              "status": "initializing",
+              "hostRoot": {
+                "kind": "agent",
+                "runId": "manager_pmulocate_a4fa_d7ef5d2157b64ddeb8fa7adbfc997926"
+              }
+            }
+          }
+        },
+        "followUpLocated": {
+          "path": "/chat?id=manager_pmulocate_a4fa_d7ef5d2157b64ddeb8fa7adbfc997926",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_209d0b2c-0590-45fc-95c2-fa46fe47999d",
+          "located": [
+            "project-task-row-project_task_a5adc73b-e5a4-4fbb-b832-3495120fe4af"
+          ],
+          "focused": "project-task-row-project_task_a5adc73b-e5a4-4fbb-b832-3495120fe4af"
+        },
+        "followUpDoneCard": "project-task-column-DONE",
+        "cancelled": {
+          "path": "/chat?id=manager_pmulocate_a4fa_d7ef5d2157b64ddeb8fa7adbfc997926",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_209d0b2c-0590-45fc-95c2-fa46fe47999d",
+          "located": [
+            "project-task-row-project_task_a5adc73b-e5a4-4fbb-b832-3495120fe4af"
+          ],
+          "focused": "project-task-row-project_task_a5adc73b-e5a4-4fbb-b832-3495120fe4af"
+        },
+        "cancelledLane": "project-task-column-CANCELLED",
+        "cancelledToggle": "true",
+        "cancelledPill": {
+          "text": "Cancelled",
+          "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px inset, rgb(203, 213, 225) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+        },
+        "heldClosureFrames": 2,
+        "noReload": true
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 42329,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 42299,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-021",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"right-side-projects-panel\"] [data-testid=\"projects-panel-picker-select\"]') to be visible\n"
+    }
+  ],
+  "feed": {
+    "total": 120,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 49,
+      "task_upserted": 47,
+      "task_worker_status": 21,
+      "task_removed": 1,
+      "project_removed": 1
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:57105",
+    "frontendUrl": "http://127.0.0.1:57106",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-6OQdS5"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-11T07:21:43.839Z"
+}

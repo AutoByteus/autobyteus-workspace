@@ -1,0 +1,90 @@
+{
+  "startedAt": "2026-10-11T07:22:09.285Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-021": {
+      "result": "Fail",
+      "description": "Show Task in Projects, docked: picker switch (remembered after reload), centred / focused / 2.4 s highlight, center and selection unchanged, Temp tasks, Enter opens, back from an open Task, only the latest highlighted, search kept / cleared, keyboard Tab / Enter / Space; a row click (agent copy, Team copy) opens the copy and locates nothing",
+      "durationMs": 42259,
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"right-side-projects-panel\"] [data-testid=\"projects-panel-picker-select\"]') to be visible\n",
+      "pages": [
+        {
+          "url": "http://127.0.0.1:57424/chat?id=manager_pmulocate_68e0_9aeef3e8a9884657bcb351e92a07b5d2",
+          "center": "MP\nCALL_TOOL:{\"name\":\"delegate_task\",\"argume…\nIdle\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer_pmulocate_68e0\",\"task_id\":\"project_task_1e72c49a-018a-4dca-a992-fb2317873089\"}}\nMP\nManager PmuLocate 68e0\n\nCALLED:{“content”:[{“type”:“text”,“text”:“{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"release_notes_writer_pmulocate_68e0_0d08636284d843288778f0eace2f8834\"\\n}”}],“structuredContent”:{“delegated”:true,“target_kind”:“agent”,“target_agent_run_id”:“release_notes_writer_pmulocate_68e0_0d08636284d843288778f0eace2f8834”}}\n",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:57423/ws/terminal/12e1749f-3d32-4ca8-becd-d503793e5a82",
+            "log: [useTerminalSession] Connected",
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected",
+            "log: [useTerminalSession] Disconnected: 1005 ",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: [Workspace] Connecting to file system changes for workspace: agent_ws_bd0a9e7d3a61b1025ceecf6586fe722f0898cab4abc30e3282bc61e1f4445c54",
+            "log: [FileExplorerStreaming] Connecting to ws://127.0.0.1:57423/ws/file-explorer/agent_ws_bd0a9e7d3a61b1025ceecf6586fe722f0898cab4abc30e3282bc61e1f4445c54...",
+            "log: [FileExplorerStreaming] WebSocket connected",
+            "log: [FileExplorerStreaming] Disconnected",
+            "log: [Workspace] Disconnected from file system watcher for workspace: agent_ws_bd0a9e7d3a61b1025ceecf6586fe722f0898cab4abc30e3282bc61e1f4445c54",
+            "log: [FileExplorerStreaming] WebSocket disconnected: 1000 Client disconnect",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "warning: [runHistorySync] Failed to hydrate active run 'manager_pmulocate_68e0_9aeef3e8a9884657bcb351e92a07b5d2'. Error: Agent run 'manager_pmulocate_68e0_9aeef3e8a9884657bcb351e92a07b5d2' changed before background hydration commit.\n    at hydrateLiveRunContext (http://127.0.0.1:57424/_nuxt/services/runHydration/runContextHydrationService.ts:114:11)\n    at async reconcileDiscoveredActiveRuns (http",
+            "log: Team WebSocket transport connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 46303,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 46276,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-021",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"right-side-projects-panel\"] [data-testid=\"projects-panel-picker-select\"]') to be visible\n"
+    }
+  ],
+  "feed": {
+    "total": 69,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 28,
+      "task_upserted": 29,
+      "task_worker_status": 11
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:57423",
+    "frontendUrl": "http://127.0.0.1:57424",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-Vh9u6I"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-11T07:23:11.677Z"
+}

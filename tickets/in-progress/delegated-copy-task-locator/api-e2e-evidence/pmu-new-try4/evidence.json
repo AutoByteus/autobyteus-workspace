@@ -1,0 +1,89 @@
+{
+  "startedAt": "2026-10-11T07:23:31.646Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-021": {
+      "result": "Fail",
+      "description": "Show Task in Projects, docked: picker switch (remembered after reload), centred / focused / 2.4 s highlight, center and selection unchanged, Temp tasks, Enter opens, back from an open Task, only the latest highlighted, search kept / cleared, keyboard Tab / Enter / Space; a row click (agent copy, Team copy) opens the copy and locates nothing",
+      "durationMs": 36101,
+      "message": "Timed out: task Team copy opened at its coordinator",
+      "pages": [
+        {
+          "url": "http://127.0.0.1:57557/chat?id=manager_pmulocate_1e19_ede0357923964788811721aa132ef226",
+          "center": "R\nreviewer\nIdle\nYou\nTask delegator address: /manager_pmulocate_1e19\nTask delegator AgentRun ID: manager_pmulocate_1e19_ede0357923964788811721aa132ef226\n\nDescription:\nReview the locate journey with the docs review team and report back on every edge case found during the whole session\nR\nreviewer\n\nOK\n\nContext Files (0)\n(drag, paste, or upload)",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:57556/ws/terminal/3bf276cf-d16c-4e56-bca6-de589e8a060d",
+            "log: [useTerminalSession] Connected",
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected",
+            "log: [useTerminalSession] Disconnected: 1005 ",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: [Workspace] Connecting to file system changes for workspace: agent_ws_a6d882f565932608e74ef537a68faf32fd063cd6c2b1f8c236e549d970d3efe9",
+            "log: [FileExplorerStreaming] Connecting to ws://127.0.0.1:57556/ws/file-explorer/agent_ws_a6d882f565932608e74ef537a68faf32fd063cd6c2b1f8c236e549d970d3efe9...",
+            "log: [FileExplorerStreaming] WebSocket connected",
+            "log: [FileExplorerStreaming] Disconnected",
+            "log: [Workspace] Disconnected from file system watcher for workspace: agent_ws_a6d882f565932608e74ef537a68faf32fd063cd6c2b1f8c236e549d970d3efe9",
+            "log: [FileExplorerStreaming] WebSocket disconnected: 1000 Client disconnect",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 50255,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 50228,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-021",
+      "message": "Timed out: task Team copy opened at its coordinator"
+    }
+  ],
+  "feed": {
+    "total": 67,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 28,
+      "task_upserted": 29,
+      "task_worker_status": 9
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:57556",
+    "frontendUrl": "http://127.0.0.1:57557",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FtQ0Nh"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-11T07:24:28.659Z"
+}

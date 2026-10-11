@@ -1,0 +1,5 @@
+
+> autobyteus@1.5.1-beta.1 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
