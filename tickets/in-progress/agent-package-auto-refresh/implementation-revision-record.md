@@ -62,7 +62,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Triggering finding IDs: CR-004; implementation notes N-5, N-6 (N-1…N-4 still honored).
 - Classification: `Design Impact` (the revised design is implemented; no further design question found)
 - Prior authoritative result: IR-002 — Team and Org GraphQL types exposed a root-only `catalogIssue`; a team-local agent's or org-owned definition's last-good issue existed only in the API (`AgentDefinition` by node), and no rendered card showed it.
-- Current authoritative result: `AgentTeamDefinition.catalogIssues` and `AgentOrgDefinition.catalogIssues: [DefinitionUnitIssue!]!` list every issue in the unit (root first, then nested nodes in path order; empty when clean). The Team card shows its team-local agents' issues; the Org card shows the Org's, its org-owned agents', org-owned Teams' and their local agents' issues. `AgentDefinition.catalogIssue` is unchanged; the Agent card passes it as a one-item list.
+- Current authoritative result (commit `bd4c63796`): `AgentTeamDefinition.catalogIssues` and `AgentOrgDefinition.catalogIssues: [DefinitionUnitIssue!]!` list every issue in the unit (root first, then nested nodes in path order; empty when clean). The Team card shows its team-local agents' issues; the Org card shows the Org's, its org-owned agents', org-owned Teams' and their local agents' issues. `AgentDefinition.catalogIssue` is unchanged; the Agent card passes it as a one-item list.
 - Related solution revision IDs: `SR-008` (design), `SR-005` (approval)
 - Related architecture-review revision IDs: `ARCH-REV-003`
 - Related code-review revision IDs: `CRR-003` (supersedes the CRR-001/002 Pass)

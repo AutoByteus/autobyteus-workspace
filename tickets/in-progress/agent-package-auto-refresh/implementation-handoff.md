@@ -29,7 +29,7 @@
   - `f7fcf9055` feat(web): live definition catalog feed, issue badges and package watch status
   - `3cc17135f` fix: isolate unreadable package folders; diagnostics follow-up reload (CRR-001) — IR-002
   - `a28465175`, `6b3a10822` — API/E2E test commits (not mine; awaiting proportional test review)
-  - IR-003: `feat: show nested definition issues on the owning Team and Org cards (SR-008)` — the commit after `a28465175`
+  - `bd4c63796` feat: show nested definition issues on the owning Team and Org cards (SR-008) — IR-003
 
 What exists now:
 
