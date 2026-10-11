@@ -1,0 +1,11 @@
+Updating autobyteus-web/package.json: 1.5.1-beta.3 -> 1.5.1
+Synced curated release notes to .github/release-notes/release-notes.md
+[release-v1.5.1 c3ced6563] chore(release): bump workspace release version to 1.5.1
+ Committer: normy <normy@macbookpro.speedport.ip>
+ 2 files changed, 17 insertions(+), 19 deletions(-)
+Release prepared locally (not pushed).
+To push later:
+  git push origin release-v1.5.1
+  git push origin v1.5.1
+   5c5404a00..c3ced6563  HEAD -> personal
+ * [new tag]             v1.5.1 -> v1.5.1

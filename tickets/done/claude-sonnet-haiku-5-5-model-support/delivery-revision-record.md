@@ -7,6 +7,7 @@
 | DR-001 | API/E2E Pass API-REV-001 (direct route) | N/A | Docs synced; awaiting user verification | docs-sync-report.md, handoff-summary.md, release-notes.md, release-deployment-report.md |
 | DR-002 | API/E2E addendum API-REV-002 (packaged desktop, user-requested) | DR-001 awaiting verification | Evidence folded in; still awaiting user verification | handoff-summary.md, release-deployment-report.md |
 | DR-003 | API/E2E Pass API-REV-003 (SR-007 / IR-002 rework after CRR-001) | DR-002 awaiting verification (superseded by rebase) | D-SR7-6 docs sync committed locally (`2aa2a6062`); awaiting user verification | docs-sync-report.md, handoff-summary.md, release-deployment-report.md |
+| DR-004 | User verification + request for a new stable release | DR-003 awaiting verification | Finalized into `personal` (`5c5404a00`); stable `v1.5.1` released (`c3ced6563`); cleanup done; Delivery Completed | user-verification.md, release-notes-v1.5.1.md, handoff-summary.md, release-deployment-report.md, delivery-evidence/dr-004/ |
 
 ## Revision Entries
 
@@ -60,3 +61,26 @@
 - Why this delivery revision was recorded: new upstream validation round on a rebased branch, plus delivery-owned D-SR7-6 / CR-005 docs work.
 - Next recipient/action: user verification, then archive ticket, commit, push branch, merge into `personal`, push, cleanup.
 - Remaining blockers, rollback concerns, or untested scope: none blocking; residual risks 1–5 in handoff-summary.md.
+
+### DR-004 — Finalization and stable release v1.5.1
+
+- Delivery round and trigger: the user's verification and release request, 2026-10-11: "verified finaliize and release a new stable version." (`user-verification.md`).
+- Triggering upstream report, verification, or evidence: `user-verification.md`; the DR-003 handoff state (`2aa2a6062` over `228cd9b5e`).
+- Prior authoritative result: DR-003. Docs were synced, and delivery was awaiting user verification.
+- Current authoritative result: `Delivery Completed`.
+  - `origin/personal` had moved to `96da4ba32` (other-ticket records only). It was merged as `80b3ef38b`, and the rerun passed: LLM unit 524/524, `tsc` clean.
+  - Ticket archived to `tickets/done/` (`6530910b1`), and the branch was pushed.
+  - `--no-ff` merge `5c5404a00` pushed to `personal`, with a tree identical to the verified branch. The licensing, hygiene and Windows-path checks all passed.
+  - Stable release `v1.5.1`: release commit `c3ced6563` and tag pushed. All 4 workflows succeeded on attempt 1.
+  - The GitHub release is Latest, with 17 assets. The updater metadata reports 1.5.1. Docker `:1.5.1`, `:latest` and `:beta` share one amd64+arm64 digest.
+  - The ticket worktree and the local branch were cleaned up.
+- Docs sync report: `docs-sync-report.md` (unchanged since DR-003)
+- Handoff summary: `handoff-summary.md` (final)
+- Release/publication/deployment report: `release-deployment-report.md` (final)
+- Integration and post-integration verification: `delivery-evidence/dr-004/post-integration-check.log`, `finalization-hygiene.log`
+- User verification/finalization state: verified; finalized; released; cleaned up.
+- Terminal return to `/solution_designer`: sent after this record is pushed to `personal`.
+- Terminal return message/reference: `send_message_to` `/software_engineering_team/solution_designer`, `Delivery Completed`, package `claude-sonnet-haiku-5-5-model-support`.
+- Why this delivery revision was recorded: completion of every delivery gate.
+- Next recipient/action: Solution Designer verifies the terminal receipt.
+- Remaining blockers, rollback concerns, or untested scope: none blocking. Residual risks 1–5 are in `handoff-summary.md`, and rollback is described in `release-deployment-report.md`.

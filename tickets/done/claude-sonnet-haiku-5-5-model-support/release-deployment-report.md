@@ -2,91 +2,160 @@
 
 ## Release / Publication / Deployment Scope
 
-Ticket `claude-sonnet-haiku-5-5-model-support`: add Claude Sonnet 5.5 and Haiku 5.5 to autobyteus-ts with an exact-value Anthropic request policy. Current classification (SR-007): task_size=`Small`, architectural_risk=`Low`, direct route (architecture review `N/A — not applicable`; test-code review `Not Required`). Independent code review CRR-001 (user-requested) addressed by SR-007 / IR-002 / API-REV-003. Finalization target: `origin/personal`. A version release is not part of the request.
+- Ticket `claude-sonnet-haiku-5-5-model-support`: Claude Sonnet 5.5 and Haiku 5.5 in autobyteus-ts, with an exact-value Anthropic request policy.
+- Classification (SR-007): task_size `Small`, architectural_risk `Low`, direct route.
+  - Architecture review: `N/A — not applicable`.
+  - Test-code review: `Not Required`.
+  - The user-requested independent code review CRR-001 was addressed by SR-007, IR-002 and API-REV-003.
+  - Delivery did not reclassify.
+- Repository finalization into `origin/personal`, then the new stable release `v1.5.1`, both requested by the user with the verification.
+- Current delivery revision: `DR-004`. Evidence for this round is in `delivery-evidence/dr-004/`.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-5-5-model-support/tickets/in-progress/claude-sonnet-haiku-5-5-model-support/handoff-summary.md`
+- Handoff summary artifact: `tickets/done/claude-sonnet-haiku-5-5-model-support/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-5-5-model-support/tickets/in-progress/claude-sonnet-haiku-5-5-model-support/delivery-revision-record.md`
-- Current delivery revision ID: `DR-003`
+- Delivery revision record: `tickets/done/claude-sonnet-haiku-5-5-model-support/delivery-revision-record.md`
+- Current delivery revision ID: `DR-004`
 
 ## Initial Delivery Integration Refresh (DR-003)
 
-- Bootstrap base reference: `origin/personal` @ `ff227eb72`
-- Latest tracked remote base reference checked: `origin/personal` @ `228cd9b5ef1c0259db2ba3e0f239cae80fdd9a84` (`git fetch origin` on 2026-10-11, at delivery start and again after the docs commit)
-- Base advanced since bootstrap: `Yes` (integrated by the IR-002 rebase, before API-REV-003)
-- Base advanced since API-REV-003 validation: `No`
-- New base commits integrated by delivery: `No`
-- Local checkpoint commit result: `Completed` — `2aa2a6062` (delivery docs only; not pushed)
-- Integration method: `Already current` (branch rebased onto `228cd9b5e` in IR-002)
-- Integration result: `Completed`; `git merge-tree --write-tree HEAD origin/personal` clean
-- Post-integration executable checks rerun by delivery: `No`
-- Post-integration verification result: `Passed` — API-REV-003 on HEAD `31132efcf` over `228cd9b5e`: ts LLM unit 524/524, `tsc` clean, server token-usage 111/111, live suites skip cleanly ungated (`api-e2e-evidence/rev3/`)
-- No-rerun rationale: no new base commits since API-REV-003; the only delivery commit changes three Markdown docs.
-- Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes`
+- Bootstrap base: `origin/personal` @ `ff227eb72`. The IR-002 rebase brought the branch onto `228cd9b5e`, which API-REV-003 then validated.
+- At DR-003 the base was unchanged (`Already current`). The delivery docs commit was `2aa2a6062`.
+
+## Post-Verification Re-Integration (DR-004)
+
+- Target re-fetched after verification: `origin/personal` had moved to `96da4ba32`.
+  - That commit adds only files under `tickets/done/delegated-copy-task-locator/` (the beta.3 delivery records).
+  - No code, docs or tests outside that folder changed.
+- Delivery-owned edits protected before re-integration: `Yes`. The docs were already committed in `2aa2a6062`, and the ticket folder was untouched by the merge.
+- Integration method: merge `origin/personal` into the ticket branch, giving `80b3ef38b`, with no conflicts.
+- Post-integration checks, logged in `delivery-evidence/dr-004/post-integration-check.log`:
+  - `pnpm -C autobyteus-ts exec vitest run tests/unit/llm`: 74 files, 524/524 passed.
+  - `tsc -p tsconfig.build.json --noEmit`: clean.
+- Renewed user verification: `Not required`. The handoff state did not change in any user-facing way.
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (awaiting)
-- Renewed verification required after later re-integration: `No`
-- Renewed verification received: `Not needed`
+- Initial explicit user completion/verification received: `Yes`
+- Reference: `user-verification.md`. On 2026-10-11 the user wrote: "verified finaliize and release a new stable version."
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-5-5-model-support/tickets/in-progress/claude-sonnet-haiku-5-5-model-support/docs-sync-report.md`
-- Docs sync result: `Updated`
-- Docs updated by delivery (`2aa2a6062`): `autobyteus-server-ts/docs/modules/token_usage.md` (CR-005), `autobyteus-server-ts/docs/modules/secret_management.md` (D-SR7-6 importer note), `autobyteus-ts/docs/provider_model_catalogs.md` (rewrap). `TESTING.md`: origin's version, unchanged.
+- Docs sync artifact: `docs-sync-report.md`
+- Result: `Updated`, committed in `2aa2a6062`:
+  - `token_usage.md` (CR-005)
+  - `secret_management.md` (D-SR7-6)
+  - `provider_model_catalogs.md` (rewrap)
+- `TESTING.md`: origin's version, unchanged.
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/claude-sonnet-haiku-5-5-model-support`: `No` (after user verification)
-
-## Version / Tag / Release Commit
-
-Not requested. Release notes drafted for later use.
+- Ticket moved to `tickets/done/claude-sonnet-haiku-5-5-model-support`: `Yes`, in archive commit `6530910b1`. The folder had been untracked until then.
+- Pre-commit scan of the 69 files:
+  - no credentials, no Windows-invalid names;
+  - longest path 117 characters;
+  - the two files over 5 MB follow existing evidence precedent.
 
 ## Repository Finalization
 
-- Bootstrap context source: solution-handoff.md (worktree, branch, base, target `origin/personal`)
-- Ticket branch: `codex/claude-5-5-model-support` (unpublished)
-- Repository finalization status: pending user verification
-- Plan after verification: re-fetch `origin/personal`; archive ticket to `tickets/done/`; commit with explicit paths (never `git add -A`; `*/dist/` excluded); push ticket branch; update `personal`, merge, push; cleanup.
+- Bootstrap context source: `solution-handoff.md`. Base and target are both `origin/personal`.
+- Ticket branch commit result: `Completed`. The ticket commits are, in order:
+  - `bc1777e02`
+  - `68269cfae`
+  - `b38d0a909`
+  - `31132efcf`
+  - `2aa2a6062`
+  - `80b3ef38b`
+  - `6530910b1`
+- Ticket branch push result: `Completed`. New branch `origin/codex/claude-5-5-model-support` @ `6530910b1`.
+- Target branch update: a temporary clean worktree, `autobyteus-worktrees/release-v1.5.1`, was created at `origin/personal@96da4ba32`. The main checkout was not touched.
+- Merge into target result: `Completed`.
+  - `--no-ff` merge `5c5404a00`. Its tree is identical to the verified branch (`git diff --quiet`).
+  - The checks are logged in `delivery-evidence/dr-004/finalization-hygiene.log`:
+    - licensing: 0
+    - artifact hygiene: 0
+    - Windows-invalid tracked paths: 0
+- Push target branch result: `Completed`: `96da4ba32..5c5404a00 HEAD -> personal`.
+- Repository finalization status: `Completed`
+
+## Version / Tag / Release Commit
+
+- Version choice: the highest stable tag was `v1.5.0`, and the betas were `v1.5.1-beta.1..3`. The stable release is therefore `v1.5.1`.
+  - `release_versions.py android-version-code 1.5.1` returns `10050199`, which is accepted.
+- Release notes: `release-notes-v1.5.1.md`, curated to cover everything merged since `v1.5.0`:
+  - this ticket
+  - delegated-copy-task-locator
+  - collapsed-left-panel-expand-keeps-run
+  - the Server Docker gzip installer fix
+- Command, run in the temporary worktree: `bash scripts/desktop-release.sh release 1.5.1 --release-notes tickets/done/claude-sonnet-haiku-5-5-model-support/release-notes-v1.5.1.md --branch release-v1.5.1 --no-push`
+- Release commit `c3ced6563`: `autobyteus-web/package.json` 1.5.1-beta.3 → 1.5.1, and the notes synced to `.github/release-notes/release-notes.md`.
+- Pushes, made after re-checking that `personal` was still `5c5404a00`:
+  - `5c5404a00..c3ced6563 HEAD -> personal`
+  - tag `v1.5.1`
+  - Log: `delivery-evidence/dr-004/v1.5.1-release.log`
 
 ## Release / Publication / Deployment
 
-- Applicable: `No` unless the user requests a release after verification
-- Release/publication/deployment result: pending decision
+- Applicable: `Yes`. The user requested a stable release.
+- Method: `Release Script` (`scripts/desktop-release.sh release`) plus the workflows the tag push triggers.
+- Workflows, all `success` on attempt 1 at `c3ced6563` (`delivery-evidence/dr-004/workflows-v1.5.1.json`):
+
+  | Workflow | Run | Result |
+  | --- | --- | --- |
+  | Desktop Release | `38131984986` | success |
+  | Android APK Release | `38131985001` | success |
+  | iOS App Store Connect Release | `38131984998` | success |
+  | Server Docker Release | `38131985046` | success |
+
+- GitHub release `v1.5.1` (`delivery-evidence/dr-004/github-release-v1.5.1.json`):
+  - It is **Latest**: `releases/latest` = `v1.5.1`.
+  - It is not a pre-release and not a draft. Published 2026-10-11T10:32:06Z.
+  - It has 17 assets:
+    - macOS arm64/x64 dmg and zip, with blockmaps
+    - the Windows exe
+    - Linux x64/arm64 AppImage
+    - the Android APK and its sha256
+    - 4 `latest*.yml` files
+  - Its body is the curated notes.
+- Updater metadata: all four `latest*.yml` report `version: 1.5.1` (`delivery-evidence/dr-004/v1.5.1-updater-metadata/`).
+- Docker: `autobyteus/autobyteus-server` `:1.5.1`, `:latest` and `:beta` share `sha256:725e2ca8…f01a` (amd64, arm64) (`delivery-evidence/dr-004/v1.5.1-docker-tags.txt`).
+  - The build log shows "Installed agy: 1.3.3" on both architectures and no "cannot execute binary" (`docker-v1.5.1-agy-excerpt.log`).
+- Release helper after the release: `release_versions.py next-beta` gives `1.5.2-beta.1`.
+- Release/publication/deployment result: `Completed`
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-5-5-model-support` (cleanup after finalization; untracked `dist/` build output is disposable)
-
-## Release Notes Summary
-
-- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-5-5-model-support/tickets/in-progress/claude-sonnet-haiku-5-5-model-support/release-notes.md`
-- Release notes status: `Unchanged` since DR-001 (SR-007 changes no user-facing behavior)
+- Ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-5-5-model-support`: removed with `git worktree remove --force`, then pruned.
+  - The only untracked files were the SDK `dist/` build outputs.
+  - None of the 4 running isolated instances came from this worktree.
+  - Log: `delivery-evidence/dr-004/cleanup.log`.
+- Local branch `codex/claude-5-5-model-support` (`6530910b1`): deleted after confirming that `origin/personal` contains it.
+- Remote branch `origin/codex/claude-5-5-model-support`: kept as a review reference.
+- Temporary worktree `release-v1.5.1` and its branch: removed right after this records commit is pushed.
+- Not touched: the main checkout, other worktrees, and their isolated instances.
 
 ## Environment Or Persisted-Data Transition Notes
 
-- Approved persisted-data decision: none required (new catalog rows; stored run prices are never recalculated)
+- Persisted-data decision: `Not Affected`. The change adds new catalog rows, and stored run prices are never recalculated.
 - Delivery action required: `None`
-
-## Verification Checks
-
-API-REV-003 (Pass, 95%) as above. Carried forward from API-REV-001/002 (still applicable — no payload change; origin commits since `ff227eb72` touch no affected area): live Claude 5.5 E2E 6/6, Haiku Token Meter tiers exact, prompt-caching live 7/7 on Sonnet 5.5/Haiku 5.5/Opus 5.5, browser check, packaged desktop 6/6 journeys with 0 provider 400s.
 
 ## Rollback Criteria
 
-Revert the merge of `codex/claude-5-5-model-support` on `personal` if any existing Claude model's request shape regresses (provider 400s on Opus/Sonnet 5/Fable/Sonnet 4.6) or Token Meter prices for existing models change.
+- Revert `c3ced6563` and `5c5404a00` on `personal` if an existing Claude model's request shape regresses (provider 400s on Opus 5.5, Sonnet 5, Fable or Sonnet 4.6) or if existing Token Meter prices change.
+- Supersede `v1.5.1` with a new release. There is no data migration.
+
+## Follow-Ups (non-blocking)
+
+- `scripts/check_repository_artifact_hygiene.py` still does not reject Windows-invalid path characters. Delivery checked for them separately this round.
+- The residual risks carried from API-REV-003 are listed in `handoff-summary.md`.
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (decision pending)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: `None` — awaiting user verification
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (`v1.5.1` fully published)
+- Applicable safe cleanup complete or not required: `Yes`. The temporary release worktree is removed after the records push.
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: recorded in `delivery-revision-record.md` DR-004.
