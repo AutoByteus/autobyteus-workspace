@@ -150,7 +150,8 @@ under "Production data migrations" in the server `README.md`.
 Native memory compacts selected WorkingContext content on the agent's own model.
 The executor owns planning and provider-safe input construction; the
 `CompactionSummarizer` first sends the agent's own (prompt-cached) conversation
-request plus a summary instruction, then falls back to a tool-free transcript
+request plus a summary instruction when the model's catalog entry selects it
+(`compactionSummaryMode`), and otherwise or on failure a tool-free transcript
 summary. Every attempt is a single-attempt provider generation validated against
 the exact nine-heading Markdown envelope (see
 `autobyteus-ts/docs/agent_memory_design.md`). It does not launch a child agent,

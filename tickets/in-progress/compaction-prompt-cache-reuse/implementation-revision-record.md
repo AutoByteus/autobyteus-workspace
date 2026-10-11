@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture Reviewer pass handoff, `design-review-report.md` round 2 | N/A (implementation note N-1 applied) | `Initial Baseline` | SR-004, ARCH-REV-002 | Implementation complete; ready for Code Review |
 | IR-002 | User instruction in conversation (2026-10-11), after CRR-001 Pass | N/A | `Requirement Gap` (user-approved directly) | SR-005, ARCH-REV-002, CRR-001 | Cached summary instruction rewritten in the agent's own voice; back to Code Review |
 | IR-003 | Architecture Reviewer pass handoff, ARCH-REV-003 (SR-007) | N/A (ARCH-004 and N-1 respected) | `Solution Revision` (reviewed) | SR-007, ARCH-REV-003, CRR-002 | Nine-heading contract, instruction v4, prompt v6, Gemini `systemInstruction` from the request; back to Code Review |
+| IR-004 | Architecture Reviewer pass handoff, ARCH-REV-005 (SR-009), from CRR-005 | CRR-005 F-3, F-4, F-5 | `Solution Revision` (reviewed) | SR-008, SR-009, ARCH-REV-005, CRR-004, CRR-005 | Per-model summary mode, summary output-limit override (REQ-009), instruction v5; back to Code Review |
 
 ## Revision Entries
 
@@ -110,3 +111,37 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - The API/E2E-owned untracked `autobyteus-server-ts/tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts:220` still expects `## Goal and constraints` and needs the new first heading.
   - Accepted risks from ARCH-REV-003 still apply: OBS-1, the slightly higher cached-path cost, and the Gemini renderer dropping late system notes.
   - The uncommitted API/E2E edits (`native-runtime-live-harness.ts`, `autobyteus-native-output-limit-recovery-live.e2e.test.ts`) and the other roles' ticket docs were not touched or committed.
+
+### IR-004 — Per-model summary mode, summary output-limit override, instruction v5
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-review-report.md`, ARCH-REV-005 (SR-009, Pass, Large/High). The reviewer's request: resume from `1153984ee` (IR-003) and apply design § Intended Change 10–12. Evidence: `code-review-report.md` § Round 5 (CRR-005) and `ac003-summary-quality-report.md` § Round 2.
+- Triggering finding IDs: CRR-005 F-3 (small output limit blocks compaction), F-4 (instruction echo), F-5 (per-provider quality), resolved through SR-008/SR-009.
+- Classification: `Solution Revision` (reviewed).
+- Prior authoritative result: IR-003 (CRR-004 Pass; then API-REV-002 Fail → CRR-005).
+- Current authoritative result: implemented; local checks pass; returning to Code Review.
+- Related solution revision IDs: SR-008, SR-009.
+- Related architecture-review revision IDs: ARCH-REV-004 (findings), ARCH-REV-005 (Pass).
+- Related code-review revision IDs: CRR-004, CRR-005.
+- Related API/E2E revision IDs: API-REV-002 (see `api-e2e-revision-record.md`).
+- Related delivery revision IDs: N/A.
+- Why this implementation revision is recorded: the cached summary becomes a per-model choice; a small known output limit no longer makes compaction impossible; the instruction no longer invites recording itself.
+- Approved behavior or requirement IDs affected: REQ-002, REQ-009, REQ-001/REQ-003 (instruction wording); AC-011 (unit cases done here), AC-003 (rerun).
+- Implementation delta:
+  - `LLMModel.compactionSummaryMode` (default `'transcript'`). The 8 Anthropic catalog entries and the 2 DeepSeek-provider entries are `'cached_conversation'`; the DeepSeek value is pending the rerun.
+  - `ConversationSummaryPort.usesCachedSummary()`, implemented by `LlmPhaseSummaryPort`; `CompactionSummarizer` skips the cached path when it is false.
+  - `LLMInvocationOptions.maxOutputTokens`; `BaseLLM.resolveMaxOutputTokens(options)` with a required parameter, threaded through every adapter. Anthropic's non-streaming path checks the override first.
+  - `resolveSummaryOutputTokenOverride` and `SUMMARY_OUTPUT_TOKEN_FLOOR` in the port. Both summary requests carry the override; `fitsInputBudget` reserves it.
+  - `COMPACTION_SUMMARY_INSTRUCTION` v5, extracted by script from the named normative section and byte-verified. SHA-256 `43da1ce9d9df6b1a00f76d17cc146077d7d9be9699fbef83b023457f445af666`.
+- Changed files or areas: see `implementation-handoff.md` § Key Files Or Areas (IR-004 bullet).
+- Local validation and result:
+  - core production typecheck: pass;
+  - core unit: 306 files, 2005/2005;
+  - runtime compaction integration 6/6; Gemini wire 4/4;
+  - server `prepare:shared` + typecheck: pass; server unit: 5232 passed; server compaction-related integration: 39/39.
+- Next recipient or routing: Code Review (`get_handoff_rules`, Large/High).
+- Remaining limitations or risks:
+  - The transcript input-budget check does not reserve the override; the design names only `fitsInputBudget`. This is a reviewer/design call.
+  - The DeepSeek catalog value is provisional.
+  - API/E2E's uncommitted OLR-E2E-010 premise (summary `max_tokens` equal to the cut limit; cached-first mode sequence) conflicts with REQ-009/REQ-002 and needs their update.
+  - The live checks (AC-011 1,024-token scenario, AC-003 v5 rerun) are API/E2E work.
+  - The uncommitted API/E2E edits and the other roles' ticket docs were not touched or committed.

@@ -250,6 +250,8 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'deepseek-v4-flash',
     provider: LLMProvider.DEEPSEEK,
     llmClass: DeepSeekLLM,
+    // Pending the SR-008 AC-003 rerun; a failed rerun returns this value to the Solution Designer.
+    compactionSummaryMode: 'cached_conversation',
     canonicalName: 'deepseek-v4-flash', staticMetadata: createStaticModelMetadata(1000000, null, 384000, 'https://api-docs.deepseek.com/quick_start/pricing', '2026-04-25', DEEPSEEK_MEDIA_CAPABILITIES),
     defaultConfig: new LLMConfig({
       rateLimit: 60,
@@ -270,6 +272,8 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'deepseek-v4-pro',
     provider: LLMProvider.DEEPSEEK,
     llmClass: DeepSeekLLM,
+    // Pending the SR-008 AC-003 rerun; a failed rerun returns this value to the Solution Designer.
+    compactionSummaryMode: 'cached_conversation',
     canonicalName: 'deepseek-v4-pro', staticMetadata: createStaticModelMetadata(1000000, null, 384000, 'https://api-docs.deepseek.com/quick_start/pricing', '2026-04-25', DEEPSEEK_MEDIA_CAPABILITIES),
     defaultConfig: new LLMConfig({
       rateLimit: 60,

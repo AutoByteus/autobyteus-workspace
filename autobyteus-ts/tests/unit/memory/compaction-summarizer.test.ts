@@ -22,6 +22,7 @@ const result = (mode: CompactionSummaryMode, content: string, extra: Partial<Sum
 });
 
 const fakePort = (overrides: { [K in keyof ConversationSummaryPort]?: (...args: any[]) => any } = {}) => ({
+  usesCachedSummary: vi.fn(overrides.usesCachedSummary ?? (() => true)),
   fitsInputBudget: vi.fn(overrides.fitsInputBudget ?? ((_messages: readonly Message[], _extra: string) => true)),
   requestCachedSummary: vi.fn(overrides.requestCachedSummary
     ?? (async (_m: readonly Message[], _i: string, _id: SummaryRequestIdentity, _s: AbortSignal) => result('cached', tagged))),
@@ -81,6 +82,25 @@ describe('CompactionSummarizer', () => {
     await expect(promise).resolves.toBe(body);
     expect(port.requestCachedSummary).not.toHaveBeenCalled();
     expect(port.requestTranscriptSummary.mock.calls[0]![2].attempt).toBe(1);
+  });
+
+  it('goes straight to the transcript request, with the full transcript budget, when the model does not select the cached summary', async () => {
+    const port = fakePort({ usesCachedSummary: vi.fn(() => false), requestTranscriptSummary: vi.fn()
+      .mockRejectedValueOnce(new Error('provider down')).mockResolvedValue(result('transcript', tagged)) });
+    const { promise, waits } = run(port);
+    await expect(promise).resolves.toBe(body);
+    expect(port.fitsInputBudget).not.toHaveBeenCalled();
+    expect(port.requestCachedSummary).not.toHaveBeenCalled();
+    expect(port.requestTranscriptSummary.mock.calls.map(([, , identity]) => identity.attempt)).toEqual([1, 2]);
+    expect(waits).toEqual([1000]);
+  });
+
+  it('exhausts 3 transcript attempts when the model does not select the cached summary', async () => {
+    const port = fakePort({ usesCachedSummary: vi.fn(() => false), requestTranscriptSummary: vi.fn(async () => result('transcript', 'no block')) });
+    const { promise } = run(port);
+    await expect(promise).rejects.toMatchObject({ code: 'invalid_summary' });
+    expect(port.requestTranscriptSummary).toHaveBeenCalledTimes(TRANSCRIPT_SUMMARY_ATTEMPTS);
+    expect(port.requestCachedSummary).not.toHaveBeenCalled();
   });
 
   it('exhausts 2 cached and 3 transcript attempts, with unique attempt ids and the existing backoff', async () => {

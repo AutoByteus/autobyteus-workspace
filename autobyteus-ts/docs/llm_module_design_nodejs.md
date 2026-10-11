@@ -21,12 +21,17 @@ under the same provider-centered model contract.
   Each provider adapter is the only builder and renderer of its own requests:
   callers pass `Message[]`, never a pre-rendered payload, and never read a
   provider's private `_renderer`.
-- **`LLMInvocationOptions`**: per-call `signal`, `turnId`, `retryMode` and
-  `promptCacheScope`. `promptCacheScope: 'conversation'` declares that the call
+- **`LLMInvocationOptions`**: per-call `signal`, `turnId`, `retryMode`,
+  `promptCacheScope` and `maxOutputTokens`. `promptCacheScope: 'conversation'` declares that the call
   is one step of a growing agent conversation whose next call resends its
-  prefix (set by the agent loop). Absent means a one-shot call (for example the
-  compaction summarizer); providers with explicit prompt caching must not
-  request caching for it.
+  prefix (set by the agent loop; the cached compaction summary request sets it too). Absent means a one-shot call (for example the
+  transcript compaction summary); providers with explicit prompt caching must not
+  request caching for it. `maxOutputTokens` replaces the resolved output limit for
+  that call only; every adapter reads it through `resolveMaxOutputTokens(options)`
+  (Anthropic's non-streaming path also honours it before its bounded default).
+- **`LLMModel.compactionSummaryMode`**: `'cached_conversation'` or `'transcript'`
+  (default, also for dynamic and custom models), set per catalog model. It decides
+  whether compaction tries the cached summary request first.
 - **Provider-native assistant turns** (`src/llm/provider-native/`): a provider's
   own record of one assistant response, stored on the assistant message under
   `metadata.provider_native_assistant_turn` as an opaque `{ provider, ... }`

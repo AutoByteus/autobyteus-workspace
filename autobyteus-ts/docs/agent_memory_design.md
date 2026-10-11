@@ -48,6 +48,12 @@ only to a `ConversationSummaryPort` (`conversation-summary-port.ts`) that the ag
 loop implements (`LlmPhaseSummaryPort` in `src/agent/loop/`); memory never holds the
 LLM, the tools or the notifier, and there is no compaction-model setting.
 
+- **Per model.** The cached request is used only when the agent's model selects it
+  (`LLMModel.compactionSummaryMode === 'cached_conversation'`, from the catalog:
+  the Anthropic models and, pending their quality rerun, the DeepSeek models).
+  The port answers `usesCachedSummary()`; memory and agent code name no provider.
+  Every other model (and every dynamic or custom model) goes straight to the
+  transcript request with its full attempt budget.
 - **Cached summary request first.** The agent's own conversation request for the
   compaction baseline — same LLM and settings, same tools, same leading system run,
   same sanitized messages in the same order (built with the shared
@@ -60,8 +66,11 @@ LLM, the tools or the notifier, and there is no compaction-model setting.
   asks the agent to review the whole conversation as a careful reviewer, gives one line
   of guidance per heading (requests received with who said them and their status,
   unverified points and open conflicts, one line per file written with its state,
-  evidence for anything called done), asks for full paths and values, each point once,
-  nothing invented, and forbids tool calls or continuing the task in that reply. It
+  evidence for anything called done), asks for full paths and values (commit hashes and
+  IDs included), each point once, nothing invented and no names or paths it did not see,
+  keeps earlier decisions that still apply and every open doubt, tells the agent that
+  the request itself is not part of its work (so it is not recorded), and forbids tool
+  calls or continuing the task in that reply (instruction v5). It
   requests the same nine-heading block as `COMPACTION_SUMMARY_PROMPT` (v6), which stays
   the transcript fallback prompt. Both texts are copied verbatim from the approved
   ticket supplement and hash-pinned in `compaction-summary-prompt.test.ts`. The provider reads nearly the whole history from its
@@ -69,6 +78,12 @@ LLM, the tools or the notifier, and there is no compaction-model setting.
   summary covers the whole conversation while the planned recent tail is still kept
   word for word. Up to **two** attempts; skipped when the request plus the model's
   output reservation would not fit the input budget.
+- **Summary output limit (REQ-009).** Both summary requests use the agent's own
+  output limit `R` unless `R` is known and below 16,384; then they pass
+  `LLMInvocationOptions.maxOutputTokens = max(R, min(16,384, model maximum if known,
+  floor(context / 4) if known))`, and the cached request's budget check reserves that
+  value instead. An unknown or high limit is unchanged. The agent's own requests and
+  the cached prefix are unaffected (the output limit is outside the prompt prefix).
 - **Transcript fallback.** Otherwise, or after two cached attempts without a valid
   summary (tool calls, a task answer, invalid format, provider error), the agent's
   own LLM receives `COMPACTION_SUMMARY_PROMPT` as system plus the prepared transcript

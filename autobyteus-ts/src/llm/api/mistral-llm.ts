@@ -57,7 +57,7 @@ export class MistralLLM extends BaseLLM {
       messages: formattedMessages,
       temperature: this.config.temperature,
       topP: this.config.topP ?? undefined,
-      maxTokens: this.resolveMaxOutputTokens() ?? undefined,
+      maxTokens: this.resolveMaxOutputTokens(options) ?? undefined,
     };
     applySafeProviderRequestKwargs(params, kwargs, { controlledKeys: MISTRAL_CONTROLLED_KWARG_KEYS });
 
@@ -100,7 +100,7 @@ export class MistralLLM extends BaseLLM {
       messages: formattedMessages,
       temperature: this.config.temperature,
       topP: this.config.topP ?? undefined,
-      maxTokens: this.resolveMaxOutputTokens() ?? undefined,
+      maxTokens: this.resolveMaxOutputTokens(options) ?? undefined,
       stream: true,
     };
     applySafeProviderRequestKwargs(params, kwargs, { controlledKeys: MISTRAL_CONTROLLED_KWARG_KEYS });

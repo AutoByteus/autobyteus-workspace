@@ -28,8 +28,8 @@ type Wait = (ms: number, signal: AbortSignal) => Promise<unknown>;
 
 /**
  * Produces the compaction summary on the agent's own model through its `ConversationSummaryPort`.
- * First the cached summary request (the agent's conversation + one instruction), up to
- * `CACHED_SUMMARY_ATTEMPTS`, unless it would not fit the input budget. Then the transcript
+ * First, when the agent's model selects it, the cached summary request (the agent's conversation
+ * + one instruction), up to `CACHED_SUMMARY_ATTEMPTS`, unless it would not fit the input budget. Then the transcript
  * request, up to `TRANSCRIPT_SUMMARY_ATTEMPTS`. A response without exactly one valid summary
  * block (including tool calls or a task answer) is a failed attempt.
  */
@@ -40,7 +40,7 @@ export class CompactionSummarizer {
   async summarize(input: CompactionSummaryInput): Promise<string> {
     const { signal } = input;
     let attempt = 0;
-    if (this.port.fitsInputBudget(input.baselineMessages, COMPACTION_SUMMARY_INSTRUCTION)) {
+    if (this.port.usesCachedSummary() && this.port.fitsInputBudget(input.baselineMessages, COMPACTION_SUMMARY_INSTRUCTION)) {
       for (let round = 1; round <= CACHED_SUMMARY_ATTEMPTS; round++) {
         signal.throwIfAborted();
         try {

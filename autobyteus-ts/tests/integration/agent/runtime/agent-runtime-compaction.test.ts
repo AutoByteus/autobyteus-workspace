@@ -94,7 +94,7 @@ describe('compaction on the agent\'s own model, narrow runtime integration',()=>
  afterEach(()=>{resetAgentFactory();vi.restoreAllMocks();});
  it.each([false,true])('continues with one summary; explicit user retry=%s',async(failFirst)=>{
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'direct-runtime-'));
-  const main=new RecordingMainLLM(new LLMModel({name:'parent',value:'parent',provider:LLMProvider.OPENAI,maxContextTokens:12000,activeContextTokens:12000}),new LLMConfig({maxTokens:200,compactionRatio:0.5,safetyMarginTokens:10}),[200,200,200,7000,200]);
+  const main=new RecordingMainLLM(new LLMModel({name:'parent',value:'parent',canonicalName:'parent',provider:LLMProvider.OPENAI,maxContextTokens:12000,activeContextTokens:12000,compactionSummaryMode:'cached_conversation'}),new LLMConfig({maxTokens:200,compactionRatio:0.5,safetyMarginTokens:10}),[200,200,200,7000,200]);
   if(failFirst) main.respondToSummary.mockImplementation(async()=>main.summaryRequests.length<=ATTEMPTS_PER_FAILED_OPERATION?'invalid':taggedSummary);
   const config=new AgentConfig('test','tester','direct compaction',main);config.memoryDir=dir;
   config.memoryCompaction=createEnabledMemoryCompactionConfiguration(new CompactionPolicy());
@@ -123,6 +123,8 @@ describe('compaction on the agent\'s own model, narrow runtime integration',()=>
    const cached=main.summaryRequests.at(-1)!;
    expect(cached.attempt).toBe(1);
    expect(cached.options).toMatchObject({promptCacheScope:'conversation',retryMode:'single_attempt'});
+   // REQ-009: the agent's 200-token limit is raised for summary requests to min(16,384, context 12,000 / 4) = 3,000.
+   expect(main.summaryRequests.map(({options})=>options.maxOutputTokens)).toEqual(main.summaryRequests.map(()=>3000));
    expect(cached.messages.at(-1)).toMatchObject({role:'user',content:COMPACTION_SUMMARY_INSTRUCTION});
    expect(cached.messages.slice(0,main.requests[3]!.length)).toEqual(main.requests[3]);
    expect(main.released).toEqual(main.summaryRequests.map(({operationId,attempt})=>`compaction_${operationId}_${attempt}`));
@@ -143,7 +145,7 @@ describe('live core recovery positions (no provider)', () => {
  afterEach(() => { resetAgentFactory(); vi.restoreAllMocks(); });
  it.each(['recover', 'interrupt', 'stop'] as const)('retains original unsent A, runs its pipeline once, and can %s', async action => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'held-core-'));
-  const main = new RecordingMainLLM(new LLMModel({ name:'parent', value:'parent', provider:LLMProvider.OPENAI, maxContextTokens:12000, activeContextTokens:12000 }), new LLMConfig({ maxTokens:200, compactionRatio:0.5, safetyMarginTokens:10 }), [200,200,200]);
+  const main = new RecordingMainLLM(new LLMModel({ name:'parent', value:'parent', canonicalName:'parent', provider:LLMProvider.OPENAI, maxContextTokens:12000, activeContextTokens:12000, compactionSummaryMode:'cached_conversation' }), new LLMConfig({ maxTokens:200, compactionRatio:0.5, safetyMarginTokens:10 }), [200,200,200]);
   const config = new AgentConfig('held','tester','scope',main); config.memoryDir=dir;
   config.memoryCompaction=createEnabledMemoryCompactionConfiguration(new CompactionPolicy());
   const agent = new AgentFactory().createAgent(config); const completed:any[]=[];
@@ -194,7 +196,7 @@ describe('live core recovery positions (no provider)', () => {
  },25000);
  it('completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay', async () => {
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'next-core-'));
-  const main=new RecordingMainLLM(new LLMModel({name:'parent',value:'parent',provider:LLMProvider.OPENAI,maxContextTokens:12000,activeContextTokens:12000}),new LLMConfig({maxTokens:200,compactionRatio:0.5,safetyMarginTokens:10}),[200,200,200,7000,200]);
+  const main=new RecordingMainLLM(new LLMModel({name:'parent',value:'parent',canonicalName:'parent',provider:LLMProvider.OPENAI,maxContextTokens:12000,activeContextTokens:12000,compactionSummaryMode:'cached_conversation'}),new LLMConfig({maxTokens:200,compactionRatio:0.5,safetyMarginTokens:10}),[200,200,200,7000,200]);
   let rejectAttempt!:(error:Error)=>void;
   // The first operation's first attempt hangs until rejected; all its attempts fail.
   main.respondToSummary.mockImplementation(async()=>{

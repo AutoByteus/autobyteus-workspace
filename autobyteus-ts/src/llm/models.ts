@@ -13,6 +13,14 @@ import type { ResolvedModelMetadata } from './metadata/model-metadata-resolver.j
 import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../utils/gemini-runtime.js';
 
+/**
+ * How compaction asks this model for its summary. `'cached_conversation'`: the agent's own
+ * (prompt-cached) conversation plus the summary instruction, with the transcript summary as
+ * fallback. `'transcript'`: the transcript summary only. Selected per catalog model after a
+ * summary-quality comparison; dynamic and custom models use `'transcript'`.
+ */
+export type CompactionSummaryRequestMode = 'cached_conversation' | 'transcript';
+
 export interface LLMModelOptions {
   name: string;
   value: string;
@@ -35,6 +43,7 @@ export interface LLMModelOptions {
   resolvedModelMetadata?: ResolvedModelMetadata;
   defaultCompactionRatio?: number | null;
   defaultSafetyMarginTokens?: number | null;
+  compactionSummaryMode?: CompactionSummaryRequestMode;
   runtime?: LLMRuntime;
   hostUrl?: string;
   configSchema?: ParameterSchema;
@@ -122,6 +131,7 @@ export class LLMModel {
   public readonly resolvedModelMetadata: ResolvedModelMetadata | null;
   public defaultCompactionRatio: number | null;
   public defaultSafetyMarginTokens: number | null;
+  public readonly compactionSummaryMode: CompactionSummaryRequestMode;
   public runtime: LLMRuntime;
   public hostUrl?: string;
   public configSchema?: ParameterSchema;
@@ -148,6 +158,7 @@ export class LLMModel {
     this.resolvedModelMetadata = options.resolvedModelMetadata ?? null;
     this.defaultCompactionRatio = options.defaultCompactionRatio ?? 0.8;
     this.defaultSafetyMarginTokens = options.defaultSafetyMarginTokens ?? 256;
+    this.compactionSummaryMode = options.compactionSummaryMode ?? 'transcript';
     this.runtime = runtime;
     this.hostUrl = options.hostUrl;
     this.configSchema = options.configSchema;

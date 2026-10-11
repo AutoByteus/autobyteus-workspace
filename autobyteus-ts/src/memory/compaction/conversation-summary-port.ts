@@ -22,6 +22,8 @@ export type SummaryAttemptResult = Readonly<{
  * the attempt, and its usage is reported to the agent run. A failed call throws.
  */
 export interface ConversationSummaryPort {
+  /** Whether the agent's model selects the cached summary request; otherwise only the transcript request is used. */
+  usesCachedSummary(): boolean;
   /** The agent's conversation request for `messages` (unchanged, cacheable) plus one appended user `instruction`. */
   requestCachedSummary(messages: readonly Message[], instruction: string,
     identity: SummaryRequestIdentity, signal: AbortSignal): Promise<SummaryAttemptResult>;

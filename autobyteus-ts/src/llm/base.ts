@@ -17,6 +17,11 @@ export type LLMInvocationOptions = {
   retryMode?: 'single_attempt';
   signal?: AbortSignal | null;
   turnId?: string | null;
+  /**
+   * Per-request output limit that replaces the agent's resolved limit for this call only (for
+   * example a compaction summary request). Agent conversation requests never set it.
+   */
+  maxOutputTokens?: number;
 };
 
 export abstract class BaseLLM {
@@ -57,9 +62,12 @@ export abstract class BaseLLM {
     this.config.systemMessage = newSystemPrompt;
   }
 
-  /** The request's output limit (configured, else the model maximum); `null` means omit. */
-  protected resolveMaxOutputTokens(): number | null {
-    return resolveRequestMaxOutputTokens(this.model, this.config);
+  /**
+   * The request's output limit: the invocation's `maxOutputTokens` override when set, otherwise
+   * the configured limit, else the model maximum; `null` means omit.
+   */
+  protected resolveMaxOutputTokens(options: LLMInvocationOptions): number | null {
+    return options.maxOutputTokens ?? resolveRequestMaxOutputTokens(this.model, this.config);
   }
 
   protected buildUserMessage(userMessage: LLMUserMessage): Message {

@@ -56,6 +56,7 @@ const claudeOpus55Schema = new ParameterSchema([
 export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
   {
     name: 'claude-fable-5-1', value: 'claude-fable-5-1', provider: LLMProvider.ANTHROPIC, llmClass: AnthropicLLM,
+    compactionSummaryMode: 'cached_conversation',
     canonicalName: 'claude-fable-5-1', staticMetadata: createStaticModelMetadata(1_000_000, 1_000_000, 128_000, 'https://platform.claude.com/docs/en/models/fable-5-1/overview', '2026-09-22'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(10, 50, {
       pricingEffectiveDate: '2026-09-01',
@@ -67,6 +68,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-fable-5',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
+    compactionSummaryMode: 'cached_conversation',
     canonicalName: 'claude-fable-5', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-07-07'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(10.0, 50.0, {
       pricingEffectiveDate: '2026-07-07',
@@ -81,6 +83,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-opus-5',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
+    compactionSummaryMode: 'cached_conversation',
     canonicalName: 'claude-opus-5', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-07-31'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
       pricingEffectiveDate: '2026-07-24',
@@ -95,6 +98,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-opus-5-5',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
+    compactionSummaryMode: 'cached_conversation',
     canonicalName: 'claude-opus-5-5',
     staticMetadata: createStaticModelMetadata(1_000_000, 1_000_000, 128_000, 'https://platform.claude.com/docs/en/models/opus-5-5/overview', '2026-09-23'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(4, 20, {
@@ -110,6 +114,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-opus-4-8',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
+    compactionSummaryMode: 'cached_conversation',
     canonicalName: 'claude-opus-4.8', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-07-07'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
       pricingEffectiveDate: '2026-07-07',
@@ -124,6 +129,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-opus-4-7',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
+    compactionSummaryMode: 'cached_conversation',
     canonicalName: 'claude-opus-4.7', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-04-25'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
       cachedInputReadTokenPricing: 0.5,
@@ -137,6 +143,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-sonnet-5',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
+    compactionSummaryMode: 'cached_conversation',
     canonicalName: 'claude-sonnet-5', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-07-07'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(2.0, 10.0, {
       pricingEffectiveDate: '2026-07-07',
@@ -151,6 +158,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-sonnet-4-6',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
+    compactionSummaryMode: 'cached_conversation',
     canonicalName: 'claude-sonnet-4.6', staticMetadata: createStaticModelMetadata(1000000, 1000000, 64000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-04-09'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0, {
       cachedInputReadTokenPricing: 0.3,

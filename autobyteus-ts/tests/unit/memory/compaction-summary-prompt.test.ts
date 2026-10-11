@@ -10,12 +10,20 @@ describe('compaction summary prompt and contract', () => {
   it('ships the exact approved v6 transcript prompt', () => {
     expect(createHash('sha256').update(COMPACTION_SUMMARY_PROMPT).digest('hex')).toBe('c3105f73f70ae7ceb43941cb617f25b57f809842875a33920ff23c046ab224f6');
   });
-  it('ships the exact approved v4 instruction, asking the agent in its own voice for a note to itself', () => {
-    expect(createHash('sha256').update(COMPACTION_SUMMARY_INSTRUCTION).digest('hex')).toBe('9349dc8ea05e2bf95edb0ed5e908933487594e788b1c09fbca7eaff347e4ba82');
+  it('ships the exact approved v5 instruction, asking the agent in its own voice for a note to itself', () => {
+    expect(createHash('sha256').update(COMPACTION_SUMMARY_INSTRUCTION).digest('hex')).toBe('43da1ce9d9df6b1a00f76d17cc146077d7d9be9699fbef83b023457f445af666');
     expect(COMPACTION_SUMMARY_INSTRUCTION.startsWith('Your context window is nearly full')).toBe(true);
     expect(COMPACTION_SUMMARY_INSTRUCTION).not.toMatch(/target agent|supplied (conversation )?history/i);
     expect(COMPACTION_SUMMARY_INSTRUCTION).toContain('Do not call any tools and do not continue the task in this reply.');
     expect(COMPACTION_SUMMARY_INSTRUCTION).toContain('Your system instructions stay in place after this, so do not restate your role, rules or process from them');
+    // v5 additions (SR-008).
+    for (const sentence of [
+      'This request to write the note is not part of your work; do not record it in the note.',
+      'Include earlier decisions and corrections that still apply, not only the most recent ones.',
+      'keep every open doubt you raised, even if the conversation later moved on from it',
+      'identifiers (such as commit hashes and IDs)',
+      'do not write names or paths you did not actually see in this conversation.',
+    ]) expect(COMPACTION_SUMMARY_INSTRUCTION).toContain(sentence);
   });
   it('requests the same nine-heading output contract on both paths, so one parser validates both', () => {
     const block = (text: string) => text.slice(text.indexOf('<compaction_summary>'), text.indexOf('</compaction_summary>') + '</compaction_summary>'.length);

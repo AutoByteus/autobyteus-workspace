@@ -134,7 +134,7 @@ export class GeminiLLM extends BaseLLM {
     return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver, { singleAttempt });
   }
 
-  private buildGenerationConfig(messages: Message[], tools?: Array<Record<string, unknown>>): Record<string, unknown> {
+  private buildGenerationConfig(messages: Message[], options: LLMInvocationOptions, tools?: Array<Record<string, unknown>>): Record<string, unknown> {
     const systemInstruction = systemInstructionOf(messages);
     const extraParams = { ...(this.config.extraParams ?? {}) };
     const thinkingLevel = extraParams.thinking_level ?? 'medium';
@@ -147,7 +147,7 @@ export class GeminiLLM extends BaseLLM {
       const normalizedLevel = GEMINI_38_THINKING_LEVELS.has(configuredLevel)
         ? configuredLevel as 'low' | 'medium' | 'high'
         : 'medium';
-      return this.buildGemini38GenerationConfig(systemInstruction, extraParams, normalizedLevel, includeThoughts, tools);
+      return this.buildGemini38GenerationConfig(systemInstruction, this.resolveMaxOutputTokens(options), extraParams, normalizedLevel, includeThoughts, tools);
     }
 
     const config: Record<string, unknown> = {
@@ -155,7 +155,7 @@ export class GeminiLLM extends BaseLLM {
       ...(systemInstruction === null ? {} : { systemInstruction }),
       temperature: this.config.temperature,
       topP: this.config.topP ?? undefined,
-      maxOutputTokens: this.resolveMaxOutputTokens() ?? undefined,
+      maxOutputTokens: this.resolveMaxOutputTokens(options) ?? undefined,
       stopSequences: this.config.stopSequences ?? undefined,
       presencePenalty: this.config.presencePenalty ?? undefined,
       frequencyPenalty: this.config.frequencyPenalty ?? undefined
@@ -182,6 +182,7 @@ export class GeminiLLM extends BaseLLM {
 
   private buildGemini38GenerationConfig(
     systemInstruction: string | null,
+    maxOutputTokens: number | null,
     extraParams: Record<string, unknown>,
     thinkingLevel: 'low' | 'medium' | 'high',
     includeThoughts: boolean,
@@ -198,7 +199,6 @@ export class GeminiLLM extends BaseLLM {
       // Google documents lower-case wire values; the generated SDK enum is upper-case.
       thinkingConfig: { thinkingLevel, includeThoughts } as unknown as ThinkingConfig
     };
-    const maxOutputTokens = this.resolveMaxOutputTokens();
     if (maxOutputTokens !== null) config.maxOutputTokens = maxOutputTokens;
     if (this.config.stopSequences !== null) config.stopSequences = this.config.stopSequences;
     if (tools && tools.length > 0) config.tools = tools;
@@ -261,7 +261,7 @@ export class GeminiLLM extends BaseLLM {
     );
 
     const tools = this.normalizeGeminiTools(kwargs.tools);
-    const config = this.buildGenerationConfig(messages, tools);
+    const config = this.buildGenerationConfig(messages, options, tools);
     if (options.signal) {
       (config as any).abortSignal = options.signal;
     }
@@ -308,7 +308,7 @@ export class GeminiLLM extends BaseLLM {
     );
 
     const tools = this.normalizeGeminiTools(kwargs.tools);
-    const config = this.buildGenerationConfig(messages, tools);
+    const config = this.buildGenerationConfig(messages, options, tools);
     if (options.signal) {
       (config as any).abortSignal = options.signal;
     }

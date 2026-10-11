@@ -2,18 +2,18 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Independent architecture review was selected (Large/High) and passed (ARCH-REV-002; SR-007 passed as ARCH-REV-003). The handoff route is decided by `get_handoff_rules` (Large/High → Code Review).
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/requirements-doc.md` (SR-007; approved baseline SR-002; SR-005 strengthens AC-003: side-by-side summary comparison plus continuation check, user review before release; SR-006 records the IR-002 wording; SR-007 adds REQ-008, the nine-heading contract, stronger AC-003 checks and AC-010)
+- Upstream review applicability and handoff-rule result: Independent architecture review was selected (Large/High) and passed (ARCH-REV-002; SR-007 passed as ARCH-REV-003; SR-009 passed as ARCH-REV-005). The handoff route is decided by `get_handoff_rules` (Large/High → Code Review).
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/requirements-doc.md` (SR-009; approved baseline SR-002; SR-008/SR-009 add per-model summary mode (REQ-002), the summary output-limit rule (REQ-009, AC-011) and instruction v5; SR-005 strengthens AC-003: side-by-side summary comparison plus continuation check, user review before release; SR-006 records the IR-002 wording; SR-007 adds REQ-008, the nine-heading contract, stronger AC-003 checks and AC-010)
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/investigation-notes.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/solution-revision-record.md` (SR-001..007)
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-spec.md` (SR-007; § Intended Change 8–9 are the IR-003 scope)
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/solution-revision-record.md` (SR-001..009)
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-spec.md` (SR-009; § Intended Change 8–9 were IR-003, 10–12 are IR-004)
 - Supplemental task artifacts:
-  - behavior-defining, user-approved: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/supplements/cached-summary-instruction.md` (instruction v4 and transcript prompt v6, copied verbatim into code);
+  - behavior-defining, user-approved: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/supplements/cached-summary-instruction.md` (only its two normative blocks, instruction v5 and transcript prompt v6, are copied verbatim into code; the rest is history);
   - evidence only: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/probes/` (`fork-summary-probe.mjs` is the live-validation recipe).
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-review-report.md` (ARCH-REV-003, Pass)
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-review-report.md` (ARCH-REV-005, Pass)
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/architecture-review-revision-record.md`
 - Solution handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/solution-handoff.md`
-- Triggering rework report: N/A. IR-003 is the reviewed SR-007 solution revision (ARCH-REV-003 Pass), not a finding.
+- Triggering rework report: `code-review-report.md` § Round 5 (CRR-005: F-3, F-4, F-5) and `ac003-summary-quality-report.md` § Round 2, resolved by the reviewed solution revision SR-009 (ARCH-REV-005 Pass). IR-004 implements it.
 - Local check summaries: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/implementation-evidence/`
 
 ## Current Implementation Summary
@@ -59,16 +59,27 @@
    - `GeminiLLM` builds `systemInstruction` from `leadingSystemMessages(messages)`: non-empty contents joined with `\n`, as `AnthropicLLM` does. This replaces the configured `this.systemMessage`, in both the 3.8 and the older config builders. Sync and stream share the builder, and the runtime (Gemini API or Vertex) does not affect it.
    - With no leading SYSTEM message, the config has no `systemInstruction` key. Later SYSTEM notes are not included (the renderer still drops them; pre-existing, accepted risk).
    - Effect: the transcript fallback's `COMPACTION_SUMMARY_PROMPT` now reaches Gemini as its system instruction. A normal agent request is unchanged in content, because its leading SYSTEM message is the same text it configures.
+11. **Per-model summary mode (IR-004, design § Intended Change 10, REQ-002, CRR-005 F-5).**
+   - `LLMModel.compactionSummaryMode: 'cached_conversation' | 'transcript'` (type `CompactionSummaryRequestMode`) defaults to `'transcript'`. That default covers dynamic and custom models (Ollama, LM Studio, the AutoByteus server, OpenAI-compatible endpoints) and any catalog entry without the field.
+   - The eight Anthropic catalog entries set `'cached_conversation'`. So do the two DeepSeek-provider entries (`deepseek-v4-flash`, `deepseek-v4-pro`), but only pending their rerun, as a code comment says. The Qwen-hosted `deepseek-v4-pro` entry stays on `'transcript'`; it belongs to the Qwen provider.
+   - New `ConversationSummaryPort.usesCachedSummary()`, implemented by `LlmPhaseSummaryPort` from the model. `CompactionSummarizer` checks it before `fitsInputBudget`. When it returns false, the summarizer goes straight to the transcript request with the full 3-attempt budget, so attempt numbers start at 1.
+   - Memory and agent code name no provider (checked by grep over the diff).
+12. **Summary output-limit override (IR-004, design § Intended Change 11, REQ-009, CRR-005 F-3).**
+   - `LLMInvocationOptions.maxOutputTokens?: number`. `BaseLLM.resolveMaxOutputTokens(options)` returns `options.maxOutputTokens ?? resolveRequestMaxOutputTokens(model, config)`. The parameter is required, so the compiler forces every call site to pass its options.
+   - Wired into every adapter that sends a limit: Anthropic streaming plus non-streaming (`options.maxOutputTokens ?? config.maxTokens ?? 8192`), OpenAI Responses, OpenAI-compatible (so DeepSeek, GLM, Qwen, Kimi, Grok, MiniMax, LM Studio and generic endpoints), Gemini (both builders), Mistral and Ollama. `AutobyteusLLM` sends no output limit (the remote server owns it), so the override has no effect there, as before.
+   - `LlmPhaseSummaryPort` owns the rule in the exported `resolveSummaryOutputTokenOverride(model, config, contextCapacity)`: `R = resolveRequestMaxOutputTokens`; null or ≥ `SUMMARY_OUTPUT_TOKEN_FLOOR` (16,384) → no override; otherwise `max(R, min(16384, model.maxOutputTokens ?? 16384, contextCapacity ? floor(contextCapacity / 4) : 16384))`. Here `contextCapacity` is `requestCapacity.effectiveContextCapacity`, which includes the active-context override. The override is computed once per port and added to both summary requests' options. The shared `conversationRequestOptions` seam is unchanged; the port spreads the override on top.
+   - `fitsInputBudget` (cached path) reserves the override instead of the agent's reservation: `min(context − L, provider input cap) − safety margin`. Without an override it uses `requestCapacity.inputBudget` unchanged. As the design specifies, the transcript path keeps its existing input-budget check (see Important Assumptions).
+13. **Instruction v5 (IR-004, design § Intended Change 12, CRR-005 F-4/F-5).** `COMPACTION_SUMMARY_INSTRUCTION` was extracted by script from the named section "Cached summary instruction v5 — normative text" and is byte-equal to it (SHA-256 `43da1ce9d9df6b1a00f76d17cc146077d7d9be9699fbef83b023457f445af666`). A diff against v4 shows exactly the five approved sentence edits. The v6 fallback was re-extracted and is byte-identical to the shipped literal. The opening sentence is unchanged, so API/E2E's `assertNoInstructionEcho` marker still matches.
 
-- Implementation cycle: `Rework` (IR-003, reviewed solution revision SR-007 after CRR-002 Pass)
+- Implementation cycle: `Rework` (IR-004, reviewed solution revision SR-009 after CRR-005 failure-origin findings)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`. It adds the nine-heading contract, instruction v4, transcript prompt v6, and Gemini `systemInstruction` from the request; see the revision record.
-- Related solution revision IDs: `SR-004` (design), `SR-005` (AC-003), `SR-006` (IR-002 wording), `SR-007` (IR-003 scope)
-- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001` (Pass, IR-001), `CRR-002` (Pass, IR-002)
+- Current implementation revision ID: `IR-004`. It adds the per-model summary mode, the summary output-limit override and instruction v5 (IR-003 added the nine-heading contract, prompt v6 and Gemini `systemInstruction`); see the revision record.
+- Related solution revision IDs: `SR-004` (design), `SR-005` (AC-003), `SR-006` (IR-002 wording), `SR-007` (IR-003 scope), `SR-008`/`SR-009` (IR-004 scope)
+- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-005`
+- Related code-review revision IDs: `CRR-001` (Pass, IR-001), `CRR-002` (Pass, IR-002), `CRR-004` (Pass, IR-003), `CRR-005` (failure-origin: F-3, F-4, F-5)
 - Related API/E2E revision IDs: see `api-e2e-revision-record.md` (API/E2E-owned; AC-003 runs on IR-001/IR-002)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`. N-1 is still applied. ARCH-004 is respected: no test requires the transcript fallback to cover the kept tail.
+- Triggering finding IDs: CRR-005 `F-3`, `F-4`, `F-5` (through SR-009). N-1 is still applied. ARCH-004 is respected: no test requires the transcript fallback to cover the kept tail.
 
 ## Routing Classification (Mandatory)
 
@@ -85,6 +96,7 @@
   - Streaming is used for both paths, so no non-streaming limit applies.
   - The server projection accepts `autobyteus_compaction` events (tested).
   - No live fork was run here, so a fork 400 has not been observed.
+  - IR-004: the agreed seams are unchanged except one approved addition: `ConversationSummaryPort.usesCachedSummary()` (design § 10). `conversationRequestOptions` keeps its signature; the override is added on top by the port. `BaseLLM.resolveMaxOutputTokens` is protected and gained a required `options` parameter. It has no callers outside the adapters (grep over core, server, test-support).
   - IR-003: the agreed seams (`ConversationSummaryPort`/`SummaryAttemptResult`/`SummaryRequestIdentity`, `LlmPhaseSummaryPort`, `conversationRequestKwargs`/`conversationRequestOptions`, `LLMRequestAssembler.bindRequestPrefix(tools)`, `BaseLLM.releaseConversation(id,{signal})`) are unchanged. Only one adapter changed (Gemini). It was the only adapter reading `this.systemMessage` (grep over `src/llm`).
 
 ## Reviewed Behavior Implementation Trace
@@ -97,6 +109,9 @@
 | BEH-003 | Compaction metered | port `reportUsage` | Done. AC-007 unit: port event shape; server fold test (compaction events add to totals and cost, priced with cache components) |
 | BEH-001 (REQ-003, IR-003) | One nine-heading contract for both paths, approved texts | `compaction-summary-parser.ts`, `compaction-summary-prompt.ts` | Done. Hash pins for both texts; the block skeleton in both equals the nine headings; per-heading guidance present and ordered in both; the retired six-heading body is rejected |
 | BEH-001 (REQ-008, AC-010) | Gemini `systemInstruction` equals the request's leading SYSTEM messages; none when absent; normal requests unchanged | `gemini-llm.ts` `systemInstructionOf`, both config builders | Done (unit). Request bodies for 3.8 and 3.1 Pro × Gemini API and Vertex × sync and stream: leading run joined, late note excluded, configured prompt ignored; no `systemInstruction` without a leading SYSTEM message; normal agent request equals the configured prompt; the transcript fallback through `LlmPhaseSummaryPort` carries `COMPACTION_SUMMARY_PROMPT` (single-attempt client, both runtimes). The installed-SDK loopback wire test checks the serialized `systemInstruction` and its absence. The live Gemini fallback run is still to do (API/E2E) |
+| BEH-001 (REQ-002, IR-004) | Cached summary only for models that select it | `models.ts`, Anthropic and DeepSeek catalog entries, `conversation-summary-port.ts`, `compaction-summarizer.ts`, port `usesCachedSummary` | Done. Summarizer: transcript-only branch (no budget check, no cached call, attempts 1..n with backoff; exhaustion after 3). Catalog: every definition checked (Anthropic and DeepSeek provider cached, all others transcript); dynamic and custom default to transcript; the port reports the mode |
+| BEH-001 (REQ-009, AC-011) | Summary output limit raised only for a known small agent limit | `llm-phase-summary-port.ts` `resolveSummaryOutputTokenOverride`, `withOutputLimit`, `cachedSummaryInputBudget`; `base.ts`; all adapters | Done (unit and integration). All 8 worked-example rows pass, plus bounds tests (never below R, model max cap, unknown context). On the Anthropic wire: Opus at 1,024 gives both summary requests 16,384, the agent request keeps 1,024, and system/tools/thinking/cache_control and the message prefix are equal; Opus without a limit sends 128,000 everywhere. Unknown limit: no override. Budget reservation verified. Adapter request bodies (sync and stream) show the override wins and requests without it are unchanged: Anthropic, OpenAI Responses, DeepSeek, generic OpenAI-compatible, Gemini 3.1/3.8, Mistral, Ollama. Runtime integration through the real `LlmPhase`: every summary request carries 3,000 (agent limit 200, context 12,000). The live 1,024-token scenario is still to do (API/E2E) |
+| BEH-001 (REQ-001, IR-004) | Instruction v5 | `compaction-summary-prompt.ts` | Done. Hash pin plus the five v5 sentences asserted |
 | BEH-004 | Guard before and after compaction | `llm-request-assembler.ts` `bindRequestPrefix`; `llm-phase.ts` after-final bind | Done. AC-006 unit: real `MemoryManager`; tools changed means compaction sees no thinking; order test (bind → compaction → bind → checkpoint) |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -120,6 +135,7 @@
   - New server: `tests/unit/token-usage/projections/token-usage-compaction-ingestion.test.ts`.
   - Adapted: executor harness, assembler, configuration, agent-config/factory, the runtime compaction integration, the server recovery fixture, backend-factory unit and integration tests, provider builder, settings service and GraphQL e2e, the live boundary unit test, the live quality and capabilities e2e, and the web card spec.
   - Deleted (they tested only removed code): core `direct-llm-compression-strategy.test.ts`; server `config/compaction-model-settings.test.ts`, `compaction/compaction-llm-factory.test.ts`, `compaction/compaction-parent-credentials.test.ts`, `compaction/compaction-provider-requests.test.ts`; web `CompactionModelSettings.spec.ts`.
+- **IR-004:** `src/llm/{models,base,anthropic-supported-model-definitions,supported-model-definitions}.ts`, `src/llm/api/{anthropic,gemini,mistral,ollama,openai-compatible,openai-responses}-llm.ts`, `src/memory/compaction/{conversation-summary-port,compaction-summarizer,compaction-summary-prompt}.ts`, `src/agent/loop/llm-phase-summary-port.ts`. Tests: new `tests/unit/agent/loop/llm-phase-summary-output-limit.test.ts`; changed `tests/unit/llm/api/request-output-limit.test.ts`, `tests/unit/memory/compaction-summarizer.test.ts`, `tests/unit/memory/compaction-summary-prompt.test.ts`, `tests/integration/agent/runtime/agent-runtime-compaction.test.ts` (its models select the cached summary, and a REQ-009 assertion was added). Docs: `autobyteus-ts/docs/{agent_memory_design,llm_module_design,llm_module_design_nodejs}.md`, `autobyteus-server-ts/docs/ARCHITECTURE.md`.
 - **IR-003:** `src/memory/compaction/{compaction-summary-parser,compaction-summary-prompt}.ts`, `src/llm/api/gemini-llm.ts`; tests `tests/unit/memory/compaction-summary-prompt.test.ts`, `tests/unit/llm/api/gemini-llm.test.ts`, `tests/integration/llm/api/gemini-llm-wire-contract.test.ts`, server `tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts` (heading check now uses `COMPACTION_SUMMARY_HEADINGS`); docs `autobyteus-ts/docs/agent_memory_design.md`, `autobyteus-server-ts/docs/ARCHITECTURE.md` (the stale strategy paragraph now describes the summarizer).
 - **Docs:** `autobyteus-ts/docs/agent_memory_design.md`; `autobyteus-server-ts/docs/{ARCHITECTURE.md,modules/agent_memory.md}`; `autobyteus-web/docs/{settings.md,agent_execution_architecture.md}`.
 
@@ -130,6 +146,8 @@
 - **Streamed attempts report completion from the terminal chunk's `finish`** (added upstream). Unreported means `unknown`. Streaming is needed because the agent's own `maxTokens` would break non-streaming SDK calls.
 - **No backoff between the 2 cached attempts.** The fallback is the recovery path. The transcript path keeps today's 1 s and 2 s backoffs.
 - **The "before" bind runs only when compaction can run** (not on tool continuations). This avoids a redundant digest on every continuation. The "after" bind always runs, as before.
+- **IR-004, transcript input check unchanged.** Design § 11 says only that `fitsInputBudget` reserves the override. The transcript path's existing check, `estimateMessagesTokens > requestCapacity.inputBudget`, was left as is. When the override applies, a transcript request can therefore reserve up to L − R more output than its input check assumed: at most a quarter of the context, minus R. Reserving L there too would shrink what the transcript fallback accepts and could make some compactions fail earlier. If the reviewer prefers that, it is a one-line change, but it is a design decision.
+- **IR-004, the override is computed once per port.** `LlmPhase` builds a port per run with that run's LLM and capacity, the same lifetime as `requestCapacity`.
 - **A user retry of a failed compaction reuses the operation id**, so conversation ids `compaction_<op>_<n>` can repeat across executions. This is harmless: each is released after its attempt, and `llm_call_id` and `idempotency_key` include the new execution turn.
 
 ## Known Risks
@@ -139,7 +157,11 @@
 - **Gemini single-attempt:** the previously reported `compaction-single-attempt-transport` failure passes on the merged base `e50826755`, so it appears to have been fixed upstream. Compaction on Gemini agents relies on that single-attempt path.
 - **Provider instruction-following** (design risk): handled by the parser plus the fallback. Validate one non-Anthropic provider live.
 - **Transcript path on Gemini:** resolved in IR-003 (REQ-008). Gemini now takes the system prompt from the request, so the fallback's summary prompt is its system instruction. Accepted, pre-existing: Gemini's renderer still drops SYSTEM notes that come after the leading run.
-- **Accepted (ARCH-REV-003):** OBS-1 (a small configured `maxTokens` can truncate the summary; it is then classified `incomplete_summary` and falls back); the cached path can cost slightly more than the transcript path (history A: $0.12 vs $0.08).
+- **IR-004, DeepSeek catalog value is provisional.** It is `'cached_conversation'` pending the SR-008 AC-003 rerun. A failed rerun goes back to the Solution Designer; API/E2E does not change the value itself (ARCH-REV-004/005).
+- **IR-004, API/E2E-owned live tests affected by the new behavior (not edited here):**
+  - `autobyteus-server-ts/tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts` OLR-E2E-010 (uncommitted API/E2E work). It asserts that every summary call carries `max_tokens == SUMMARY_CUT_LIMIT` and that a blocked operation runs `cached, cached, transcript ×3`. Under REQ-009, a known agent limit below 16,384 is raised for summary requests. Under REQ-002, the mode sequence depends on the model's catalog value (transcript-only gives `transcript ×3`). The scenario premise needs revisiting.
+  - `autobyteus-compaction-cache-reuse-live.e2e.test.ts`: `assertNoInstructionEcho` still works with v5 (same opening sentence).
+- **Accepted (ARCH-REV-003):** OBS-1 (superseded for small known limits by REQ-009) (a small configured `maxTokens` can truncate the summary; it is then classified `incomplete_summary` and falls back); the cached path can cost slightly more than the transcript path (history A: $0.12 vs $0.08).
 - **Small wording changes stay hash-pinned:** any change to either text must come from the approved supplement and update the pinned hash.
 - **Summary overlap with the kept tail** (DEC-002): the existing `post_compaction_target_exceeded` handling applies.
 
@@ -197,7 +219,15 @@
 
 ## Local Implementation Checks Run
 
-**IR-003 (current code, HEAD `8d0a98eb5` plus the IR-003 commit):**
+**IR-004 (current code, HEAD `1153984ee` plus the IR-004 commit):**
+- autobyteus-ts production typecheck (`tsconfig.build.json`): pass. The new and changed test files gained no type errors. I added `canonicalName` to the three runtime-test models I edited. The remaining errors in that file (`mockImplementation` return types) and `gemini-llm.test.ts:64` are on unchanged lines and were present at HEAD.
+- autobyteus-ts `vitest run tests/unit`: 306 files, **2005 tests, all passed**. Focused afterwards: `tests/unit/{agent,memory,llm}` plus runtime compaction integration, 193 files and 1332 tests passed.
+- autobyteus-ts integration: `agent-runtime-compaction.test.ts` 6/6 and `gemini-llm-wire-contract.test.ts` 4/4.
+- Server: `prepare:shared` passes and `typecheck` exits 0. `vitest run tests/unit`: 666 files passed, 4 skipped; 5232 tests passed. Integration: `standalone-agent-run-root/*`, `agent-run-manager` and `memory-layout-and-projection` pass (5 files, 39 tests; prerequisites check OK).
+- Verbatim check: v5 and v6 byte-equal to their named supplement sections (`true true`).
+- Web: not rerun; no web code changed.
+
+**IR-003 (HEAD `8d0a98eb5` plus the IR-003 commit):**
 - autobyteus-ts production typecheck (`tsconfig.build.json`): pass. In the test-config typecheck, the changed files gained no errors. The remaining errors in `tests/unit/llm/api/gemini-llm.test.ts:64` (an `it.each` signature) and the live `tests/integration/llm/api/gemini-llm.test.ts` were present at HEAD.
 - autobyteus-ts `vitest run tests/unit`: 305 files, **1977 tests, all passed** (up from 1955: the prompt, parser and Gemini tests).
 - autobyteus-ts integration: `agent-runtime-compaction.test.ts` 6/6 and `gemini-llm-wire-contract.test.ts` 4/4 (installed SDK over loopback HTTP).
@@ -272,6 +302,11 @@ Run through the test vault, using `probes/fork-summary-probe.mjs` as the recipe.
 - **AC-008.** One non-Anthropic native provider compacts, through the cached request or the fallback. The harness reports `summaryModes`.
 - **Live harness review.** `test-support/live-e2e/live-e2e-harness.ts` and the `real-e2e-*` consumers were migrated without live execution here. Please validate their evidence semantics (`summary*` fields, `summaryOnAgentModelVerified`, the cached-mode source evidence).
 - **Desktop.** The Settings card has no model option. The user verifies the meter (AC-007).
+- **IR-004 (per ARCH-REV-005 and design § Guidance For Implementation, SR-008):**
+  - **AC-011 live:** the repository's real-provider DeepSeek compaction scenario with `max_tokens: 1024` succeeds; the summary request bodies carry `min(16384, model max, context ÷ 4)` (16,384 for `deepseek-v4-pro`). On Anthropic, the summary call's cache read is unchanged with the floor.
+  - **AC-003 rerun with v5:** Opus 5.5, one more Anthropic model, and DeepSeek. Gemini runs must show no instruction echo (`assertNoInstructionEcho`). If DeepSeek fails, report to the Solution Designer; do not flip the catalog value.
+  - **REQ-002 live:** a non-selecting model (for example Gemini) compacts through the transcript path only.
+  - Revisit OLR-E2E-010 (see Known Risks).
 - **IR-003 reruns (per ARCH-REV-003):**
   - **AC-003** on histories A (464,106 tokens) and B (194,548 tokens) with instruction v4 and prompt v6, using the conditions above.
   - **AC-010:** a live Gemini transcript-fallback run on both the Gemini API and Vertex. The summary must pass the nine-heading parser, and the request's `systemInstruction` must be `COMPACTION_SUMMARY_PROMPT`.

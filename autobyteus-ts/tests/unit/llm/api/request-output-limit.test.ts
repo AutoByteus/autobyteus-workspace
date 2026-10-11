@@ -273,3 +273,71 @@ describe('Ollama output limit (AC-013)', () => {
     expect(lastParams(chat).options).toBeUndefined();
   });
 });
+
+describe('per-request maxOutputTokens override (REQ-009, AC-011)', () => {
+  const override = { maxOutputTokens: 16_384 };
+  /** Sends the same request without and with the override, streamed and not; returns the four outgoing limits. */
+  const limits = async (build: () => BaseLLM, install: (llm: BaseLLM) => ReturnType<typeof vi.fn> | { stream: ReturnType<typeof vi.fn>; sync: ReturnType<typeof vi.fn> },
+    read: (params: Record<string, any>) => unknown) => {
+    const out: unknown[] = [];
+    for (const options of [{}, override]) {
+      for (const stream of [true, false]) {
+        const llm = build();
+        const recorder = install(llm);
+        if (stream) { for await (const _ of llm.streamMessages(messages, { logicalConversationId: 'c' }, options)) { /* drain */ } }
+        else await llm.sendMessages(messages, { logicalConversationId: 'c' }, options);
+        const mock = typeof recorder === 'function' ? recorder : (stream ? recorder.stream : recorder.sync);
+        out.push(read(lastParams(mock)));
+      }
+    }
+    return out;
+  };
+
+  it('Anthropic: the override wins on streaming and non-streaming calls; without it the agent limit and the non-streaming default stay', async () => {
+    expect(await limits(() => new AnthropicLLM(catalogModel(LLMProvider.ANTHROPIC, 'claude-opus-5-5'), new LLMConfig({ maxTokens: 1024 }), key),
+      (llm) => withAnthropicClient(llm as AnthropicLLM), (params) => params.max_tokens)).toEqual([1024, 1024, 16_384, 16_384]);
+    expect(await limits(() => new AnthropicLLM(catalogModel(LLMProvider.ANTHROPIC, 'claude-opus-5-5'), new LLMConfig(), key),
+      (llm) => withAnthropicClient(llm as AnthropicLLM), (params) => params.max_tokens)).toEqual([128_000, 8192, 16_384, 16_384]);
+  });
+
+  it('OpenAI Responses: max_output_tokens', async () => {
+    expect(await limits(() => new OpenAILLM(catalogModel(LLMProvider.OPENAI, 'gpt-5.5'), new LLMConfig({ maxTokens: 1024 }), key),
+      (llm) => withResponsesClient(llm as OpenAILLM), (params) => params.max_output_tokens)).toEqual([1024, 1024, 16_384, 16_384]);
+  });
+
+  it.each([
+    ['DeepSeek', () => new DeepSeekLLM(catalogModel(LLMProvider.DEEPSEEK, 'deepseek-v4-pro'), new LLMConfig({ maxTokens: 1024 }), key), 'max_tokens'],
+    ['generic endpoint', () => new OpenAICompatibleLLM(syntheticModel(LLMProvider.OPENAI, null), 'http://localhost:1', new LLMConfig({ maxTokens: 1024 }), key, LLMProvider.OPENAI), 'max_completion_tokens'],
+  ] as const)('OpenAI-compatible %s: %s', async (_label, build, parameter) => {
+    expect(await limits(build, (llm) => withChatCompletionsClient(llm as OpenAICompatibleLLM), (params) => params[parameter]))
+      .toEqual([1024, 1024, 16_384, 16_384]);
+  });
+
+  it.each(['gemini-3.1-pro-preview', 'gemini-3.8-flash'])('Gemini %s: maxOutputTokens', async (value) => {
+    expect(await limits(() => new GeminiLLM(catalogModel(LLMProvider.GEMINI, value), new LLMConfig({ maxTokens: 1024 }), key, geminiRuntimeResolver()),
+      (llm) => { const client = withGeminiClient(llm as GeminiLLM); return { stream: client.generateContentStream, sync: client.generateContent }; },
+      (params) => params.config.maxOutputTokens)).toEqual([1024, 1024, 16_384, 16_384]);
+  });
+
+  it('Mistral: maxTokens, also for a model with no known limit', async () => {
+    const install = (llm: BaseLLM) => {
+      const stream = vi.fn(async () => emptyStream());
+      const sync = vi.fn(async () => ({ choices: [{ finishReason: 'stop', message: { content: 'ok' } }] }));
+      (llm as any).clientPromise = Promise.resolve({ chat: { stream, complete: sync } });
+      return { stream, sync };
+    };
+    expect(await limits(() => new MistralLLM(syntheticModel(LLMProvider.MISTRAL, null), new LLMConfig({ maxTokens: 1024 }), key), install,
+      (params) => params.maxTokens)).toEqual([1024, 1024, 16_384, 16_384]);
+  });
+
+  it('Ollama: options.num_predict', async () => {
+    const install = (llm: BaseLLM) => {
+      const chat = vi.fn(async (request: Record<string, unknown>) => request.stream
+        ? emptyStream() : { done: true, done_reason: 'stop', message: { content: 'ok' } });
+      (llm as any).client = { chat, abort: vi.fn() };
+      return chat;
+    };
+    expect(await limits(() => new OllamaLLM(syntheticModel(LLMProvider.OLLAMA, null, 'http://localhost:11434'), new LLMConfig({ maxTokens: 1024 }), key),
+      install, (params) => params.options?.num_predict)).toEqual([1024, 1024, 16_384, 16_384]);
+  });
+});
