@@ -78,12 +78,16 @@ LLM, the tools or the notifier, and there is no compaction-model setting.
   summary covers the whole conversation while the planned recent tail is still kept
   word for word. Up to **two** attempts; skipped when the request plus the model's
   output reservation would not fit the input budget.
-- **Summary output limit (REQ-009).** Both summary requests use the agent's own
-  output limit `R` unless `R` is known and below 16,384; then they pass
-  `LLMInvocationOptions.maxOutputTokens = max(R, min(16,384, model maximum if known,
-  floor(context / 4) if known))`, and the cached request's budget check reserves that
-  value instead. An unknown or high limit is unchanged. The agent's own requests and
-  the cached prefix are unaffected (the output limit is outside the prompt prefix).
+- **Summary output limit (REQ-009, SR-010).** Both summary requests use the agent's own
+  output limit `R` unless `R` is known and below 16,384. Then the ceiling is
+  `L = max(R, min(16,384, model maximum if known, floor(context / 4) if known))`, and each
+  request passes `LLMInvocationOptions.maxOutputTokens = max(R, min(L, context − E −
+  safety margin))`, where `E` is the estimate of exactly what that request sends (the same
+  estimate its input check uses); with an unknown context it passes `L`. Both paths
+  accept inputs with the agent's own input budget, so an accepted request always leaves
+  room for at least `R` and input plus output stays within `context − margin`. An unknown
+  or high limit is unchanged. The agent's own requests and the cached prefix are
+  unaffected (the output limit is outside the prompt prefix).
 - **Transcript fallback.** Otherwise, or after two cached attempts without a valid
   summary (tool calls, a task answer, invalid format, provider error), the agent's
   own LLM receives `COMPACTION_SUMMARY_PROMPT` as system plus the prepared transcript

@@ -158,22 +158,25 @@ describe('LlmPhaseSummaryPort output limit on the wire', () => {
     expect(llm.options.map((options) => 'maxOutputTokens' in options)).toEqual([false, false]);
   });
 
-  it('fitsInputBudget reserves the override instead of the agent limit, and the agent budget otherwise', () => {
+  it('fitsInputBudget accepts with the agent\'s own budget, with or without an override (SR-010), and the limit fits the room', async () => {
     const withOverride = new RecordingLLM(ollamaModel(8192), new LLMConfig({ maxTokens: 1024 }));
     const capacity = resolveLlmRequestCapacity(withOverride.model, withOverride.config)!;
     expect(capacity.inputBudget).toBe(8192 - 1024 - capacity.safetyMarginTokens);
-    const overrideBudget = 8192 - 2048 - capacity.safetyMarginTokens;
     const sized = (chars: number) => [new Message(MessageRole.USER, { content: 'x'.repeat(chars) })];
     const estimate = (chars: number) => estimateMessagesTokens([...sized(chars), new Message(MessageRole.USER, { content: 'i' })]);
+    // Real estimator: the largest input that still fits the agent budget, i.e. inside the SR-009 "reserve L" window.
     let chars = 1000;
-    while (estimate(chars) <= overrideBudget) chars += 500;
-    expect(estimate(chars)).toBeLessThanOrEqual(capacity.inputBudget);
+    while (estimate(chars + 100) <= capacity.inputBudget) chars += 100;
+    expect(estimate(chars)).toBeGreaterThan(8192 - 2048 - capacity.safetyMarginTokens);
 
     const port = new LlmPhaseSummaryPort({ agentId: 'agent', llm: withOverride, tools: [], notifier: null, requestCapacity: capacity });
-    expect(port.fitsInputBudget(sized(chars), 'i')).toBe(false);
-    expect(port.fitsInputBudget(sized(chars - 500), 'i')).toBe(true);
+    expect(port.fitsInputBudget(sized(chars), 'i')).toBe(true);
+    expect(port.fitsInputBudget(sized(chars + 400), 'i')).toBe(false);
+    await port.requestCachedSummary(sized(chars), 'i', { operationId: 'op', executionTurnId: 't', attempt: 1 }, new AbortController().signal);
+    const sent = withOverride.options.at(-1)!.maxOutputTokens!;
+    expect(sent).toBe(Math.max(1024, Math.min(2048, 8192 - estimate(chars) - capacity.safetyMarginTokens)));
+    expect(estimate(chars) + sent).toBeLessThanOrEqual(8192 - capacity.safetyMarginTokens);
 
-    // Without an override (unknown agent limit) the same capacity is used unchanged: the request fits.
     const unknownLimit = new RecordingLLM(ollamaModel(8192), new LLMConfig());
     const noOverridePort = new LlmPhaseSummaryPort({ agentId: 'agent', llm: unknownLimit, tools: [], notifier: null, requestCapacity: capacity });
     expect(noOverridePort.fitsInputBudget(sized(chars), 'i')).toBe(true);

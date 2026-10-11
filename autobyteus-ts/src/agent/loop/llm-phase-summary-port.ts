@@ -30,9 +30,10 @@ export const compactionConversationId = (identity: SummaryRequestIdentity): stri
   `compaction_${identity.operationId}_${identity.attempt}`;
 
 /**
- * The output limit override for summary requests (both paths), or `null` for none (REQ-009).
+ * The ceiling `L` of the raised summary output limit, or `null` for no override (REQ-009).
  * Only a known agent limit `R` below the floor is raised, to the floor bounded by the model
  * maximum and a quarter of the context, and never below `R`. An unknown or high limit is kept.
+ * Each request then sends `L` fitted to the room its own input leaves (`summaryOutputLimit`).
  */
 export const resolveSummaryOutputTokenOverride = (
   model: LLMModel, config: LLMConfig, contextCapacity: number | null,
@@ -54,10 +55,14 @@ const estimateToolSchemaTokens = (tools: ReadonlyArray<Record<string, unknown>>)
  * which is released afterwards; its usage is reported as an `autobyteus_compaction` usage event.
  */
 export class LlmPhaseSummaryPort implements ConversationSummaryPort {
-  private readonly outputTokenOverride: number | null;
+  /** The agent's own resolved output limit `R`. */
+  private readonly agentOutputLimit: number | null;
+  /** The ceiling `L`, or `null` when there is no override. */
+  private readonly outputLimitCeiling: number | null;
 
   constructor(private readonly input: LlmPhaseSummaryPortInput) {
-    this.outputTokenOverride = resolveSummaryOutputTokenOverride(input.llm.model, input.llm.config,
+    this.agentOutputLimit = resolveRequestMaxOutputTokens(input.llm.model, input.llm.config);
+    this.outputLimitCeiling = resolveSummaryOutputTokenOverride(input.llm.model, input.llm.config,
       input.requestCapacity?.effectiveContextCapacity ?? null);
   }
 
@@ -65,26 +70,36 @@ export class LlmPhaseSummaryPort implements ConversationSummaryPort {
     return this.input.llm.model.compactionSummaryMode === 'cached_conversation';
   }
 
+  /** The cached request is accepted with the agent's own input budget. */
   fitsInputBudget(messages: readonly Message[], extraText: string): boolean {
-    const budget = this.cachedSummaryInputBudget();
-    if (budget === null) return false;
-    const estimate = estimateMessagesTokens([...messages, new Message(MessageRole.USER, { content: extraText })])
-      + estimateToolSchemaTokens(this.input.tools);
-    return estimate <= budget;
-  }
-
-  /** The agent's input budget, or with the override the same budget reserving the override instead. */
-  private cachedSummaryInputBudget(): number | null {
     const capacity = this.input.requestCapacity;
-    if (!capacity) return null;
-    if (this.outputTokenOverride === null || capacity.effectiveContextCapacity === null) return capacity.inputBudget;
-    const contextCap = Math.max(0, capacity.effectiveContextCapacity - this.outputTokenOverride);
-    const inputCap = capacity.providerInputCapTokens === null ? contextCap : Math.min(contextCap, capacity.providerInputCapTokens);
-    return Math.max(0, inputCap - capacity.safetyMarginTokens);
+    return capacity !== null && this.estimateCachedRequest(messages, extraText) <= capacity.inputBudget;
   }
 
-  private withOutputLimit(options: LLMInvocationOptions): LLMInvocationOptions {
-    return this.outputTokenOverride === null ? options : { ...options, maxOutputTokens: this.outputTokenOverride };
+  /** What the cached request sends: the messages, the appended instruction and the tool schemas. */
+  private estimateCachedRequest(messages: readonly Message[], instruction: string): number {
+    return estimateMessagesTokens([...messages, new Message(MessageRole.USER, { content: instruction })])
+      + estimateToolSchemaTokens(this.input.tools);
+  }
+
+  /**
+   * The limit one summary request sends (SR-010): `max(R, min(L, context − E − margin))` for an
+   * input estimate `E`, unbounded by room when the context is unknown; `null` without an override.
+   * An accepted input (`E ≤ inputBudget`) leaves room ≥ R, so input + output stays within
+   * `context − margin`, as for the agent's own requests.
+   */
+  private summaryOutputLimit(estimatedInputTokens: number): number | null {
+    const ceiling = this.outputLimitCeiling;
+    if (ceiling === null || this.agentOutputLimit === null) return null;
+    const capacity = this.input.requestCapacity;
+    if (capacity === null || capacity.effectiveContextCapacity === null) return ceiling;
+    const room = capacity.effectiveContextCapacity - estimatedInputTokens - capacity.safetyMarginTokens;
+    return Math.max(this.agentOutputLimit, Math.min(ceiling, room));
+  }
+
+  private withOutputLimit(options: LLMInvocationOptions, estimatedInputTokens: number): LLMInvocationOptions {
+    const limit = this.summaryOutputLimit(estimatedInputTokens);
+    return limit === null ? options : { ...options, maxOutputTokens: limit };
   }
 
   async requestCachedSummary(messages: readonly Message[], instruction: string,
@@ -93,7 +108,8 @@ export class LlmPhaseSummaryPort implements ConversationSummaryPort {
     const sanitized = await sanitizeMediaInputMessages([...messages], this.input.llm.model.multimodalCapabilities);
     return this.send('cached', [...sanitized.outboundMessages, new Message(MessageRole.USER, { content: instruction })],
       conversationRequestKwargs(conversationId, this.input.tools),
-      this.withOutputLimit(conversationRequestOptions({ signal, turnId: identity.executionTurnId, retryMode: 'single_attempt' })),
+      this.withOutputLimit(conversationRequestOptions({ signal, turnId: identity.executionTurnId, retryMode: 'single_attempt' }),
+        this.estimateCachedRequest(messages, instruction)),
       identity, signal);
   }
 
@@ -105,11 +121,12 @@ export class LlmPhaseSummaryPort implements ConversationSummaryPort {
     ];
     const capacity = this.input.requestCapacity;
     if (!capacity) throw new CompactionInvocationError('input_capacity_unavailable', 'Compactor input capacity is unavailable.');
-    if (estimateMessagesTokens(messages) > capacity.inputBudget) {
+    const estimate = estimateMessagesTokens(messages);
+    if (estimate > capacity.inputBudget) {
       throw new CompactionInvocationError('input_budget_exceeded', 'Selected compaction history exceeds the compactor input budget.');
     }
     return this.send('transcript', messages, { logicalConversationId: compactionConversationId(identity) },
-      this.withOutputLimit({ signal, turnId: identity.executionTurnId, retryMode: 'single_attempt' }), identity, signal);
+      this.withOutputLimit({ signal, turnId: identity.executionTurnId, retryMode: 'single_attempt' }, estimate), identity, signal);
   }
 
   private async send(mode: CompactionSummaryMode, messages: Message[], kwargs: Record<string, unknown>,

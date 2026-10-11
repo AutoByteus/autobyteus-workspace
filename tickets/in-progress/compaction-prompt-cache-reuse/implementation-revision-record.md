@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-002 | User instruction in conversation (2026-10-11), after CRR-001 Pass | N/A | `Requirement Gap` (user-approved directly) | SR-005, ARCH-REV-002, CRR-001 | Cached summary instruction rewritten in the agent's own voice; back to Code Review |
 | IR-003 | Architecture Reviewer pass handoff, ARCH-REV-003 (SR-007) | N/A (ARCH-004 and N-1 respected) | `Solution Revision` (reviewed) | SR-007, ARCH-REV-003, CRR-002 | Nine-heading contract, instruction v4, prompt v6, Gemini `systemInstruction` from the request; back to Code Review |
 | IR-004 | Architecture Reviewer pass handoff, ARCH-REV-005 (SR-009), from CRR-005 | CRR-005 F-3, F-4, F-5 | `Solution Revision` (reviewed) | SR-008, SR-009, ARCH-REV-005, CRR-004, CRR-005 | Per-model summary mode, summary output-limit override (REQ-009), instruction v5; back to Code Review |
+| IR-005 | Architecture Reviewer pass handoff, ARCH-REV-006 (SR-010), from CRR-006 | CRR-006 CR-004 | `Solution Revision` (reviewed) | SR-010, ARCH-REV-006, CRR-006 | Summary output limit fitted to each request's room; both paths accept with the agent budget; back to Code Review |
 
 ## Revision Entries
 
@@ -144,4 +145,32 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - The DeepSeek catalog value is provisional.
   - API/E2E's uncommitted OLR-E2E-010 premise (summary `max_tokens` equal to the cut limit; cached-first mode sequence) conflicts with REQ-009/REQ-002 and needs their update.
   - The live checks (AC-011 1,024-token scenario, AC-003 v5 rerun) are API/E2E work.
+  - The uncommitted API/E2E edits and the other roles' ticket docs were not touched or committed.
+
+### IR-005 — Summary output limit fitted to each request (SR-010, CR-004)
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-review-report.md`, ARCH-REV-006 (SR-010, Pass). Applied on top of IR-004 (`13648b147`).
+- Triggering finding IDs: CRR-006 CR-004. Under IR-004, a transcript request in the window `(context − L − margin, context − R − margin]` could overflow the context, and a cached request in that window gave up the cache.
+- Classification: `Solution Revision` (reviewed).
+- Prior authoritative result: IR-004.
+- Current authoritative result: implemented; local checks pass; returning to Code Review.
+- Related solution revision IDs: SR-010. Related architecture-review revision IDs: ARCH-REV-006. Related code-review revision IDs: CRR-006. Related API/E2E revision IDs: see `api-e2e-revision-record.md`. Related delivery revision IDs: N/A.
+- Why this implementation revision is recorded: it keeps today's input acceptance and today's minimum output on both paths, while never letting input plus output exceed `context − margin`.
+- Approved behavior or requirement IDs affected: REQ-009, AC-011.
+- Implementation delta (local to `LlmPhaseSummaryPort`; no interface change):
+  - the port holds `R` and the ceiling `L` (`resolveSummaryOutputTokenOverride`, unchanged);
+  - the new private `summaryOutputLimit(E)` computes `max(R, min(L, context − E − margin))`, gives `L` for an unknown context, and gives none without an override;
+  - `estimateCachedRequest` is shared by `fitsInputBudget` and the cached limit (N-2); the transcript limit uses the estimate its own check computes;
+  - `fitsInputBudget` returns `E ≤ requestCapacity.inputBudget`;
+  - `cachedSummaryInputBudget` is removed.
+- Changed files or areas: `autobyteus-ts/src/agent/loop/llm-phase-summary-port.ts`; tests `tests/unit/agent/loop/llm-phase-summary-fitted-limit.test.ts` (new) and `tests/unit/agent/loop/llm-phase-summary-output-limit.test.ts`; `autobyteus-ts/docs/agent_memory_design.md`.
+- Local validation and result:
+  - core production typecheck: pass;
+  - core unit: 307 files, 2017/2017;
+  - runtime compaction integration: pass;
+  - server `prepare:shared` + typecheck: pass; server unit: 5232 passed; server compaction integration: 39/39.
+- Next recipient or routing: Code Review (`get_handoff_rules`, Large/High).
+- Remaining limitations or risks:
+  - `E` is an estimate (characters ÷ 4 and so on). The limit is as accurate as the existing input checks, which use the same estimator.
+  - Open items owned by API/E2E: CR-001/C-020 (OLR-E2E-010), CR-003, the DeepSeek AC-003 rerun, AC-010 and AC-011 live.
   - The uncommitted API/E2E edits and the other roles' ticket docs were not touched or committed.
