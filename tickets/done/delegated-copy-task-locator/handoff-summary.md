@@ -122,11 +122,19 @@ Stop it afterwards with `pnpm --silent isolated-app stop`.
   - a full regeneration of `autobyteus-web/generated/graphql.ts`, which was already out of step before this ticket.
 - Persisted data: `Not Affected`. No migration, and no rollback data concern.
 
-## Delivery State
+## Delivery State (final, DR-002)
 
 - Docs sync: `docs-sync-report.md`, result `Updated`.
-- Release notes: `release-notes.md`, kept for a later curated stable release. Beta releases publish generated notes.
-- **User verification received** 2026-10-11 (`user-verification.md`): "i have also tested. i verified. its
-  working. now finalize, and release anew beta."
-- Finalization and the requested beta release follow: archive commit, ticket-branch push, `origin/personal`
-  re-check, merge and push, beta tag, cleanup. Results: `release-deployment-report.md`, DR-002.
+- User verification: received 2026-10-11 (`user-verification.md`).
+- Finalized:
+  - merge `d110cb612` on `origin/personal`, its tree identical to the verified ticket branch;
+  - ticket branch `origin/codex/delegated-copy-task-locator` @ `e507d5e96`.
+- Released: **`v1.5.1-beta.3`**, with release commit `d72d2018b`.
+  - Desktop, Android and iOS were published. The GitHub pre-release has 17 assets.
+  - The Docker image `autobyteus/autobyteus-server:1.5.1-beta.3` was built from `228cd9b5e`, which carries the
+    gzip installer fix.
+  - `v1.5.1-beta.2` has no desktop release: its Windows checkout failed on `:` in evidence log names, which were then
+    fixed in `d94946519`.
+- Release notes: `release-notes.md`, kept for a later curated stable release.
+- Cleanup: the ticket worktree and local branch are removed; the remote branch is kept.
+- Details: `release-deployment-report.md`, and `delivery-revision-record.md` DR-002.
