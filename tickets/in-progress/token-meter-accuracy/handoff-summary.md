@@ -2,13 +2,10 @@
 
 ## User Verification
 
-- Status: **waiting for the user** (AC-010).
-- Asked of the user:
-  1. **Verify in the desktop app.**
-     - Claude SDK fix A: the latest prompt equals the SDK's own reading for the last call. No summed percentages such as 6,759 %.
-     - Claude SDK fix B: the meter updates per model call during the turn (standalone, team member, delegated copy).
-     - Spot checks: AGY, Codex (post-compaction reading not 0), Grok and native.
-  2. **Release decision:** publish a new beta (`v1.4.99-beta.10`) or finalize without a release.
+- Verified by the user on 2026-10-11: "i have verified. lets finalize and release a new beta".
+  - AC-010 (desktop app: Claude SDK fixes A and B, runtime spot checks): verified.
+- Release decision: publish the next beta.
+- Follow-up: the code reviewer's refactoring proposal (`code-review-refactoring-proposal.md`, R-1–R-4) is tracked separately as Project Task `project_task_7257984e-19b4-452a-a65b-99316d879bc1` (SR-007). It is not part of this package.
 
 ## State For User Verification
 

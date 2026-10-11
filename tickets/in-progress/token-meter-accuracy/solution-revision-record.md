@@ -10,6 +10,7 @@
 | SR-004 | Design | ARCH-REV-001 (Fail — Design Impact) | ARCH-F-001, ARCH-F-002; RR-1–RR-5 | design Ready (SR-003) | design Ready (round 2) | REQ-004, REQ-006, REQ-008; AC-003, AC-004, AC-006 | D-9 freshness key, D-10 awaited emission; requirements unchanged |
 | SR-005 | Design | ARCH-REV-002 (Fail — Design Impact) | ARCH-F-003 | design Ready (SR-004) | design Ready (round 3) | REQ-008, REQ-010; AC-003, AC-008 | Strict shared contract schemas mapped; requirements unchanged |
 | SR-006 | Evidence | PTM coordination note: gemini-native-cache-hit merged | AF-16 | design Ready, ARCH-REV-003 Pass | unchanged | BEH-003 | Integration note for delivery; no requirement or design change |
+| SR-007 | Evidence | Code reviewer refactoring proposal (R-1–R-4), user-requested | — | integrated (DR-001), awaiting AC-010 | unchanged | none (behavior-neutral) | User chose follow-up: Project Task project_task_7257984e-19b4-452a-a65b-99316d879bc1 (TODO) |
 
 ## Revision Entries
 
@@ -123,3 +124,15 @@
 - Design/review impact: none (design unchanged); delivery integration note
 - Applied handoff-rule outcome: no rule matches an evidence-only note; result returned to the Project Task Manager
 - Next action: delivery integrates with current `origin/personal` per AF-16
+
+### SR-007 — Post-review refactoring proposal (scoping pending)
+
+- Phase and classification: Evidence, `Evidence-only clarification` (no requirement or design change yet)
+- Trigger: `/software_engineering_team/code_reviewer` proposal at user request: `code-review-refactoring-proposal.md` (R-1 dead partial-stream text path; R-2 one owned token-usage details type and wire mapper; R-3 extract the team live-partial merge from `tokenUsageMeterStore.ts`; R-4 fold result exposes `contributes`).
+- Verification (HEAD `f3245cdb0`): `claude-session.ts:398` returns for `stream_event` before the turn tracker, so `claude-text-segment-projector.ts:135/167` partial path is unreachable; `tokenPayload` is duplicated in `team-agent-event-websocket-projector.ts:17` and `agent-presentation-message-projector.ts:4`; the store is 536 physical lines.
+- Design note: R-1 was an intentional deferral in this design (Task Design Health Assessment); with the reviewer's reachability proof, removal is justified.
+- Status: package integrated (DR-001), awaiting user verification AC-010. All items are behavior-neutral.
+- Recommendation to the user: Option A — separate follow-up ticket (expected Medium / Low) after AC-010, so the validated package does not restart review and E2E. A possible Claude SDK cost-source follow-up (user question 2026-10-11) can be scoped alongside it.
+- User decision (2026-10-11): "create a follow up ticket for this". Created Project Task `project_task_7257984e-19b4-452a-a65b-99316d879bc1` (TODO, starts after AC-010 and finalization; proposal and code review report attached). The SDK cost-source idea is excluded and needs its own user decision.
+- Approval impact: none for this package; scope unchanged.
+- Next action: this package continues with user verification (AC-010) via delivery.
