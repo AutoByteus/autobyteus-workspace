@@ -1,0 +1,138 @@
+{
+  "startedAt": "2026-10-10T20:05:11.861Z",
+  "cases": {
+    "C55-BR-001-claude-sonnet-5-5": {
+      "result": "Pass",
+      "listed": 35,
+      "initial": {
+        "trigger": "Off",
+        "draft": {
+          "thinking_enabled": false,
+          "thinking_display": "summarized"
+        }
+      },
+      "primaryIds": [
+        "off",
+        "on"
+      ],
+      "displayIds": [
+        "omitted",
+        "summarized"
+      ],
+      "offChecked": [
+        "chat-thinking-option-primary-off"
+      ],
+      "on": {
+        "trigger": "On",
+        "draft": {
+          "thinking_enabled": true,
+          "thinking_display": "summarized"
+        }
+      },
+      "onChecked": [
+        "chat-thinking-option-primary-on",
+        "chat-thinking-option-thinking_display-summarized"
+      ],
+      "switched": {
+        "trigger": "On",
+        "draft": {
+          "thinking_enabled": true,
+          "thinking_display": "omitted"
+        }
+      }
+    },
+    "C55-BR-001-claude-haiku-5-5": {
+      "result": "Pass",
+      "listed": 35,
+      "initial": {
+        "trigger": "Off",
+        "draft": {
+          "thinking_enabled": false,
+          "thinking_display": "omitted"
+        }
+      },
+      "primaryIds": [
+        "off",
+        "on"
+      ],
+      "displayIds": [
+        "omitted",
+        "summarized"
+      ],
+      "offChecked": [
+        "chat-thinking-option-primary-off"
+      ],
+      "on": {
+        "trigger": "On",
+        "draft": {
+          "thinking_enabled": true,
+          "thinking_display": "omitted"
+        }
+      },
+      "onChecked": [
+        "chat-thinking-option-primary-on",
+        "chat-thinking-option-thinking_display-omitted"
+      ],
+      "switched": {
+        "trigger": "On",
+        "draft": {
+          "thinking_enabled": true,
+          "thinking_display": "summarized"
+        }
+      }
+    },
+    "C55-BR-002-haiku-on-send": {
+      "result": "Pass",
+      "runId": "daily_assistant_23637f20a13a4d65ac454640de4f9f10",
+      "metadataConfig": {
+        "llmModelIdentifier": "claude-haiku-5-5",
+        "llmConfig": {
+          "thinking_enabled": true,
+          "thinking_display": "omitted"
+        },
+        "runtimeKind": "autobyteus"
+      },
+      "reply": true
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 27293
+    },
+    {
+      "label": "frontend",
+      "pid": 27316
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 27316,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 27293,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/c55-thinking-menu-1nlNqh"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/c55-thinking-menu-1nlNqh",
+  "backendUrl": "http://127.0.0.1:53511",
+  "frontUrl": "http://127.0.0.1:53512",
+  "importSummary": [
+    "TARGET /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/c55-thinking-menu-1nlNqh/server-data/db/probe.db\r",
+    "TARGET_STATUS INITIALIZATION_REQUIRED\r",
+    "SKIP_CONFIGURED 0\r",
+    "TARGET /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/c55-thinking-menu-1nlNqh/server-data/db/probe.db\r",
+    "TARGET_STATUS READY\r",
+    "SKIPPED 0\r"
+  ],
+  "modelIdentifiers": {
+    "claude-sonnet-5-5": "claude-sonnet-5-5",
+    "claude-haiku-5-5": "claude-haiku-5-5"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-10-10T20:06:07.332Z"
+}

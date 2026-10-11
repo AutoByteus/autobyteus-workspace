@@ -1,0 +1,969 @@
+[
+  {
+    "case": "C55-E2E-001",
+    "name": "C55-E2E-001: the catalog lists each model once with 1M/1M/128K limits and its thinking schema defaults",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "claude-sonnet-5-5": {
+        "modelIdentifier": "claude-sonnet-5-5",
+        "maxContextTokens": 1000000,
+        "maxInputTokens": 1000000,
+        "maxOutputTokens": 128000,
+        "props": {
+          "thinking_enabled": {
+            "type": "boolean",
+            "default": false
+          },
+          "thinking_display": {
+            "type": "string",
+            "enum": [
+              "omitted",
+              "summarized"
+            ],
+            "default": "summarized"
+          }
+        }
+      },
+      "claude-haiku-5-5": {
+        "modelIdentifier": "claude-haiku-5-5",
+        "maxContextTokens": 1000000,
+        "maxInputTokens": 1000000,
+        "maxOutputTokens": 128000,
+        "props": {
+          "thinking_enabled": {
+            "type": "boolean",
+            "default": false
+          },
+          "thinking_display": {
+            "type": "string",
+            "enum": [
+              "omitted",
+              "summarized"
+            ],
+            "default": "omitted"
+          }
+        }
+      }
+    },
+    "at": "2026-10-10T19:45:13.312Z"
+  },
+  {
+    "case": "C55-E2E-002",
+    "name": "C55-E2E-002: claude-sonnet-5-5 thinking Off tool turn sends {\"type\":\"between_tools\"} and replays thinking unchanged",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "claude-sonnet-5-5",
+      "llmConfig": {
+        "thinking_enabled": false,
+        "thinking_display": "summarized"
+      },
+      "error": null,
+      "calls": [
+        {
+          "index": 0,
+          "phase": "C55-E2E-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 145,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "between_tools"
+          },
+          "responseBlockTypes": [
+            "text",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 0,
+            "creation": 8089,
+            "write5m": 0,
+            "write1h": 8089,
+            "output": 145
+          }
+        },
+        {
+          "index": 1,
+          "phase": "C55-E2E-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 316,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": false,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "between_tools"
+          },
+          "responseBlockTypes": [
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 8089,
+            "creation": 392,
+            "write5m": 0,
+            "write1h": 392,
+            "output": 316
+          }
+        },
+        {
+          "index": 2,
+          "phase": "C55-E2E-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 563,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": false,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "between_tools"
+          },
+          "responseBlockTypes": [
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 2,
+            "read": 8481,
+            "creation": 550,
+            "write5m": 0,
+            "write1h": 550,
+            "output": 563
+          }
+        },
+        {
+          "index": 3,
+          "phase": "C55-E2E-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 418,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "between_tools"
+          },
+          "responseBlockTypes": [
+            "text",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 2,
+            "read": 9031,
+            "creation": 795,
+            "write5m": 0,
+            "write1h": 795,
+            "output": 418
+          }
+        },
+        {
+          "index": 4,
+          "phase": "C55-E2E-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 98,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "between_tools"
+          },
+          "responseBlockTypes": [
+            "text",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 9826,
+            "creation": 539,
+            "write5m": 0,
+            "write1h": 539,
+            "output": 98
+          }
+        },
+        {
+          "index": 5,
+          "phase": "C55-E2E-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 183,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "between_tools"
+          },
+          "responseBlockTypes": [
+            "text"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 10365,
+            "creation": 234,
+            "write5m": 0,
+            "write1h": 234,
+            "output": 183
+          }
+        }
+      ],
+      "replays": [
+        {
+          "fromCall": 1,
+          "toCall": 2,
+          "blocks": 1,
+          "signedBlocks": 1,
+          "thinkingChars": 176
+        },
+        {
+          "fromCall": 2,
+          "toCall": 3,
+          "blocks": 1,
+          "signedBlocks": 1,
+          "thinkingChars": 179
+        }
+      ]
+    },
+    "at": "2026-10-10T19:45:32.694Z"
+  },
+  {
+    "case": "C55-E2E-003",
+    "name": "C55-E2E-003: claude-sonnet-5-5 thinking On tool turn sends {\"type\":\"adaptive\",\"display\":\"summarized\"} and replays thinking unchanged",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "claude-sonnet-5-5",
+      "llmConfig": {
+        "thinking_enabled": true,
+        "thinking_display": "summarized"
+      },
+      "error": null,
+      "calls": [
+        {
+          "index": 6,
+          "phase": "C55-E2E-003",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 111,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": false,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "adaptive",
+            "display": "summarized"
+          },
+          "responseBlockTypes": [
+            "tool_use"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 0,
+            "creation": 8090,
+            "write5m": 0,
+            "write1h": 8090,
+            "output": 111
+          }
+        },
+        {
+          "index": 7,
+          "phase": "C55-E2E-003",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 350,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "adaptive",
+            "display": "summarized"
+          },
+          "responseBlockTypes": [
+            "thinking",
+            "text",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 2,
+            "read": 8090,
+            "creation": 345,
+            "write5m": 0,
+            "write1h": 345,
+            "output": 350
+          }
+        },
+        {
+          "index": 8,
+          "phase": "C55-E2E-003",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 661,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "adaptive",
+            "display": "summarized"
+          },
+          "responseBlockTypes": [
+            "thinking",
+            "text",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 8435,
+            "creation": 664,
+            "write5m": 0,
+            "write1h": 664,
+            "output": 661
+          }
+        },
+        {
+          "index": 9,
+          "phase": "C55-E2E-003",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 779,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": false,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "adaptive",
+            "display": "summarized"
+          },
+          "responseBlockTypes": [
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 9099,
+            "creation": 988,
+            "write5m": 0,
+            "write1h": 988,
+            "output": 779
+          }
+        },
+        {
+          "index": 10,
+          "phase": "C55-E2E-003",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 542,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "adaptive",
+            "display": "summarized"
+          },
+          "responseBlockTypes": [
+            "thinking",
+            "text"
+          ],
+          "usage": {
+            "input": 2,
+            "read": 10087,
+            "creation": 938,
+            "write5m": 0,
+            "write1h": 938,
+            "output": 542
+          }
+        }
+      ],
+      "replays": [
+        {
+          "fromCall": 7,
+          "toCall": 8,
+          "blocks": 1,
+          "signedBlocks": 1,
+          "thinkingChars": 184
+        },
+        {
+          "fromCall": 8,
+          "toCall": 9,
+          "blocks": 1,
+          "signedBlocks": 1,
+          "thinkingChars": 665
+        },
+        {
+          "fromCall": 9,
+          "toCall": 10,
+          "blocks": 1,
+          "signedBlocks": 1,
+          "thinkingChars": 458
+        }
+      ]
+    },
+    "at": "2026-10-10T19:45:59.262Z"
+  },
+  {
+    "case": "C55-E2E-004",
+    "name": "C55-E2E-004: claude-haiku-5-5 thinking Off tool turn sends {\"type\":\"disabled\"} and replays thinking unchanged",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "claude-haiku-5-5",
+      "llmConfig": {
+        "thinking_enabled": false,
+        "thinking_display": "omitted"
+      },
+      "error": null,
+      "calls": [
+        {
+          "index": 11,
+          "phase": "C55-E2E-004",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 122,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "disabled"
+          },
+          "responseBlockTypes": [
+            "text",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 0,
+            "creation": 8088,
+            "write5m": 0,
+            "write1h": 8088,
+            "output": 122
+          }
+        },
+        {
+          "index": 12,
+          "phase": "C55-E2E-004",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 432,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "disabled"
+          },
+          "responseBlockTypes": [
+            "text",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 8088,
+            "creation": 369,
+            "write5m": 0,
+            "write1h": 369,
+            "output": 432
+          }
+        },
+        {
+          "index": 13,
+          "phase": "C55-E2E-004",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 431,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "disabled"
+          },
+          "responseBlockTypes": [
+            "text",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 8457,
+            "creation": 989,
+            "write5m": 0,
+            "write1h": 989,
+            "output": 431
+          }
+        },
+        {
+          "index": 14,
+          "phase": "C55-E2E-004",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 570,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "disabled"
+          },
+          "responseBlockTypes": [
+            "text"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 9446,
+            "creation": 987,
+            "write5m": 0,
+            "write1h": 987,
+            "output": 570
+          }
+        }
+      ],
+      "replays": []
+    },
+    "at": "2026-10-10T19:46:07.827Z"
+  },
+  {
+    "case": "C55-E2E-005",
+    "name": "C55-E2E-005: claude-haiku-5-5 thinking On tool turn sends {\"type\":\"adaptive\"} and replays thinking unchanged",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "claude-haiku-5-5",
+      "llmConfig": {
+        "thinking_enabled": true,
+        "thinking_display": "omitted"
+      },
+      "error": null,
+      "calls": [
+        {
+          "index": 15,
+          "phase": "C55-E2E-005",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 198,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": false,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "adaptive"
+          },
+          "responseBlockTypes": [
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 0,
+            "creation": 8090,
+            "write5m": 0,
+            "write1h": 8090,
+            "output": 198
+          }
+        },
+        {
+          "index": 16,
+          "phase": "C55-E2E-005",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 524,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "adaptive"
+          },
+          "responseBlockTypes": [
+            "thinking",
+            "text",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 2,
+            "read": 8090,
+            "creation": 432,
+            "write5m": 0,
+            "write1h": 432,
+            "output": 524
+          }
+        },
+        {
+          "index": 17,
+          "phase": "C55-E2E-005",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 2301,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "adaptive"
+          },
+          "responseBlockTypes": [
+            "thinking",
+            "text",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 8522,
+            "creation": 843,
+            "write5m": 0,
+            "write1h": 843,
+            "output": 2301
+          }
+        },
+        {
+          "index": 18,
+          "phase": "C55-E2E-005",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 1010,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "adaptive"
+          },
+          "responseBlockTypes": [
+            "thinking",
+            "text",
+            "tool_use"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 9365,
+            "creation": 2594,
+            "write5m": 0,
+            "write1h": 2594,
+            "output": 1010
+          }
+        },
+        {
+          "index": 19,
+          "phase": "C55-E2E-005",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 572,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "thinkingSent": {
+            "type": "adaptive"
+          },
+          "responseBlockTypes": [
+            "thinking",
+            "text"
+          ],
+          "usage": {
+            "input": 4,
+            "read": 11959,
+            "creation": 13825,
+            "write5m": 0,
+            "write1h": 13825,
+            "output": 572
+          }
+        }
+      ],
+      "replays": [
+        {
+          "fromCall": 15,
+          "toCall": 16,
+          "blocks": 1,
+          "signedBlocks": 1,
+          "thinkingChars": 0
+        },
+        {
+          "fromCall": 16,
+          "toCall": 17,
+          "blocks": 1,
+          "signedBlocks": 1,
+          "thinkingChars": 0
+        },
+        {
+          "fromCall": 17,
+          "toCall": 18,
+          "blocks": 1,
+          "signedBlocks": 1,
+          "thinkingChars": 0
+        },
+        {
+          "fromCall": 18,
+          "toCall": 19,
+          "blocks": 1,
+          "signedBlocks": 1,
+          "thinkingChars": 0
+        }
+      ]
+    },
+    "at": "2026-10-10T19:46:30.508Z"
+  },
+  {
+    "case": "C55-E2E-006",
+    "name": "C55-E2E-006: Haiku 5.5 Token Meter prices each call at its prompt-size tier (≤100K and >100K gross input)",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": null,
+      "perCall": [
+        {
+          "usage": {
+            "input": 4,
+            "read": 0,
+            "creation": 7948,
+            "write5m": 0,
+            "write1h": 7948,
+            "output": 151
+          },
+          "gross": 7952,
+          "tierId": "prompt_le_100k",
+          "cost": 0.0016655000000000003
+        },
+        {
+          "usage": {
+            "input": 4,
+            "read": 7948,
+            "creation": 234159,
+            "write5m": 0,
+            "write1h": 234159,
+            "output": 12
+          },
+          "gross": 242111,
+          "tierId": "prompt_gt_100k",
+          "cost": 0.2345884
+        }
+      ],
+      "expectedCost": 0.23625390000000002,
+      "lowTierOnlyCost": 0.048583180000000004,
+      "summary": {
+        "usageReportCount": 2,
+        "standardInputTokens": 8,
+        "cacheReadInputTokens": 7948,
+        "cacheCreationInputTokens": 242107,
+        "cacheCreation5mInputTokens": 0,
+        "cacheCreation1hInputTokens": 242107,
+        "outputTokens": 163,
+        "grossInputTokens": 250063,
+        "estimatedApiTotalCost": 0.2362539,
+        "apiCostStatus": "estimated",
+        "currency": "USD"
+      },
+      "calls": [
+        {
+          "index": 20,
+          "phase": "C55-006",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 151,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": true,
+          "errorBody": null
+        },
+        {
+          "index": 21,
+          "phase": "C55-006",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 12,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null
+        }
+      ]
+    },
+    "at": "2026-10-10T19:46:33.384Z"
+  }
+]
