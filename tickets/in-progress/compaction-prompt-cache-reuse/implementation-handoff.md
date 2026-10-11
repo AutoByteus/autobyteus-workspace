@@ -2,16 +2,18 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Independent architecture review was selected (Large/High) and passed (ARCH-REV-002). The handoff route is decided by `get_handoff_rules` (Large/High → Code Review).
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/requirements-doc.md` (SR-005; approved baseline SR-002; SR-005 strengthens AC-003 only: side-by-side summary comparison plus continuation check, user review before release)
+- Upstream review applicability and handoff-rule result: Independent architecture review was selected (Large/High) and passed (ARCH-REV-002; SR-007 passed as ARCH-REV-003). The handoff route is decided by `get_handoff_rules` (Large/High → Code Review).
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/requirements-doc.md` (SR-007; approved baseline SR-002; SR-005 strengthens AC-003: side-by-side summary comparison plus continuation check, user review before release; SR-006 records the IR-002 wording; SR-007 adds REQ-008, the nine-heading contract, stronger AC-003 checks and AC-010)
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/investigation-notes.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/solution-revision-record.md` (SR-001..004)
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-spec.md` (SR-004)
-- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/probes/` (evidence only; `fork-summary-probe.mjs` is the live-validation recipe)
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-review-report.md` (ARCH-REV-002, Pass)
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/solution-revision-record.md` (SR-001..007)
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-spec.md` (SR-007; § Intended Change 8–9 are the IR-003 scope)
+- Supplemental task artifacts:
+  - behavior-defining, user-approved: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/supplements/cached-summary-instruction.md` (instruction v4 and transcript prompt v6, copied verbatim into code);
+  - evidence only: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/probes/` (`fork-summary-probe.mjs` is the live-validation recipe).
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-review-report.md` (ARCH-REV-003, Pass)
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/architecture-review-revision-record.md`
 - Solution handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/solution-handoff.md`
-- Triggering rework report: N/A (initial implementation)
+- Triggering rework report: N/A. IR-003 is the reviewed SR-007 solution revision (ARCH-REV-003 Pass), not a finding.
 - Local check summaries: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/implementation-evidence/`
 
 ## Current Implementation Summary
@@ -22,7 +24,7 @@
    - `createEnabledMemoryCompactionConfiguration(policy)` is policy-only.
    - Deleted: `DirectLlmCompressionStrategy`, `CompressionStrategy`, `CompressionStrategyFactory`, `CompactionLlmFactory`, `CompactionCompressionExecution`. Exports are updated.
 2. **Cached summary first, same-model fallback (2 and 3).**
-   - `summarize` sends the cached request if `fitsInputBudget(baseline, instruction)` passes. That request is the baseline conversation plus `COMPACTION_SUMMARY_INSTRUCTION`, which is written to the agent in second person (IR-002). It says the context is nearly full and the earlier conversation will be replaced by its own summary; lists what to keep; forbids tools and continuing the task; and ends with the same six-heading block as the transcript prompt. It gets up to 2 attempts with no backoff.
+   - `summarize` sends the cached request if `fitsInputBudget(baseline, instruction)` passes. That request is the baseline conversation plus `COMPACTION_SUMMARY_INSTRUCTION`, written to the agent in second person (IR-002; text v4 since IR-003, item 9). It gets up to 2 attempts with no backoff.
    - After that comes the transcript request (summary prompt as system, rendered transcript as user): up to 3 attempts with today's 1 s and 2 s backoffs.
    - These count as failed attempts: tool calls, an `incomplete` completion, a parse failure, or a provider error.
    - Attempt numbers are unique across both modes (1..5).
@@ -49,16 +51,24 @@
    - Server: deleted `config/compaction-model-settings.ts` and `agent-execution/compaction/compaction-llm-factory.ts`; removed the settings-service registration and the durable-writer special case; removed `compactionLlmFactory` from `AutoByteusAgentRunBackendFactory`, `agent-provider-factory-builder.ts` and `create-process-agent-provider-factory-builder.ts`. The backend now builds `createEnabledMemoryCompactionConfiguration(new CompactionPolicy())`.
    - Web: deleted `CompactionModelSettings.vue`, `utils/compactionModelSettings.ts` and its spec; removed the model parts from `CompactionConfigCard.vue`; removed 9 model i18n keys in en and zh-CN; updated the card description.
    - `CompactionExecutionMetadata` and `CompressionAttemptObservation` gained `mode: 'cached' | 'transcript'`.
+9. **Nine-heading contract and approved texts (IR-003, design § Intended Change 8).**
+   - `COMPACTION_SUMMARY_HEADINGS` is now the nine headings: Task and constraints; Requests and instructions received; Decisions and findings; Unverified points and open conflicts; Files created or changed; Completed work; Current state; Open work and next steps; Essential references. Both paths use this one contract and the one parser. The parser rules are unchanged, and its heading error now states the count.
+   - `COMPACTION_SUMMARY_INSTRUCTION` (v4) and `COMPACTION_SUMMARY_PROMPT` (v6) were extracted programmatically from the supplement's two fenced blocks and written into the source. Each literal was checked byte-equal to its block plus its trailing newline. SHA-256 values: instruction `9349dc8ea05e2bf95edb0ed5e908933487594e788b1c09fbca7eaff347e4ba82`, prompt `c3105f73f70ae7ceb43941cb617f25b57f809842875a33920ff23c046ab224f6`; both are pinned in `compaction-summary-prompt.test.ts`. The only non-ASCII characters are the supplement's own em dashes (two in each text).
+   - Stored six-heading summaries are never re-parsed, so no old-format reader exists (verified by ARCH-REV-003). A test pins that the retired six-heading body is rejected.
+10. **Gemini system prompt from the request (IR-003, design § Intended Change 9, REQ-008).**
+   - `GeminiLLM` builds `systemInstruction` from `leadingSystemMessages(messages)`: non-empty contents joined with `\n`, as `AnthropicLLM` does. This replaces the configured `this.systemMessage`, in both the 3.8 and the older config builders. Sync and stream share the builder, and the runtime (Gemini API or Vertex) does not affect it.
+   - With no leading SYSTEM message, the config has no `systemInstruction` key. Later SYSTEM notes are not included (the renderer still drops them; pre-existing, accepted risk).
+   - Effect: the transcript fallback's `COMPACTION_SUMMARY_PROMPT` now reaches Gemini as its system instruction. A normal agent request is unchanged in content, because its leading SYSTEM message is the same text it configures.
 
-- Implementation cycle: `Rework` (IR-002, user-requested wording change after CRR-001 Pass)
+- Implementation cycle: `Rework` (IR-003, reviewed solution revision SR-007 after CRR-002 Pass)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (IR-002 rewrites the cached summary instruction in the agent's own voice, approved directly by the user; see the revision record)
-- Related solution revision IDs: `SR-004` (design), `SR-005` (AC-003 requirements update; no design change)
-- Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `CRR-001` (Pass, for IR-001)
-- Related API/E2E revision IDs: `N/A`
+- Current implementation revision ID: `IR-003`. It adds the nine-heading contract, instruction v4, transcript prompt v6, and Gemini `systemInstruction` from the request; see the revision record.
+- Related solution revision IDs: `SR-004` (design), `SR-005` (AC-003), `SR-006` (IR-002 wording), `SR-007` (IR-003 scope)
+- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-001` (Pass, IR-001), `CRR-002` (Pass, IR-002)
+- Related API/E2E revision IDs: see `api-e2e-revision-record.md` (API/E2E-owned; AC-003 runs on IR-001/IR-002)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (implementation note N-1 applied)
+- Triggering finding IDs: `N/A`. N-1 is still applied. ARCH-004 is respected: no test requires the transcript fallback to cover the kept tail.
 
 ## Routing Classification (Mandatory)
 
@@ -75,6 +85,7 @@
   - Streaming is used for both paths, so no non-streaming limit applies.
   - The server projection accepts `autobyteus_compaction` events (tested).
   - No live fork was run here, so a fork 400 has not been observed.
+  - IR-003: the agreed seams (`ConversationSummaryPort`/`SummaryAttemptResult`/`SummaryRequestIdentity`, `LlmPhaseSummaryPort`, `conversationRequestKwargs`/`conversationRequestOptions`, `LLMRequestAssembler.bindRequestPrefix(tools)`, `BaseLLM.releaseConversation(id,{signal})`) are unchanged. Only one adapter changed (Gemini). It was the only adapter reading `this.systemMessage` (grep over `src/llm`).
 
 ## Reviewed Behavior Implementation Trace
 
@@ -84,6 +95,8 @@
 | BEH-001 (isolation) | Compaction never posts into the agent's provider session; sessions released | `BaseLLM.releaseConversation`, `AutobyteusLLM.releaseConversation`, port `finally` release | Done. AC-009 with a fake `AutobyteusLLM` client: ids `compaction_op_12_1/2`, cleanup for exactly those ids, the agent session untouched, `llm.cleanup` not called; abort releases with a live signal (N-1); a hanging release is bounded to 10 s |
 | BEH-002 | Compaction-model setting removed | server and web removals above | Done. AC-005: the web card spec (no model control, a leftover value never written, remaining settings save); server settings unit and GraphQL e2e (leftover value inert, generic custom and deletable, startup unaffected) |
 | BEH-003 | Compaction metered | port `reportUsage` | Done. AC-007 unit: port event shape; server fold test (compaction events add to totals and cost, priced with cache components) |
+| BEH-001 (REQ-003, IR-003) | One nine-heading contract for both paths, approved texts | `compaction-summary-parser.ts`, `compaction-summary-prompt.ts` | Done. Hash pins for both texts; the block skeleton in both equals the nine headings; per-heading guidance present and ordered in both; the retired six-heading body is rejected |
+| BEH-001 (REQ-008, AC-010) | Gemini `systemInstruction` equals the request's leading SYSTEM messages; none when absent; normal requests unchanged | `gemini-llm.ts` `systemInstructionOf`, both config builders | Done (unit). Request bodies for 3.8 and 3.1 Pro × Gemini API and Vertex × sync and stream: leading run joined, late note excluded, configured prompt ignored; no `systemInstruction` without a leading SYSTEM message; normal agent request equals the configured prompt; the transcript fallback through `LlmPhaseSummaryPort` carries `COMPACTION_SUMMARY_PROMPT` (single-attempt client, both runtimes). The installed-SDK loopback wire test checks the serialized `systemInstruction` and its absence. The live Gemini fallback run is still to do (API/E2E) |
 | BEH-004 | Guard before and after compaction | `llm-request-assembler.ts` `bindRequestPrefix`; `llm-phase.ts` after-final bind | Done. AC-006 unit: real `MemoryManager`; tools changed means compaction sees no thinking; order test (bind → compaction → bind → checkpoint) |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -107,6 +120,7 @@
   - New server: `tests/unit/token-usage/projections/token-usage-compaction-ingestion.test.ts`.
   - Adapted: executor harness, assembler, configuration, agent-config/factory, the runtime compaction integration, the server recovery fixture, backend-factory unit and integration tests, provider builder, settings service and GraphQL e2e, the live boundary unit test, the live quality and capabilities e2e, and the web card spec.
   - Deleted (they tested only removed code): core `direct-llm-compression-strategy.test.ts`; server `config/compaction-model-settings.test.ts`, `compaction/compaction-llm-factory.test.ts`, `compaction/compaction-parent-credentials.test.ts`, `compaction/compaction-provider-requests.test.ts`; web `CompactionModelSettings.spec.ts`.
+- **IR-003:** `src/memory/compaction/{compaction-summary-parser,compaction-summary-prompt}.ts`, `src/llm/api/gemini-llm.ts`; tests `tests/unit/memory/compaction-summary-prompt.test.ts`, `tests/unit/llm/api/gemini-llm.test.ts`, `tests/integration/llm/api/gemini-llm-wire-contract.test.ts`, server `tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts` (heading check now uses `COMPACTION_SUMMARY_HEADINGS`); docs `autobyteus-ts/docs/agent_memory_design.md`, `autobyteus-server-ts/docs/ARCHITECTURE.md` (the stale strategy paragraph now describes the summarizer).
 - **Docs:** `autobyteus-ts/docs/agent_memory_design.md`; `autobyteus-server-ts/docs/{ARCHITECTURE.md,modules/agent_memory.md}`; `autobyteus-web/docs/{settings.md,agent_execution_architecture.md}`.
 
 ## Important Assumptions
@@ -124,7 +138,9 @@
 - **Leftover setting value.** The design says the server "neither lists nor accepts" the key, and also allows generic listing as long as it is not shown as a compaction setting. A value saved before the removal is therefore listed only as a "Custom user-defined setting" (deletable, no effect, not on the Compaction card). The project's `retiredSettingNames` mechanism would delete it at startup, which the design explicitly rejected. If it should be hidden instead, that needs a small non-deleting retirement guard; this is a designer call.
 - **Gemini single-attempt:** the previously reported `compaction-single-attempt-transport` failure passes on the merged base `e50826755`, so it appears to have been fixed upstream. Compaction on Gemini agents relies on that single-attempt path.
 - **Provider instruction-following** (design risk): handled by the parser plus the fallback. Validate one non-Anthropic provider live.
-- **Transcript path on adapters that also send `config.systemMessage`** (for example Gemini's `systemInstruction`): the fallback carries the summary prompt as a SYSTEM message on the agent's LLM, which still has its own system instruction. The cached path matches normal requests exactly. Live validation should cover one non-Anthropic provider.
+- **Transcript path on Gemini:** resolved in IR-003 (REQ-008). Gemini now takes the system prompt from the request, so the fallback's summary prompt is its system instruction. Accepted, pre-existing: Gemini's renderer still drops SYSTEM notes that come after the leading run.
+- **Accepted (ARCH-REV-003):** OBS-1 (a small configured `maxTokens` can truncate the summary; it is then classified `incomplete_summary` and falls back); the cached path can cost slightly more than the transcript path (history A: $0.12 vs $0.08).
+- **Small wording changes stay hash-pinned:** any change to either text must come from the approved supplement and update the pinned hash.
 - **Summary overlap with the kept tail** (DEC-002): the existing `post_compaction_target_exceeded` handling applies.
 
 ## Task Design Health Assessment Implementation Check
@@ -153,7 +169,7 @@
 - Dead code found elsewhere, listed as follow-up: None.
 - Shared structures remain tight: `Yes`
 - Canonical shared design guidance reapplied: `Yes`
-- Changed source files within size guardrails: `Yes`. Largest changed: server backend factory 478 non-empty lines (it shrank), `llm-phase.ts` 367; new files are 20–121 lines.
+- Changed source files within size guardrails: `Yes`. Largest changed: server backend factory 478 non-empty lines (it shrank), `llm-phase.ts` 367; new files are 20–121 lines. IR-003: `gemini-llm.ts` 375 lines total.
 - Notes: the design file list omitted the test-support live harness, which imported the removed factory. It was migrated as part of the removal, and its evidence semantics are flagged for API/E2E review.
 
 ## Persisted Data Transition Check (When Applicable)
@@ -181,7 +197,15 @@
 
 ## Local Implementation Checks Run
 
-All are implementation-scoped. No API/E2E or live-provider checks were run. Results are on the **merged** code (`846fff306` plus follow-up), unless marked pre-merge.
+**IR-003 (current code, HEAD `8d0a98eb5` plus the IR-003 commit):**
+- autobyteus-ts production typecheck (`tsconfig.build.json`): pass. In the test-config typecheck, the changed files gained no errors. The remaining errors in `tests/unit/llm/api/gemini-llm.test.ts:64` (an `it.each` signature) and the live `tests/integration/llm/api/gemini-llm.test.ts` were present at HEAD.
+- autobyteus-ts `vitest run tests/unit`: 305 files, **1977 tests, all passed** (up from 1955: the prompt, parser and Gemini tests).
+- autobyteus-ts integration: `agent-runtime-compaction.test.ts` 6/6 and `gemini-llm-wire-contract.test.ts` 4/4 (installed SDK over loopback HTTP).
+- Server: `prepare:shared` then `typecheck`: pass. `vitest run tests/unit`: 666 files passed, 4 skipped; 5232 tests passed (includes the recovery fixture and live-boundary unit test that use `COMPACTION_SUMMARY_HEADINGS`).
+- Web: not rerun. IR-003 changes no web code, and no web file contains summary heading text (grep).
+- Verbatim check: both literals compared byte-for-byte with the supplement's fenced blocks (script output `true true`).
+
+**IR-001 (and IR-002, see the revision record):** all are implementation-scoped. No API/E2E or live-provider checks were run. Results are on the **merged** code (`846fff306` plus follow-up), unless marked pre-merge.
 
 - autobyteus-ts production typecheck: pass.
 - autobyteus-ts test-config typecheck: 276 error lines against 282 on base `e50826755`; no file gained errors. The six pre-existing assembler identity errors are fixed.
@@ -231,7 +255,7 @@ Run through the test vault, using `probes/fork-summary-probe.mjs` as the recipe.
   - call `requestTranscriptSummary(COMPACTION_SUMMARY_PROMPT, new CompactionContentBuilder().build(plan.compactableUnits), identity, signal)`, using `WorkingContextMessageWindowPlanner.plan(...)` on the same baseline;
   - parse each with `parseCompactionSummary`;
   - use distinct `attempt` values, which gives distinct isolated conversations.
-- **Side-by-side checklist.** Goal and constraints; user decisions and preferences; the latest unresolved request; completed vs open work; exact paths, identifiers, commands and errors; next steps; no invented facts.
+- **Side-by-side checklist.** Task and constraints; user decisions and preferences; the latest unresolved request; completed vs open work; exact paths, identifiers, commands and errors; next steps; no invented facts. SR-007 adds: gap A is flagged as unverified; gap B is kept or flagged as a conflict; every file written by a tool call in the compacted part is listed with its exact path; nothing from the system prompt is restated; all paths are complete; every request is marked open, done or cancelled; no needless repetition across sections (requirements AC-003; supplement § Validation).
 - **Continuation check.** Build both compacted contexts from the same baseline and plan, using each summary:
   - via `memoryManager.prepareCompaction(baseline, { selectedNewRawTraceIds: plan.rawTraceIdsToArchive, retainedMessages: plan.retainedMessages, summary, budgetAssessment: plan.budgetAssessment })`, on two separate `MemoryManager` copies of the run (or `AcceptedCompactionBuilder` directly), then commit each;
   - give both the same next user message(s) and let each continue for a few calls;
@@ -248,3 +272,7 @@ Run through the test vault, using `probes/fork-summary-probe.mjs` as the recipe.
 - **AC-008.** One non-Anthropic native provider compacts, through the cached request or the fallback. The harness reports `summaryModes`.
 - **Live harness review.** `test-support/live-e2e/live-e2e-harness.ts` and the `real-e2e-*` consumers were migrated without live execution here. Please validate their evidence semantics (`summary*` fields, `summaryOnAgentModelVerified`, the cached-mode source evidence).
 - **Desktop.** The Settings card has no model option. The user verifies the meter (AC-007).
+- **IR-003 reruns (per ARCH-REV-003):**
+  - **AC-003** on histories A (464,106 tokens) and B (194,548 tokens) with instruction v4 and prompt v6, using the conditions above.
+  - **AC-010:** a live Gemini transcript-fallback run on both the Gemini API and Vertex. The summary must pass the nine-heading parser, and the request's `systemInstruction` must be `COMPACTION_SUMMARY_PROMPT`.
+  - **API/E2E-owned test to update:** the untracked `autobyteus-server-ts/tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts` (line 220) still expects `## Goal and constraints` in the next agent request. Under the nine-heading contract that must become `## Task and constraints` (or use `COMPACTION_SUMMARY_HEADINGS[0]`). I did not edit it because the file is API/E2E's uncommitted work.

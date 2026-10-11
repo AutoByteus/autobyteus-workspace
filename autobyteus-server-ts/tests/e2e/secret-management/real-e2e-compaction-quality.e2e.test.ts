@@ -6,6 +6,7 @@ import type { CompleteResponse } from 'autobyteus-ts/llm/utils/response-types.js
 import { CompactionContentBuilder } from 'autobyteus-ts/memory/compaction/compaction-content-builder.js';
 import type { CompactionExecutionMetadata } from 'autobyteus-ts/memory/compaction/compaction-execution.js';
 import { CompactionSummarizer } from 'autobyteus-ts/memory/compaction/compaction-summarizer.js';
+import { COMPACTION_SUMMARY_HEADINGS } from 'autobyteus-ts/memory/compaction/compaction-summary-parser.js';
 import { LlmPhaseSummaryPort } from 'autobyteus-ts/agent/loop/llm-phase-summary-port.js';
 import { resolveLlmRequestCapacity } from 'autobyteus-ts/agent/token-budget.js';
 import type { WorkingContextMessageUnit } from 'autobyteus-ts/memory/compaction/working-context-message-unit.js';
@@ -49,7 +50,7 @@ class Capture extends LLMExtension {
 // Keyword checks are regression alarms, not a semantic completeness oracle.
 // Review the retained input/output evidence separately for contradiction and omission.
 const assertEssentialRetention = (summary: string) => {
-  for (const heading of ['Goal and constraints', 'Decisions and findings', 'Completed work', 'Current state', 'Open work and next steps', 'Essential references']) expect(summary).toContain(`## ${heading}`);
+  for (const heading of COMPACTION_SUMMARY_HEADINGS) expect(summary).toContain(`## ${heading}`);
   for (const exact of ['INC-042', 'Mira Chen', '/workspace/helios/plan.md', 'pnpm verify:helios', '/workspace/helios/inventory.json']) {
     expect(summary).toContain(exact);
   }

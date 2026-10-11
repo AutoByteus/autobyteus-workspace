@@ -7,21 +7,26 @@ const body = COMPACTION_SUMMARY_HEADINGS.map(h => `## ${h}\n- Keep /repo/check.t
 const tagged = `<compaction_summary>\n${body}\n</compaction_summary>`;
 
 describe('compaction summary prompt and contract', () => {
-  it('ships the exact approved v5 literal', () => {
-    expect(createHash('sha256').update(COMPACTION_SUMMARY_PROMPT).digest('hex')).toBe('2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7');
+  it('ships the exact approved v6 transcript prompt', () => {
+    expect(createHash('sha256').update(COMPACTION_SUMMARY_PROMPT).digest('hex')).toBe('c3105f73f70ae7ceb43941cb617f25b57f809842875a33920ff23c046ab224f6');
   });
-  it('asks the agent, in its own voice, for a summary of its own conversation', () => {
+  it('ships the exact approved v4 instruction, asking the agent in its own voice for a note to itself', () => {
+    expect(createHash('sha256').update(COMPACTION_SUMMARY_INSTRUCTION).digest('hex')).toBe('9349dc8ea05e2bf95edb0ed5e908933487594e788b1c09fbca7eaff347e4ba82');
     expect(COMPACTION_SUMMARY_INSTRUCTION.startsWith('Your context window is nearly full')).toBe(true);
     expect(COMPACTION_SUMMARY_INSTRUCTION).not.toMatch(/target agent|supplied (conversation )?history/i);
     expect(COMPACTION_SUMMARY_INSTRUCTION).toContain('Do not call any tools and do not continue the task in this reply.');
-    expect(COMPACTION_SUMMARY_INSTRUCTION).toContain('Your system instructions stay in place, so do not repeat them.');
-    expect(createHash('sha256').update(COMPACTION_SUMMARY_INSTRUCTION).digest('hex')).toBe('536583bcef6ca2389e9ae984ffcc5ee09f0812f73c2b88132d26c809348de98f');
+    expect(COMPACTION_SUMMARY_INSTRUCTION).toContain('Your system instructions stay in place after this, so do not restate your role, rules or process from them');
   });
-  it('requests the same output contract as the transcript prompt, so one parser validates both', () => {
+  it('requests the same nine-heading output contract on both paths, so one parser validates both', () => {
     const block = (text: string) => text.slice(text.indexOf('<compaction_summary>'), text.indexOf('</compaction_summary>') + '</compaction_summary>'.length);
+    expect(COMPACTION_SUMMARY_HEADINGS).toHaveLength(9);
     expect(block(COMPACTION_SUMMARY_INSTRUCTION)).toBe(block(COMPACTION_SUMMARY_PROMPT));
     expect([...block(COMPACTION_SUMMARY_INSTRUCTION).matchAll(/^## (.+)$/gm)].map(([, heading]) => heading)).toEqual([...COMPACTION_SUMMARY_HEADINGS]);
-    expect(COMPACTION_SUMMARY_INSTRUCTION).toContain('concise bullets starting with "- ", or "(none)"');
+    for (const text of [COMPACTION_SUMMARY_INSTRUCTION, COMPACTION_SUMMARY_PROMPT]) {
+      const guidance = COMPACTION_SUMMARY_HEADINGS.map(heading => text.indexOf(`\n- ${heading}: `));
+      expect(guidance.every((index, i) => index > 0 && (i === 0 || index > guidance[i - 1]!))).toBe(true);
+    }
+    expect(COMPACTION_SUMMARY_INSTRUCTION).toContain('with short bullets starting with "- ". Write "(none)" under a heading that has nothing to record.');
   });
   it('extracts one inner body, ignores exterior, and preserves Markdown/CRLF', () => {
     expect(parseCompactionSummary(`outside\n${tagged}\noutside`)).toBe(body);
@@ -33,6 +38,11 @@ describe('compaction summary prompt and contract', () => {
     tagged.replace('</compaction_summary>', ''), '</compaction_summary>' + tagged,
     tagged.replace('## Current state', '## Other'), tagged.replace('- Keep /repo/check.ts; approval pending.', '')])('rejects invalid envelope %s', value => {
     expect(() => parseCompactionSummary(value)).toThrow();
+  });
+  it('rejects a body in the retired six-heading format', () => {
+    const retired = ['Goal and constraints', 'Decisions and findings', 'Completed work', 'Current state', 'Open work and next steps', 'Essential references']
+      .map(h => `## ${h}\n- Keep /repo/check.ts.`).join('\n\n');
+    expect(() => validateCompactionSummaryBody(retired)).toThrow('Summary requires the 9 exact headings in the approved order.');
   });
   it.each([tagged, undefined, {}, body.replace('## Current state', '## Other'), 'prefix\n' + body])('rejects non-body result %s', value => {
     expect(() => validateCompactionSummaryBody(value as string)).toThrow();

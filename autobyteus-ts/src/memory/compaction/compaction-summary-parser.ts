@@ -1,6 +1,14 @@
+/** The one output contract shared by the cached summary request and the transcript fallback. */
 export const COMPACTION_SUMMARY_HEADINGS = [
-  'Goal and constraints', 'Decisions and findings', 'Completed work',
-  'Current state', 'Open work and next steps', 'Essential references',
+  'Task and constraints',
+  'Requests and instructions received',
+  'Decisions and findings',
+  'Unverified points and open conflicts',
+  'Files created or changed',
+  'Completed work',
+  'Current state',
+  'Open work and next steps',
+  'Essential references',
 ] as const;
 
 export class CompactionSummaryValidationError extends Error {
@@ -20,7 +28,7 @@ export const validateCompactionSummaryBody = (content: string): string => {
   const headings = [...body.matchAll(/^## ([^\r\n]+)\r?$/gm)];
   if (headings.length !== COMPACTION_SUMMARY_HEADINGS.length ||
       headings.some((heading, i) => heading[1] !== COMPACTION_SUMMARY_HEADINGS[i])) {
-    fail('Summary requires the six exact headings in the approved order.');
+    fail(`Summary requires the ${COMPACTION_SUMMARY_HEADINGS.length} exact headings in the approved order.`);
   }
   if (body.slice(0, headings[0]!.index).trim()) fail('Summary must begin with its first heading.');
   headings.forEach((heading, i) => {
@@ -32,7 +40,7 @@ export const validateCompactionSummaryBody = (content: string): string => {
   return body;
 };
 
-/** Provider envelope extraction belongs only to the direct LLM strategy. */
+/** Extracts and validates the one summary block of a provider reply (cached or transcript path). */
 export const parseCompactionSummary = (content: string): string => {
   if (typeof content !== 'string' || content.split(open).length !== 2 || content.split(close).length !== 2) {
     fail('Expected exactly one complete compaction_summary block.');

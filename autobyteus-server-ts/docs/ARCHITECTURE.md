@@ -147,12 +147,15 @@ under "Production data migrations" in the server `README.md`.
 
 ## Native Working-Context Compaction
 
-Native memory now compresses selected WorkingContext content with one isolated,
-tool-free LLM strategy (`compress(content): Promise<string>`). The executor owns
-planning and provider-safe input construction; the strategy owns up to three
-single-attempt provider generations and exact six-heading Markdown-envelope
-validation. It does not launch a child agent, select a registered strategy, repair
-JSON category arrays or write episodic/semantic/lineage output.
+Native memory compacts selected WorkingContext content on the agent's own model.
+The executor owns planning and provider-safe input construction; the
+`CompactionSummarizer` first sends the agent's own (prompt-cached) conversation
+request plus a summary instruction, then falls back to a tool-free transcript
+summary. Every attempt is a single-attempt provider generation validated against
+the exact nine-heading Markdown envelope (see
+`autobyteus-ts/docs/agent_memory_design.md`). It does not launch a child agent,
+select a registered strategy, repair JSON category arrays or write
+episodic/semantic/lineage output. There is no separate compaction-model setting.
 
 The accepted snapshot `{agent_id, messages}` is the continuation authority. Raw
 archive preparation precedes atomic snapshot replacement; in-memory installation

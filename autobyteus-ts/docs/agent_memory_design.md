@@ -54,13 +54,17 @@ LLM, the tools or the notifier, and there is no compaction-model setting.
   `conversation-request.ts` arguments), sent with `promptCacheScope: 'conversation'`
   — plus one appended user message, `COMPACTION_SUMMARY_INSTRUCTION`. It is written
   to the agent in second person: its context is nearly full, the earlier conversation
-  is about to be replaced by a summary it writes now, and it will continue from that
-  summary and the recent messages only. It lists what to keep (goal, constraints and
-  preferences, decisions, done/in progress/open work, current state and next step,
-  exact references), asks it to keep requests close to their original wording without
-  inventing anything, and forbids tool calls or continuing the task in that reply. It
-  requests the same six-heading block as `COMPACTION_SUMMARY_PROMPT`, which stays the
-  transcript fallback prompt. The provider reads nearly the whole history from its
+  is about to be replaced by a note it writes to itself now, and it will continue from
+  that note and the recent messages only (files it wrote stay on disk). It covers the
+  conversation from the first user message without restating the system instructions,
+  asks the agent to review the whole conversation as a careful reviewer, gives one line
+  of guidance per heading (requests received with who said them and their status,
+  unverified points and open conflicts, one line per file written with its state,
+  evidence for anything called done), asks for full paths and values, each point once,
+  nothing invented, and forbids tool calls or continuing the task in that reply. It
+  requests the same nine-heading block as `COMPACTION_SUMMARY_PROMPT` (v6), which stays
+  the transcript fallback prompt. Both texts are copied verbatim from the approved
+  ticket supplement and hash-pinned in `compaction-summary-prompt.test.ts`. The provider reads nearly the whole history from its
   prompt cache. The
   summary covers the whole conversation while the planned recent tail is still kept
   word for word. Up to **two** attempts; skipped when the request plus the model's
@@ -68,7 +72,8 @@ LLM, the tools or the notifier, and there is no compaction-model setting.
 - **Transcript fallback.** Otherwise, or after two cached attempts without a valid
   summary (tool calls, a task answer, invalid format, provider error), the agent's
   own LLM receives `COMPACTION_SUMMARY_PROMPT` as system plus the prepared transcript
-  as the user message, without tools or caching: up to **three** attempts with
+  as the user message, without tools or caching (every adapter, Gemini included, takes
+  the system prompt from the request's leading SYSTEM messages): up to **three** attempts with
   abortable 1s/2s backoffs. Provider capacity is checked before dispatch.
 - Every attempt is exactly one provider call (`single_attempt` transport) on its own
   provider conversation `compaction_<operationId>_<attempt>`, never the agent's id.
@@ -91,12 +96,18 @@ LLM, the tools or the notifier, and there is no compaction-model setting.
 The parser accepts exactly one `<compaction_summary>...</compaction_summary>`
 block, ignores exterior prose, and requires these exact `##` headings in order:
 
-1. Goal and constraints
-2. Decisions and findings
-3. Completed work
-4. Current state
-5. Open work and next steps
-6. Essential references
+1. Task and constraints
+2. Requests and instructions received
+3. Decisions and findings
+4. Unverified points and open conflicts
+5. Files created or changed
+6. Completed work
+7. Current state
+8. Open work and next steps
+9. Essential references
+
+Both paths share this one contract (`COMPACTION_SUMMARY_HEADINGS`) and one parser.
+Stored summaries are never re-parsed, so older six-heading summaries need no reader.
 
 The body starts with the first heading. Each section must contain specific
 bullets or `(none)`; duplicate/missing/reordered headings or envelope markers

@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer pass handoff, `design-review-report.md` round 2 | N/A (implementation note N-1 applied) | `Initial Baseline` | SR-004, ARCH-REV-002 | Implementation complete; ready for Code Review |
 | IR-002 | User instruction in conversation (2026-10-11), after CRR-001 Pass | N/A | `Requirement Gap` (user-approved directly) | SR-005, ARCH-REV-002, CRR-001 | Cached summary instruction rewritten in the agent's own voice; back to Code Review |
+| IR-003 | Architecture Reviewer pass handoff, ARCH-REV-003 (SR-007) | N/A (ARCH-004 and N-1 respected) | `Solution Revision` (reviewed) | SR-007, ARCH-REV-003, CRR-002 | Nine-heading contract, instruction v4, prompt v6, Gemini `systemInstruction` from the request; back to Code Review |
 
 ## Revision Entries
 
@@ -73,3 +74,39 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Remaining limitations or risks:
   - The new wording has not been run on a real model.
   - Unrelated uncommitted API/E2E edits in `autobyteus-server-ts/tests/e2e/helpers/native-runtime-live-harness.ts` and `.../autobyteus-native-output-limit-recovery-live.e2e.test.ts` (their CR-001 work) are present in the worktree and were not touched or committed by this revision.
+
+### IR-003 — Nine-heading contract, approved texts v4/v6, Gemini system prompt from the request
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-review-report.md`, ARCH-REV-003 (SR-007, Pass, Large/High). The reviewer's request: resume from paused commit `8d0a98eb5` and apply design § Intended Change 8–9.
+- Triggering finding IDs: N/A. ARCH-004 is respected: no test requires the transcript fallback to cover the kept tail. N-1 (bounded release in a `finally`) is unchanged.
+- Classification: `Solution Revision` (reviewed). The behavior-defining texts come from the user-approved supplement `supplements/cached-summary-instruction.md`.
+- Prior authoritative result: IR-002 (CRR-002 Pass).
+- Current authoritative result: implemented; local checks pass; returning to Code Review.
+- Related solution revision IDs: SR-007 (REQ-003 nine headings, REQ-008, AC-003 checks, AC-010).
+- Related architecture-review revision IDs: ARCH-REV-003.
+- Related code-review revision IDs: CRR-002.
+- Related API/E2E revision IDs: see `api-e2e-revision-record.md`. The AC-003 rerun on histories A and B and AC-010 follow this revision.
+- Related delivery revision IDs: N/A.
+- Why this implementation revision is recorded: SR-007 changes the shared output contract and both summary texts, and aligns Gemini with the other adapters, so the fallback prompt reaches Gemini as its system prompt.
+- Approved behavior or requirement IDs affected: REQ-003, REQ-008, REQ-004 (fallback on Gemini); AC-003 (rerun), AC-010 (unit part done here).
+- Implementation delta:
+  - `COMPACTION_SUMMARY_HEADINGS`: nine headings, one contract and one parser for both paths. The parser's heading error states the count.
+  - `COMPACTION_SUMMARY_INSTRUCTION` v4 and `COMPACTION_SUMMARY_PROMPT` v6: extracted by script from the supplement's two fenced blocks and verified byte-equal. SHA-256 values: instruction `9349dc8ea05e2bf95edb0ed5e908933487594e788b1c09fbca7eaff347e4ba82`, prompt `c3105f73f70ae7ceb43941cb617f25b57f809842875a33920ff23c046ab224f6`.
+  - `GeminiLLM`: `systemInstruction` comes from `leadingSystemMessages(messages)` (non-empty contents joined with `\n`) in both config builders, for sync and stream, on Gemini API and Vertex. With no leading SYSTEM message, no key is sent.
+  - Server docs: the stale strategy paragraph in `ARCHITECTURE.md` now describes the summarizer.
+- Changed files or areas:
+  - `autobyteus-ts/src/memory/compaction/compaction-summary-parser.ts`, `compaction-summary-prompt.ts`; `autobyteus-ts/src/llm/api/gemini-llm.ts`;
+  - `autobyteus-ts/tests/unit/memory/compaction-summary-prompt.test.ts`, `tests/unit/llm/api/gemini-llm.test.ts`, `tests/integration/llm/api/gemini-llm-wire-contract.test.ts`;
+  - `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts`;
+  - `autobyteus-ts/docs/agent_memory_design.md`, `autobyteus-server-ts/docs/ARCHITECTURE.md`.
+- Local validation and result:
+  - core production typecheck: pass;
+  - core unit: 305 files, 1977/1977;
+  - runtime compaction integration 6/6; Gemini installed-SDK wire contract 4/4;
+  - server `prepare:shared` + typecheck: pass; server unit: 5232 passed, 7 skipped.
+- Next recipient or routing: Code Review (`get_handoff_rules`, Large/High).
+- Remaining limitations or risks:
+  - The new texts have not been run on a real model here (API/E2E: AC-003 A/B rerun, AC-010 live Gemini fallback).
+  - The API/E2E-owned untracked `autobyteus-server-ts/tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts:220` still expects `## Goal and constraints` and needs the new first heading.
+  - Accepted risks from ARCH-REV-003 still apply: OBS-1, the slightly higher cached-path cost, and the Gemini renderer dropping late system notes.
+  - The uncommitted API/E2E edits (`native-runtime-live-harness.ts`, `autobyteus-native-output-limit-recovery-live.e2e.test.ts`) and the other roles' ticket docs were not touched or committed.

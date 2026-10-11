@@ -11,7 +11,7 @@ import {
   type LlmFinishTable,
   type LlmResponseFinish,
 } from '../utils/llm-response-finish.js';
-import { Message } from '../utils/messages.js';
+import { Message, leadingSystemMessages } from '../utils/messages.js';
 import { createGeminiTokenUsageObservation } from './gemini-token-usage-normalizer.js';
 import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
 import {
@@ -98,6 +98,18 @@ const applySingleAttemptRetry = (config: Record<string, unknown>): void => {
   config.httpOptions = { ...httpOptions, retryOptions: { ...retryOptions, attempts: 1 } };
 };
 
+/**
+ * The request's own system prompt: its leading SYSTEM messages joined with `\n`, as the other
+ * adapters take it; `null` (no `systemInstruction`) when the request has none. Later SYSTEM notes
+ * are not part of it.
+ */
+const systemInstructionOf = (messages: Message[]): string | null => {
+  const parts = leadingSystemMessages(messages)
+    .map((message) => message.content)
+    .filter((content): content is string => Boolean(content));
+  return parts.length ? parts.join('\n') : null;
+};
+
 export class GeminiLLM extends BaseLLM {
   private clientPromise: Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
@@ -122,7 +134,8 @@ export class GeminiLLM extends BaseLLM {
     return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver, { singleAttempt });
   }
 
-  private buildGenerationConfig(tools?: Array<Record<string, unknown>>): Record<string, unknown> {
+  private buildGenerationConfig(messages: Message[], tools?: Array<Record<string, unknown>>): Record<string, unknown> {
+    const systemInstruction = systemInstructionOf(messages);
     const extraParams = { ...(this.config.extraParams ?? {}) };
     const thinkingLevel = extraParams.thinking_level ?? 'medium';
     const includeThoughts = Boolean(extraParams.include_thoughts ?? false);
@@ -134,12 +147,12 @@ export class GeminiLLM extends BaseLLM {
       const normalizedLevel = GEMINI_38_THINKING_LEVELS.has(configuredLevel)
         ? configuredLevel as 'low' | 'medium' | 'high'
         : 'medium';
-      return this.buildGemini38GenerationConfig(extraParams, normalizedLevel, includeThoughts, tools);
+      return this.buildGemini38GenerationConfig(systemInstruction, extraParams, normalizedLevel, includeThoughts, tools);
     }
 
     const config: Record<string, unknown> = {
       responseMimeType: 'text/plain',
-      systemInstruction: this.systemMessage,
+      ...(systemInstruction === null ? {} : { systemInstruction }),
       temperature: this.config.temperature,
       topP: this.config.topP ?? undefined,
       maxOutputTokens: this.resolveMaxOutputTokens() ?? undefined,
@@ -168,6 +181,7 @@ export class GeminiLLM extends BaseLLM {
   }
 
   private buildGemini38GenerationConfig(
+    systemInstruction: string | null,
     extraParams: Record<string, unknown>,
     thinkingLevel: 'low' | 'medium' | 'high',
     includeThoughts: boolean,
@@ -179,7 +193,7 @@ export class GeminiLLM extends BaseLLM {
 
     const config: Record<string, unknown> = {
       responseMimeType: 'text/plain',
-      systemInstruction: this.systemMessage,
+      ...(systemInstruction === null ? {} : { systemInstruction }),
       ...extraParams,
       // Google documents lower-case wire values; the generated SDK enum is upper-case.
       thinkingConfig: { thinkingLevel, includeThoughts } as unknown as ThinkingConfig
@@ -247,7 +261,7 @@ export class GeminiLLM extends BaseLLM {
     );
 
     const tools = this.normalizeGeminiTools(kwargs.tools);
-    const config = this.buildGenerationConfig(tools);
+    const config = this.buildGenerationConfig(messages, tools);
     if (options.signal) {
       (config as any).abortSignal = options.signal;
     }
@@ -294,7 +308,7 @@ export class GeminiLLM extends BaseLLM {
     );
 
     const tools = this.normalizeGeminiTools(kwargs.tools);
-    const config = this.buildGenerationConfig(tools);
+    const config = this.buildGenerationConfig(messages, tools);
     if (options.signal) {
       (config as any).abortSignal = options.signal;
     }
