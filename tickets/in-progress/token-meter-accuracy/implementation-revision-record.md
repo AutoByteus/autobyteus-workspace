@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer pass, `design-review-report.md`, round 3 | N/A | `Initial Baseline` | SR-005, ARCH-REV-003 | Implementation complete; local checks green; ready for Code Review |
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 round 1 (Fail — Local Fix) | CR-F-001 | `Local Fix` | SR-005, ARCH-REV-003, CRR-001 | Ledger-era consolidation nulls Claude SDK readings; consolidation test added; returned for targeted delta review; **Pass** in CRR-002 (round 2, targeted delta), forwarded by Code Reviewer to API/E2E |
+| IR-003 | Delivery blocker DR-002 → Solution Designer SR-008 (D-11) → Architecture Reviewer ARCH-REV-004 Pass | DR-002 native-compaction reading conflict | `Design Impact` (implemented design delta) | SR-008, ARCH-REV-004, DR-002, CRR-001/002 | Native compaction usage resets the context reading; upstream test adapted; returned for code review |
 
 ## Revision Entries
 
@@ -63,4 +64,37 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - Server typecheck clean.
 - Next recipient or routing: Code Reviewer (targeted delta review), per `get_handoff_rules`.
 - Remaining limitations or risks: non-blocking C-02 (the accumulator imports `tokenUsageObservationContributes` from record-state) is left as is to keep this a minimal Local Fix. `tokenUsageMeterStore.ts` is at 499 effective lines, unchanged here.
+
+### IR-003 — Native compaction usage resets the context reading (D-11)
+
+- Triggering role, report path, and round: delivery blocker DR-002 (`/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/release-deployment-report.md`, `delivery-revision-record.md`). The Solution Designer answered with SR-008 / D-11, and the Architecture Reviewer passed it in ARCH-REV-004 (`design-review-report.md`, round 4).
+- Triggering finding IDs: DR-002. After the `origin/personal` merge (`168900db7`, which brought in compaction-prompt-cache-reuse), native compaction summary calls (`autobyteus_compaction`) report null readings. Under D-4 a stale reading (e.g. 91.1 %) would stay until the agent's next call.
+- Classification: `Design Impact`, resolved upstream and implemented here as a design delta.
+- Prior authoritative result: IR-002 (CRR-002 Pass).
+- Current authoritative result:
+  - A server-internal observation fact, `context_reading_reset`, is added; the payload builder defaults it to `false`.
+  - The native bridge sets it only for `ingestion_kind === "autobyteus_compaction"` and keeps `reports_model_call: true`.
+  - In `applyTokenUsageContribution`, a latest observation with the fact sets prompt and percent to null and keeps window and threshold (taking payload values when non-null). The call, its tokens and cost still count, and the save bumps `revision`.
+  - The fold does not branch on ingestion kind; D-4 is otherwise unchanged.
+- Related solution revision IDs: SR-008.
+- Related architecture-review revision IDs: ARCH-REV-004.
+- Related code-review revision IDs: CRR-001, CRR-002 (prior rounds).
+- Related API/E2E revision IDs: N/A.
+- Related delivery revision IDs: DR-002.
+- Why this revision is recorded: it implements the D-11 design delta that unblocks delivery re-integration.
+- Approved behavior or requirement IDs affected: BEH-005 (clarified), REQ-010, AC-011 (user verification of native compaction), REQ-009.
+- Implementation delta: commit `5b48c2b47`. Files changed:
+  - `autobyteus-server-ts/src/agent-execution/domain/agent-run-token-usage.ts`
+  - `src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts`
+  - `src/token-usage/projections/token-usage-run-record-state.ts`
+  - `src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-row.ts` (explicit `false`, a type completion)
+  - `tests/unit/token-usage/projections/token-usage-compaction-ingestion.test.ts`: the upstream case now builds payloads as the converter does; added a reset-keeps-window/threshold case, a no-fact-keeps-reading case, a next-call-restores case and a converter case.
+  - `docs/modules/token_usage.md`: native section and the D-4 exception.
+- Local validation and result:
+  - The compaction test passes (3); a mutation that disables the rule fails 2.
+  - Typecheck clean.
+  - Server unit: 5,263 pass / 7 skipped. Token-usage integration: 24 pass.
+  - Contracts: 17 + 10 pass, no `dist` diff.
+- Next recipient or routing: Code Reviewer, per `get_handoff_rules` (SR-008 route: code review → affected-scope validation → delivery resumes finalization).
+- Remaining limitations or risks: the accepted D-11 edge (a failed summary attempt also hides the reading). The flag is visible but unused on the standalone socket, which forwards whole payloads. AC-011 needs user verification in the desktop app.
 

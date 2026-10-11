@@ -1,6 +1,6 @@
 # Implementation Handoff — token-meter-accuracy
 
-Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy`, branch `codex/token-meter-accuracy`, base `origin/personal` @ `927796780`, finalization target `origin/personal`. Implementation commits: `9e8e5bf26` (feature), `a5d8d2d31` (guardrail refactor and fixture updates), plus the handoff commit. Note: `origin/personal` has advanced to `e350a194b` since the base. This branch is not rebased; integration belongs to delivery.
+Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy`, branch `codex/token-meter-accuracy`, base `origin/personal` @ `927796780`, finalization target `origin/personal`. Implementation commits: `9e8e5bf26` (feature), `a5d8d2d31` (guardrail refactor and fixture updates), `f78921e5f` (IR-002, CR-F-001), `5b48c2b47` (IR-003, D-11), plus handoff commits. Delivery merged `origin/personal` @ `beb6b3b49` into the branch (`168900db7`). IR-003 is implemented and validated on top of that merge.
 
 ## Upstream Artifact Package
 
@@ -12,7 +12,7 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy`
 - Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/probes/` (P1–P8, plus the new `P9-agy-resume.jsonl` for RR-2), `solution-handoff.md`, user screenshots `user-16-running-member-zero.png` and `user-17-latest-prompt-97.png`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/architecture-review-revision-record.md` (ARCH-REV-001–003)
-- Triggering rework report, revision record, or evidence: N/A (initial round)
+- Triggering rework report, revision record, or evidence: IR-002: `code-review-report.md` (CRR-001, CR-F-001). IR-003: delivery blocker DR-002 (`release-deployment-report.md`, `delivery-revision-record.md`), SR-008 / D-11, ARCH-REV-004 Pass (`design-review-report.md`).
 
 ## Current Implementation Summary
 
@@ -34,15 +34,15 @@ Other runtimes and the meter:
 - **Meter** shows the threshold marker and label, and marks a genuine over-window reading.
 - **Pre-fix Claude readings** are cleared by one Prisma migration.
 
-- Implementation cycle: `Rework` (IR-002 Local Fix for CR-F-001; IR-001 initial baseline)
+- Implementation cycle: `Rework` (IR-003 implements design delta D-11; IR-002 Local Fix for CR-F-001; IR-001 initial baseline)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-005` (cumulative SR-001–SR-005)
-- Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001`
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: `SR-008` (cumulative SR-001–SR-008)
+- Related architecture-review revision IDs: `ARCH-REV-004` (cumulative ARCH-REV-001–004)
+- Related code-review revision IDs: `CRR-001`, `CRR-002`
 - Related API/E2E revision IDs: `N/A`
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-F-001`
+- Related delivery revision IDs: `DR-002`
+- Triggering finding IDs: `CR-F-001` (IR-002); DR-002 native-compaction reading conflict (IR-003)
 
 ## Routing Classification (Mandatory)
 
@@ -71,6 +71,8 @@ Other runtimes and the meter:
 | BEH-007 | Attribution preserved; live within one call for every run kind | Strict contract schemas plus team and collaboration projectors carry `revision`, threshold and `reports_model_call`; GraphQL fields; web guards on `revision`; team partial aggregate counts only model calls | Standalone, team-member and collaboration paths parse through the strict schemas (contract and transport tests) |
 | BEH-008 | Only genuine overflow above 100 %, marked | Claude counting artefact removed at the source; Prisma migration clears pre-fix Claude readings; aggregate's Claude read-time derivation removed; panel over-window mark with clamped amber bar | P3 failed compaction shows 94.6 % with the threshold at 67,000; P7 Codex 100.3 % is marked |
 
+| BEH-005 (D-11, AC-011) | A native compaction summary call counts as a call with tokens and cost; its usage resets the latest reading to unknown (window and threshold kept) until the agent's next call | `agent-run-token-usage.ts` server-internal `context_reading_reset` (builder default `false`); `autobyteus-stream-event-converter.ts` sets it only for `ingestion_kind === "autobyteus_compaction"` (`reports_model_call` stays `true`); `token-usage-run-record-state.ts` `applyTokenUsageContribution` reset rule (no ingestion-kind branch in the fold); legacy ledger payload sets `false` | Upstream compaction test: 2 calls, totals and cost, reading null, window kept, revision +1; the next agent call restores the reading. A readingless observation without the fact still keeps the reading (D-4). Converter test: compaction sets the reset, an agent call does not. A mutation disabling the rule fails 2 tests |
+
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`. Pricing catalog values and `TokenCostCalculator` are untouched (REQ-011). Docs edits are limited to the fold/adapter/frontend-contract sections of `token_usage.md`.
 
 ## Key Files Or Areas
@@ -94,6 +96,9 @@ Other runtimes and the meter:
 - P2's mid-turn readings in the fixture follow the rule P4 measured (reading = that call's prompt). P2 itself read the context only after `result`, at 5,659, which matches.
 
 ## Known Risks
+
+- D-11 accepted edge (AC-011): a failed native compaction summary attempt also resets the reading to unknown until the agent's next call. Unknown is never false.
+- `context_reading_reset` is server-internal. The strict team and collaboration projectors copy fields one by one, so it does not reach those contracts. The standalone agent socket (`agent-run-event-message-mapper.ts`) forwards the whole persisted payload, as it already does for other non-contract fields such as `ingestion_kind`. The flag is therefore visible there but unused, and the web handler is not strict.
 
 - RR-1 (accepted): per-call Claude pricing uses the API response model's exact Anthropic catalog identity. Checked: Opus 5.5, Sonnet 5 and Fable 5.1 resolve to trusted prices. Haiku 4.5 calls stay `price_missing` because the catalog has no entry (AF-10).
 - RR-4 (accepted): a dated API response model id would split per-call identity from the turn-end canonical identity.
@@ -153,6 +158,17 @@ Other runtimes and the meter:
 - Untracked build output (`autobyteus-application-backend-sdk/dist/`, `autobyteus-application-sdk-contracts/dist/`) was intentionally not committed (TESTING.md).
 
 ## Local Implementation Checks Run
+
+IR-003 (D-11), on top of the delivery merge `168900db7`:
+
+- `vitest run tests/unit/token-usage/projections/token-usage-compaction-ingestion.test.ts` → 3 pass. A mutation that disables the reset rule fails 2.
+- `pnpm -C autobyteus-server-ts typecheck` → clean.
+- `pnpm -C autobyteus-server-ts test:unit` → 669 files, 5,263 pass / 7 skipped.
+- `vitest run tests/integration/token-usage` → 24 pass.
+- Contract packages rebuilt and tested: 17 + 10 pass, with no `dist` diff.
+- Frontend unchanged: an unknown prompt already hides the context card (`hasCurrentPrompt`).
+
+Earlier rounds (IR-001/IR-002):
 
 Implementation-scoped only; not API/E2E sign-off.
 
