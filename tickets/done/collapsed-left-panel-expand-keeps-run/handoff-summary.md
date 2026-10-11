@@ -102,10 +102,10 @@ pnpm --silent isolated-app start --build
 
 ## Delivery Artifacts
 
-- Docs sync: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/docs-sync-report.md`
-- Release notes: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/release-notes.md`
-- Release/deployment report: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/release-deployment-report.md`
-- Delivery revision record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/delivery-revision-record.md` (DR-001..DR-005)
+- Docs sync: `tickets/done/collapsed-left-panel-expand-keeps-run/docs-sync-report.md`
+- Release notes: `tickets/done/collapsed-left-panel-expand-keeps-run/release-notes.md`
+- Release/deployment report: `tickets/done/collapsed-left-panel-expand-keeps-run/release-deployment-report.md`
+- Delivery revision record: `tickets/done/collapsed-left-panel-expand-keeps-run/delivery-revision-record.md` (DR-001..DR-005)
 
 ## Outcome
 
@@ -114,5 +114,10 @@ pnpm --silent isolated-app start --build
   - After going through the alternatives, the user withdrew the request: "After thinking for a long time, seems like the best option is still the tree option" (SR-005).
   - Requirements (SR-003) and design (SR-004) are unchanged. The verification steps above apply again.
 - **Cancelled (DR-004), 2026-10-09; reopened (SR-006, DR-005), 2026-10-10.** The user's words: "I still like the solution for the tree button. When I click the collapse, it should collapse. And then there is a tree button so I could click again to open the [workspaces] tree itself. The chat button is just for the chat page; if I want a new chat, I just click new chat." This is SR-003 unchanged.
-- User verification: pending (requested at DR-005)
-- Finalization / release: pending user verification. `personal` is at stable `v1.4.99`, so the user chooses the next version if a release is wanted.
+- User verification: **received** 2026-10-11 ("i tested. i think this user experience is better. lets ask delivery engineer to finalize and release a new beta. i already verified"; `user-verification.md`)
+- Finalized: merge `087de0c4c` on `origin/personal`, after a post-verification re-integration with `ff227eb72` (v1.5.0) as `65cc72483`. Branch `codex/collapsed-left-panel-expand-keeps-run` pushed.
+- Released: **`v1.5.1-beta.1`** (release commit `da4aaa030`).
+  - Desktop, iOS and Android published. GitHub pre-release with 17 assets.
+  - **Server Docker image blocked:** the upstream Antigravity installer is now served gzip-compressed, and `Dockerfile.monorepo` does not decompress it. Routed as a packaging Local Fix.
+- Cleanup: ticket worktree and local branch removed. The remote branch is kept.
+- Details: `release-deployment-report.md` (DR-006)

@@ -7,16 +7,17 @@
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/in-progress/collapsed-left-panel-expand-keeps-run/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/done/collapsed-left-panel-expand-keeps-run/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/in-progress/collapsed-left-panel-expand-keeps-run/delivery-revision-record.md`
-- Current delivery revision ID: `DR-005`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/done/collapsed-left-panel-expand-keeps-run/delivery-revision-record.md`
+- Current delivery revision ID: `DR-006`
 - Notes:
   - DR-002: halted on 2026-10-09 by the Solution Designer, after the user objected to the Workspaces icon design.
   - DR-003: resumed the same day. The user withdrew the request and kept the tree option (SR-005). Requirements and design are unchanged.
   - Re-integrated and rechecked.
   - DR-004: cancelled by the user on 2026-10-09 and stopped. Nothing shipped. The Solution Designer did the cleanup.
   - DR-005: reopened on 2026-10-10 (SR-006, SR-003 unchanged). The branch was recovered, IR-003 merged `d28c56d5d`, and API-REV-003 passed. Awaiting user verification.
+  - DR-006: user verified on 2026-10-11. Finalized on `personal` and released `v1.5.1-beta.1` (desktop and mobile). Server Docker image blocked (packaging Local Fix).
 
 ## Initial Delivery Integration Refresh
 
@@ -104,7 +105,7 @@
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/in-progress/collapsed-left-panel-expand-keeps-run/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/done/collapsed-left-panel-expand-keeps-run/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `TESTING.md`
@@ -119,52 +120,81 @@
 
 ## Version / Tag / Release Commit
 
-- Pending the user's finalization decision.
+- Release commit `da4aaa030` ("chore(release): bump workspace release version to 1.5.1-beta.1"). It changes only `autobyteus-web/package.json` (1.5.0 → 1.5.1-beta.1).
+- The commit was made by `bash scripts/desktop-release.sh beta --branch release-tmp-clp --no-push` in a temporary clean worktree at merge `087de0c4c`.
+- The script chose the version itself: the next patch after the highest stable tag `v1.5.0`, which the Android version code can encode.
+- Tag `v1.5.1-beta.1` → `da4aaa030`, pushed after re-checking that `personal` had not moved.
+- Log: `delivery-evidence/dr-006/v1.5.1-beta.1-release.log`
 
 ## Repository Finalization
 
 - Bootstrap context source: `investigation-notes.md` (base `origin/personal`; `origin/HEAD -> origin/personal`)
 - Ticket branch: `codex/collapsed-left-panel-expand-keeps-run`
-- Ticket branch commit result: pending
-- Ticket branch push result: pending
+- Ticket branch commit result: `Completed`. Archive commit `4fc3085a3` moved the ticket to `tickets/done/` and added `user-verification.md`.
+- Ticket branch push result: `Completed` (new branch `origin/codex/collapsed-left-panel-expand-keeps-run` @ `4fc3085a3`)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: —
-- Delivery-owned edits protected before re-integration: —
-- Re-integration before final merge result: —
-- Target branch update result: —
-- Merge into target result: —
-- Push target branch result: —
-- Repository finalization status: pending user verification
+- Target advanced after verification / acceptance: `Yes`, from `d28c56d5d` to `ff227eb72`. See "Post-verification re-integration (DR-006)".
+- Delivery-owned edits protected before re-integration: `Completed` (checkpoint `c4510bdda`)
+- Re-integration before final merge result: `Completed`
+  - Merge `65cc72483`, no conflicts and no overlap with ticket files.
+  - Checks: unit tests 4137 pass, PMU-001..PMU-019 pass.
+- Target branch update result: `Completed`. A temporary clean worktree `release-tmp-clp` was created at the fetched `origin/personal@ff227eb72`. The main checkout was not touched.
+- Merge into target result: `Completed`
+  - `--no-ff` merge `087de0c4c`, whose tree is identical to the verified ticket branch (`git diff --quiet`).
+  - Licensing and artifact hygiene both exit 0 (`delivery-evidence/dr-006/finalization-hygiene.log`).
+- Push target branch result: `Completed` (`ff227eb72..087de0c4c HEAD -> personal`, after re-checking that the target had not moved)
+- Repository finalization status: `Completed`
 - Blocker: None
 
 ## Release / Publication / Deployment
 
-- Applicable: to be decided by the user at verification
-- Method: if a release is requested, use the repository's documented release flow (workspace version bump release commit, as in `v1.4.99-beta.5`)
-- Method reference / command: —
-- Release/publication/deployment result: pending
-- Release notes handoff result: pending
-- Blocker: None
+- Applicable: `Yes`. The user asked for a new beta.
+- Method: `Release Script`, `scripts/desktop-release.sh beta`, with tag-triggered GitHub workflows. Beta releases use generated notes, not curated notes.
+- **`v1.5.1-beta.1` workflows** (`delivery-evidence/dr-006/workflows.json`):
+  - Desktop Release `38111975596`: **success**
+  - iOS App Store Connect Release `38111975590`: **success**
+  - Android APK Release `38111975624`: **success**
+  - Server Docker Release `38111975576`: **failure** on attempt 1 and on a re-run, attempt 2.
+- GitHub release: a **pre-release**, not a draft, published 2026-10-11T04:38:04Z, with 17 assets:
+  - macOS arm64/x64 dmg+zip, Windows exe, Linux x64/arm64 AppImage
+  - Android APK + sha256
+  - `latest*.yml` updater metadata
+  - Details: `delivery-evidence/dr-006/github-release-v1.5.1-beta.1.json`
+  - GitHub `releases/latest` stays on stable `v1.5.0`.
+- **Docker blocker (packaging):**
+  - Step "Build and push default multi-arch image" fails in `autobyteus-server-ts/docker/Dockerfile.monorepo` line 68: `curl -fsSL https://antigravity.google/cli/install.sh -o …`, followed by `bash agy-install.sh` → "cannot execute binary file", exit 126.
+  - Attempt 1 failed on arm64 and attempt 2 on amd64.
+  - Root cause, reproduced locally on 2026-10-11: the upstream CDN returns a **gzip-compressed body** (content-type `text/x-sh`) even without `Accept-Encoding`. Plain `curl -fsSL` saves the compressed bytes. `curl -fsSL --compressed` returns the correct `#!/bin/bash` script.
+  - This is an upstream behavior change, not caused by this ticket (client-only). A re-run cannot fix it.
+  - The likely fix is adding `--compressed` (or gunzipping when needed) to that `curl`.
+  - Tag `v1.5.1-beta.1` holds the old Dockerfile, so publishing the Docker image for this beta needs the fix and then a new beta tag, or a Docker workflow dispatch on a fixed ref.
+- Release/publication/deployment result: `Blocked`, partially. The desktop beta and mobile are published; the Server Docker image is not.
+- Release notes handoff result: `Not required` (beta uses generated notes)
+- Blocker: Server Docker image, packaging `Local Fix` → `/software_engineering_team/implementation_engineer`
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run`
-- Worktree cleanup result: pending
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
-- Remote branch cleanup result: pending
+- Worktree cleanup result: `Completed`
+  - `git worktree remove --force`. The only untracked files were SDK `dist/` build outputs, and no processes were running from it.
+  - The temporary `release-tmp-clp` worktree and branch are removed after this records commit is pushed.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. `codex/collapsed-left-panel-expand-keeps-run` (`4fc3085a3`) was deleted after confirming it is contained in `origin/personal`.
+- Remote branch cleanup result: `Not required`. `origin/codex/collapsed-left-panel-expand-keeps-run` is kept as a review reference.
+- Isolated instances: none owned by delivery. API/E2E stopped `iso-62896-0865` (the user's test) and `iso-62032-1caa`. The Solution Designer stopped `iso-50840-584c` and `iso-52024-c0a7` at the cancellation.
+- Log: `delivery-evidence/dr-006/cleanup.log`
 - Blocker: None
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/release-notes.md`
-- Archived release notes artifact used for release/publication: pending
+- Release notes artifact created before verification / acceptance: `tickets/done/collapsed-left-panel-expand-keeps-run/release-notes.md`
+- Archived release notes artifact used for release/publication: not used. The beta path publishes generated notes, and the ticket's notes are kept for a later curated stable release.
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-- None beyond the release flow, if a release is requested.
+- None beyond the tag-triggered release workflows.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -174,29 +204,32 @@
 
 ## Verification Checks
 
-- See "Initial Delivery Integration Refresh" above, and the API/E2E report `api-e2e-execution-coverage-report.md` (API-REV-002).
+- Post-verification re-integration: `delivery-evidence/dr006-web-unit-full.log`, `delivery-evidence/dr006-pmu-full/evidence.json`
+- API/E2E: `api-e2e-execution-coverage-report.md` (API-REV-003)
+- Release: `delivery-evidence/dr-006/` (release log, workflows, GitHub release, hygiene, cleanup)
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
-- Status: resolved (DR-003). The user withdrew the change request on 2026-10-09 and kept the tree option (SR-005). The entry below is kept as history.
-- Classification: `Requirement Gap` (classified by the Solution Designer)
-- Recommended recipient: `/software_engineering_team/solution_designer` (already owning it)
-- Why final handoff could not complete: after trying the build on 2026-10-09, the user rejected the separate Workspaces tree icon. They want the same control to fold and unfold the left panel. See `investigation-notes.md`, "User Change Request (2026-10-09)".
+- **Current (DR-006):**
+  - Classification: `Local Fix` (packaging, release pipeline). The upstream Antigravity installer URL now serves a gzip body, and `Dockerfile.monorepo` line 68 does not decompress it.
+  - Recommended recipient: `/software_engineering_team/implementation_engineer`
+  - Why final handoff could not complete: the Server Docker image for `v1.5.1-beta.1` was not published. Every other release gate, repository finalization and cleanup is complete.
+- History (DR-002, resolved in DR-003):
+  - Classification: `Requirement Gap` (classified by the Solution Designer); recipient `/software_engineering_team/solution_designer`.
+  - After trying the build on 2026-10-09, the user rejected the separate Workspaces tree icon. The user later withdrew this (SR-005).
 
 ## Rollback Criteria
 
-- If the Workspaces icon navigates, loses the open run, or reveals or focuses a stale row in the desktop app, revert merge commit(s) of this ticket on `personal`. The change is client-only, with no data to roll back.
+- If the Workspaces icon navigates, loses the open run, or reveals or focuses a stale row in the desktop app, revert merge `087de0c4c` on `personal`. The change is client-only, with no data to roll back.
+- The beta can be withdrawn from GitHub as was done for `v1.4.100-beta.1`. Only installs with "Receive beta updates" on are offered it.
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: None.
-  - The DR-002 Requirement Gap was withdrawn (SR-005).
-  - The DR-004 cancellation was reversed by the user's reopening (SR-006).
-  - Awaiting user verification.
+- Explicit user testing/verification complete: `Yes` (2026-10-11, `user-verification.md`)
+- Repository finalization complete: `Yes` (merge `087de0c4c`, release commit `da4aaa030` on `personal`)
+- Applicable release/deployment/rollout complete or not required: `No`. Desktop, iOS and Android are published; the Server Docker image is blocked.
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: the Server Docker image for `v1.5.1-beta.1` (packaging Local Fix, routed to `/software_engineering_team/implementation_engineer`).
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to `/solution_designer`: `No`
 - Terminal message/reference: —

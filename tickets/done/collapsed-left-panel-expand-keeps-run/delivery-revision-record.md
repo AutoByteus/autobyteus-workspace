@@ -11,6 +11,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 | DR-003 | Solution Designer resume: user withdrew the change request, tree option kept (SR-005) | DR-002 Blocked | Re-integrated with `033a6d780`, rechecked, docs re-confirmed, awaiting user verification | release-deployment-report.md, handoff-summary.md, docs-sync-report.md |
 | DR-004 | Solution Designer STOP: user cancelled the ticket (2026-10-09) | DR-003 awaiting user verification | Cancelled: stopped, nothing shipped; cleanup done by Solution Designer | this record only (reconstructed after recovery) |
 | DR-005 | API/E2E Pass API-REV-003 on the reopened package (SR-006) | DR-004 Cancelled | Branch current with `d28c56d5d`, docs re-confirmed, awaiting user verification | release-deployment-report.md, handoff-summary.md, docs-sync-report.md |
+| DR-006 | User verification (2026-10-11), finalize and release a beta | DR-005 awaiting user verification | Finalized on `personal` (`087de0c4c`), `v1.5.1-beta.1` published for desktop and mobile; Server Docker image Blocked (packaging Local Fix) | user-verification.md, release-deployment-report.md, handoff-summary.md, archive to `tickets/done/` |
 
 ## Revision Entries
 
@@ -131,3 +132,26 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 - Remaining blockers, rollback concerns, or untested scope: none blocking.
   - The residual risks are unchanged (`handoff-summary.md`).
   - The right Team-tab member-open trigger named in REQ-005/AC-002 does not exist in this product. This is a wording note for the Solution Designer.
+
+### DR-006 — Finalization and beta release; Server Docker image blocked (revisits DR-005)
+
+- Delivery round and trigger: user verification on 2026-10-11, relayed at the user's request by `/software_engineering_team/api_e2e_engineer`. User's words: "i tested. i think this user experience is better. lets ask delivery engineer to finalize and release a new beta. i already verified"
+- Triggering upstream report, verification, or evidence: `user-verification.md`. The user tested a packaged build at `c708178d3` (`iso-62896-0865`).
+- Prior authoritative result: DR-005, awaiting user verification.
+- Current authoritative result:
+  - **Re-integration:** the target had advanced to `ff227eb72` (v1.5.0). After checkpoint `c4510bdda`, it was merged as `65cc72483`, with no conflicts and no overlap with ticket files. Rechecked: unit tests 4137 pass, PMU-001..PMU-019 pass. No renewed verification was needed.
+  - **Archive:** commit `4fc3085a3`. The ticket branch was pushed.
+  - **Merge:** `--no-ff` merge `087de0c4c`, tree identical to the ticket branch, hygiene clean, pushed to `personal`.
+  - **Beta:** `desktop-release.sh beta` produced `v1.5.1-beta.1` (release commit `da4aaa030`; tag pushed).
+    - Desktop, iOS and Android workflows succeeded. The GitHub pre-release has 17 assets, and `latest` stays `v1.5.0`.
+    - **The Server Docker Release failed twice** (attempts 1 and 2). The upstream `https://antigravity.google/cli/install.sh` now returns a gzip body, and `Dockerfile.monorepo` line 68 (`curl -fsSL`, no `--compressed`) passes those bytes to `bash`, giving "cannot execute binary file" (exit 126).
+  - **Cleanup:** the ticket worktree and local branch were removed. The remote branch is kept.
+- Docs sync report: unchanged (DR-005 re-check holds; the base did not touch the documented areas).
+- Handoff summary / release report: `handoff-summary.md` and `release-deployment-report.md` (final sections)
+- Integration and post-integration verification: `delivery-evidence/dr006-*`. Release evidence: `delivery-evidence/dr-006/`.
+- User verification/finalization state: verified. Repository finalization is `Completed`. Release is partially `Blocked` (Docker).
+- Terminal return to `/solution_designer`: `Blocked`. It is not eligible while the Docker publication gate is open.
+- Terminal return message/reference: —
+- Why this delivery revision was recorded: finalization and release round.
+- Next recipient/action: packaging `Local Fix` → `/software_engineering_team/implementation_engineer`, to make the Dockerfile's Antigravity install tolerate a gzip-served installer. Then delivery publishes the Server Docker image, by a new beta tag or a Docker workflow dispatch on the fixed ref, as the project method allows. The terminal return follows after that.
+- Remaining blockers, rollback concerns, or untested scope: the Docker image only. Rollback is to revert `087de0c4c`, or withdraw the beta as with `v1.4.100-beta.1`.
