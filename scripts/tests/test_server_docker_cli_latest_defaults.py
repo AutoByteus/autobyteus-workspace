@@ -38,9 +38,18 @@ class ServerDockerCliLatestDefaultsTest(unittest.TestCase):
     def test_new_clis_use_official_latest_in_the_cache_busted_layer(self) -> None:
         layer = self.cli_install_layer()
         self.assertIn('npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"', layer)
-        self.assertIn('curl -fsSL https://antigravity.google/cli/install.sh -o ', layer)
+        self.assertIn('curl -fsSL --compressed https://antigravity.google/cli/install.sh -o ', layer)
         self.assertIn('bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"', layer)
         self.assertNotIn("| bash", layer)
+
+    def test_agy_installer_is_decoded_and_checked_before_it_runs(self) -> None:
+        # The installer is served gzip-encoded even without Accept-Encoding; undecoded
+        # bytes made bash fail with "cannot execute binary file" (exit 126).
+        layer = self.cli_install_layer()
+        shebang_check = 'test "$(head -c 2 "${cli_scratch}/agy-install.sh")" = \'#!\''
+        self.assertIn(shebang_check, layer)
+        self.assertLess(layer.index('--compressed https://antigravity.google/cli/install.sh'), layer.index(shebang_check))
+        self.assertLess(layer.index(shebang_check), layer.index('bash "${cli_scratch}/agy-install.sh"'))
 
     def test_installers_use_disposable_state_and_publish_outside_home(self) -> None:
         layer = self.cli_install_layer()
