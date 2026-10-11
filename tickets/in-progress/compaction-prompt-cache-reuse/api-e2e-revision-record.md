@@ -9,6 +9,7 @@
 | API-REV-003 | code_reviewer / CRR-007 (round 3, IR-004/IR-005 `97fd9a814`) | SR-008, SR-009, SR-010, ARCH-REV-005/006, IR-004, IR-005, CRR-006, CRR-007 | Fail / 93% | Fail / 92% (F-3, F-4, C-020 resolved; new F-5; DeepSeek gate fails) |
 | API-REV-004 | code_reviewer / CRR-009 (round 4, IR-006 `090353579`) | SR-011, ARCH-REV-007, IR-006, CRR-008, CRR-009 | Fail / 92% | Fail / 94% (F-5/F-6 resolved except Sonnet B: new F-9) |
 | API-REV-005 | code_reviewer / CRR-011 (round 5, IR-007 `097192731`) | SR-012, ARCH-REV-008, IR-007, CRR-010, CRR-011 | Fail / 94% | **Pass / 94.6%** |
+| API-REV-006 | code_reviewer / CRR-013 (delivery-stage Local Fix IR-008 `71b15db4f`, DR-001) | IR-008, CRR-013, DR-001 | Pass / 94.6% | **Pass / 94%** |
 
 ## Revision Entries
 
@@ -189,3 +190,22 @@ None. This is the first round.
   - the gap-A follow-up Task;
   - N-3 not observed.
 - **Next:** proportional test-code review by code_reviewer.
+
+### API-REV-006: Delivery-stage re-validation of IR-008 (new Anthropic models cached) on the merged code
+
+- **Trigger:** code_reviewer CRR-013 Pass. IR-008 is a delivery-stage Local Fix (DR-001).
+- **Durable test paths changed:** none. Test review: Not Applicable.
+- **Cases:** ledger rows 51–55.
+  - Stale `dist` rebuilt.
+  - Core 2072; server 5242.
+  - Opus CCR-E2E-001..004 pass on the merged Anthropic request policy.
+  - Sonnet 5.5 CCR-E2E-001 pass (95.6 %).
+  - Haiku 5.5 live smoke not achieved: test-trigger sizing (`target_unattainable`); a temporary probe was interrupted by the user.
+
+#### Prior Failure Resolution
+
+None. API-REV-005 was a Pass.
+
+- **Current result and confidence:** Pass / 94%.
+- **Residuals:** Haiku 5.5's live cached path is unexercised (same code path as the passing models; catalog value unit-tested); C-022; N-T3; AC-010 Gemini API key.
+- **Next:** delivery resumes (DR-002).

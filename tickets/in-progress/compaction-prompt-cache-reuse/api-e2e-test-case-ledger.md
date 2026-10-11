@@ -98,8 +98,18 @@
 | 49 | RE2E-DS | 2026-10-11 | Completed | preflight + `deepseek.compaction-agent-flow` | 3/3 | 3/3 | **Pass** | `round5/real-e2e-*.log` | — |
 | 50 | AC-010 | 2026-10-11 | Completed | Gemini API key probe | Pass if quota allows | 429 | **Blocked** | `round5/ac010/` | User: key quota |
 
+### Round 6 (API-REV-006, IR-008 `71b15db4f`, delivery-stage re-validation)
+
+| Sequence | Case ID | Timestamp | Event | Command / Entry Point / Material Configuration | Expected Observable Result | Observed Result Or Checkpoint | Result | Evidence / Artifact Path | Next Action / Unresolved Issue |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 51 | build | 2026-10-11 | Completed | `dist` found stale (no mode on the 2 new models); `pnpm -C autobyteus-ts build` | All 10 Anthropic entries cached | Confirmed after the rebuild | Fixed | `round6/core-build.log` | — |
+| 52 | repo checks | 2026-10-11 | Completed | core `tsc` + unit; server `typecheck` + `test:unit` (idle) | Green | Core **2072**; server **5242** | **Pass** | `round6/core-*.log`, `round6/server-*.log` | — |
+| 53 | CCR-E2E-001..004 (Opus, merged Anthropic request policy) | 2026-10-11 | Completed | `round6/run-chain.sh` → `run-ccr.sh opus` | Pass | 4/4; 001 95.8 %, 004 16,384 / 4,096 / 95.8 % | **Pass** | `round6/live-ccr-opus/` | — |
+| 54 | CCR-E2E-001 Sonnet 5.5 | 2026-10-11 | Completed | `CCR_MODEL=claude-sonnet-5-5` | Accepted; cache read ≥ 90 % | 95.6 %, accepted, continued | **Pass** | `round6/live-ccr-sonnet55/` | — |
+| 55 | CCR-E2E-001 Haiku 5.5 | 2026-10-11 | Completed | `CCR_MODEL=claude-haiku-5-5` | Accepted; cache read ≥ 90 % | `target_unattainable` before any summary request (test trigger too aggressive for its 2x longer history); a temporary 0.95 H probe was interrupted by the user, no result, not repeated; temporary file and home removed | **Not achieved (test sizing)** | `round6/live-ccr-haiku55/`, `round6/live-ccr-haiku55-smoke095-interrupted-no-result.log` | Residual |
+
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: row 50
+- Last durably recorded event: row 55
 - Cases not started: none
-- Reconciled into execution coverage report: `Yes` (`api-e2e-execution-coverage-report.md`, API-REV-005)
+- Reconciled into execution coverage report: `Yes` (`api-e2e-execution-coverage-report.md`, API-REV-006)

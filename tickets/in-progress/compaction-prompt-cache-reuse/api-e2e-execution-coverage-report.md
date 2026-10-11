@@ -20,12 +20,35 @@ All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction
 - API/E2E Test-Case Ledger: `api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `api-e2e-revision-record.md`
 - Summary-quality report (AC-003, for the user): `ac003-summary-quality-report.md`
-- Current API/E2E Revision ID: `API-REV-005` (round 5 on `097192731`, **latest authoritative: Pass**; see § Round 5 first)
-- Current Execution Round: 5
+- Current API/E2E Revision ID: `API-REV-006` (round 6 on `71b15db4f`, delivery-stage re-validation, **latest authoritative: Pass**; see § Round 6 first)
+- Current Execution Round: 6
 - Trigger: round 1, code review pass CRR-001, then CRR-002 (IR-002) during the round; round 2, CRR-004 (IR-003 `1153984ee`; answers F-1/F-2 of API-REV-001)
 - Prior Round Reviewed: round 1 (API-REV-001, Fail / 93%)
 - Latest Authoritative Round: **2**. See § Round 2 below; the round-1 sections that follow are kept as history unless round 2 says otherwise.
 - Code under validation: `codex/compaction-prompt-cache-reuse` @ **`8d0a98eb5`** (IR-002). The AC-002/006/008 cached-path runs, AC-003 and the desktop app all ran on `8d0a98eb5`. The early runs on `faee47a48` (IR-001) are kept as history only.
+
+## Round 6 (API-REV-006, latest authoritative): IR-008 at `71b15db4f` (delivery merge `fffdc5c2f` + new Anthropic models set to cached)
+
+**Scope (proportionate).** IR-008 changes only catalog values: `claude-sonnet-5-5` and `claude-haiku-5-5` → `cached_conversation`. But the delivery merge (`origin/personal` @ `6314c4ee2`) also rewrote Anthropic request shaping: `anthropic-llm.ts` and the new `anthropic-model-request-policy.ts` (per-model `thinking` policy). The cached summary depends on reproducing the agent's request exactly, so the live Anthropic cases were rerun on the merged code.
+
+**Stale build found and fixed.** `autobyteus-ts/dist` (14:28) predated IR-008: the two new models had no mode there. It was rebuilt with `pnpm -C autobyteus-ts build` before any live run; all 10 Anthropic entries now read `cached_conversation`.
+
+| Case | Result | Key Evidence |
+| --- | --- | --- |
+| Repository checks | **Pass** | Core 309 / **2072** (includes the catalog-mode test); core typecheck clean; server typecheck clean; server 666+ files / **5242** (run with live harnesses idle) |
+| CCR-E2E-001..004 (Opus 5.5, merged request shaping) | **Pass 4/4** | 001 cache read 95.8 %, strict applied (Opus 5.5 always sends adaptive thinking), prefix identity including `thinking`; 002 strict 200 after the tools change; 003 Gemini `[transcript]`, `4900`; 004 summary 16,384 vs agent 4,096, cache read 95.8 % |
+| CCR-E2E-001 on `claude-sonnet-5-5` (newly cached) | **Pass** | Cached summary accepted on the first attempt, cache read 95.6 %, continued, meter = provider, no echo (no `thinking` parameter on its requests, so strict mode is not applicable) |
+| CCR-E2E-001 on `claude-haiku-5-5` (newly cached) | **Not achieved (test sizing)** | Before any summary request, the planner refused the compaction as `target_unattainable`, the correct product refusal. Haiku's history was about twice as long (H ≈ 53–57k tokens; Opus and Sonnet ≈ 28k), and this case's aggressive trigger (0.85 H) caps the target near 0.77 H, below the fixed reserves for this history. Tokens per character are like the other models (1.46 vs 1.35–1.42), so this is not an estimator fault. With default settings (80 % of the model context) the target is far larger. A temporary probe with a 0.95 H trigger was interrupted by the user before producing a result (`round6/live-ccr-haiku55-smoke095-interrupted-no-result.log`) and was not repeated |
+| AC-010 (Gemini API key) | Not rerun (blocked by quota in rounds 2–5) | — |
+
+**Residuals:**
+- Haiku 5.5's live cached summary is unexercised. It uses the same code path as the other cached Anthropic models, which pass, and the catalog value is unit-tested.
+- C-022: Sonnet 5.5 and Haiku 5.5 have no AC-003 quality run of their own (follow-up Task).
+- N-T3: the catalog test title still says "(pending the rerun) DeepSeek" (cosmetic, implementation-owned).
+
+**Durable test changes this round: none.** The test review is Not Applicable (the durable set was reviewed in CRR-012).
+
+**Result: Pass / 94 %.**
 
 ## Round 5 (API-REV-005, latest authoritative): IR-007 at `097192731` (F-9: an explained empty section is accepted)
 

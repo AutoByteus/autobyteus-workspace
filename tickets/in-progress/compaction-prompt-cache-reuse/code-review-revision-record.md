@@ -18,6 +18,8 @@ The latest `code-review-report.md` (or a later `api-e2e-test-review-report.md`) 
 | CRR-010 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-004 Fail (94%) | Pass (CRR-009) | Fail → Solution Designer | F-9 (Design Impact); F-6 resolved live |
 | CRR-011 | `code-review-report.md` | Implementation Review, round 11 (Targeted Delta) / IR-007 handoff | Fail (CRR-010) | Pass | F-9 resolved in code; CR-001/C-020, CR-003 open (API/E2E) |
 | CRR-012 | `api-e2e-test-review-report.md` | Proportional API/E2E test review / API-REV-005 Pass (94.6%) | Pass (CRR-011) | Pass | CR-001/C-020 and CR-003 resolved; N-T1 and N-T2 cosmetic |
+| CRR-013 | `code-review-report.md` | Implementation Review, round 13 (Targeted Delta) / IR-008 (delivery DR-001 Local Fix) | Pass (CRR-012) | Pass | None actionable; C-022 (quality residual), N-T3 (cosmetic) |
+| CRR-014 | `api-e2e-test-review-report.md` | Proportional API/E2E test review / API-REV-006 Pass (94%) | Pass (CRR-013) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -450,3 +452,61 @@ None.
   - N-3;
   - load sensitivity of `native-compaction-terminal-drain`;
   - SR-013 pending outside this package.
+
+### CRR-013 — Targeted delta review of IR-008 (new Anthropic catalog models use the cached summary)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/code-review-report.md` (§ Round 13)
+- Review entry point and round: Implementation Review, round 13 (round 12 was the CRR-012 test review)
+- Review scope: `Targeted Delta Review` (two catalog values, the handoff count)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-revision-record.md` IR-008 (commit `71b15db4f`), at delivery's request (`delivery-revision-record.md` DR-001)
+- Relevant solution revision IDs: SR-011, SR-012
+- Relevant architecture-review revision IDs: ARCH-REV-008
+- Relevant implementation revision IDs: IR-008
+- Relevant API/E2E revision IDs: API-REV-005
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-012, test review)
+- Current authoritative result: Pass (9.35/10)
+- What changed in the review result and why:
+  - The merged base added `claude-sonnet-5-5` and `claude-haiku-5-5` without `compactionSummaryMode`. Setting them to `cached_conversation` restores REQ-002 ("the Anthropic catalog models") for all 10 entries.
+  - Reviewer runs: core `tsc` exit 0; 102/102 focused tests, including the catalog-mode test.
+- Supported product scenario / material-premise basis changes: C-022 is recorded as a non-promoted quality residual (no model-specific AC-003 run for Sonnet 5.5 and Haiku 5.5; the transcript fallback remains).
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: none actionable (C-022 quality residual; N-T3 cosmetic)
+- Material score or classification changes: None
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer` (proportionate re-validation)
+- Remaining risks or uncertainty:
+  - C-022 for the user's AC-003 review;
+  - the earlier residual risks (AC-010 quota, N-3, load-sensitive server test).
+
+### CRR-014 — Test review after API-REV-006: no durable test change (Not Applicable)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/api-e2e-test-review-report.md` (§ Round 2)
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A`
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md` § Round 6 (API-REV-006)
+- Relevant solution revision IDs: SR-012
+- Relevant architecture-review revision IDs: ARCH-REV-008
+- Relevant implementation revision IDs: IR-008
+- Relevant API/E2E revision IDs: API-REV-006
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-013)
+- Current authoritative result: Not Applicable
+- What changed in the review result and why: no file under `tests/` or `test-support/` changed after `d0f3fbd52` (the set reviewed in CRR-012). Live re-validation on the merged Anthropic request shaping passed, including the newly cached `claude-sonnet-5-5`.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - Haiku 5.5's cached path is not exercised live (test sizing); C-022;
+  - AC-010 (quota);
+  - N-3;
+  - the stale `autobyteus-ts/dist` (rebuilt by API/E2E; delivery must build fresh).

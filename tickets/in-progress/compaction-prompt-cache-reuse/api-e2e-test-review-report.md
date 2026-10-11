@@ -1,5 +1,24 @@
 # API/E2E Test Review Report
 
+## Round 2 (CRR-014, latest) — API-REV-006 on `71b15db4f` (IR-008)
+
+- Trigger: API-REV-006 **Pass / 94%** from `/software_engineering_team/api_e2e_engineer`, after the delivery-stage Local Fix IR-008 (DR-001) on top of delivery's merge `fffdc5c2f`.
+- Changed durable test scope: **none**.
+  - `git status` and `git diff 71b15db4f` show no changes under `tests/` or `test-support/`; only ticket documents and evidence changed.
+  - The durable set committed in `d0f3fbd52` is the one reviewed in round 1 (CRR-012).
+- Result: **`Not Applicable`**. No durable test file changed, and the round-1 Pass of the durable set stands.
+- Execution evidence noted (not re-reviewed as test code):
+  - CCR-E2E-001..004 4/4 on Opus 5.5 with the merged Anthropic request shaping (95.8% cache read; strict applied; 16,384 vs 4,096);
+  - CCR-E2E-001 on `claude-sonnet-5-5`: accepted, 95.6%;
+  - core 2072, server 5242.
+- `claude-haiku-5-5` live was not achieved: the case's aggressive test trigger produced `target_unattainable` before any summary request. That comes from test-only settings, not a product scenario, and the same code path passes on the other Anthropic models. Recorded as a residual risk with C-022.
+- **Note for delivery:** API/E2E found `autobyteus-ts/dist` older than IR-008 and rebuilt it. Delivery must make sure its final build and packaging come from a fresh build of the HEAD it releases.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+
+---
+
+## Round 1 (CRR-012)
+
 ## Review Meta
 
 - Review Round: 1

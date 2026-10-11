@@ -28,7 +28,25 @@
 
 All artifact paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/`.
 
-## Round 11 — Implementation Review of IR-007 (CRR-011, latest)
+## Round 13 — Implementation Review of IR-008 (CRR-013, latest; round 12 was the CRR-012 test review)
+
+- Review Entry Point: `Implementation Review`. Review Scope: `Targeted Delta Review`.
+- Trigger: IR-008 (commit `71b15db4f`, range `fffdc5c2f..71b15db4f`), an implementation-owned Local Fix requested by delivery (DR-001) after delivery's merge with `origin/personal@6314c4ee2`.
+- Delivery revision record reviewed: `delivery-revision-record.md` (DR-001).
+- **Change:**
+  - `compactionSummaryMode: 'cached_conversation'` on `claude-sonnet-5-5` and `claude-haiku-5-5`. The base commit `bc1777e02` added these entries without the field, so they defaulted to transcript, and the ticket's catalog test caught it.
+  - All 10 Anthropic entries are now cached (reviewer count: 10 of 10).
+  - The handoff count is corrected.
+- **Basis:** REQ-002 (SR-011) selects "the Anthropic catalog models"; enabling a model is one catalog value. So this restores approved behavior for models that arrived through the merge. It is not a behavior change.
+- **Reviewer runs:**
+  - core `tsc -p tsconfig.build.json`: exit 0;
+  - `vitest run tests/unit/agent/loop tests/unit/llm/supported-model-definitions.test.ts tests/unit/memory/compaction-summarizer.test.ts`: 13 files, 102/102 passed. This includes the catalog-mode test.
+- **Non-blocking notes:**
+  - **C-022, quality basis:** AC-003 measured Opus 5.5 plus the Sonnet 5 family check. Sonnet 5.5 and Haiku 5.5 inherit the cached mode under the approved rule without their own quality run. If a cached summary fails, the transcript fallback (accepted live on Anthropic models) still applies, so this is a quality residual, not a correctness risk. It goes to the user's AC-003 review and the follow-up Task (per-model strategies). Not promoted.
+  - **N-T3, cosmetic:** the catalog test title still says "(pending the rerun) DeepSeek", although DeepSeek is final since SR-011.
+- **Result:** `Pass`. Scorecard unchanged at 9.35/10.
+
+## Round 11 — Implementation Review of IR-007 (CRR-011)
 
 - Review Entry Point: `Implementation Review`. Review Scope: `Targeted Delta Review`.
 - IR-007 (`090353579..097192731`) changes one validator rule in `compaction-summary-parser.ts`, its tests and one doc line, implementing SR-012 (ARCH-REV-008 Pass) for F-9. SR-013 (the output-approach comparison) is pending the user's approval and is not implemented.
@@ -636,7 +654,16 @@ Not a failing classification: the source review passes. CR-001 is an API/E2E-own
 
 ## Latest Authoritative Result
 
-**Round 11 (CRR-011), latest:**
+**Round 13 (CRR-013), latest:**
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (Targeted Delta of IR-008, a delivery-stage Local Fix)
+- Score: 9.35/10. Every category ≥ 9.0.
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer` (re-validation after an implementation-owned fix; proportionate to a catalog-value change)
+- Notes:
+  - C-022: Sonnet 5.5 and Haiku 5.5 are cached by rule without their own AC-003 run (for the user's review and the follow-up Task);
+  - N-T3: a cosmetic test title.
+
+**Round 11 (CRR-011), superseded:**
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review` (Targeted Delta of IR-007)
 - Score: 9.35/10. Every category ≥ 9.0.
