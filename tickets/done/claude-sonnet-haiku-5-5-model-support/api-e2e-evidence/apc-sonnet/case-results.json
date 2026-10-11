@@ -1,0 +1,907 @@
+[
+  {
+    "case": "APC-E2E-001",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "t1Calls": 13,
+      "t2Calls": 13,
+      "t1ToolCycleResponsesWithThinking": 11,
+      "thinkingBlocksInFirstT2Request": 15,
+      "lastT1Usage": {
+        "input_tokens": 4,
+        "cache_read_input_tokens": 21819,
+        "cache_creation_input_tokens": 1226,
+        "cache_creation_5m": 0,
+        "cache_creation_1h": 1226,
+        "output_tokens": 376
+      },
+      "firstT2Usage": {
+        "input_tokens": 4,
+        "cache_read_input_tokens": 23045,
+        "cache_creation_input_tokens": 304,
+        "cache_creation_5m": 0,
+        "cache_creation_1h": 304,
+        "output_tokens": 136
+      },
+      "previousRequestGrossInput": 23049,
+      "previousRequestCachedPrefix": 23045,
+      "firstT2GrossInput": 23353,
+      "newInputTokens": 304,
+      "firstT2WrittenOrUncached": 308
+    },
+    "at": "2026-10-10T19:48:47.665Z"
+  },
+  {
+    "case": "APC-E2E-002",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "t3Calls": 1,
+      "t4Calls": 4,
+      "noteBlockIndex": 105,
+      "blockEntries": 107,
+      "systemShaBefore": "b0a96250e7bb441b",
+      "systemShaT4": "b0a96250e7bb441b",
+      "firstT4Usage": {
+        "input_tokens": 4,
+        "cache_read_input_tokens": 35391,
+        "cache_creation_input_tokens": 445,
+        "cache_creation_5m": 0,
+        "cache_creation_1h": 445,
+        "output_tokens": 162
+      },
+      "systemContainsNote": false
+    },
+    "at": "2026-10-10T19:49:00.059Z"
+  },
+  {
+    "case": "APC-E2E-003",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "calls": 31,
+      "turns": 4,
+      "cacheReadTokens": 730052,
+      "grossInputTokens": 768824,
+      "runLevelHit": 0.9495697324745326,
+      "cacheWrite1hTokens": 38670,
+      "cacheWrite5mTokens": 0,
+      "sdkVersionsSentOnLiveCalls": [
+        "0.132.1"
+      ],
+      "serverSdkVersion": "0.132.1",
+      "perCall": [
+        {
+          "index": 0,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 8710,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 8710,
+          "output_tokens": 136
+        },
+        {
+          "index": 1,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 8710,
+          "cache_creation_input_tokens": 849,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 849,
+          "output_tokens": 546
+        },
+        {
+          "index": 2,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 9559,
+          "cache_creation_input_tokens": 1322,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1322,
+          "output_tokens": 684
+        },
+        {
+          "index": 3,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 10881,
+          "cache_creation_input_tokens": 1397,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1397,
+          "output_tokens": 381
+        },
+        {
+          "index": 4,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 12278,
+          "cache_creation_input_tokens": 1092,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1092,
+          "output_tokens": 320
+        },
+        {
+          "index": 5,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 13370,
+          "cache_creation_input_tokens": 1130,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1130,
+          "output_tokens": 362
+        },
+        {
+          "index": 6,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 14500,
+          "cache_creation_input_tokens": 1155,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1155,
+          "output_tokens": 319
+        },
+        {
+          "index": 7,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 15655,
+          "cache_creation_input_tokens": 1100,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1100,
+          "output_tokens": 409
+        },
+        {
+          "index": 8,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 16755,
+          "cache_creation_input_tokens": 1202,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1202,
+          "output_tokens": 676
+        },
+        {
+          "index": 9,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 17957,
+          "cache_creation_input_tokens": 1389,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1389,
+          "output_tokens": 705
+        },
+        {
+          "index": 10,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 19346,
+          "cache_creation_input_tokens": 1416,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1416,
+          "output_tokens": 287
+        },
+        {
+          "index": 11,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 20762,
+          "cache_creation_input_tokens": 1057,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1057,
+          "output_tokens": 419
+        },
+        {
+          "index": 12,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 21819,
+          "cache_creation_input_tokens": 1226,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1226,
+          "output_tokens": 376
+        },
+        {
+          "index": 13,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 23045,
+          "cache_creation_input_tokens": 304,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 304,
+          "output_tokens": 136
+        },
+        {
+          "index": 14,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 23349,
+          "cache_creation_input_tokens": 849,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 849,
+          "output_tokens": 325
+        },
+        {
+          "index": 15,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 24198,
+          "cache_creation_input_tokens": 1036,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1036,
+          "output_tokens": 249
+        },
+        {
+          "index": 16,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 25234,
+          "cache_creation_input_tokens": 960,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 960,
+          "output_tokens": 213
+        },
+        {
+          "index": 17,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 26194,
+          "cache_creation_input_tokens": 1002,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1002,
+          "output_tokens": 252
+        },
+        {
+          "index": 18,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 27196,
+          "cache_creation_input_tokens": 1041,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1041,
+          "output_tokens": 211
+        },
+        {
+          "index": 19,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 28237,
+          "cache_creation_input_tokens": 1000,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1000,
+          "output_tokens": 245
+        },
+        {
+          "index": 20,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 29237,
+          "cache_creation_input_tokens": 958,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 958,
+          "output_tokens": 211
+        },
+        {
+          "index": 21,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 30195,
+          "cache_creation_input_tokens": 998,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 998,
+          "output_tokens": 211
+        },
+        {
+          "index": 22,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 31193,
+          "cache_creation_input_tokens": 1000,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1000,
+          "output_tokens": 211
+        },
+        {
+          "index": 23,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 32193,
+          "cache_creation_input_tokens": 1000,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1000,
+          "output_tokens": 211
+        },
+        {
+          "index": 24,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 33193,
+          "cache_creation_input_tokens": 1000,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1000,
+          "output_tokens": 211
+        },
+        {
+          "index": 25,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 34193,
+          "cache_creation_input_tokens": 1000,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1000,
+          "output_tokens": 99
+        },
+        {
+          "index": 26,
+          "phase": "T3",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 35193,
+          "cache_creation_input_tokens": 198,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 198,
+          "output_tokens": 136
+        },
+        {
+          "index": 27,
+          "phase": "T4",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 35391,
+          "cache_creation_input_tokens": 445,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 445,
+          "output_tokens": 162
+        },
+        {
+          "index": 28,
+          "phase": "T4",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 35836,
+          "cache_creation_input_tokens": 875,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 875,
+          "output_tokens": 250
+        },
+        {
+          "index": 29,
+          "phase": "T4",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 36711,
+          "cache_creation_input_tokens": 961,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 961,
+          "output_tokens": 211
+        },
+        {
+          "index": 30,
+          "phase": "T4",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 37672,
+          "cache_creation_input_tokens": 998,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 998,
+          "output_tokens": 112
+        }
+      ]
+    },
+    "at": "2026-10-10T19:49:00.104Z"
+  },
+  {
+    "case": "APC-E2E-007",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "calls": 31,
+      "raw": {
+        "input": 102,
+        "read": 730052,
+        "write5m": 0,
+        "write1h": 38670,
+        "writeTotal": 38670,
+        "output": 9276
+      },
+      "expectedCost": 0.3206491999999999,
+      "summary": {
+        "usageReportCount": 31,
+        "standardInputTokens": 102,
+        "cacheReadInputTokens": 730052,
+        "cacheCreationInputTokens": 38670,
+        "cacheCreation5mInputTokens": 0,
+        "cacheCreation1hInputTokens": 38670,
+        "outputTokens": 9276,
+        "grossInputTokens": 768824,
+        "estimatedApiTotalCost": 0.3206492,
+        "estimatedApiCacheReadInputCost": 0.0730052,
+        "estimatedApiCacheCreation1hInputCost": 0.15468,
+        "cacheState": "positive",
+        "apiCostStatus": "estimated",
+        "currency": "USD"
+      }
+    },
+    "at": "2026-10-10T19:49:00.142Z"
+  },
+  {
+    "case": "APC-E2E-005",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "thinkingInPersistedSnapshot": true,
+      "thinkingBlocksInLastRequestBeforeStop": 22,
+      "firstAfterRestore": {
+        "index": 31,
+        "phase": "T5",
+        "sdkVersion": "0.132.1",
+        "status": 200,
+        "stopReason": "tool_use",
+        "responseBlockTypes": [
+          "tool_use"
+        ],
+        "usage": {
+          "input_tokens": 4,
+          "cache_read_input_tokens": 8548,
+          "cache_creation_input_tokens": 26657,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 26657,
+          "output_tokens": 136
+        },
+        "errorBody": null,
+        "systemSha": "b0a96250e7bb441b",
+        "toolsSha": "2f1fe3678d5b329e",
+        "messageCount": 65,
+        "blockEntryCount": 97,
+        "thinkingBlocksInRequest": 0,
+        "cacheControlCount": 2,
+        "topLevelCacheControl": {
+          "type": "ephemeral",
+          "ttl": "1h"
+        }
+      },
+      "t5": [
+        {
+          "index": 31,
+          "phase": "T5",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 4,
+            "cache_read_input_tokens": 8548,
+            "cache_creation_input_tokens": 26657,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 26657,
+            "output_tokens": 136
+          },
+          "errorBody": null,
+          "systemSha": "b0a96250e7bb441b",
+          "toolsSha": "2f1fe3678d5b329e",
+          "messageCount": 65,
+          "blockEntryCount": 97,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 32,
+          "phase": "T5",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "thinking",
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 35205,
+            "cache_creation_input_tokens": 849,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 849,
+            "output_tokens": 787
+          },
+          "errorBody": null,
+          "systemSha": "b0a96250e7bb441b",
+          "toolsSha": "2f1fe3678d5b329e",
+          "messageCount": 67,
+          "blockEntryCount": 99,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 33,
+          "phase": "T5",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "thinking",
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 36054,
+            "cache_creation_input_tokens": 1498,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 1498,
+            "output_tokens": 2313
+          },
+          "errorBody": null,
+          "systemSha": "b0a96250e7bb441b",
+          "toolsSha": "2f1fe3678d5b329e",
+          "messageCount": 69,
+          "blockEntryCount": 103,
+          "thinkingBlocksInRequest": 2,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 34,
+          "phase": "T5",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "thinking",
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 37552,
+            "cache_creation_input_tokens": 3024,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 3024,
+            "output_tokens": 1922
+          },
+          "errorBody": null,
+          "systemSha": "b0a96250e7bb441b",
+          "toolsSha": "2f1fe3678d5b329e",
+          "messageCount": 71,
+          "blockEntryCount": 107,
+          "thinkingBlocksInRequest": 4,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 35,
+          "phase": "T5",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "end_turn",
+          "responseBlockTypes": [
+            "thinking",
+            "text"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 40576,
+            "cache_creation_input_tokens": 2633,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 2633,
+            "output_tokens": 1832
+          },
+          "errorBody": null,
+          "systemSha": "b0a96250e7bb441b",
+          "toolsSha": "2f1fe3678d5b329e",
+          "messageCount": 73,
+          "blockEntryCount": 111,
+          "thinkingBlocksInRequest": 6,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        }
+      ]
+    },
+    "at": "2026-10-10T19:49:55.036Z"
+  },
+  {
+    "case": "APC-E2E-004",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "settingResult": "Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' has been updated successfully.",
+      "error": null,
+      "waitingCall": {
+        "index": 36,
+        "phase": "T6",
+        "sdkVersion": "0.132.1",
+        "status": 200,
+        "stopReason": "tool_use",
+        "responseBlockTypes": [
+          "thinking",
+          "tool_use"
+        ],
+        "usage": {
+          "input_tokens": 4,
+          "cache_read_input_tokens": 43209,
+          "cache_creation_input_tokens": 539,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 539,
+          "output_tokens": 577
+        },
+        "errorBody": null,
+        "systemSha": "b0a96250e7bb441b",
+        "toolsSha": "2f1fe3678d5b329e",
+        "messageCount": 75,
+        "blockEntryCount": 113,
+        "thinkingBlocksInRequest": 6,
+        "cacheControlCount": 2,
+        "topLevelCacheControl": {
+          "type": "ephemeral",
+          "ttl": "1h"
+        }
+      },
+      "continuation": {
+        "index": 37,
+        "phase": "T6-after-change",
+        "sdkVersion": "0.132.1",
+        "status": 200,
+        "stopReason": "tool_use",
+        "responseBlockTypes": [
+          "thinking",
+          "thinking",
+          "tool_use"
+        ],
+        "usage": {
+          "input_tokens": 2,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 39720,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 39720,
+          "output_tokens": 1303
+        },
+        "errorBody": null,
+        "systemSha": "b0a96250e7bb441b",
+        "toolsSha": "815a9b22a31c34b5",
+        "messageCount": 77,
+        "blockEntryCount": 109,
+        "thinkingBlocksInRequest": 0,
+        "cacheControlCount": 2,
+        "topLevelCacheControl": {
+          "type": "ephemeral",
+          "ttl": "1h"
+        }
+      },
+      "continuationLastAssistantBlocks": [
+        "tool_use"
+      ],
+      "continuationLastMessageRole": "user",
+      "toolsChanged": true,
+      "afterChange": [
+        {
+          "index": 37,
+          "phase": "T6-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "thinking",
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 39720,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 39720,
+            "output_tokens": 1303
+          },
+          "errorBody": null,
+          "systemSha": "b0a96250e7bb441b",
+          "toolsSha": "815a9b22a31c34b5",
+          "messageCount": 77,
+          "blockEntryCount": 109,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 38,
+          "phase": "T6-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "thinking",
+            "text",
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 39720,
+            "cache_creation_input_tokens": 2014,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 2014,
+            "output_tokens": 721
+          },
+          "errorBody": null,
+          "systemSha": "b0a96250e7bb441b",
+          "toolsSha": "815a9b22a31c34b5",
+          "messageCount": 79,
+          "blockEntryCount": 113,
+          "thinkingBlocksInRequest": 2,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 39,
+          "phase": "T6-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "thinking",
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 4,
+            "cache_read_input_tokens": 41734,
+            "cache_creation_input_tokens": 1527,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 1527,
+            "output_tokens": 756
+          },
+          "errorBody": null,
+          "systemSha": "b0a96250e7bb441b",
+          "toolsSha": "815a9b22a31c34b5",
+          "messageCount": 81,
+          "blockEntryCount": 118,
+          "thinkingBlocksInRequest": 3,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 40,
+          "phase": "T6-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "thinking",
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 43261,
+            "cache_creation_input_tokens": 1469,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 1469,
+            "output_tokens": 657
+          },
+          "errorBody": null,
+          "systemSha": "b0a96250e7bb441b",
+          "toolsSha": "815a9b22a31c34b5",
+          "messageCount": 83,
+          "blockEntryCount": 122,
+          "thinkingBlocksInRequest": 5,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 41,
+          "phase": "T6-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "thinking",
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 44730,
+            "cache_creation_input_tokens": 1368,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 1368,
+            "output_tokens": 490
+          },
+          "errorBody": null,
+          "systemSha": "b0a96250e7bb441b",
+          "toolsSha": "815a9b22a31c34b5",
+          "messageCount": 85,
+          "blockEntryCount": 126,
+          "thinkingBlocksInRequest": 7,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 42,
+          "phase": "T6-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "end_turn",
+          "responseBlockTypes": [
+            "thinking",
+            "text"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 46098,
+            "cache_creation_input_tokens": 1201,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 1201,
+            "output_tokens": 977
+          },
+          "errorBody": null,
+          "systemSha": "b0a96250e7bb441b",
+          "toolsSha": "815a9b22a31c34b5",
+          "messageCount": 87,
+          "blockEntryCount": 130,
+          "thinkingBlocksInRequest": 9,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        }
+      ]
+    },
+    "at": "2026-10-10T19:50:43.211Z"
+  },
+  {
+    "case": "APC-E2E-008",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "sourceCall": 42,
+      "thinkingBlocksKept": 9,
+      "unchanged": {
+        "status": 200,
+        "strict": true,
+        "usage": {
+          "input_tokens": 2,
+          "cache_read_input_tokens": 47299,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 0,
+          "output_tokens": 862
+        },
+        "errorBody": null
+      },
+      "changedTool": {
+        "status": 400,
+        "strict": true,
+        "errorBody": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.43.content.2: Invalid `signature` in `thinking` block. The block is bound to a different conversation. Remove the block, or set `thinking.block_binding.prefix_mismatch_behavior` to \\\"drop_block\\\". The `tools` list differs from the one this block was created with.\"},\"request_id\":\"req_011Cfu8yD1kY2LTuQ32qpXv2\"}"
+      }
+    },
+    "at": "2026-10-10T19:50:49.467Z"
+  }
+]
