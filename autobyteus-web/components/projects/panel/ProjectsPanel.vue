@@ -35,6 +35,7 @@ import ProjectsPanelTaskDetail from './ProjectsPanelTaskDetail.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectChangeFeed } from '~/composables/projects/useProjectChangeFeed'
 import { useProjectsPanelStore } from '~/stores/projectsPanelStore'
+import { useTaskLocatorStore } from '~/stores/taskLocatorStore'
 
 type PanelView = { kind: 'board' } | { kind: 'task'; taskId: string }
 
@@ -45,5 +46,8 @@ const view = ref<PanelView>({ kind: 'board' })
 const openTask = (taskId: string) => { view.value = { kind: 'task', taskId } }
 // Another Project (or Temp tasks) shows its board.
 watch(() => JSON.stringify(panel.choice), () => { view.value = { kind: 'board' } })
+// "Show Task in Projects" shows the chosen board, leaving an open Task.
+const locator = useTaskLocatorStore()
+watch(() => locator.request?.seq, (seq) => { if (seq !== undefined) view.value = { kind: 'board' } })
 onMounted(() => panel.load())
 </script>
