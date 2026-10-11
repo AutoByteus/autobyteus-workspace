@@ -9,6 +9,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | DR-001 | CRR-002 Pass from `/software_engineering_team/code_reviewer` | N/A | Integrated, checked and docs synced. Held before user verification: the API/E2E desktop round was reopened during delivery | `release-deployment-report.md`, `docs-sync-report.md`, `release-notes.md`, `TESTING.md`, `delivery-evidence/dr1-*.log` |
 | DR-002 | API-REV-002 Pass (desktop round, no test-code change) from `/software_engineering_team/api_e2e_engineer` | DR-001 held | Re-integrated (`b7e318107`), checked and docs re-checked. Handoff summary issued. Waiting for user verification | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, `delivery-evidence/dr2-*.log` |
 | DR-003 | User verification: "finalize and release a new beta." | DR-002 waiting for verification | Delivery Completed: archived, merged to `personal`, `v1.4.99-beta.9` published, cleaned up | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/{finalization-hygiene.log,beta9-release.log,workflows-beta9.json,github-release-beta9.json,docker-tags.txt,updater-metadata/}` |
+| DR-004 | User request on 2026-10-10: stable release | DR-003 completed | Stable `v1.5.0` published (Latest) | `release-notes-v1.5.0.md`, `release-deployment-report.md` § Stable Release v1.5.0, `delivery-evidence/{v1.5.0-*,workflows-v1.5.0.json,github-release-v1.5.0.json}` |
 
 ## Revision Entries
 
@@ -110,3 +111,16 @@ The latest docs sync report, handoff summary and release/publication/deployment 
   - P-004.
   - One cache rewrite per restore.
   - `memory-manager.ts` at 498/500 lines.
+
+### DR-004 — Stable release v1.5.0
+
+- Delivery round and trigger: on 2026-10-10 the user asked for a stable release.
+- Prior authoritative result: DR-003 (Delivery Completed, `v1.4.99-beta.9`).
+  - This ticket's change already shipped in stable `v1.4.99`.
+- Current authoritative result: stable `v1.5.0` is published as GitHub Latest.
+  - Release commit `305685451`, with all 4 workflows passing.
+  - Updater metadata reports 1.5.0.
+  - Docker `:1.5.0`, `:latest` and `:beta` share one digest.
+- Release/publication/deployment report: `release-deployment-report.md` § Stable Release v1.5.0
+- Terminal return to `/solution_designer`: not re-sent. This is a release-only follow-up on an already completed package, and the user asked for the release only.
+- Remaining concerns: none for the release. The DEF-A and DEF-B recommendations stand.

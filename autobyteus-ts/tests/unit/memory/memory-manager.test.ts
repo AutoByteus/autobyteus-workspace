@@ -12,6 +12,7 @@ import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../
 import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
 import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
 import { ToolInteractionStatus } from '../../../src/memory/models/tool-interaction.js';
+import { buildToolInteractions } from '../../../src/memory/tool-interaction-builder.js';
 import { SYNTHETIC_TOOL_RESULT_ERROR } from '../../../src/memory/working-context-tool-protocol-repairer.js';
 
 const makeTempDir = () => fs.mkdtempSync(path.join(os.tmpdir(), 'memory-manager-'));
@@ -41,6 +42,11 @@ const appendOperationBoundaryNote = (manager: MemoryManager, turnId: string, rea
     sourceEvent: 'AgentTurnInterruptedEvent'
   });
 };
+
+
+const toolInteractionsOf = (manager: MemoryManager, turnId?: string) => buildToolInteractions(
+  manager.listTurnRawTraceCorpusOrdered().filter((item) => !turnId || item.turnId === turnId),
+);
 
 describe('MemoryManager', () => {
   it('ingests user message and assistant response with sequencing', () => {
@@ -112,7 +118,7 @@ describe('MemoryManager', () => {
       const toolResult = new ToolResultEvent('read_file', 'ok', 'call_1', undefined, { path: 'a.txt' }, turnId);
       manager.ingestToolResult(toolResult, turnId);
 
-      const interactions = manager.getToolInteractions(turnId);
+      const interactions = toolInteractionsOf(manager, turnId);
       expect(interactions).toHaveLength(1);
       expect(interactions[0].toolName).toBe('read_file');
       expect(interactions[0].status).toBe(ToolInteractionStatus.SUCCESS);
@@ -335,17 +341,17 @@ describe('MemoryManager', () => {
         })
       ]);
 
-      const allInteractions = manager.getToolInteractions();
+      const allInteractions = toolInteractionsOf(manager);
       expect(new Set(allInteractions.map((interaction) => interaction.toolCallId))).toEqual(
         new Set(['call_1', 'call_2'])
       );
 
-      const turn1Interactions = manager.getToolInteractions('turn_0001');
+      const turn1Interactions = toolInteractionsOf(manager, 'turn_0001');
       expect(turn1Interactions).toHaveLength(1);
       expect(turn1Interactions[0].toolCallId).toBe('call_1');
       expect(turn1Interactions[0].status).toBe(ToolInteractionStatus.SUCCESS);
 
-      const turn2Interactions = manager.getToolInteractions('turn_0002');
+      const turn2Interactions = toolInteractionsOf(manager, 'turn_0002');
       expect(turn2Interactions).toHaveLength(1);
       expect(turn2Interactions[0].status).toBe(ToolInteractionStatus.PENDING);
     } finally {
@@ -401,8 +407,8 @@ describe('MemoryManager', () => {
       const rawItems = reloadedManager.listTurnRawTracesOrdered();
       expect(rawItems.map((item) => item.traceType)).toEqual(['tool_call', 'tool_result', 'tool_continuation']);
       expect(rawItems[2]?.content).toBe('Native API tool continuation');
-      expect(reloadedManager.getToolInteractions(turnId)).toHaveLength(1);
-      expect(reloadedManager.getToolInteractions(turnId)[0]).toMatchObject({
+      expect(toolInteractionsOf(reloadedManager, turnId)).toHaveLength(1);
+      expect(toolInteractionsOf(reloadedManager, turnId)[0]).toMatchObject({
         status: ToolInteractionStatus.SUCCESS,
         toolCallId: 'call_1',
       });

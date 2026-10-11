@@ -1,0 +1,27 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block/autobyteus-ts[39m
+
+ [32m✓[39m tests/unit/llm/api/openai-compatible-request-builder.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/anthropic-llm-prompt-caching.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/anthropic-llm.test.ts [2m([22m[2m34 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+[90mstdout[2m | tests/unit/llm/api/compaction-single-attempt-transport.test.ts[2m > [22m[2mcompaction invocation-local SDK retry bound[2m > [22m[2m'geminiProject' status 401 makes one SDK fetch
+[22m[39mThe user provided project/location will take precedence over the API key from the environment variables.
+
+[90mstdout[2m | tests/unit/llm/api/compaction-single-attempt-transport.test.ts[2m > [22m[2mcompaction invocation-local SDK retry bound[2m > [22m[2m'geminiProject' status 429 makes one SDK fetch
+[22m[39mThe user provided project/location will take precedence over the API key from the environment variables.
+
+[90mstdout[2m | tests/unit/llm/api/compaction-single-attempt-transport.test.ts[2m > [22m[2mcompaction invocation-local SDK retry bound[2m > [22m[2m'geminiProject' status 503 makes one SDK fetch
+[22m[39mThe user provided project/location will take precedence over the API key from the environment variables.
+
+[90mstderr[2m | tests/unit/llm/api/compaction-single-attempt-transport.test.ts[2m > [22m[2mcompaction invocation-local SDK retry bound[2m > [22m[2mcounts one remote generation request through the real axios client (not remote host internal work)
+[22m[39mSECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+ [32m✓[39m tests/unit/llm/api/compaction-single-attempt-transport.test.ts [2m([22m[2m37 tests[22m[2m)[22m[32m 55[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/request-output-limit.test.ts [2m([22m[2m25 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+[2m      Tests [22m [1m[32m105 passed[39m[22m[90m (105)[39m
+[2m   Start at [22m 06:23:48
+[2m   Duration [22m 1.92s[2m (transform 2.04s, setup 113ms, import 5.29s, tests 110ms, environment 1ms)[22m
+
+exit=0

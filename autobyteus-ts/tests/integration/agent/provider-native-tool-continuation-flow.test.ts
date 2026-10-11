@@ -7,7 +7,7 @@ import { AgentContext } from '../../../src/agent/context/agent-context.js';
 import { AgentRuntimeState } from '../../../src/agent/context/agent-runtime-state.js';
 import {
   LLMUserMessageReadyEvent,
-  ToolContinuationReadyEvent,
+  TurnContinuationReadyEvent,
   UserMessageReceivedEvent
 } from '../../../src/agent/events/agent-events.js';
 import { AgentRuntime } from '../../../src/agent/runtime/agent-runtime.js';
@@ -415,8 +415,8 @@ describe('provider-native tool continuation integration flow', () => {
 
         const eventStoreEvents = runtimeState.eventStore?.allEvents().map((envelope) => envelope.event) ?? [];
         const toolContinuationEvents = eventStoreEvents.filter(
-          (event) => event instanceof ToolContinuationReadyEvent
-        ) as ToolContinuationReadyEvent[];
+          (event) => event instanceof TurnContinuationReadyEvent
+        ) as TurnContinuationReadyEvent[];
         expect(toolContinuationEvents.map((event) => event.turnId)).toEqual(['turn_0001']);
         const syntheticNativeReadyEvents = eventStoreEvents.filter(
           (event) =>

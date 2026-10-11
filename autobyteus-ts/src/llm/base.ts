@@ -5,6 +5,7 @@ import { LLMExtension } from './extensions/base-extension.js';
 import { Message, MessageRole } from './utils/messages.js';
 import { LLMUserMessage } from './user-message.js';
 import { CompleteResponse, ChunkResponse } from './utils/response-types.js';
+import { resolveRequestMaxOutputTokens } from './utils/max-output-tokens.js';
 
 export type LLMInvocationOptions = {
   /**
@@ -54,6 +55,11 @@ export abstract class BaseLLM {
 
     this.systemMessage = newSystemPrompt;
     this.config.systemMessage = newSystemPrompt;
+  }
+
+  /** The request's output limit (configured, else the model maximum); `null` means omit. */
+  protected resolveMaxOutputTokens(): number | null {
+    return resolveRequestMaxOutputTokens(this.model, this.config);
   }
 
   protected buildUserMessage(userMessage: LLMUserMessage): Message {
@@ -117,15 +123,17 @@ export abstract class BaseLLM {
       if (chunk.content) accumulatedContent += chunk.content;
       if (chunk.reasoning) accumulatedReasoning += chunk.reasoning;
       
+      // Adapters yield exactly one terminal chunk, last, carrying usage and finish.
       if (chunk.is_complete) finalChunk = chunk;
-      
+
       yield chunk;
     }
 
     const completeResponse = new CompleteResponse({
       content: accumulatedContent,
       reasoning: accumulatedReasoning || null,
-      usage: finalChunk?.usage
+      usage: finalChunk?.usage,
+      finish: finalChunk?.finish ?? null,
     });
 
     await this.executeAfterHooks(messages, completeResponse, kwargs);

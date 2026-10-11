@@ -10,6 +10,10 @@ import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
 import type { AgentExternalEventNotifier } from '../events/notifiers.js';
 
+/** The error result for a call whose arguments could not be parsed (Claude Code's retry wording). */
+export const buildMalformedToolCallError = (parseError: string): string =>
+  `Your tool call was malformed and could not be parsed (${parseError}). Please retry.`;
+
 export type ToolPhaseRunOptions = {
   onToolResult?: (event: ToolResultEvent) => void | Promise<void>;
 };
@@ -70,6 +74,18 @@ export class ToolPhase {
     let toolName = toolInvocation.name;
     let arguments_ = toolInvocation.arguments;
     let invocationId = toolInvocation.id;
+
+    // Admission: a malformed call never reaches preprocessing, approval or execution.
+    if (toolInvocation.argumentsParseError !== null) {
+      const errorMessage = buildMalformedToolCallError(toolInvocation.argumentsParseError);
+      notifier?.notifyAgentDataToolLog({
+        log_entry: `[TOOL_CALL_MALFORMED] Tool: ${toolName}, Invocation_ID: ${invocationId}, Error: ${toolInvocation.argumentsParseError}`,
+        tool_invocation_id: invocationId,
+        tool_name: toolName,
+        turn_id: activeTurnId
+      });
+      return new ToolResultEvent(toolName, null, invocationId, errorMessage, arguments_, activeTurnId, false);
+    }
 
     try {
       toolInvocation = await turn.executionScope.runAbortable(

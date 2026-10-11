@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import fastify, { type FastifyInstance } from "fastify";
@@ -17,8 +18,11 @@ import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memo
 import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import { ContextFileLayout } from "../../../../src/context-files/store/context-file-layout.js";
+import { ContextFileLocalPathResolver } from "../../../../src/context-files/services/context-file-local-path-resolver.js";
+import { ContextFileOwnerResolver } from "../../../../src/context-files/services/context-file-owner-resolver.js";
+import { createStoredCollaborationExecutionLocationService } from "../../../../src/agent-collaboration/execution/services/collaboration-execution-location-service.js";
 import type { ContextFileDraftOwnerDescriptor } from "../../../../src/context-files/domain/context-file-owner-types.js";
-import { writeAttachmentSidecars } from "../../../fixtures/current-attachment-package-fixtures.js";
+import { writeAttachmentAgentMetadata, writeAttachmentSidecars } from "../../../fixtures/current-attachment-package-fixtures.js";
 import {
   testAgentOrgExecutionTree,
   testOrgAgentNode,
@@ -48,6 +52,17 @@ const INVALID_LOCATORS = [
   "/rest/drafts/team-runs/draft-team/members/no-root/context-files/ctx_a__b.txt",
   "/rest/drafts/agent-org-runs/org/agent-runs/%20padded/context-files/ctx_a__b.txt",
   "/rest/drafts/agent-collaborations/host/agent-runs/a%2Fb/context-files/ctx_a__b.txt",
+  "/rest/drafts/agent-runs/..%2Fagent-runs%2Fvictim/context-files/ctx_a__b.txt",
+  "/rest/drafts/agent-runs/%2E%2E/context-files/ctx_a__b.txt",
+  "/rest/drafts/agent-runs/..%2F..%2Fx/context-files/ctx_a__b.txt",
+  "/rest/drafts/agent-runs/%20draft-agent/context-files/ctx_a__b.txt",
+  "/rest/drafts/team-runs/..%2Fagent-runs%2Fvictim/members/%2FA/context-files/ctx_a__b.txt",
+  "/rest/drafts/team-runs/%2E%2E/members/%2FA/context-files/ctx_a__b.txt",
+  "/rest/drafts/agent-runs/draft-agent/context-files/ctx_a__b%00.txt",
+  "/rest/drafts/agent-runs/draft-agent/context-files/ctx_a__b%20c.txt",
+  "/rest/drafts/agent-runs/draft-agent/context-files/ctx_a__b%3Ac.txt",
+  "/rest/drafts/agent-runs/draft-agent/context-files/%2E",
+  "/rest/drafts/agent-runs/draft-agent/context-files/.",
 ];
 
 let app: FastifyInstance;
@@ -88,16 +103,55 @@ const writeAgentCollaborationFixture = async (memoryDir: string) => {
     { schemaVersion: 1, subjectKind: "agent", hostRunId: "host", messages: [] });
 };
 
-const upload = async (owner: unknown, content: string) => {
+const postUpload = (owner: unknown, content: string) => {
   const boundary = "universal-draft-context-file";
-  const response = await app.inject({ method: "POST", url: "/rest/context-files/upload",
+  return app.inject({ method: "POST", url: "/rest/context-files/upload",
     headers: { "content-type": `multipart/form-data; boundary=${boundary}` },
     payload: `--${boundary}\r\nContent-Disposition: form-data; name="owner"\r\n\r\n${JSON.stringify(owner)}\r\n`
       + `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="notes.txt"\r\nContent-Type: text/plain\r\n\r\n`
       + `${content}\r\n--${boundary}--\r\n`,
   });
+};
+const upload = async (owner: unknown, content: string) => {
+  const response = await postUpload(owner, content);
   expect(response.statusCode).toBe(200);
   return response.json() as { storedFilename: string; locator: string };
+};
+
+/**
+ * Sends the path byte-for-byte over a real socket. `app.inject` and WHATWG URL clients collapse `%2E`/`%2E%2E`
+ * segments before routing, which would hide exactly the cases these tests guard.
+ */
+const rawRequest = async (method: "GET" | "DELETE", rawPath: string): Promise<{ statusCode: number; body: string }> => {
+  if (!app.server.listening) await app.listen({ port: 0, host: "127.0.0.1" });
+  const { port } = app.server.address() as { port: number };
+  return new Promise((resolve, reject) => {
+    const request = http.request({ host: "127.0.0.1", port, method, path: rawPath }, (response) => {
+      let body = "";
+      response.setEncoding("utf8");
+      response.on("data", (chunk) => { body += chunk; });
+      response.on("end", () => resolve({ statusCode: response.statusCode ?? 0, body }));
+    });
+    request.on("error", reject);
+    request.end();
+  });
+};
+const detailOf = (body: string): unknown => {
+  try { return (JSON.parse(body) as { detail?: unknown }).detail; } catch { return undefined; }
+};
+
+/** Every file under the app data root with its bytes, to prove a rejected request touched nothing. */
+const snapshotFiles = async (): Promise<Record<string, string>> => {
+  const files: Record<string, string> = {};
+  const walk = async (dir: string): Promise<void> => {
+    for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) await walk(full);
+      else files[path.relative(config.root, full)] = await fs.readFile(full, "utf8");
+    }
+  };
+  await walk(config.root);
+  return files;
 };
 
 beforeEach(async () => {
@@ -151,9 +205,9 @@ describe("universal draft context-file read and delete", () => {
       expect({ url, status: response.statusCode }).toEqual({ url, status: 404 });
     }
     for (const url of INVALID_LOCATORS) {
-      const response = await app.inject({ method, url });
-      expect({ url, status: response.statusCode }).toEqual({ url, status: 400 });
-      expect({ url, body: response.json() }).toEqual({ url, body: { detail: expect.any(String) } });
+      const response = await rawRequest(method, url);
+      expect({ url, status: response.statusCode, detail: typeof detailOf(response.body) })
+        .toEqual({ url, status: 400, detail: "string" });
     }
     for (const url of [
       "/rest/drafts/unknown-runs/x/context-files/ctx_a__b.txt",
@@ -163,3 +217,100 @@ describe("universal draft context-file read and delete", () => {
     }
   });
 });
+
+describe("malformed and traversal owner IDs and stored filenames", () => {
+  /** Files a traversal ID would reach: another owner's draft, the draft root, and app data outside it. */
+  const writeSentinels = async () => {
+    const draftRoot = path.join(config.root, "draft_context_files");
+    await put(path.join(draftRoot, "agent-runs", "victim", "context_files", "ctx_a__b.txt"), "victim draft");
+    await put(path.join(draftRoot, "context_files", "ctx_a__b.txt"), "draft-root level");
+    await put(path.join(config.root, "x", "context_files", "ctx_a__b.txt"), "app data");
+    await put(path.join(draftRoot, "agent-runs", "victim", "members", "%2FA", "context_files", "ctx_a__b.txt"), "team victim");
+  };
+
+  it.each(["GET", "DELETE"] as const)("%s answers 400 with detail and touches no file", async (method) => {
+    await writeSentinels();
+    // The owner folder exists, so a dot-only filename would otherwise address the folder itself.
+    const existing = await upload(DRAFT_OWNERS.agent_draft, "existing draft");
+    const before = await snapshotFiles();
+
+    for (const url of INVALID_LOCATORS) {
+      const response = await rawRequest(method, url);
+      expect({ url, status: response.statusCode, detail: typeof detailOf(response.body) })
+        .toEqual({ url, status: 400, detail: "string" });
+    }
+
+    expect(await snapshotFiles()).toEqual(before);
+    expect((await app.inject({ method: "GET", url: existing.locator })).body).toBe("existing draft");
+  });
+
+  it("rejects upload with a traversal or extra-field owner and writes nothing", async () => {
+    await writeSentinels();
+    const before = await snapshotFiles();
+    for (const owner of [
+      { kind: "agent_draft", draftRunId: "../agent-runs/victim" },
+      { kind: "agent_draft", draftRunId: ".." },
+      { kind: "agent_draft", draftRunId: " draft-agent" },
+      { kind: "agent_draft", draftRunId: "draft-agent", extra: 1 },
+      { kind: "team_member_draft", teamDraftId: "../agent-runs/victim", memberAddress: "/A" },
+      { kind: "team_member_draft", teamDraftId: "draft-team", memberAddress: "/A", extra: 1 },
+    ]) {
+      const response = await postUpload(owner, "should not be written");
+      expect({ owner, status: response.statusCode, detail: typeof response.json().detail })
+        .toEqual({ owner, status: 400, detail: "string" });
+    }
+    expect(await snapshotFiles()).toEqual(before);
+  });
+
+  it("rejects finalize with a traversal draft owner and moves nothing", async () => {
+    await writeSentinels();
+    writeAttachmentAgentMetadata(path.join(config.root, "memory"), "run-final");
+    const before = await snapshotFiles();
+    for (const draftOwner of [
+      { kind: "agent_draft", draftRunId: "../agent-runs/victim" },
+      { kind: "agent_draft", draftRunId: "victim", extra: 1 },
+      { kind: "team_member_draft", teamDraftId: "../agent-runs/victim", memberAddress: "/A" },
+    ]) {
+      const response = await app.inject({ method: "POST", url: "/rest/context-files/finalize", payload: {
+        draftOwner,
+        finalOwner: { kind: "agent_final", runId: "run-final" },
+        attachments: [{ storedFilename: "ctx_a__b.txt", displayName: "b.txt" }],
+      } });
+      expect({ draftOwner, status: response.statusCode, detail: typeof response.json().detail })
+        .toEqual({ draftOwner, status: 400, detail: "string" });
+    }
+    expect(await snapshotFiles()).toEqual(before);
+  });
+
+  it.each([
+    "solution_designer_0123456789abcdef0123456789abcdef",
+    "temp-1728555555555-3",
+    "temp-chat-1728555555555-12",
+    "team-draft-3f2b8c1e-9a4d-4e6f-8b7a-1c2d3e4f5a6b",
+  ])("keeps legitimate draft ID %s working for upload, read and delete", async (id) => {
+    for (const owner of [
+      { kind: "agent_draft", draftRunId: id },
+      { kind: "team_member_draft", teamDraftId: id, memberAddress: "/delivery/lead" },
+    ]) {
+      const attachment = await upload(owner, `bytes for ${id}`);
+      expect((await app.inject({ method: "GET", url: attachment.locator })).body).toBe(`bytes for ${id}`);
+      expect((await app.inject({ method: "DELETE", url: attachment.locator })).statusCode).toBe(204);
+      expect((await app.inject({ method: "GET", url: attachment.locator })).statusCode).toBe(404);
+    }
+  });
+
+  it("leaves malformed locators unresolved for the runtime with the real layout", async () => {
+    const memoryDir = path.join(config.root, "memory");
+    const local = new ContextFileLocalPathResolver({ layout, baseUrl: "http://app.test", ownerResolver: new ContextFileOwnerResolver({
+      memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir),
+    }) });
+    await writeSentinels();
+    const existing = await upload(DRAFT_OWNERS.agent_draft, "existing draft");
+    expect(local.resolve(existing.locator)).toBe(layout.getDraftFilePath(DRAFT_OWNERS.agent_draft, existing.storedFilename));
+    for (const locator of [...INVALID_LOCATORS, "/rest/runs/%2E%2E/context-files/ctx_a__b.txt",
+      "/rest/runs/host/context-files/ctx_a__b%00.txt", "/rest/runs/host/context-files/%2E"]) {
+      expect(local.resolve(locator), locator).toBeNull();
+    }
+  });
+});
+

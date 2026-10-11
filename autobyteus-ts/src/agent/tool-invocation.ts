@@ -6,13 +6,19 @@ export class ToolInvocation {
   id: string;
   turnId?: string;
   nativeToolCallContext?: ProviderNativeToolCallContext;
+  /**
+   * Why the model's arguments are unusable (invalid JSON or not an object); `null` when valid.
+   * A marked invocation is never executed: `arguments` is only the `{}` history placeholder.
+   */
+  readonly argumentsParseError: string | null;
 
   constructor(
     name: string,
     arguments_: Record<string, unknown>,
     id: string,
     turnId?: string,
-    nativeToolCallContext?: ProviderNativeToolCallContext
+    nativeToolCallContext?: ProviderNativeToolCallContext,
+    options: { argumentsParseError?: string | null } = {}
   ) {
     if (!id) {
       throw new Error('ToolInvocation requires a non-empty id.');
@@ -29,6 +35,7 @@ export class ToolInvocation {
     this.id = id;
     this.turnId = turnId;
     this.nativeToolCallContext = nativeToolCallContext;
+    this.argumentsParseError = options.argumentsParseError ?? null;
   }
 
   isValid(): boolean {

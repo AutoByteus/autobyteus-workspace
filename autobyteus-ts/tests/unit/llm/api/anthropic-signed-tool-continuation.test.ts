@@ -61,8 +61,8 @@ describe('Anthropic signed tool continuation', () => {
 
   it('replays exactly within a tool cycle and keeps signed blocks across an independent turn (append-only)', async () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'anthropic-signed-turn-'));
-    const identity = (turnId: string, requestId: string, isToolContinuation: boolean) => ({
-      turnId, requestId, isToolContinuation, getParentModelIdentifier: () => 'claude-opus-5-5', signal: new AbortController().signal,
+    const identity = (turnId: string, requestId: string, isTurnContinuation: boolean) => ({
+      turnId, requestId, isTurnContinuation, getParentModelIdentifier: () => 'claude-opus-5-5', signal: new AbortController().signal,
     });
     const render = async (request: RequestPackage) => await new AnthropicPromptRenderer().render(request.outboundMessages) as any[];
     const nativeTurns = (request: RequestPackage) => request.canonicalMessages.flatMap((message) => {

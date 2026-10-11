@@ -97,6 +97,21 @@ type LiveE2eAgentBackendFactory = {
   createBackend(config: AgentRunConfig, agentRunId: string): Promise<LiveE2eAgentBackend>;
 };
 
+/** Prepares a new product backend through the factory's public preparation contract (as run creation does). */
+const prepareNewProductBackend = async (
+  factory: AutoByteusAgentRunBackendFactory,
+  config: AgentRunConfig,
+  runId: string,
+): Promise<AgentRunBackend> => {
+  const preparation = factory.beginPreparation({ kind: 'new', config, runId });
+  try {
+    return await preparation.prepare();
+  } catch (error) {
+    await preparation.release().catch(() => undefined);
+    throw error;
+  }
+};
+
 export const wrapProductAgentBackendForLiveE2e = (
   backend: AgentRunBackend,
   environment: { appDataDir: string; memoryDir: string; baseUrl: string },
@@ -555,7 +570,7 @@ export class LiveE2eScenarioExecution {
     });
     const backendFactory: LiveE2eAgentBackendFactory = {
       createBackend: async (config, runId) => wrapProductAgentBackendForLiveE2e(
-        await productBackendFactory.createBackend(config, runId),
+        await prepareNewProductBackend(productBackendFactory, config, runId),
         { appDataDir: ownedRoot, memoryDir: memoryDirectory, baseUrl: this.serverUrl },
       ),
     };
@@ -689,7 +704,7 @@ export class LiveE2eScenarioExecution {
     });
     const backendFactory: LiveE2eAgentBackendFactory = {
       createBackend: async (config, id) => wrapProductAgentBackendForLiveE2e(
-        await productBackendFactory.createBackend(config, id),
+        await prepareNewProductBackend(productBackendFactory, config, id),
         { appDataDir: ownedRoot, memoryDir: memoryDirectory, baseUrl: this.serverUrl },
       ),
     };

@@ -31,6 +31,30 @@ describe("raw trace to historical replay events", () => {
     }]);
   });
 
+  it("keeps the hidden output-limit recovery note out of replayed history", () => {
+    const events = buildHistoricalReplayEvents([
+      { traceType: "user", content: "Write the spec.", turnId: "turn-1", seq: 1, ts: 1 },
+      { traceType: "assistant", content: "Part one", turnId: "turn-1", seq: 2, ts: 2 },
+      {
+        traceType: "output_limit_recovery",
+        sourceEvent: "OutputLimitRecovery",
+        content: "System note: output token limit hit. Resume directly from where your previous message stopped.",
+        turnId: "turn-1",
+        seq: 3,
+        ts: 3,
+      },
+      { traceType: "assistant", content: " and part two.", turnId: "turn-1", seq: 4, ts: 4 },
+    ]);
+
+    expect(events.map((event) => [event.kind, (event as { role?: string }).role, (event as { content?: string }).content]))
+      .toEqual([
+        ["message", "user", "Write the spec."],
+        ["message", "assistant", "Part one"],
+        ["message", "assistant", " and part two."],
+      ]);
+    expect(JSON.stringify(events)).not.toContain("System note");
+  });
+
   it("merges tool call and result into one canonical tool replay event", () => {
     const events = buildHistoricalReplayEvents([
       {

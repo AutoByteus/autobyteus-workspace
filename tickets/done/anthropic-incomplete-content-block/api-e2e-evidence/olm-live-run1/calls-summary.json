@@ -1,0 +1,158 @@
+[
+  {
+    "index": 0,
+    "phase": "OLM-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 4096
+    },
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "errorBody": null
+  },
+  {
+    "index": 1,
+    "phase": "OLM-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": false,
+    "limits": {
+      "max_tokens": 8192
+    },
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "errorBody": null
+  },
+  {
+    "index": 2,
+    "phase": "OLM-E2E-004",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 128000
+    },
+    "status": 200,
+    "stopSignals": [
+      "status:completed"
+    ],
+    "maxReportedOutputTokens": 5,
+    "errorBody": null
+  },
+  {
+    "index": 3,
+    "phase": "OLM-E2E-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 3,
+    "errorBody": null
+  },
+  {
+    "index": 4,
+    "phase": "OLM-E2E-006",
+    "host": "open.bigmodel.cn",
+    "pathname": "/api/coding/paas/v4/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 3,
+    "errorBody": null
+  },
+  {
+    "index": 5,
+    "phase": "OLM-E2E-007",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1,
+    "errorBody": null
+  },
+  {
+    "index": 6,
+    "phase": "OLM-E2E-008",
+    "host": "token-plan.ap-southeast-1.maas.aliyuncs.com",
+    "pathname": "/compatible-mode/v1/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_completion_tokens": 65536
+    },
+    "status": 401,
+    "stopSignals": [],
+    "maxReportedOutputTokens": null,
+    "errorBody": "{\"error\":{\"message\":\"Invalid API-key provided. For details, see: https://www.alibabacloud.com/help/en/model-studio/error-code#apikey-error\",\"id\":\"ca942fb7-79ab-456e-82c4-beef4138ace8\",\"type\":\"invalid_request_error\",\"code\":\"invalid_api_key\"}}"
+  },
+  {
+    "index": 7,
+    "phase": "OLM-E2E-009",
+    "host": "api.x.ai",
+    "pathname": "/v1/chat/completions",
+    "stream": true,
+    "limits": {},
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 1,
+    "errorBody": null
+  },
+  {
+    "index": 8,
+    "phase": "OLM-010-DEEPSEEK",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "errorBody": null
+  },
+  {
+    "index": 9,
+    "phase": "OLM-010-GLM",
+    "host": "open.bigmodel.cn",
+    "pathname": "/api/coding/paas/v4/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "errorBody": null
+  }
+]

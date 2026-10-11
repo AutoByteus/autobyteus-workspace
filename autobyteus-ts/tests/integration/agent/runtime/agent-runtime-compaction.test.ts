@@ -14,6 +14,7 @@ import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { Message } from '../../../../src/llm/utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../../../../src/llm/utils/response-types.js';
+import { buildFinish } from '../../../../src/llm/utils/llm-response-finish.js';
 import { buildLlmTokenUsageObservation } from '../../../../src/llm/utils/llm-token-usage-observation.js';
 import { EventType } from '../../../../src/events/event-types.js';
 import {DirectLlmCompressionStrategy} from '../../../../src/memory/compaction/direct-llm-compression-strategy.js';
@@ -74,7 +75,7 @@ class SummaryLLM extends BaseLLM {
   readonly cleanup = vi.fn(async()=>undefined);
   constructor(readonly output:string) {
     super(new LLMModel({name:'summary',value:'summary',provider:LLMProvider.OPENAI,maxContextTokens:100000}),new LLMConfig({maxTokens:8192}));
-    this.send.mockResolvedValue(new CompleteResponse({content:output,completionStatus:'complete'}));
+    this.send.mockResolvedValue(new CompleteResponse({content:output,finish:buildFinish('stop','end_turn')}));
   }
   protected _sendMessagesToLLM(messages:Message[]) {return this.send(messages);}
   protected async *_streamMessagesToLLM() {}
@@ -101,7 +102,7 @@ describe('direct compaction narrow runtime integration',()=>{
    expect(await waitForCondition(()=>events.some(e=>e.phase===(failFirst?'failed':'completed'))&&agent.context.state.activeTurn===null,10000)).toBe(true);
    if(failFirst){
     expect(created).toHaveLength(3);expect(main.requests).toHaveLength(4);
-    expect(agent.context.state.memoryManager?.isCompactionAwaitingUserRetry()).toBe(true);
+    expect(agent.context.state.memoryManager?.getPendingCompactionGate().kind).toBe('awaiting_user_retry');
    }
    await agent.postUserMessage(new AgentInputUserMessage('Continue with the approved scope.'));
    expect(await waitForCondition(()=>main.requests.length===5&&agent.currentStatus===AgentStatus.IDLE,10000)).toBe(true);
@@ -132,6 +133,8 @@ describe('live core recovery positions (no provider)', () => {
   try {
    agent.start(); expect(await waitForStatus(agent.context, s => s===AgentStatus.IDLE)).toBe(true);
    agent.context.statusManager!.notifier.subscribe(EventType.AGENT_TURN_COMPLETED, e => completed.push(e));
+   const usageEvents:any[]=[];
+   agent.context.statusManager!.notifier.subscribe(EventType.AGENT_TOKEN_USAGE_UPDATED, e => { usageEvents.push(e); });
    for (let i=0;i<3;i++) {
     await agent.postUserMessage(new AgentInputUserMessage(`Seed ${i} ${'context '.repeat(1100)}`));
     expect(await waitForCondition(() => main.requests.length===i+1 && agent.context.state.activeTurn===null,10000)).toBe(true);
@@ -152,6 +155,12 @@ describe('live core recovery positions (no provider)', () => {
     expect(ingestions).toHaveBeenCalledTimes(1); expect(ingestions.mock.calls[0][0].content).toBe('LATER B');
     expect(main.requests[3].at(-1)?.content).toBe('ORIGINAL A MUST STAY'); expect(main.requests[4].at(-1)?.content).toBe('LATER B');
     expect(compress).toHaveBeenCalledTimes(2); expect(agent.getCompactionRecovery()).toBeNull();
+    // AR-002: the blocked attempt consumed a call sequence; the retried call is still not a
+    // continuation (compaction ran again above) and its call id is unique, not reused.
+    const heldTurnCallIds = usageEvents.map((e) => e.llm_call_id).filter((id) => String(id).startsWith(`${original.turnId}:`));
+    expect(heldTurnCallIds).toEqual([`${original.turnId}:llm:2`]);
+    const allCallIds = usageEvents.map((e) => e.idempotency_key);
+    expect(new Set(allCallIds).size).toBe(allCallIds.length);
    } else if(action==='interrupt') {
     await agent.interrupt();
     expect(await waitForCondition(() => agent.context.state.activeTurn===null,1000)).toBe(true);
