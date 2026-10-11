@@ -13,6 +13,7 @@ import { useApplicationStore } from '~/stores/applicationStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { readSkillNameConflictError, toSkillNameConflict } from '~/utils/skills/skillNames'
+import { createLoadedListReloader } from '~/utils/definitionCatalog/loadedListReloader'
 
 export type AgentPackageSourceKind =
   | 'BUILT_IN'
@@ -58,6 +59,15 @@ export interface AgentPackage {
   isDefault: boolean
   isRemovable: boolean
   updateInfo: AgentPackageUpdateInfo
+  /** Whether the server watches this package for changes; null when it does not report watching. */
+  autoRefresh?: AgentPackageAutoRefresh | null
+}
+
+export type AgentPackageAutoRefreshState = 'WATCHING' | 'ROOT_MISSING' | 'UNAVAILABLE'
+
+export interface AgentPackageAutoRefresh {
+  state: AgentPackageAutoRefreshState
+  message: string | null
 }
 
 export interface AgentPackageImportInput {
@@ -78,6 +88,14 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
   const checkingUpdates = ref(false)
   const actionPackageIds = ref<Record<string, boolean>>({})
   const error = ref('')
+  const listReloader = createLoadedListReloader('agent packages', async () => {
+    const { data, errors } = await getApolloClient().query({ query: GET_AGENT_PACKAGES, fetchPolicy: 'network-only' })
+    const errorMessage = graphQLErrorMessage(errors)
+    if (errorMessage) throw new Error(errorMessage)
+    if (data?.agentPackages) agentPackages.value = data.agentPackages
+  })
+  /** A catalog change notification (root status, registration, Update): reload the rows in place if loaded. */
+  const reloadIfLoaded = (): Promise<void> => listReloader.reloadIfLoaded()
 
   const refreshDependentCatalogs = async (): Promise<void> => {
     const applicationStore = useApplicationStore()
@@ -127,6 +145,7 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
 
       if (data?.agentPackages) {
         agentPackages.value = data.agentPackages
+        listReloader.markLoaded()
       }
     } catch (err: any) {
       error.value = err.message
@@ -299,6 +318,7 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
     actionPackageIds,
     error,
     fetchAgentPackages,
+    reloadIfLoaded,
     importAgentPackage,
     removeAgentPackage,
     reloadAgentPackage,

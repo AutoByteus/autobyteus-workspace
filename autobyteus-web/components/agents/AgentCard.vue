@@ -27,6 +27,7 @@
             {{ ownershipLabel }}
           </p>
         </div>
+        <DefinitionCatalogIssueBadge :issue="agentDef.catalogIssue" />
 
         <div class="mt-3 space-y-2">
           <div class="flex items-start gap-2">
@@ -89,6 +90,7 @@
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue';
 import type { AgentDefinition } from '~/stores/agentDefinitionStore';
+import DefinitionCatalogIssueBadge from '~/components/definitions/DefinitionCatalogIssueBadge.vue';
 import {
   formatApplicationOwnershipLabel,
   normalizeDefinitionOwnershipScope,

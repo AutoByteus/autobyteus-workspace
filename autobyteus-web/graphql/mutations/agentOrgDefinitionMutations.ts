@@ -22,3 +22,9 @@ export const UpdateAgentOrgDefinition = gql`
 export const DeleteAgentOrgDefinition = gql`
   mutation DeleteAgentOrgDefinition($id: String!) { deleteAgentOrgDefinition(id: $id) }
 `
+
+export const RefreshAgentOrgDefinitionCatalog = gql`
+  mutation RefreshAgentOrgDefinitionCatalog {
+    refreshAgentOrgDefinitionCatalog
+  }
+`

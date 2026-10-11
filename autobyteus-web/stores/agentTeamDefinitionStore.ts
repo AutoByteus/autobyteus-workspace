@@ -11,6 +11,8 @@ import {
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
+import { createLoadedListReloader } from '~/utils/definitionCatalog/loadedListReloader'
+import type { DefinitionCatalogIssue } from '~/types/definitionCatalog'
 
 export type AgentTeamDefinitionOwnershipScope = 'SHARED' | 'APPLICATION_OWNED' | 'AGENT_ORG_OWNED'
 export type AgentMemberRefScope = 'SHARED' | 'TEAM_LOCAL' | 'APPLICATION_OWNED' | null
@@ -44,6 +46,8 @@ export interface AgentTeamDefinition {
   ownerPackageId?: string | null
   ownerLocalApplicationId?: string | null
   defaultLaunchConfig?: DefaultLaunchConfig | null
+  /** Set when the Team is served from its last working version (file and reason). */
+  catalogIssue?: DefinitionCatalogIssue | null
 }
 
 export interface TeamDefinitionHandoff { from: string; to: string; rules: string[] }
@@ -84,6 +88,13 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
   const agentTeamDefinitions = ref<AgentTeamDefinition[]>([])
   const loading = ref(false)
   const error = ref<unknown>(null)
+  const listReloader = createLoadedListReloader('agent team definitions', async () => {
+    const { data, errors } = await getApolloClient().query({ query: GetAgentTeamDefinitions, fetchPolicy: 'network-only' })
+    if (errors && errors.length > 0) {
+      throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+    }
+    agentTeamDefinitions.value = (data.agentTeamDefinitions || []) as AgentTeamDefinition[]
+  })
 
   const fetchAllAgentTeamDefinitions = async () => {
     if (agentTeamDefinitions.value.length > 0) {
@@ -110,6 +121,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
       }
 
       agentTeamDefinitions.value = (data.agentTeamDefinitions || []) as AgentTeamDefinition[]
+      listReloader.markLoaded()
     } catch (cause) {
       error.value = cause
       console.error('Failed to fetch agent team definitions:', cause)
@@ -133,6 +145,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
       }
 
       agentTeamDefinitions.value = (data.agentTeamDefinitions || []) as AgentTeamDefinition[]
+      listReloader.markLoaded()
     } catch (cause) {
       error.value = cause
       console.error('Failed to reload agent team definitions:', cause)
@@ -169,6 +182,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
       }
 
       agentTeamDefinitions.value = (data.agentTeamDefinitions || []) as AgentTeamDefinition[]
+      listReloader.markLoaded()
     } catch (cause) {
       error.value = cause
       console.error('Failed to refresh agent team definition catalog:', cause)
@@ -315,7 +329,11 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
     )
   ))
 
+  /** A catalog change notification: reload the list in place if this window has loaded it. */
+  const reloadIfLoaded = (): Promise<void> => listReloader.reloadIfLoaded()
+
   const invalidateAgentTeamDefinitions = (): void => {
+    listReloader.markUnloaded()
     agentTeamDefinitions.value = []
     loading.value = false
     error.value = null
@@ -335,6 +353,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
     updateAgentTeamDefinition,
     deleteAgentTeamDefinition,
     invalidateAgentTeamDefinitions,
+    reloadIfLoaded,
     getCatalogAgentTeamDefinitionById,
     getCatalogAgentTeamDefinitionByName,
     getApplicationOwnedTeamDefinitionsByOwnerApplicationId,

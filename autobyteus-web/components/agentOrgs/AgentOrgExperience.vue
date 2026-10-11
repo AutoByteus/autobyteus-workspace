@@ -30,26 +30,13 @@
           </div>
         </header>
 
+        <DefinitionDiagnosticsNotice subject="AGENT_ORG" />
+
         <div v-if="catalogSections.length > 0" class="space-y-8">
           <section v-for="section in catalogSections" :key="section.id">
             <h2 v-if="section.title" class="mb-3 text-xl font-semibold text-slate-900">{{ section.title }}</h2>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <article v-for="org in section.orgs" :key="org.id" class="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-slate-300 hover:shadow-md" :data-test="`org-card-${org.id}`">
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-[4rem_minmax(0,1fr)_auto] sm:items-start">
-                  <AgentOrgAvatar :name="org.name" :avatar-url="org.avatarUrl" />
-                  <div class="min-w-0">
-                    <h3 class="truncate text-xl font-semibold text-slate-900">{{ org.name }}</h3>
-                    <p class="mt-1 line-clamp-2 text-sm text-slate-600">{{ org.description }}</p>
-                  </div>
-                  <div class="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
-                    <button type="button" class="inline-flex min-w-[104px] justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2" @click="openLaunch(org.id)">{{ t('agentOrgs.experience.actions.run') }}</button>
-                    <button type="button" class="inline-flex items-center text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2" @click="go('org-detail', org.id)">{{ t('agentOrgs.experience.actions.viewDetails') }} <span class="ml-1" aria-hidden="true">→</span></button>
-                  </div>
-                </div>
-
-                <AgentOrgCatalogMemberChips :org="org" />
-
-              </article>
+              <AgentOrgCatalogCard v-for="org in section.orgs" :key="org.id" :org="org" @run="openLaunch" @view-details="go('org-detail', $event)" />
             </div>
           </section>
         </div>
@@ -163,9 +150,10 @@
 </template>
 
 <script setup lang="ts">
+import DefinitionDiagnosticsNotice from '~/components/definitions/DefinitionDiagnosticsNotice.vue'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
-import AgentOrgCatalogMemberChips from './AgentOrgCatalogMemberChips.vue'
+import AgentOrgCatalogCard from './AgentOrgCatalogCard.vue'
 import AgentOrgAvatar from './AgentOrgAvatar.vue'
 import AgentOrgAvatarEditor from './AgentOrgAvatarEditor.vue'
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
@@ -458,7 +446,7 @@ const confirmDelete = async () => {
 const openTeam = (id: string) => router.push({ path: '/agent-teams', query: { view: 'team-detail', id, returnToOrg: selectedOrg.value.id } })
 // Run opens the Org launch page with a fresh draft (REQ-005/007).
 const openLaunch = (id: string) => runStart.runOrg(id)
-const reloadOrgs = async (): Promise<void> => { reloading.value = true; try { await orgStore.fetchAll(true) } finally { reloading.value = false } }
+const reloadOrgs = async (): Promise<void> => { reloading.value = true; try { await orgStore.refreshAndReload() } finally { reloading.value = false } }
 const openMemberPicker = (): void => { memberPickerTab.value = 'agents'; memberSearch.value = ''; memberPickerOpen.value = true }
 const closeMemberPicker = (): void => { memberPickerOpen.value = false; memberSearch.value = '' }
 const addMember = (ref: string, refType: AgentOrgMember['refType'], displayName: string): void => {

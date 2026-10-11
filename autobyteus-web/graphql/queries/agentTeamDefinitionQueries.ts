@@ -31,6 +31,7 @@ export const GetAgentTeamDefinitions = gql`
         ref
         refScope
       }
+      catalogIssue { code reason definitionPath packageRoot }
     }
   }
 `

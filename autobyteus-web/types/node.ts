@@ -33,6 +33,8 @@ export interface NodeEndpoints {
   agentCollaborationWs: string;
   /** The node's Project and Task change feed. */
   projectsWs: string;
+  /** The node's agent, team, org and package catalog change feed. */
+  definitionCatalogWs: string;
   terminalWs: string;
   fileExplorerWs: string;
   health: string;

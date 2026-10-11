@@ -28,6 +28,7 @@ import toolsLocalMessages from './tools';
 import generatedWorkspaceMessages from './workspace.generated';
 import workspaceMessages from './workspace';
 import runSettingsMessages from './runSettings';
+import definitionCatalogMessages from './definitionCatalog';
 import type { TranslationCatalog } from '../../runtime/types';
 
 const zhCnMessages: TranslationCatalog = {
@@ -61,6 +62,7 @@ const zhCnMessages: TranslationCatalog = {
   ...generatedWorkspaceMessages,
   ...workspaceMessages,
   ...runSettingsMessages,
+  ...definitionCatalogMessages,
 };
 
 export default zhCnMessages;

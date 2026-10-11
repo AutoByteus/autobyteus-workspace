@@ -115,7 +115,8 @@ describe('definition inspection return through actual pages and stores', () => {
     expect(wrapper.text()).toContain('Org description')
     expect(calls.filter(call => call.field === 'agentTeamDefinition').every(call => call.variables.id === ownedTeamId)).toBe(true)
     expect(calls.filter(call => call.field === 'agentOrgEndpointCatalog').every(call => call.variables.id === orgId)).toBe(true)
-    expect(calls.every(call => ['getServerSettings', 'agentOrgDefinitions', 'agentDefinitions', 'agentTeamDefinitions', 'agentTeamDefinition', 'agentOrgEndpointCatalog'].includes(call.field))).toBe(true)
+    // `definitionDiagnostics` feeds the catalog pages' unavailable-definition notices.
+    expect(calls.every(call => ['getServerSettings', 'agentOrgDefinitions', 'agentDefinitions', 'agentTeamDefinitions', 'agentTeamDefinition', 'agentOrgEndpointCatalog', 'definitionDiagnostics'].includes(call.field))).toBe(true)
   })
 
   it('keeps standalone Team -> shared member -> Team -> catalog navigation free of Org return scope', async () => {

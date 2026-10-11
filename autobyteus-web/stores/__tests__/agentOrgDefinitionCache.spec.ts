@@ -6,7 +6,7 @@ import { GetAgentOrgDefinitions } from '~/graphql/queries/agentOrgDefinitionQuer
 const io = vi.hoisted(() => ({ client: null as any }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io.client }))
 vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ waitForBoundBackendReady: async () => true }) }))
-const definition = (id = 'one') => ({ __typename: 'AgentOrgDefinition', id, name: id, description: 'Keep description', instructions: 'Keep instructions', category: 'Keep category', avatarUrl: '/old.png', revision: 'r1', members: [], handoffs: [], defaultLaunchConfig: null })
+const definition = (id = 'one') => ({ __typename: 'AgentOrgDefinition', id, name: id, description: 'Keep description', instructions: 'Keep instructions', category: 'Keep category', avatarUrl: '/old.png', revision: 'r1', members: [], handoffs: [], defaultLaunchConfig: null, catalogIssue: null })
 const historyQuery = gql`query Preserved { retainedHistory { id text } }`
 let response: any, failure: Error | undefined, calls: any[], store: ReturnType<typeof useAgentOrgDefinitionStore>
 beforeEach(async () => {
