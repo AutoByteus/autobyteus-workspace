@@ -1,0 +1,381 @@
+{
+  "meta": {
+    "model": "deepseek-v4-flash",
+    "provider": "DEEPSEEK",
+    "agentId": "solution_designer_052deeed03f244439530c0ee124f9b80",
+    "toolNames": [
+      "edit_file",
+      "get_handoff_rules",
+      "read_file",
+      "run_bash",
+      "write_file"
+    ],
+    "baselineMessageCount": 265,
+    "estimatedBaselineTokens": 186994,
+    "compactableUnits": 92,
+    "retainedMessages": 80,
+    "transcriptChars": 167183,
+    "fitsInputBudget": true,
+    "inputBudget": 232742,
+    "activeContextTokensOverride": 616998,
+    "triggerThresholdTokens": 186193,
+    "postCompactionTarget": {
+      "budgetKey": "232742:186193:81459:18620:81459",
+      "inputBudgetTokens": 232742,
+      "triggerThresholdTokens": 186193,
+      "observedPromptTokens": 186994,
+      "qualityRetentionCapTokens": 81459,
+      "triggerHeadroomTokens": 18620,
+      "postCompactionTargetTokens": 81459,
+      "replacementMemoryReserveTokens": 8192
+    },
+    "cachedInstructionFirstLine": "Your context window is nearly full. The earlier part of this conversation is about to be replaced by a note that you write now. After that you will continue from your note and the most recent messages only; everything else from before will be gone for you. Files you wrote stay on disk.",
+    "continuations": [
+      "Sorry for interrupting you earlier. From memory and without running any tools: remind me in a few sentences what problem you are solving (my original request), and roughly how your design works.",
+      "OK. Where exactly are the design files (worktree, ticket folder and file names), what is the current status of the design work (what is approved or reviewed, what is not), and what is still open or blocked? Do not run any tools."
+    ]
+  },
+  "results": {
+    "cached": {
+      "summary": "## Task and constraints\n- Task: Analyze and design a solution so internal platform agents (specifically the Memory Compactor, `autobyteus-memory-compactor`) can be hidden from the frontend, controlled by an environment variable / server setting, leveraging the existing backend `ServerSettingsService`.\n- User constraint: They explicitly referenced that \"backend we already have setting service\" and that \"if its possible taht would be the best, please analyse\".\n- Constraint from skill/workflow: Requirements and architecture design are separate authorities; user approval separates them. Design should be proportionate (narrow local change → concise design). Ticket artifacts must live in a dedicated task worktree, not the shared integration checkout.\n- Constraint: Backend-authoritative filtering preferred (per my design) to avoid per-client UI changes.\n\n## Requests and instructions received\n- User (latest, open): \"tell me your rough design how does it work\" — asked for a rough explanation of the design. NOTE: this turn was interrupted/cancelled per system note; do not resume it. The design was already written to disk and summarized in a previous reply.\n- User (open): \"do you think its your problem or its the edit file problem\" — I answered it was my own operator error (done, answered).\n- User (open): \"could you tell me why did you fail earlier two times for edit file?\" — answered (done): omitted the table separator line in attempt 1; miscounted table columns (typed 9 vs actual 8) in attempt 2; third attempt succeeded after re-reading lines 1–20.\n- User (open): \"so what is your design?\" — answered with full design summary and wrote `design-spec.md`.\n- User (open): \"give me your worktree ticket folder please\" — done: created worktree and reported paths.\n- User (open): \"could you give me the problem you are trying to solve? i meant the earliest user request\" — answered: distinguished the current request (hide internal agent from frontend) from the earliest historical request in `tickets/done/agent-based-compaction` (user wanted compaction executed through a configurable, independently configurable agent with its own instructions/runtime/model; and later clarified that compactor runs should be visible normal runs via existing `AgentRunService`, not hidden internal runs, because \"users can inspect whether compaction quality is good or bad\").\n- User (original): \"currently there are a few agents for example, the memory compactor agent. when memory compactor agent is triggered, it is also shown on the frontend. but i think this agent is internal. so i think could use use enviornmetn varialbe like setting to control whether it should appear on frontend or not. in backend we already have setting service. if its possible taht would be the best, please analyse\"\n\n## Decisions and findings\n- Feasible, and best implemented via `ServerSettingsService` because `AppConfig.get(key)` resolves `process.env[key] ?? this.configData[key] ?? defaultValue`, giving both env-var and Settings-UI support with dynamic runtime updates.\n- Proposed setting key: `AUTOBYTEUS_SHOW_INTERNAL_AGENTS`, boolean, default `false` (hidden).\n- Chosen approach: backend-authoritative filtering at query boundaries (zero frontend changes needed; Server Settings UI auto-discovers the predefined setting).\n- Internal agent classification: add `isInternal: true` to built-in registry entries and export `isInternalAgentDefinitionId(id)`; mark both `autobyteus-memory-compactor` and `autobyteus-retrospective-skill-improver` as internal.\n- Filter points identified: `AgentRunHistoryService.listRunHistory()` (sidebar runs) and `AgentDefinitionService.getVisibleAgentDefinitions()` (agent catalog/dropdowns). Direct ID lookups (`getAgentDefinitionById`, `getRunProjection(runId)`) must remain unfiltered so internal runners still work and log-based inspection stays possible.\n- Classification: `task_size: Small`, `architectural_risk: Low` (4 backend files, 0 frontend files, no schema/persisted-data change; persisted-data decision = `Not Affected`).\n- Historical finding that still matters: In `tickets/done/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md`, visible normal compactor runs were a deliberate user decision to avoid invasive Codex/Claude runtime internals changes and to allow inspection. This new setting preserves that execution model while cleaning default UX.\n- Key code findings: `ServerCompactionAgentRunner.runCompactionTask()` calls `agentRunService.createAgentRun({ agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID, ... })`; `AgentRunProvisioningService.prepareAgentRun` calls `historyCatalogService.recordPreparedRun(...)`; frontend `WorkspaceAgentRunsTreePanel.vue` calls `runHistoryStore.fetchTree()` on mount and `refreshTreeQuietly()` every 4 seconds (`HISTORY_REFRESH_INTERVAL_MS`).\n- Existing conventions confirmed: `SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY = \"ENABLE_SKILL_IMPROVEMENT\"` boolean pattern, `getSkillImprovementEnabledSetting()`/`setSkillImprovementEnabledSetting()` in `server-settings-service.ts`, and `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` used as a predefined setting key whose value is an agent definition id.\n\n## Unverified points and open conflicts\n- Unverified: whether any frontend unit tests assert that `autobyteus-memory-compactor` appears in the default run tree or agent catalog (would break after default-hiding). Check: run `rg -n \"Memory Compactor|autobyteus-memory-compactor\" autobyteus-web` and review `autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts` and `agentStatusHandler.spec.ts` (both matched \"compactor\" in a filename search).\n- Unverified: whether `WorkspaceRunHistoryService.listRunHistory`/`getWorkspaceRunHistory` needs its own filter or inherits it from `AgentRunHistoryService.listRunHistory`. My design placed filtering in `AgentRunHistoryService.listRunHistory` (which `WorkspaceRunHistoryService` calls), but requirement REQ-002 also names `WorkspaceRunHistoryService.getWorkspaceRunHistory`. Check: confirm the single filter point suffices or add an explicit filter.\n- Unverified: whether existing unit tests assert `getVisibleAgentDefinitions` includes the Memory Compactor — `autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts` around line 356 asserts `visibleDefinitions.some((definition) => definition.id === MEMORY_COMPACTOR_AGENT_DEFINITION_ID)` is `true`. This test would need updating once default-hiding is implemented. Not yet changed.\n- Unresolved (never answered by user): my three approval questions — (1) whether the setting should cover both Memory Compactor and Retrospective Skill Improver or only Memory Compactor; (2) whether to hide both sidebar runs and the agent catalog/dropdowns or only sidebar runs; (3) confirmation that default should be `false`. My design assumed: cover both internal agents, hide both surfaces, default `false`.\n- No conflict between earlier and later findings; the visible-run decision from `agent-based-compaction` and the new setting are complementary, and the setting is the current direction.\n\n## Files created or changed\n- `/Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility/tickets/in-progress/internal-agent-frontend-visibility/investigation-notes.md` — investigation notes (meta, source log, behavior IDs BEH-001/002/003, technical feasibility) — draft; workspace root/branch lines were edited to point at this worktree; untracked in git.\n- `/Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility/tickets/in-progress/internal-agent-frontend-visibility/requirements-doc.md` — requirements document with REQ-001..REQ-005, AC-001..AC-004, SCN-001..SCN-005, status `Draft`/`Ready for Approval` — waiting for explicit user approval.\n- `/Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility/tickets/in-progress/internal-agent-frontend-visibility/solution-revision-record.md` — cumulative solution revision index; SR-001 record — updated to `Mixed`, `Architecture Design Complete`, `task_size: Small`, `architectural_risk: Low`.\n- `/Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility/tickets/in-progress/internal-agent-frontend-visibility/design-spec.md` — full design spec per template (current-state read, task size/risk, production-path map, spines DS-001..DS-004, ownership, file mapping, change sequence, risks) — draft design, status `Draft`; user has not approved requirements or the design.\n- Earlier files were first written under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/in-progress/internal-agent-frontend-visibility/` and then copied into the worktree; that directory in the superrepo was deleted with `rm -rf` (verified: only the worktree copy remains).\n- No source code files were modified. The shared superrepo still shows an unrelated pre-existing modification to `package.json` (not mine).\n\n## Completed work\n- Investigated and confirmed the root cause paths with tool evidence: `built-in-agent-registry.ts`, `built-in-agent-bootstrapper.ts`, `server-compaction-agent-runner.ts`, `agent-run-provisioning-service.ts`, `agent-run-history-service.ts`, `workspace-run-history-service.ts`, `agent-definition-service.ts`, `server-settings-service.ts`, `app-config.ts`, `WorkspaceAgentRunsTreePanel.vue`.\n- Created the dedicated worktree: `git worktree add -b codex/internal-agent-frontend-visibility /Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility origin/personal` succeeded; HEAD at `9267d11c8` (\"docs(delivery): clarify accepted Electron verification\"); branch tracks `origin/personal`. Verified with `git status` in the worktree (only the untracked ticket folder).\n- Ran `git fetch origin personal` successfully (`0f54978ba..9267d11c8`).\n- Wrote and updated all four ticket artifacts in the worktree.\n- Edited `solution-revision-record.md` successfully on the third attempt (evidence: `edit_file` returned \"File edited successfully\").\n- Answered the user's questions about the problem statement, earliest historical request, the design, and the two `edit_file` failures.\n\n## Current state\n- Design spec is complete and classified (`task_size: Small`, `architectural_risk: Low`) but **requirements are not user-approved** and the design has not been accepted; `design-spec.md` says design status `Draft` and requirements status `Ready for Approval`.\n- The interrupted user request (\"tell me your rough design how does it work\") is cancelled; the design content already exists on disk and was already summarized in a prior reply.\n- No handoff has been sent; no `get_handoff_rules` call has been made in this conversation. No source code implemented.\n- Waiting on: explicit user approval of intended behavior (requirements) and acceptance of the design, plus answers to the three open scoping questions.\n\n## Open work and next steps\n- Next step: reply with a rough, non-tool explanation of how the design works (or ask for approval) — but only if/when the user asks again, since the last such turn was cancelled.\n- Obtain explicit user approval of the requirements baseline (currently `Ready for Approval`) and resolve the three open scoping questions before implementation: (1) internal scope = both vs Memory Compactor only; (2) hide both surfaces vs sidebar only; (3) default value confirmation.\n- If requirements change, update `requirements-doc.md` + `solution-revision-record.md` and re-approve before design proceeds.\n- After approval and design acceptance, per workflow: call `get_handoff_rules` and route with `send_message_to` to the exact returned `recipient_address`; with `task_size=Small` and `architectural_risk=Low` the matching rule points to direct implementation at `/implementation_engineer`.\n- Before implementation, verify/adjust the test at `autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts` (~line 356) that asserts the Memory Compactor appears in visible definitions.\n\n## Essential references\n- Worktree root: `/Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility`\n- Ticket folder: `/Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility/tickets/in-progress/internal-agent-frontend-visibility`\n- Branch: `codex/internal-agent-frontend-visibility`, base `origin/personal` at commit `9267d11c8`\n- Proposed setting key: `AUTOBYTEUS_SHOW_INTERNAL_AGENTS` (default `false`; allowed values `true`/`false`)\n- Internal agent definition ids: `autobyteus-memory-compactor`, `autobyteus-retrospective-skill-improver`\n- Constants: `MEMORY_COMPACTOR_AGENT_DEFINITION_ID = \"autobyteus-memory-compactor\"`, `RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = \"autobyteus-retrospective-skill-improver\"` in `autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts`; `SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY = \"ENABLE_SKILL_IMPROVEMENT\"`\n- Files to modify (design): `autobyteus-server-ts/src/services/server-settings-service.ts`; `autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts`; `autobyteus-server-ts/src/run-history/services/agent-run-history-service.ts`; `autobyteus-server-ts/src/agent-definition/services/agent-definition-service.ts`\n- Historical reference: `/Users/normy/autobyteus-workspace-superrepo/tickets/done/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md` (user quote: compactor run appearing on frontend/history \"is good: users can inspect whether compaction quality is good or bad\")\n- Skill template sources used: `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/templates/{requirements-doc-template.md,investigation-notes-template.md,design-spec-template.md,solution-revision-record-template.md}` and `.../skills/solution-designer/SKILL.md`\n- Handoff rules already retrieved in this conversation (three rules): `/architecture_reviewer` for Large/High, `/implementation_engineer` for Small|Medium + Low, `/delivery_engineer` for delivery-receipt evidence gaps.",
+      "parseError": null,
+      "hasToolCalls": false,
+      "metadata": {
+        "mode": "cached",
+        "modelIdentifier": "deepseek-v4-flash",
+        "provider": "DEEPSEEK",
+        "invocationId": "compaction_ac003_1",
+        "completionStatus": "complete",
+        "completionReason": "stop",
+        "usage": {
+          "input_tokens": 123712,
+          "output_tokens": 3365,
+          "total_tokens": 127077,
+          "usage_scope": "per_call",
+          "model_provider": "DEEPSEEK",
+          "provider_name": "DeepSeek",
+          "model_identifier": "deepseek-v4-flash",
+          "model_value": "deepseek-v4-flash",
+          "input_token_semantic": "gross_includes_cache",
+          "cache_state": "zero_reported",
+          "standard_input_tokens": null,
+          "cache_miss_input_tokens": 123712,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": null,
+          "billable_output_tokens": null,
+          "raw_usage_json": {
+            "prompt_tokens": 123712,
+            "completion_tokens": 3365,
+            "total_tokens": 127077,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 123712
+          },
+          "quality_flags": []
+        }
+      },
+      "rawContentChars": 14108,
+      "identifierCheck": {
+        "total": 107,
+        "notInHistory": [
+          "ServerCompactionAgentRunner.runCompactionTask()",
+          "agentRunService.createAgentRun({ agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID, ... })",
+          "AgentRunProvisioningService.prepareAgentRun",
+          "historyCatalogService.recordPreparedRun(...)",
+          "SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY = \"ENABLE_SKILL_IMPROVEMENT\"",
+          "setSkillImprovementEnabledSetting()",
+          "rg -n \"Memory Compactor|autobyteus-memory-compactor\" autobyteus-web",
+          "WorkspaceRunHistoryService.listRunHistory",
+          "/Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility/tickets/in-progress/internal-agent-frontend-visibility/requirements-doc.md",
+          "MEMORY_COMPACTOR_AGENT_DEFINITION_ID = \"autobyteus-memory-compactor\"",
+          "RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = \"autobyteus-retrospective-skill-improver\"",
+          "/Users/normy/autobyteus-workspace-superrepo/tickets/done/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md",
+          "/002/003"
+        ]
+      },
+      "compactedMessageCount": 83,
+      "compactedEstimatedTokens": 73186,
+      "continuation": [
+        {
+          "user": "Sorry for interrupting you earlier. From memory and without running any tools: remind me in a few sentences what problem you are solving (my original request), and roughly how your design works.",
+          "assistant": "No problem — here it is from memory, no tools.\n\n**Your original request:** Internal platform agents like the Memory Compactor are meant to be background machinery, but because compaction runs as a normal `AgentRun`, \"Memory Compactor\" shows up in the frontend workspace sidebar tree and in the `/agents` catalog/dropdowns. You asked whether we could control that with an environment variable / server setting, and pointed out the backend already has a settings service.\n\n**Rough design:** Yes — and the trick is that the existing `ServerSettingsService` sits on top of `AppConfigProvider`, which resolves values as `process.env[key] ?? storedConfig[key] ?? default`. So one new registered setting, `AUTOBYTEUS_SHOW_INTERNAL_AGENTS` (boolean, default `false`), automatically works both as an env var and as a Settings-UI toggle that takes effect at runtime.\n\n**How it works:** We tag the platform agents (`autobyteus-memory-compactor`, `autobyteus-retrospective-skill-improver`) as `isInternal` in the built-in agent registry, then apply that classification at two backend query boundaries: `AgentRunHistoryService.listRunHistory()` skips internal runs when the setting is off, and `AgentDefinitionService.getVisibleAgentDefinitions()` skips internal definitions. Compaction itself is untouched — it still runs as a normal `AgentRun` and is still written to disk — so flipping the setting to `true` immediately makes those runs visible for inspection again, and direct ID lookups (`getRunProjection(runId)`, `getAgentDefinitionById`) keep working for internal callers. Because filtering is backend-authoritative, there are zero frontend changes: four backend files, `Small` size, `Low` risk.\n\nRequirements and the full design spec are written in the worktree ticket folder (`requirements-doc.md`, `design-spec.md`, plus investigation notes and the solution revision record). The one thing still open is your explicit approval of the intended behavior and the three scoping choices — both internal agents vs. Memory Compactor only, hide both sidebar runs and the catalog vs. sidebar only, and confirming default `false`.",
+          "toolCallDeltas": 0,
+          "identifiersNotInHistory": [
+            "process.env[key] ?? storedConfig[key] ?? default"
+          ]
+        },
+        {
+          "user": "OK. Where exactly are the design files (worktree, ticket folder and file names), what is the current status of the design work (what is approved or reviewed, what is not), and what is still open or blocked? Do not run any tools.",
+          "assistant": "No tools used — everything below is from memory.\n\n## 1. Where the design files live\n\n**Worktree root:**\n`/Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility`\n(branch `codex/internal-agent-frontend-visibility`, created from `origin/personal` at commit `9267d11c8`)\n\n**Ticket folder:**\n`/Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility/tickets/in-progress/internal-agent-frontend-visibility`\n\n**Files in that folder:**\n\n| File | Content |\n| --- | --- |\n| `investigation-notes.md` | Investigation meta, source log, behavior IDs BEH-001–BEH-003, technical feasibility, root-cause trace |\n| `requirements-doc.md` | Problem/desired outcome, scope guardrail, REQ-001–REQ-005, AC-001–AC-004, SCN-001–SCN-005, stakeholders |\n| `design-spec.md` | Full design spec: current-state read, task size/risk, architecture evidence, spines DS-001–DS-004, ownership, interface/boundary checks, file mapping, change sequence, risks, implementation guidance |\n| `solution-revision-record.md` | Cumulative solution revision index with SR-001 |\n\nOne correction worth flagging: an earlier draft of these files was first written under the shared superrepo `tickets/in-progress/...` and then moved into the worktree; the superrepo copy was deleted. Only the worktree copy remains, and it is currently **untracked in git** (not committed).\n\n## 2. Current status of the design work\n\n**Approved:** Nothing is formally approved by you yet.\n\n**Reviewed:** Nothing has had independent review. Under the configured route contract, `Small` size + `Low` risk means independent review is skipped and the work routes directly to implementation — so no architecture-review artifact is expected; it would be recorded as `N/A — not applicable`.\n\n**Completed (mine, unapproved):**\n- Investigation: complete with tool-backed evidence across the server files and frontend panel.\n- Requirements: `REQ-001`–`REQ-005`, `AC-001`–`AC-004`, `SCN-001`–`SCN-005` drafted; document status `Draft` / `Ready for Approval`.\n- Design: written and classified — `task_size: Small`, `architectural_risk: Low`; solution revision `SR-001` marked `Mixed` / `Architecture Design Complete`.\n- Discrepancy you should know about: `design-spec.md`'s own header still says design status `Draft`, while the revision record now says design `Ready`. Those two statements are inconsistent and I have not reconciled them, because reconciling them depends on your acceptance.\n\n**Not started:** no source code changed anywhere; no implementation; no handoff message sent for this work.\n\n## 3. What is still open\n\n**Open — waiting on you:**\n1. Explicit approval of the intended behavior (requirements baseline), which is the gate before the design becomes authoritative.\n2. Your acceptance of the design spec.\n3. Three scoping questions I raised and you have not answered:\n   - cover **both** internal agents (Memory Compactor + Retrospective Skill Improver) or **only** Memory Compactor;\n   - hide **both** the sidebar runs and the agent catalog/dropdowns, or **only** the sidebar;\n   - confirm the **default** should be `false` (hidden).\n   My design currently *assumes*: both agents, both surfaces, default `false`. The setting key `AUTOBYTEUS_SHOW_INTERNAL_AGENTS` is also my proposal, not approved.\n\n**Open — unverified technical points to settle before/at implementation:**\n- Whether `WorkspaceRunHistoryService.getWorkspaceRunHistory` needs its own filter, or whether filtering placed in `AgentRunHistoryService.listRunHistory` suffices. `REQ-002` names both, so this needs confirming.\n- An existing test at `autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts` (around line 356) asserts the Memory Compactor **does** appear in visible definitions; it will need updating once default-hiding exists.\n- Whether any other frontend tests assert the compactor appears in the default run tree or catalog. Candidate files were identified but not confirmed.\n\n**Not blocked technically.** Nothing prevents progress except your approval and the three answers. Also noted: the shared superrepo still has an unrelated pre-existing modification to `package.json` that is not mine.\n\nThe single next step is your approval plus those three choices; after that the matching handoff rule for `Small`/`Low` points to direct implementation at `/implementation_engineer`.",
+          "toolCallDeltas": 0,
+          "identifiersNotInHistory": [
+            "tickets/in-progress/...",
+            "/in-progress/..."
+          ]
+        }
+      ]
+    },
+    "transcript": {
+      "summary": "## Task and constraints\n- Analyze whether an env-var-like backend setting can control whether internal agents such as the Memory Compactor appear on the frontend, using the existing backend setting service if possible.\n- User believes the Memory Compactor is internal and should be hideable from the frontend.\n- User explicitly asked for analysis (“please analyse”); no implementation or code change was authorized in this history.\n- Preference/constraint: use the existing setting service rather than introducing an unrelated configuration mechanism.\n\n## Requests and instructions received\n- User (open): “currently there are a few agents for example, the memory compactor agent. when memory compactor agent is triggered, it is also shown on the frontend. but i think this agent is internal. so i think could use use enviornmetn varialbe like setting to control whether it should appear on frontend or not. in backend we already have setting service. if its possible taht would be the best, please analyse”\n- No later user or other-agent messages, decisions, or corrections are present in this history.\n\n## Decisions and findings\n- Repo root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`; current branch is `personal`.\n- Built-in agent registry: `autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts` defines `MEMORY_COMPACTOR_AGENT_DEFINITION_ID = \"autobyteus-memory-compactor\"` and `RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = \"autobyteus-retrospective-skill-improver\"`.\n- `BUILT_IN_AGENT_DEFINITIONS` gives the Memory Compactor only `id`, `templateDirName: \"memory-compactor\"`, and `displayName: \"Memory Compactor\"`; it has no `settingDefault`. The Retrospective Skill Improver has `settingDefault: { key: AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID }`.\n- `BuiltInAgentSettingDefault` is typed narrowly to `typeof AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID`; adding a Memory Compactor setting/default would require changing this shape.\n- `autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts` syncs template `agent.md`, `agent-config.json`, and `skills/` into app data, then calls `initializeSettingDefaultIfNeeded(definition)` only when `definition.settingDefault` is declared. Tests show Memory Compactor `initializedSetting: false` and Retrospective Skill Improver `initializedSetting: true`.\n- The existing server setting service is `autobyteus-server-ts/src/services/server-settings-service.ts`. It registers predefined settings such as `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE`, `AUTOBYTEUS_COMPACTION_DEBUG_LOGS`, `APPLICATIONS_CAPABILITY_SETTING_KEY`, `SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY`, `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID`, `CODEX_APP_SERVER_SANDBOX_SETTING_KEY`, and `STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY`.\n- Precedent for a capability-style boolean setting: `SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY = \"ENABLE_SKILL_IMPROVEMENT\"`.\n- Docs in `autobyteus-server-ts/docs/modules/agent_definition.md` explicitly state the Memory Compactor is synchronized at fixed id `autobyteus-memory-compactor` “without creating a user-selectable server-setting default”; docs also say the `structured-json` compaction strategy always resolves the fixed built-in `autobyteus-memory-compactor` and that `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is no longer a predefined setting/runtime selection path (stale values are inert).\n- Compaction runs are created through the normal agent-run framework: `ServerCompactionAgentRunner` (`autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts`) calls `AgentRunService.createAgentRun`, records run activity, and waits for final output. The runner is instantiated via `createDefaultCompactionAgentRunner` in `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts`; no direct `new ServerCompactionAgentRunner` call was found in `src`.\n- `AgentRunService.createAgentRun` leads through `AgentRunProvisioningService` (`autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts`) to `AgentRunHistoryCatalogService.recordPreparedRun`, which creates run-history index rows. Therefore compactor runs enter normal run history unless filtered.\n- Run-history grouping: `WorkspaceRunHistoryService.getWorkspaceRunHistory` combines `AgentRunHistoryService.listRunHistory(limitPerAgent)` and `TeamRunHistoryService.listTeamRunHistory()`; `AgentRunHistoryService` groups rows by `workspaceRootPath` and `agentDefinitionId`/`agentName`. A Memory Compactor run would therefore appear under a `autobyteus-memory-compactor` group unless filtered.\n- Frontend: `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue` calls `runHistoryStore.fetchTree()`, loads workspace catalogs and definition stores, and periodically calls `runHistoryStore.refreshTreeQuietly()`. No filtering of internal agent ids was found in the inspected frontend paths. Related files include `autobyteus-web/stores/runHistoryStore.ts`, `autobyteus-web/stores/runHistoryMutationActions.ts`, and `autobyteus-web/graphql/queries/runHistoryQueries.ts`.\n- Agent-definition GraphQL surface: `autobyteus-server-ts/src/api/graphql/types/agent-definition.ts` exposes `agentDefinitions`; `rg` shows `getVisibleAgentDefinitions` is called in that file. `AgentDefinitionService.getVisibleAgentDefinitions()` delegates to `provider.getAllVisible()`, implemented in `FileAgentDefinitionProvider.getAllVisible()` via `listTeamLocalAgentDefinitions(...)` over shared/application-owned definitions. No per-definition “internal/hidden” flag was found in `AgentDefinition` or the GraphQL type.\n- Test evidence: `autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts` has a test named “lists synced built-ins through normal paths and restores product-managed files on the next startup”; it calls `getVisibleAgentDefinitions()` and asserts visibility includes `MEMORY_COMPACTOR_AGENT_DEFINITION_ID`.\n- Historical design decision: `tickets/done/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md` says the compactor should use the existing top-level normal run API (`AgentRunService.createAgentRun`), not modify Codex/Claude internals, and should use normal run inputs with `autoExecuteTools=false` and `skillAccessMode=PRELOADED_ONLY`. The rationale was that the existing run framework already owns visibility/history and gives operators an inspectable audit/debug surface; it is marked “Resolved by solution designer on 2026-04-28; pending architecture re-review.”\n- No existing setting key for Memory Compactor frontend visibility was found. No scheduled-run implementation was found by `rg -i \"scheduled.*run\"` (exit 1). No `AGENT_RUN_CREATED`/`agentRunCreated`/`AgentRunCreated` constant was found in server `src` (exit 1).\n\n## Unverified points and open conflicts\n- Exact `agentDefinitions` GraphQL resolver behavior was not fully read; `rg` shows it references `getVisibleAgentDefinitions`, but the complete resolver body should be confirmed by reading `autobyteus-server-ts/src/api/graphql/types/agent-definition.ts` end to end.\n- Whether Memory Compactor runs actually appear in the current frontend run tree at runtime is inferred from `createAgentRun` → `recordPreparedRun` → history grouping and from the visibility test; it was not runtime-verified. Check by launching a compaction or querying run history/API and looking for `autobyteus-memory-compactor`.\n- Whether any existing frontend/backend filtering already hides internal agents in paths not searched is not proven; check with broader searches over frontend stores/components and GraphQL consumers for filters on `autobyteus-memory-compactor` or an internal/capability flag.\n- Whether the right design is to filter at agent-definition catalog visibility, run-history projection, frontend tree projection, or all of them has not been decided. Trace all consumers of `getVisibleAgentDefinitions`, `getWorkspaceRunHistory`, `listWorkspaceRunHistory`, and `fetchTree` to choose the boundary.\n- Conflict to resolve: the earlier `agent-based-compaction` design intentionally made compactor runs visible/inspectable, while the current user request calls the compactor internal and asks for a setting to hide it from the frontend. The user request is latest; the earlier design may need revision, but no decision has been made.\n- Potential doc conflict: `agent_definition.md` states the Memory Compactor is synchronized “without creating a user-selectable server-setting default.” A visibility setting may be compatible only if docs clarify it is not a default-agent selection setting; confirm intended semantics before designing the key.\n- The exact repository state is from inspection only: branch `personal` is behind `origin/personal` by 32 commits with fast-forward possible; `package.json` is modified and `.article-work/`, `applications/*/dist/`, `autobyteus-application-backend-sdk/dist/`, `autobyteus-application-sdk-contracts/dist/` are untracked. No cleanup or commit was requested.\n\n## Files created or changed\n- (none — no files were written, edited, or deleted; only read/search/inspection commands were run in this history.)\n\n## Completed work\n- Inspected the built-in agent registry, built-in agent bootstrapper, server settings service, compaction runner, compaction backend factory, agent-run service, agent-run provisioning service, workspace/agent run history services, agent-definition service/provider, run-history GraphQL types, agent-definition GraphQL types, and frontend workspace history tree panel.\n- Ran searches including `rg -i \"compactor\" autobyteus* --files-with-matches`, `rg \"MEMORY_COMPACTOR_AGENT_DEFINITION_ID\" autobyteus*`, `rg \"createAgentRun\" autobyteus-server-ts/src`, `rg \"getVisibleAgentDefinitions\" autobyteus-server-ts/src`, `rg \"getAllVisible\" autobyteus-server-ts/src`, `rg \"recordPreparedRun\" autobyteus-server-ts/src`, `rg \"refreshTreeQuietly\" autobyteus-web`, and `rg \"templateDirName\" autobyteus-server-ts/src`.\n- Read tests in `autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts` showing Memory Compactor has `initializedSetting: false`, Retrospective Skill Improver has `initializedSetting: true`, and `getVisibleAgentDefinitions()` currently includes `autobyteus-memory-compactor`.\n- No validation, tests, builds, GraphQL queries, or runtime checks were run; no analysis conclusion was delivered to the user yet.\n\n## Current state\n- The work is in the investigation/analysis phase only. No final feasibility answer, design proposal, code change, or validation result exists.\n- The user is waiting for the analysis of whether and how an existing setting-service-backed env-var-like setting can control Memory Compactor frontend visibility.\n- Repository context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, branch `personal`, behind `origin/personal` by 32 commits, with a modified `package.json` and several untracked `dist/` directories.\n\n## Open work and next steps\n- Finish the feasibility analysis and answer the user’s request.\n- Likely next inspection: read the full `agentDefinitions` resolver body in `autobyteus-server-ts/src/api/graphql/types/agent-definition.ts`; inspect frontend consumers of `getVisibleAgentDefinitions`, `getWorkspaceRunHistory`, `listWorkspaceRunHistory`, `runHistoryStore.fetchTree()`, and `runHistoryStore.refreshTreeQuietly()` for any existing filter seam.\n- Determine whether visibility should be controlled by a new server setting registered in `server-settings-service.ts` (e.g., modeled after `SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY`) and whether filtering belongs in the agent-definition catalog, run-history service, frontend tree projection, or a combination.\n- Reconcile the older `tickets/done/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md` decision to keep compactor runs visible with the user’s current desire to hide them.\n- If implementation is later authorized, consider whether to extend `BuiltInAgentDefinition` beyond its current `settingDefault` shape and update `autobyteus-server-ts/docs/modules/agent_definition.md`, which currently says the Memory Compactor has no user-selectable server-setting default.\n- No code or tests should be assumed changed until explicitly performed and verified.\n\n## Essential references\n- Repo root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`\n- `autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts` — built-in ids, templates, `BuiltInAgentSettingDefault`, `BUILT_IN_AGENT_DEFINITIONS`\n- `autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts` — startup sync and `initializeSettingDefaultIfNeeded`\n- `autobyteus-server-ts/src/services/server-settings-service.ts` — `registerPredefinedSetting`, `getAvailableSettings`, predefined keys\n- `autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts` — compaction runner using normal `createAgentRun`\n- `autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts` — resolves `autobyteus-memory-compactor`\n- `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` — `createDefaultCompactionAgentRunner`\n- `autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts` and `autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts` — run creation and `recordPreparedRun`\n- `autobyteus-server-ts/src/run-history/services/workspace-run-history-service.ts`, `autobyteus-server-ts/src/run-history/services/agent-run-history-service.ts`, `autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts` — history grouping by `agentDefinitionId`\n- `autobyteus-server-ts/src/agent-definition/services/agent-definition-service.ts` and `autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts` — `getVisibleAgentDefinitions()` / `getAllVisible()`\n- `autobyteus-server-ts/src/api/graphql/types/agent-definition.ts` and `autobyteus-server-ts/src/api/graphql/types/run-history.ts` — GraphQL surfaces\n- `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue`, `autobyteus-web/stores/runHistoryStore.ts`, `autobyteus-web/stores/runHistoryMutationActions.ts`, `autobyteus-web/graphql/queries/runHistoryQueries.ts` — frontend run-history tree\n- `autobyteus-server-ts/docs/modules/agent_definition.md` and `autobyteus-server-ts/docs/modules/skill_improvement.md` — documented contracts\n- `tickets/done/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md` — prior visible-compactor decision, `autoExecuteTools=false`, `skillAccessMode=PRELOADED_ONLY`\n- Key identifiers: `autobyteus-memory-compactor`, `autobyteus-retrospective-skill-improver`, `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID`, `SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY = \"ENABLE_SKILL_IMPROVEMENT\"`, `AUTOBYTEUS_COMPACTION_DEBUG_LOGS`, `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE`, inert `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`, `listWorkspaceRunHistory`, `getWorkspaceRunHistory`, `refreshTreeQuietly`, `getAllVisible`, `getVisibleAgentDefinitions`, `createAgentRun`, `ServerCompactionAgentRunner`",
+      "parseError": null,
+      "hasToolCalls": false,
+      "metadata": {
+        "mode": "transcript",
+        "modelIdentifier": "deepseek-v4-flash",
+        "provider": "DEEPSEEK",
+        "invocationId": "compaction_ac003_2",
+        "completionStatus": "complete",
+        "completionReason": "stop",
+        "usage": {
+          "input_tokens": 49501,
+          "output_tokens": 10057,
+          "total_tokens": 59558,
+          "usage_scope": "per_call",
+          "model_provider": "DEEPSEEK",
+          "provider_name": "DeepSeek",
+          "model_identifier": "deepseek-v4-flash",
+          "model_value": "deepseek-v4-flash",
+          "input_token_semantic": "gross_includes_cache",
+          "cache_state": "positive",
+          "standard_input_tokens": null,
+          "cache_miss_input_tokens": 48733,
+          "cache_read_input_tokens": 768,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "reasoning_output_tokens": 6214,
+          "billable_input_tokens": null,
+          "billable_output_tokens": null,
+          "raw_usage_json": {
+            "prompt_tokens": 49501,
+            "completion_tokens": 10057,
+            "total_tokens": 59558,
+            "prompt_tokens_details": {
+              "cached_tokens": 768
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 6214
+            },
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 48733
+          },
+          "quality_flags": []
+        }
+      },
+      "rawContentChars": 15406,
+      "identifierCheck": {
+        "total": 141,
+        "notInHistory": [
+          "MEMORY_COMPACTOR_AGENT_DEFINITION_ID = \"autobyteus-memory-compactor\"",
+          "RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = \"autobyteus-retrospective-skill-improver\"",
+          "templateDirName: \"memory-compactor\"",
+          "displayName: \"Memory Compactor\"",
+          "settingDefault: { key: AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID }",
+          "definition.settingDefault",
+          "SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY = \"ENABLE_SKILL_IMPROVEMENT\"",
+          "AgentRunHistoryCatalogService.recordPreparedRun",
+          "TeamRunHistoryService.listTeamRunHistory()",
+          " is called in that file. ",
+          ", implemented in ",
+          " over shared/application-owned definitions. No per-definition “internal/hidden” flag was found in ",
+          "rg -i \"scheduled.*run\"",
+          " shows it references ",
+          ", but the complete resolver body should be confirmed by reading ",
+          "applications/*/dist/",
+          "rg -i \"compactor\" autobyteus* --files-with-matches",
+          "rg \"MEMORY_COMPACTOR_AGENT_DEFINITION_ID\" autobyteus*",
+          "rg \"createAgentRun\" autobyteus-server-ts/src",
+          "rg \"getVisibleAgentDefinitions\" autobyteus-server-ts/src",
+          "rg \"getAllVisible\" autobyteus-server-ts/src",
+          "rg \"recordPreparedRun\" autobyteus-server-ts/src",
+          "rg \"refreshTreeQuietly\" autobyteus-web",
+          "rg \"templateDirName\" autobyteus-server-ts/src",
+          "/search/inspection"
+        ]
+      },
+      "compactedMessageCount": 83,
+      "compactedEstimatedTokens": 73510,
+      "continuation": [
+        {
+          "user": "Sorry for interrupting you earlier. From memory and without running any tools: remind me in a few sentences what problem you are solving (my original request), and roughly how your design works.",
+          "assistant": "From memory (no tools run):\n\n**Problem:** Memory compaction runs as a normal agent run using the built-in `autobyteus-memory-compactor` agent. Because it's a normal run, the \"Memory Compactor\" shows up as an agent group in the frontend workspace run-history sidebar, and the definition also appears in the agent catalog / run-creation dropdown. You consider it an internal agent that shouldn't clutter the frontend, and you asked whether a setting (env-var-backed, ideally reusing the existing backend `ServerSettingsService`) could control that visibility.\n\n**Rough design:** Add one boolean server setting — I proposed `AUTOBYTEUS_SHOW_INTERNAL_AGENTS`, defaulting to `false` — registered in the existing settings service, so it can come from an environment variable or be toggled in the Server Settings UI. Mark internal built-in agents (`autobyteus-memory-compactor`, and I proposed also `autobyteus-retrospective-skill-improver`) as internal in the built-in agent registry, with a small helper like `isInternalAgentDefinitionId(id)` so callers don't hardcode ids. Then filter at the two backend query boundaries: `AgentRunHistoryService.listRunHistory()` skips internal-agent rows, and `AgentDefinitionService.getVisibleAgentDefinitions()` skips internal definitions when the setting is off. Compaction still executes exactly as before — it's only presentation that's filtered — and direct lookups by explicit id (`getAgentDefinitionById`, `getRunProjection(runId)`) stay untouched so internal runners and debugging still work. That means zero frontend changes, and flipping the setting to `true` surfaces the internal agents and runs again.\n\nCaveats worth re-flagging: the setting key name, the `false` default, and whether the Retrospective Skill Improver is included alongside the Memory Compactor were my proposals and still need your confirmation. The design is written up in `design-spec.md` in the ticket folder, and the requirements are still marked pending your explicit approval — I haven't handed anything off or made code changes.",
+          "toolCallDeltas": 0,
+          "identifiersNotInHistory": []
+        },
+        {
+          "user": "OK. Where exactly are the design files (worktree, ticket folder and file names), what is the current status of the design work (what is approved or reviewed, what is not), and what is still open or blocked? Do not run any tools.",
+          "assistant": "## 1. Where the files are\n\n**Worktree root**\n`/Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility`\n\n**Branch**\n`codex/internal-agent-frontend-visibility`, set up tracking `origin/personal`, based on commit `9267d11c8` (`docs(delivery): clarify accepted Electron verification`).\n\n**Ticket folder**\n`/Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility/tickets/in-progress/internal-agent-frontend-visibility`\n\n**Files in that folder**\n\n| File | Contents |\n| --- | --- |\n| `investigation-notes.md` | Investigation meta, initial request verbatim, source log, current-state findings, feasibility notes |\n| `requirements-doc.md` | Problem statement, `BEH-001`–`BEH-003`, scope guardrail, `REQ-001`–`REQ-005`, `AC-001`–`AC-004`, `SCN-001`–`SCN-005` |\n| `design-spec.md` | Full design spec: current-state read, task size/risk, evidence table, behavior map, spines `DS-001`–`DS-004`, ownership/boundary/dependency maps, file responsibility mapping, change sequence, risks |\n| `solution-revision-record.md` | Cumulative revision index; `SR-001` entry |\n\nNote: I first drafted the three artifacts in the superrepo at `tickets/in-progress/internal-agent-frontend-visibility/`, then copied them into the worktree and removed the superrepo copy. So the worktree folder should be the only remaining copy — but that cleanup is only in my recollection and was never re-checked afterward.\n\nAlso: the ticket folder is **untracked** in git. Nothing has been staged or committed, and no code files were touched.\n\n## 2. Current status of the design work\n\n| Item | Status |\n| --- | --- |\n| Investigation | Done for the feasibility question; recorded in `investigation-notes.md` |\n| Requirements (`requirements-doc.md`) | Status field reads `Draft (Pending User Review & Approval)`. **Not approved.** |\n| Design (`design-spec.md`) | Status field reads `Design status: Draft`. Not reviewed. |\n| `SR-001` in the revision record | I edited it to `Mixed` phase / `Architecture Design Complete`, with requirements `Ready for Approval` and design `Ready` |\n| Classification | `task_size: Small`, `architectural_risk: Low` (recorded in both `design-spec.md` and `SR-001`) |\n| Independent architecture review | **Not requested, not performed** |\n| Implementation / tests / runtime validation | **None** |\n| Handoff | **None** — no `get_handoff_rules` call, no `send_message_to`, no `delegate_task`, nothing routed to any reviewer or engineer |\n| User approval capture | **None exists** |\n\nSo: drafted, internally consistent in substance, but **not approved and not reviewed**.\n\n## 3. What is still open or blocked\n\n**Gating item — your approval.** You explicitly asked for analysis only, and no implementation was authorized. Per my workflow, intended behavior (the setting, its default, and the hiding semantics) must be approved by you before the design is authoritative and before anything is routed onward. This is the reason nothing has been handed off.\n\n**Open decisions I proposed but you have not confirmed**\n1. The setting key name `AUTOBYTEUS_SHOW_INTERNAL_AGENTS`.\n2. Default value `false` (hidden by default).\n3. Whether the scope is Memory Compactor only, or also `autobyteus-retrospective-skill-improver`.\n4. Whether hiding applies to both surfaces (workspace run-history sidebar **and** agent catalog / run-creation dropdowns) or only the sidebar.\n\n**Known conflict to reconcile.** The earlier completed ticket `tickets/done/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md` deliberately decided compactor runs should be *visible* normal runs for inspectability. This request reverses that default. That prior decision would need to be recorded as revised, and `autobyteus-server-ts/docs/modules/agent_definition.md` (which states the Memory Compactor is synced \"without creating a user-selectable server-setting default\") would need updated wording so the new setting isn't misread as an agent-selection default.\n\n**Evidence gaps / unverified points**\n- The full `agentDefinitions` GraphQL resolver body in `autobyteus-server-ts/src/api/graphql/types/agent-definition.ts` was never read end to end — only grepped for `getVisibleAgentDefinitions`.\n- That compactor runs actually surface in the frontend tree at runtime was inferred from `createAgentRun` → `recordPreparedRun` → history grouping plus the visibility unit test. Not runtime-verified.\n- Whether any frontend path already filters internal agents was not exhaustively searched.\n- Whether internal agents exist beyond the two built-ins was not exhaustively confirmed.\n- Adding a Memory Compactor setting default would require widening `BuiltInAgentSettingDefault`; my design avoids that by using a capability-style setting instead — but that avoidance itself hasn't been reviewed.\n\n**Housekeeping gap.** The `design-spec.md` header records an approval-basis reference while `solution-revision-record.md` now marks the design `Ready`; the two documents don't say the same thing, and I marked design progress without an approval capture. That inconsistency should be reconciled before any handoff.\n\n**Unrelated repo state (not part of this ticket):** the superrepo checkout is on `personal`, behind `origin/personal`, with a modified `package.json` and untracked `.article-work/` and several `dist/` directories. No cleanup or commit was requested and none was performed.",
+          "toolCallDeltas": 0,
+          "identifiersNotInHistory": [
+            "Draft (Pending User Review & Approval)",
+            "Design status: Draft",
+            "/boundary/dependency"
+          ]
+        }
+      ]
+    }
+  },
+  "c010": {},
+  "calls": [
+    {
+      "label": "opus-cached",
+      "host": "api.deepseek.com",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 123712,
+        "prompt_cache_hit_tokens": 0,
+        "completion_tokens": 3365,
+        "candidatesTokenCount": null,
+        "input_tokens": null,
+        "cache_read_input_tokens": null,
+        "cache_creation_input_tokens": null,
+        "output_tokens": null,
+        "promptTokenCount": null,
+        "cachedContentTokenCount": null
+      },
+      "anthropicSystemChars": null,
+      "messageCount": 266,
+      "geminiSystemInstruction": null,
+      "geminiContentsRoles": null,
+      "geminiFirstContentText": null,
+      "summaryPromptInSystemInstruction": null,
+      "agentPromptInSystemInstruction": null,
+      "summaryPromptInContents": null
+    },
+    {
+      "label": "opus-transcript",
+      "host": "api.deepseek.com",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 49501,
+        "prompt_cache_hit_tokens": 768,
+        "completion_tokens": 10057,
+        "candidatesTokenCount": null,
+        "input_tokens": null,
+        "cache_read_input_tokens": null,
+        "cache_creation_input_tokens": null,
+        "output_tokens": null,
+        "promptTokenCount": null,
+        "cachedContentTokenCount": null
+      },
+      "anthropicSystemChars": null,
+      "messageCount": 2,
+      "geminiSystemInstruction": null,
+      "geminiContentsRoles": null,
+      "geminiFirstContentText": null,
+      "summaryPromptInSystemInstruction": null,
+      "agentPromptInSystemInstruction": null,
+      "summaryPromptInContents": null
+    },
+    {
+      "label": "opus-continue-cached-1",
+      "host": "api.deepseek.com",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 43759,
+        "prompt_cache_hit_tokens": 4352,
+        "completion_tokens": 543,
+        "candidatesTokenCount": null,
+        "input_tokens": null,
+        "cache_read_input_tokens": null,
+        "cache_creation_input_tokens": null,
+        "output_tokens": null,
+        "promptTokenCount": null,
+        "cachedContentTokenCount": null
+      },
+      "anthropicSystemChars": null,
+      "messageCount": 84,
+      "geminiSystemInstruction": null,
+      "geminiContentsRoles": null,
+      "geminiFirstContentText": null,
+      "summaryPromptInSystemInstruction": null,
+      "agentPromptInSystemInstruction": null,
+      "summaryPromptInContents": null
+    },
+    {
+      "label": "opus-continue-cached-2",
+      "host": "api.deepseek.com",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 44274,
+        "prompt_cache_hit_tokens": 43648,
+        "completion_tokens": 1713,
+        "candidatesTokenCount": null,
+        "input_tokens": null,
+        "cache_read_input_tokens": null,
+        "cache_creation_input_tokens": null,
+        "output_tokens": null,
+        "promptTokenCount": null,
+        "cachedContentTokenCount": null
+      },
+      "anthropicSystemChars": null,
+      "messageCount": 86,
+      "geminiSystemInstruction": null,
+      "geminiContentsRoles": null,
+      "geminiFirstContentText": null,
+      "summaryPromptInSystemInstruction": null,
+      "agentPromptInSystemInstruction": null,
+      "summaryPromptInContents": null
+    },
+    {
+      "label": "opus-continue-transcript-1",
+      "host": "api.deepseek.com",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 44237,
+        "prompt_cache_hit_tokens": 4352,
+        "completion_tokens": 600,
+        "candidatesTokenCount": null,
+        "input_tokens": null,
+        "cache_read_input_tokens": null,
+        "cache_creation_input_tokens": null,
+        "output_tokens": null,
+        "promptTokenCount": null,
+        "cachedContentTokenCount": null
+      },
+      "anthropicSystemChars": null,
+      "messageCount": 84,
+      "geminiSystemInstruction": null,
+      "geminiContentsRoles": null,
+      "geminiFirstContentText": null,
+      "summaryPromptInSystemInstruction": null,
+      "agentPromptInSystemInstruction": null,
+      "summaryPromptInContents": null
+    },
+    {
+      "label": "opus-continue-transcript-2",
+      "host": "api.deepseek.com",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 44737,
+        "prompt_cache_hit_tokens": 44160,
+        "completion_tokens": 2396,
+        "candidatesTokenCount": null,
+        "input_tokens": null,
+        "cache_read_input_tokens": null,
+        "cache_creation_input_tokens": null,
+        "output_tokens": null,
+        "promptTokenCount": null,
+        "cachedContentTokenCount": null
+      },
+      "anthropicSystemChars": null,
+      "messageCount": 86,
+      "geminiSystemInstruction": null,
+      "geminiContentsRoles": null,
+      "geminiFirstContentText": null,
+      "summaryPromptInSystemInstruction": null,
+      "agentPromptInSystemInstruction": null,
+      "summaryPromptInContents": null
+    }
+  ],
+  "geminiBodies": []
+}

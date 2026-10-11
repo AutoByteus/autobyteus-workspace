@@ -135,10 +135,10 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
           continuationTraceAbsent: true,
           exactRetainedArtifactVerified: true,
           summaryAndCurrentUserVerified: true,
-          directSummaryRequestCount: 1,
-          directSummaryTaskFramingVerified: true,
-          directSummarySourceToolTailVerified: true,
-          directSummaryProviderSafeUnicodeVerified: true,
+          summaryOnAgentModelVerified: true,
+          summaryRequestFramingVerified: true,
+          summarySourceToolTailVerified: true,
+          summaryProviderSafeUnicodeVerified: true,
           noCategoryArtifactsVerified: true,
           unicodeShieldSourceImmutableVerified: true,
         });
@@ -148,6 +148,8 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
         expect(result.effectiveContextWindowTokens).toBeGreaterThan(0);
         expect(result.triggerThresholdTokens).toBeGreaterThan(0);
         expect(result.completedCompactionCount).toBe(1);
+        expect(result.summaryRequestCount).toBeGreaterThanOrEqual(result.completedCompactionCount);
+        expect(result.summaryModes).toHaveLength(result.summaryRequestCount);
         expect(result.summaryInvocationIds).toHaveLength(result.completedCompactionCount);
         expect(result.summaryModelIdentifiers).toHaveLength(result.completedCompactionCount);
         expect(result.completionStatuses).toHaveLength(result.completedCompactionCount);

@@ -395,17 +395,8 @@ const settingsMessages = {
   'settings.components.settings.DockerNodeStartGuideCard.copyFailed': '无法复制命令：{{error}}',
   'settings.components.settings.DockerNodeStartGuideCard.nextStep': 'new-container 输出 Backend 后，将该 URL 添加为远程节点，并通过你信任的私有网络打开 Docker 节点窗口。手机访问需要在该窗口中使用手机可访问、已验证的 HTTPS 或已确认可信私有 HTTP /mobile URL 创建二维码。',
 
-  "settings.components.settings.CompactionConfigCard.description": "选择摘要模型并调整上下文压缩时机。",
-  "settings.components.settings.CompactionConfigCard.model": "摘要模型",
-  "settings.components.settings.CompactionConfigCard.inheritModel": "使用当前父运行模型",
-  "settings.components.settings.CompactionConfigCard.modelHelp": "每次压缩都使用新的直接模型调用。继承跟随当前父模型；明确选择的模型保持不变。",
-  "settings.components.settings.CompactionConfigCard.loadingModels": "正在加载模型…",
-  "settings.components.settings.CompactionConfigCard.unavailableModel": "保存的模型不可用，不会自动替换：",
-  "settings.components.settings.CompactionConfigCard.modelError": "无法加载可用模型。",
-  "settings.components.settings.CompactionConfigCard.resetModelConfig": "使用模型默认配置",
-  "settings.components.settings.CompactionConfigCard.invalidModelConfig": "请检查模型配置值。",
+  "settings.components.settings.CompactionConfigCard.description": "调整上下文压缩时机。压缩始终使用智能体自身的模型生成摘要。",
   "settings.components.settings.CompactionConfigCard.settingsError": "无法加载压缩设置。",
-  "settings.components.settings.CompactionConfigCard.invalidModelSettings": "保存的模型设置无效。请选择模型或继承，然后保存。",
   "settings.components.settings.CompactionConfigCard.nodeChanged": "所选节点已更改；剩余设置未保存。",
 } satisfies TranslationCatalog;
 

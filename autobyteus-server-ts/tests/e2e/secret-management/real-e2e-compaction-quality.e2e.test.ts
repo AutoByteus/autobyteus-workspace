@@ -5,11 +5,14 @@ import { Message, MessageRole } from 'autobyteus-ts/llm/utils/messages.js';
 import type { CompleteResponse } from 'autobyteus-ts/llm/utils/response-types.js';
 import { CompactionContentBuilder } from 'autobyteus-ts/memory/compaction/compaction-content-builder.js';
 import type { CompactionExecutionMetadata } from 'autobyteus-ts/memory/compaction/compaction-execution.js';
-import { DirectLlmCompressionStrategy } from 'autobyteus-ts/memory/compaction/direct-llm-compression-strategy.js';
+import { CompactionSummarizer } from 'autobyteus-ts/memory/compaction/compaction-summarizer.js';
+import { COMPACTION_SUMMARY_HEADINGS } from 'autobyteus-ts/memory/compaction/compaction-summary-parser.js';
+import { LlmPhaseSummaryPort } from 'autobyteus-ts/agent/loop/llm-phase-summary-port.js';
+import { resolveLlmRequestCapacity } from 'autobyteus-ts/agent/token-budget.js';
 import type { WorkingContextMessageUnit } from 'autobyteus-ts/memory/compaction/working-context-message-unit.js';
 import { createCompactedMemoryUserMessage } from 'autobyteus-ts/memory/working-context-finalizer.js';
-import { createCompactionLlm } from '../../../src/agent-execution/compaction/compaction-llm-factory.js';
-import { LiveE2eHarness, inspectDirectSummaryRequest } from '../../../../test-support/live-e2e/live-e2e-harness.js';
+import { createAvailableLlm } from '../../../src/agent-execution/backends/autobyteus/available-llm-construction.js';
+import { LiveE2eHarness, inspectSummaryRequest } from '../../../../test-support/live-e2e/live-e2e-harness.js';
 import { liveE2eScenarios, selectedLiveE2eScenarioIds } from '../../../../test-support/live-e2e/live-e2e-scenarios.mjs';
 import { assertNoInventedPlanChanges } from '../../../../test-support/live-e2e/compaction-quality-checks.js';
 import { LiveE2eEvidenceScanner } from '../../../../test-support/live-e2e/live-e2e-evidence-scanner.js';
@@ -31,6 +34,8 @@ const history = [
 ];
 const correction = 'Correction: retention is now 30 days, replacing 7 days. Cancel the proposed cloud export entirely. Inventory remains completed. Keep risk assessment active. Add the owner-review checkpoint APPROVAL-73 to the plan; approval for implementation is still pending. The latest unresolved request is to compare rollback options, not to implement them. pnpm verify:helios is still unrun.';
 
+const AGENT_SYSTEM_PROMPT = 'You are a careful planning agent working on incident INC-042.';
+
 class Capture extends LLMExtension {
   requests: Array<{ messages: Array<{ role: MessageRole; content: string | null; toolPayload: unknown; provenance: null }> }> = [];
   responses: CompleteResponse[] = [];
@@ -45,7 +50,7 @@ class Capture extends LLMExtension {
 // Keyword checks are regression alarms, not a semantic completeness oracle.
 // Review the retained input/output evidence separately for contradiction and omission.
 const assertEssentialRetention = (summary: string) => {
-  for (const heading of ['Goal and constraints', 'Decisions and findings', 'Completed work', 'Current state', 'Open work and next steps', 'Essential references']) expect(summary).toContain(`## ${heading}`);
+  for (const heading of COMPACTION_SUMMARY_HEADINGS) expect(summary).toContain(`## ${heading}`);
   for (const exact of ['INC-042', 'Mira Chen', '/workspace/helios/plan.md', 'pnpm verify:helios', '/workspace/helios/inventory.json']) {
     expect(summary).toContain(exact);
   }
@@ -73,21 +78,28 @@ const assertEssentialRetention = (summary: string) => {
         expect(matches).toHaveLength(1);
         parentModelIdentifier = matches[0]!.model_identifier;
       }
+      // Compaction always summarizes on the agent's own model: the cached summary request (the
+      // conversation + instruction) first, the transcript request as fallback.
       const captures: Capture[] = [];
       const compress = async (units: WorkingContextMessageUnit[], phase: string) => {
         let execution: CompactionExecutionMetadata | undefined;
-        const strategy = new DirectLlmCompressionStrategy(async input => {
-          const llm = await createCompactionLlm(input);
-          const capture = new Capture(llm); captures.push(capture); llm.registerExtension(capture);
-          return llm;
-        }, { getParentModelIdentifier: () => parentModelIdentifier,
-          operationId: `quality-${phase}`, executionTurnId: `quality-${phase}`,
-          signal: AbortSignal.timeout(400_000),
-          observe: event => { if (event.outcome === 'succeeded') execution = event.execution; },
-        });
-        const summary = await strategy.compress(new CompactionContentBuilder().build(units));
-        if (!execution) throw new Error('Missing direct compression success observation.');
-        return { summary, execution };
+        const llm = await createAvailableLlm(parentModelIdentifier);
+        const capture = new Capture(llm); captures.push(capture); llm.registerExtension(capture);
+        try {
+          const port = new LlmPhaseSummaryPort({ agentId: `quality-${scenarioId}`, llm, tools: [],
+            requestCapacity: resolveLlmRequestCapacity(llm.model, llm.config), notifier: null });
+          const summary = await new CompactionSummarizer(port).summarize({
+            baselineMessages: [new Message(MessageRole.SYSTEM, { content: AGENT_SYSTEM_PROMPT }), ...units.flatMap(u => u.messages)],
+            transcriptContent: new CompactionContentBuilder().build(units),
+            operationId: `quality-${phase}`, executionTurnId: `quality-${phase}`,
+            signal: AbortSignal.timeout(400_000),
+            observe: event => { if (event.outcome === 'succeeded') execution = event.execution; },
+          });
+          if (!execution) throw new Error('Missing compaction summary success observation.');
+          return { summary, execution };
+        } finally {
+          await llm.cleanup();
+        }
       };
       const first = await compress(history, 'first');
       report({ event: 'semantic_first', scenarioId, source: history.flatMap(u => u.messages.map(m => m.content)), ...first });
@@ -106,12 +118,15 @@ const assertEssentialRetention = (summary: string) => {
       expect(repeated.execution.invocationId).not.toBe(first.execution.invocationId);
       expect(captures).toHaveLength(2);
       for (const capture of captures) {
-        expect(capture.requests).toHaveLength(1); expect(capture.responses).toHaveLength(1);
-        inspectDirectSummaryRequest(capture.requests[0]!);
-        expect(capture.responses[0]!.completionStatus).not.toBe('incomplete');
+        expect(capture.requests.length).toBeGreaterThanOrEqual(1);
+        expect(capture.responses).toHaveLength(capture.requests.length);
+        for (const request of capture.requests) inspectSummaryRequest(request);
       }
-      expect(captures[1]!.requests[0]!.messages[1]!.content).toContain(first.summary);
-      report({ event: 'semantic_two_calls_verified', scenarioId, invocationCount: 2 });
+      // The repeated compaction's successful request carries the first summary (as conversation or transcript).
+      expect(JSON.stringify(captures[1]!.requests.at(-1)!.messages)).toContain(JSON.stringify(first.summary).slice(1, 200));
+      report({ event: 'semantic_two_compactions_verified', scenarioId,
+        modes: [first.execution.mode, repeated.execution.mode],
+        attempts: captures.map(capture => capture.requests.length) });
     });
   }
 });

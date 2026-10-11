@@ -18,7 +18,6 @@ export type LlmRequestAssemblyIdentity = Readonly<{
   requestId: string;
   /** Not the turn's first LLM call (a tool-result or recovery continuation): no pre-request compaction. */
   isTurnContinuation?: boolean;
-  getParentModelIdentifier: () => string;
   signal: AbortSignal;
 }>;
 
@@ -50,21 +49,19 @@ export class LLMRequestAssembler {
       recoverySourceEvent: 'LLMRequestAssembler.preCompaction',
     });
 
-    const didCompact = this.pendingCompactionExecutor && !identity.isTurnContinuation
-      ? await this.pendingCompactionExecutor.executeIfAuthorized({
+    // Compaction runs only on a turn's first LLM call. Its cached summary request replays the
+    // history under the current prefix, so reasoning bound to a changed prefix is removed first.
+    const compactionExecutor = identity.isTurnContinuation ? null : this.pendingCompactionExecutor;
+    if (compactionExecutor) this.bindRequestPrefix(requestTools);
+    const didCompact = compactionExecutor
+      ? await compactionExecutor.executeIfAuthorized({
           executionSite: 'before_parent_request',
           turnId: identity.turnId,
-          getParentModelIdentifier: identity.getParentModelIdentifier,
           signal: identity.signal,
         })
       : false;
-
-    // Runs on tool continuations too: tool definitions can change mid tool cycle. Any
-    // removal is persisted before the checkpoint, so a failed request cannot restore it.
-    this.memoryManager.bindRetainedReasoningToRequestPrefix(computeLlmRequestPrefixDigest({
-      leadingSystem: leadingSystemMessages(this.memoryManager.getWorkingContextMessages()),
-      tools: requestTools,
-    }));
+    // Compaction can change the leading system run, so bind again before the checkpoint.
+    this.bindRequestPrefix(requestTools);
 
     const recoverySnapshot = this.captureRecoverySnapshot(identity);
     try {
@@ -86,6 +83,18 @@ export class LLMRequestAssembler {
       });
       throw error;
     }
+  }
+
+  /**
+   * Binds retained provider reasoning to the request prefix (leading system run + `requestTools`).
+   * Runs on tool continuations too: tool definitions can change mid tool cycle. Any removal is
+   * persisted immediately, so a later checkpoint restore cannot bring it back.
+   */
+  bindRequestPrefix(requestTools: ReadonlyArray<Record<string, unknown>>): void {
+    this.memoryManager.bindRetainedReasoningToRequestPrefix(computeLlmRequestPrefixDigest({
+      leadingSystem: leadingSystemMessages(this.memoryManager.getWorkingContextMessages()),
+      tools: requestTools,
+    }));
   }
 
   private async buildRequestPackage(

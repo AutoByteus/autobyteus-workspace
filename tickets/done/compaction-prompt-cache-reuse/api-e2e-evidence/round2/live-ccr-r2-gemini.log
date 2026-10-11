@@ -1,0 +1,666 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:26785) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-appdata-N7XkNk
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-appdata-N7XkNk/.env
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mLoading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-appdata-N7XkNk/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-appdata-N7XkNk/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-appdata-N7XkNk
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-appdata-N7XkNk/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-appdata-N7XkNk/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-appdata-N7XkNk/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-appdata-N7XkNk/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-11T07:12:30.537Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-appdata-N7XkNk/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-appdata-N7XkNk/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-appdata-N7XkNk/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mRegistered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-11T07:12:30.812Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39m[2026-10-11T07:12:30.813Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mIn-memory cache: Added new agent definition with ID compaction-cache-auditor-92ee0871.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgent Definition created successfully with ID: compaction-cache-auditor-92ee0871
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mIn-memory cache: Added new agent definition with ID compaction-cache-chat-50e9d687.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgent Definition created successfully with ID: compaction-cache-chat-50e9d687
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mServer setting 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE' updated
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mServer setting 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO' updated
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-ws-gQoF3G
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-ws-gQoF3G.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mCreated and registered workspace ID: agent_ws_b5308fa2deb6fcc13115e0d1b8058d57b4eef41a86bb1feaa5d57fa942143a40
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-ws-gQoF3G
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-ws-gQoF3G.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mReusing registered workspace ID: agent_ws_b5308fa2deb6fcc13115e0d1b8058d57b4eef41a86bb1feaa5d57fa942143a40
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-cache-e2e-appdata-N7XkNk/media
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentRuntimeState initialized for agent_id 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': LLM instance 'GeminiLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e' with config: 'compaction-cache-chat-50e9d687'.
+AgentWorker initialized for agent_id 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e'.
+Registered AgentContext for agent_id 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e'. Context registered.
+Agent facade initialized for agent_id 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e'.
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e' created and stored successfully.
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e' requesting runtime to start.
+AgentRuntime for 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Starting worker.
+AgentWorker 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Starting...
+AgentWorker 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e' asyncRun(): Starting.
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Runtime init completed (event store initialized).
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Runtime init completed (status deriver initialized).
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Runtime init completed (AgentEventInbox initialized).
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e' to become idle (timeout: 30s)...
+AgentEventStream (ID: a6be0cfe-b0d8-451e-ac21-1e7bf559520d) initialized for agent_id 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e'. Subscribed to notifier.
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Bootstrapper starting direct lifecycle execution.
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Executing SystemPromptProcessingStep.
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': No configured skills. Skipping skill catalog.
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Final processed system prompt configured and captured. Trace ID: rt_1791702751044_d1ed4bd5-5fd0-4ff1-b5c0-e05e15142146. Final length: 4412.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentWorker 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentEventStream (ID: a6be0cfe-b0d8-451e-ac21-1e7bf559520d) for 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentEventStream (ID: 487dca8b-4d18-438b-9cfd-83fe10ee9242) initialized for agent_id 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent websocket attached for run compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e
+Created agent session 0a4b2133-23e7-44d8-85d5-d658ad84d83e for run compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e
+Agent WebSocket connected: session=0a4b2133-23e7-44d8-85d5-d658ad84d83e, run=compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent run 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': UserInputContextBuildingProcessor completed. Final content length: 17988
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent run 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent run 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': UserInputContextBuildingProcessor completed. Final content length: 18361
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent run 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent run 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': UserInputContextBuildingProcessor completed. Final content length: 18361
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent run 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent run 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': UserInputContextBuildingProcessor completed. Final content length: 18763
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent run 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mServer setting 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE' updated
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mServer setting 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO' updated
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent run 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': UserInputContextBuildingProcessor completed. Final content length: 44
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_requested {
+  agent_id: [32m'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e'[39m,
+  phase: [32m'requested'[39m,
+  turn_id: [32m'turn_0005'[39m,
+  compaction_operation_id: [32m'compaction_operation_mv3hkad5_1'[39m,
+  requested_turn_id: [32m'turn_0005'[39m,
+  execution_turn_id: [1mnull[22m,
+  selected_block_count: [1mnull[22m,
+  compacted_block_count: [1mnull[22m,
+  raw_trace_count: [1mnull[22m
+}
+AgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: [32m'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e'[39m,
+  turn_id: [32m'turn_0005'[39m,
+  compaction_operation_id: [32m'compaction_operation_mv3hkad5_1'[39m,
+  requested_turn_id: [32m'turn_0005'[39m,
+  execution_turn_id: [32m'turn_0005'[39m,
+  selected_block_count: [33m7[39m,
+  raw_trace_count: [33m7[39m,
+  phase: [32m'started'[39m
+}
+AgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mcompaction_completed {
+  agent_id: [32m'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e'[39m,
+  turn_id: [32m'turn_0005'[39m,
+  compaction_operation_id: [32m'compaction_operation_mv3hkad5_1'[39m,
+  requested_turn_id: [32m'turn_0005'[39m,
+  execution_turn_id: [32m'turn_0005'[39m,
+  selected_block_count: [33m7[39m,
+  raw_trace_count: [33m7[39m,
+  compaction_model_identifier: [32m'gemini-3.8-flash'[39m,
+  summarizer_provider: [32m'GEMINI'[39m,
+  compaction_invocation_id: [32m'compaction_compaction_operation_mv3hkad5_1_1'[39m,
+  completion_status: [32m'complete'[39m,
+  completion_reason: [32m'STOP'[39m,
+  summary_char_count: [33m2828[39m,
+  summary_token_count: [33m721[39m,
+  phase: [32m'completed'[39m,
+  compacted_block_count: [33m7[39m
+}
+AgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent run 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent run 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': UserInputContextBuildingProcessor completed. Final content length: 72
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgent run 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22m[2mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mRemoving agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e'. Attempting graceful shutdown.
+Agent 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgentWorker 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mClosed agent session 0a4b2133-23e7-44d8-85d5-d658ad84d83e
+Agent WebSocket disconnected: 0a4b2133-23e7-44d8-85d5-d658ad84d83e
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgentExternalEventNotifier (NotifierID: 32cdff5c-56a1-48a5-bfa4-e89f16a7d94e, AgentID: compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e' asyncRun() loop has finished.
+AgentWorker 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgentWorker 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Shutdown resource cleanup completed successfully.
+AgentWorker 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mUnregistered AgentContext for agent_id 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e'.
+AgentRuntime for 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgentRuntime for 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgentEventStream (ID: 487dca8b-4d18-438b-9cfd-83fe10ee9242) for 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgentEventStream (ID: 487dca8b-4d18-438b-9cfd-83fe10ee9242) for 'compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mIn-memory cache: Removed agent definition with ID compaction-cache-auditor-92ee0871.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgent Definition with ID compaction-cache-auditor-92ee0871 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mIn-memory cache: Removed agent definition with ID compaction-cache-chat-50e9d687.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22m[2mAutoByteus native compaction on the agent's own model with a cached summary request (live)
+[22m[39mAgent Definition with ID compaction-cache-chat-50e9d687 deleted successfully.
+
+ [31m❯[39m tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m2 skipped[39m[2m)[22m[33m 23311[2mms[22m[39m
+     [2m[90m↓[39m[22m CCR-E2E-001: Opus 5.5 compacts with a cached summary request (>= 90 % cache read), continues, and meters the call
+     [2m[90m↓[39m[22m CCR-E2E-002: tools changed in Settings before the compaction turn: the summary request carries no thinking and is accepted (strict)
+[31m     [31m×[31m CCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call[39m[33m 19764[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts[2m > [22mAutoByteus native compaction on the agent's own model with a cached summary request (live)[2m > [22mCCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call
+[31m[1mAssertionError[22m: CCR-E2E-003: agent request 6 after compaction carries the summary instruction (recorded in the note): expected true to be false // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- false[39m
+[31m+ true[39m
+
+[36m [2m❯[22m assertNoInstructionEcho tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts:[2m120:120[22m[39m
+    [90m118| [39m  [35mfor[39m ([35mconst[39m call [35mof[39m calls) {
+    [90m119| [39m    [34mexpect[39m([33mJSON[39m[33m.[39m[34mstringify[39m(call[33m.[39mbody)[33m.[39m[34mincludes[39m([33mINSTRUCTION_OPENING[39m)[33m,[39m
+    [90m120| [39m      `${label}: agent request ${call.index} after compaction carries …
+    [90m   | [39m                                                                                                                       [31m^[39m
+    [90m121| [39m  }
+    [90m122| [39m}[33m;[39m
+[90m [2m❯[22m tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts:[2m342:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m2 skipped[39m[90m (3)[39m
+[2m   Start at [22m 09:12:12
+[2m   Duration [22m 41.54s[2m (transform 13.09s, setup 74ms, import 17.25s, tests 23.31s, environment 0ms)[22m
+
+exit 1

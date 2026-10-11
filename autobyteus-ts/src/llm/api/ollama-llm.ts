@@ -59,7 +59,8 @@ export class OllamaLLM extends BaseLLM {
   private buildChatRequest(
     messages: unknown[],
     kwargs: Record<string, unknown>,
-    stream: boolean
+    stream: boolean,
+    options: LLMInvocationOptions
   ): Record<string, unknown> {
     const request: Record<string, unknown> = {
       model: this.model.value,
@@ -75,7 +76,7 @@ export class OllamaLLM extends BaseLLM {
       Object.assign(request, this.config.extraParams);
     }
 
-    const maxOutputTokens = this.resolveMaxOutputTokens();
+    const maxOutputTokens = this.resolveMaxOutputTokens(options);
     if (maxOutputTokens !== null) {
       request.options = { ...(request.options as Record<string, unknown> ?? {}), num_predict: maxOutputTokens };
     }
@@ -128,7 +129,7 @@ export class OllamaLLM extends BaseLLM {
     const abort = () => this.client.abort();
     options.signal?.addEventListener('abort', abort, { once: true });
     try {
-      const response: any = await this.client.chat(this.buildChatRequest(formattedMessages, kwargs, false) as any);
+      const response: any = await this.client.chat(this.buildChatRequest(formattedMessages, kwargs, false, options) as any);
     const messageParts = this.extractMessageParts(response?.message);
 
     const usage = this.toTokenUsage(response);
@@ -155,7 +156,7 @@ export class OllamaLLM extends BaseLLM {
     const abort = () => this.client.abort();
     options.signal?.addEventListener('abort', abort, { once: true });
     try {
-      const stream = await this.client.chat(this.buildChatRequest(formattedMessages, kwargs, true) as any);
+      const stream = await this.client.chat(this.buildChatRequest(formattedMessages, kwargs, true, options) as any);
 
       let inReasoning = false;
       let finalResponse: any = null;

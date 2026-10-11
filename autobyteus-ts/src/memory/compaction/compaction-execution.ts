@@ -1,7 +1,11 @@
 import type { CompleteResponse } from '../../llm/utils/response-types.js';
 import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-observation.js';
 
+/** `cached`: the agent's own conversation request plus the summary instruction. `transcript`: the fallback. */
+export type CompactionSummaryMode = 'cached' | 'transcript';
+
 export type CompactionExecutionMetadata = Readonly<{
+  mode: CompactionSummaryMode;
   modelIdentifier: string;
   provider: string;
   invocationId: string;
@@ -20,15 +24,8 @@ export class CompactionInvocationError extends Error {
 
 export type CompressionAttemptObservation = Readonly<{
   attempt: number;
+  mode: CompactionSummaryMode;
   outcome: 'started' | 'succeeded' | 'failed';
   execution?: CompactionExecutionMetadata;
   code?: string;
-}>;
-
-export type CompactionCompressionExecution = Readonly<{
-  signal: AbortSignal;
-  operationId: string;
-  executionTurnId: string;
-  getParentModelIdentifier: () => string;
-  observe?: (event: CompressionAttemptObservation) => void;
 }>;

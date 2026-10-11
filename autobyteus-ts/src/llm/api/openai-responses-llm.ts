@@ -198,7 +198,7 @@ export class OpenAIResponsesLLM extends BaseLLM {
       input: formattedMessages
     };
 
-    const maxOutputTokens = this.resolveMaxOutputTokens();
+    const maxOutputTokens = this.resolveMaxOutputTokens(options);
     if (maxOutputTokens !== null) {
       params.max_output_tokens = maxOutputTokens;
     }
@@ -253,7 +253,7 @@ export class OpenAIResponsesLLM extends BaseLLM {
       stream: true
     };
 
-    const maxOutputTokens = this.resolveMaxOutputTokens();
+    const maxOutputTokens = this.resolveMaxOutputTokens(options);
     if (maxOutputTokens !== null) {
       params.max_output_tokens = maxOutputTokens;
     }

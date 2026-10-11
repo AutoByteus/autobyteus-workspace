@@ -332,9 +332,11 @@ src/llm/
 - **`temperature`**: Sampling randomness.
 - **`maxTokens`**: Configured output limit. When it is unset, requests use
   the model's own maximum output tokens (`LLMModel.maxOutputTokens`, from the
-  catalog or live metadata), not a framework default. `BaseLLM.resolveMaxOutputTokens()`
+  catalog or live metadata), not a framework default. `BaseLLM.resolveMaxOutputTokens(options)`
   (backed by `src/llm/utils/max-output-tokens.ts`) resolves this at request-build
-  time only: configured value, else model maximum, else `null`, in which case
+  time only: the invocation's `maxOutputTokens` override when set (per request,
+  e.g. a compaction summary request; agent conversation requests never set it),
+  else the configured value, else model maximum, else `null`, in which case
   the adapter omits the parameter and the provider default applies. It never
   writes into `config.maxTokens`, so the input-token budget is unchanged. Each
   adapter sends the resolved value under its provider's name: `max_tokens`

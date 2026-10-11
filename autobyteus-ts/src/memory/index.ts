@@ -72,7 +72,7 @@ export { CondensedToolCallRenderer } from './presentation/condensed-tool-call-re
 export { ReadableValueRenderer } from './presentation/readable-value-renderer.js';
 export { ProviderSafeCompactionText, providerSafeCompactionText } from './presentation/unicode-safe-text.js';
 
-export { DirectLlmCompressionStrategy, type CompactionLlmFactory } from './compaction/direct-llm-compression-strategy.js';
-
-export type { CompressionStrategy } from './compaction/compression-strategy.js';
-export type { CompactionCompressionExecution, CompressionAttemptObservation } from './compaction/compaction-execution.js';
+export { CompactionSummarizer, CACHED_SUMMARY_ATTEMPTS, TRANSCRIPT_SUMMARY_ATTEMPTS } from './compaction/compaction-summarizer.js';
+export type { CompactionSummaryInput } from './compaction/compaction-summarizer.js';
+export type { ConversationSummaryPort, SummaryAttemptResult, SummaryRequestIdentity } from './compaction/conversation-summary-port.js';
+export type { CompactionExecutionMetadata, CompactionSummaryMode, CompressionAttemptObservation } from './compaction/compaction-execution.js';

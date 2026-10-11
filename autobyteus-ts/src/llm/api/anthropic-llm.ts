@@ -309,7 +309,7 @@ export class AnthropicLLM extends BaseLLM {
 
   protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {
     // Non-streaming keeps a bounded default: the SDK refuses large non-streaming limits.
-    const maxTokens = this.config.maxTokens ?? ANTHROPIC_NON_STREAMING_DEFAULT_MAX_TOKENS;
+    const maxTokens = options.maxOutputTokens ?? this.config.maxTokens ?? ANTHROPIC_NON_STREAMING_DEFAULT_MAX_TOKENS;
     const { stream: _stream, ...base } = await this.buildRequestParams(messages, kwargs, options, maxTokens);
     const params: MessageCreateParamsNonStreaming = base;
 
@@ -343,7 +343,7 @@ export class AnthropicLLM extends BaseLLM {
   }
 
   protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): AsyncGenerator<ChunkResponse, void, unknown> {
-    const maxTokens = this.resolveMaxOutputTokens();
+    const maxTokens = this.resolveMaxOutputTokens(options);
     if (maxTokens === null) {
       throw new Error(`Anthropic model '${this.model.value}' has no known maximum output tokens; configure max_tokens for it.`);
     }

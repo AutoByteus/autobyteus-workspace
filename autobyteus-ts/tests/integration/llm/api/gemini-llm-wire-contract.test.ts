@@ -92,10 +92,13 @@ describe('Gemini 3.8 installed SDK wire contract', () => {
       expect(server.requests[0]).toMatchObject({
         method: 'POST', url: '/models/gemini-3.8-flash:streamGenerateContent?alt=sse',
       });
-      expect(JSON.parse(server.requests[0]!.body)).toMatchObject({
+      const body = JSON.parse(server.requests[0]!.body);
+      expect(body).toMatchObject({
         contents: [{ role: 'user', parts: [{ text: 'Hello over the installed SDK' }] }],
         generationConfig: { thinkingConfig: { thinkingLevel: 'low' } },
       });
+      // The request has no leading SYSTEM message, so none is sent (the configured default is not).
+      expect(body).not.toHaveProperty('systemInstruction');
     } finally { await server.close(); }
   });
 
@@ -133,7 +136,7 @@ describe('Gemini 3.8 installed SDK wire contract', () => {
       );
       injectInstalledSdkClient(llm, server.baseUrl);
 
-      const result = await llm.sendMessages(messages);
+      const result = await llm.sendMessages([new Message(MessageRole.SYSTEM, 'Wire system prompt.'), ...messages]);
 
       expect(result).toMatchObject({ content: 'wire-ok' });
       expect(server.requests).toHaveLength(1);
@@ -152,7 +155,7 @@ describe('Gemini 3.8 installed SDK wire contract', () => {
           seed: 42,
         },
       });
-      expect(body.systemInstruction).toBeDefined();
+      expect(body.systemInstruction).toEqual({ parts: [{ text: 'Wire system prompt.' }], role: 'user' });
       for (const forbidden of [
         'temperature', 'topP', 'topK', 'candidateCount', 'frequencyPenalty',
         'presencePenalty', 'thinkingBudget', 'thinking_level', 'include_thoughts',

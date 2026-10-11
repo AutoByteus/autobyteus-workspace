@@ -12,6 +12,8 @@ import { PendingCompactionExecutor } from '../../memory/compaction/pending-compa
 import { isAgentInterruptionError } from '../interruption/agent-interruption.js';
 import { resolveTurnToolNames } from './llm-phase-tools.js';
 import { evaluateLlmPhaseCompaction } from './llm-phase-compaction.js';
+import { LlmPhaseSummaryPort } from './llm-phase-summary-port.js';
+import { conversationRequestKwargs, conversationRequestOptions } from './conversation-request.js';
 import {
   applyCompactionPolicy,
   resolveCompactionTokenBudget,
@@ -138,7 +140,8 @@ export class LlmPhase {
       );
       const reporter = compactionReporter;
       pendingCompactionExecutor = new PendingCompactionExecutor(memoryManager, {
-        reporter, createCompressionStrategy: automaticCompaction.createCompressionStrategy,
+        reporter,
+        summaryPort: new LlmPhaseSummaryPort({ agentId, llm: llmInstance, tools: toolSchemas, requestCapacity, notifier }),
         maxItemChars: automaticCompaction.policy.maxItemChars,
         onRecoveryStateChanged: (previous) => context.state.compactionRecovery?.publish(previous),
       });
@@ -158,7 +161,7 @@ export class LlmPhase {
         { kind: 'llm_request_assembly' },
         () => assembler.prepareRequest(
           input.llmUserMessage,
-          { turnId: activeTurnId, requestId: llmCallId, isTurnContinuation: turn.isContinuation, getParentModelIdentifier: () => (context.state.llmInstance as BaseLLM).model.modelIdentifier, signal: turn.executionScope.signal },
+          { turnId: activeTurnId, requestId: llmCallId, isTurnContinuation: turn.isContinuation, signal: turn.executionScope.signal },
           systemPrompt ?? undefined,
           toolSchemas,
         )
@@ -219,8 +222,8 @@ export class LlmPhase {
       turn.executionScope.throwIfAborted({ kind: 'llm_stream_start' });
       const stream = llmInstance.streamMessages(
         request.outboundMessages,
-        { logicalConversationId: agentId, ...(request.tools.length ? { tools: request.tools } : {}) },
-        { promptCacheScope: 'conversation', signal: turn.executionScope.signal, turnId: activeTurnId }
+        conversationRequestKwargs(agentId, request.tools),
+        conversationRequestOptions({ signal: turn.executionScope.signal, turnId: activeTurnId }),
       );
 
       for await (const chunkResponse of turn.executionScope.iterateAbortable(
@@ -414,10 +417,12 @@ export class LlmPhase {
       && pendingCompactionExecutor
     ) {
       try {
+        // The cached summary request replays the settled history under the current prefix.
+        assembler.bindRequestPrefix(request.tools);
         await pendingCompactionExecutor.executeIfAuthorized({
           executionSite: 'after_final_response',
           turnId: activeTurnId,
-          getParentModelIdentifier: () => (context.state.llmInstance as BaseLLM).model.modelIdentifier, signal: turn.executionScope.signal,
+          signal: turn.executionScope.signal,
         });
       } catch (error) {
         turn.executionScope.throwIfAborted({ kind: 'llm_compaction' });

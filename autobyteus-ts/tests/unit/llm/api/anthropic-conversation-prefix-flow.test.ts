@@ -71,7 +71,7 @@ class Agent {
   async prepare(turnId: string, input: string | null, tools: typeof toolsV1, isTurnContinuation = input === null): Promise<RequestPackage> {
     return new LLMRequestAssembler(this.memory).prepareRequest(
       input === null ? null : new LLMUserMessage({ content: input }),
-      { turnId, requestId: `${turnId}:llm:${++this.requestCount}`, isTurnContinuation, getParentModelIdentifier: () => 'claude-opus-5-5', signal: new AbortController().signal },
+      { turnId, requestId: `${turnId}:llm:${++this.requestCount}`, isTurnContinuation, signal: new AbortController().signal },
       SYSTEM_PROMPT,
       tools,
     );
