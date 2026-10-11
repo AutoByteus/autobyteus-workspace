@@ -264,7 +264,10 @@ given it a key source file. A typical case is provisioning model access into an
 isolated AutoByteus instance at the `databaseUrl` reported by
 `pnpm isolated-app start`. The agent runs the same command with the same TTY
 confirmation (`script` provides a terminal for agents that cannot type into
-prompts). Nothing runs it automatically, and no tool imports on an agent's
+prompts). When the agent shell's stdin is a socket, `script` can fail with
+`tcgetattr: Operation not supported on socket`; the agent then runs the same
+command under a small Python `pty.fork()` wrapper that types `IMPORT` at the
+prompt. Nothing runs it automatically, and no tool imports on an agent's
 behalf:
 
 - `--source` must be an explicit absolute path;

@@ -12,6 +12,7 @@ import process from 'node:process';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { routeTaskWorkerBoundaries } from './fixtures/task-worker-boundaries.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -148,6 +149,8 @@ const graphQlData = (operationName, query) => {
   }
   if (operationName === 'GetAllWorkspaces' || query.includes('workspaces')) return { workspaces: [] };
   if (operationName === 'GetServerSettings' || query.includes('serverSettings')) return { serverSettings: [] };
+  // The opened run's Files tab reads its file changes (added after this probe); the fixture runs have none.
+  if (operationName === 'GetRunFileChanges' || query.includes('getRunFileChanges')) return { getRunFileChanges: [] };
   return {};
 };
 
@@ -241,6 +244,8 @@ try {
     });
   });
 
+  // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
+  await routeTaskWorkerBoundaries(page);
   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
   await page.locator('[data-test="peer-sidebar-probe"]').waitFor({ state: 'visible' });
   await page.waitForFunction(() => Boolean(window.__peerSidebarProbe));

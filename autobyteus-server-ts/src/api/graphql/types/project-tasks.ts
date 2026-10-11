@@ -9,7 +9,7 @@ import {
   Resolver,
   registerEnumType,
 } from "type-graphql";
-import type { ProjectTaskView } from "../../../projects/domain/models.js";
+import type { ProjectTaskView, TaskWorkerTaskResult } from "../../../projects/domain/models.js";
 import { getProjectTaskService } from "../../../projects/services/project-task-service.js";
 import { withProjectErrors } from "./projects.js";
 
@@ -135,6 +135,27 @@ export class TaskWithoutProject {
   @Field(() => TaskRoot, { nullable: true }) root!: TaskRoot | null;
 }
 
+/** The current Task of a Task worker; `projectId` null means a Temp task. */
+@ObjectType()
+export class TaskWorkerTaskView {
+  @Field(() => String) taskId!: string;
+  @Field(() => String, { nullable: true }) projectId!: string | null;
+  @Field(() => String) description!: string;
+  @Field(() => ProjectTaskStatus) status!: ProjectTaskStatus;
+}
+/** One Task worker (a task Agent or task Team copy) and its current Task; `task` is null when it has none. */
+@ObjectType()
+export class TaskWorkerTask {
+  @Field(() => String) workerKind!: "agent" | "team";
+  @Field(() => String) workerRunId!: string;
+  @Field(() => TaskWorkerTaskView, { nullable: true }) task!: TaskWorkerTaskView | null;
+}
+
+const toGraphqlTaskWorkerTask = ({ execution, task }: TaskWorkerTaskResult): TaskWorkerTask => ({
+  ...("agentRunId" in execution ? { workerKind: "agent", workerRunId: execution.agentRunId } : { workerKind: "team", workerRunId: execution.teamRunId }),
+  task: task && { ...task, status: task.status as ProjectTaskStatus },
+});
+
 const toGraphqlTask = (task: ProjectTaskView): ProjectTask => ({
   root: task.root,
   contextFiles: task.contextFiles,
@@ -166,6 +187,17 @@ export class ProjectTaskResolver {
     return withProjectErrors(async () => (await this.service.listTasksWithoutProject()).map((task) => ({
       ...task, status: task.status as ProjectTaskStatus,
     })));
+  }
+
+  /** The current Task of each listed task Agent and task Team copy, in one read (agents first, then teams). */
+  @Query(() => [TaskWorkerTask])
+  async taskWorkerTasks(
+    @Arg("agentRunIds", () => [String]) agentRunIds: string[],
+    @Arg("teamRunIds", () => [String]) teamRunIds: string[],
+  ): Promise<TaskWorkerTask[]> {
+    return withProjectErrors(async () => (await this.service.currentTasksOfTaskWorkers([
+      ...agentRunIds.map((agentRunId) => ({ agentRunId })), ...teamRunIds.map((teamRunId) => ({ teamRunId })),
+    ])).map(toGraphqlTaskWorkerTask));
   }
 
   @Mutation(() => ProjectTask)

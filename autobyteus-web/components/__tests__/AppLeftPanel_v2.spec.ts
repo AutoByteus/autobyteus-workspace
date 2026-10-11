@@ -5,6 +5,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import AppLeftPanel from '../AppLeftPanel.vue'
 import { useChatDraftStore } from '~/stores/chatDraftStore'
 import { useAppLayoutStore } from '~/stores/appLayoutStore'
+import { useAgentContextsStore } from '~/stores/agentContextsStore'
+import { useLeftPanel } from '~/composables/useLeftPanel'
 
 const {
   applicationsCapabilityStoreMock,
@@ -55,6 +57,7 @@ vi.mock('~/stores/applicationsCapabilityStore', () => ({
 vi.mock('~/components/workspace/history/WorkspaceAgentRunsTreePanel.vue', () => ({
   default: {
     name: 'WorkspaceAgentRunsTreePanel',
+    props: { runShown: { type: Boolean, default: false } },
     emits: ['run-selected', 'run-created'],
     template: '<div></div>',
   },
@@ -260,5 +263,64 @@ describe('AppLeftPanel Component', () => {
     await nextTick()
 
     expect(routerMock.push).not.toHaveBeenCalled()
+  })
+
+  // collapsed-left-panel-expand-keeps-run
+  describe('Workspaces navigation', () => {
+    beforeEach(() => setActivePinia(createPinia()))
+    const mountPanel = () => mount(AppLeftPanel, {
+      attachTo: document.body,
+      global: { stubs: { Icon: true, WorkspaceAgentRunsTreePanel: true }, mocks: { $route: routeMock, $router: routerMock } },
+    })
+
+    it('lights the Chat row only on New chat, not on an open run (AC-007, AC-011)', () => {
+      routeMock.path = '/chat'
+      routeMock.query = { id: 'run-1' }
+      useAgentContextsStore().runs.set('run-1', {} as never)
+      const onRun = mountPanel()
+      expect(onRun.get('[data-test="app-left-panel-chat"]').classes()).not.toContain('bg-gray-100')
+      onRun.unmount()
+
+      routeMock.query = {}
+      const onNewChat = mountPanel()
+      expect(onNewChat.get('[data-test="app-left-panel-chat"]').classes()).toContain('bg-gray-100')
+      onNewChat.unmount()
+    })
+
+    // CR-001: the tree reveals only while a run is shown; the panel passes the shell's signal down.
+    it('tells the tree whether a run is shown, so a stale selection is not revealed off a run', () => {
+      const runShown = (wrapper: ReturnType<typeof mountPanel>) =>
+        wrapper.findComponent({ name: 'WorkspaceAgentRunsTreePanel' }).props('runShown')
+      routeMock.path = '/chat'
+      routeMock.query = { id: 'run-1' }
+      useAgentContextsStore().runs.set('run-1', {} as never)
+      const onRun = mountPanel()
+      expect(runShown(onRun)).toBe(true)
+      onRun.unmount()
+
+      routeMock.query = {}
+      const onNewChat = mountPanel()
+      expect(runShown(onNewChat)).toBe(false)
+      onNewChat.unmount()
+    })
+
+    it('collapses with the collapse control and moves focus to the strip Workspaces icon (AC-007, AC-012)', async () => {
+      const { isLeftPanelVisible, setLeftPanelVisible } = useLeftPanel()
+      setLeftPanelVisible(true)
+      const stripWorkspaces = document.createElement('button')
+      stripWorkspaces.dataset.test = 'workspace-left-strip-workspaces'
+      document.body.appendChild(stripWorkspaces)
+      const wrapper = mountPanel()
+
+      await wrapper.get('[data-test="app-left-panel-collapse"]').trigger('click')
+      await flushPromises()
+
+      expect(isLeftPanelVisible.value).toBe(false)
+      expect(document.activeElement).toBe(stripWorkspaces)
+      expect(routerMock.push).not.toHaveBeenCalled()
+      wrapper.unmount()
+      stripWorkspaces.remove()
+      setLeftPanelVisible(true)
+    })
   })
 })

@@ -43,6 +43,16 @@ describe('useLeavingTreeRows', () => {
     expect(document.activeElement).toBe(get('staying'))
   })
 
+  // delegated-copy-task-locator: a row with a Task summary is two lines tall; its leave starts from its own height.
+  it('starts a leaving row\'s collapse from its measured height (2rem when unmeasured)', () => {
+    const { get } = mountTree()
+    Object.defineProperty(get('leaving'), 'offsetHeight', { configurable: true, value: 46 })
+    useLeavingTreeRows(() => null).onBeforeLeave(get('leaving'))
+    expect(get('leaving').style.getPropertyValue('--tree-row-leave-height')).toBe('46px')
+    const css = fs.readFileSync(path.resolve(__dirname, '../treeRowLeave.css'), 'utf8').replace(/\s+/g, ' ')
+    expect(css).toContain('.tree-row-leave-from { opacity: 1; max-height: var(--tree-row-leave-height, 2rem); }')
+  })
+
   it('leaves in 200 ms ease-out (fade, height and margin) and removes rows at once under reduced motion', () => {
     const css = fs.readFileSync(path.resolve(__dirname, '../treeRowLeave.css'), 'utf8').replace(/\s+/g, ' ')
     expect(css).toContain('.tree-row-leave-active { overflow: hidden; transition: opacity 200ms ease-out, max-height 200ms ease-out, margin-top 200ms ease-out, transform 200ms ease-out; }')

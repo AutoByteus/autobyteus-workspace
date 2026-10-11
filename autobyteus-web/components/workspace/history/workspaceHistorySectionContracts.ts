@@ -99,6 +99,8 @@ export interface WorkspaceHistorySectionActions {
   onArchiveTeam: (team: TeamTreeNode) => Promise<void> | void;
   onDeleteTeam: (team: TeamTreeNode) => void;
   onSelectTeam: (team: TeamTreeNode, workspaceId?: string) => Promise<void> | void;
+  /** Opens the Team run like `onSelectTeam`, but never collapses an already-selected one. */
+  onOpenTeamRun: (team: TeamTreeNode, workspaceId?: string) => Promise<void> | void;
   onSelectTeamMember: (
     member: TeamMemberFocusTarget,
     workspaceId?: string,

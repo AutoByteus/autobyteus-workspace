@@ -250,6 +250,7 @@ const sectionActions: WorkspaceHistorySectionActions = {
   onArchiveTeam: () => undefined,
   onDeleteTeam: () => undefined,
   onSelectTeam: () => undefined,
+  onOpenTeamRun: () => undefined,
   onSelectTeamMember: () => undefined,
 };
 

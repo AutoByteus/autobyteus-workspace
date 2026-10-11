@@ -1,0 +1,21 @@
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:53663/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 35ms
+✔ Vite server built in 281ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[nitro] ✔ Nuxt Nitro server built in 2949ms
+ℹ Vite client warmed up in 1ms
+ℹ ✨ new dependencies optimized: @xterm/xterm, @xterm/addon-fit, crypto-js/sha256, @novnc/novnc, zod, @monaco-editor/loader, vue-pdf-embed, xlsx, markdown-it, dompurify, katex, @mdit/plugin-katex, mermaid, prismjs, prismjs/components/prism-markup, prismjs/components/prism-css, prismjs/components/prism-clike, prismjs/components/prism-javascript, prismjs/components/prism-markdown, prismjs/components/prism-markup-templating, prismjs/components/prism-typescript, prismjs/components/prism-jsx, prismjs/components/prism-python, prismjs/components/prism-ruby, prismjs/components/prism-php, prismjs/components/prism-json
+ℹ ✨ optimized dependencies changed. reloading
+ℹ hmr update /components/workspace/history/treeRowLeave.css?vue&type=style&index=0&src=1d89963f&scoped=1d89963f&lang.css, /components/workspace/history/treeRowLeave.css?vue&type=style&index=0&src=0a39d3e0&scoped=0a39d3e0&lang.css, /components/workspace/history/treeRowLeave.css?vue&type=style&index=0&src=c3addd28&scoped=c3addd28&lang.css
+ℹ hmr update /app.vue?vue&type=style&index=0&lang.css, /components/workspace/history/AgentRunTaskRows.vue, /components/workspace/history/WorkspaceTeamExecutionTree.vue, /components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue

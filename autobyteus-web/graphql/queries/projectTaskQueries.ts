@@ -37,6 +37,16 @@ export const GetProjectTasks = gql`
   ${ProjectTaskFields}
 `
 
+export const GetTaskWorkerTasks = gql`
+  query GetTaskWorkerTasks($agentRunIds: [String!]!, $teamRunIds: [String!]!) {
+    taskWorkerTasks(agentRunIds: $agentRunIds, teamRunIds: $teamRunIds) {
+      workerKind
+      workerRunId
+      task { taskId projectId description status }
+    }
+  }
+`
+
 export const GetTasksWithoutProject = gql`
   query GetTasksWithoutProject {
     tasksWithoutProject {

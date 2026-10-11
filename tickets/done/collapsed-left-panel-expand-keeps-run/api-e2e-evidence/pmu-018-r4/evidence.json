@@ -1,0 +1,114 @@
+{
+  "startedAt": "2026-10-08T16:39:03.969Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-018": {
+      "result": "Fail",
+      "description": "Collapsed strip Workspaces, other entries: nested task-Team member (non-coordinator) after a collapse, New chat first send, far-down Org worker (large scroll), slow history load with and without a user scroll first; highlight on the Org launch page, empty /workspace and /agents; page icon docks and navigates",
+      "durationMs": 25958,
+      "message": "slow load takeover: precondition — the worker row is not rendered before the history reload",
+      "details": {
+        "atTakeover": {
+          "agentRunId": "release_notes_writer_pmustripmore_0eb0_c82dc62250454c4993dbce19f4f42ce6",
+          "test": "agent-org-task-agent-row-release_notes_writer_pmustripmore_0eb0_c82dc62250454c4993dbce19f4f42ce6",
+          "text": "Wworker",
+          "visible": true,
+          "scrollTop": 999,
+          "scrollHeight": 1185,
+          "clientHeight": 186,
+          "centreOffset": 71,
+          "focused": true,
+          "selectedRows": 1
+        }
+      },
+      "pages": [
+        {
+          "url": "http://127.0.0.1:54725/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmustripmore-0eb0&orgRunId=delivery_org_pmustripmore_0eb0_15026be0a0f74050a8f7df4629fc2882&mode=active&agentRunId=release_notes_writer_pmustripmore_0eb0_c82dc62250454c4993dbce19f4f42ce6",
+          "center": "W\nworker - 2CE6\nIdle\nYou\nTask delegator address: /manager\nTask delegator AgentRun ID: manager_pmustripmore_0eb0_297676685dc34891960b7e1f7ad1d2d4\n\nDescription:\nSlow-load Org worker, user scrolls first\nW\nworker\n\nOK\n\nContext Files (0)\n(drag, paste, or upload)",
+          "console": [
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:54724/ws/terminal/04817b6c-c499-4e01-ba50-949b8fe01937",
+            "log: [useTerminalSession] Connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "warning: WebSocket connection to 'ws://127.0.0.1:54724/ws/agent-org/delivery_org_pmustripmore_0eb0_15026be0a0f74050a8f7df4629fc2882' failed: WebSocket is closed before the connection is established.",
+            "log: Agent WebSocket connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected"
+          ]
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 18336,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 17458,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-018",
+      "message": "slow load takeover: precondition — the worker row is not rendered before the history reload"
+    }
+  ],
+  "feed": {
+    "total": 26,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 10,
+      "task_upserted": 9,
+      "task_worker_status": 6
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:54724",
+    "frontendUrl": "http://127.0.0.1:54725",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-QmiJWZ"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-08T16:39:58.587Z"
+}

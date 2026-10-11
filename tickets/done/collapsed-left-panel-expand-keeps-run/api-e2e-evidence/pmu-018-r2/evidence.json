@@ -1,0 +1,72 @@
+{
+  "startedAt": "2026-10-08T16:36:52.331Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-018": {
+      "result": "Fail",
+      "description": "Collapsed strip Workspaces, other entries: nested task-Team member (non-coordinator) after a collapse, New chat first send, far-down Org worker (large scroll), slow history load with and without a user scroll first; highlight on the Org launch page, empty /workspace and /agents; page icon docks and navigates",
+      "durationMs": 33662,
+      "message": "Timed out: nested task Team member row",
+      "pages": [
+        {
+          "url": "http://127.0.0.1:54457/workspace",
+          "center": "M\nmanager\nIdle\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/docs_review_team_pmustripmore_49ee\",\"task_id\":\"project_task_af60a2d9-2f8b-4c91-8cc8-e3c11006fd05\"}}\nM\nmanager\n\nCALLED:{“content”:[{“type”:“text”,“text”:“{\\n \"target_agent_run_id\": \"release_notes_writer_pmustripmore_49ee_60debb45ab264757b1f6b6f777d980d3\",\\n \"target_kind\": \"team\"\\n}”}],“structuredContent”:{“target_agent_run_id”:“release_notes_writer_pmustripmore_49ee_60debb45ab264757b1f6b6f777d980d3”,“target_kind”:“team”}}\n\nContext Files (0)\n(drag, paste, or upload)",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:54456/ws/terminal/91a519c9-f376-4650-8b41-f277cdb5b4e5",
+            "log: [useTerminalSession] Connected",
+            "log: Team WebSocket transport connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 41114,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 39733,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-018",
+      "message": "Timed out: nested task Team member row"
+    }
+  ],
+  "feed": {
+    "total": 10,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 4,
+      "task_upserted": 3,
+      "task_worker_status": 2
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:54456",
+    "frontendUrl": "http://127.0.0.1:54457",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-4NLulF"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-08T16:37:47.041Z"
+}

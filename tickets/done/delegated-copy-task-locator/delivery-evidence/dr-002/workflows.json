@@ -1,0 +1,65 @@
+[
+ {
+  "conclusion": "success",
+  "databaseId": 38128706267,
+  "event": "workflow_dispatch",
+  "headBranch": "personal",
+  "name": "Server Docker Release"
+ },
+ {
+  "conclusion": "success",
+  "databaseId": 38127759709,
+  "event": "push",
+  "headBranch": "v1.5.1-beta.3",
+  "name": "iOS App Store Connect Release"
+ },
+ {
+  "conclusion": "success",
+  "databaseId": 38127759708,
+  "event": "push",
+  "headBranch": "v1.5.1-beta.3",
+  "name": "Android APK Release"
+ },
+ {
+  "conclusion": "failure",
+  "databaseId": 38127759682,
+  "event": "push",
+  "headBranch": "v1.5.1-beta.3",
+  "name": "Server Docker Release"
+ },
+ {
+  "conclusion": "success",
+  "databaseId": 38127759661,
+  "event": "push",
+  "headBranch": "v1.5.1-beta.3",
+  "name": "Desktop Release"
+ },
+ {
+  "conclusion": "cancelled",
+  "databaseId": 38126968655,
+  "event": "push",
+  "headBranch": "v1.5.1-beta.2",
+  "name": "Server Docker Release"
+ },
+ {
+  "conclusion": "success",
+  "databaseId": 38126968630,
+  "event": "push",
+  "headBranch": "v1.5.1-beta.2",
+  "name": "iOS App Store Connect Release"
+ },
+ {
+  "conclusion": "success",
+  "databaseId": 38126968603,
+  "event": "push",
+  "headBranch": "v1.5.1-beta.2",
+  "name": "Android APK Release"
+ },
+ {
+  "conclusion": "cancelled",
+  "databaseId": 38126968590,
+  "event": "push",
+  "headBranch": "v1.5.1-beta.2",
+  "name": "Desktop Release"
+ }
+]

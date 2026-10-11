@@ -1,0 +1,268 @@
+{
+  "startedAt": "2026-10-11T07:16:06.747Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-020": {
+      "result": "Fail",
+      "description": "Task summaries under delegated copy rows (Agent host: agent, task Team, Temp copies; Team host): one line for members, sub-work and the @ collaborator; spec values, hover; GraphQL answers; batched reads, no Task-list reads",
+      "durationMs": 34949,
+      "message": "locator.getAttribute: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-transient-execution-row\"][data-transient-kind=\"task_team\"][data-team-run-id=\"docs_review_team_pmulocate_999d_2689bf602c3546cabe7bb17f6f9a9d45\"]:visible')\n",
+      "pages": [
+        {
+          "url": "http://127.0.0.1:56710/chat?id=manager_pmulocate_999d_7a24c0273b404a6d91de21c30fcc9d7e",
+          "center": "MP\nCALL_TOOL:{\"name\":\"delegate_task\",\"argume…\nIdle\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer_pmulocate_999d\",\"task_id\":\"project_task_b8572f5d-bc14-4f73-974e-abd61bb42457\"}}\nMP\nManager PmuLocate 999d\n\nCALLED:{“content”:[{“type”:“text”,“text”:“{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"release_notes_writer_pmulocate_999d_243ec043024f4b7d9a5f01004269ba2e\"\\n}”}],“structuredContent”:{“delegated”:true,“target_kind”:“agent”,“target_agent_run_id”:“release_notes_writer_pmulocate_999d_243ec043024f4b7d9a5f01004269ba2e”}}\n",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:56709/ws/terminal/18ac6b60-e0c3-4071-84e9-a70fddafd148",
+            "log: [useTerminalSession] Connected",
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected",
+            "log: [useTerminalSession] Disconnected: 1005 ",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    },
+    "PMU-021": {
+      "result": "Fail",
+      "description": "Show Task in Projects, docked: picker switch (remembered after reload), centred / focused / 2.4 s highlight, center and selection unchanged, Temp tasks, Enter opens, back from an open Task, only the latest highlighted, search kept / cleared, keyboard Tab / Enter / Space; a row click (agent copy, Team copy) opens the copy and locates nothing",
+      "durationMs": 32590,
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"right-side-projects-panel\"] [data-testid=\"projects-panel-picker-select\"]') to be visible\n",
+      "pages": [
+        {
+          "url": "http://127.0.0.1:56710/chat?id=manager_pmulocate_999d_7a24c0273b404a6d91de21c30fcc9d7e",
+          "center": "MP\nCALL_TOOL:{\"name\":\"delegate_task\",\"argume…\nIdle\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer_pmulocate_999d\",\"task_id\":\"project_task_b8572f5d-bc14-4f73-974e-abd61bb42457\"}}\nMP\nManager PmuLocate 999d\n\nCALLED:{“content”:[{“type”:“text”,“text”:“{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"release_notes_writer_pmulocate_999d_243ec043024f4b7d9a5f01004269ba2e\"\\n}”}],“structuredContent”:{“delegated”:true,“target_kind”:“agent”,“target_agent_run_id”:“release_notes_writer_pmulocate_999d_243ec043024f4b7d9a5f01004269ba2e”}}\n",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:56709/ws/terminal/97fd8c01-8602-46fb-9f98-128a200dbac5",
+            "log: [useTerminalSession] Connected",
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected",
+            "log: [useTerminalSession] Disconnected: 1005 ",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    },
+    "PMU-022": {
+      "result": "Fail",
+      "description": "Show Task in Projects: hidden panel reopened docked; 900×800 drawer with reduced motion (static highlight); New chat start surface opens its tools",
+      "durationMs": 5363,
+      "message": "reduced motion: static highlight, card in view",
+      "details": {
+        "centreOffset": 0,
+        "inView": true,
+        "atEdge": false,
+        "background": "rgba(238, 242, 255, 0.03)",
+        "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+        "animation": "none"
+      },
+      "pages": [
+        {
+          "url": "http://127.0.0.1:56710/chat?id=manager_pmulocate_999d_7a24c0273b404a6d91de21c30fcc9d7e",
+          "center": "MP\nCALL_TOOL:{\"name\":\"delegate_task\",\"argume…\nIdle\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer_pmulocate_999d\",\"task_id\":\"project_task_b8572f5d-bc14-4f73-974e-abd61bb42457\"}}\nMP\nManager PmuLocate 999d\n\nCALLED:{“content”:[{“type”:“text”,“text”:“{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"release_notes_writer_pmulocate_999d_243ec043024f4b7d9a5f01004269ba2e\"\\n}”}],“structuredContent”:{“delegated”:true,“target_kind”:“agent”,“target_agent_run_id”:“release_notes_writer_pmulocate_999d_243ec043024f4b7d9a5f01004269ba2e”}}\n",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:56709/ws/terminal/a3b01226-2463-4a37-94c3-87597de67595",
+            "log: [useTerminalSession] Connected",
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected",
+            "log: [useTerminalSession] Disconnected: 1005 ",
+            "log: serverStore: Checking server health at /rest/health"
+          ]
+        },
+        {
+          "url": "http://127.0.0.1:56710/chat?id=manager_pmulocate_999d_7a24c0273b404a6d91de21c30fcc9d7e",
+          "center": "MP\nCALL_TOOL:{\"name\":\"delegate_task\",\"argume…\nIdle\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer_pmulocate_999d\",\"task_id\":\"project_task_b8572f5d-bc14-4f73-974e-abd61bb42457\"}}\nMP\nManager PmuLocate 999d\n\nCALLED:{“content”:[{“type”:“text”,“text”:“{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"release_notes_writer_pmulocate_999d_243ec043024f4b7d9a5f01004269ba2e\"\\n}”}],“structuredContent”:{“delegated”:true,“target_kind”:“agent”,“target_agent_run_id”:“release_notes_writer_pmulocate_999d_243ec043024f4b7d9a5f01004269ba2e”}}\n",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected"
+          ]
+        }
+      ]
+    },
+    "PMU-023": {
+      "result": "Pass",
+      "description": "Show Task in Projects from pages with no right panel: Agents page (wide and narrow) opens the Agent run; Projects page opens the selected Team run without collapsing it; then locates",
+      "durationMs": 8270,
+      "details": {
+        "agentHost1440": {
+          "opened": {
+            "path": "/chat?id=manager_pmulocate_999d_7a24c0273b404a6d91de21c30fcc9d7e",
+            "docked": true,
+            "drawer": false,
+            "picker": "temp",
+            "located": [
+              "project-task-row-ad_hoc_task_dc9b69c3-fc74-460a-b957-61f1299cae4a"
+            ],
+            "focused": "project-task-row-ad_hoc_task_dc9b69c3-fc74-460a-b957-61f1299cae4a"
+          },
+          "runCurrent": 1
+        },
+        "agentHost900": {
+          "opened": {
+            "path": "/chat?id=manager_pmulocate_999d_7a24c0273b404a6d91de21c30fcc9d7e",
+            "docked": false,
+            "drawer": true,
+            "picker": "temp",
+            "located": [
+              "project-task-row-ad_hoc_task_dc9b69c3-fc74-460a-b957-61f1299cae4a"
+            ],
+            "focused": "project-task-row-ad_hoc_task_dc9b69c3-fc74-460a-b957-61f1299cae4a"
+          },
+          "runCurrent": 1
+        },
+        "teamHost": {
+          "teamOpened": {
+            "path": "/workspace",
+            "docked": true,
+            "drawer": false,
+            "picker": "project:project_1f0ba028-852c-4f1d-bd31-19ad42685401",
+            "located": [
+              "project-task-row-project_task_42385f5f-7419-414d-84c1-e3101e7090f3"
+            ],
+            "focused": "project-task-row-project_task_42385f5f-7419-414d-84c1-e3101e7090f3"
+          },
+          "routeOfTeam": "/workspace",
+          "teamRowExpanded": "true",
+          "copyRowShown": 1,
+          "selection": {
+            "route": "/workspace",
+            "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_pmulocate_999d_ae16a01fee5f40cca098bb5e328cb7fc\"}",
+            "focusedMember": "/manager",
+            "focusedRunId": "manager_pmulocate_999d_24b03984924e4d18aefe9b70569ca5c4"
+          }
+        }
+      }
+    },
+    "PMU-025": {
+      "result": "Pass",
+      "description": "zh-CN: summary tooltip / accessible name and the row's accessible name; locate",
+      "durationMs": 2549,
+      "details": {
+        "text": "Ship the copy Task summary in the tree",
+        "title": "在项目中显示任务：Ship the copy Task summary in the tree",
+        "aria": "在项目中显示任务：Ship the copy Task summary in the tree",
+        "row": "临时任务智能体，release notes writer pmulocate 999d，第 1 级，空闲, 由 manager pmulocate 999d 启动，/release_notes_writer_pmulocate_999d, 任务：Ship the copy Task summary in the tree",
+        "located": {
+          "path": "/chat?id=manager_pmulocate_999d_7a24c0273b404a6d91de21c30fcc9d7e",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_81daa484-985d-40ba-9df6-f712d8552326",
+          "located": [
+            "project-task-row-project_task_b8572f5d-bc14-4f73-974e-abd61bb42457"
+          ],
+          "focused": "project-task-row-project_task_b8572f5d-bc14-4f73-974e-abd61bb42457"
+        }
+      }
+    },
+    "PMU-024": {
+      "result": "Fail",
+      "description": "Live summaries without reload: rename; feed lost then reconnect re-read; follow-up Task by run ID (earlier in Done); cancelled just before the click → Cancelled lane and slate-300 pill, then the row leaves; Task delete; Project delete",
+      "durationMs": 42050,
+      "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-transient-execution-row\"][data-agent-run-id=\"release_notes_writer_pmulocate_999d_06dfddd3c1f5443dbea8c4323b7ee487\"]:visible').locator('[data-test=\"workspace-task-worker-task-summary\"]')\n    - locator resolved to <button type=\"button\" data-v-2746c134=\"\" data-test=\"workspace-task-worker-task-summary\" data-task-id=\"project_task_20cb3998-abc5-459a-bf4b-703638e1426f\" title=\"Show Task in Projects: Publish the changelog to the docs site\" aria-label=\"Show Task in Projects: Publish the changelog to the docs site\" class=\"-mx-1 mt-0.5 block max-w-full truncate rounded px-1 text-left text-[0.6875rem] font-normal leading-4 underline-offset-2 transition-colors hover:text-indigo-700 hover:underline focus:outline-none focus-…>Publish the changelog to the docs site</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not stable\n    - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - element is not stable\n  - retrying click action\n    - waiting 100ms\n    - waiting for element to be visible, enabled and stable\n  - element was detached from the DOM, retrying\n",
+      "pages": [
+        {
+          "url": "http://127.0.0.1:56710/chat?id=manager_pmulocate_999d_21f748fa64b444eb9f19128c350e3c2b",
+          "center": "MP\nCALL_TOOL:{\"name\":\"delegate_task\",\"argume…\nIdle\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer_pmulocate_999d\",\"task_id\":\"project_task_ef8029d7-aa0a-4e32-bd64-98fcbe0a33e0\"}}\nMP\nManager PmuLocate 999d\n\nCALLED:{“content”:[{“type”:“text”,“text”:“{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"release_notes_writer_pmulocate_999d_06dfddd3c1f5443dbea8c4323b7ee487\"\\n}”}],“structuredContent”:{“delegated”:true,“target_kind”:“agent”,“target_agent_run_id”:“release_notes_writer_pmulocate_999d_06dfddd3c1f5443dbea8c4323b7ee487”}}\n",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:56709/ws/terminal/64b1bccc-f153-4323-a0b9-183037ae4ad1",
+            "log: [useTerminalSession] Connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected",
+            "log: [useTerminalSession] Disconnected: 1005 ",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 36737,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 36398,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-020",
+      "message": "locator.getAttribute: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-transient-execution-row\"][data-transient-kind=\"task_team\"][data-team-run-id=\"docs_review_team_pmulocate_999d_2689bf602c3546cabe7bb17f6f9a9d45\"]:visible')\n"
+    },
+    {
+      "id": "PMU-021",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"right-side-projects-panel\"] [data-testid=\"projects-panel-picker-select\"]') to be visible\n"
+    },
+    {
+      "id": "PMU-022",
+      "message": "reduced motion: static highlight, card in view"
+    },
+    {
+      "id": "PMU-024",
+      "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-transient-execution-row\"][data-agent-run-id=\"release_notes_writer_pmulocate_999d_06dfddd3c1f5443dbea8c4323b7ee487\"]:visible').locator('[data-test=\"workspace-task-worker-task-summary\"]')\n    - locator resolved to <button type=\"button\" data-v-2746c134=\"\" data-test=\"workspace-task-worker-task-summary\" data-task-id=\"project_task_20cb3998-abc5-459a-bf4b-703638e1426f\" title=\"Show Task in Projects: Publish the changelog to the docs site\" aria-label=\"Show Task in Projects: Publish the changelog to the docs site\" class=\"-mx-1 mt-0.5 block max-w-full truncate rounded px-1 text-left text-[0.6875rem] font-normal leading-4 underline-offset-2 transition-colors hover:text-indigo-700 hover:underline focus:outline-none focus-…>Publish the changelog to the docs site</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not stable\n    - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - element is not stable\n  - retrying click action\n    - waiting 100ms\n    - waiting for element to be visible, enabled and stable\n  - element was detached from the DOM, retrying\n"
+    }
+  ],
+  "feed": {
+    "total": 116,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 48,
+      "task_upserted": 47,
+      "task_worker_status": 20
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:56709",
+    "frontendUrl": "http://127.0.0.1:56710",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-IBfXJd"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-11T07:18:34.803Z"
+}

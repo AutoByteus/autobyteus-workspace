@@ -518,7 +518,7 @@ pnpm -C autobyteus-server-ts exec vitest
 
 The unit and integration baseline, the integration build prerequisites, the
 test environment isolation and the `typecheck` scope are described in
-[TESTING.md](../TESTING.md#server-unit-and-integration-baseline):
+[TESTING.md](../TESTING.md#environments-credentials-and-data):
 
 ```bash
 pnpm -C autobyteus-server-ts test:unit

@@ -83,8 +83,10 @@ or credentials.
 | LLM | `claude-opus-5` | `claude-opus-5` | Anthropic | 2026-07-31 | Exact API ID; standard pricing is effective 2026-07-24, with 1M context / 128k output metadata and the adaptive-thinking/no-sampling request policy. |
 | LLM | `claude-opus-5-5` | `claude-opus-5-5` | Anthropic | 2026-09-23 | Exact Messages API ID; 1M context/input / 128k output, adaptive-only thinking request policy, and Standard $4 input / $20 output / $0.20 cache read / $5 five-minute write / $8 one-hour write per MTok. Signed native thinking remains private working-context material during tool continuation. |
 | LLM | `claude-opus-4.8` | `claude-opus-4-8` | Anthropic | 2026-07-07 | Retained latest Opus row; uses the current adaptive-thinking/no-sampling request policy. |
-| LLM | `claude-sonnet-5` | `claude-sonnet-5` | Anthropic | 2026-07-07 | Latest Sonnet row; exact provider ID only, with no `claude-sonnet-4.8` alias. |
+| LLM | `claude-sonnet-5-5` | `claude-sonnet-5-5` | Anthropic | 2026-10-09 | Exact API ID; 1M context/input / 128k output. Adaptive thinking; thinking off sends `{ type: "between_tools" }` (never `disabled`); display defaults to `summarized`. Forced `tool_choice` fails locally. Standard pricing effective 2026-09-28. |
+| LLM | `claude-sonnet-5` | `claude-sonnet-5` | Anthropic | 2026-07-07 | Exact provider ID only, with no `claude-sonnet-4.8` alias. |
 | LLM | `claude-opus-4.7` | `claude-opus-4-7` | Anthropic | 2026-04-25 | Uses adaptive-thinking schema; see request-shape notes below. |
+| LLM | `claude-haiku-5-5` | `claude-haiku-5-5` | Anthropic | 2026-10-09 | Exact API ID; 1M context/input / 128k output. Adaptive thinking; thinking off sends `{ type: "disabled" }`; display defaults to `omitted`. Standard pricing effective 2026-10-07, tiered at 100k prompt tokens (cache tokens included). |
 | LLM | `deepseek-v4-flash` | `deepseek-v4-flash` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `deepseek-v4-pro` | `deepseek-v4-pro` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `qwen3.8-max` | `qwen3.8-max` | Qwen / Alibaba | 2026-08-06 | Native Qwen offering with source-dated 1M context metadata; input/output limits remain unknown. |
@@ -223,14 +225,14 @@ for it; new Anthropic API model IDs appear only after
 the sole ordered aggregate in `src/llm/supported-model-definitions.ts`.
 
 The active current-model rows are `claude-opus-5-5`, `claude-opus-5`, `claude-fable-5-1`,
-`claude-fable-5`, `claude-opus-4.8`, `claude-opus-4.7`, `claude-sonnet-5`, and
-retained `claude-sonnet-4.6`. Opus 5 uses the exact provider API value
+`claude-fable-5`, `claude-opus-4.8`, `claude-opus-4.7`, `claude-sonnet-5-5`,
+`claude-sonnet-5`, retained `claude-sonnet-4.6`, and `claude-haiku-5-5`. Opus 5 uses the exact provider API value
 `claude-opus-5`, with standard pricing effective 2026-07-24 and model limits
 verified 2026-07-31 against the [Claude models overview](https://platform.claude.com/docs/en/about-claude/models/overview).
 Do not add `claude-sonnet-4.8` unless Anthropic publishes that exact API ID.
 
-Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Sonnet 5, Claude Fable 5,
-and Claude Fable 5.1 must not
+Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Sonnet 5.5,
+Claude Sonnet 5, Claude Haiku 5.5, Claude Fable 5, and Claude Fable 5.1 must not
 reuse the older fixed-budget extended-thinking request shape. Their built-in
 schemas expose adaptive thinking where the provider supports a manual toggle:
 
@@ -241,6 +243,35 @@ schemas expose adaptive thinking where the provider supports a manual toggle:
   for these models.
 - The adapter does not inject its usual default `temperature` and removes
   `temperature`, `top_p`, and `top_k` request fields for these models.
+
+Per-model request rules live in one exact-value table,
+`src/llm/api/anthropic-model-request-policy.ts`. Every Anthropic catalog row
+has an explicit entry; a unit test pins each row's policy. Each row records
+the thinking mode, the shape sent when the thinking toggle is off, and whether
+a forced `tool_choice` (`any`/`tool`) fails locally:
+
+| Model value | Thinking mode | Toggle off sends | Forced `tool_choice` |
+| --- | --- | --- | --- |
+| `claude-opus-5-5` | adaptive required | — (fails locally) | fails locally |
+| `claude-sonnet-5-5` | adaptive | `{ type: "between_tools" }` | fails locally |
+| `claude-haiku-5-5` | adaptive | `{ type: "disabled" }` | allowed |
+| `claude-sonnet-5` | adaptive | `{ type: "disabled" }` | allowed |
+| `claude-opus-5`, `claude-opus-4-8`, `claude-opus-4-7`, `claude-fable-5`, `claude-fable-5-1` | adaptive | nothing | allowed |
+| `claude-sonnet-4-6` | fixed budget | nothing (`temperature: 0` default) | allowed |
+
+An explicit caller `thinking` value reaches an adaptive model only when its type
+is `adaptive` or that model's own off shape (`between_tools` is reduced to
+`{ type: "between_tools" }`); anything else is dropped.
+
+Claude Sonnet 5.5 and Haiku 5.5 (verified 2026-10-09 against the
+[Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview) and
+[Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview)
+overviews) both default the thinking toggle to off, which sends each model's
+lowest setting. Sonnet 5.5 rejects `disabled`, so off sends `between_tools`,
+and Claude still writes short progress notes between tool calls; its display
+defaults to `summarized` so those notes stay visible. Haiku 5.5 off sends
+`disabled`. The effort parameter and the beta `display: "updates"` are not
+exposed.
 
 Fable 5.1 is different at the catalog boundary: adaptive thinking is always on,
 so its static definition intentionally has no `thinking_enabled` or fixed-budget
@@ -661,6 +692,15 @@ dimensions must remain explicit:
 - Sonnet 5 (verified 2026-10-09): input `2`, output `10`, cache read `0.2`,
   5-minute cache write `2.5`, 1-hour cache write `4`. Only new usage is priced
   with this row; stored records keep their captured price.
+- Sonnet 5.5 (effective 2026-09-28; verified 2026-10-09): input `2`, output
+  `10`, cache read `0.1`, 5-minute cache write `2.5`, 1-hour cache write `4`.
+- Haiku 5.5 (effective 2026-10-07; verified 2026-10-09) is tiered by prompt
+  size. Prompts up to `100,000` tokens (`prompt_le_100k`): input `0.1`, output
+  `0.5`, cache read `0.01`, 5-minute cache write `0.125`, 1-hour cache write
+  `0.2`. Larger prompts (`prompt_gt_100k`): input `0.5`, output `2.5`, cache
+  read `0.05`, 5-minute cache write `0.625`, 1-hour cache write `1`. The prompt
+  size counts all input tokens including cache reads and writes, which is the
+  gross input the server already uses to select a tier.
 
 OpenAI GPT-5.6 prices are first-party standard API prices per million tokens
 effective 2026-07-30 and verified against the [GPT-5.6 Sol](https://developers.openai.com/api/docs/models/gpt-5.6-sol),

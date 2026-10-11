@@ -66,6 +66,7 @@ import WorkspaceRightToolDrawer from './WorkspaceRightToolDrawer.vue';
 import StartSurfaceToolsToggle from './StartSurfaceToolsToggle.vue';
 import { useStartSurfaceTools } from '~/composables/layout/useStartSurfaceTools';
 import { LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX } from '~/utils/layout/responsiveLayoutPolicy';
+import { useTaskLocatorStore } from '~/stores/taskLocatorStore';
 
 /**
  * The right tool shell (dock, strip, drawer, resize) around a center slot.
@@ -131,9 +132,25 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   isLive = false;
+  releaseShell?.();
+  releaseShell = null;
   workspaceFlowResizeObserver?.disconnect();
   workspaceFlowResizeObserver = null;
   setRightPanelWorkspaceWidth(null);
+});
+
+// "Show Task in Projects" from the Workspaces tree reveals the Projects tab the way the strip reveals
+// a tool (docked, reopened, or the drawer); a start surface opens its tools first. The shell registers
+// after its width is known, so a request placed before it mounted (a run just opened) is revealed now.
+const taskLocator = useTaskLocatorStore();
+let releaseShell: (() => void) | null = null;
+onMounted(() => {
+  releaseShell = taskLocator.registerShell();
+  watch(() => taskLocator.request, async (request) => {
+    if (request?.step !== 'pending') return;
+    if (props.startSurface) startTools.openTools();
+    if (await revealTool('projects')) taskLocator.markRevealed(request.seq);
+  }, { immediate: true });
 });
 
 const showDockedRightPanel = computed(() =>

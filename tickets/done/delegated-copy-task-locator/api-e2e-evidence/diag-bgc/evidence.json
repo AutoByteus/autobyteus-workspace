@@ -1,0 +1,337 @@
+{
+  "startedAt": "2026-10-11T08:32:42.173Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/pages/api-e2e-background-agent-renderer-contention.vue",
+  "routePath": "/api-e2e-background-agent-renderer-contention",
+  "scenarios": {
+    "BG-BROWSER-000": {
+      "description": "Production fixture seeds the approved 26-workspace/38-team topology",
+      "result": "Pass",
+      "startedAt": "2026-10-11T08:33:02.219Z",
+      "details": {
+        "topologyText": " workspaces=26 teams=38 topology=2 patches=0"
+      }
+    },
+    "BG-BROWSER-001A": {
+      "description": "Warmed foreground Files/Teams latency at idle",
+      "result": "Pass",
+      "startedAt": "2026-10-11T08:33:02.224Z",
+      "details": {
+        "mode": "idle",
+        "elapsedMs": 6501.600000023842,
+        "windows": 0,
+        "dispatches": 0,
+        "topologyDelta": 0,
+        "navigationReasons": [],
+        "patchDelta": 0,
+        "presentationRevisionDelta": 0,
+        "contentCharacterDelta": 0,
+        "statusValues": [
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running"
+        ],
+        "longTasks": [],
+        "actionLatencies": [
+          10.099999994039536,
+          14.599999994039536,
+          15.399999976158142,
+          14.099999994039536,
+          13.199999988079071,
+          13.5,
+          11.800000011920929,
+          12.400000005960464,
+          13.199999988079071,
+          13,
+          12.300000011920929,
+          14.300000011920929,
+          15.100000023841858,
+          14.099999994039536,
+          14.300000011920929,
+          14.599999994039536,
+          13.699999988079071,
+          13,
+          14.5,
+          14.300000011920929,
+          13.599999994039536,
+          13.299999982118607,
+          12.799999982118607,
+          11.199999988079071,
+          15.5,
+          14.099999994039536,
+          13.799999982118607,
+          15.299999982118607
+        ],
+        "latency": {
+          "count": 28,
+          "min": 10.099999994039536,
+          "mean": 13.610714282308306,
+          "p95": 15.399999976158142,
+          "max": 15.5
+        }
+      }
+    },
+    "BG-BROWSER-001B": {
+      "description": "One background run at two windows per second remains responsive",
+      "result": "Pass",
+      "startedAt": "2026-10-11T08:33:08.729Z",
+      "details": {
+        "mode": "one",
+        "elapsedMs": 6504.399999976158,
+        "windows": 13,
+        "dispatches": 26,
+        "topologyDelta": 0,
+        "navigationReasons": [],
+        "patchDelta": 1,
+        "presentationRevisionDelta": 13,
+        "contentCharacterDelta": 42,
+        "statusValues": [
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running"
+        ],
+        "longTasks": [],
+        "actionLatencies": [
+          12,
+          10.699999988079071,
+          12.800000011920929,
+          12.900000005960464,
+          15.699999988079071,
+          11.400000005960464,
+          13.099999994039536,
+          11.299999982118607,
+          13,
+          13.300000011920929,
+          14.200000017881393,
+          9.699999988079071,
+          8.599999994039536,
+          12.599999994039536,
+          10.699999988079071,
+          12.099999994039536,
+          14.599999994039536,
+          13.200000017881393,
+          7.100000023841858,
+          13,
+          12,
+          15.900000005960464,
+          14.099999994039536,
+          14.099999994039536,
+          13.300000011920929,
+          14.5,
+          12.5,
+          11.599999994039536
+        ],
+        "latency": {
+          "count": 28,
+          "min": 7.100000023841858,
+          "mean": 12.5,
+          "p95": 15.699999988079071,
+          "max": 15.900000005960464
+        }
+      }
+    },
+    "BG-BROWSER-001C": {
+      "description": "Twenty-run aggregate-equivalent 40 windows/80 dispatches per second remains responsive",
+      "result": "Pass",
+      "startedAt": "2026-10-11T08:33:15.238Z",
+      "details": {
+        "mode": "aggregate",
+        "elapsedMs": 6503.4000000059605,
+        "windows": 260,
+        "dispatches": 520,
+        "topologyDelta": 0,
+        "navigationReasons": [],
+        "patchDelta": 19,
+        "presentationRevisionDelta": 260,
+        "contentCharacterDelta": 1190,
+        "statusValues": [
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running"
+        ],
+        "longTasks": [],
+        "actionLatencies": [
+          14.5,
+          13.799999982118607,
+          7.800000011920929,
+          7.5,
+          12.700000017881393,
+          11.5,
+          11,
+          11,
+          9.700000017881393,
+          10.099999994039536,
+          13.5,
+          11.600000023841858,
+          14.799999982118607,
+          12.399999976158142,
+          14.099999994039536,
+          13,
+          12.299999982118607,
+          13.599999994039536,
+          11.800000011920929,
+          14.5,
+          9.800000011920929,
+          7.0999999940395355,
+          11.5,
+          11,
+          14.400000005960464,
+          10.899999976158142,
+          14.799999982118607,
+          12.700000017881393
+        ],
+        "latency": {
+          "count": 28,
+          "min": 7.0999999940395355,
+          "mean": 11.907142856291362,
+          "p95": 14.799999982118607,
+          "max": 14.799999982118607
+        }
+      }
+    },
+    "BG-BROWSER-002": {
+      "description": "CONNECTED and exact repeated status cause no presentation or navigation work",
+      "result": "Pass",
+      "startedAt": "2026-10-11T08:33:21.747Z",
+      "details": {
+        "topologyDelta": 0,
+        "patchDelta": 0,
+        "presentationRevisionDelta": 0,
+        "status": "running"
+      }
+    },
+    "BG-BROWSER-003": {
+      "description": "Latest-100 retention remains exact after 110 completed segment lifecycles",
+      "result": "Pass",
+      "startedAt": "2026-10-11T08:33:21.750Z",
+      "details": {
+        "visualCount": 100,
+        "segmentCount": 100,
+        "firstContent": "retained-10",
+        "lastContent": "retained-109",
+        "topologyRevision": 2,
+        "revisions": {
+          "before": {
+            "topology": 2,
+            "patch": 20
+          },
+          "after": {
+            "topology": 2,
+            "patch": 21
+          }
+        }
+      }
+    },
+    "BG-BROWSER-004": {
+      "description": "Collapsed/unfocused stable, task-agent, task-team, child, status, and focus survive sustained traffic",
+      "result": "Fail",
+      "startedAt": "2026-10-11T08:33:21.782Z",
+      "failure": {
+        "id": "BG-BROWSER-004",
+        "description": "Collapsed/unfocused stable, task-agent, task-team, child, status, and focus survive sustained traffic",
+        "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-member-disclosure\"][data-member-address=\"/worker\"]')\n",
+        "stack": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-member-disclosure\"][data-member-address=\"/worker\"]')\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:277:28\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:96:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:267:3"
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "failures": [
+    {
+      "id": "BG-BROWSER-004",
+      "description": "Collapsed/unfocused stable, task-agent, task-team, child, status, and focus survive sustained traffic",
+      "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-member-disclosure\"][data-member-address=\"/worker\"]')\n",
+      "stack": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-member-disclosure\"][data-member-address=\"/worker\"]')\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:277:28\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:96:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:267:3"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 57676,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "port": 62268,
+  "baseUrl": "http://127.0.0.1:62268",
+  "performanceComparison": {
+    "idleP95": 15.399999976158142,
+    "oneP95": 15.699999988079071,
+    "aggregateP95": 14.799999982118607,
+    "oneToIdle": 1.019480520284765,
+    "aggregateToIdle": 0.9610389613656858
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-11T08:33:53.822Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/diag-bgc/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/diag-bgc/nuxt.log",
+    "desktopScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/diag-bgc/desktop-hierarchy.png",
+    "mobileScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/diag-bgc/mobile-composer.png"
+  }
+}

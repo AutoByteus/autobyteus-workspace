@@ -22,8 +22,10 @@
       :expanded="isExpanded(display.row)"
       :continuing-ancestor-depths="display.continuingAncestorDepths"
       :has-following-sibling="display.hasFollowingSibling"
+      :task="taskOf(display.row)"
       @select="select"
       @toggle="toggle"
+      @locate-task="(task: TaskWorkerTask) => locate(task, () => emit('open-run'))"
     />
   </TransitionGroup>
 </template>
@@ -33,8 +35,10 @@ import { computed, onMounted, ref, watch } from 'vue'
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue'
 import { useLeavingTreeRows } from '~/components/workspace/history/useLeavingTreeRows'
 import { useLocalization } from '~/composables/useLocalization'
+import { useTaskWorkerTasks } from '~/composables/projects/useTaskWorkerTasks'
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
+import type { TaskWorkerTask } from '~/types/project'
 
 const props = defineProps<{
   runId: string
@@ -44,7 +48,11 @@ const props = defineProps<{
   /** The run has a stored collaboration package. */
   hasCollaboration: boolean
 }>()
-const emit = defineEmits<{ (event: 'select-run'): void }>()
+/**
+ * `select-run` opens the run with its last selected child; `open-run` opens the run's own conversation, as
+ * clicking the run row does (a Task summary located from a page without a right panel, REQ-012).
+ */
+const emit = defineEmits<{ (event: 'select-run'): void; (event: 'open-run'): void }>()
 const { t } = useLocalization()
 const collaboration = useAgentRunCollaborationStore()
 
@@ -56,6 +64,8 @@ onMounted(loadStored)
 watch(() => props.hasCollaboration, loadStored)
 
 const rows = computed(() => collaboration.taskRows(props.runId))
+// Task workers show their current Task's summary; it locates the Task in Projects.
+const { taskOf, locate } = useTaskWorkerTasks(() => rows.value.map((display) => display.row))
 // The run row directly precedes this tree.
 const { leaving, onBeforeLeave, onLeaveSettled } = useLeavingTreeRows(
   (tree) => tree.previousElementSibling instanceof HTMLElement ? tree.previousElementSibling : null)

@@ -12,7 +12,7 @@
   - `pnpm -C autobyteus-server-ts test:integration`
 - Type-check production `src`:
   - `pnpm -C autobyteus-server-ts typecheck`
-- The unit/integration baseline, environment isolation and opt-in gates are described in [TESTING.md](../TESTING.md#server-unit-and-integration-baseline).
+- The unit/integration baseline, environment isolation and opt-in gates are described in [TESTING.md](../TESTING.md#environments-credentials-and-data).
 - Run a single test file:
   - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/config/app-config.test.ts --no-watch`
 

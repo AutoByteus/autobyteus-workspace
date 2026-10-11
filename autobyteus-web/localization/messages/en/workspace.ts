@@ -234,6 +234,8 @@ const messages = {
   "workspace.history.hierarchy.tree_label": "{{name}} organization tree",
   "workspace.history.hierarchy.role.agent_team": "Agent team",
   "workspace.history.hierarchy.role.agent": "Agent",
+  "workspace.history.copyTask.locate": "Show Task in Projects: {{title}}",
+  "workspace.history.copyTask.accessible": "Task: {{title}}",
   "workspace.history.hierarchy.role.temporary_task_team": "Temporary task team",
   "workspace.history.hierarchy.role.temporary_task_agent": "Temporary task agent",
   "workspace.history.hierarchy.identity": "{{role}} · {{name}} · {{address}}",

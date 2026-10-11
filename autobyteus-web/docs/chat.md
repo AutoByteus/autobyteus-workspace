@@ -25,7 +25,15 @@ deleted while it is open, Chat also leaves to the `/workspace` empty view and
 selects no other run (see "Workspace History Archive And Delete Actions" in
 `agent_execution_architecture.md`). Agent execution links
 (`buildWorkspaceExecutionRoute`, `resolveSelectionRoute`) build the chat route,
-and `/workspace` execution-link queries accept team links only.
+and `/workspace` execution-link queries accept team links only. The route id is
+read with `chatRouteRunId` (`workspaceNavigationService.ts`), the same parser
+the shell highlight and the Workspaces tree use.
+
+**Highlight.** Chat means New chat. The strip's Chat icon and the docked Chat
+row are lit only on `/chat` with no run id. While a chat run is shown
+(`/chat?id=…` with a registered context), the strip's Workspaces icon is lit
+instead (see [Workspace Layout — Collapsed strip](./workspace_layout.md#collapsed-strip-pages-and-workspaces)).
+Clicking the Chat row or its pencil still opens a fresh New chat.
 
 ## New Chat Draft
 

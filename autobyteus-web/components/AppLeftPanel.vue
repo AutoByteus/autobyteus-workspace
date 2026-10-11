@@ -69,11 +69,12 @@
                   v-if="itemIndex === 0"
                   type="button"
                   class="absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex"
+                  data-test="app-left-panel-collapse"
                   :title="$t('shell.components.AppLeftPanel.collapse_left_panel')"
                   :class="isNavRowActive(item.key)
                     ? 'text-gray-500 hover:bg-gray-200 hover:text-gray-700'
                     : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'"
-                  @click.stop="toggleLeftPanel"
+                  @click.stop="collapseLeftPanel"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect width="18" height="18" x="3" y="3" rx="2"/>
@@ -101,7 +102,7 @@
         class="min-h-0 flex-1 border-b border-gray-200 bg-white outline-none"
       >
         <div class="h-full">
-          <WorkspaceAgentRunsTreePanel @run-selected="onRunningRunSelected" />
+          <WorkspaceAgentRunsTreePanel :run-shown="isWorkspacesActive" @run-selected="onRunningRunSelected" />
         </div>
       </section>
     </div>
@@ -125,7 +126,7 @@
 
 <script setup lang="ts">
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
-import { computed, onMounted } from 'vue';
+import { computed, nextTick, onMounted } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
 import WorkspaceAgentRunsTreePanel from '~/components/workspace/history/WorkspaceAgentRunsTreePanel.vue';
@@ -148,12 +149,21 @@ const {
   primaryNavItems,
   resolvePrimaryRoute,
   isPrimaryNavActive,
+  isWorkspacesActive,
   ensurePrimaryNavigationReady,
 } = useShellPrimaryNavigation();
 
 const route = useRoute();
 const router = useRouter();
 const { toggleLeftPanel } = useLeftPanel();
+// The collapse control unmounts with the panel, so focus moves to the strip's Workspaces icon,
+// which opens the panel again (REQ-009).
+const collapseLeftPanel = (): void => {
+  toggleLeftPanel();
+  void nextTick(() => {
+    document.querySelector<HTMLElement>('[data-test="workspace-left-strip-workspaces"]')?.focus({ preventScroll: true });
+  });
+};
 const {
   panelSectionsContainerRef,
   primaryNavSectionRef,
