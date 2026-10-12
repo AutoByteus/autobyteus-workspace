@@ -1,0 +1,31 @@
+{
+  "platform": "darwin arm64 node v22.23.1",
+  "roots": [
+    "/tmp/apar-desk/run-9dys/autobyteus-agents",
+    "/tmp/apar-desk/run-9dys/autobyteus-private-agents"
+  ],
+  "readyMs": 71,
+  "liveFsWatchHandles": 604,
+  "watchedUnderSkills": 0,
+  "watchedGitOrNodeModules": 0,
+  "watchedOutsideKindDirs": 0,
+  "definitionTreeDirsTotal": 461,
+  "idleCpu": {
+    "userMs": 18,
+    "systemMs": 6,
+    "wallMs": 30002,
+    "percent": 0.079
+  },
+  "eventsWhileIdle": 0,
+  "sampleWatched": [
+    "/tmp/apar-desk/run-9dys",
+    "/tmp/apar-desk/run-9dys/autobyteus-agents/agents",
+    "/tmp/apar-desk/run-9dys/autobyteus-agents/agent-teams",
+    "/tmp/apar-desk/run-9dys/autobyteus-agents/agent-orgs",
+    "/tmp/apar-desk/run-9dys",
+    "/tmp/apar-desk/run-9dys/autobyteus-agents/agents/agent-package-creator",
+    "/tmp/apar-desk/run-9dys/autobyteus-agents/agents/computer-use-operator",
+    "/tmp/apar-desk/run-9dys/autobyteus-agents/agents/deep-researcher"
+  ],
+  "liveAfterClose": 0
+}

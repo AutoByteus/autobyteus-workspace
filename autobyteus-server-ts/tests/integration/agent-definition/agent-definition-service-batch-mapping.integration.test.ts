@@ -75,7 +75,7 @@ describe("AgentDefinitionService integration", () => {
     );
 
     try {
-      await service.refreshCache();
+      await service.reloadAgentPackageDefinitions();
 
       const sharedOnly = await service.getAllAgentDefinitions();
       const visible = await service.getVisibleAgentDefinitions();
@@ -90,7 +90,7 @@ describe("AgentDefinitionService integration", () => {
       expect(localDefinition?.ownerTeamName).toBe(`Team ${unique}`);
     } finally {
       await fs.rm(teamDir, { recursive: true, force: true });
-      await service.refreshCache();
+      await service.reloadAgentPackageDefinitions();
     }
   });
 });

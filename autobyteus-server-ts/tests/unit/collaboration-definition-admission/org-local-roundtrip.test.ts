@@ -15,10 +15,10 @@ import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definit
 import { listAgentOrgOwnedDefinitionSources } from "../../../src/agent-org-definition/providers/agent-org-owned-definition-source-index.js";
 import { buildAgentOrgOwnedDefinitionId } from "../../../src/agent-org-definition/utils/agent-org-owned-definition-id.js";
 import { AgentOrgDefinitionResolver } from "../../../src/api/graphql/types/agent-org-definition.js";
-const mocks = vi.hoisted(() => ({ service: { createDefinition: vi.fn(), updateDefinition: vi.fn() }, admission: { requireAvailable: vi.fn(), scan: vi.fn() } }));
+const mocks = vi.hoisted(() => ({ service: { createDefinition: vi.fn(), updateDefinition: vi.fn(), getFolderLoadIssues: vi.fn(async () => []) }, admission: { requireAvailable: vi.fn(), scan: vi.fn() } }));
 vi.mock("../../../src/api/graphql/studio-application-api-services.js", () => ({ getStudioAgentOrgDefinitionService: () => mocks.service, getStudioDefinitionAdmissionService: () => mocks.admission }));
 const roots: string[] = [];
-afterEach(async () => { vi.clearAllMocks(); await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });
+afterEach(async () => { vi.clearAllMocks(); mocks.service.getFolderLoadIssues.mockResolvedValue([]); await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });
 it("maps unchanged GraphQL enums to strict org_local packages and resolves bundled Agent/Team through the real owned index/providers", async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "org-local-roundtrip-")); roots.push(root);
   const configAt = (base: string) => ({ getAgentsDir: () => path.join(base, "agents"), getAgentMdPath: (id: string) => path.join(base, "agents", id, "agent.md"), getAgentConfigPath: (id: string) => path.join(base, "agents", id, "agent-config.json"), getAgentTeamsDir: () => path.join(base, "agent-teams"), getAgentOrgsDir: () => path.join(base, "agent-orgs"), getAdditionalAgentPackageRoots: () => [] }) as AppConfig;

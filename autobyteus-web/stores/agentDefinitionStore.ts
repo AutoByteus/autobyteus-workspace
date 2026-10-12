@@ -5,15 +5,17 @@ import { GetAgentDefinitions } from '~/graphql/queries/agentDefinitionQueries'
 import {
   CreateAgentDefinition,
   DeleteAgentDefinition,
-  RefreshAgentDefinitionCatalog,
   UpdateAgentDefinition,
 } from '~/graphql/mutations/agentDefinitionMutations'
+import { ReloadAgentPackageDefinitions } from '~/graphql/mutations/agentPackageDefinitionMutations'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 import {
   normalizeDefinitionOwnershipScope,
   type DefinitionOwnershipScope,
 } from '~/utils/definitionOwnership'
+import { createLoadedListReloader } from '~/utils/agentPackages/loadedListReloader'
+import type { DefinitionLoadIssue } from '~/types/agentPackageDefinitions'
 
 export type AgentDefinitionOwnershipScope = DefinitionOwnershipScope
 
@@ -45,6 +47,8 @@ export interface AgentDefinition {
   ownerPackageId?: string | null
   ownerLocalApplicationId?: string | null
   defaultLaunchConfig?: DefaultLaunchConfig | null
+  /** Set when the agent is served from its last working version (file and reason). */
+  loadIssue?: DefinitionLoadIssue | null
 }
 
 export interface CreateAgentDefinitionInput {
@@ -94,6 +98,13 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
   const loading = ref(false)
   const error = ref<unknown>(null)
   const deleteResult = ref<DeleteResult | null>(null)
+  const listReloader = createLoadedListReloader('agent definitions', async () => {
+    const { data, errors } = await getApolloClient().query({ query: GetAgentDefinitions, fetchPolicy: 'network-only' })
+    if (errors && errors.length > 0) {
+      throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+    }
+    agentDefinitions.value = data.agentDefinitions || []
+  })
 
   const fetchAllAgentDefinitions = async () => {
     if (agentDefinitions.value.length > 0) {
@@ -120,6 +131,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
       }
 
       agentDefinitions.value = data.agentDefinitions || []
+      listReloader.markLoaded()
     } catch (cause) {
       error.value = cause
       console.error('Failed to fetch agent definitions:', cause)
@@ -143,6 +155,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
       }
 
       agentDefinitions.value = data.agentDefinitions || []
+      listReloader.markLoaded()
     } catch (cause) {
       error.value = cause
       console.error('Failed to reload agent definitions:', cause)
@@ -158,7 +171,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     try {
       const client = getApolloClient()
       const mutationResult = await client.mutate({
-        mutation: RefreshAgentDefinitionCatalog,
+        mutation: ReloadAgentPackageDefinitions,
       })
 
       if (mutationResult.errors && mutationResult.errors.length > 0) {
@@ -175,9 +188,10 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
       }
 
       agentDefinitions.value = data.agentDefinitions || []
+      listReloader.markLoaded()
     } catch (cause) {
       error.value = cause
-      console.error('Failed to refresh agent definition catalog:', cause)
+      console.error('Failed to reload agent package definitions:', cause)
       throw cause
     } finally {
       loading.value = false
@@ -303,7 +317,11 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     deleteResult.value = null
   }
 
+  /** An agent package definitions change notification: reload the list in place if this window has loaded it. */
+  const reloadIfLoaded = (): Promise<void> => listReloader.reloadIfLoaded()
+
   const invalidateAgentDefinitions = (): void => {
+    listReloader.markUnloaded()
     agentDefinitions.value = []
     loading.value = false
     error.value = null
@@ -357,6 +375,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     fetchAllAgentDefinitions,
     reloadAllAgentDefinitions,
     refreshAndReloadAllAgentDefinitions,
+    reloadIfLoaded,
     createAgentDefinition,
     updateAgentDefinition,
     deleteAgentDefinition,

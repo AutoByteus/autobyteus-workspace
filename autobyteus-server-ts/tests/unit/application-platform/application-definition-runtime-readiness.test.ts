@@ -5,6 +5,8 @@ import {
 
 describe("ApplicationDefinitionRuntimeReadiness static adapter ownership", () => {
   it("rejects an unselected application open_tab declaration from the complete names snapshot", async () => {
+    const reloadAgents = vi.fn(async () => undefined);
+    const reloadTeams = vi.fn(async () => undefined);
     const readiness = new ApplicationDefinitionRuntimeReadiness({
       bundleService: {
         listApplications: vi.fn(async () => [{
@@ -13,8 +15,8 @@ describe("ApplicationDefinitionRuntimeReadiness static adapter ownership", () =>
           bundleResources: [],
         }]),
       } as never,
-      agentDefinitionService: { refreshCache: vi.fn(async () => undefined) } as never,
-      agentTeamDefinitionService: { refreshCache: vi.fn(async () => undefined) } as never,
+      agentDefinitionService: { reloadAgentPackageDefinitions: reloadAgents } as never,
+      agentTeamDefinitionService: { reloadAgentPackageDefinitions: reloadTeams } as never,
       configurationService: {
         getApplicationLaunchConfigurationView: vi.fn(async () => ({
           readiness: { status: "RUNNABLE", issues: [] },
@@ -37,5 +39,8 @@ describe("ApplicationDefinitionRuntimeReadiness static adapter ownership", () =>
       ],
     });
     expect(readiness.isApplicationReady("app-a")).toBe(false);
+    // SR-009: application-package definitions are read on demand, so readiness does not reload the agent packages.
+    expect(reloadAgents).not.toHaveBeenCalled();
+    expect(reloadTeams).not.toHaveBeenCalled();
   });
 });

@@ -1,0 +1,339 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:991) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/server-data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/server-data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/server-data/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/server-data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/server-data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/server-data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/server-data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/server-data/memory
+============================================================
+Initialized server settings service with 21 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mCreating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAgent Definition created successfully with ID: apar-manager-d5544d
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAdded new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreated and registered workspace ID: agent_ws_972f02fee90b3bc71a431067f9718db784b7f201a341360812d05f4187d234ad
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mReusing registered workspace ID: agent_ws_972f02fee90b3bc71a431067f9718db784b7f201a341360812d05f4187d234ad
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAGY compaction detection off for run apar_manager_d5544d_cbad294579ee4dc4942931831beb00c1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAgent websocket attached for run apar_manager_d5544d_cbad294579ee4dc4942931831beb00c1
+Created agent session db520381-ca96-4031-b1e6-4eac2c7a30ca for run apar_manager_d5544d_cbad294579ee4dc4942931831beb00c1
+Agent WebSocket connected: session=db520381-ca96-4031-b1e6-4eac2c7a30ca, run=apar_manager_d5544d_cbad294579ee4dc4942931831beb00c1
+
+[90mstderr[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/server-data/memory/agents/apar_manager_d5544d_cbad294579ee4dc4942931831beb00c1/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAPAR_PROBE [{"t":66,"tool":true,"frames":[{"type":"definitions_changed","subjects":["agent","agent_team","agent_org"]}]}]
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mReusing registered workspace ID: agent_ws_972f02fee90b3bc71a431067f9718db784b7f201a341360812d05f4187d234ad
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAGY compaction detection off for run apar_fresh_scout_11c8b622148141fa85d300e50f278045: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mReusing registered workspace ID: agent_ws_972f02fee90b3bc71a431067f9718db784b7f201a341360812d05f4187d234ad
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAGY compaction detection off for run apar_fresh_scout_ce686850b63645d892c509c906b15a23: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mReusing registered workspace ID: agent_ws_972f02fee90b3bc71a431067f9718db784b7f201a341360812d05f4187d234ad
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAGY compaction detection off for run apar_editor_494ae2c5f1c049fca3933f6e461ce23b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-FHAaAf/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mReusing registered workspace ID: agent_ws_972f02fee90b3bc71a431067f9718db784b7f201a341360812d05f4187d234ad
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAGY compaction detection off for run apar_editor_822be99a6f274b608b45cc2b05dc8eb1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22m[2mDefinition catalog live refresh at the real server/wire boundary
+[22m[39mClosed agent session db520381-ca96-4031-b1e6-4eac2c7a30ca
+Agent WebSocket disconnected: db520381-ca96-4031-b1e6-4eac2c7a30ca
+
+ [31m❯[39m tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts [2m([22m[2m8 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m7 skipped[39m[2m)[22m[33m 3356[2mms[22m[39m
+     [2m[90m↓[39m[22m DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets
+     [2m[90m↓[39m[22m DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload
+     [2m[90m↓[39m[22m DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it
+     [2m[90m↓[39m[22m DCF-E2E-004 (AC-013, REQ-017): every manual Reload notifies another connected client of every catalog subject
+     [2m[90m↓[39m[22m DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+     [2m[90m↓[39m[22m DCF-E2E-006 (DSN-002): a Team present in two packages is unavailable everywhere with DEFINITION_IDENTITY_DUPLICATED
+[31m     [31m×[31m DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools[39m[33m 2878[2mms[22m[39m
+     [2m[90m↓[39m[22m DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts[2m > [22mDefinition catalog live refresh at the real server/wire boundary[2m > [22mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[31m[1mAssertionError[22m: {
+  "delegated": false,
+  "message": "'/apar_doomed' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run."
+}: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m tests/e2e/agent-definitions/definition-catalog-live-refresh.e2e.test.ts:[2m626:121[22m[39m
+    [90m624| [39m    const refused = await managerCalls(callTool("delegate_task", { rec…
+    [90m625| [39m    record[33m.[39mdeletedDelegation [33m=[39m refused[33m;[39m
+    [90m626| [39m    expect(refused.isError || /not found|unknown|unavailable|no agent|…
+    [90m   | [39m                                                                                                                        [31m^[39m
+    [90m627| [39m    [34mexpect[39m(refused[33m.[39mtext)[33m.[39mnot[33m.[39m[34mtoMatch[39m([36m/"delegated":\s*true/[39m)[33m;[39m
+    [90m628| [39m    evidence[33m.[39mdcf007 [33m=[39m record[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m7 skipped[39m[90m (8)[39m
+[2m   Start at [22m 13:43:33
+[2m   Duration [22m 9.80s[2m (transform 4.41s, setup 20ms, import 5.96s, tests 3.36s, environment 0ms)[22m
+

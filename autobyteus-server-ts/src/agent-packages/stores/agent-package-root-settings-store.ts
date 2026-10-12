@@ -5,7 +5,7 @@ import { resolveBundledApplicationResourceRoot } from "../../application-bundles
 
 type AppConfigLike = {
   getAppDataDir(): string;
-  getAdditionalAgentPackageRoots(): string[];
+  getRegisteredAgentPackageRoots(): string[];
   getAppRootDir?: () => string;
   get(key: string, defaultValue?: string): string | undefined;
 };
@@ -62,7 +62,8 @@ export class AgentPackageRootSettingsStore {
     const roots: string[] = [];
     const builtInApplicationRootPath = this.getBuiltInApplicationRootPath();
 
-    for (const rootPath of this.config.getAdditionalAgentPackageRoots()) {
+    // Registered roots whose folder is missing stay listed, so Settings can report them (REQ-015).
+    for (const rootPath of this.config.getRegisteredAgentPackageRoots()) {
       const resolved = path.resolve(rootPath);
       if (
         resolved === this.getDefaultRootPath()

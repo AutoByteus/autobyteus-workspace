@@ -284,15 +284,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
 
     let agentDef: AgentDefinition | null = null;
     try {
-      const getFreshAgentDefinitionById = (
-        this.agentDefinitionService as AgentDefinitionService & {
-          getFreshAgentDefinitionById?: (definitionId: string) => Promise<AgentDefinition | null>;
-        }
-      ).getFreshAgentDefinitionById;
-      agentDef =
-        typeof getFreshAgentDefinitionById === "function"
-          ? await getFreshAgentDefinitionById.call(this.agentDefinitionService, agentDefinitionId)
-          : await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
+      agentDef = await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
     } catch (error) {
       logger.error(
         `Failed to fetch agent definition '${agentDefinitionId}': ${String(error)}`,

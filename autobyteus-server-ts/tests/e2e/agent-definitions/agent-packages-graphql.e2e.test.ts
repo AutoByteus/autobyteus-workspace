@@ -9,9 +9,11 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { AgentOrgDefinitionService } from "../../../src/agent-org-definition/services/agent-org-definition-service.js";
+import { resetProcessAgentPackageDefinitionsForTests } from "../../../src/agent-package-definitions/services/agent-package-definitions.js";
 import { DefinitionSourceRegistry } from "../../../src/collaboration-definition-admission/providers/definition-source-registry.js";
 import { DefinitionAdmissionService } from "../../../src/collaboration-definition-admission/services/definition-admission-service.js";
 import { GitHubAgentPackageInstaller } from "../../../src/agent-packages/installers/github-agent-package-installer.js";
+import { GitHubRepositoryClient } from "../../../src/integrations/github/github-repository-client.js";
 import { AgentPackageService } from "../../../src/agent-packages/services/agent-package-service.js";
 import { AgentPackageRegistryStore } from "../../../src/agent-packages/stores/agent-package-registry-store.js";
 import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/stores/agent-package-root-settings-store.js";
@@ -135,7 +137,7 @@ const createTestRootSettingsStore = (defaultRoot: string): AgentPackageRootSetti
   new AgentPackageRootSettingsStore(
     {
       getAppDataDir: () => defaultRoot,
-      getAdditionalAgentPackageRoots: () => parseAdditionalRoots(),
+      getRegisteredAgentPackageRoots: () => parseAdditionalRoots(),
       get: (key: string, defaultValue?: string) =>
         process.env[key] ?? defaultValue,
     },
@@ -156,48 +158,29 @@ const createTestRegistryStore = (registryRoot: string): AgentPackageRegistryStor
     getAppDataDir: () => registryRoot,
   });
 
-const createRevisionBackedGitHubInstaller = (input: {
+type RevisionBackedGitHubInput = {
   dataRoot: string;
   owner: string;
   repo: string;
   getRevision: () => string;
   fixtureRootsByRevision: Record<string, string>;
   defaultBranch?: string;
-}): GitHubAgentPackageInstaller => {
+};
+
+/** The controlled GitHub API (repository metadata and branch head) shared by the installer and the service's revision client. */
+const createRevisionBackedGitHubFetch = (input: RevisionBackedGitHubInput): typeof fetch => {
   const defaultBranch = input.defaultBranch ?? "main";
+  return (async (resource: string | URL | Request) => {
+    const requestUrl = typeof resource === "string"
+      ? resource
+      : resource instanceof URL
+        ? resource.toString()
+        : resource.url;
 
-  return new GitHubAgentPackageInstaller({
-    config: {
-      getAppDataDir: () => input.dataRoot,
-      getDownloadDir: () => path.join(input.dataRoot, "downloads"),
-    },
-    fetchImpl: async (resource) => {
-      const requestUrl = typeof resource === "string"
-        ? resource
-        : resource instanceof URL
-          ? resource.toString()
-          : resource.url;
-
-      if (requestUrl.includes("/branches/")) {
-        return new Response(
-          JSON.stringify({
-            commit: { sha: input.getRevision() },
-          }),
-          {
-            status: 200,
-            statusText: "OK",
-            headers: { "Content-Type": "application/json" },
-          },
-        );
-      }
-
+    if (requestUrl.includes("/branches/")) {
       return new Response(
         JSON.stringify({
-          default_branch: defaultBranch,
-          html_url: `https://github.com/${input.owner}/${input.repo}`,
-          private: false,
-          name: input.repo,
-          owner: { login: input.owner },
+          commit: { sha: input.getRevision() },
         }),
         {
           status: 200,
@@ -205,7 +188,32 @@ const createRevisionBackedGitHubInstaller = (input: {
           headers: { "Content-Type": "application/json" },
         },
       );
+    }
+
+    return new Response(
+      JSON.stringify({
+        default_branch: defaultBranch,
+        html_url: `https://github.com/${input.owner}/${input.repo}`,
+        private: false,
+        name: input.repo,
+        owner: { login: input.owner },
+      }),
+      {
+        status: 200,
+        statusText: "OK",
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }) as typeof fetch;
+};
+
+const createRevisionBackedGitHubInstaller = (input: RevisionBackedGitHubInput): GitHubAgentPackageInstaller =>
+  new GitHubAgentPackageInstaller({
+    config: {
+      getAppDataDir: () => input.dataRoot,
+      getDownloadDir: () => path.join(input.dataRoot, "downloads"),
     },
+    fetchImpl: createRevisionBackedGitHubFetch(input),
     downloadFileFromUrlImpl: async (archiveUrl, downloadDir) => {
       await fs.mkdir(downloadDir, { recursive: true });
       const revision = decodeURIComponent(
@@ -228,7 +236,15 @@ const createRevisionBackedGitHubInstaller = (input: {
       });
     },
   });
-};
+
+/**
+ * Package-service GitHub dependencies over one controlled upstream: the installer (download) and the
+ * revision client that Check/Update use (`githubClient`, added by c6c4afbf4), so no request reaches GitHub.
+ */
+const createRevisionBackedGitHubDependencies = (input: RevisionBackedGitHubInput) => ({
+  installer: createRevisionBackedGitHubInstaller(input),
+  githubClient: new GitHubRepositoryClient(createRevisionBackedGitHubFetch(input)),
+});
 
 describe("Agent packages GraphQL e2e", () => {
   let schema: GraphQLSchema;
@@ -242,13 +258,14 @@ describe("Agent packages GraphQL e2e", () => {
     vi.stubEnv("AUTOBYTEUS_AGENT_PACKAGE_ROOTS", "");
     appConfigProvider.resetForTests();
     appConfigProvider.initialize({ appDataDir: suiteRoot });
+    resetProcessAgentPackageDefinitionsForTests();
     const agents = AgentDefinitionService.getInstance();
     const teams = AgentTeamDefinitionService.getInstance({ agentDefinitionService: agents });
     const orgs = new AgentOrgDefinitionService(undefined, agents, teams);
     // Exercise the same concrete source/admission authorities as the host composition,
     // scoped to this owned root and the package roots changed by these transactions.
     const admission = new DefinitionAdmissionService({
-      registry: new DefinitionSourceRegistry({ appConfig: appConfigProvider.config }),
+      registry: new DefinitionSourceRegistry({ listImplementationOwnedTeamSources: async () => [] }),
       agents, teams, orgs,
     });
     closeStudioServices = configureE2eStudioApplicationApiServices({
@@ -280,8 +297,8 @@ describe("Agent packages GraphQL e2e", () => {
 
     process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = "";
     AgentPackageService.resetInstance();
-    await AgentDefinitionService.getInstance().refreshCache();
-    await AgentTeamDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
+    await AgentTeamDefinitionService.getInstance().reloadAgentPackageDefinitions();
   });
 
   const execGraphql = async <T>(
@@ -828,7 +845,7 @@ describe("Agent packages GraphQL e2e", () => {
     AgentPackageService.getInstance({
       rootSettingsStore: createTestRootSettingsStore(defaultRoot),
       registryStore: createTestRegistryStore(registryRoot),
-      installer: createRevisionBackedGitHubInstaller({
+      ...createRevisionBackedGitHubDependencies({
         dataRoot,
         owner,
         repo,
@@ -1056,7 +1073,7 @@ describe("Agent packages GraphQL e2e", () => {
     AgentPackageService.getInstance({
       rootSettingsStore: createTestRootSettingsStore(defaultRoot),
       registryStore,
-      installer: createRevisionBackedGitHubInstaller({
+      ...createRevisionBackedGitHubDependencies({
         dataRoot,
         owner,
         repo,
@@ -1188,7 +1205,7 @@ describe("Agent packages GraphQL e2e", () => {
     AgentPackageService.getInstance({
       rootSettingsStore: createTestRootSettingsStore(defaultRoot),
       registryStore: createTestRegistryStore(registryRoot),
-      installer: createRevisionBackedGitHubInstaller({
+      ...createRevisionBackedGitHubDependencies({
         dataRoot,
         owner,
         repo,
@@ -1198,14 +1215,11 @@ describe("Agent packages GraphQL e2e", () => {
           [newRevision]: newFixtureRoot,
         },
       }),
-      refreshAgentDefinitions: async () => {
+      reloadAgentPackageDefinitions: async () => {
         if (failRefresh) {
           throw new Error("cache refresh failed");
         }
-        await AgentDefinitionService.getInstance().refreshCache();
-      },
-      refreshAgentTeams: async () => {
-        await AgentTeamDefinitionService.getInstance().refreshCache();
+        await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
       },
     });
 

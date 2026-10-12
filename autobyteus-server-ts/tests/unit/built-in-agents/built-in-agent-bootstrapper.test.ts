@@ -154,7 +154,7 @@ describe("BuiltInAgentBootstrapper", () => {
       RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
     );
 
-    const skillImproverDefinition = await services.agentDefinitionService.getFreshAgentDefinitionById(
+    const skillImproverDefinition = await services.agentDefinitionService.getAgentDefinitionById(
       RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
     );
     expect(skillImproverDefinition).toMatchObject({
@@ -173,7 +173,7 @@ describe("BuiltInAgentBootstrapper", () => {
     expect(resolvedConfiguredSkills[0]?.content).toContain("Retrospective Skill Improver");
 
     await expect(
-      services.agentDefinitionService.getFreshAgentDefinitionById("daily-assistant"),
+      services.agentDefinitionService.getAgentDefinitionById("daily-assistant"),
     ).resolves.toBeNull();
   });
 
@@ -403,7 +403,7 @@ describe("BuiltInAgentBootstrapper", () => {
       await expect(fs.readFile(historyPath, "utf-8")).resolves.toBe(history);
       await expect(fs.readFile(path.join(builtInDailyAssistantDir(), "agent.md"), "utf-8"))
         .resolves.toBe(await readTemplate("daily-assistant", "agent.md"));
-      const definition = await services.agentDefinitionService.getFreshAgentDefinitionById(DAILY_ASSISTANT_AGENT_DEFINITION_ID);
+      const definition = await services.agentDefinitionService.getAgentDefinitionById(DAILY_ASSISTANT_AGENT_DEFINITION_ID);
       expect(definition).toMatchObject({ id: DAILY_ASSISTANT_AGENT_DEFINITION_ID, name: "Daily Assistant" });
       expect(definition?.toolNames).toContain("list_available_agents");
       expect((await fs.readdir(path.join(tempDataDir, "agents"))).sort()).toEqual([

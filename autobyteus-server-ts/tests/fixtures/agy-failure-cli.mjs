@@ -87,6 +87,13 @@ if (arg === "--version") {
       catch (error) { return { path: file, error: error.code }; }
     });
   };
+  // linked_skills: `READ_AGENT_PROMPT` reports the agent prompt the server materialized for this run
+  // (`.agents/agents/<--agent>/agent.md` in the capsule, the file AGY loads), so a test can prove which
+  // definition instructions a run or a delegated copy actually received.
+  const readAgentPrompt = () => {
+    try { return readFileSync(path.join(process.cwd(), ".agents", "agents", argValue("--agent") ?? "", "agent.md"), "utf8"); }
+    catch (error) { return `UNREADABLE:${error.code}`; }
+  };
   const callAgentTool = async (name, args) => {
     const config = JSON.parse(readFileSync(path.join(process.cwd(), ".agents", "mcp_config.json"), "utf8"));
     const server = config.mcpServers?.autobyteus_agent_tools;
@@ -134,6 +141,7 @@ if (arg === "--version") {
       : call ? `CALLED:${JSON.stringify(await callAgentTool(call.name, call.arguments))}`
       : content.includes("READ_SKILLS") ? `SKILLS:${JSON.stringify(readCapsuleSkills())}`
       : content.includes("READ_REFERENCE_FILES") ? `REFERENCES:${JSON.stringify(readReferenceFiles(content))}`
+      : content.includes("READ_AGENT_PROMPT") ? `AGENT_PROMPT:${JSON.stringify(readAgentPrompt())}`
       : delegation ? `DELEGATED:${JSON.stringify(await callAgentTool("delegate_task", JSON.parse(delegation[1])))}`
         : "OK";
     reply(turns * 10, text);

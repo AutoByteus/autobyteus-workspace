@@ -65,6 +65,43 @@ export const listExistingDirectoryPaths = ({
   return paths;
 };
 
+/** Absolute, resolved, de-duplicated paths from a comma-separated value; existence is not checked. */
+export const listAbsolutePaths = ({
+  rawValue,
+  label,
+  onWarn,
+}: {
+  rawValue: string | null | undefined;
+  label: string;
+  onWarn: WarnFn;
+}): string[] => {
+  const normalized = normalizeOptionalConfigString(rawValue);
+  if (!normalized) {
+    return [];
+  }
+
+  const seen = new Set<string>();
+  const paths: string[] = [];
+  for (const candidate of normalized.split(",")) {
+    const trimmed = candidate.trim();
+    if (!trimmed) {
+      continue;
+    }
+    if (!path.isAbsolute(trimmed)) {
+      onWarn(`${label} path must be absolute and will be ignored: ${trimmed}`);
+      continue;
+    }
+    const resolved = path.resolve(trimmed);
+    if (seen.has(resolved)) {
+      continue;
+    }
+    seen.add(resolved);
+    paths.push(resolved);
+  }
+
+  return paths;
+};
+
 export const listExistingAbsoluteDirectoryPaths = ({
   rawValue,
   label,
