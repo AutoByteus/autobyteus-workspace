@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | API/E2E Pass (API-REV-001), direct route | N/A | Docs synced; waiting for the user's verification and release decision | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `autobyteus-server-ts/docs/modules/agent_execution.md` |
 | DR-002 | User: "finalize and release a new beta" | DR-001 waiting for verification | Finalized into `personal`; beta `v1.5.2-beta.3` released completely | `release-deployment-report.md`, `delivery-evidence/` |
+| DR-003 | User confirmed AC-004 in the deployed beta | DR-002 complete, AC-004 still with the user | AC-004 passed; no open acceptance items | `release-deployment-report.md`, `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -54,3 +55,21 @@
   - RK-01 is accepted upstream.
   - The baseline failure of the fake-CLI interrupt-resume E2E (8 cases) belongs to the owner of the Claude streaming-session lifecycle.
   - Rollback: revert `79c1216bc` on `personal` and cut the next beta.
+
+### DR-003 — AC-004 confirmed by the user in the deployed beta
+
+- Delivery round and trigger: the user's post-release check, revisiting DR-002.
+- Triggering upstream report, verification, or evidence: on 2026-10-12, while running the deployed `v1.5.2-beta.3`, the user reported: "it passes. i dont see this error now".
+- Prior authoritative result: DR-002. Finalization and the beta release were complete; AC-004 was still with the user.
+- Current authoritative result: AC-004 passed. All acceptance criteria (AC-001 to AC-004) are now met. Nothing about the code, release or rollout changed.
+- Docs sync report: unchanged.
+- Handoff summary: unchanged.
+- Release/publication/deployment report: "Verification Checks" and "Final Status" now record the AC-004 pass.
+- Integration and post-integration verification: not applicable. This change only records the user's check.
+- User verification/finalization state: fully verified. Finalization and release are complete.
+- Terminal return to `/solution_designer`: `Sent` as a follow-up to the DR-002 terminal package.
+- Why this delivery revision was recorded: to close the one acceptance item that DR-002 left open.
+- Next recipient/action: none. The solution designer may close the ticket.
+- Remaining blockers, rollback concerns, or untested scope:
+  - RK-01 was accepted upstream.
+  - The baseline failure of the fake-CLI interrupt-resume E2E is a separate item.

@@ -140,7 +140,7 @@ None beyond the release. This repository deploys no hosted service. Server users
 ## Verification Checks
 
 - Post-integration: unit tests, typecheck and the live E2E all passed on the merged state (see "Finalization Re-Integration").
-- AC-004: the user checks this in the published beta `v1.5.2-beta.3`; the steps are in `handoff-summary.md`. If it fails, the fix goes into the next beta, and the published tag is not moved.
+- AC-004: **Passed.** The user checked it in the deployed beta `v1.5.2-beta.3` on 2026-10-12 and reported: "it passes. i dont see this error now". Recorded in `delivery-revision-record.md` DR-003.
 
 ## Rollback Criteria
 
@@ -148,7 +148,7 @@ None beyond the release. This repository deploys no hosted service. Server users
 
 ## Final Status
 
-- Explicit user testing/verification complete: `Yes`, as the user's release approval ("finalize and release a new beta"). The AC-004 check in the beta build is still with the user.
+- Explicit user testing/verification complete: `Yes`. The user approved the release ("finalize and release a new beta") and then confirmed AC-004 in the deployed `v1.5.2-beta.3` ("it passes"; DR-003).
 - Repository finalization complete: `Yes`. `personal` @ `37e972199`.
 - Applicable release/deployment/rollout complete or not required: `Yes`. `v1.5.2-beta.3` is complete: 4 of 4 workflows succeeded and all 17 assets plus the Docker image were checked.
 - Applicable safe cleanup complete or not required: `Yes`. The worktree and local branches are removed after this record is pushed.
