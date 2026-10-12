@@ -6,6 +6,5 @@ describe('MultimediaProvider', () => {
     expect(MultimediaProvider.OPENAI).toBe('OPENAI');
     expect(MultimediaProvider.GEMINI).toBe('GEMINI');
     expect(MultimediaProvider.QWEN).toBe('QWEN');
-    expect(MultimediaProvider.AUTOBYTEUS).toBe('AUTOBYTEUS');
   });
 });

@@ -5,7 +5,6 @@ import {AnthropicLLM} from '../../../../src/llm/api/anthropic-llm.js';
 import {GeminiLLM} from '../../../../src/llm/api/gemini-llm.js';
 import {MistralLLM} from '../../../../src/llm/api/mistral-llm.js';
 import {OllamaLLM} from '../../../../src/llm/api/ollama-llm.js';
-import {AutobyteusLLM} from '../../../../src/llm/api/autobyteus-llm.js';
 import {LLMModel} from '../../../../src/llm/models.js';
 import {LLMProvider} from '../../../../src/llm/providers.js';
 import {LLMConfig} from '../../../../src/llm/utils/llm-config.js';
@@ -25,7 +24,6 @@ const fixture=(family:string,reason:string|undefined)=>{
  case 'gemini':llm=new GeminiLLM(model(LLMProvider.GEMINI),config(),key,geminiRuntimeResolver());send.mockResolvedValue({text:'ok',candidates:[{finishReason:reason}]});llm.clientPromise=Promise.resolve({client:{models:{generateContent:send}},runtimeInfo:{runtime:'api_key'}});break;
  case 'mistral':llm=new MistralLLM(model(LLMProvider.MISTRAL),config(),key);send.mockResolvedValue({choices:[{finishReason:reason,message:{content:'ok'}}]});llm.clientPromise=Promise.resolve({chat:{complete:send}});break;
  case 'ollama':llm=new OllamaLLM(model(LLMProvider.OLLAMA),config(),key);send.mockResolvedValue({done:true,done_reason:reason,message:{content:'ok'}});llm.client={chat:send,abort:vi.fn()};break;
- case 'rpa':llm=new AutobyteusLLM(model(LLMProvider.AUTOBYTEUS),config(),key);send.mockResolvedValue({content:'ok',finish_reason:reason});llm.clientPromise=Promise.resolve({sendMessage:send,cleanup:vi.fn()});break;
  }
  return {llm,send};
 };
@@ -36,12 +34,12 @@ describe('non-streaming finish and its completion projection',()=>{
  ['anthropic','end_turn','complete','stop'],['anthropic','max_tokens','incomplete','output_limit'],['anthropic','pause_turn','incomplete','other'],['anthropic','refusal','incomplete','content_filter'],['anthropic','model_context_window_exceeded','incomplete','context_window_exceeded'],['anthropic',undefined,'unknown',null],
  ['gemini','STOP','complete','stop'],['gemini','MAX_TOKENS','incomplete','output_limit'],['gemini','SAFETY','incomplete','content_filter'],['gemini','OTHER','incomplete','other'],['gemini',undefined,'unknown',null],
  ['mistral','stop','complete','stop'],['mistral','length','incomplete','output_limit'],['mistral','tool_calls','incomplete','tool_calls'],['mistral','model_length','incomplete','context_window_exceeded'],['mistral',undefined,'unknown',null],
- ['ollama','stop','complete','stop'],['ollama','length','incomplete','output_limit'],['ollama',undefined,'unknown',null],['rpa','stop','unknown',null],
+ ['ollama','stop','complete','stop'],['ollama','length','incomplete','output_limit'],['ollama',undefined,'unknown',null],
  ])('%s %s becomes %s (finish %s)',async(family,reason,expected,finishReason)=>{
   const {llm,send}=fixture(family!,reason);const signal=new AbortController().signal;
   const result=await llm.sendMessages(messages,{logicalConversationId:'fresh-summary'},{signal});
   expect(result.finish?.reason ?? null).toBe(finishReason);
-  expect(result.completionStatus).toBe(expected);expect(result.completionReason).toBe(family==='rpa'?null:reason??null);
+  expect(result.completionStatus).toBe(expected);expect(result.completionReason).toBe(reason??null);
   expect(result.content).toBe('ok');expect(send).toHaveBeenCalledOnce();
   const payload=send.mock.calls[0][0];
   expect(payload.tools).toBeUndefined();expect(payload.stream).not.toBe(true);
@@ -70,10 +68,5 @@ describe('non-streaming finish and its completion projection',()=>{
   const {llm,send}=fixture('chat','stop');
   send.mockResolvedValue({choices:[{finish_reason:'stop',message:{content:'',refusal:'I cannot help.'}}]});
   expect((await llm.sendMessages(messages)).finish).toEqual({reason:'content_filter',providerReason:'stop'});
- });
- it('does not infer completion from RPA complete-looking text or cleanup',async()=>{
-  const {llm}=fixture('rpa','stop');await llm.sendMessages(messages,{logicalConversationId:'isolated'});
-  const client=await llm.clientPromise;const signal=new AbortController().signal;
-  await llm.cleanup({signal});expect(client.cleanup).toHaveBeenCalledExactlyOnceWith('isolated',{signal});
  });
 });

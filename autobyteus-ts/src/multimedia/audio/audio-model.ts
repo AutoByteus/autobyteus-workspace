@@ -5,7 +5,6 @@ import { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { BaseAudioClient } from './base-audio-client.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
-import { buildHostScopedMultimediaModelIdentifier } from '../model-identifier.js';
 
 type ParameterSchemaInput = Record<string, unknown> | ParameterSchema | null | undefined;
 
@@ -18,7 +17,6 @@ export interface AudioModelOptions {
   clientClass: AudioClientConstructor;
   parameterSchema?: ParameterSchemaInput;
   runtime?: MultimediaRuntime;
-  hostUrl?: string | null;
 }
 
 export class AudioModel {
@@ -27,7 +25,6 @@ export class AudioModel {
   provider: MultimediaProvider;
   clientClass: AudioClientConstructor;
   runtime: MultimediaRuntime;
-  hostUrl?: string | null;
   parameterSchema: ParameterSchema;
   defaultConfig: MultimediaConfig;
 
@@ -37,7 +34,6 @@ export class AudioModel {
     this.provider = options.provider;
     this.clientClass = options.clientClass;
     this.runtime = options.runtime ?? MultimediaRuntime.API;
-    this.hostUrl = options.hostUrl;
 
     if (options.parameterSchema && !(options.parameterSchema instanceof ParameterSchema)) {
       this.parameterSchema = ParameterSchema.fromConfig(options.parameterSchema);
@@ -58,10 +54,6 @@ export class AudioModel {
   }
 
   get modelIdentifier(): string {
-    if (this.runtime === MultimediaRuntime.AUTOBYTEUS && this.hostUrl) {
-      return buildHostScopedMultimediaModelIdentifier(this.name, this.hostUrl);
-    }
-
     return this.name;
   }
 

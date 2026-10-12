@@ -76,11 +76,6 @@ export class ServerSettingsService {
 
   private initializeSettings(): void {
     this.registerPredefinedSetting(
-      "AUTOBYTEUS_LLM_SERVER_HOSTS",
-      "Comma-separated URLs of AUTOBYTEUS LLM servers",
-    );
-
-    this.registerPredefinedSetting(
       "AUTOBYTEUS_SERVER_HOST",
       "Public URL of this server. Managed at startup by the launch environment and not editable here.",
       false,
@@ -337,9 +332,7 @@ export class ServerSettingsService {
   }
 
   private refreshDependentSettingsAfterUpdate(key: string): void {
-    if (key === 'AUTOBYTEUS_LLM_SERVER_HOSTS'
-      || key === 'OLLAMA_HOSTS'
-      || key === 'LMSTUDIO_HOSTS') {
+    if (key === 'OLLAMA_HOSTS' || key === 'LMSTUDIO_HOSTS') {
       getModelCatalogService().notifySettingsChange(key);
     }
     if (MEDIA_DEFAULT_MODEL_SETTING_KEYS.has(key)) {

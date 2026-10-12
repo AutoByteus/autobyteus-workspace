@@ -17,7 +17,6 @@ export interface VideoModelOptions {
   clientClass: VideoClientConstructor;
   parameterSchema?: ParameterSchemaInput;
   runtime?: MultimediaRuntime;
-  hostUrl?: string | null;
   description?: string | null;
 }
 
@@ -27,7 +26,6 @@ export class VideoModel {
   provider: MultimediaProvider;
   clientClass: VideoClientConstructor;
   runtime: MultimediaRuntime;
-  hostUrl?: string | null;
   description?: string | null;
   parameterSchema: ParameterSchema;
   defaultConfig: MultimediaConfig;
@@ -38,7 +36,6 @@ export class VideoModel {
     this.provider = options.provider;
     this.clientClass = options.clientClass;
     this.runtime = options.runtime ?? MultimediaRuntime.API;
-    this.hostUrl = options.hostUrl;
     this.description = options.description ?? null;
 
     if (options.parameterSchema && !(options.parameterSchema instanceof ParameterSchema)) {
@@ -60,16 +57,6 @@ export class VideoModel {
   }
 
   get modelIdentifier(): string {
-    if (this.runtime === MultimediaRuntime.AUTOBYTEUS && this.hostUrl) {
-      try {
-        const url = new URL(this.hostUrl);
-        const host = url.host || url.hostname || this.hostUrl;
-        return `${this.name}@${host}`;
-      } catch {
-        return `${this.name}@${this.hostUrl}`;
-      }
-    }
-
     return this.name;
   }
 

@@ -124,7 +124,7 @@ const mapMedia = (model: AudioModel | ImageModel | VideoModel): ModelDetail => (
   providerName: getLlmProviderDisplayName(String(model.provider) as LLMProvider),
   providerType: String(model.provider),
   runtime: String(model.runtime),
-  hostUrl: model.hostUrl ?? null,
+  hostUrl: null,
   configSchema: model.parameterSchema?.toJsonSchemaDict?.() ?? null,
   maxContextTokens: null,
   activeContextTokens: null,

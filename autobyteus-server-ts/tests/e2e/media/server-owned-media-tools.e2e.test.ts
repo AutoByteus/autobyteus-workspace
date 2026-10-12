@@ -18,8 +18,7 @@ const mockImageClientFactory = vi.hoisted(() => ({
   listModels: vi.fn(),
   describeConstructionTarget: vi.fn(),
   createImageClient: vi.fn(),
-  syncRuntimeModels: vi.fn(),
-  listSourceModels: vi.fn(),
+  hasRegisteredModel: vi.fn(),
 }));
 
 const mockAudioClientFactory = vi.hoisted(() => ({
@@ -28,8 +27,7 @@ const mockAudioClientFactory = vi.hoisted(() => ({
   listModels: vi.fn(),
   describeConstructionTarget: vi.fn(),
   createAudioClient: vi.fn(),
-  syncRuntimeModels: vi.fn(),
-  listSourceModels: vi.fn(),
+  hasRegisteredModel: vi.fn(),
 }));
 
 const mockVideoClientFactory = vi.hoisted(() => ({
@@ -220,7 +218,8 @@ const configureMediaFactories = (): void => {
       parameterSchema: createModelSchema("editA"),
     },
   ]);
-  mockImageClientFactory.listSourceModels.mockReturnValue([]);
+  mockImageClientFactory.hasRegisteredModel.mockImplementation((identifier: string) =>
+    mockImageClientFactory.listModels().some((model: { modelIdentifier: string }) => model.modelIdentifier === identifier));
   mockAudioClientFactory.ensureInitialized.mockImplementation(() => undefined);
   mockAudioClientFactory.requiresGeminiRuntimeResolver.mockReturnValue(false);
   mockAudioClientFactory.describeConstructionTarget.mockImplementation(() => ({
@@ -235,7 +234,8 @@ const configureMediaFactories = (): void => {
       parameterSchema: createModelSchema("speechA"),
     },
   ]);
-  mockAudioClientFactory.listSourceModels.mockReturnValue([]);
+  mockAudioClientFactory.hasRegisteredModel.mockImplementation((identifier: string) =>
+    mockAudioClientFactory.listModels().some((model: { modelIdentifier: string }) => model.modelIdentifier === identifier));
   mockVideoClientFactory.ensureInitialized.mockImplementation(() => undefined);
   mockVideoClientFactory.requiresGeminiRuntimeResolver.mockReturnValue(false);
   mockVideoClientFactory.describeConstructionTarget.mockImplementation(() => ({
@@ -249,7 +249,6 @@ const configureMediaFactories = (): void => {
       value: "video-a",
       provider: "GEMINI",
       runtime: "api",
-      hostUrl: null,
       description: "video model A capabilities",
       parameterSchema: createModelSchema("videoA"),
     },
@@ -259,7 +258,6 @@ const configureMediaFactories = (): void => {
       value: "video-b",
       provider: "GEMINI",
       runtime: "api",
-      hostUrl: null,
       description: "video model B capabilities",
       parameterSchema: createModelSchema("videoB"),
     },
@@ -589,7 +587,6 @@ describe("server-owned media tools API/E2E boundary", () => {
         value: "gemini-omni-flash-preview",
         provider: "GEMINI",
         runtime: "api",
-        hostUrl: null,
         description: "Gemini video generation model.",
         parameterSchema: createVideoSchema(),
       },

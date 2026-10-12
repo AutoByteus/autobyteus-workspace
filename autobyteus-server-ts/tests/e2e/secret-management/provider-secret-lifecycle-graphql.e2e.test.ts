@@ -128,7 +128,7 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
   });
 
   it('saves and replaces a provider key without value readback', async () => {
-    expect((await provider('AUTOBYTEUS'))?.apiKeyConfigured).toBe(false);
+    expect((await provider('LMSTUDIO'))?.apiKeyConfigured).toBe(false);
     const mutation = `
       mutation Save($providerId: String!, $apiKey: String!) {
         saveProviderApiKey(providerId: $providerId, apiKey: $apiKey) {
@@ -139,26 +139,26 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
     `;
     const firstCanary = 'synthetic-graphql-secret-first';
     const first = await execute<{ saveProviderApiKey: ProviderCredentialSetting }>(mutation, {
-      providerId: 'AUTOBYTEUS',
+      providerId: 'LMSTUDIO',
       apiKey: firstCanary,
     });
     expect(first.saveProviderApiKey).toMatchObject({
-      provider: { id: 'AUTOBYTEUS' },
+      provider: { id: 'LMSTUDIO' },
       apiKeyConfigured: true,
     });
     expect(JSON.stringify(first)).not.toContain(firstCanary);
 
     const secondCanary = 'synthetic-graphql-secret-second';
     const second = await execute<{ saveProviderApiKey: ProviderCredentialSetting }>(mutation, {
-      providerId: 'AUTOBYTEUS',
+      providerId: 'LMSTUDIO',
       apiKey: secondCanary,
     });
     expect(second.saveProviderApiKey).toMatchObject({
-      provider: { id: 'AUTOBYTEUS' },
+      provider: { id: 'LMSTUDIO' },
       apiKeyConfigured: true,
     });
     expect(JSON.stringify(second)).not.toContain(secondCanary);
-    expect((await provider('AUTOBYTEUS'))?.apiKeyConfigured).toBe(true);
+    expect((await provider('LMSTUDIO'))?.apiKeyConfigured).toBe(true);
     const evidence = server.output() + fs.readFileSync(server.runtimeEnvironmentPath, 'utf8');
     expect(evidence).not.toContain(firstCanary);
     expect(evidence).not.toContain(secondCanary);

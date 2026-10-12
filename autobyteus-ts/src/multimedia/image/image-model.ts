@@ -5,7 +5,6 @@ import { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { BaseImageClient } from './base-image-client.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
-import { buildHostScopedMultimediaModelIdentifier } from '../model-identifier.js';
 
 type ParameterSchemaInput = Record<string, unknown> | ParameterSchema | null | undefined;
 
@@ -18,7 +17,6 @@ export interface ImageModelOptions {
   clientClass: ImageClientConstructor;
   parameterSchema?: ParameterSchemaInput;
   runtime?: MultimediaRuntime;
-  hostUrl?: string | null;
   description?: string | null;
 }
 
@@ -28,7 +26,6 @@ export class ImageModel {
   provider: MultimediaProvider;
   clientClass: ImageClientConstructor;
   runtime: MultimediaRuntime;
-  hostUrl?: string | null;
   description?: string | null;
   parameterSchema: ParameterSchema;
   defaultConfig: MultimediaConfig;
@@ -39,7 +36,6 @@ export class ImageModel {
     this.provider = options.provider;
     this.clientClass = options.clientClass;
     this.runtime = options.runtime ?? MultimediaRuntime.API;
-    this.hostUrl = options.hostUrl;
     this.description = options.description ?? null;
 
     if (options.parameterSchema && !(options.parameterSchema instanceof ParameterSchema)) {
@@ -61,10 +57,6 @@ export class ImageModel {
   }
 
   get modelIdentifier(): string {
-    if (this.runtime === MultimediaRuntime.AUTOBYTEUS && this.hostUrl) {
-      return buildHostScopedMultimediaModelIdentifier(this.name, this.hostUrl);
-    }
-
     return this.name;
   }
 

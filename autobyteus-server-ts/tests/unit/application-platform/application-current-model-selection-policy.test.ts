@@ -68,11 +68,6 @@ describe("ApplicationCurrentModelSelectionPolicy", () => {
       LLMRuntime.LMSTUDIO,
       "http://127.0.0.1:1234",
     ),
-    buildHostScopedLlmModelIdentifier(
-      "dynamic-model",
-      LLMRuntime.AUTOBYTEUS,
-      "https://models.example.test",
-    ),
   ])("delegates canonical dynamic identifier %s to selected-provider availability", async (
     modelIdentifier,
   ) => {

@@ -12,7 +12,6 @@ const localImportCredentialAliases = Object.freeze({
   GLM_API_KEY: secretId('provider.glm.api-key'),
   MINIMAX_API_KEY: secretId('provider.minimax.api-key'),
   LMSTUDIO_API_KEY: secretId('provider.lmstudio.api-key'),
-  AUTOBYTEUS_API_KEY: secretId('provider.autobyteus.api-key'),
   GEMINI_API_KEY: secretId('provider.google.ai-studio.api-key'),
   VERTEX_AI_API_KEY: secretId('provider.google.vertex-express.api-key'),
   SERPER_API_KEY: secretId('search.serper.api-key'),

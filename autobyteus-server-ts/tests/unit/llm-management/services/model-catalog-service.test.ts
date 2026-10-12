@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { LLMFactory } from 'autobyteus-ts';
 import { LLMModel } from 'autobyteus-ts/llm/models.js';
+import { OllamaModelProvider } from 'autobyteus-ts/llm/ollama-provider.js';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import { LLMRuntime } from 'autobyteus-ts/llm/runtimes.js';
 import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
@@ -18,21 +19,20 @@ describe('ModelCatalogService', () => {
     prepareProvider: vi.fn(),
     prepareRows: vi.fn(),
   };
-  const remoteDiscoveryService = {
-    configuredHosts: vi.fn(() => ['https://gateway.example.invalid']),
-    fingerprint: vi.fn((kind: string, revision: number) => `${kind}|gateway|credential:${revision}`),
-    prepare: vi.fn(),
-  };
   const emptyExternalCatalog = { listModels: vi.fn().mockResolvedValue([]) };
+  let ollamaHosts: string[];
+  let discoverOllamaModels: ReturnType<typeof vi.spyOn>;
 
   const createService = () => new ModelCatalogService(
     builtInCatalog,
     customProviderStore as never,
     customSyncService as never,
-    remoteDiscoveryService as never,
     emptyExternalCatalog as never,
     emptyExternalCatalog as never,
   );
+  const ollamaModel = (name: string, hostUrl: string, provider = LLMProvider.OLLAMA) => new LLMModel({
+    name, value: name, canonicalName: name, provider, runtime: LLMRuntime.OLLAMA, hostUrl,
+  });
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -41,16 +41,14 @@ describe('ModelCatalogService', () => {
     ImageClientFactory.reinitialize();
     customProviderStore.listProviders.mockResolvedValue([]);
     customProviderStore.getProviderById.mockResolvedValue(null);
-    remoteDiscoveryService.configuredHosts.mockReturnValue(['https://gateway.example.invalid']);
-    remoteDiscoveryService.fingerprint.mockImplementation(
-      (kind: string, revision: number) => `${kind}|gateway|credential:${revision}`,
-    );
-    remoteDiscoveryService.prepare.mockResolvedValue({
-      models: [], successfulUnitCount: 1, failedUnitCount: 0,
-    });
+    ollamaHosts = ['http://ollama.example.invalid:11434'];
+    vi.spyOn(OllamaModelProvider, 'getHosts').mockImplementation(() => ollamaHosts);
+    discoverOllamaModels = vi.spyOn(OllamaModelProvider, 'discoverModels')
+      .mockResolvedValue({ models: [], successfulHostCount: 1, failedHostCount: 0 });
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     LLMFactory.resetForTests();
     AudioClientFactory.reinitialize();
     ImageClientFactory.reinitialize();
@@ -62,8 +60,7 @@ describe('ModelCatalogService', () => {
     const selectionCatalog = vi.fn(async () => ({ offeredModels: [raw[1]],
       findExactCurrent: (id: string) => raw.find((model) => model.model_identifier === id) ?? null }));
     const service = new ModelCatalogService(builtInCatalog, customProviderStore as never,
-      customSyncService as never, remoteDiscoveryService as never,
-      { selectionCatalog } as never, emptyExternalCatalog as never);
+      customSyncService as never, { selectionCatalog } as never, emptyExternalCatalog as never);
     expect((await service.listLlmModels('claude_agent_sdk')).map((model) => model.model_identifier)).toEqual(['opus']);
     expect((await service.listProviderModelCatalogSnapshots('claude_agent_sdk'))[0]?.llmModels
       .map((model) => model.model_identifier)).toEqual(['opus']);
@@ -71,111 +68,88 @@ describe('ModelCatalogService', () => {
     expect(selectionCatalog).toHaveBeenCalledTimes(3);
   });
 
-  it('returns static and cold dynamic registry snapshots without remote discovery', async () => {
+  it('returns static and cold dynamic registry snapshots without discovery and without a remote AutoByteus provider', async () => {
     const snapshots = await createService().listProviderModelCatalogSnapshots('autobyteus');
     const openAi = snapshots.find(({ ownerProvider }) => ownerProvider.id === LLMProvider.OPENAI);
-    const autobyteus = snapshots.find(({ ownerProvider }) => ownerProvider.id === LLMProvider.AUTOBYTEUS);
+    const ollama = snapshots.find(({ ownerProvider }) => ownerProvider.id === LLMProvider.OLLAMA);
 
     expect(openAi).toMatchObject({
       ownerProvider: { catalogMode: 'STATIC' },
       sources: [],
     });
     expect(openAi?.llmModels.length).toBeGreaterThan(0);
-    expect(autobyteus).toMatchObject({
+    expect(openAi?.imageModels.length).toBeGreaterThan(0);
+    expect(ollama).toMatchObject({
       ownerProvider: { catalogMode: 'DISCOVERED' },
-      sources: [
-        { modelKind: 'LLM', state: 'IDLE' },
-        { modelKind: 'AUDIO', state: 'IDLE' },
-        { modelKind: 'IMAGE', state: 'IDLE' },
-      ],
+      sources: [{ modelKind: 'LLM', state: 'IDLE' }],
     });
-    expect(remoteDiscoveryService.prepare).not.toHaveBeenCalled();
+    expect(snapshots.map(({ ownerProvider }) => ownerProvider.id)).not.toContain('AUTOBYTEUS');
+    expect(discoverOllamaModels).not.toHaveBeenCalled();
   });
 
   it('rejects reload for a static provider without touching discovery', async () => {
     await expect(createService().reloadProviderModelCatalog(LLMProvider.OPENAI, 'autobyteus'))
       .rejects.toThrow('STATIC_PROVIDER_RELOAD_NOT_SUPPORTED');
-    expect(remoteDiscoveryService.prepare).not.toHaveBeenCalled();
+    expect(discoverOllamaModels).not.toHaveBeenCalled();
   });
 
-  it('projects an AutoByteus-served provider row only through its owning dynamic source', async () => {
+  it('rejects ensure and reload for the removed remote AutoByteus provider as an unknown provider', async () => {
+    const service = createService();
+    await expect(service.ensureProviderModelCatalog('AUTOBYTEUS', 'autobyteus')).rejects.toThrow('UNKNOWN_MODEL_PROVIDER');
+    await expect(service.reloadProviderModelCatalog('AUTOBYTEUS', 'autobyteus')).rejects.toThrow('UNKNOWN_MODEL_PROVIDER');
+    expect(discoverOllamaModels).not.toHaveBeenCalled();
+  });
+
+  it('projects a dynamically served provider row only through its owning dynamic source', async () => {
     await LLMFactory.ensureInitialized();
-    const discovered = new LLMModel({
-      name: 'remote-openai-model',
-      value: 'remote-openai-model',
-      canonicalName: 'remote-openai-model',
-      provider: LLMProvider.OPENAI,
-      runtime: LLMRuntime.AUTOBYTEUS,
-      hostUrl: 'https://gateway.example.invalid/v2',
-    });
-    LLMFactory.replaceSourceModels('AUTOBYTEUS:LLM', [discovered]);
+    const discovered = ollamaModel('served-openai-model', 'http://ollama.example.invalid:11434', LLMProvider.OPENAI);
+    LLMFactory.replaceSourceModels('OLLAMA:LLM', [discovered]);
 
     const snapshots = await createService().listProviderModelCatalogSnapshots('autobyteus');
     const openAi = snapshots.find(({ ownerProvider }) => ownerProvider.id === LLMProvider.OPENAI)!;
-    const autobyteus = snapshots.find(({ ownerProvider }) => ownerProvider.id === LLMProvider.AUTOBYTEUS)!;
+    const ollama = snapshots.find(({ ownerProvider }) => ownerProvider.id === LLMProvider.OLLAMA)!;
 
     expect(openAi.llmModels.map(({ model_identifier }) => model_identifier))
       .not.toContain(discovered.modelIdentifier);
-    expect(autobyteus.llmModels.map(({ model_identifier }) => model_identifier))
+    expect(ollama.llmModels.map(({ model_identifier }) => model_identifier))
       .toEqual([discovered.modelIdentifier]);
   });
 
-  it('ensures the three AutoByteus source kinds once and reuses warm terminal snapshots', async () => {
+  it('ensures a dynamic provider source once and reuses the warm terminal snapshot', async () => {
     const service = createService();
 
-    const first = await service.ensureProviderModelCatalog(LLMProvider.AUTOBYTEUS, 'autobyteus');
-    expect(first.sources).toEqual([
-      expect.objectContaining({ modelKind: 'LLM', state: 'READY' }),
-      expect.objectContaining({ modelKind: 'AUDIO', state: 'READY' }),
-      expect.objectContaining({ modelKind: 'IMAGE', state: 'READY' }),
-    ]);
-    expect(remoteDiscoveryService.prepare.mock.calls.map(([kind]) => kind).sort())
-      .toEqual(['audio', 'image', 'llm']);
+    const first = await service.ensureProviderModelCatalog(LLMProvider.OLLAMA, 'autobyteus');
+    expect(first.sources).toEqual([expect.objectContaining({ modelKind: 'LLM', state: 'READY' })]);
+    expect(discoverOllamaModels).toHaveBeenCalledOnce();
 
-    await service.ensureProviderModelCatalog(LLMProvider.AUTOBYTEUS, 'autobyteus');
-    expect(remoteDiscoveryService.prepare).toHaveBeenCalledTimes(3);
+    await service.ensureProviderModelCatalog(LLMProvider.OLLAMA, 'autobyteus');
+    expect(discoverOllamaModels).toHaveBeenCalledOnce();
   });
 
-  it('invalidates and schedules all AutoByteus kinds without waiting for their completion', async () => {
-    const pending = new Promise(() => undefined);
-    remoteDiscoveryService.prepare.mockReturnValue(pending);
+  it('ignores a leftover remote AutoByteus host setting change', async () => {
     const service = createService();
-
-    expect(() => service.notifyCredentialRevision(LLMProvider.AUTOBYTEUS)).not.toThrow();
-    await vi.waitFor(() => expect(remoteDiscoveryService.prepare).toHaveBeenCalledTimes(3));
-    expect(remoteDiscoveryService.fingerprint.mock.calls.map(([kind, revision]) => [kind, revision]))
-      .toEqual(expect.arrayContaining([
-        ['llm', 1], ['audio', 1], ['image', 1],
-      ]));
-  });
-
-  it('clears the full affected source before a same-authority endpoint replacement that fails', async () => {
-    await LLMFactory.ensureInitialized();
-    const dynamicModel = (name: string, hostUrl: string) => new LLMModel({
-      name, value: name, canonicalName: name,
-      provider: LLMProvider.AUTOBYTEUS,
-      runtime: LLMRuntime.AUTOBYTEUS,
-      hostUrl,
-    });
-    LLMFactory.replaceSourceModels('AUTOBYTEUS:LLM', [
-      dynamicModel('old-path', 'http://gateway.example.invalid/path-a'),
-      dynamicModel('peer', 'https://peer.example.invalid'),
-    ]);
-    remoteDiscoveryService.configuredHosts.mockReturnValue([
-      'https://gateway.example.invalid/path-b',
-      'https://peer.example.invalid',
-    ]);
-    remoteDiscoveryService.prepare.mockRejectedValue(new Error('replacement failed'));
-    const service = createService();
-
     service.notifySettingsChange('AUTOBYTEUS_LLM_SERVER_HOSTS');
+    await service.waitForIdle();
+    expect(discoverOllamaModels).not.toHaveBeenCalled();
+  });
 
-    await expect(LLMFactory.listSourceModels('AUTOBYTEUS:LLM')).resolves.toEqual([]);
+  it('clears the full affected source before an endpoint replacement that fails', async () => {
+    await LLMFactory.ensureInitialized();
+    LLMFactory.replaceSourceModels('OLLAMA:LLM', [
+      ollamaModel('old-host-model', 'http://ollama.example.invalid:11434'),
+      ollamaModel('peer-model', 'http://peer.example.invalid:11434'),
+    ]);
+    ollamaHosts = ['http://replacement.example.invalid:11434', 'http://peer.example.invalid:11434'];
+    discoverOllamaModels.mockRejectedValue(new Error('replacement failed'));
+    const service = createService();
+
+    service.notifySettingsChange('OLLAMA_HOSTS');
+
+    await expect(LLMFactory.listSourceModels('OLLAMA:LLM')).resolves.toEqual([]);
     await service.waitForIdle();
     const snapshot = await service.listProviderModelCatalogSnapshots('autobyteus');
-    const autobyteus = snapshot.find(({ ownerProvider }) => ownerProvider.id === LLMProvider.AUTOBYTEUS)!;
-    expect(autobyteus.llmModels).toEqual([]);
-    expect(autobyteus.sources.find(({ modelKind }) => modelKind === 'LLM'))
-      .toMatchObject({ state: 'ERROR', modelCount: 0 });
+    const ollama = snapshot.find(({ ownerProvider }) => ownerProvider.id === LLMProvider.OLLAMA)!;
+    expect(ollama.llmModels).toEqual([]);
+    expect(ollama.sources).toEqual([expect.objectContaining({ modelKind: 'LLM', state: 'ERROR', modelCount: 0 })]);
   });
 });

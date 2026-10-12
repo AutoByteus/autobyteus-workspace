@@ -5,9 +5,6 @@ describe('ProviderCredentialCatalog', () => {
   const catalog = new ProviderCredentialCatalog();
 
   it.each([
-    [{ kind: 'modelDiscovery', modelKind: 'llm', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey' }, 'provider.autobyteus.api-key'],
-    [{ kind: 'modelDiscovery', modelKind: 'audio', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey' }, 'provider.autobyteus.api-key'],
-    [{ kind: 'modelDiscovery', modelKind: 'image', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey' }, 'provider.autobyteus.api-key'],
     [{ kind: 'llm', providerId: 'OPENAI', credentialSlot: 'apiKey' }, 'provider.openai.api-key'],
     [{ kind: 'media', mediaKind: 'image', providerId: 'OPENAI', credentialSlot: 'apiKey' }, 'provider.openai.api-key'],
     [{ kind: 'llm', providerId: 'GEMINI', credentialSlot: 'geminiAiStudioApiKey' }, 'provider.google.ai-studio.api-key'],
@@ -20,12 +17,18 @@ describe('ProviderCredentialCatalog', () => {
   });
 
   it.each([
-    { kind: 'media', mediaKind: 'video', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey' },
-    { kind: 'modelDiscovery', modelKind: 'video', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey' },
+    { kind: 'llm', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey' },
+    { kind: 'media', mediaKind: 'image', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey' },
+    { kind: 'modelDiscovery', modelKind: 'llm', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey' },
     { kind: 'llm', providerId: 'GEMINI', credentialSlot: 'apiKey' },
     { kind: 'media', mediaKind: 'image', providerId: 'ANTHROPIC', credentialSlot: 'apiKey' },
     { kind: 'search', providerId: 'unknown', credentialSlot: 'apiKey' },
   ] as const)('rejects unauthorized provider/subject/slot combinations', (consumer) => {
     expect(() => catalog.resolve(consumer as never)).toThrow('SECRET_CONSUMER_NOT_AUTHORIZED');
+  });
+
+  it('no longer recognizes the removed remote AutoByteus provider secret', () => {
+    expect(catalog.isKnownSecretId('provider.autobyteus.api-key' as never)).toBe(false);
+    expect(catalog.isKnownSecretId('provider.openai.api-key' as never)).toBe(true);
   });
 });
