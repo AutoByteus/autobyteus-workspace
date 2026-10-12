@@ -1,0 +1,16 @@
+$ git diff --check
+Exit: 0
+$ git diff --cached --check
+Exit: 0
+$ git diff 2756d7b298ca5b203ebd2310d172b37a5d381b5c --check
+Exit: 0
+$ python3 scripts/check_licensing.py
+Licensing is consistent.
+Tracked files scanned: 6508
+Exit: 0
+$ python3 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 60965
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+Exit: 0
