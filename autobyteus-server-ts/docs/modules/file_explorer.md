@@ -27,7 +27,9 @@ The following operations are request/response snapshots and must not start or re
 
 File mutations return concrete `FileSystemChangeEvent` payloads so the frontend can apply the result immediately. If a live WebSocket stream is also open, the frontend filters the later self-echo from the stream.
 
-Search refreshes its file-name index from snapshot traversal (`getAllFilePaths`) and backend search strategies such as `FuzzysortSearchStrategy` and `RipgrepSearchStrategy`; search must not depend on an always-on watcher. GraphQL request abort/close is propagated into `WorkspaceSearchSnapshotController`, which cancels a caller's wait on refresh/search work and aborts an unshared refresh when the final waiter leaves. Closing the workspace/file explorer also aborts stale search snapshot refresh work so watcher/session cleanup does not wait for unrelated full-tree traversal.
+Search refreshes its file-name index through `WorkspaceSearchSnapshotController`: `buildWorkspaceDirectoryTree` loads the snapshot, then `FileNameIndexer.refreshSnapshotIndex` traverses `getTree`. Backend strategies such as `FuzzysortSearchStrategy` and `RipgrepSearchStrategy` return internal absolute filesystem candidates. The public `WorkspaceFileExplorer.searchFiles` boundary converts and validates these once against the workspace root, returning workspace-relative locators in the same convention as tree paths. GraphQL `searchFiles(workspaceId, query)` returns those locators unchanged; they can be used directly with workspace text and protected content readers, including for nested files whose folders are not expanded. Ordering is preserved; absolute and escaping inputs remain rejected by the readers.
+
+Search must not depend on an always-on watcher. GraphQL request abort/close is propagated into `WorkspaceSearchSnapshotController`, which cancels a caller's wait on refresh/search work and aborts an unshared refresh when the final waiter leaves. Closing the workspace/file explorer also aborts stale search snapshot refresh work so watcher/session cleanup does not wait for unrelated full-tree traversal.
 
 ## Path And Ignored-Folder Boundaries
 

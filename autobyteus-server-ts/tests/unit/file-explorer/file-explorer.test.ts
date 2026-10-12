@@ -17,7 +17,8 @@ describe("WorkspaceFileExplorer", () => {
     await explorer.buildWorkspaceDirectoryTree();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await explorer.close();
     fs.rmSync(tempDir, { recursive: true, force: true });
   });
 
@@ -72,7 +73,7 @@ describe("WorkspaceFileExplorer", () => {
     );
   });
 
-  it("produces shallow JSON with limited depth", async () => {
+  it("projects the live tree with limited depth and relative paths", async () => {
     const folder2 = path.join(tempDir, "folder1", "folder2");
     fs.mkdirSync(folder2, { recursive: true });
     fs.writeFileSync(path.join(folder2, "deep_file.txt"), "deep", "utf-8");
@@ -81,10 +82,8 @@ describe("WorkspaceFileExplorer", () => {
 
     await explorer.buildWorkspaceDirectoryTree();
 
-    const shallowJson = explorer.toShallowJson(1) as string;
-    const shallowDict = JSON.parse(shallowJson) as {
-      children: Array<{ name: string; children: Array<{ name: string }> }>;
-    };
+    const tree = explorer.getTree() as TreeNode;
+    const shallowDict = tree.toShallowDict(1);
 
     const childNames = new Set(shallowDict.children.map((child) => child.name));
     expect(childNames.has("folder1")).toBe(true);
@@ -92,11 +91,9 @@ describe("WorkspaceFileExplorer", () => {
 
     const folder1 = shallowDict.children.find((child) => child.name === "folder1");
     expect(folder1?.children ?? []).toEqual([]);
+    expect(folder1?.path).toBe("folder1");
 
-    const shallowJson2 = explorer.toShallowJson(2) as string;
-    const shallowDict2 = JSON.parse(shallowJson2) as {
-      children: Array<{ name: string; children: Array<{ name: string; children: Array<unknown> }> }>;
-    };
+    const shallowDict2 = tree.toShallowDict(2);
 
     const folder1Depth2 = shallowDict2.children.find((child) => child.name === "folder1");
     const folder1Children = new Set(folder1Depth2?.children.map((child) => child.name) ?? []);
@@ -105,5 +102,6 @@ describe("WorkspaceFileExplorer", () => {
 
     const folder2Depth2 = folder1Depth2?.children.find((child) => child.name === "folder2");
     expect(folder2Depth2?.children ?? []).toEqual([]);
+    expect(folder2Depth2?.path).toBe(path.join("folder1", "folder2"));
   });
 });

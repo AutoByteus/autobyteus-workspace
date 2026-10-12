@@ -652,7 +652,7 @@ async searchFiles(query: string, workspaceId: string) {
 
 #### 3. TreeNode Conversion
 
-Search results from the backend are file paths. The frontend converts these to `TreeNode` objects so they can be rendered by the same `FileItem.vue` component used for the directory tree:
+GraphQL search results are workspace-relative file paths, in the same convention as tree nodes, not absolute host filesystem paths. The server converts and validates its internal absolute search candidates at the public explorer boundary, preserving result order. The frontend uses each returned locator unchanged for workspace text reads and protected content previews, including PDFs, without relaxing the readers' path restrictions. It converts results to `TreeNode` objects so they can be rendered by the same `FileItem.vue` component used for the directory tree:
 
 ```typescript
 wsState.searchResults = matchedPaths.map((filePath) => {
@@ -919,7 +919,7 @@ Snapshot operations intentionally bypass this lifecycle:
 
 - `createWorkspace`, `fetchAllWorkspaces`, `folderChildren`, `fileContent`, and `searchFiles` return snapshots without acquiring watcher leases.
 - File mutations return concrete change events that the frontend applies immediately; the later stream echo is filtered if a live stream is open.
-- Search index refresh uses snapshot traversal (`getAllFilePaths`), observes request abort signals, and does not keep watcher state alive.
+- Search index refresh builds a directory-tree snapshot (`buildWorkspaceDirectoryTree`) and traverses `getTree` via `FileNameIndexer.refreshSnapshotIndex`, observes request abort signals, and does not keep watcher state alive.
 
 ### Sequence Diagram
 

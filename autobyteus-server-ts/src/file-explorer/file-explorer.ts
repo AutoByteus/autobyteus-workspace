@@ -174,13 +174,6 @@ export class WorkspaceFileExplorer {
     return this.rootNode ? this.rootNode.toJson() : null;
   }
 
-  toShallowJson(depth = 1): string | null {
-    if (!this.rootNode) {
-      return null;
-    }
-    return JSON.stringify(this.rootNode.toShallowDict(depth));
-  }
-
   async loadFolderChildren(
     folderPath: string,
     options: FolderProjectionOptions = {},
@@ -217,34 +210,14 @@ export class WorkspaceFileExplorer {
     return folderNode;
   }
 
-  async getAllFilePaths(): Promise<string[]> {
-    if (!this.rootNode) {
-      await this.buildWorkspaceDirectoryTree();
-    }
-
-    const paths: string[] = [];
-    const stack: TreeNode[] = this.rootNode ? [this.rootNode] : [];
-
-    while (stack.length > 0) {
-      const node = stack.pop();
-      if (!node) {
-        continue;
-      }
-
-      if (node.isFile) {
-        paths.push(node.getPath());
-      } else {
-        for (const child of node.children) {
-          stack.push(child);
-        }
-      }
-    }
-
-    return paths;
-  }
-
+  /** Returns workspace-relative locators, matching tree and content paths. */
   async searchFiles(query: string, signal?: AbortSignal): Promise<string[]> {
-    return this.searchSnapshotController.search(query, signal);
+    const candidates = await this.searchSnapshotController.search(query, signal);
+    return candidates.map((candidate) => {
+      const relativePath = path.relative(this.workspaceRootPath, candidate);
+      this.getPath(relativePath);
+      return relativePath;
+    });
   }
 
   async acquireWatcherLease(reason: string): Promise<WatcherLease> {

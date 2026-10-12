@@ -27,9 +27,11 @@ describe("WorkspaceFileExplorer integration", () => {
     await fs.rm(workspace, { recursive: true, force: true });
   });
 
-  it("builds tree and lists file paths", async () => {
-    const paths = await explorer.getAllFilePaths();
-    expect(paths).toContain(path.join("subdir", "seed.txt"));
+  it("builds a tree with workspace-relative file identity", () => {
+    const relativePath = path.join("subdir", "seed.txt");
+    const node = explorer.getTree()?.findNodeByPath(relativePath);
+    expect(node?.isFile).toBe(true);
+    expect(node?.getPath()).toBe(relativePath);
   });
 
   it("writes new file and emits ADD change", async () => {
