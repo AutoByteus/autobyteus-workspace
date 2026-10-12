@@ -1,0 +1,60 @@
+Final attempt2 after preserved API log-heading formatting fix.
+$ /opt/homebrew/bin/python3.11 scripts/check_licensing.py
+Licensing is consistent.
+Tracked files scanned: 6508
+Exit: 0
+
+$ /opt/homebrew/bin/python3.11 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 60994
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+Exit: 0
+
+$ git diff --cached --check
+Exit: 0
+
+$ git diff --check
+Exit: 0
+
+PASS exclusively API-owned paths staged; coordinator receipt unstaged.
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-coverage-investigation.md
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/affected-python311.log
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/affected-python39.log
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/artifact-formatting-attempt.json
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/audit.py
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/broad-python311.log
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/broad-python39.log
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/gates.log
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/helper-probe.log
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/helpers.py
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/input-reference-audit.log
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/narrow-tests.log
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/port-probe.log
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/port_probe.py
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/probe-results.json
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/repository-results.json
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/run_probes.py
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/run_repository.py
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/source-python311.log
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/source-python39.log
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-execution-coverage-report.md
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-revision-record.md
+tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-test-case-ledger.md
+Owned final-gate HOME/TMPDIR cleaned.
+
+Last full-index gate after all final artifact paths staged:
+$ /opt/homebrew/bin/python3.11 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 60995
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+Exit: 0
+
+Last full-index gate after all final artifact paths staged:
+$ git diff --cached --check
+Exit: 0
+
+Last full-index gate after all final artifact paths staged:
+$ git diff --check
+Exit: 0

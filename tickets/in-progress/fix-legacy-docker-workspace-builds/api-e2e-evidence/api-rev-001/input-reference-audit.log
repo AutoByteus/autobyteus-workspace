@@ -1,0 +1,160 @@
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds
+Clean env; no application/provider inheritance.
+$ /opt/homebrew/bin/python3.11 /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/audit.py
+Complete source allowlist PASS: 11 deletes +5 modifications; all other tracked production paths unchanged.
+M	.gitignore
+M	README.md
+M	autobyteus-server-ts/docker/README.md
+D	docker/.gitignore
+D	docker/Dockerfile.allinone
+D	docker/Dockerfile.remote-server
+D	docker/README.md
+D	docker/allinone-start-server.sh
+D	docker/allinone-start-web.sh
+D	docker/compose.personal-test.yml
+D	docker/remote-server-entrypoint.sh
+D	docker/supervisor-allinone.conf
+D	scripts/personal-docker.sh
+D	scripts/seed-personal-test-fixtures.py
+M	scripts/tests/test_docker_build_context_sources.py
+M	scripts/tests/test_public_docker_launcher_shared_workspace.py
+ABSENT docker/.gitignore baseline sha256 c740db8c5771bc53deca3faf16465ffd78a57c5bc6df70143f0a8f422fb469ab
+ABSENT docker/Dockerfile.allinone baseline sha256 307adf870154e2036f26d09bd751c28ca40065decfc0b3153f82352d0a107429
+ABSENT docker/Dockerfile.remote-server baseline sha256 7460994d126a222e1e3896b03424b3bac7668a98580cbac97aa53f8d48a25760
+ABSENT docker/README.md baseline sha256 7e4b311e0b0b00a1f918ba5b47b4a028f615022610f811fdad0d342bb0a527bb
+ABSENT docker/allinone-start-server.sh baseline sha256 c785353334f41aed23ddc72898bd032ed79aca6a53bc272dda53ee6f0206be01
+ABSENT docker/allinone-start-web.sh baseline sha256 e1245608089c6cdb592c4cf45045786283a0cf8d2ab7893f0958072cf3a49e00
+ABSENT docker/compose.personal-test.yml baseline sha256 a5b2b63337635e92917b906cc1da0d530b3b8c7d74b64546be919e472c01f5e5
+ABSENT docker/remote-server-entrypoint.sh baseline sha256 8cc23f8dc405cd29f3d906dabecbd9f1457b2c6d90087c458781430dde39fccf
+ABSENT docker/supervisor-allinone.conf baseline sha256 b89c7dee4bcdd8bb74360f7610b7bfe221807a622200882a660dc18dabe6701a
+ABSENT scripts/personal-docker.sh baseline sha256 6b59c2161ca93de9413630ea0dbe1b3ef4c0334851fed5b273700708e04f7b3c
+ABSENT scripts/seed-personal-test-fixtures.py baseline sha256 1367f1c8b3ae6ed4e6d68bd3b26b500e4d33f7eceba06bd3bb3d1f58990bbb3f
+BYTE-IDENTICAL .dockerignore 09b45e127b653696b059856f70a85fe86964ae3f479a4920c9b6a109e120b295
+BYTE-IDENTICAL package.json 7f8df829919449c370a855f9d6dcb92b91d5f8805d09720f24c86b49e2918ac0
+BYTE-IDENTICAL pnpm-workspace.yaml 334c01a6e5e3d1a20eef38b66370c73767b4399a337a4cbaf55eacc743524d89
+BYTE-IDENTICAL pnpm-lock.yaml 739054d84cd9c64520ca7d194aa76679a6adddfbd74680869ba11bad0e68652e
+BYTE-IDENTICAL LICENSE 0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0
+BYTE-IDENTICAL LICENSING.md ff416568ab01c60e62b28a570f078ed83b61dbc154262fd2bc1f80c16a42fb1f
+BYTE-IDENTICAL NOTICE c781cf26b278b2dd15b79f96e210c200a195480464f0801888fc7026eccbdca2
+BYTE-IDENTICAL .github/workflows/release-server-docker.yml 85e34c4b90c88c66f922309709fddaeea6dd6505f636ddc604ed19e33f0ed450
+BYTE-IDENTICAL autobyteus-server-ts/docker/.env.example 34d627b5f3afecce9ecc1462df6fbfbb081e6d498e7066df3e388f2783cb0d71
+BYTE-IDENTICAL autobyteus-server-ts/docker/.gitignore 0cc28e2b677c457c721ce43e245160e47863fbdca7dd8b0e720db287dd60b365
+BYTE-IDENTICAL autobyteus-server-ts/docker/Dockerfile.monorepo 28ba38691af0ea7c328e1a048e031eff62f2f749d58852f170bee20c97863213
+BYTE-IDENTICAL autobyteus-server-ts/docker/bootstrap.sh e783bb25234c35e4106e17d19a06c9ada4fa28a3e4b8615e63b70d4283d3b5a1
+BYTE-IDENTICAL autobyteus-server-ts/docker/build-multi-arch.sh 11419ae586a21257928fd04bd76063631f37afd235743a8f97999f79a8eee799
+BYTE-IDENTICAL autobyteus-server-ts/docker/build.sh 57220d8e6efd5ebdfe19ec6a5f5d79117e2308f006e1c26915cb7f8fff00178b
+BYTE-IDENTICAL autobyteus-server-ts/docker/docker-compose.yml 1411f127873c16f4c8492de3014fe60633ee12f0f15b155156b7f1cda1558fc6
+BYTE-IDENTICAL autobyteus-server-ts/docker/docker-start.sh b05d4f3f9277a76db01115b66262eb31821b2982f5499d85c24908438d15f5b7
+BYTE-IDENTICAL autobyteus-server-ts/docker/entrypoint.sh 3175be989f347e27c49426714bb87329ed9610ce22238243a348ff0f6bc857bc
+BYTE-IDENTICAL autobyteus-server-ts/docker/exo-open-root-bridge.sh 9fc2adf1b8c97d1f924552dbc79680a4d29a6214f285031e62112ee9e6b57875
+BYTE-IDENTICAL autobyteus-server-ts/docker/open-vnc-browser-url.sh f9e42685cdf786c40a1b186c63a0339a90a11d4f8f86bae3ae4001adf8594e5f
+BYTE-IDENTICAL autobyteus-server-ts/docker/supervisor-autobyteus-server.conf 5ba101a84e2b1b181750d80a554a3c2cbdb12d0eb11eadd337c04d52fe91f95f
+BYTE-IDENTICAL autobyteus-server-ts/docker/xdg-open-root-bridge.sh 3794b67485f843b41a68984b96c7e26b575f9159ed51a2fdb6669efc8b050b16
+BYTE-IDENTICAL scripts/public/docker/autobyteus-docker.d/bash/commands.sh 0cd7a12df19071f93af87c70a60cfb027fbf5d7e5c3463e0f2263145196e563b
+BYTE-IDENTICAL scripts/public/docker/autobyteus-docker.d/bash/core.sh 6defb71cde9493426bb1fd7b326d099074f5a246c52066fce939d90343604610
+BYTE-IDENTICAL scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh bc64dfcb79bdc4b20e8868ede2400776897ee60aadd028e1c4a316b77e6cba10
+BYTE-IDENTICAL scripts/public/docker/autobyteus-docker.d/powershell/Commands.ps1 b098e8fd3a31f465cc06ffb16ed4841f4ec6fa145f9fba16de0d6f196bf6ca2f
+BYTE-IDENTICAL scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1 fc43bfafd78485bceb1c2d27d2b05e035ebf97fbf099dd6f234674aa2ba82a71
+BYTE-IDENTICAL scripts/public/docker/autobyteus-docker.d/powershell/DockerRuntime.ps1 959dabd6cda84d8cf23cbd04daf417ce536b1826b001abd15b12b1a1dc6db162
+BYTE-IDENTICAL scripts/public/docker/autobyteus-docker.ps1 93756ebbe7038eef3797d9044ca8d3fdcdee4900d4e039fbb26fcd9cae568f30
+BYTE-IDENTICAL scripts/public/docker/autobyteus-docker.sh e7d4c195e14419e0614ce08b2101fd9f1c76cee5030152c85116be0b7bfef187
+COPY pnpm-workspace.yaml exists/no removed dependency; scoped delta= []
+COPY pnpm-lock.yaml exists/no removed dependency; scoped delta= []
+COPY package.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-ts/package.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-ts/tsconfig.build.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-ts/tsconfig.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-ts/scripts exists/no removed dependency; scoped delta= []
+COPY autobyteus-application-sdk-contracts/package.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-application-sdk-contracts/tsconfig.build.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-application-sdk-contracts/tsconfig.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-application-backend-sdk/package.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-application-backend-sdk/tsconfig.build.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-application-backend-sdk/tsconfig.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-agent-presentation-contracts/package.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-agent-presentation-contracts/tsconfig.build.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-agent-presentation-contracts/tsconfig.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-collaboration-stream-contracts/package.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-collaboration-stream-contracts/tsconfig.build.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-collaboration-stream-contracts/tsconfig.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-team-stream-contracts/package.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-team-stream-contracts/tsconfig.build.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-team-stream-contracts/tsconfig.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-server-ts/package.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-server-ts/tsconfig.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-web/package.json exists/no removed dependency; scoped delta= []
+COPY autobyteus-ts exists/no removed dependency; scoped delta= []
+COPY autobyteus-application-sdk-contracts exists/no removed dependency; scoped delta= []
+COPY autobyteus-application-backend-sdk exists/no removed dependency; scoped delta= []
+COPY autobyteus-agent-presentation-contracts exists/no removed dependency; scoped delta= []
+COPY autobyteus-collaboration-stream-contracts exists/no removed dependency; scoped delta= []
+COPY autobyteus-team-stream-contracts exists/no removed dependency; scoped delta= []
+COPY autobyteus-server-ts exists/no removed dependency; scoped delta= [('M', 'autobyteus-server-ts/docker/README.md')]
+COPY autobyteus-web exists/no removed dependency; scoped delta= []
+COPY LICENSE exists/no removed dependency; scoped delta= []
+COPY LICENSING.md exists/no removed dependency; scoped delta= []
+COPY NOTICE exists/no removed dependency; scoped delta= []
+COPY autobyteus-server-ts/docker/supervisor-autobyteus-server.conf exists/no removed dependency; scoped delta= []
+COPY autobyteus-server-ts/docker/bootstrap.sh exists/no removed dependency; scoped delta= []
+COPY autobyteus-server-ts/docker/entrypoint.sh exists/no removed dependency; scoped delta= []
+COPY autobyteus-server-ts/docker/open-vnc-browser-url.sh exists/no removed dependency; scoped delta= []
+COPY autobyteus-server-ts/docker/xdg-open-root-bridge.sh exists/no removed dependency; scoped delta= []
+COPY autobyteus-server-ts/docker/exo-open-root-bridge.sh exists/no removed dependency; scoped delta= []
+Executable application/contracts/manifests/lockfile/license inputs unchanged; broad package COPY guide bytes can change, not full-image equality.
+REFERENCE AUDIT 2756d7b298ca5b203ebd2310d172b37a5d381b5c
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:README.md:301:./scripts/personal-docker.sh up
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:README.md:302:./scripts/personal-docker.sh ports
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:README.md:309:./scripts/personal-docker.sh up -r 0 --no-seed-test-fixtures
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:README.md:315:./scripts/personal-docker.sh down
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:autobyteus-server-ts/docker/README.md:506:- Builds `docker/Dockerfile.monorepo` for `linux/amd64,linux/arm64`. The runtime image contains `/app/LICENSE`, `/app/LICENSING.md` and `/app/NOTICE` and carries the label `org.opencontainers.image.licenses="AGPL-3.0-only"`. The same files and label are declared in `docker/Dockerfile.allinone`, `docker/Dockerfile.remote-server` and `autobyteus-message-gateway/docker/Dockerfile`.
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/Dockerfile.allinone:67:COPY docker/allinone-start-server.sh /usr/local/bin/allinone-start-server.sh
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/Dockerfile.allinone:68:COPY docker/allinone-start-web.sh /usr/local/bin/allinone-start-web.sh
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/Dockerfile.allinone:69:COPY docker/supervisor-allinone.conf /etc/supervisor/conf.d/supervisor-allinone.conf
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/Dockerfile.allinone:71:RUN chmod +x /usr/local/bin/allinone-start-server.sh \
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/Dockerfile.allinone:72:  /usr/local/bin/allinone-start-web.sh
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/Dockerfile.remote-server:53:COPY docker/remote-server-entrypoint.sh /usr/local/bin/remote-server-entrypoint.sh
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/Dockerfile.remote-server:54:RUN chmod +x /usr/local/bin/remote-server-entrypoint.sh
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/Dockerfile.remote-server:65:ENTRYPOINT ["/usr/local/bin/remote-server-entrypoint.sh"]
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/README.md:14:./scripts/personal-docker.sh up
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/README.md:15:./scripts/personal-docker.sh ports
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/README.md:26:./scripts/personal-docker.sh up -r 0 --no-seed-test-fixtures
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/README.md:32:./scripts/personal-docker.sh down
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/README.md:40:./scripts/personal-docker.sh ps
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/README.md:46:./scripts/personal-docker.sh logs
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/README.md:52:./scripts/personal-docker.sh logs main-allinone
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/README.md:58:./scripts/personal-docker.sh seed
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/README.md:64:./scripts/personal-docker.sh down --volumes
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/README.md:70:./scripts/personal-docker.sh down --delete-state
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/README.md:82:./scripts/personal-docker.sh up --project ticket-a
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/README.md:83:./scripts/personal-docker.sh up --project ticket-b
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/compose.personal-test.yml:6:      dockerfile: docker/Dockerfile.allinone
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/compose.personal-test.yml:58:      dockerfile: docker/Dockerfile.remote-server
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/supervisor-allinone.conf:2:command=/usr/local/bin/allinone-start-server.sh
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:docker/supervisor-allinone.conf:12:command=/usr/local/bin/allinone-start-web.sh
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:scripts/personal-docker.sh:5:COMPOSE_FILE="${ROOT_DIR}/docker/compose.personal-test.yml"
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:scripts/personal-docker.sh:14:  ./scripts/personal-docker.sh <command> [options]
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:scripts/personal-docker.sh:55:  local seed_script="${ROOT_DIR}/scripts/seed-personal-test-fixtures.py"
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:scripts/tests/test_docker_build_context_sources.py:10:ALLINONE_DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile.allinone"
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:scripts/tests/test_docker_build_context_sources.py:11:REMOTE_SERVER_DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile.remote-server"
+2756d7b298ca5b203ebd2310d172b37a5d381b5c:scripts/tests/test_docker_build_context_sources.py:79:            "Dockerfile.allinone must admit @autobyteus/team-stream-contracts to its filtered install command",
+
+REFERENCE AUDIT HEAD
+HEAD:scripts/tests/test_docker_build_context_sources.py:26:    "docker/Dockerfile.allinone",
+HEAD:scripts/tests/test_docker_build_context_sources.py:27:    "docker/Dockerfile.remote-server",
+HEAD:scripts/tests/test_docker_build_context_sources.py:29:    "docker/allinone-start-server.sh",
+HEAD:scripts/tests/test_docker_build_context_sources.py:30:    "docker/allinone-start-web.sh",
+HEAD:scripts/tests/test_docker_build_context_sources.py:31:    "docker/compose.personal-test.yml",
+HEAD:scripts/tests/test_docker_build_context_sources.py:32:    "docker/remote-server-entrypoint.sh",
+HEAD:scripts/tests/test_docker_build_context_sources.py:33:    "docker/supervisor-allinone.conf",
+HEAD:scripts/tests/test_docker_build_context_sources.py:34:    "scripts/personal-docker.sh",
+HEAD:scripts/tests/test_docker_build_context_sources.py:35:    "scripts/seed-personal-test-fixtures.py",
+
+GUIDE LINK README.md autobyteus-server-ts/docker/README.md => autobyteus-server-ts/docker/README.md
+GUIDE LINK autobyteus-server-ts/README.md docker/README.md => autobyteus-server-ts/docker/README.md
+Original supported apostrophe fixture/assertion body unchanged; IMPL-BASE-001 remains OPEN.
+Historical/IR/CR evidence unchanged. No resource operations in this audit; no actual image/API/desktop/provider execution.
+PASS audit.
+
+Exit: 0
+
+Owned outer HOME/TMPDIR cleanup completed.

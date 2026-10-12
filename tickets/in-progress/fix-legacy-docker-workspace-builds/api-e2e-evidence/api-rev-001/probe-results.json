@@ -1,0 +1,38 @@
+[
+  {
+    "case": "API-005",
+    "result": "Pass",
+    "exit_codes": [
+      0
+    ],
+    "log": "input-reference-audit.log"
+  },
+  {
+    "case": "API-006",
+    "result": "Pass",
+    "exit_codes": [
+      0
+    ],
+    "log": "helper-probe.log"
+  },
+  {
+    "case": "API-007",
+    "result": "Pass",
+    "exit_codes": [
+      0
+    ],
+    "log": "port-probe.log"
+  },
+  {
+    "case": "API-008",
+    "result": "Pass",
+    "exit_codes": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "log": "gates.log"
+  }
+]
