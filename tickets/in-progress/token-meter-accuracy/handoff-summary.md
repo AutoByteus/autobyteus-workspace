@@ -4,8 +4,9 @@
 
 - Verified by the user on 2026-10-11: "i have verified. lets finalize and release a new beta".
   - AC-010 (desktop app: Claude SDK fixes A and B, runtime spot checks): verified.
-- Release decision: publish the next beta (after 1.5.1).
-- **Renewed verification needed (DR-003).** After that verification, the package gained D-12 and D-13 (SR-008–SR-014) and the 1.5.1 base. Waiting for the user on:
+- Release decision: no release (user, 2026-10-12). This replaces the 2026-10-11 request for a beta.
+- **Renewed verification received (DR-004), 2026-10-12:** "finalize no need to release a new version". The user accepts the DR-003 package (AC-011, AC-012) and changes the release decision to **no release**.
+- Earlier request (DR-003): **renewed verification needed.** After that verification, the package gained D-12 and D-13 (SR-008–SR-014) and the 1.5.1 base. Waiting for the user on:
   - AC-011: during a native compaction, "Latest prompt" keeps its value; on the agent's next call it shows a smaller value.
   - AC-012: after a completed native or Claude Agent SDK compaction (for example a manual `/compact`), the value is greyed with "Compacted — updates on the next model call", and the note clears on the next model call. A Codex compaction shows no note.
 - Follow-up: the code reviewer's refactoring proposal (`code-review-refactoring-proposal.md`, R-1–R-4) is tracked separately as Project Task `project_task_7257984e-19b4-452a-a65b-99316d879bc1` (SR-007). It is not part of this package.
