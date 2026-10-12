@@ -59,10 +59,13 @@
   - Contracts 13/24/17.
   - Browser probe DLP-001..007 7/7.
   - Web 4216 passed; guards; licensing; hygiene.
-- User verification/finalization state: accepted (2026-10-12). Finalization in progress.
-- Terminal return to `/solution_designer`: sent after finalization, release and cleanup complete (see `release-deployment-report.md` → Final Status).
+- User verification/finalization state: accepted (2026-10-12).
+  - Finalized on `personal` @ `2e9bd209c` (merge `4aad2038a`).
+  - Beta `v1.5.3-beta.1` is complete: four of four workflows succeeded, 17 assets, Docker `1.5.3-beta.1` and `:beta`.
+  - The worktree and branches are cleaned up.
+- Terminal return to `/solution_designer`: `Sent` after this record commit is pushed. The send result is reported in the delivery engineer's conversation.
 - Why this delivery revision was recorded: new upstream evidence, a base re-integration, and the user's acceptance and release decision.
-- Next recipient/action: finalize, release, clean up, then return the terminal package to `/solution_designer`.
+- Next recipient/action: `/solution_designer` verifies the terminal package.
 - Remaining blockers, rollback concerns, or untested scope:
   - AC-015 with the user's own definitions was not reported.
   - UNK-001 (out of scope).

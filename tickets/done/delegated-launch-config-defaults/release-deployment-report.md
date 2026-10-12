@@ -87,37 +87,84 @@
 - Docs updated:
   - Server modules: `agent_communication.md`, `agent_tools.md`, `agent_definition.md`, `agent_team_definition.md`, `agent_orgs.md`, `run_history.md`.
   - Web: `agent_teams.md`, `agent_orgs.md`, `settings.md`.
-  - `TESTING.md`, which will be its own `docs(testing)` commit.
+  - `TESTING.md`, committed separately as `44441f4ab` (`docs(testing): contract packages track their dist/`).
+- Committed docs sync: `02de957e0`.
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/delegated-launch-config-defaults`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/done/delegated-launch-config-defaults` (in the repository: `tickets/done/delegated-launch-config-defaults/`)
+- Archived ticket path: `tickets/done/delegated-launch-config-defaults/` on `personal`. The archive commit is `68febeb64`.
 
 ## Version / Tag / Release Commit
 
-- Pending the user's release decision. The next beta would be `v1.5.2-beta.3` (`scripts/release_versions.py next-beta`).
+- Version: `1.5.3-beta.1`. It is the next beta after stable `v1.5.2` (`scripts/release_versions.py next-beta`).
+- Release commit: `2e9bd209c` `chore(release): bump workspace release version to 1.5.3-beta.1`. Only `autobyteus-web/package.json` changed.
+- Tag: annotated `v1.5.3-beta.1` on `2e9bd209c`.
+- Command: `bash scripts/desktop-release.sh beta --branch finalize/delegated-launch-config-defaults --no-push`, run after deleting the untracked `*/dist/` folders as the guide requires.
 
 ## Repository Finalization
 
 - Bootstrap context source: the ticket branch's recorded base and `RELEASE.md` → Finalization Target.
-- Ticket branch: `codex/delegated-launch-config-defaults` (local)
-- Finalization target: `origin` / `personal`, through `finalize/delegated-launch-config-defaults` with `--no-ff`, per `RELEASE.md`.
-- Repository finalization status: not started (waiting for verification).
+- Ticket branch: `codex/delegated-launch-config-defaults`. It stayed local and was never pushed, matching the guide's flow. The final ticket commit was `bb91dd7f0`.
+- Ticket branch commit result: `Completed`.
+- Ticket branch push result: `Not required`. `RELEASE.md` merges the local ticket branch on a `finalize/` branch and pushes only `personal`. This differs from the generic step of pushing the ticket branch.
+- Finalization target remote / branch: `origin` / `personal`.
+- Target advanced after verification: `Yes`, twice.
+  - First to `4d315fd24` (`agent-package-auto-refresh`). It was merged into the ticket branch as `f3760a679`, and the checks were rerun.
+  - Then to `e305a20a5`. That commit touched only `tickets/done/` files of another ticket, so no rerun was needed.
+- Delivery-owned edits protected before re-integration: `Completed` (all committed).
+- Re-integration before final merge result: `Completed`.
+- Target branch update and merge:
+  - `git checkout -b finalize/delegated-launch-config-defaults origin/personal` at `e305a20a5`.
+  - `git merge --no-ff codex/delegated-launch-config-defaults` gave `4aad2038a`.
+- Push target branch result: `Completed`.
+  - The base was re-fetched and confirmed unchanged at `e305a20a5`.
+  - `git push origin HEAD:personal` moved it `e305a20a5..2e9bd209c`.
+  - The base was re-fetched again (`origin/personal == 2e9bd209c`) before the tag push.
+- Repository finalization status: `Completed`.
 
 ## Release / Publication / Deployment
 
-- Applicable: pending the user's decision.
-- Release notes: `release-notes.md` prepared before verification.
+- Applicable: `Yes`. The user asked for a new beta.
+- Method: `Project Release Guide` (`RELEASE.md` → Cutting The Release, Watching The Rollout).
+- Method reference / command: `desktop-release.sh beta … --no-push`; `git push origin HEAD:personal`; `git push origin v1.5.3-beta.1`.
+- Pipelines triggered and their results: all four succeeded.
+
+  | Workflow | Run | Result |
+  | --- | --- | --- |
+  | Desktop Release | `38252391362` | success, 13:21 UTC |
+  | Android APK Release | `38252391427` | success, 13:03 UTC |
+  | iOS App Store Connect Release | `38252391312` | success, 13:13 UTC (TestFlight upload) |
+  | Server Docker Release | `38252391368` | success, 13:39 UTC |
+
+- Published artifacts checked against what the release should produce:
+  - GitHub release https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.3-beta.1 is a pre-release with 17 assets:
+    - macOS arm64 and x64: `.dmg`, `.zip` and blockmaps;
+    - Linux x64 and arm64 AppImages;
+    - the Windows `.exe`;
+    - `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`;
+    - the Android APK and its `.sha256`.
+  - Docker Hub:
+    - `autobyteus/autobyteus-server:1.5.3-beta.1` is published for amd64 and arm64.
+    - `:beta` points to the same digest (`sha256:62ee64827c53…`).
+    - `:latest` is unchanged on `v1.5.2`.
+- Release/publication/deployment result: `Completed` (not partial).
+- Release notes handoff result: `Not required`. Pre-release tags use GitHub generated notes. The ticket's `release-notes.md` stays for the next stable release.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults`
-- Planned after finalization: remove the worktree, prune, and delete the local ticket and finalize branches. Also remove `/tmp/dlcd-ac015-agents` (the verification copy of the agent package).
+- Worktree cleanup result: `Completed` (`git worktree remove`; it was clean and fully merged).
+- Worktree prune result: `Completed`.
+- Local ticket branch cleanup result: `Completed`. Deleted `codex/delegated-launch-config-defaults` (was `bb91dd7f0`) and `finalize/delegated-launch-config-defaults` (was `2e9bd209c`).
+- Remote branch cleanup result: `Not required` (never pushed).
+- Other: `/tmp/dlcd-ac015-agents`, the unused verification copy of the agent package, was removed.
+- This record was committed from a temporary detached worktree of `origin/personal`, which was removed afterwards.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `tickets/done/delegated-launch-config-defaults/release-notes.md`
+- Release notes artifact created before verification: `tickets/in-progress/delegated-launch-config-defaults/release-notes.md`. It is archived as `tickets/done/delegated-launch-config-defaults/release-notes.md`.
+- Archived release notes artifact used for release/publication: not used for the beta, which has generated notes. It is available for the next stable release.
 - Release notes status: `Updated`
 
 ## Environment Or Persisted-Data Transition Notes
@@ -127,6 +174,17 @@
 - Result and evidence: AC-009 is covered by the durable server E2E (pre-change saved tree restores on the Team value), rerun in DR-001.
 
 ## Verification Checks
+
+DR-002 finalization re-integration, on `f3760a679` (`delivery-evidence/dr-002/final-merge/`):
+
+- 15 of 16 checks passed on the first run.
+- The flaky `run-file-change-service.test.ts` timeout was unrelated. It passed 5/5 alone, and the full rerun passed: 679 files, 5357 passed.
+- Other results:
+  - ticket server E2E: 3/3;
+  - real-UI probe: 7/7;
+  - web: 610 files, 4236 passed;
+  - contracts: 13/24/17.
+- Before tagging, on the final merge `4aad2038a`: `check_licensing.py` and `check_repository_artifact_hygiene.py` passed.
 
 DR-002, on the merged state `7f750e1e5`. Logs and probe screenshots are in `delivery-evidence/dr-002/`. All 16 checks passed:
 
@@ -163,10 +221,10 @@ Server unit counts are lower than API/E2E's 5277 because the base removed the re
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (pending decision)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: None. Waiting for user verification.
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes`. The user wrote "now finalize and release a new beta." on 2026-10-12. The AC-015 result with the user's own definitions was not separately reported.
+- Repository finalization complete: `Yes` (`personal` @ `2e9bd209c`, merge `4aad2038a`).
+- Applicable release/deployment/rollout complete or not required: `Yes`. `v1.5.3-beta.1` is complete: four of four workflows succeeded, 17 assets, Docker `:beta` moved.
+- Applicable safe cleanup complete or not required: `Yes`.
+- Unresolved blocker: None.
+- Successful terminal package eligible for return: `Yes`.
+- Terminal package sent to `/solution_designer`: after this record is pushed (see `delivery-revision-record.md` → DR-002).

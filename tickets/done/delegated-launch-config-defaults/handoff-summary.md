@@ -5,7 +5,7 @@
 - 2026-10-12: the user replied "now finalize and release a new beta."
 - Decisions:
   1. **Accepted for finalization.** The user did not report the AC-015 result separately. This instruction is recorded as acceptance. AC-015's setup was proven with real Claude and Codex runtimes in the packaged app (ISO-001), but not with the user's own Software Engineering Team definitions and Sol 6.1.
-  2. **Release:** a new beta, `v1.5.3-beta.1` (the next beta after stable `v1.5.2`). See `release-deployment-report.md`.
+  2. **Release:** a new beta. It shipped as `v1.5.3-beta.1`, the next beta after stable `v1.5.2`, and is complete: four of four workflows, 17 assets, Docker `:beta`. See `release-deployment-report.md`.
   3. **`RELEASE.md` correction:** not answered. It is not changed in this ticket and stays a proposal.
   4. **Follow-up candidates:** not answered. They go to the Solution Designer as separate-ticket candidates.
 
