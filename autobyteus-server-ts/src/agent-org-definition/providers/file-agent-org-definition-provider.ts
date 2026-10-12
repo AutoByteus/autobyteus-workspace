@@ -75,7 +75,7 @@ export class FileAgentOrgDefinitionProvider {
       throw error;
     }
   }
-  /** Exact disk read used for write results; readers go through the definition catalog. */
+  /** Exact disk read used for write results; readers go through the agent package definitions. */
   async getById(id: string): Promise<AgentOrgDefinition | null> {
     if (!id || id.startsWith("_")) return null;
     const source = await this.locate(id);

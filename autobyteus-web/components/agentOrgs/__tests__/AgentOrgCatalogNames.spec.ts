@@ -7,7 +7,7 @@ import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
 import { useAgentOrgDefinitionStore, type AgentOrgDefinition } from '~/stores/agentOrgDefinitionStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
-import { useDefinitionDiagnosticsStore } from '~/stores/definitionDiagnosticsStore'
+import { useDefinitionProblemsStore } from '~/stores/definitionProblemsStore'
 
 const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), push: vi.fn(), route: null as any }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
@@ -29,7 +29,7 @@ beforeEach(() => {
   vi.spyOn(useAgentOrgDefinitionStore(), 'fetchAll').mockResolvedValue(undefined)
   vi.spyOn(useAgentOrgDefinitionStore(), 'refreshAndReload').mockResolvedValue(undefined)
   // The unavailable-Org notice reads diagnostics, not member references or the catalog.
-  vi.spyOn(useDefinitionDiagnosticsStore(), 'ensureLoaded').mockResolvedValue(undefined)
+  vi.spyOn(useDefinitionProblemsStore(), 'ensureLoaded').mockResolvedValue(undefined)
   vi.spyOn(useAgentDefinitionStore(), 'fetchAllAgentDefinitions').mockResolvedValue(undefined)
   vi.spyOn(useAgentTeamDefinitionStore(), 'fetchAllAgentTeamDefinitions').mockResolvedValue(undefined)
 })

@@ -14,6 +14,7 @@ import {
   parseAgentTeamDefinitionConfig,
 } from "./agent-team-definition-config.js";
 import {
+  buildApplicationOwnedTeamSourcePaths,
   ensureWritableTeamSourcePaths,
   findTeamSourcePaths,
   type ResolvedTeamSourcePaths,
@@ -120,7 +121,7 @@ export class FileAgentTeamDefinitionProvider {
 
   /**
    * Exact disk read used for write results, application-owned Teams and startup data migrations.
-   * Runtime readers of registered package roots go through the definition catalog.
+   * Runtime readers of registered agent packages go through the agent package definitions.
    */
   async getById(id: string): Promise<AgentTeamDefinition | null> {
     if (id.startsWith("_")) return null;
@@ -128,6 +129,30 @@ export class FileAgentTeamDefinitionProvider {
       id, this.getReadTeamRoots(), this.applicationBundleService, this.getReadOrgRoots(),
     );
     return source ? this.readDefinition(source) : null;
+  }
+
+  /**
+   * Application-package Teams, read on demand (they are not agent package definitions). Each Team
+   * is isolated: one that cannot be read is logged and skipped, never failing the list.
+   */
+  async listApplicationOwnedTeams(): Promise<AgentTeamDefinition[]> {
+    let sources: Awaited<ReturnType<ApplicationBundleService["listApplicationOwnedTeamSources"]>>;
+    try {
+      sources = await this.applicationBundleService.listApplicationOwnedTeamSources();
+    } catch (error) {
+      logger.warn("APPLICATION_PACKAGE_SOURCES_UNAVAILABLE:agent_team", error);
+      return [];
+    }
+    const output: AgentTeamDefinition[] = [];
+    for (const source of sources) {
+      try {
+        const definition = await this.readDefinition(buildApplicationOwnedTeamSourcePaths(source));
+        if (definition) output.push(definition);
+      } catch (error) {
+        logger.warn(`APPLICATION_PACKAGE_TEAM_SKIPPED:${source.definitionId}: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+    return output;
   }
 
   async getTemplates(): Promise<AgentTeamDefinition[]> {

@@ -31,7 +31,7 @@ export const GetAgentTeamDefinitions = gql`
         ref
         refScope
       }
-      catalogIssues { subject definitionId name code reason definitionPath packageRoot usingLastGood }
+      loadIssues { kind definitionId name code reason definitionPath packageRoot usingLastGood }
     }
   }
 `

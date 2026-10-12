@@ -5,7 +5,7 @@ import { afterEach, expect, it } from 'vitest';
 import type { AppConfig } from '../../../src/config/app-config.js';
 import { FileAgentOrgDefinitionProvider } from '../../../src/agent-org-definition/providers/file-agent-org-definition-provider.js';
 import { AgentOrgDefinition, AgentOrgDefinitionUpdate } from '../../../src/agent-org-definition/domain/agent-org-definition.js';
-import { createDiskDefinitionServices } from '../../helpers/definition-catalog-test-runtime.js';
+import { createDiskDefinitionServices } from '../../helpers/agent-package-definitions-test-support.js';
 const roots: string[] = [];
 afterEach(async () => { await Promise.all(roots.splice(0).map(root => fs.rm(root, { recursive: true, force: true }))); });
 const setup = async () => {

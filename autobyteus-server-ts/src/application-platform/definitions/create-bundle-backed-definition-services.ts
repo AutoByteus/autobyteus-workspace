@@ -5,39 +5,36 @@ import { AgentDefinitionService } from "../../agent-definition/services/agent-de
 import { FileAgentTeamDefinitionProvider } from "../../agent-team-definition/providers/file-agent-team-definition-provider.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import {
-  createDefinitionCatalogRuntime,
-  type DefinitionCatalogRuntime,
-} from "../../definition-catalog/services/definition-catalog-runtime.js";
+  createAgentPackageDefinitions,
+  type AgentPackageDefinitions,
+} from "../../agent-package-definitions/services/agent-package-definitions.js";
 
 export type BundleBackedDefinitionServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
-  catalogRuntime: DefinitionCatalogRuntime;
+  packageDefinitions: AgentPackageDefinitions;
 }>;
 
-/** One definition catalog (registered package roots plus this bundle service's applications) behind the services. */
+/** The agent package definitions of the registered packages behind the services; application-package definitions come from this bundle service. */
 export const createBundleBackedDefinitionServices = (input: {
   appConfig: AppConfig;
   bundleService: ApplicationBundleService;
 }): BundleBackedDefinitionServices => {
-  const catalogRuntime = createDefinitionCatalogRuntime({
-    appConfig: input.appConfig,
-    applicationOwnedSources: input.bundleService,
-  });
+  const packageDefinitions = createAgentPackageDefinitions({ appConfig: input.appConfig });
   const agentDefinitionService = new AgentDefinitionService({
     fileStore: new FileAgentDefinitionProvider({
       appConfig: input.appConfig,
       applicationBundleService: input.bundleService,
     }),
-    catalogRuntime,
+    packageDefinitions,
   });
   const agentTeamDefinitionService = new AgentTeamDefinitionService({
     fileStore: new FileAgentTeamDefinitionProvider({
       appConfig: input.appConfig,
       applicationBundleService: input.bundleService,
     }),
-    catalogRuntime,
+    packageDefinitions,
     agentDefinitionService,
   });
-  return Object.freeze({ agentDefinitionService, agentTeamDefinitionService, catalogRuntime });
+  return Object.freeze({ agentDefinitionService, agentTeamDefinitionService, packageDefinitions });
 };

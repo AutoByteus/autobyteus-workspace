@@ -9,7 +9,7 @@ import {
   registerEnumType,
 } from "type-graphql";
 import { AgentDefinitionConverter } from "../converters/agent-definition-converter.js";
-import { DefinitionCatalogIssue } from "./definition-diagnostics.js";
+import { DefinitionLoadIssue } from "./definition-problems.js";
 import { getStudioAgentDefinitionService } from "../studio-application-api-services.js";
 import {
   GraphqlDefaultLaunchConfig,
@@ -116,8 +116,8 @@ export class AgentDefinition {
   defaultLaunchConfig?: GraphqlDefaultLaunchConfig | null;
 
   /** Set when the definition is served from its last working version; names the file and reason. */
-  @Field(() => DefinitionCatalogIssue, { nullable: true })
-  catalogIssue?: DefinitionCatalogIssue | null;
+  @Field(() => DefinitionLoadIssue, { nullable: true })
+  loadIssue?: DefinitionLoadIssue | null;
 }
 
 @InputType()
@@ -238,7 +238,7 @@ export class AgentDefinitionResolver {
       if (!domainDefinition) {
         return null;
       }
-      return await AgentDefinitionConverter.toGraphql(domainDefinition, await service.getDefinitionIssue(id));
+      return await AgentDefinitionConverter.toGraphql(domainDefinition, await service.getLoadIssue(id));
     } catch (error) {
       logger.error(`Error fetching agent definition by ID ${id}: ${String(error)}`);
       throw new Error("Unable to fetch agent definition at this time.");
@@ -250,7 +250,7 @@ export class AgentDefinitionResolver {
     try {
       const service = getStudioAgentDefinitionService();
       const definitions = await service.getVisibleAgentDefinitions();
-      const issues = new Map((await service.listDefinitionIssues()).map((entry) => [entry.definitionId, entry.issue]));
+      const issues = new Map((await service.listLoadIssues()).map((entry) => [entry.definitionId, entry.issue]));
       return await Promise.all(
         definitions.map(async (definition) =>
           AgentDefinitionConverter.toGraphql(definition, issues.get(String(definition.id ?? "")) ?? null)),
@@ -272,18 +272,6 @@ export class AgentDefinitionResolver {
     } catch (error) {
       logger.error(`Error fetching agent templates: ${String(error)}`);
       throw new Error("Unable to fetch agent templates at this time.");
-    }
-  }
-
-  @Mutation(() => Boolean)
-  async refreshAgentDefinitionCatalog(): Promise<boolean> {
-    try {
-      const service = getStudioAgentDefinitionService();
-      await service.refreshCache();
-      return true;
-    } catch (error) {
-      logger.error(`Error refreshing agent definition catalog: ${String(error)}`);
-      throw new Error("Unable to refresh agent definition catalog at this time.");
     }
   }
 

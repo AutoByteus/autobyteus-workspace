@@ -65,9 +65,9 @@ export type AgentPackageUpdateInfo = {
   lastError: string | null;
 };
 
-export const AGENT_PACKAGE_AUTO_REFRESH_STATES = ["WATCHING", "ROOT_MISSING", "UNAVAILABLE"] as const;
+export const AGENT_PACKAGE_AUTO_REFRESH_STATES = ["WATCHING", "FOLDER_MISSING", "UNAVAILABLE"] as const;
 
-/** Whether the server is watching this package's definition folders (null when no monitor runs). */
+/** Whether the server is watching this package's definition folders (null when no folder watcher runs). */
 export type AgentPackageAutoRefresh = {
   state: (typeof AGENT_PACKAGE_AUTO_REFRESH_STATES)[number];
   message: string | null;

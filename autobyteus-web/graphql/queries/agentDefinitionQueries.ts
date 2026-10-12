@@ -31,7 +31,7 @@ export const GetAgentDefinitions = gql`
         runtimeKind
         llmConfig
       }
-      catalogIssue { code reason definitionPath packageRoot }
+      loadIssue { code reason definitionPath packageRoot }
     }
   }
 `

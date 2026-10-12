@@ -218,7 +218,7 @@ export class FileAgentDefinitionProvider {
 
   /**
    * Exact disk read used for write results, application-owned definitions and startup data
-   * migrations. Runtime readers of registered package roots go through the definition catalog.
+   * migrations. Runtime readers of registered agent packages go through the agent package definitions.
    */
   async getById(id: string): Promise<AgentDefinition | null> {
     if (id.startsWith("_")) {
@@ -258,17 +258,46 @@ export class FileAgentDefinitionProvider {
   }
 
   /**
-   * Team-local agents of application-owned Teams (application-owned disk reads; registered package
-   * roots are served by the definition catalog).
+   * Application-package agents, read on demand (they are not agent package definitions). Each
+   * agent is isolated: one that cannot be read is logged and skipped, never failing the list.
+   */
+  async listApplicationOwnedAgents(): Promise<AgentDefinition[]> {
+    const output: AgentDefinition[] = [];
+    for (const source of await this.listApplicationSources("agent")) {
+      try {
+        const definition = await this.readApplicationOwnedAgent(buildApplicationOwnedAgentSourcePaths(source), source.definitionId);
+        if (definition) output.push(definition);
+      } catch (error) {
+        logger.warn(`APPLICATION_PACKAGE_AGENT_SKIPPED:${source.definitionId}: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+    return output;
+  }
+
+  /**
+   * Team-local agents of application-package Teams, read on demand. Each agent is isolated (a
+   * malformed one is logged and skipped).
    */
   async listApplicationOwnedTeamLocalAgents(): Promise<AgentDefinition[]> {
     return listTeamLocalAgentDefinitions({
       sharedTeamRoots: [],
-      applicationOwnedTeamSources: await this.applicationBundleService.listApplicationOwnedTeamSources(),
+      applicationOwnedTeamSources: await this.listApplicationSources("agent_team"),
       existingDefinitions: [],
       readAgentFromPaths: this.readAgentFromPaths.bind(this),
       warn: logger.warn,
     });
+  }
+
+  /** The application packages' agent or Team sources; a failing listing reads as none (logged). */
+  private async listApplicationSources(kind: "agent" | "agent_team") {
+    try {
+      return kind === "agent"
+        ? await this.applicationBundleService.listApplicationOwnedAgentSources()
+        : await this.applicationBundleService.listApplicationOwnedTeamSources();
+    } catch (error) {
+      logger.warn(`APPLICATION_PACKAGE_SOURCES_UNAVAILABLE:${kind}`, error);
+      return [];
+    }
   }
 
   async getTemplates(): Promise<AgentDefinition[]> {

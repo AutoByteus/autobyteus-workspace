@@ -283,7 +283,7 @@ describe("Agent definitions GraphQL e2e", () => {
     const configPath = path.join(agentDir, "agent-config.json");
     const { skillScope: _removed, ...configWithoutScope } = JSON.parse(await fs.readFile(configPath, "utf-8"));
     await fs.writeFile(configPath, JSON.stringify(configWithoutScope, null, 2), "utf-8");
-    await execGraphql(`mutation { refreshAgentDefinitionCatalog }`);
+    await execGraphql(`mutation { reloadAgentPackageDefinitions }`);
     const reread = await execGraphql<{ agentDefinition: { skillScope: string } | null }>(`
       query AgentDefinition($id: String!) { agentDefinition(id: $id) { skillScope } }
     `, { id: agentId });
@@ -339,7 +339,7 @@ describe("Agent definitions GraphQL e2e", () => {
     );
 
     // No package monitor runs in this test: the Reload mutation reconciles the files written above.
-    await execGraphql(`mutation { refreshAgentDefinitionCatalog }`);
+    await execGraphql(`mutation { reloadAgentPackageDefinitions }`);
     const listed = await execGraphql<{
       agentDefinitions: Array<{
         id: string;

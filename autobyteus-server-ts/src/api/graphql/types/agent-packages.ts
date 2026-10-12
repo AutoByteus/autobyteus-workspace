@@ -53,7 +53,7 @@ registerEnumType(AgentPackageUpdateStatusEnum, {
 
 enum AgentPackageAutoRefreshStateEnum {
   WATCHING = "WATCHING",
-  ROOT_MISSING = "ROOT_MISSING",
+  FOLDER_MISSING = "FOLDER_MISSING",
   UNAVAILABLE = "UNAVAILABLE",
 }
 

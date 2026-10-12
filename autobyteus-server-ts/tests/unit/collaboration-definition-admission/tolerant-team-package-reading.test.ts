@@ -6,7 +6,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 import type { AppConfig } from '../../../src/config/app-config.js';
 import type { ApplicationBundleService } from '../../../src/application-bundles/services/application-bundle-service.js';
 import { FileAgentTeamDefinitionProvider } from '../../../src/agent-team-definition/providers/file-agent-team-definition-provider.js';
-import { createDiskDefinitionServices } from '../../helpers/definition-catalog-test-runtime.js';
+import { createDiskDefinitionServices } from '../../helpers/agent-package-definitions-test-support.js';
 import { AgentTeamDefinitionResolver } from '../../../src/api/graphql/types/agent-team-definition.js';
 import { TeamRunService } from '../../../src/agent-team-execution/services/team-run-service.js';
 const bound = vi.hoisted(() => ({ admission: null as any, teams: null as any }));

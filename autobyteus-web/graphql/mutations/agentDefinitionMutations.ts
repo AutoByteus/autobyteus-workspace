@@ -60,9 +60,3 @@ export const DeleteAgentDefinition = gql`
     }
   }
 `
-
-export const RefreshAgentDefinitionCatalog = gql`
-  mutation RefreshAgentDefinitionCatalog {
-    refreshAgentDefinitionCatalog
-  }
-`

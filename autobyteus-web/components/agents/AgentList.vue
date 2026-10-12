@@ -42,7 +42,7 @@
       </div>
 
 
-      <DefinitionDiagnosticsNotice subject="AGENT" />
+      <DefinitionProblemsNotice kind="AGENT" />
 
       <div v-if="loading && !reloading" class="rounded-lg border border-slate-200 bg-white py-20 text-center shadow-sm">
         <div class="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
@@ -145,7 +145,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAgentDefinitionStore, type AgentDefinition } from '~/stores/agentDefinitionStore';
 import AgentCard from '~/components/agents/AgentCard.vue';
-import DefinitionDiagnosticsNotice from '~/components/definitions/DefinitionDiagnosticsNotice.vue';
+import DefinitionProblemsNotice from '~/components/definitions/DefinitionProblemsNotice.vue';
 import { useRunStart } from '~/composables/runSettings/useRunStart';
 import { useServerSettingsStore } from '~/stores/serverSettings';
 import { useToasts } from '~/composables/useToasts';

@@ -8,7 +8,7 @@ import { AgentOrgDefinitionResolver } from "../../agent-org-definition/services/
 import type { AgentTeamDefinition } from "../../agent-team-definition/domain/agent-team-definition.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { assertValidFlatTeamDefinition } from "../../agent-team-definition/services/flat-team-definition-validator.js";
-import type { DefinitionCatalogIssue } from "../../definition-catalog/domain/definition-catalog-types.js";
+import type { DefinitionLoadIssue } from "../../agent-package-definitions/domain/agent-package-definition-types.js";
 import type { DefinitionSourceClass } from "../domain/definition-source-descriptor.js";
 import type {
   AvailableDefinitionAdmissionResult,
@@ -32,13 +32,13 @@ type AdmissionSource = Readonly<{
 
 type PreliminaryResult = AvailableDefinitionAdmissionResult | UnavailableDefinitionAdmissionResult;
 
-const failureOf = (issue: DefinitionCatalogIssue | null): AdmissionSource["failure"] =>
+const failureOf = (issue: DefinitionLoadIssue | null): AdmissionSource["failure"] =>
   issue ? { code: issue.code, reason: issue.reason } : { code: "DEFINITION_CONTRACT_INVALID", reason: "The definition could not be loaded." };
 
 /**
  * Exact target-only admission and dependency availability owner for new-work surfaces. Teams and
- * Orgs from registered package roots are enumerated through the definition services (the
- * catalog, last good honored); application-owned Teams come from the source registry.
+ * Orgs from registered agent packages are listed through the definition services (the agent
+ * package definitions, last good honored); application-owned Teams come from the source registry.
  */
 export class DefinitionAdmissionService {
   private static instance: DefinitionAdmissionService | null = null;
@@ -120,8 +120,8 @@ export class DefinitionAdmissionService {
   }
 
   /**
-   * Shared Team units, org-owned Team nodes (their owning Orgs resolve them through these
-   * results), application-owned Teams and AgentOrg units, in a stable order.
+   * Shared Teams, org-owned Teams (their owning Orgs resolve them through these results),
+   * application-owned Teams and AgentOrgs, in a stable order.
    */
   private async listSources(): Promise<AdmissionSource[]> {
     const sources: AdmissionSource[] = [];

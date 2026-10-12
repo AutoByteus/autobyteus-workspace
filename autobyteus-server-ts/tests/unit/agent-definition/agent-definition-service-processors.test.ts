@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
-import { createInMemoryCatalogRuntime } from "../../helpers/definition-catalog-test-runtime.js";
+import { createInMemoryPackageDefinitions } from "../../helpers/agent-package-definitions-test-support.js";
 
 type FakeOption = { name: string; isMandatory: boolean };
 
@@ -28,7 +28,7 @@ describe("AgentDefinitionService processor filtering", () => {
     update: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
   };
-  let catalog: ReturnType<typeof createInMemoryCatalogRuntime>;
+  let definitions: ReturnType<typeof createInMemoryPackageDefinitions>;
 
   beforeEach(() => {
     provider = {
@@ -42,13 +42,13 @@ describe("AgentDefinitionService processor filtering", () => {
       update: vi.fn(async (definition: AgentDefinition) => definition),
       delete: vi.fn(async () => true),
     };
-    catalog = createInMemoryCatalogRuntime();
+    definitions = createInMemoryPackageDefinitions();
   });
 
   const buildService = () =>
     new AgentDefinitionService({
       fileStore: provider as never,
-      catalogRuntime: catalog.runtime,
+      packageDefinitions: definitions.packageDefinitions,
       registries: {
         input: registry,
         llmResponse: registry,
@@ -98,7 +98,7 @@ describe("AgentDefinitionService processor filtering", () => {
       id: "test-id",
       inputProcessorNames: ["MANDATORY_A", "legacy_optional"],
     });
-    catalog.seed("agent", existing);
+    definitions.seed("agent", existing);
     provider.update.mockImplementation(async (definition: AgentDefinition) => definition);
 
     const updated = await service.updateAgentDefinition("test-id", {
@@ -109,7 +109,7 @@ describe("AgentDefinitionService processor filtering", () => {
     expect(updated.inputProcessorNames).toEqual(["new_optional"]);
     expect(updated.lifecycleProcessorNames).toEqual(["new_lifecycle"]);
     // The stored definition is never mutated in place, and the owning unit is reconciled.
-    expect(catalog.catalog.getDefinition("agent", "test-id")?.inputProcessorNames).toEqual(["MANDATORY_A", "legacy_optional"]);
-    expect(catalog.sync.reconcileNow).toHaveBeenCalledWith("agent", ["test-id"]);
+    expect(definitions.store.getDefinition("agent", "test-id")?.inputProcessorNames).toEqual(["MANDATORY_A", "legacy_optional"]);
+    expect(definitions.reloader.reloadFoldersNow).toHaveBeenCalledWith("agent", ["test-id"]);
   });
 });

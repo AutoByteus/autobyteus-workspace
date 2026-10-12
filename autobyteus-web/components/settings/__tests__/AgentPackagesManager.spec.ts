@@ -147,7 +147,7 @@ describe('AgentPackagesManager', () => {
   it('shows whether each package folder is auto-refreshing, missing or not watched', async () => {
     const { wrapper } = await mountComponent([
       { ...defaultPackages[0], autoRefresh: { state: 'WATCHING', message: null } },
-      { ...defaultPackages[1], autoRefresh: { state: 'ROOT_MISSING', message: 'Its definitions keep their last loaded version until the folder returns.' } },
+      { ...defaultPackages[1], autoRefresh: { state: 'FOLDER_MISSING', message: 'Its definitions keep their last loaded version until the folder returns.' } },
     ] as typeof defaultPackages)
 
     const watching = wrapper.get('[data-testid="agent-package-auto-refresh-built-in_3Adefault"]')

@@ -6,7 +6,7 @@ export const GetAgentOrgDefinitions = gql`
       handoffs { from to rules }
       members { memberName ref refType refScope }
       defaultLaunchConfig { llmModelIdentifier runtimeKind llmConfig }
-      catalogIssues { subject definitionId name code reason definitionPath packageRoot usingLastGood }
+      loadIssues { kind definitionId name code reason definitionPath packageRoot usingLastGood }
     }
   }
 `

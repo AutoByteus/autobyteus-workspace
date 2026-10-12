@@ -7,19 +7,19 @@ import { createBundleBackedDefinitionServices } from "../application-platform/de
 import { DefinitionSourceRegistry } from "../collaboration-definition-admission/providers/definition-source-registry.js";
 import { DefinitionAdmissionService } from "../collaboration-definition-admission/services/definition-admission-service.js";
 import { FileAgentOrgDefinitionProvider } from "../agent-org-definition/providers/file-agent-org-definition-provider.js";
-import type { DefinitionCatalogSync } from "../definition-catalog/services/definition-catalog-sync.js";
+import type { AgentPackageDefinitions } from "../agent-package-definitions/services/agent-package-definitions.js";
 
 export type HostDefinitionServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
   agentOrgDefinitionService: AgentOrgDefinitionService;
   definitionAdmissionService: DefinitionAdmissionService;
-  /** The process definition catalog sync (the studio server wires the monitor and change feed to it). */
-  definitionCatalogSync: DefinitionCatalogSync;
+  /** The process agent package definitions (the studio server wires the folder watcher and change feed to its reloader). */
+  agentPackageDefinitions: AgentPackageDefinitions;
   close(): void;
 }>;
 
-/** Owns fail-closed process binding for the executable host definition catalog. */
+/** Owns fail-closed process binding for the executable host definition services. */
 export const createHostDefinitionServices = (input: {
   appConfig: AppConfig;
   bundleService: ApplicationBundleService;
@@ -44,7 +44,7 @@ export const createHostDefinitionServices = (input: {
     new FileAgentOrgDefinitionProvider(input.appConfig),
     definitions.agentDefinitionService,
     definitions.agentTeamDefinitionService,
-    definitions.catalogRuntime,
+    definitions.packageDefinitions,
   );
   try {
     AgentOrgDefinitionService.bindProcessInstance(agentOrgDefinitionService);
@@ -76,11 +76,11 @@ export const createHostDefinitionServices = (input: {
     agentTeamDefinitionService: definitions.agentTeamDefinitionService,
     agentOrgDefinitionService,
     definitionAdmissionService,
-    definitionCatalogSync: definitions.catalogRuntime.sync,
+    agentPackageDefinitions: definitions.packageDefinitions,
     close: () => {
       if (closed) return;
       closed = true;
-      definitions.catalogRuntime.sync.close();
+      definitions.packageDefinitions.reloader.close();
       DefinitionAdmissionService.releaseProcessInstance(definitionAdmissionService);
       AgentOrgDefinitionService.releaseProcessInstance(agentOrgDefinitionService);
       AgentTeamDefinitionService.releaseProcessInstance(

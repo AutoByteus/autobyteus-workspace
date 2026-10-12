@@ -31,7 +31,7 @@ import UiErrorPanel from '~/components/ui/UiErrorPanel.vue'
 import ToastContainer from '~/components/common/ToastContainer.vue'
 import SkillNameConflictDialog from '~/components/skills/SkillNameConflictDialog.vue'
 import { ServerStatus } from '~/types/serverStatus'
-import { useDefinitionCatalogChangeFeed } from '~/composables/definitionCatalog/useDefinitionCatalogChangeFeed'
+import { useAgentPackageDefinitionChangeFeed } from '~/composables/agentPackages/useAgentPackageDefinitionChangeFeed'
 
 const config = useRuntimeConfig()
 const serverStore = useServerStore()
@@ -40,8 +40,8 @@ const isEmbeddedWindow = computed(() => windowNodeContextStore.isEmbeddedWindow)
 const isAppReady = computed(() =>
   !isEmbeddedWindow.value || serverStore.status === ServerStatus.RUNNING
 )
-// Agents, Teams, Orgs, packages and the `@` menus follow catalog changes without a page reload.
-useDefinitionCatalogChangeFeed(isAppReady)
+// Agents, Teams, Orgs, packages and the `@` menus follow agent package definition changes without a page reload.
+useAgentPackageDefinitionChangeFeed(isAppReady)
 </script>
 
 <style lang="css">

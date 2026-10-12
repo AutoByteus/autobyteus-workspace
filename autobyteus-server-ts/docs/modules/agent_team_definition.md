@@ -61,23 +61,24 @@ owner/source lookup. An unavailable owner does not fall back to a same-named
 shared Team, and org-owned Teams never enter the public Team list. See
 [Org-owned source resolution](./agent_orgs.md#exact-org-owned-team-and-team-local-agent-reads).
 
-### Catalog Inventory And Issues
+### Agent Package Definitions And Load Issues
 
-Package-root Teams are served from the
-[definition catalog](./definition_catalog.md) as **team units**: the Team plus
-its Team-local Agents. File edits are detected and applied automatically. Each
-node keeps its last good version when a later edit is invalid, so a broken
-Team-local Agent does not make its Team unavailable.
+Teams from agent packages are served from the
+[agent package definitions](./agent_package_definitions.md) as **definition folders**:
+the Team plus its Team-local Agents. File edits are detected and applied
+automatically. Each definition keeps its last working version when a later edit
+is invalid, so a broken Team-local Agent does not make its Team unavailable.
 
-- `AgentTeamDefinition.catalogIssues` lists every issue in the unit: the Team
-  first, then its Team-local Agents. Each entry has `subject`, `definitionId`,
+- `AgentTeamDefinition.loadIssues` lists every load issue in the definition
+  folder: the Team first, then its Team-local Agents. Each entry has `kind`, `definitionId`,
   `name`, `code`, `reason`, `definitionPath`, `packageRoot` and
-  `usingLastGood`. The list is empty when the unit is clean.
-- A Team ID present in more than one registered package root is an issue-only
-  `DEFINITION_IDENTITY_DUPLICATED` unit. Every reader treats it as unavailable:
+  `usingLastGood`. The list is empty when the folder is clean.
+- A Team ID present in more than one registered agent package is unusable
+  (`DEFINITION_IDENTITY_DUPLICATED`). Every reader treats it as unavailable:
   the Teams list, launch, `list_available_agents` and `@`.
-- Admission enumerates catalog team units plus application-owned Team sources.
-  `definitionDiagnostics(subject: AGENT_TEAM)` lists the Teams that cannot be
+- Admission lists the Team folders plus application-package Team sources.
+  Application-package Teams are read on demand for the Team list; a malformed
+  one is logged and skipped. `definitionProblems(kind: AGENT_TEAM)` lists the Teams that cannot be
   used and the reason.
 
 Normal Team input readers extract supported root/member/handoff/default fields and

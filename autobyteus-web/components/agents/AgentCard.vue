@@ -27,7 +27,7 @@
             {{ ownershipLabel }}
           </p>
         </div>
-        <DefinitionCatalogIssueBadge :issues="catalogIssues" />
+        <DefinitionLoadIssueBadge :issues="loadIssues" />
 
         <div class="mt-3 space-y-2">
           <div class="flex items-start gap-2">
@@ -90,8 +90,8 @@
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue';
 import type { AgentDefinition } from '~/stores/agentDefinitionStore';
-import type { DefinitionUnitIssue } from '~/types/definitionCatalog';
-import DefinitionCatalogIssueBadge from '~/components/definitions/DefinitionCatalogIssueBadge.vue';
+import type { DefinitionLoadIssueEntry } from '~/types/agentPackageDefinitions';
+import DefinitionLoadIssueBadge from '~/components/definitions/DefinitionLoadIssueBadge.vue';
 import {
   formatApplicationOwnershipLabel,
   normalizeDefinitionOwnershipScope,
@@ -127,10 +127,10 @@ watch(() => agentDef.value.avatarUrl, () => {
 });
 
 /** A listed agent is always usable, so its own issue means its last working version is in use. */
-const catalogIssues = computed<DefinitionUnitIssue[]>(() => {
-  const issue = agentDef.value.catalogIssue;
+const loadIssues = computed<DefinitionLoadIssueEntry[]>(() => {
+  const issue = agentDef.value.loadIssue;
   return issue
-    ? [{ subject: 'AGENT', definitionId: agentDef.value.id, name: agentDef.value.name, usingLastGood: true, ...issue }]
+    ? [{ kind: 'AGENT', definitionId: agentDef.value.id, name: agentDef.value.name, usingLastGood: true, ...issue }]
     : [];
 });
 

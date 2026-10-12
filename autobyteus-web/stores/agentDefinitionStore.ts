@@ -5,17 +5,17 @@ import { GetAgentDefinitions } from '~/graphql/queries/agentDefinitionQueries'
 import {
   CreateAgentDefinition,
   DeleteAgentDefinition,
-  RefreshAgentDefinitionCatalog,
   UpdateAgentDefinition,
 } from '~/graphql/mutations/agentDefinitionMutations'
+import { ReloadAgentPackageDefinitions } from '~/graphql/mutations/agentPackageDefinitionMutations'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 import {
   normalizeDefinitionOwnershipScope,
   type DefinitionOwnershipScope,
 } from '~/utils/definitionOwnership'
-import { createLoadedListReloader } from '~/utils/definitionCatalog/loadedListReloader'
-import type { DefinitionCatalogIssue } from '~/types/definitionCatalog'
+import { createLoadedListReloader } from '~/utils/agentPackages/loadedListReloader'
+import type { DefinitionLoadIssue } from '~/types/agentPackageDefinitions'
 
 export type AgentDefinitionOwnershipScope = DefinitionOwnershipScope
 
@@ -48,7 +48,7 @@ export interface AgentDefinition {
   ownerLocalApplicationId?: string | null
   defaultLaunchConfig?: DefaultLaunchConfig | null
   /** Set when the agent is served from its last working version (file and reason). */
-  catalogIssue?: DefinitionCatalogIssue | null
+  loadIssue?: DefinitionLoadIssue | null
 }
 
 export interface CreateAgentDefinitionInput {
@@ -171,7 +171,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     try {
       const client = getApolloClient()
       const mutationResult = await client.mutate({
-        mutation: RefreshAgentDefinitionCatalog,
+        mutation: ReloadAgentPackageDefinitions,
       })
 
       if (mutationResult.errors && mutationResult.errors.length > 0) {
@@ -191,7 +191,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
       listReloader.markLoaded()
     } catch (cause) {
       error.value = cause
-      console.error('Failed to refresh agent definition catalog:', cause)
+      console.error('Failed to reload agent package definitions:', cause)
       throw cause
     } finally {
       loading.value = false
@@ -317,7 +317,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     deleteResult.value = null
   }
 
-  /** A catalog change notification: reload the list in place if this window has loaded it. */
+  /** An agent package definitions change notification: reload the list in place if this window has loaded it. */
   const reloadIfLoaded = (): Promise<void> => listReloader.reloadIfLoaded()
 
   const invalidateAgentDefinitions = (): void => {

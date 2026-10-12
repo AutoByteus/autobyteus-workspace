@@ -32,11 +32,6 @@ export class ApplicationDefinitionRuntimeReadiness {
   }) {}
 
   async prepare(): Promise<void> {
-    await Promise.all([
-      this.dependencies.agentDefinitionService.refreshCache(),
-      this.dependencies.agentTeamDefinitionService.refreshCache(),
-    ]);
-
     const applications = await this.dependencies.bundleService.listApplications();
     const activeApplications = this.dependencies.activeApplicationIds
       ? applications.filter((application) =>

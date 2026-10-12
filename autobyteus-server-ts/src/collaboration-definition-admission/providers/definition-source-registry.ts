@@ -19,7 +19,7 @@ export type ImplementationOwnedTeamSource = Readonly<{
 
 /**
  * Inventories application-owned (implementation) Team sources for admission. Definitions from
- * registered package roots are enumerated by the definition catalog instead.
+ * registered agent packages come from the agent package definitions instead.
  */
 export class DefinitionSourceRegistry {
   constructor(private readonly options: Readonly<{

@@ -68,7 +68,7 @@ import {
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "./project-task-execution-resource-composition.js";
-import { composeDefinitionCatalogFeed, type DefinitionCatalogFeed } from "./definition-catalog-feed-composition.js";
+import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } from "./agent-package-definition-feed-composition.js";
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
@@ -81,7 +81,7 @@ type StudioApiHandle = ReturnType<typeof configureStudioApplicationApiServices>;
 
 const closeStudioProcessResources = async (input: {
   hostDefinitionServices: HostDefinitionServices;
-  definitionCatalogFeed: DefinitionCatalogFeed | null;
+  agentPackageDefinitionFeed: AgentPackageDefinitionFeed | null;
   agentToolsMcpHost: AgentToolsMcpHost | null;
   generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null;
   generalProcessRunSupervisor: GeneralProcessRunSupervisor | null;
@@ -107,7 +107,7 @@ const closeStudioProcessResources = async (input: {
           } finally {
             try {
               try {
-                await input.definitionCatalogFeed?.close();
+                await input.agentPackageDefinitionFeed?.close();
               } finally {
                 input.hostDefinitionServices.close();
               }
@@ -186,18 +186,18 @@ export const buildStudioServer = async (input: {
     appConfig: input.appConfig,
     bundleService: packages.bundleService,
   });
-  let definitionCatalogFeed: DefinitionCatalogFeed | null = null;
+  let agentPackageDefinitionFeed: AgentPackageDefinitionFeed | null = null;
   try {
-    definitionCatalogFeed = await composeDefinitionCatalogFeed({ sync: hostDefinitionServices.definitionCatalogSync });
+    agentPackageDefinitionFeed = await composeAgentPackageDefinitionFeed({ reloader: hostDefinitionServices.agentPackageDefinitions.reloader });
   } catch (error) {
     hostDefinitionServices.close();
     throw error;
   }
-  // Startup logs unavailable definitions; it is never blocked by the definition catalog (BEH-008).
+  // Startup logs unavailable definitions; it is never blocked by the agent package definitions (BEH-008).
   try {
-    const definitionDiagnostics = (await hostDefinitionServices.definitionAdmissionService.scan())
+    const definitionProblems = (await hostDefinitionServices.definitionAdmissionService.scan())
       .filter((result) => result.status === "unavailable");
-    for (const diagnostic of definitionDiagnostics) {
+    for (const diagnostic of definitionProblems) {
       console.warn(`DEFINITION_ADMISSION_UNAVAILABLE:${diagnostic.subjectKind}:${diagnostic.definitionId ?? "unknown"}:${diagnostic.code}:${diagnostic.definitionPath}`);
     }
   } catch (error) {
@@ -215,7 +215,7 @@ export const buildStudioServer = async (input: {
     processResourcesClosed = true;
     await closeStudioProcessResources({
       hostDefinitionServices,
-      definitionCatalogFeed,
+      agentPackageDefinitionFeed,
       agentToolsMcpHost,
       generalProcessAuthority,
       generalProcessRunSupervisor,
@@ -340,7 +340,7 @@ export const buildStudioServer = async (input: {
         lifecycleReadiness: currentApplicationRuntime.lifecycle,
         application: currentApplicationRuntime.realtime,
         agentOrgRunService: generalProcessRunSupervisor.agentOrgRunService,
-        definitionCatalogChangeHub: definitionCatalogFeed.hub,
+        agentPackageDefinitionChangeHub: agentPackageDefinitionFeed.hub,
       });
       await registerGraphql(app);
       return Object.freeze({

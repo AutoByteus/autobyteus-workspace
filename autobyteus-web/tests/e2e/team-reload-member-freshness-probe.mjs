@@ -136,14 +136,14 @@ async function inspectVersion(version) {
   await inspectMember('worker', version); await inspectMember('shared', version);
   await page.getByRole('button', { name: 'Back to Agent Teams', exact: true }).click();
 }
-const catalogOps = requests => requests.filter(name => /(?:AgentDefinitions|AgentTeamDefinitions|DefinitionCatalog)$/.test(name));
+const catalogOps = requests => requests.filter(name => /(?:AgentDefinitions|AgentTeamDefinitions|AgentPackageDefinitions)$/.test(name));
 async function reload() {
   const start = evidence.requests.length;
   const before = await sourceSnapshot();
   await page.getByRole('button', { name: 'Reload', exact: true }).click();
   await wait('Reload finished', async () => await page.getByRole('button', { name: 'Reload', exact: true }).isEnabled());
   const ops = catalogOps(evidence.requests.slice(start).map(request => request.operationName));
-  assert.deepEqual(ops, ['RefreshAgentTeamDefinitionCatalog', 'GetAgentDefinitions', 'GetAgentTeamDefinitions']);
+  assert.deepEqual(ops, ['ReloadAgentPackageDefinitions', 'GetAgentDefinitions', 'GetAgentTeamDefinitions']);
   assert.deepEqual(await sourceSnapshot(), before, 'Reload rewrote package sources');
   return ops;
 }
@@ -216,7 +216,7 @@ try {
     await page.getByText('E2E required member read unavailable', { exact: true }).waitFor();
     assert(await page.getByRole('button', { name: 'Reload', exact: true }).isEnabled());
     assert.deepEqual(catalogOps(evidence.requests.slice(start).map(request => request.operationName)),
-      ['RefreshAgentTeamDefinitionCatalog', 'GetAgentDefinitions']);
+      ['ReloadAgentPackageDefinitions', 'GetAgentDefinitions']);
     await snap('read-error'); await page.unroute(instance.graphqlUrl, handler);
     const operations = await reload();
     assert.equal(await page.getByText('E2E required member read unavailable', { exact: true }).count(), 0);

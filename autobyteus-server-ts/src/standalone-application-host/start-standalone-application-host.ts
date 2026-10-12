@@ -239,9 +239,9 @@ export const startStandaloneApplicationHost = async (
       appConfig: processResources.appConfig,
       bundleService,
     });
-    const definitionDiagnostics = (await hostDefinitionServices.definitionAdmissionService.scan())
+    const definitionProblems = (await hostDefinitionServices.definitionAdmissionService.scan())
       .filter((result) => result.status === "unavailable");
-    for (const diagnostic of definitionDiagnostics) {
+    for (const diagnostic of definitionProblems) {
       console.warn(`DEFINITION_ADMISSION_UNAVAILABLE:${diagnostic.subjectKind}:${diagnostic.definitionId ?? "unknown"}:${diagnostic.code}:${diagnostic.definitionPath}`);
     }
     const workspaceManager = getWorkspaceManager();

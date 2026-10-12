@@ -4,7 +4,7 @@ import { useAgentDefinitionStore, type AgentDefinition } from '../agentDefinitio
 import { useAgentTeamDefinitionStore } from '../agentTeamDefinitionStore';
 import { GetAgentDefinitions } from '~/graphql/queries/agentDefinitionQueries';
 import { GetAgentTeamDefinitions } from '~/graphql/queries/agentTeamDefinitionQueries';
-import { RefreshAgentTeamDefinitionCatalog } from '~/graphql/mutations/agentTeamDefinitionMutations';
+import { ReloadAgentPackageDefinitions } from '~/graphql/mutations/agentPackageDefinitionMutations';
 import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalDefinitionId';
 
 const { query, mutate } = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn() }));
@@ -49,7 +49,7 @@ describe('explicit Team Reload member publication', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.resetAllMocks();
-    mutate.mockResolvedValue({ data: { refreshAgentTeamDefinitionCatalog: true } });
+    mutate.mockResolvedValue({ data: { reloadAgentPackageDefinitions: true } });
   });
 
   it('preserves first discovery, then refreshes warmed scoped/shared members on every Reload', async () => {
@@ -77,8 +77,8 @@ describe('explicit Team Reload member publication', () => {
       expect(agents.getAgentDefinitionById(workerId)?.ownerTeamId).toBe(teamId);
     }
     expect(mutate.mock.calls).toEqual([
-      [{ mutation: RefreshAgentTeamDefinitionCatalog }],
-      [{ mutation: RefreshAgentTeamDefinitionCatalog }],
+      [{ mutation: ReloadAgentPackageDefinitions }],
+      [{ mutation: ReloadAgentPackageDefinitions }],
     ]);
   });
 
@@ -100,7 +100,7 @@ describe('explicit Team Reload member publication', () => {
     const reload = teams.refreshAndReloadAllAgentTeamDefinitions().then(completed);
     expect(teams.loading).toBe(true);
     expect(query).not.toHaveBeenCalled();
-    mutation.resolve({ data: { refreshAgentTeamDefinitionCatalog: true } });
+    mutation.resolve({ data: { reloadAgentPackageDefinitions: true } });
     await vi.waitFor(() => expect(query).toHaveBeenCalledTimes(1));
     expect(agents.loading).toBe(true);
     expect(teams.agentTeamDefinitions).toEqual(teamsAt(1));
@@ -126,7 +126,7 @@ describe('explicit Team Reload member publication', () => {
       agents.agentDefinitions = agentsAt(1);
       teams.agentTeamDefinitions = teamsAt(1);
       respondAt(2);
-      mutate.mockResolvedValue({ data: { refreshAgentTeamDefinitionCatalog: true } });
+      mutate.mockResolvedValue({ data: { reloadAgentPackageDefinitions: true } });
       query.mockClear();
       const failure = new Error(`${stage} ${kind} failure`);
       const response = () => kind === 'transport'

@@ -13,7 +13,7 @@ import { useApplicationStore } from '~/stores/applicationStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { readSkillNameConflictError, toSkillNameConflict } from '~/utils/skills/skillNames'
-import { createLoadedListReloader } from '~/utils/definitionCatalog/loadedListReloader'
+import { createLoadedListReloader } from '~/utils/agentPackages/loadedListReloader'
 
 export type AgentPackageSourceKind =
   | 'BUILT_IN'
@@ -63,7 +63,7 @@ export interface AgentPackage {
   autoRefresh?: AgentPackageAutoRefresh | null
 }
 
-export type AgentPackageAutoRefreshState = 'WATCHING' | 'ROOT_MISSING' | 'UNAVAILABLE'
+export type AgentPackageAutoRefreshState = 'WATCHING' | 'FOLDER_MISSING' | 'UNAVAILABLE'
 
 export interface AgentPackageAutoRefresh {
   state: AgentPackageAutoRefreshState
@@ -94,7 +94,7 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
     if (errorMessage) throw new Error(errorMessage)
     if (data?.agentPackages) agentPackages.value = data.agentPackages
   })
-  /** A catalog change notification (root status, registration, Update): reload the rows in place if loaded. */
+  /** An agent package definitions change notification (package folder status, registration, Update): reload the rows in place if loaded. */
   const reloadIfLoaded = (): Promise<void> => listReloader.reloadIfLoaded()
 
   const refreshDependentCatalogs = async (): Promise<void> => {

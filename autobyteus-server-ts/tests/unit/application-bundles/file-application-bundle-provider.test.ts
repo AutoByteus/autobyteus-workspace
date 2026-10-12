@@ -5,7 +5,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { FileAgentDefinitionProvider } from "../../../src/agent-definition/providers/file-agent-definition-provider.js";
 import { FileAgentTeamDefinitionProvider } from "../../../src/agent-team-definition/providers/file-agent-team-definition-provider.js";
-import { createDiskDefinitionServices } from "../../helpers/definition-catalog-test-runtime.js";
+import { createDiskDefinitionServices } from "../../helpers/agent-package-definitions-test-support.js";
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import type { AppConfig } from "../../../src/config/app-config.js";
 import type { ApplicationBundleService } from "../../../src/application-bundles/services/application-bundle-service.js";

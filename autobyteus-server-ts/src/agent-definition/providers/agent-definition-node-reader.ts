@@ -3,8 +3,8 @@ import { AgentDefinition } from "../domain/models.js";
 import type { AgentDefinitionOwnershipScope, AgentDefinitionSourceInfo } from "../domain/models.js";
 import { parseAgentMd } from "../utils/agent-md-parser.js";
 import { defaultAgentConfig, normalizeAgentConfigRecord, type AgentConfigRecord } from "./agent-definition-config.js";
-import type { NodeReadOutcome } from "../../definition-catalog/domain/definition-catalog-types.js";
-import { errorMessage, fingerprintOf, readOptionalText } from "../../definition-catalog/domain/definition-node-files.js";
+import type { DefinitionReadResult } from "../../agent-package-definitions/domain/agent-package-definition-types.js";
+import { errorMessage, fingerprintOf, readOptionalText } from "../../agent-package-definitions/domain/definition-files.js";
 
 export type AgentDefinitionOwnership = Readonly<{
   ownershipScope: AgentDefinitionOwnershipScope;
@@ -61,14 +61,14 @@ export const buildAgentDefinitionFromFiles = (input: {
 };
 
 /**
- * Reads one agent folder into a classified outcome. The folder is present when `agent.md` or
+ * Reads one agent folder into a classified read result. The folder is present when `agent.md` or
  * `agent-config.json` exists; `agent.md` is required and `agent-config.json` defaults when absent.
  */
 export const readAgentDefinitionNode = async (input: {
   agentDir: string;
   definitionId: string;
   ownership: AgentDefinitionOwnership;
-}): Promise<NodeReadOutcome<AgentDefinition>> => {
+}): Promise<DefinitionReadResult<AgentDefinition>> => {
   const mdPath = path.join(input.agentDir, "agent.md");
   const configPath = path.join(input.agentDir, "agent-config.json");
   let mdContent: string | null;
@@ -76,22 +76,22 @@ export const readAgentDefinitionNode = async (input: {
   try {
     mdContent = await readOptionalText(mdPath);
   } catch (error) {
-    return { kind: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: errorMessage(error), definitionPath: mdPath };
+    return { status: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: errorMessage(error), definitionPath: mdPath };
   }
   try {
     configContent = await readOptionalText(configPath);
   } catch (error) {
-    return { kind: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: errorMessage(error), definitionPath: configPath };
+    return { status: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: errorMessage(error), definitionPath: configPath };
   }
-  if (mdContent === null && configContent === null) return { kind: "absent" };
+  if (mdContent === null && configContent === null) return { status: "absent" };
   if (mdContent === null) {
-    return { kind: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: "agent.md is missing.", definitionPath: mdPath };
+    return { status: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: "agent.md is missing.", definitionPath: mdPath };
   }
   let config: AgentConfigRecord;
   try {
     config = configContent === null ? defaultAgentConfig() : JSON.parse(configContent) as AgentConfigRecord;
   } catch (error) {
-    return { kind: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: `Invalid JSON: ${errorMessage(error)}`, definitionPath: configPath };
+    return { status: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: `Invalid JSON: ${errorMessage(error)}`, definitionPath: configPath };
   }
   let definition: AgentDefinition;
   try {
@@ -99,11 +99,11 @@ export const readAgentDefinitionNode = async (input: {
       mdContent, mdPath, config, definitionId: input.definitionId, ownership: input.ownership,
     });
   } catch (error) {
-    return { kind: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: errorMessage(error), definitionPath: mdPath };
+    return { status: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: errorMessage(error), definitionPath: mdPath };
   }
   const ownership = input.ownership;
   return {
-    kind: "valid",
+    status: "valid",
     definition,
     fingerprint: fingerprintOf([
       mdContent,

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
-import { createInMemoryCatalogRuntime } from "../../helpers/definition-catalog-test-runtime.js";
+import { createInMemoryPackageDefinitions } from "../../helpers/agent-package-definitions-test-support.js";
 
 describe("AgentDefinitionService skill names", () => {
   let provider: {
@@ -12,7 +12,7 @@ describe("AgentDefinitionService skill names", () => {
     update: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
   };
-  let catalog: ReturnType<typeof createInMemoryCatalogRuntime>;
+  let definitions: ReturnType<typeof createInMemoryPackageDefinitions>;
 
   beforeEach(() => {
     provider = {
@@ -26,13 +26,13 @@ describe("AgentDefinitionService skill names", () => {
       update: vi.fn(async (definition: AgentDefinition) => definition),
       delete: vi.fn(async () => true),
     };
-    catalog = createInMemoryCatalogRuntime();
+    definitions = createInMemoryPackageDefinitions();
   });
 
   const buildService = () =>
     new AgentDefinitionService({
       fileStore: provider as never,
-      catalogRuntime: catalog.runtime,
+      packageDefinitions: definitions.packageDefinitions,
     });
 
   it("persists skill names on create", async () => {
@@ -65,7 +65,7 @@ describe("AgentDefinitionService skill names", () => {
       description: "Old",
       id: "test-id",
     });
-    catalog.seed("agent", existing);
+    definitions.seed("agent", existing);
     provider.update.mockImplementation(async (definition: AgentDefinition) => definition);
 
     const updated = await service.updateAgentDefinition("test-id", {

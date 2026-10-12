@@ -4,9 +4,9 @@ import fsPromises from "node:fs/promises";
 import path from "node:path";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import {
-  PackageDefinitionMonitor,
-  type RootWatchStatus,
-} from "../../definition-catalog/monitor/package-definition-monitor.js";
+  AgentPackageFolderWatcher,
+  type PackageFolderWatchStatus,
+} from "../../agent-package-definitions/monitor/agent-package-folder-watcher.js";
 import { GitHubAgentPackageInstaller } from "../installers/github-agent-package-installer.js";
 import {
   AgentPackageRecord,
@@ -31,8 +31,8 @@ import {
   mapLocalPackage,
 } from "./agent-package-mappers.js";
 
-type ReloadDefinitionCatalogFn = () => Promise<void>;
-type RootWatchStatusFn = (rootPath: string) => RootWatchStatus | null;
+type ReloadAgentPackageDefinitionsFn = () => Promise<void>;
+type PackageFolderWatchStatusFn = (rootPath: string) => PackageFolderWatchStatus | null;
 
 /** The skill-name check each import path runs before it commits (REQ-023). */
 type SkillNameGuard = Pick<SkillService, "assertNoIncomingSkillNameConflicts">;
@@ -63,8 +63,9 @@ export class AgentPackageService {
   private readonly registryStore: AgentPackageRegistryStore;
   private readonly githubClient: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">;
   private readonly installer: GitHubAgentPackageInstaller;
-  private readonly reloadDefinitionCatalog: ReloadDefinitionCatalogFn;
-  private readonly rootWatchStatus: RootWatchStatusFn;
+  /** One full reload of every registered agent package; it also re-syncs folder watching and notifies connected clients. */
+  private readonly reloadAgentPackageDefinitions: ReloadAgentPackageDefinitionsFn;
+  private readonly packageFolderWatchStatus: PackageFolderWatchStatusFn;
   private readonly skillNames: SkillNameGuard;
 
   constructor(dependencies: {
@@ -72,8 +73,8 @@ export class AgentPackageService {
     registryStore?: AgentPackageRegistryStore;
     installer?: GitHubAgentPackageInstaller;
     githubClient?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">;
-    reloadDefinitionCatalog?: ReloadDefinitionCatalogFn;
-    rootWatchStatus?: RootWatchStatusFn;
+    reloadAgentPackageDefinitions?: ReloadAgentPackageDefinitionsFn;
+    packageFolderWatchStatus?: PackageFolderWatchStatusFn;
     skillNames?: SkillNameGuard;
   } = {}) {
     this.rootSettingsStore =
@@ -83,12 +84,12 @@ export class AgentPackageService {
     this.githubClient = dependencies.githubClient ?? new GitHubRepositoryClient();
     this.installer =
       dependencies.installer ?? new GitHubAgentPackageInstaller();
-    this.reloadDefinitionCatalog =
-      dependencies.reloadDefinitionCatalog ??
-      (() => AgentDefinitionService.getInstance().refreshCache());
-    this.rootWatchStatus =
-      dependencies.rootWatchStatus ??
-      ((rootPath) => PackageDefinitionMonitor.getProcessInstance()?.getRootWatchStatus(rootPath) ?? null);
+    this.reloadAgentPackageDefinitions =
+      dependencies.reloadAgentPackageDefinitions ??
+      (() => AgentDefinitionService.getInstance().reloadAgentPackageDefinitions());
+    this.packageFolderWatchStatus =
+      dependencies.packageFolderWatchStatus ??
+      ((rootPath) => AgentPackageFolderWatcher.getProcessInstance()?.getPackageFolderWatchStatus(rootPath) ?? null);
     this.skillNames = dependencies.skillNames ?? SkillService.getInstance();
   }
 
@@ -102,13 +103,13 @@ export class AgentPackageService {
       recordByRootPath.set(path.resolve(record.rootPath), record);
     }
 
-    const packages: AgentPackage[] = [mapBuiltInPackage(defaultRootPath, this.rootWatchStatus(defaultRootPath))];
+    const packages: AgentPackage[] = [mapBuiltInPackage(defaultRootPath, this.packageFolderWatchStatus(defaultRootPath))];
 
     for (const rootPath of additionalRootPaths) {
       const resolvedRootPath = path.resolve(rootPath);
       const record = recordByRootPath.get(resolvedRootPath);
 
-      const autoRefresh = this.rootWatchStatus(resolvedRootPath);
+      const autoRefresh = this.packageFolderWatchStatus(resolvedRootPath);
       if (record?.sourceKind === GITHUB_SOURCE_KIND) {
         packages.push(mapGitHubPackage(record, autoRefresh));
         continue;
@@ -156,7 +157,7 @@ export class AgentPackageService {
 
     try {
       await this.registryStore.removePackageRecord(normalizedPackageId);
-      await this.refreshCatalogCaches();
+      await this.reloadAgentPackageDefinitions();
 
       if (
         targetPackage.sourceKind === GITHUB_SOURCE_KIND &&
@@ -172,7 +173,7 @@ export class AgentPackageService {
     } catch (error) {
       this.safeAddAdditionalRootPath(targetPackage.path);
       await this.restorePackageRecord(existingRecord);
-      await this.refreshCatalogCaches().catch(() => undefined);
+      await this.reloadAgentPackageDefinitions().catch(() => undefined);
       throw error;
     }
   }
@@ -188,9 +189,9 @@ export class AgentPackageService {
 
     validatePackageRoot(targetPackage.path);
     // R-3: a rejected reload keeps the previous registration; the files already on disk stay, and
-    // the catalog and the Skills page banner reflect them (REQ-024).
+    // the agent package definitions and the Skills page banner reflect them (REQ-024).
     this.assertPackageSkillNames(targetPackage.path);
-    await this.refreshCatalogCaches();
+    await this.reloadAgentPackageDefinitions();
     return this.listAgentPackages();
   }
 
@@ -294,14 +295,14 @@ export class AgentPackageService {
         ),
       });
 
-      await this.refreshCatalogCaches();
+      await this.reloadAgentPackageDefinitions();
       await replacement.commit();
       return this.listAgentPackages();
     } catch (error) {
       await replacement.rollback().catch(() => undefined);
       await this.restorePackageRecord(record);
       await this.markGitHubUpdateFailed(record, error).catch(() => undefined);
-      await this.refreshCatalogCaches().catch(() => undefined);
+      await this.reloadAgentPackageDefinitions().catch(() => undefined);
       throw error;
     }
   }
@@ -318,12 +319,12 @@ export class AgentPackageService {
 
     try {
       await this.registryStore.upsertLinkedLocalPackageRecord(resolvedPath);
-      await this.refreshCatalogCaches();
+      await this.reloadAgentPackageDefinitions();
       return this.listAgentPackages();
     } catch (error) {
       this.safeRemoveAdditionalRootPath(resolvedPath);
       await this.registryStore.removePackageRecord(packageId).catch(() => undefined);
-      await this.refreshCatalogCaches().catch(() => undefined);
+      await this.reloadAgentPackageDefinitions().catch(() => undefined);
       throw error;
     }
   }
@@ -379,7 +380,7 @@ export class AgentPackageService {
         ),
       });
 
-      await this.refreshCatalogCaches();
+      await this.reloadAgentPackageDefinitions();
       return this.listAgentPackages();
     } catch (error) {
       this.safeRemoveAdditionalRootPath(installedPackage.rootPath);
@@ -388,7 +389,7 @@ export class AgentPackageService {
         recursive: true,
         force: true,
       }).catch(() => undefined);
-      await this.refreshCatalogCaches().catch(() => undefined);
+      await this.reloadAgentPackageDefinitions().catch(() => undefined);
       throw error;
     }
   }
@@ -492,11 +493,6 @@ export class AgentPackageService {
 
   private assertPackageSkillNames(rootPath: string): void {
     this.skillNames.assertNoIncomingSkillNameConflicts({ path: rootPath, layout: "definition_root", tier: 2 });
-  }
-
-  /** One full catalog reconcile; it also re-syncs root watching and notifies connected clients. */
-  private async refreshCatalogCaches(): Promise<void> {
-    await this.reloadDefinitionCatalog();
   }
 
   private safeRemoveAdditionalRootPath(rootPath: string): void {

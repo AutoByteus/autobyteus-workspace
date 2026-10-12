@@ -12,7 +12,7 @@ import { FileAgentOrgDefinitionProvider } from '../../../src/agent-org-definitio
 import { buildAgentOrgOwnedDefinitionId, isAgentOrgOwnedTeamDefinitionId } from '../../../src/agent-org-definition/utils/agent-org-owned-definition-id.js';
 import { buildTeamLocalAgentDefinitionId } from '../../../src/agent-team-definition/utils/team-local-definition-id.js';
 import { findTeamSourcePaths } from '../../../src/agent-team-definition/providers/team-definition-source-paths.js';
-import { createDiskDefinitionServices } from '../../helpers/definition-catalog-test-runtime.js';
+import { createDiskDefinitionServices } from '../../helpers/agent-package-definitions-test-support.js';
 import { AgentOrgExecutionScopeBuilder } from '../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js';
 import { validateAgentOrgStatePackage } from '../../../src/agent-org-execution/services/agent-org-state-package-validator.js';
 import type { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/local/flat-team-execution-factory.js';
@@ -79,7 +79,7 @@ const fixture = async (placement: 'data' | 'external' = 'data') => {
   const services = createDiskDefinitionServices({ ...appConfig, externalRoots: [external] }, apps);
   closers.push(services.close);
   const service = services.teams, admission = services.admission;
-  return { root, data, base, appConfig, apps, agents, teams, orgs, runtime: services.runtime, service, admission, ids, applicationTeamId };
+  return { root, data, base, appConfig, apps, agents, teams, orgs, packageDefinitions: services.packageDefinitions, service, admission, ids, applicationTeamId };
 };
 describe('Org-owned Team -> Team-local Agent production reads', () => {
   it.each(['data', 'external'] as const)('reads/admit %s authored packages with exact immediate owner, metadata and unchanged bytes', async (placement) => {
@@ -105,9 +105,9 @@ describe('Org-owned Team -> Team-local Agent production reads', () => {
     const file = path.join(f.base, 'agent-orgs/alpha/agent-teams/squad/team.md');
     await fs.writeFile(file, (await fs.readFile(file, 'utf8')).replace('alpha Team instructions', 'Updated instructions'));
     // The package monitor reports the change as the owning Org unit; the next read applies it.
-    f.runtime.sync.noteUnitChange('agent_org', 'alpha');
+    f.packageDefinitions.reloader.markFolderChanged('agent_org', 'alpha');
     expect((await f.service.getDefinitionById(id))?.instructions).toBe('Updated instructions\n');
-    await f.service.refreshCache();
+    await f.service.reloadAgentPackageDefinitions();
     expect((await f.service.getDefinitionById(id))?.instructions).toBe('Updated instructions\n');
     expect((await f.service.getAllDefinitions()).map(t => t.id)).not.toContain(id);
     expect((await f.service.getEndpointCatalog(id)).from[0]?.address).toBe('/lead');

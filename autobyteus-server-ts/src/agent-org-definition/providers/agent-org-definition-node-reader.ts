@@ -4,8 +4,8 @@ import { AgentOrgDefinition, AgentOrgMember } from "../domain/agent-org-definiti
 import { parseOrgMd } from "../utils/org-md-parser.js";
 import { readAgentOrgDefinitionConfig } from "./agent-org-definition-config.js";
 import type { DefinitionSourceDescriptor } from "../../collaboration-definition-admission/domain/definition-source-descriptor.js";
-import type { NodeReadOutcome } from "../../definition-catalog/domain/definition-catalog-types.js";
-import { errorMessage, fingerprintOf, pathExists, readOptionalText } from "../../definition-catalog/domain/definition-node-files.js";
+import type { DefinitionReadResult } from "../../agent-package-definitions/domain/agent-package-definition-types.js";
+import { errorMessage, fingerprintOf, pathExists, readOptionalText } from "../../agent-package-definitions/domain/definition-files.js";
 
 const ORG_FILES = ["org.md", "org-config.json"] as const;
 
@@ -42,14 +42,14 @@ export const buildAgentOrgDefinitionFromFiles = (input: {
 };
 
 /**
- * Reads one AgentOrg folder into a classified outcome. Present when `org.md` or `org-config.json`
+ * Reads one AgentOrg folder into a classified read result. Present when `org.md` or `org-config.json`
  * exists; both are required. A missing Org file next to a Team config is a family mismatch.
  */
 export const readAgentOrgDefinitionNode = async (input: {
   definitionId: string;
   orgDir: string;
   descriptor: DefinitionSourceDescriptor;
-}): Promise<NodeReadOutcome<AgentOrgDefinition>> => {
+}): Promise<DefinitionReadResult<AgentOrgDefinition>> => {
   const mdPath = path.join(input.orgDir, "org.md");
   const configPath = path.join(input.orgDir, "org-config.json");
   let mdContent: string | null;
@@ -58,14 +58,14 @@ export const readAgentOrgDefinitionNode = async (input: {
     mdContent = await readOptionalText(mdPath);
     configContent = await readOptionalText(configPath);
   } catch (error) {
-    return { kind: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: errorMessage(error), definitionPath: input.orgDir };
+    return { status: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: errorMessage(error), definitionPath: input.orgDir };
   }
-  if (mdContent === null && configContent === null) return { kind: "absent" };
+  if (mdContent === null && configContent === null) return { status: "absent" };
   if (mdContent === null || configContent === null) {
     const missingPath = mdContent === null ? mdPath : configPath;
     const familyMismatch = await pathExists(path.join(input.orgDir, "team-config.json"));
     return {
-      kind: "invalid",
+      status: "invalid",
       code: familyMismatch ? "DEFINITION_FAMILY_MISMATCH" : "DEFINITION_CONTRACT_INVALID",
       reason: familyMismatch
         ? `${path.basename(missingPath)} is missing, and the folder holds a Team definition instead of an AgentOrg.`
@@ -76,15 +76,15 @@ export const readAgentOrgDefinitionNode = async (input: {
   try {
     parseOrgMd(mdContent, mdPath);
   } catch (error) {
-    return { kind: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: errorMessage(error), definitionPath: mdPath };
+    return { status: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: errorMessage(error), definitionPath: mdPath };
   }
   try {
     const definition = buildAgentOrgDefinitionFromFiles({
       definitionId: input.definitionId, mdPath, mdContent, configContent, descriptor: input.descriptor,
     });
-    return { kind: "valid", definition, fingerprint: fingerprintOf([mdContent, configContent]) };
+    return { status: "valid", definition, fingerprint: fingerprintOf([mdContent, configContent]) };
   } catch (error) {
     const reason = error instanceof SyntaxError ? `Invalid JSON: ${error.message}` : errorMessage(error);
-    return { kind: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason, definitionPath: configPath };
+    return { status: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason, definitionPath: configPath };
   }
 };

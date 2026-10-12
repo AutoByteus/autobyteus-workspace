@@ -5,7 +5,7 @@ import {
   TeamMember,
 } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
-import { createInMemoryCatalogRuntime } from "../../helpers/definition-catalog-test-runtime.js";
+import { createInMemoryPackageDefinitions } from "../../helpers/agent-package-definitions-test-support.js";
 
 const agent = (memberName: string, ref = `agent-${memberName}`) => new TeamMember({
   memberName,
@@ -42,13 +42,14 @@ describe("AgentTeamDefinitionService flat Team authority", () => {
     getTemplates: ReturnType<typeof vi.fn>;
     update: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
+    listApplicationOwnedTeams: ReturnType<typeof vi.fn>;
   };
   let agents: { getAgentDefinitionById: ReturnType<typeof vi.fn> };
-  let catalog: ReturnType<typeof createInMemoryCatalogRuntime>;
-  /** The test's disk state reconciled into the catalog, as the sync would after a write or a file event. */
+  let definitions: ReturnType<typeof createInMemoryPackageDefinitions>;
+  /** The test's disk state applied to the store, as the reloader would after a write or a file event. */
   const reconcile = () => {
-    if (stored) catalog.seed("agent_team", stored);
-    else catalog.catalog.remove("agent_team", "team-1");
+    if (stored) definitions.seed("agent_team", stored);
+    else definitions.store.remove("agent_team", "team-1");
   };
 
   beforeEach(() => {
@@ -62,16 +63,17 @@ describe("AgentTeamDefinitionService flat Team authority", () => {
         return stored;
       }),
       delete: vi.fn(async () => { stored = null; return true; }),
+      listApplicationOwnedTeams: vi.fn(async () => []),
     };
     const lookup = vi.fn(async (id: string) => id.startsWith("agent-") ? { id } : null);
     agents = { getAgentDefinitionById: lookup };
-    catalog = createInMemoryCatalogRuntime();
-    catalog.sync.reconcileNow.mockImplementation(async () => reconcile());
+    definitions = createInMemoryPackageDefinitions();
+    definitions.reloader.reloadFoldersNow.mockImplementation(async () => reconcile());
   });
 
   const service = () => {
     reconcile();
-    return new AgentTeamDefinitionService({ fileStore: provider as never, catalogRuntime: catalog.runtime, agentDefinitionService: agents });
+    return new AgentTeamDefinitionService({ fileStore: provider as never, packageDefinitions: definitions.packageDefinitions, agentDefinitionService: agents });
   };
 
   it("creates an Agent-only Team after validating every referenced Agent", async () => {
@@ -82,7 +84,7 @@ describe("AgentTeamDefinitionService flat Team authority", () => {
     expect(agents.getAgentDefinitionById).toHaveBeenCalledWith("agent-coordinator");
     expect(agents.getAgentDefinitionById).toHaveBeenCalledWith("agent-reviewer");
     expect(created.id).toBe("team-created");
-    expect(catalog.sync.reconcileNow).toHaveBeenCalledWith("agent_team", ["team-created"]);
+    expect(definitions.reloader.reloadFoldersNow).toHaveBeenCalledWith("agent_team", ["team-created"]);
   });
 
   it("rejects create with an existing id, missing Agent, or invalid coordinator", async () => {
@@ -99,7 +101,7 @@ describe("AgentTeamDefinitionService flat Team authority", () => {
     expect(provider.create).not.toHaveBeenCalled();
   });
 
-  it("reads current definitions, lists the catalog, and returns null for a miss", async () => {
+  it("reads current definitions, lists them, and returns null for a miss", async () => {
     const current = await service().getDefinitionById("team-1");
     expect(current).toEqual(stored);
     expect(current).not.toBe(stored);
@@ -165,7 +167,7 @@ describe("AgentTeamDefinitionService flat Team authority", () => {
     await expect(service().deleteDefinition("missing")).rejects.toThrow("not found");
     await expect(service().deleteDefinition("team-1")).resolves.toBe(true);
     expect(provider.delete).toHaveBeenCalledWith("team-1");
-    expect(catalog.sync.reconcileNow).toHaveBeenCalledWith("agent_team", ["team-1"]);
+    expect(definitions.reloader.reloadFoldersNow).toHaveBeenCalledWith("agent_team", ["team-1"]);
   });
 
   it("rejects deletion of Org-owned and application-owned Team definitions", async () => {

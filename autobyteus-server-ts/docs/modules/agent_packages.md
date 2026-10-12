@@ -4,10 +4,11 @@
 
 Owns the server-side lifecycle for package roots that contribute shared agents,
 team-local agents, agent teams, and agent orgs to the
-[definition catalog](./definition_catalog.md). This module is the authoritative
+[agent package definitions](./agent_package_definitions.md). This module is the authoritative
 boundary for package source identity, import, removal, local reload, managed
-GitHub update checks, managed GitHub update execution, post-mutation catalog
-reconcile, and reporting each root's auto-refresh state.
+GitHub update checks, managed GitHub update execution, the full reload of the
+agent package definitions after each package mutation, and reporting each
+package folder's auto-refresh state.
 
 ## TS Source
 
@@ -74,31 +75,31 @@ copy. Mutations are thin adapters over `AgentPackageService`:
   GitHub package with the latest default-branch archive.
 
 Each `AgentPackage` row also carries `autoRefresh { state, message }`, the
-root's watch state from `PackageDefinitionMonitor`:
+package folder's watch state from `AgentPackageFolderWatcher`:
 
 | State | Web label | Meaning |
 | --- | --- | --- |
 | `WATCHING` | Auto-refreshing | Definition edits in the folder are applied automatically |
-| `ROOT_MISSING` | Folder not found | The folder does not exist; its definitions stay in use from the last good copy, and watching resumes when the folder reappears |
+| `FOLDER_MISSING` | Folder not found | The folder does not exist; its definitions stay in use from their last working version, and watching resumes when the folder reappears |
 | `UNAVAILABLE` | Not auto-refreshing | Watching failed (for example an unreadable `agents`, `agent-teams` or `agent-orgs` folder, or a watch limit); `message` has the reason; Reload still works |
 
-`autoRefresh` is `null` when no monitor runs (the standalone application host).
+`autoRefresh` is `null` when no folder watcher runs (the standalone application host).
 
-## Catalog Reconcile Invariant
+## Reload Invariant
 
 Every successful package import, removal, local reload, or managed GitHub update
-runs one full definition-catalog reconcile (`reloadDefinitionCatalog`, covering
-agents, teams and orgs) before returning the latest package inventory. The
-reconcile also re-syncs the monitor: new roots are armed, removed roots are
-released, and a root replaced in place by Update is re-armed. The change is
-published on `/ws/definition-catalog`, so loaded web lists update without a
+runs one full reload of the agent package definitions (`reloadAgentPackageDefinitions`,
+covering agents, teams and orgs) before returning the latest package inventory.
+The reload also re-syncs the folder watcher: new packages are watched, removed
+ones are released, and a folder replaced in place by Update is re-armed. The
+change is announced on `/ws/agent-package-definitions`, so loaded web lists update without a
 separate client refresh. Frontend stores additionally refresh Applications,
 Agents, and Agent Teams after a package mutation.
 
-Outside package actions, changes to definition files under any registered root
-are detected and applied automatically. Reload remains the manual fallback for
-roots that are not being watched. See
-[Definition Catalog](./definition_catalog.md).
+Outside package actions, changes to definition files in any registered package
+folder are detected and applied automatically. Reload remains the manual
+fallback for package folders that are not being watched. See
+[Agent Package Definitions](./agent_package_definitions.md).
 
 ## Package-Contained Configured Skills
 
@@ -178,9 +179,9 @@ preserving the owning agent/team context for package-contained skills.
 - GitHub update checks never modify package files. Check failures persist
   `CHECK_FAILED` metadata and preserve the previous package state.
 - GitHub updates stage the new archive materialization, validate package shape,
-  update registry metadata, reconcile the definition catalog, and then commit
+  update registry metadata, reload the agent package definitions, and then commit
   the replacement. If metadata fetch, staging, validation, registry write,
-  catalog reconcile, or replacement commit fails, the previous package
+  reload, or replacement commit fails, the previous package
   record/files remain available and `UPDATE_FAILED` metadata records the error.
 
 ## Notes
@@ -192,6 +193,7 @@ preserving the owning agent/team context for package-contained skills.
   prefer repository identity for GitHub packages and the selected local path for
   local packages.
 - Agent and team definition modules own definition parsing, identity, and
-  edit-time invariants; the definition catalog owns the in-memory inventory,
-  watching and last good; Agent Packages owns package source lifecycle and
-  triggers the catalog reconcile after package mutations.
+  edit-time invariants; the agent package definitions own the loaded
+  definitions, folder watching and last working versions; Agent Packages owns
+  package source lifecycle and triggers their full reload after package
+  mutations.

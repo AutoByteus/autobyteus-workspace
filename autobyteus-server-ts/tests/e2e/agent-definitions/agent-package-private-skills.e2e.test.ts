@@ -395,8 +395,8 @@ describe("Agent package private skills GraphQL e2e", () => {
     delete process.env.AUTOBYTEUS_SKILLS_PATHS;
     AgentPackageService.resetInstance();
     SkillService.resetInstance();
-    await AgentDefinitionService.getInstance().refreshCache();
-    await AgentTeamDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
+    await AgentTeamDefinitionService.getInstance().reloadAgentPackageDefinitions();
   });
 
   const execGraphql = async <T>(
@@ -485,7 +485,7 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const imported = await importLocalPackage(execGraphql, externalRoot);
     expect(imported.sharedAgentCount).toBe(2);
-    await AgentDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
     SkillService.resetInstance();
 
     const bootstrapper = createCodexBootstrapper(workspaceRoot);
@@ -587,7 +587,7 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const imported = await importLocalPackage(execGraphql, externalRoot);
     expect(imported.sharedAgentCount).toBe(2);
-    await AgentDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
     SkillService.resetInstance();
 
     const { factory, capturedConfigs } = createAutoByteusRuntimeProbe(workspaceRoot);
@@ -684,7 +684,7 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const imported = await importLocalPackage(execGraphql, externalRoot);
     expect(imported.sharedAgentCount).toBe(3);
-    await AgentDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
     SkillService.resetInstance();
 
     await expect(resolveAgentSkillDescriptions(singleAgentId)).resolves.toEqual([
@@ -895,7 +895,7 @@ describe("Agent package private skills GraphQL e2e", () => {
     const imported = await importLocalPackage(execGraphql, externalRoot);
     expect(imported.agentTeamCount).toBe(1);
     expect(imported.teamLocalAgentCount).toBe(5);
-    await AgentDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
     SkillService.resetInstance();
 
     const singleDefinitionId = buildTeamLocalAgentDefinitionId(teamId, singleLocalAgentId);

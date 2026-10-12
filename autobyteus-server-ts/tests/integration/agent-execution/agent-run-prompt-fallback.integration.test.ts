@@ -9,7 +9,7 @@ import type { AgentRunBackendFactory } from "../../../src/agent-execution/backen
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
-import { getDefaultDefinitionCatalogRuntime } from "../../../src/definition-catalog/services/definition-catalog-runtime.js";
+import { getProcessAgentPackageDefinitions } from "../../../src/agent-package-definitions/services/agent-package-definitions.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import {
   parseAgentMd,
@@ -213,7 +213,7 @@ describe("AgentRunService fresh definition runtime integration", () => {
     );
 
     // The package monitor reports the external edit; the next read applies it before answering.
-    getDefaultDefinitionCatalogRuntime().sync.noteUnitChange("agent", created.id as string);
+    getProcessAgentPackageDefinitions().reloader.markFolderChanged("agent", created.id as string);
     const readAfterEdit = await agentDefinitionService.getAgentDefinitionById(created.id as string);
     expect(readAfterEdit?.instructions).toBe(updatedInstructions);
 
@@ -269,7 +269,7 @@ describe("AgentRunService fresh definition runtime integration", () => {
       ),
       "utf-8",
     );
-    getDefaultDefinitionCatalogRuntime().sync.noteUnitChange("agent", created.id as string);
+    getProcessAgentPackageDefinitions().reloader.markFolderChanged("agent", created.id as string);
 
     let capturedConfig: AgentConfig | null = null;
     const runService = buildRunService(agentDefinitionService, (config) => {

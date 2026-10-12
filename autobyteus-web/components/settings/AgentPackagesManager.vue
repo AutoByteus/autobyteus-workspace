@@ -187,17 +187,17 @@ const updateStatusLabel = (pkg: AgentPackage): string => {
 const autoRefreshLabel = (state: AgentPackageAutoRefreshState): string => {
   switch (state) {
     case 'WATCHING':
-      return $t('definitionCatalog.package.watching')
-    case 'ROOT_MISSING':
-      return $t('definitionCatalog.package.rootMissing')
+      return $t('agentPackageDefinitions.package.watching')
+    case 'FOLDER_MISSING':
+      return $t('agentPackageDefinitions.package.rootMissing')
     default:
-      return $t('definitionCatalog.package.unavailable')
+      return $t('agentPackageDefinitions.package.unavailable')
   }
 }
 
 const autoRefreshClass = (state: AgentPackageAutoRefreshState): string => {
   if (state === 'WATCHING') return 'text-gray-500'
-  return state === 'ROOT_MISSING' ? 'text-red-700' : 'text-amber-700'
+  return state === 'FOLDER_MISSING' ? 'text-red-700' : 'text-amber-700'
 }
 
 const updateStatusClass = (status: AgentPackageUpdateStatus): string => {

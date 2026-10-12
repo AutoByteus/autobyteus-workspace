@@ -62,7 +62,7 @@ const fakeAgentDefinitionService = {
       name: definitionId === RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID ? "Retrospective Skill Improver" : "Memory Compactor",
     };
   },
-  async refreshCache() {},
+  async reloadAgentPackageDefinitions() {},
 };
 
 const fakeServerSettingsService = {

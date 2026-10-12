@@ -7,7 +7,7 @@ import { AgentTeamDefinitionService } from '../../../src/agent-team-definition/s
 import { AgentOrgDefinitionService } from '../../../src/agent-org-definition/services/agent-org-definition-service.js';
 import { DefinitionSourceRegistry } from '../../../src/collaboration-definition-admission/providers/definition-source-registry.js';
 import { DefinitionAdmissionService } from '../../../src/collaboration-definition-admission/services/definition-admission-service.js';
-import { createDefinitionCatalogRuntime } from '../../../src/definition-catalog/services/definition-catalog-runtime.js';
+import { createAgentPackageDefinitions } from '../../../src/agent-package-definitions/services/agent-package-definitions.js';
 
 const temporaryRoots: string[] = [];
 afterEach(async () => {
@@ -41,27 +41,21 @@ const writeAgent = async (root: string, id = 'agent-1'): Promise<void> => {
   await fs.writeFile(path.join(root, 'agents', id, 'agent.md'), `---\nname: ${id}\ndescription: Test\n---\n\nAct.`);
 };
 
-/** Admission over a real definition catalog of the given package roots (the first is the default package). */
+/** Admission over real agent package definitions of the given package roots (the first is the default package). */
 const build = (input: { dataRoot: string; externalRoots?: string[] }) => {
-  const runtime = createDefinitionCatalogRuntime({
+  const packageDefinitions = createAgentPackageDefinitions({
     appConfig: {
       getAgentsDir: () => path.join(input.dataRoot, 'agents'),
       getAgentTeamsDir: () => path.join(input.dataRoot, 'agent-teams'),
       getAgentOrgsDir: () => path.join(input.dataRoot, 'agent-orgs'),
       getRegisteredAgentPackageRoots: () => input.externalRoots ?? [],
     },
-    applicationOwnedSources: {
-      listApplicationOwnedAgentSources: async () => [],
-      getApplicationOwnedAgentSourceById: async () => null,
-      listApplicationOwnedTeamSources: async () => [],
-      getApplicationOwnedTeamSourceById: async () => null,
-    },
   });
-  const agents = new AgentDefinitionService({ fileStore: {} as never, catalogRuntime: runtime });
-  const teams = new AgentTeamDefinitionService({ fileStore: {} as never, catalogRuntime: runtime, agentDefinitionService: agents });
-  const orgs = new AgentOrgDefinitionService({} as never, agents, teams, runtime);
+  const agents = new AgentDefinitionService({ fileStore: {} as never, packageDefinitions });
+  const teams = new AgentTeamDefinitionService({ fileStore: {} as never, packageDefinitions, agentDefinitionService: agents });
+  const orgs = new AgentOrgDefinitionService({} as never, agents, teams, packageDefinitions);
   const registry = new DefinitionSourceRegistry({ listImplementationOwnedTeamSources: async () => [] });
-  return { service: new DefinitionAdmissionService({ registry, teams, orgs, agents }), runtime };
+  return { service: new DefinitionAdmissionService({ registry, teams, orgs, agents }), packageDefinitions };
 };
 
 describe('DefinitionAdmissionService', () => {
@@ -148,11 +142,11 @@ describe('DefinitionAdmissionService', () => {
     const dataRoot = await temporaryRoot();
     await writeAgent(dataRoot);
     const teamPath = await writePackage(dataRoot, 'agent-teams', 'team-1', teamConfig());
-    const { service, runtime } = build({ dataRoot });
+    const { service, packageDefinitions } = build({ dataRoot });
     expect((await service.requireAvailable('agent_team', 'team-1')).definition.id).toBe('team-1');
     await fs.writeFile(path.join(teamPath, 'team-config.json'), '{ "coordinatorMemberName": ');
-    runtime.sync.noteUnitChange('agent_team', 'team-1');
+    packageDefinitions.reloader.markFolderChanged('agent_team', 'team-1');
     expect((await service.requireAvailable('agent_team', 'team-1')).definition.id).toBe('team-1');
-    runtime.sync.close();
+    packageDefinitions.reloader.close();
   });
 });

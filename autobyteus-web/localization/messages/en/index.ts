@@ -28,7 +28,7 @@ import toolsLocalMessages from './tools';
 import generatedWorkspaceMessages from './workspace.generated';
 import workspaceMessages from './workspace';
 import runSettingsMessages from './runSettings';
-import definitionCatalogMessages from './definitionCatalog';
+import agentPackageDefinitionsMessages from './agentPackageDefinitions';
 import type { TranslationCatalog } from '../../runtime/types';
 
 const enMessages: TranslationCatalog = {
@@ -62,7 +62,7 @@ const enMessages: TranslationCatalog = {
   ...generatedWorkspaceMessages,
   ...workspaceMessages,
   ...runSettingsMessages,
-  ...definitionCatalogMessages,
+  ...agentPackageDefinitionsMessages,
 };
 
 export default enMessages;

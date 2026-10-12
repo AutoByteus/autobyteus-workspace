@@ -142,42 +142,42 @@ resolves that from global Skill Improvement settings plus current target state.
 - cache invalidation via `invalidateAgentDefinitions()`, and
 - `reloadIfLoaded()`, the live-refresh entry: a network-only reload that runs only when the list was already loaded, de-duplicates in-flight reloads, and keeps the previous list while reloading and on error.
 
-## Live Catalog Refresh
+## Live Agent Package Definition Refresh
 
-`app.vue` retains the node's `/ws/definition-catalog` feed
-(`services/definitionCatalog/definitionCatalogChangeFeed.ts`, on the shared
+`app.vue` retains the node's `/ws/agent-package-definitions` feed
+(`services/agentPackages/agentPackageDefinitionChangeFeed.ts`, on the shared
 `services/nodeChangeFeed/nodeChangeFeed.ts` socket lifecycle) while the app is
 ready. The feed reconnects with backoff and is reopened when the window is bound
-to another node. A `definitions_changed` frame names subjects, and each loaded
-store reloads:
+to another node. An `agent_package_definitions_changed` frame names the changed
+lists (`changedLists`), and each loaded store reloads:
 
-| Subject | Reloads |
+| Changed list | Reloads |
 | --- | --- |
-| `agent` | Agents list and Agent diagnostics |
-| `agent_team` | Teams list and Team diagnostics |
-| `agent_org` | Orgs list and Org diagnostics |
-| `agent_package` | Settings → Agent Packages rows |
+| `agents` | Agents list and Agent definition problems |
+| `agent_teams` | Teams list and Team definition problems |
+| `agent_orgs` | Orgs list and Org definition problems |
+| `agent_packages` | Settings → Agent Packages rows |
 
 Every `connected` frame (first connect and each reconnect) re-reads all loaded
-catalogs. A definition created, edited or removed in a package folder, by
+lists. A definition created, edited or removed in a package folder, by
 another client, or by an agent's tool therefore appears on the Agents page and
-in `@` mentions without a Reload. The server already expands dependent subjects,
-for example an `agent` change also reloads Teams and Orgs. See the
-[server definition catalog](../../autobyteus-server-ts/docs/modules/definition_catalog.md).
+in `@` mentions without a Reload. The server already names dependent lists,
+for example an agent change also reloads Teams and Orgs. See the server's
+[agent package definitions](../../autobyteus-server-ts/docs/modules/agent_package_definitions.md).
 
-### Issue Badge And Diagnostics Notice
+### Load Issue Badge And Definition Problems Notice
 
-- `AgentCard.vue` shows `DefinitionCatalogIssueBadge.vue` when the agent has a
-  `catalogIssue`, meaning a later edit could not be read and the card is
+- `AgentCard.vue` shows `DefinitionLoadIssueBadge.vue` when the agent has a
+  `loadIssue` (passed as a one-item list), meaning a later edit could not be read and the card is
   showing the last working version. The badge text is "Using last working
   version", or "Package folder unavailable" when the package folder is missing.
   Expanding it ("Show what is wrong") lists the definition, the file and the
   reason.
-- `AgentList.vue` shows `DefinitionDiagnosticsNotice.vue` for `AGENT` when some
+- `AgentList.vue` shows `DefinitionProblemsNotice.vue` for `AGENT` when some
   agent definitions cannot be used at all, for example a new agent whose first
   version is invalid. The notice is titled "N agent definition(s) could not be
   loaded" and lists each with its file and reason. Its data comes from
-  `definitionDiagnosticsStore` (`definitionDiagnostics(subject)`).
+  `definitionProblemsStore` (`definitionProblems(kind)`).
 - Team-local agents are not listed on this page, so their issues show on the
   owning Team card (see [Agent Teams](./agent_teams.md#definition-and-package-refresh)).
 
@@ -188,8 +188,8 @@ invalidate and reload Agents together with Applications and Agent Teams. This
 keeps embedded application-owned definitions visible, refreshed, or removed in
 the same session immediately after a package mutation.
 
-For definition updates outside the editor, edits to definition files under a
-registered package root are applied automatically while the package row shows
+For definition updates outside the editor, edits to definition files in a
+registered agent package are applied automatically while the package row shows
 **Auto-refreshing** (see [Settings](./settings.md#settings-agent-packages-auto-refresh)).
 **Settings → Agent Packages** stays the source-aware package lifecycle surface.
 Local path packages remain user-owned: edit or pull the folder outside

@@ -28,7 +28,7 @@
           </span>
         </div>
         <p v-if="applicationLabel" class="mt-2 text-sm text-slate-500">Application: {{ applicationLabel }}</p>
-        <DefinitionCatalogIssueBadge :issues="teamDef.catalogIssues" />
+        <DefinitionLoadIssueBadge :issues="teamDef.loadIssues" />
       </div>
 
       <div class="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
@@ -76,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import DefinitionCatalogIssueBadge from '~/components/definitions/DefinitionCatalogIssueBadge.vue';
+import DefinitionLoadIssueBadge from '~/components/definitions/DefinitionLoadIssueBadge.vue';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';

@@ -17,7 +17,7 @@ const TEMPLATES_DIR = fileURLToPath(new URL("./templates/", import.meta.url));
 
 type AgentDefinitionLookup = {
   getAgentDefinitionById: (definitionId: string) => Promise<AgentDefinition | null>;
-  refreshCache: () => Promise<void>;
+  reloadAgentPackageDefinitions: () => Promise<void>;
 };
 
 type BuiltInAgentSettingsPersistence = Pick<
@@ -75,7 +75,7 @@ export class BuiltInAgentBootstrapper {
     this.logger = options.logger ?? logger;
   }
 
-  /** Writes every built-in agent's files, reconciles the catalog once, then resolves each and seeds its setting. */
+  /** Writes every built-in agent's files, reloads the agent package definitions once, then resolves each and seeds its setting. */
   async bootstrap(): Promise<BuiltInAgentsBootstrapResult> {
     const agentsDir = this.getAgentsDir();
     await fs.mkdir(agentsDir, { recursive: true });
@@ -85,7 +85,7 @@ export class BuiltInAgentBootstrapper {
       synced.push({ definition, ...await this.syncBuiltInAgentFiles(agentsDir, definition) });
     }
 
-    await this.getAgentDefinitionService().refreshCache();
+    await this.getAgentDefinitionService().reloadAgentPackageDefinitions();
 
     const builtInAgents: BuiltInAgentBootstrapResult[] = [];
     for (const { definition, ...files } of synced) {

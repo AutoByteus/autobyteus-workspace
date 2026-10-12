@@ -91,21 +91,22 @@ its owner and physical directory. Missing indexed owners return no definition
 rather than borrowing a same-named shared Team. The Agent provider supplies the
 same Org-root context when reading a Team-local Agent.
 
-For package roots, the [definition catalog](./definition_catalog.md) holds each
-Org as one **org unit**: the Org, its Org-owned Agents, and its Org-owned Teams
-with their Team-local Agents. Org-owned exact IDs are answered from that unit's
-nodes, which keep their last good version when a later edit is invalid. They
+For agent packages, the [agent package definitions](./agent_package_definitions.md) hold
+each Org as one **definition folder**: the Org, its Org-owned Agents, and its
+Org-owned Teams with their Team-local Agents. Org-owned exact IDs are answered
+from that folder's definitions, which keep their last working version when a
+later edit is invalid. They
 are never added to the public Team or Agent lists. Exact readability and shared
 catalog visibility are separate facts: valid self-contained packages need no
 extraction, publication, copying or migration. Reads leave authored files intact.
 Existing source writability and mutation boundaries are unchanged.
 
-`AgentOrgDefinition.catalogIssues` lists every issue in the unit (the Org first,
-then nested nodes in path order) with `subject`, `definitionId`, `name`, `code`,
+`AgentOrgDefinition.loadIssues` lists every load issue in the definition folder
+(the Org first, then nested definitions in path order) with `kind`, `definitionId`, `name`, `code`,
 `reason`, `definitionPath`, `packageRoot` and `usingLastGood`. The web shows them
-on the owning Org card. An Org ID present in more than one registered package
-root is an issue-only `DEFINITION_IDENTITY_DUPLICATED` unit and is unavailable
-to every reader. `definitionDiagnostics(subject: AGENT_ORG)` lists Orgs that
+on the owning Org card. An Org ID present in more than one registered agent
+package is unusable (`DEFINITION_IDENTITY_DUPLICATED`) and is unavailable to
+every reader. `definitionProblems(kind: AGENT_ORG)` lists Orgs that
 cannot be used.
 
 Frontend catalog getters likewise describe only the current public inventory.

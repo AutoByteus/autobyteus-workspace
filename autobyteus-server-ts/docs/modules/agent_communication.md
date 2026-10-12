@@ -480,8 +480,8 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   definition at its in-run address (the standalone host, then configured
   placement or Org mounted Team, then collaborator entry, then collaborator-Team
   member; ties go to the smallest address), any other at its catalog address.
-  Definitions come from the live [definition catalog](./definition_catalog.md):
-  a definition just written to a package root is listed once the change is
+  Definitions come from the live [agent package definitions](./agent_package_definitions.md):
+  a definition just written to an agent package is listed once the change is
   detected, without Reload. A Team or Org whose ID exists in more than one
   registered package is not listed, because it is unavailable to every reader.
   In a standalone Agent run the sender is the viewer: a copy member's list holds

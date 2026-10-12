@@ -9,7 +9,7 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { AgentOrgDefinitionService } from "../../../src/agent-org-definition/services/agent-org-definition-service.js";
-import { resetDefaultDefinitionCatalogRuntimeForTests } from "../../../src/definition-catalog/services/definition-catalog-runtime.js";
+import { resetProcessAgentPackageDefinitionsForTests } from "../../../src/agent-package-definitions/services/agent-package-definitions.js";
 import { DefinitionSourceRegistry } from "../../../src/collaboration-definition-admission/providers/definition-source-registry.js";
 import { DefinitionAdmissionService } from "../../../src/collaboration-definition-admission/services/definition-admission-service.js";
 import { GitHubAgentPackageInstaller } from "../../../src/agent-packages/installers/github-agent-package-installer.js";
@@ -258,7 +258,7 @@ describe("Agent packages GraphQL e2e", () => {
     vi.stubEnv("AUTOBYTEUS_AGENT_PACKAGE_ROOTS", "");
     appConfigProvider.resetForTests();
     appConfigProvider.initialize({ appDataDir: suiteRoot });
-    resetDefaultDefinitionCatalogRuntimeForTests();
+    resetProcessAgentPackageDefinitionsForTests();
     const agents = AgentDefinitionService.getInstance();
     const teams = AgentTeamDefinitionService.getInstance({ agentDefinitionService: agents });
     const orgs = new AgentOrgDefinitionService(undefined, agents, teams);
@@ -297,8 +297,8 @@ describe("Agent packages GraphQL e2e", () => {
 
     process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = "";
     AgentPackageService.resetInstance();
-    await AgentDefinitionService.getInstance().refreshCache();
-    await AgentTeamDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
+    await AgentTeamDefinitionService.getInstance().reloadAgentPackageDefinitions();
   });
 
   const execGraphql = async <T>(
@@ -1215,11 +1215,11 @@ describe("Agent packages GraphQL e2e", () => {
           [newRevision]: newFixtureRoot,
         },
       }),
-      reloadDefinitionCatalog: async () => {
+      reloadAgentPackageDefinitions: async () => {
         if (failRefresh) {
           throw new Error("cache refresh failed");
         }
-        await AgentDefinitionService.getInstance().refreshCache();
+        await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
       },
     });
 

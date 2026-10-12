@@ -30,7 +30,7 @@
           </div>
         </header>
 
-        <DefinitionDiagnosticsNotice subject="AGENT_ORG" />
+        <DefinitionProblemsNotice kind="AGENT_ORG" />
 
         <div v-if="catalogSections.length > 0" class="space-y-8">
           <section v-for="section in catalogSections" :key="section.id">
@@ -150,7 +150,7 @@
 </template>
 
 <script setup lang="ts">
-import DefinitionDiagnosticsNotice from '~/components/definitions/DefinitionDiagnosticsNotice.vue'
+import DefinitionProblemsNotice from '~/components/definitions/DefinitionProblemsNotice.vue'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
 import AgentOrgCatalogCard from './AgentOrgCatalogCard.vue'

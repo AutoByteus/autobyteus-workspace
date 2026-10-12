@@ -85,7 +85,7 @@ describe("Org-owned Agent exact lookup through the hosted definition catalog and
     schema = await buildSchema({ resolvers: [AgentDefinitionResolver], validate: false });
     originalFiles = await snapshot(root);
   });
-  afterEach(async () => { registration?.close(); registration = undefined; definitions.catalogRuntime.sync.close(); await fs.rm(root, { recursive: true, force: true }); });
+  afterEach(async () => { registration?.close(); registration = undefined; definitions.packageDefinitions.reloader.close(); await fs.rm(root, { recursive: true, force: true }); });
 
   it.each([false, true])("resolves exact owned content with catalog already loaded=%s and keeps it out of lists", async (catalogFirst) => {
     if (catalogFirst) {
@@ -112,7 +112,7 @@ describe("Org-owned Agent exact lookup through the hosted definition catalog and
 
   it("reads parent-owned updates and reference removal once the Org unit change is detected, never listing the owned child", async () => {
     // Direct file writes stand in for an external editor; the package monitor reports them as the Org unit.
-    const detected = () => definitions.catalogRuntime.sync.noteUnitChange("agent_org", "org");
+    const detected = () => definitions.packageDefinitions.reloader.markFolderChanged("agent_org", "org");
     expect((await read(ownedId)).data?.agentDefinition).toMatchObject({ ownerOrgName: "Org" });
     let parent = (await orgs.getById("org"))!; parent.name = "Renamed Org"; parent = await orgs.update(parent); detected();
     expect((await read(ownedId)).data?.agentDefinition).toMatchObject({ ownerOrgName: "Renamed Org" });

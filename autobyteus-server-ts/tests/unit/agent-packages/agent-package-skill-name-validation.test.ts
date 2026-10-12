@@ -54,7 +54,7 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
     ),
     registryStore,
     installer, githubClient,
-    reloadDefinitionCatalog: async () => { refreshes += 1; },
+    reloadAgentPackageDefinitions: async () => { refreshes += 1; },
     skillNames: skillService,
   });
 
