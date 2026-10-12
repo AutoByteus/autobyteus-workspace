@@ -2,186 +2,175 @@
 
 ## Review Round Meta
 
-- Date / reviewer: 2026-10-12 / code_reviewer.
-- Review Entry Point: Implementation Review; round 1; Full Review; latest authoritative round 1.
-- Workspace: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview`, branch `codex/resume-pdf-search-preview`.
-- Canonical task-artifact root: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview`. Artifact names below resolve beneath this root; source/test paths resolve beneath the workspace.
-- Requirements context: `requirements-doc.md`, Approved R1 / SR-001; investigation context: `investigation-notes.md`.
-- Solution history / design context: `solution-revision-record.md`, SR-001–003; `design-spec.md`, SR-003; cumulative `solution-handoff.md`.
-- Independent architecture context: `design-review-report.md`, ARCH-REV-002 / round 2 Pass; `architecture-review-revision-record.md`, ARCH-REV-001/002. Current canonical report supersedes the older Fail snapshot in the solution handoff.
-- Implementation context / trigger: implementation_engineer's `implementation-handoff.md` and `implementation-revision-record.md`, IR-001 initial Implementation Complete, selected High-risk source-review route.
-- Reviewed source/tests/docs: `bc820093753dee510294b42879043daec243d4e8`; artifact HEAD at intake `51dcdb626d129992969f5d89f39d373306ca4c8c`; reviewed design input `e4ddf9dbf`; base `2756d7b298ca5b203ebd2310d172b37a5d381b5c`. Source unchanged from committed/checksummed input.
-- Supplements reviewed: `evidence/runtime-failure-excerpts.log`, `evidence/installed-module-checksums.txt`, `evidence/baseline-isolated-reproduction.log`; implementation install/prebuild/typecheck (including initial prerequisite failure)/prepare/unit/integration/reference/parity/build-identity/cleanup logs. Original screenshot personally inspected at `/home/autobyteus/data/projects/project_f34a9537-07d7-449a-b78f-16368f1aa619/tasks/project_task_1aefbe1a-dfb5-4ec1-b893-8423b09a12dd/context/ctx_7cbb18ffeeeb__ctx_27db61845e57_image.png`.
-- Normative Product/behavior-defining supplements: N/A — not applicable.
-- Code review history: `code-review-revision-record.md`, current CRR-001; no prior code-review result or prior finding is inferred.
-- API/E2E coverage investigation, execution report, API-REV, delivery record/DR, failing API/E2E scenarios/commands: N/A — not yet performed; this is not a failure-origin review.
-- Authorities read: code-reviewer skill, full shared design-principles, design-examples Example 9, canonical report/revision templates, root DESIGN.md / TESTING.md / AGENTS.md and server/web AGENTS.md. No closer applicable design/testing guidance or principle conflict found.
+- Date/reviewer: 2026-10-12 / code_reviewer.
+- Entry point: **Implementation Review**, round 2; latest authoritative round 2; current revision **CRR-002**.
+- Review scope: **Targeted Delta Review**. IR-002 changes only the class and exact unit/E2E diagnostic dependencies identified by CR-F-001; no spine, shared production interface/data shape, owner, unrelated file or layered workaround changes. Prior unaffected full-review evidence from CRR-001 carries forward after independent delta verification.
+- Workspace: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview`; branch `codex/resume-pdf-search-preview`.
+- Canonical artifact root: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview`. Artifact names below resolve beneath this root; source paths resolve beneath the workspace.
+- Requirements/investigation: `requirements-doc.md`, Approved R1 / SR-001, unchanged; current `investigation-notes.md` including E-013.
+- Solution context: `design-spec.md`, `solution-revision-record.md`, `solution-handoff.md`; cumulative SR-001–004. SR-004 corrects serializer ownership/removal inventory without changing approved behavior.
+- Architecture context: current `design-review-report.md`, ARCH-REV-003 / round3 Pass, plus `architecture-review-revision-record.md`, ARCH-REV-001–003. Authoring-snapshot status in the solution handoff is not current independent-review authority.
+- Implementation trigger/context: implementation_engineer's `implementation-handoff.md` and `implementation-revision-record.md`, IR-001/002; IR-002 correction ready for independent source re-review.
+- Prior code-review context: report at commit `ddf1d7828` and current `code-review-revision-record.md`, CRR-001 **Fail — Design Impact**, solely CR-F-001. Finding rechecked first against actual code, tests, design and evidence; architecture/implementation assertions alone did not close it.
+- Reviewed correction/source commit: `7f321575058d744c8e635b3aff0a6d1f4557e2c4`; intake artifact HEAD `69be5f21f505ec5f0aff8cca51ca9d7366d8de25`; architecture input `1921e5096`, design `74a4364f4`; initial source `bc820093753dee510294b42879043daec243d4e8`; base `2756d7b298ca5b203ebd2310d172b37a5d381b5c`.
+- Supplements reviewed: current `evidence/implementation-ir002-{reference-check,js-parity,prebuild,typecheck,prepare,focused,build-identity,cleanup}.log`; retained baseline runtime-failure/installed-checksum/isolated-reproduction evidence, IR-001 logs and `evidence/code-review-{checks,reference-check}.log`. Original screenshot personally inspected in round1; unchanged evidentiary context, not render approval. Normative Product/behavior-defining supplements: N/A — not applicable.
+- API/E2E coverage/execution reports/API-REV, delivery record/DR, failing API/E2E commands/scenarios: N/A — not yet performed; not a failure-origin or successful test-code review.
+- Authorities: code-reviewer skill/shared design-principles/Example 9/templates and root DESIGN/TESTING/AGENTS plus server/web AGENTS read in round1; applicable guidance unchanged. Implementation skill's API/E2E ownership rule checked for the explicitly recorded execution-role conflict below.
 
 ## Routing Classification Review
 
-- Task size: Small; architectural risk: High; selected route: Implementation Review; independent source review required: Yes.
-- Confirmed: one production method's public response semantics, same-class bounded deletions and associated tests/docs; material search contract/protected-file and live-delivery concerns remain High. No reclassification required.
+- Task size **Small**, architectural risk **High**, confirmed; selected route **Implementation Review**, independent source review required **Yes**.
+- Same narrow public-search semantic correction and bounded cleanup; public contract/protected-file/live-delivery risk remains High. No local downgrade or classification correction.
 
-## Review Scope
+## Review Scope / Evidence
 
-- Full source/structural review of public search conversion, touched explorer class, planned removals, exact changed TS/JS tests and both area docs; independently traced the complete search/open path and relevant snapshot/abort/lease lifecycle.
-- Source context: file-explorer, search-snapshot controller, indexer/strategies, TreeNode/traversal, filesystem workspace/path owner, GraphQL resolver, protected REST; client Files/composable/search/content actions, URL builder, FileItem/FileViewer/PdfViewer and authorized URL loading.
-- Explicit exclusions: unrelated ranking/index deduplication, symlink/TOCTOU redesign, broad generated-test cleanup, original-document changes, runtime rollout, public release. No production or test fixes made by reviewer.
-- Independent focused check: current prepared worktree artifacts passed prerequisite check; clean environment plus own HOME/TMPDIR; installed Vitest entrypoint ran the same 13 focused unit and 3 integration files: **16 files / 86 tests passed, no skips**, exit0. Exact invocation and cleanup in `evidence/code-review-checks.log`. No server/browser/ports or live requests started. Newly created test DB and all reviewer-owned fixture/home data removed.
-- Static checks: committed source matches working file/build checksums; 406 effective lines / +7−34 source delta; four named JS counterparts independently match TS transpilation exactly (not executed); diff check clean. Evidence: `evidence/code-review-reference-check.log`.
-- Implementation's prior typecheck failure was missing Prisma prerequisites, followed by prebuild and green typecheck; no unresolved test failure or source workaround identified. No broad suite, joined API or render pass claimed.
+- This round: exact explorer.toJson removal; unit explorer `.test.ts/.js` serialization/null/relative-path/nonmutation assertions; existing path-boundary E2E diagnostic accessor/type; corrected SR-004 and IR-002 manifest/history; current reference/build/check/cleanup evidence.
+- Preserved spine context: Files/scoped composable/search actions → GraphQL explorer lease → public search → snapshot/index/strategies → relative choices; click → scoped preview/content URL or text query → protected workspace/path owner → bytes → shared PDF viewer. Delta verification confirms all those production mechanisms unchanged.
+- Independent static evidence: `evidence/code-review-crr002-static.log`. Exact comparison proves the **sole production delta is deletion of explorer.toJson**; remaining class, including candidate conversion/getPath/abort/watcher methods, is byte-identical to prior source. Current source/build SHA matches IR-002 build identity. Four TS→JS counterparts match independently; diagnostic E2E syntax transpiles with erased type import. JS/E2E not executed by reviewer.
+- Implementation-owned current checks inspected: prebuild/Prisma, typecheck and integration prepare/current server build/sanitized bootstrap exit0; **16 files /87 focused unit+integration tests passed, no skips** (76 unit +11 integration). These are IR-002 results, not reviewer execution. Prior reviewer86 passes remain historical evidence for unaffected scope. No suite/build/server/browser rerun by reviewer this round.
+- Excluded: broader ranking/index/symlink/security redesign, unrelated generated tests, original documents/persistence, live runtime/release/rollout. No source/test fixes made by reviewer.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved intent understood: correct actual search-selected PDF/shared identity defect; preserve protected access, data and truthful changed-build/rollout/user verification.
-- Design behavior map verified: **Confirmed** for BEH-001–004. No new or ambiguous supported product behavior. The removal inventory has a separate engineering-contract gap (CR-F-001), not a new PDF failure scenario.
+Approved requirements and design behavior basis: **Confirmed**; all existing behavior IDs preserved; no newly discovered supported behavior or material intended-behavior ambiguity.
 
-| Behavior ID | Status | Current implementation path / lifecycle evidence | Contradicting / new behavior |
+| Behavior | Status | Current path/lifecycle evidence | Contradicting/new behavior |
 | --- | --- | --- | --- |
-| BEH-001 | Confirmed | Files query → scoped store/Apollo → FileExplorerResolver:65–82 → explorer search:214–221 → snapshot/index/strategies → relative response → search node → preview URL → unchanged protected REST/path owner → PdfViewer. Source repairs identity; actual pages still need AC-001 validation. | None |
-| BEH-002 | Confirmed | Tree child paths and new search locators share workspaceId/relative path. Client reuses found node or creates lazy search node without transforming the locator. Real unexpanded nested text search/read/tree/bytes checks pass. | None |
-| BEH-003 | Confirmed | Conversion calls existing getPath; content/read owners still reject absolute and escaping inputs before bytes. No reader/REST/security source delta. | None |
-| BEH-004 | Confirmed | No document/persistence/runtime writer change. DS-003 review → isolated validation → delivery/rollout/user verification remains downstream. /app is not the checked worktree; no live restart/validation claimed. | None |
+| BEH-001 | Confirmed | DS-001 Files query → resolver:65–82 → explorer search:210–217 → snapshot/index/strategies → relative response → client result → protected content → PdfViewer. Only dead serializer removed; PDF bytes/pages still need AC-001 execution. | None |
+| BEH-002 | Confirmed | DS-002 tree/search share workspaceId/relative path; client reuses loaded node or creates lazy node. Existing getTree/TreeNode projections/serialization retained; current real nested text/path/byte and JSON/null tests green. | None |
+| BEH-003 | Confirmed | getPath/resolveWorkspaceRelativePath and REST guard unchanged; denied-read unit assertion retains tree state. Changed E2E diagnostic observes same existing tree/null value and leaves denial/watcher/lease assertions intact. | None |
+| BEH-004 | Confirmed | DS-003 review → isolated validation → delivery/rollout/user verification unchanged. No persisted/runtime writer delta; /app still baseline; implementation integrity/cleanup evidence explicit. | None |
 
-Spines DS-001/002 are stretched through the actual UI/transport/authoritative owners to usable choices and bytes/render; DS-003 remains delivery-owned. Snapshot controller owns refresh/waiter/abort; resolver releases explorer lease in finally; search does not acquire watcher lease. Conversion is synchronous once candidates resolve and adds no competing lifecycle owner.
+Snapshot controller remains sole refresh/waiter/abort owner; resolver releases explorer lease in finally; search acquires no watcher lease. Prior full macro/ownership/path review evidence is valid because no such source changed. Corrected inventory distinguishes live **TreeNode.toJson** from removed **WorkspaceFileExplorer.toJson**.
 
 ## Supported Product Scenario And Reachability Gate
 
-| Scenario | Related authority | Kind / actor / goal | Supported entry / shape | Forward production path and lifecycle | Outcome / independent evidence | Validity / review use |
-| --- | --- | --- | --- | --- | --- | --- |
-| SCN-001 | REQ-001/004, AC-001, BEH-001 | User reads résumé in selected workspace | Files search `resume`, click nested PDF; Normal | Query → GraphQL/explorer snapshot → relative choices → FileItem click → protected content URL/reader → shared PDF viewer; parents need not be loaded in client tree | Correct bytes/pages; request/screenshot E-001/004 establish actual path independently of tests. Source traces above corroborate. | Supported Normal Scenario / Use |
-| SCN-002 | REQ-004, AC-003, BEH-002 | User opens same workspace file by browsing or search | Files tree/result click; Normal | Tree/findFileByPath or lazy node → same scoped preview/text action → existing content owner | Same identity/readability; E-008, existing Files surface/docs and client source; real text tests confirm established path. | Supported Normal Scenario / Use |
-| SCN-003 | REQ-002, AC-002, BEH-003 | Governing workspace-access contract denies prohibited locators | Registered workspace content/read requests; Explicit Edge | Request → workspace getAbsolutePath / explorer getPath → relative-only lexical containment → deny before filesystem bytes | Absolute in-root/outside, parent/sibling escape remain denied; approved safety constraint and existing reader contract, not mock output, establish obligation. | Supported Explicit Edge Scenario / Use |
-| SCN-004 | REQ-003, AC-004, BEH-004 | Delivery safely applies validated fix, preserving active user state | Approved operational rollout then user re-search/open; Normal | Reviewed candidate → test-owned validation → Delivery host/build pin/authority/rollback → runtime → explicit user verification | Honest deployment/integrity/cleanup receipt; delegated outcome and TESTING/RELEASE basis E-002. Not executed by this reviewer. | Supported Normal Scenario / Use |
+| Scenario / authority | Actor or contract / coherent goal | Supported entry / shape | Forward production path / lifecycle / consequence | Independent evidence | Validity / use |
+| --- | --- | --- | --- | --- | --- |
+| SCN-001; REQ-001/004, AC-001, BEH-001 | User reads résumé in selected workspace | Files search `resume`, click nested PDF; Normal | Query → workspace snapshot search → relative choice → preview → protected bytes → PDF pages, including client-unexpanded parent | Approved request/screenshot E-001 and runtime400 E-004 establish path independently; unchanged full source trace corroborates | Supported Normal Scenario / Use |
+| SCN-002; REQ-004, AC-003, BEH-002 | User opens equivalent workspace file through browse/search | Files tree or result selection; Normal | Tree node or lazy result → same scoped preview/text action → existing content owner; same relative identity and readable data | Files/docs/client surface E-008, unchanged source and current interoperation evidence | Supported Normal Scenario / Use |
+| SCN-003; REQ-002, AC-002, BEH-003 | Workspace confinement contract denies prohibited locators before bytes | Registered workspace readers/content requests; Explicit Edge | Request → real getPath/getAbsolutePath → unchanged lexical absolute/traversal/sibling denial → no unauthorized bytes | Approved safety constraint and existing path/REST contract; not inferred from synthetic candidate output | Supported Explicit Edge Scenario / Use |
+| SCN-004; REQ-003, AC-004, BEH-004 | Delivery safely applies validated fix and captures user verification | Authorized operational rollout then user re-search/open; Normal | Reviewed build → isolated proof → host/runtime pin/authority/rollback → deployed runtime → explicit user outcome | Delegated outcome, E-002 and established TESTING/RELEASE obligations | Supported Normal Scenario / Use; not executed here |
 
-Established structural contract **ENG-001**: shared Core Principle 7 requires removing code reached only by its own tests from touched files, with importer/entrypoint/reference evidence; independent design is context, not immunity. This contract does not require inventing a user failure. It applies to the already changed `WorkspaceFileExplorer` class and its removal inventory.
+**ENG-001** remains the governing structural contract: shared Core Principle7 requires evidence-backed removal of test-only code from touched files, without deleting supported production owners. No user failure is invented to justify cleanup.
 
 ### Candidate Finding And Mechanism Gate
 
-| Candidate | Observation / mechanism | Scenario / contract | Independent trigger | Forward path / lifecycle / consequence | Evidence | Disposition / proportionate response |
-| --- | --- | --- | --- | --- | --- | --- |
-| CG-001 | Retained `WorkspaceFileExplorer.toJson` is test-only despite being labelled live in removal guidance | ENG-001; SR-003 local cleanup inventory | Governing touched-file dead-code rule, independent of a runtime failure or test fixture | Workspace acquires explorer; real callers use public search/read/mutations/folder projection/watching. No caller invokes explorer serialization. Unit tests and E2E diagnostics alone call facade; retaining it leaves a misleading unused API in touched class. | Explorer:173–175; unit explorer .ts:61–64/.js:45; path-boundary E2E:98–110; all production importers/reference/entrypoint inspection in code-review-reference-check.log. SkillService:385–393 returns **TreeNode**, so SkillResolver:191 is not an explorer call. | **Promote** → CR-F-001. Correct design's live/dead distinction; delete only unused explorer facade and adapt direct tests at live tree owner, no replacement layer. |
-| CG-002 | New root-relative mapping plus existing containment validation | SCN-001/002/003; REQ-002/004 | User's established search/open goal and approved workspace confinement contract | Snapshot absolute candidates → path.relative(root,candidate) → existing getPath → relative choice → unchanged reader; preserve order/count or fail rather than publish escape | Explorer:214–221, real strategies/index and path owner; independent focused regression incl abort/order/text/denials | **Promote**, compliant mechanism, no finding/deduction. Controlled sibling fixture checks contract; it does not prove a production strategy actually emits outside files. No new fallback or security framework required. |
+| Candidate | Observation/mechanism | Authority / independent trigger | Forward path/lifecycle/consequence | Evidence | Disposition / response |
+| --- | --- | --- | --- | --- | --- |
+| CG-001 | Prior dead explorer serialization facade | ENG-001; touched-class cleanup rule | Real explorer consumers do not serialize it; tests now get existing tree → TreeNode.toJson, yielding identical JSON/null observations. Removed facade leaves no runtime behavioral change. | Exact source deletion; no retired explorer calls; unit .ts/.js; E2E:98–112; unchanged SkillService:385–393/SkillResolver:191; current static/reference and87focused evidence | Prior promoted finding **resolved**, CR-F-001 closed independently this round; no deduction or new mechanism |
+| CG-002 | Root-relative conversion plus existing validation | SCN-001/002/003, REQ-002/004; actual search/open goal and confinement contract | Internal absolute candidate → path.relative → getPath → relative public locator → unchanged reader; order and cancellation retained | Explorer:210–217 unchanged from reviewed fix; current local regressions and full round1 traces | Promote, compliant; no finding/deduction. Sibling fixture checks contract, not an asserted outside-emitting production strategy |
 
-No held candidate or hypothetical race, corruption, external-client compatibility, or new recovery premise is used to justify findings/scores/machinery. Existing snapshot lifecycle preservation is assessed against the established search cancellation contract, not arbitrary contradictory actions.
+No held candidate or unsupported timing, corruption, external-client or recovery premise affects findings/scores/routing. No new defensive/lifecycle machinery.
+
+## Prior Finding Recheck
+
+CR-F-001 verified **Resolved**: SR-004 corrects live/dead owner inventory; actual class no longer contains toJson; exact unit counterparts and E2E diagnostics use the live tree, preserving null/JSON/nonmutation observations. TreeNode serializer/Skill pipeline/getTree unchanged; manifest's earlier retention claim explicitly corrected. Detailed resolution/history is in CRR-002. ARCH-F-001's prior two named deletions remain resolved, not reopened.
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required action |
 | --- | --- | --- | --- |
-| Task design health assessment present, evidenced and preserved | Pass | Missing Invariant at existing search owner; no broad refactor | None |
-| Approved behavior-defining supplements matched | Pass | None applicable; screenshot/logs evidentiary only | None |
-| Data-flow spine inventory clarity/preservation | Pass | DS-001/002 complete source traces; DS-003 operational ownership | None |
-| Ownership boundaries clear/preserved | Pass | Public explorer transforms; workspace reader authorizes bytes | None |
-| Off-spine concerns serve clear owners | Pass | Existing snapshot/index/path/MIME/URL owners unchanged | None |
-| Existing capability/subsystem reused | Pass | getPath and existing public search reused | None |
-| Reusable owned structures properly allocated | Pass | No repeated new structure warrants extraction | None |
-| Shared/data-model structures tight | Pass | One relative string meaning paired with workspaceId, no parallel shape | None |
-| Repeated coordination has clear owner | Pass | Conversion once; abort/refresh remains controller-owned | None |
-| No empty new indirection | Pass | No new layer/helper/facade added | None |
-| Scope-appropriate SoC/file responsibility | Pass | Existing explorer owns file operations; narrow mapping/deletions | None |
-| Ownership-driven dependency direction | Pass | UI → transports → public owners → internals, unchanged | None |
-| Authoritative Boundary Rule | Pass | Resolver does not reach controller/index; client does not bypass content owner | None |
-| File placement | Pass | Existing file-explorer owner, layer-specific tests/docs | None |
-| Flat vs over-split layout | Pass | No unjustified extraction or new directory | None |
-| Interface/API/identity clarity | Pass | Public relative locator, internal absolute candidate, one subject | None |
-| Naming/local readability | Pass | candidates/relativePath and method contract clear | None |
-| No unjustified duplication | Pass | One production mapping; intentional tracked test parity | None |
-| Patch-on-patch complexity controlled | Pass | Clean producer correction, no client/reader workarounds | None |
-| Dead code removed in touched files/modules | **Fail** | CG-001: explorer.toJson retained; two planned removals correctly executed | CR-F-001 |
-| Relevant test scenarios/assertions requirement-aligned | Pass | Six boundary cases; real nested text/tree/guard integration; render explicitly unclaimed | None |
-| Test fixture/helper reuse and organization coherent | Pass | Test-owned roots, leases finally released, deterministic abort synchronization | None |
-| No stale/compatibility-only changed-scope tests retained | **Fail** | Unit explorer serialization still tests unused facade; E2E diagnostics reference it | CR-F-001; retain useful tree serialization/denial assertions at live owner |
-| API/E2E readiness | Pass | Built prerequisites/current source/fixtures viable; remaining joined PDF/client/HTTP gates explicit | Proceed only after cleanup design/source re-review passes |
+| Design-health assessment present/evidenced/preserved | Pass | Missing Invariant at existing search owner; bounded cleanup, no refactor | None |
+| Approved behavior-defining supplements matched | Pass | None applicable; original screenshot/logs only evidence | None |
+| Data-flow spine inventory clarity/preservation | Pass | DS-001/002 full paths and DS-003 ownership carry forward; no spine delta | None |
+| Ownership boundary preservation/clarity | Pass | Search transforms, workspace reader authorizes; live tree owns serialization | None |
+| Off-spine concerns serve clear owners | Pass | Snapshot/index/path/MIME/URL ownership unchanged | None |
+| Existing capability/subsystem reuse | Pass | getTree/TreeNode serializer, getPath and public search reused | None |
+| Reusable owned structures | Pass | No repeated new production structure; no extraction needed | None |
+| Shared/data-model tightness | Pass | One relative locator paired with workspaceId; no new/parallel representation | None |
+| Repeated coordination ownership | Pass | Once-only mapping; controller abort/refresh unchanged | None |
+| No empty indirection | Pass | Unused serialization facade deleted, none added | None |
+| Scope-appropriate SoC/file responsibility | Pass | Existing file-operation owner, live tree representation | None |
+| Ownership-driven dependencies | Pass | No new production dependency/cycle | None |
+| Authoritative Boundary Rule | Pass | Transport/client still use public owners, no internal-controller/byte bypass | None |
+| File placement | Pass | Existing owner/tests, type-only diagnostic dependency at live tree owner | None |
+| Flat vs over-split layout | Pass | No artificial new layer/directory | None |
+| Interface/API/identity clarity | Pass | Public relative locator; internal candidate; no diagnostic runtime API | None |
+| Naming/local readability | Pass | Owner-specific serializer distinction and explicit mapping | None |
+| No unjustified duplication | Pass | One production conversion, intentional tracked test counterpart parity | None |
+| Patch-on-patch control | Pass | Deletion, not replacement wrapper/workaround | None |
+| Dead code removed in touched scope | Pass | CG-001 resolved; all three named explorer methods removed, live owners intact | None |
+| Tests requirement-aligned | Pass | Relative JSON/null/denial nonmutation assertions; unchanged search/path coverage | None |
+| Fixtures/helpers/coherent structure | Pass | Existing isolated mkdtemp/close lifecycle, one nested serialization fixture | None |
+| No stale/compatibility-only changed-scope tests | Pass | No removed-member test/diagnostic references; no compatibility branch | None |
+| API/E2E readiness | Pass | Current prepared build and local87passes; exact remaining validation gates assigned | API/E2E must execute outstanding diagnostic and joined PDF/client/HTTP checks |
 
 ## Source File Size And Structure Audit
 
-| Source | Effective non-empty lines | >500 hard limit | >220 delta | SoC / ownership | Placement | Preliminary classification | Action |
+| Source | Effective non-empty lines | >500 hard limit | >220 delta | SoC/ownership | Placement | Classification | Required action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| autobyteus-server-ts/src/file-explorer/file-explorer.ts | 406 | Pass | Pass: +7 / −34, 41 changed | Pass for search/file-operation owner | Pass | Design Impact only for CG-001 removal-inventory gap | CR-F-001; no size-driven split |
+| autobyteus-server-ts/src/file-explorer/file-explorer.ts | 403 | Pass | Pass: round2 +0/−4; cumulative +7/−38 | Pass | Pass | N/A — no failure | None; no size-driven split |
 
-Tests/docs/generated outputs are not subject to implementation-source thresholds.
+Thresholds apply to changed implementation source only, not tests/docs/generated outputs.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms added | Pass | No dual format, flag, absolute-reader fallback or viewer workaround |
-| No legacy old-behavior retention | Pass | Public absolute forwarding removed; private strategy absolutes remain current contract |
-| Dead code removed in touched scope | **Fail** | CG-001; existing facade is test-only, not a supported compatibility API |
-| Approved persisted-data decision followed | Pass | Not Affected: no persisted schema/model/writer/root or registry change |
-| No version-specific dual reads/writes/request fallback | Pass | No persistence/request compatibility delta |
-| Reviewed transition mechanics preserved | Pass | No migration required or added |
+| No backward-compatibility mechanisms | Pass | No dual path/flag/absolute-reader/viewer fallback |
+| No legacy old-behavior retention | Pass | Public absolute forwarding gone; private candidates remain current mechanics |
+| Dead code removed in touched scope | Pass | CG-001 resolved; all three named facades removed without replacements |
+| Approved persisted-data decision followed | Pass | Not Affected; no schema/model/writer/root/registry delta |
+| No version-specific dual reads/writes/request fallback | Pass | None introduced |
+| Reviewed transition mechanics followed | Pass | No migration required or added |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-| Item / path | Type | Evidence | Why / required action |
-| --- | --- | --- | --- |
-| WorkspaceFileExplorer.toJson, src/file-explorer/file-explorer.ts:173–175 | UnusedHelper | CG-001 / reference log; only unit and E2E diagnostic calls, no runtime/entrypoint/external contract | ENG-001. Remove explorer facade after designer corrects its retention premise; preserve live TreeNode.toJson and adapt exact direct unit counterparts plus E2E diagnostics. No broad test sweep. |
-
-Verified completed: toShallowJson/getAllFilePaths and named stale converter mocks removed; no retired-name product reference remains. ARCH-F-001's named removal plan was executed correctly; CR-F-001 identifies a separate earlier inventory omission, not reopening that resolved finding by assertion.
-
-Outside-scope recorded follow-up: existing `tests/integration/file-explorer/file-system-watcher.integration.test.js:6` obsolete FileExplorer import remains excluded by default TS-only runner. Keep implementation's bounded no-sweep disposition; not a new executed baseline failure or score deduction.
+None in reviewed changed scope. Resolved items/history retained in CRR-002. Outside-scope recorded follow-up remains existing excluded JS watcher test's obsolete FileExplorer import (`tests/integration/file-explorer/file-system-watcher.integration.test.js:6`); no new executed baseline failure or score deduction, no broad generated-test sweep.
 
 ## Docs-Impact Verdict
 
-- Yes: server `docs/modules/file_explorer.md` and web `docs/file_explorer.md` correctly describe relative public identity and live snapshot/index traversal; reviewed edits are aligned.
-- Additional impact is designer-owned removal/live-owner inventory and implementation manifest truth for CR-F-001. No global TESTING/RELEASE or product contract rewrite needed.
+Yes. Existing server/web file_explorer area docs still correctly describe public relative identity and live snapshot/index traversal. SR-004's inventory and IR-002 manifest now correctly distinguish tree vs explorer serialization. No additional documentation correction identified; delivery owns final sync. No global TESTING/RELEASE policy rewrite.
 
 ## Additional Material Premise Validation
 
-- Upstream architecture material-premise decisions: None; ARCH-REV-002 recorded no additional premise beyond SCN-001–004. These scenario decisions remain Confirmed.
-- New/reclassified product/failure/lifecycle premises: None. CG-001 is static engineering-contract evidence, not an invented production serialization incident. No extra runtime machinery is prescribed.
+Upstream ARCH-REV-003 lists no additional product/failure/lifecycle premises; SCN-001–004 unchanged and Confirmed. No new/reclassified material premise. ENG-001 cleanup is a structural contract, not a new product serialization scenario.
+
+## Verification-Ownership Discrepancy
+
+SR-004/ARCH-REV-003 asks implementation to run the focused path-boundary E2E before source re-review. Authoritative implementation skill reserves API/E2E execution for api_e2e_engineer; IR-002 explicitly records that conflict and leaves the exact diagnostic E2E unexecuted. The mechanically equivalent adapter can be judged from the source/type/fixture path and current local evidence; absence of its E2E run does not invalidate the cleanup's scenario/contract basis or create a source finding. **Execution is not waived:** the source-review Pass forwards it as a required first API/E2E validation item. This report is not an E2E pass. No new E2E cases or production machinery added by implementation.
 
 ## Review Scorecard
 
-Overall **9.4/10 (94/100)**, simple category average; does not override failed cleanup check. The only deduction below the clean-pass threshold is CG-001/ENG-001.
+Overall **9.5/10 (95/100)**, simple category average; all categories meet the clean-source-pass bar. Only changed score is Cleanup8.5→9.5 after verified CG-001 resolution; other categories retain corroborated round1 evidence.
 
-| Priority | Category | Score | Why | Weak / holding down | Improvement |
+| Priority | Category | Score | Why | Weak/holding down | Improvement |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | Complete Files query→choices and click→bytes/viewer paths independently traced | None material for source gate | Preserve traces |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | Explorer corrects identity; protected owner retains authorization | None material | Keep existing boundaries |
-| 3 | API / Interface / Query / Command Clarity | 9.5 | Single workspace-relative public meaning, documented and consistent with tree | None material | Validate joined transport semantics downstream |
-| 4 | Separation of Concerns and File Placement | 9.5 | Local production change in right owner, no layer proliferation | None material | No split required |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | Existing string[]/workspaceId sufficient; path policy reused | None material | Avoid parallel formats |
-| 6 | Naming Quality and Local Readability | 9.5 | Candidate/locator distinction and bounded map obvious | None material | Preserve clear contract |
-| 7 | API/E2E Readiness | 9.5 | Current prerequisites and 86 focused checks green, gaps honestly assigned | Full PDF/API/client execution is next-stage proof, not a source defect/deduction | Execute AC-001–003 after corrected source review |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.5 | Real method/path/text interoperation, order/abort and unchanged guard evidence | HTTP/PDF render not claimed; no evidenced source correctness defect | Complete changed-stack runtime proof downstream |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean producer correction without compatibility branches or migration | None material; test-only facade accounted under cleanup | Keep single public representation |
-| 10 | Cleanup Completeness | **8.5** | Two named removals/parity/docs correct, but touched class retains unused serialization facade | **CG-001 / CR-F-001**; design labels explorer.toJson live without a product caller | Correct inventory; remove only facade/direct method-dependent scaffolding, preserve live TreeNode serializer/assertions |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | Complete query/selection/bytes/render and operational spines preserved | None material at source gate | Preserve traces |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | Identity/byte/tree owners distinct; no bypass | None material | Keep boundaries |
+| 3 | API / Interface / Query / Command Clarity | 9.5 | Single relative public identity, no replacement diagnostic API | None material | Validate joined transport downstream |
+| 4 | Separation of Concerns and File Placement | 9.5 | Local facade deletion at existing owner and exact test dependencies | None material | No extraction needed |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | Existing locator/tree/path structures reused, no parallel format | None material | Preserve tight representation |
+| 6 | Naming Quality and Local Readability | 9.5 | Explicit candidate/locator and serializer-owner distinction | None material | Preserve contracts |
+| 7 | API/E2E Readiness | 9.5 | Current build/local87checks and exact outstanding execution items | Diagnostic/HTTP/PDF/client runs are next-stage proof, not a source defect/deduction | Execute required checks now |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.5 | Same search/guards/lifecycle; tree serialization/null preserved | No runtime source defect evidenced; E2E/render not yet claimed | Complete changed-stack validation |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean producer correction/deletions, no compatibility/migration | None material | Keep one public format |
+| 10 | Cleanup Completeness | 9.5 | CG-001 resolved with actual facade deletion, exact test/manifest correction and live-owner retention | None material in reviewed scope | Keep no-sweep follow-up separate |
 
 ## Findings
 
-### CR-F-001 — Removal inventory incorrectly preserves test-only explorer serialization
-
-- Severity: Low maintainability; **blocking under mandatory touched-file cleanup contract**, not a security or PDF runtime failure.
-- Classification: **Design Impact**; promoted CG-001, established ENG-001. Approved BEH/REQ/AC unchanged; relevant REQ-004/AC-003 identity/tree coverage and preserved REQ-001/003.
-- Location: `autobyteus-server-ts/src/file-explorer/file-explorer.ts:173–175`; related unit `file-explorer.test.{ts,js}` serialization test and `tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts:98–110` diagnostics.
-- Evidence: `toJson` merely forwards rootNode serialization. Repository/importer/script/config/entrypoint searches find no production explorer caller; package is private and index exposes server/host entrypoints, not this class. Unit/E2E-only callers do not make it live under Core Principle 7. `SkillResolver.skillFileTree` serializes a **TreeNode returned by DirectoryTraversal**, not WorkspaceFileExplorer; retain that real serializer.
-- Earlier artifact gap: SR-003 Legacy Removal Policy says to preserve live `getTree`/`toJson`; IR-001 explicitly labels explorer `toJson` live. Implementation followed that guidance. Correct the design's owner-specific live/dead inventory rather than blaming the successful conversion or treating ARCH-REV-002 as immunity.
-- Proportionate response: Solution Designer corrects removal/verification inventory; implementation removes only the unused explorer facade and updates its exact direct TS/JS unit references and existing E2E diagnostics to observe live tree serialization. Preserve TreeNode.toJson, getTree, real serialized tree/denial assertions, search/controller/readers and all safety/operational constraints. No replacement facade, new API, broad test sweep or requirements change justified. If an actual supported consumer is found, record it before removal instead.
-- Re-entry: corrected design/implementation package returns for source review, then API/E2E; existing focused passes do not certify the future edit.
+**None open. CR-F-001 resolved** by independent source/design/test/evidence checks recorded in CRR-002. No functional/security defect or new finding attributed. Prior failure history is preserved, not rewritten as Pass.
 
 ## Classification / Recommended Recipient
 
-- Decision: **Fail — Design Impact**, solely CR-F-001. Functionality correction and named SR-003 removals otherwise conform; no implementation runtime defect attributed.
-- Recommended owner: Solution Designer under configured failed Design Impact rule; do not advance this package to API/E2E or delivery yet. Preserve cumulative R1/SR/ARCH/IR chain, this report/CRR and evidence.
-- Fresh get_handoff_rules on 2026-10-12 selects only “When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision” → `/software_engineering_team/solution_designer`. Pass/Local Fix rules do not match; no duplicate notification.
+- Review outcome **Pass**; failure classification N/A. Small / High unchanged.
+- Fresh get_handoff_rules (2026-10-12) selects primary implementation-review Pass → `/software_engineering_team/api_e2e_engineer`. After confirmed handoff, the skill-required informational Pass rule → `/software_engineering_team/implementation_engineer`, no action/forwarding required. Failure/delivery rules do not match.
+- Forward complete approved requirements/investigation/design/SR/ARCH/IR chain, canonical code review/CRR and all retained/new evidence. Do not advance directly to delivery.
 
 ## Residual Risks / Safety Receipt
 
-- AC-001 remains unverified: joined GraphQL→protected REST200/application/pdf/exact valid multipage fixture bytes and actual lazy nested result click→real PDF pages/canvases/no load alert/browser errors on current stack. API/E2E owns proof after source-review pass.
-- AC-002/003 need real HTTP denials/no outside bytes, client node reuse/tree identity and representative text behavior; current checks prove method/reader boundary only.
-- AC-004 remains delivery-owned: host Docker access/runtime build pin, safe8001 rollout/rollback/timing authority, explicit user re-search/open, résumé integrity and final cleanup. /app stays baseline; no deployment or user-verification claim.
-- Original baseline SHA retained from upstream integrity evidence: `7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5`; reviewer did not edit/copy original or production registry/database/config, /app, or PID61. No expanded symlink guarantee.
-- Reviewer changed only review artifacts/evidence; owned test fixtures/home/new DB removed. Existing task worktree/dependencies/build prerequisites retained; upstream-owned dirty solution-history receipt and untracked SDK/devkit/Brief Studio dist outputs left untouched/unstaged.
+- Required API/E2E first item: execute current `autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts` in clean test-owned environment; verify retained null/tree nonmutation/denial/watcher/lease assertions. Syntax/parity/local87checks are not its execution.
+- AC-001 remains unverified: real GraphQL search→protected REST200/application/pdf/exact valid synthetic multipage bytes, then lazy unexpanded result click→real PDF pages/canvases/loading completion/no alert/browser errors on current stack.
+- AC-002/003 still need real HTTP absolute in-root/outside/traversal/sibling denials/no outside bytes, client tree reuse/identity and representative text read. Current local owner assertions are not transport/browser sign-off.
+- AC-004 remains Delivery-owned: host Docker access/build/frontend/runtime pin, safe8001 rollout/rollback/timing approval if disruptive, explicit user close-failed-tab/re-search/open verification, original SHA and final cleanup. /app remains installed baseline; no public release requested.
+- Upstream original résumé read-only hash recheck equals `7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5`; no personal content fixture or file/state/runtime edits by reviewer. Existing lexical protection, not expanded symlink/TOCTOU claim.
+- This round changed only review report/history/static evidence; no test processes/fixtures/DB/ports created. Implementation's own cleanup inspected; worktree/dependencies/build prerequisites and upstream dirty ARCH-REV-003 informational solution-history receipt retained untouched/unstaged. Do not claim worktree entirely clean or cleanup finalized.
 
 ## Latest Authoritative Result
 
-- Review Decision: **Fail**.
-- Review Entry Point / scope / revision: Implementation Review / Full Review / CRR-001.
-- Supported Product Scenario Gate: Pass. Material-Premise Gate: Pass.
-- Score Summary: 9.4/10, 94/100; Cleanup Completeness 8.5 blocks clean pass.
-- Failure Origin: N/A — not an API/E2E failure; earlier design cleanup-inventory gap only.
-- Classification / recommended recipient: Design Impact / Solution Designer; Small / High unchanged.
-- Notes: CR-F-001 open. 86 independent focused tests pass; no API/E2E, PDF render, rollout or explicit user verification pass.
+- Decision: **Pass**, Implementation Review / round2 / Targeted Delta Review / **CRR-002**.
+- Supported Product Scenario Gate: Pass; Material-Premise Gate: Pass.
+- Score: 9.5/10 (95/100); no category below9.
+- Failure origin/classification: N/A — no failure.
+- CR-F-001 resolved; source approved for API/E2E validation, **not** API/E2E/PDF render/deployment/user-verification sign-off.
