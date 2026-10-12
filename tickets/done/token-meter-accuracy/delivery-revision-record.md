@@ -7,6 +7,7 @@
 | DR-001 | CRR-003 Pass (code reviewer) | N/A | Integrated, docs synced, waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md` |
 | DR-002 | User verification + "finalize and release a new beta" (2026-10-11) | DR-001 waiting for verification | Blocked: re-integration found a native-compaction reading conflict (Design Impact) | `release-deployment-report.md`, `handoff-summary.md`, `docs-sync-report.md` |
 | DR-003 | CRR-009 Pass after the SR-008–SR-014 rework | DR-002 Blocked | Current with base, docs synced, checks pass; waiting for renewed user verification (AC-011, AC-012) | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md` |
+| DR-004 | User sign-off: "finalize no need to release a new version" (2026-10-12) | DR-003 waiting for verification | Finalized into `personal`, no release, cleaned up | `release-deployment-report.md`, `handoff-summary.md`, `docs-sync-report.md` |
 
 ## Revision Entries
 
@@ -85,3 +86,22 @@
 - Remaining blockers, rollback concerns, or untested scope:
   - No blockers.
   - Residual risks as listed in API-REV-003 and in `handoff-summary.md` § Follow-Ups.
+
+### DR-004 — Finalization, no release
+
+- Delivery round and trigger: the user's sign-off on 2026-10-12, "finalize no need to release a new version".
+- Triggering upstream report, verification, or evidence: the user verification above; `origin/personal` advanced to `3514fe48e`.
+- Prior authoritative result: DR-003, waiting for renewed verification.
+- Current authoritative result:
+  - Re-integrated (merge `0c1c60a5c`, no conflicts); checks pass.
+  - Archived to `tickets/done/token-meter-accuracy/`, then merged into `personal` and pushed.
+  - No release. The worktree and local branch are removed.
+  - Exact commits and push results are in `release-deployment-report.md` § Repository Finalization.
+- Docs sync report: `docs-sync-report.md` (TESTING.md rule `99e5e1e05` recorded).
+- Handoff summary: `handoff-summary.md`.
+- Release/publication/deployment report: `release-deployment-report.md`.
+- User verification/finalization state: verified; finalized; release `Not required`.
+- Terminal return to `/solution_designer`: sent after this record is pushed.
+- Why this delivery revision was recorded: final completion of delivery.
+- Next recipient/action: `/software_engineering_team/solution_designer` verifies the terminal package.
+- Remaining blockers, rollback concerns, or untested scope: none blocking. Residual risks and follow-ups are listed in `handoff-summary.md`.

@@ -3,17 +3,15 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `token-meter-accuracy`. Classification: `task_size=Large`, `architectural_risk=High`, reviewed route.
-- Current state: **DR-003, waiting for renewed user verification (AC-011, AC-012)**.
-  - The DR-002 blocker was resolved by the Solution Designer (SR-008–SR-014 → D-12, D-13). The package returned through ARCH-REV-009, CRR-008, API-REV-003 and CRR-009, all passing.
-  - Nothing is pushed, merged into the target, released or cleaned up.
-- Release: the user asked for a new beta. `v1.4.99-beta.10` is already taken upstream; the workspace is now at 1.5.1, so the release will be the next beta after 1.5.1, from `scripts/desktop-release.sh beta`.
+- Current state: **DR-004, finalization without a release.** The user's sign-off on 2026-10-12: "finalize no need to release a new version".
+- Release: **Not required** (user decision). This replaces the 2026-10-11 beta request.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/delivery-revision-record.md`
-- Current delivery revision ID: `DR-003`
+- Current delivery revision ID: `DR-004`
 - Notes: —
 
 ## Initial Delivery Integration Refresh
@@ -91,13 +89,24 @@
   - `autobyteus-ts` `tests/unit/agent/loop tests/unit/memory/compaction`: 145/145.
 - Result: `Passed`. The DR-002 blocker is resolved: the upstream compaction test is adapted to "reading kept" (D-12) and passes.
 
+## Finalization Re-Integration (DR-004)
+
+- Target refreshed after the user's sign-off: `origin/personal` advanced from `beb6b3b49` to `3514fe48e`, 16 commits: remove-autobyteus-remote-provider (native runtime unchanged), v1.5.2-beta.1/beta.2, `RELEASE.md`.
+- Delivery-owned edits protected: checkpoint `eae87f313` (user verification, no release).
+- Integration: merge `0c1c60a5c`, no conflicts. Overlapping files: `TESTING.md` (different sections), `autobyteus-web/docs/settings.md`.
+- Checks on `0c1c60a5c`:
+  - `autobyteus-ts` build: clean. Server typecheck: clean.
+  - The scoped server set: 1569 passed, 7 skipped. One failure, `token-usage-record-restart-graphql.e2e.test.ts`, was the stale server build output again; it passes 1/1 after `pnpm run build`.
+  - Gated AGY fake-CLI transport: 1/1. Web Token Meter, meter store and status handler specs: 68/68. `autobyteus-ts` loop + compaction: 145/145.
+- User-facing handoff state materially changed: `No`. The remote-provider removal does not touch the Token Meter, so no renewed verification was needed.
+
 ## User Verification
 
 - Initial explicit user completion/verification received: `Yes`
 - Initial verification / acceptance reference: the user on 2026-10-11: "i have verified. lets finalize and release a new beta" (`handoff-summary.md` § User Verification)
 - Renewed verification required after later re-integration: `Yes`. The package added D-12/D-13 and the new AC-011 and AC-012 after the 2026-10-11 verification.
-- Renewed verification received: `No`
-- Renewed verification / acceptance reference: —
+- Renewed verification received: `Yes`
+- Renewed verification / acceptance reference: the user on 2026-10-12: "finalize no need to release a new version" (`handoff-summary.md` § User Verification)
 
 ## Docs Sync Result
 
