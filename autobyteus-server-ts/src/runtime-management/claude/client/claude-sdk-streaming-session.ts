@@ -24,6 +24,16 @@ export type ClaudeSdkInterruptOutcome = Readonly<{
   cancelled: readonly string[];
 }>;
 
+/** The SDK's own context accounting for its latest model call (`getContextUsage`, summary detail). */
+export type ClaudeSdkContextUsage = Readonly<{
+  totalTokens: number;
+  rawMaxTokens: number | null;
+  /** Present only when the SDK's auto-compaction is enabled. */
+  autoCompactThreshold: number | null;
+}>;
+
+export const CLAUDE_CONTEXT_USAGE_TIMEOUT_MS = 2_000;
+
 export type ClaudeSdkSelectedModelResolution = Awaited<
   ReturnType<typeof resolveClaudeSdkSelectedModelForQuery>
 >;
@@ -37,6 +47,8 @@ export interface ClaudeSdkStreamingSession {
   send(message: ClaudeSdkUserMessage): void;
   interruptAndCancelQueued(): Promise<ClaudeSdkInterruptOutcome>;
   resolveSelectedModel(selectedValue: string): Promise<ClaudeSdkSelectedModelResolution>;
+  /** One local summary read (no provider call), bounded by a 2 s timeout; null on failure. */
+  readContextUsage(): Promise<ClaudeSdkContextUsage | null>;
   /** Ends the input channel and closes the query (kills the CLI process). */
   requestClose(): void;
 }
@@ -101,6 +113,20 @@ const readInitCapabilities = (frame: unknown): ReadonlySet<string> | null => {
 
 type InterruptWithOptions = (options: { cancelQueued: true }) => Promise<unknown>;
 
+const positiveCount = (value: unknown): number | null =>
+  typeof value === "number" && Number.isSafeInteger(value) && value > 0 ? value : null;
+
+const parseContextUsage = (value: unknown): ClaudeSdkContextUsage | null => {
+  const usage = asObject(value);
+  const totalTokens = usage?.totalTokens;
+  if (typeof totalTokens !== "number" || !Number.isSafeInteger(totalTokens) || totalTokens < 0) return null;
+  return {
+    totalTokens,
+    rawMaxTokens: positiveCount(usage?.rawMaxTokens),
+    autoCompactThreshold: usage?.isAutoCompactEnabled === true ? positiveCount(usage.autoCompactThreshold) : null,
+  };
+};
+
 class ClaudeSdkStreamingSessionHandle implements ClaudeSdkStreamingSession {
   readonly messages: AsyncIterable<unknown>;
   private capabilitySnapshot: ReadonlySet<string> | null = null;
@@ -138,6 +164,23 @@ class ClaudeSdkStreamingSessionHandle implements ClaudeSdkStreamingSession {
   resolveSelectedModel(selectedValue: string): Promise<ClaudeSdkSelectedModelResolution> {
     this.assertAccepting();
     return resolveClaudeSdkSelectedModelForQuery(this.query, selectedValue);
+  }
+
+  async readContextUsage(): Promise<ClaudeSdkContextUsage | null> {
+    const read = this.query.getContextUsage;
+    if (typeof read !== "function") return null;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const result = await Promise.race([
+        read.call(this.query, { detail: "summary" }),
+        new Promise<null>((resolve) => { timeout = setTimeout(() => resolve(null), CLAUDE_CONTEXT_USAGE_TIMEOUT_MS); }),
+      ]);
+      return parseContextUsage(result);
+    } catch {
+      return null;
+    } finally {
+      clearTimeout(timeout);
+    }
   }
 
   requestClose(): void {

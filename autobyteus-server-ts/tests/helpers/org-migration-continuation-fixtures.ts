@@ -1,6 +1,7 @@
 import { vi } from "vitest";
 import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../../src/agent-execution/backends/agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../../src/agent-execution/backends/agent-run-backend-factory.js";
+import { createBackendPreparation } from "../../src/agent-execution/backends/agent-run-backend-preparation.js";
 import type { AgentRunContext, RuntimeAgentRunContext } from "../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunEventType } from "../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunManager } from "../../src/agent-execution/services/agent-run-manager.js";
@@ -63,7 +64,13 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
     };
   });
   const unavailable = async (): Promise<never> => { throw new Error("Unexpected new provider conversation or task activation"); };
-  const factory: AgentRunBackendFactory = { restoreBackend, createBackend: unavailable };
+  // The scripted provider is reached through the current factory contract: restore only.
+  const factory: AgentRunBackendFactory = {
+    beginPreparation: (request) => createBackendPreparation({
+      prepare: async () => request.kind === "restore" ? restoreBackend(request.context) : unavailable(),
+      releaseResources: async () => undefined,
+    }),
+  };
   const recorder = new AgentRunMemoryRecorder();
   const sessions = createNoopAgentToolMcpRunSessionDeactivator();
   const noAttachment = { attachToRun: () => () => undefined };

@@ -1,0 +1,62 @@
+[
+ {
+  "t": 2342,
+  "type": "TOKEN_USAGE_UPDATED",
+  "phase": null,
+  "call": true,
+  "prompt": 22812,
+  "count": 3,
+  "revision": 3,
+  "summaryPrompt": 22812
+ },
+ {
+  "t": 2344,
+  "type": "COMPACTION_STATUS",
+  "phase": "requested",
+  "call": null,
+  "prompt": null,
+  "count": null,
+  "revision": null,
+  "summaryPrompt": null
+ },
+ {
+  "t": 2344,
+  "type": "COMPACTION_STATUS",
+  "phase": "started",
+  "call": null,
+  "prompt": null,
+  "count": null,
+  "revision": null,
+  "summaryPrompt": null
+ },
+ {
+  "t": 9504,
+  "type": "TOKEN_USAGE_UPDATED",
+  "phase": null,
+  "call": true,
+  "prompt": null,
+  "count": 4,
+  "revision": 4,
+  "summaryPrompt": 22812
+ },
+ {
+  "t": 9505,
+  "type": "COMPACTION_STATUS",
+  "phase": "completed",
+  "call": null,
+  "prompt": null,
+  "count": null,
+  "revision": null,
+  "summaryPrompt": null
+ },
+ {
+  "t": 9512,
+  "type": "TURN_COMPLETED",
+  "phase": null,
+  "call": null,
+  "prompt": null,
+  "count": null,
+  "revision": null,
+  "summaryPrompt": null
+ }
+]

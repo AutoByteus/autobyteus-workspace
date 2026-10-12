@@ -729,10 +729,11 @@ raw model; auxiliary-model usage is not charged to the selected-model meter.
 The meter reports an AutoByteus-configured API-equivalent estimate, not the
 Claude subscription's actual charge. See [Token Usage](token_usage.md) for
 checkpoint, cache-write approximation, and migration details.
-The same selected raw result row supplies a context-window capacity only when
-it is positive and safe; a safe full prompt sum then yields the latest prompt
-percentage. Older valid rows with null percentage are repaired by the
-run-summary read projection, not by a data backfill.
+Context readings do not come from the result: every main-loop model call is
+reported live from the stream's `message_start`/`message_delta` usage with the
+SDK's own `getContextUsage()` reading (tokens in context, window and
+auto-compaction threshold), and the result only reconciles what per-call data
+cannot see, such as the SDK's own compaction calls.
 
 Claude interrupt is owned by the session, not by WebSocket, GraphQL, or
 frontend button state, and it ends only the current turn. The process, the

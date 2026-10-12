@@ -25,8 +25,8 @@ describe('buildClaudeTokenUsageEvent', () => {
       idempotency_key: 'claude_sdk_result:result-1', selected_match_state: 'matched',
       model_identifier: 'claude-opus-5-5', model_value: 'claude-opus-5-5',
       claude_sdk_session_id: 'session-1', claude_sdk_query_kind: 'create',
-      reported_input_tokens: null,
-      latest_prompt_tokens: 120, raw_event_json: null,
+      reported_input_tokens: null, reports_model_call: false,
+      latest_prompt_tokens: null, raw_event_json: null,
       claude_sdk_model_usage: [{ rawModelId: 'claude-opus-5-5[1m]', canonicalModel: 'claude-opus-5-5',
         provider: 'firstParty', inputTokens: 10, outputTokens: 2,
         cacheReadInputTokens: 3, cacheCreationInputTokens: 4 }],
@@ -35,37 +35,17 @@ describe('buildClaudeTokenUsageEvent', () => {
     expect(JSON.stringify(event)).not.toContain('must-not-survive');
   });
 
-  it('derives selected known context percentage and rejects invalid capacity or unsafe prompt sums', () => {
-    const selected = row({ canonicalModel: 'claude-opus-5-5', contextWindow: 1_000_000,
-      inputTokens: 2, cacheReadInputTokens: 0, cacheCreationInputTokens: 22_133 });
-    const haiku = row({ canonicalModel: 'claude-haiku-4-5', contextWindow: 200_000 });
-    const result = build({ type: 'result', usage: { input_tokens: 2, cache_read_input_tokens: 0,
-      cache_creation_input_tokens: 22_133, output_tokens: 1 }, modelUsage: {
-      'claude-haiku-4-5': haiku, 'claude-opus-5-5[1m]': selected,
+  it('never reads the multi-call result.usage sum or modelUsage contextWindow as a context reading (P1, D-3)', () => {
+    // P1 turn 1: four main-loop calls; result.usage sums them (24,993) while the SDK's context is 7,062.
+    const result = build({ type: 'result', num_turns: 4, usage: { input_tokens: 34, cache_read_input_tokens: 13_656,
+      cache_creation_input_tokens: 11_303, output_tokens: 443 }, modelUsage: {
+      'claude-opus-5-5[1m]': row({ canonicalModel: 'claude-opus-5-5', contextWindow: 200_000 }),
     } });
-    expect(result?.params).toMatchObject({ model_identifier: 'claude-opus-5-5',
-      latest_prompt_tokens: 22_135, effective_context_window_tokens: 1_000_000,
-      context_window_usage_percent: 2.2135 });
-    for (const contextWindow of [0, Number.MAX_SAFE_INTEGER + 1, null]) {
-      const invalid = build({ type: 'result', usage: { input_tokens: 2,
-        cache_creation_input_tokens: 22_133 }, modelUsage: {
-        'claude-opus-5-5[1m]': row({ canonicalModel: 'claude-opus-5-5', contextWindow }),
-      } });
-      expect(invalid?.params).toMatchObject({ effective_context_window_tokens: null,
-        context_window_usage_percent: null });
-    }
-    const unsafePrompt = build({ type: 'result', usage: { input_tokens: Number.MAX_SAFE_INTEGER,
-      cache_read_input_tokens: 1, cache_creation_input_tokens: 0 }, modelUsage: { 'claude-opus-5-5[1m]': selected } });
-    expect(unsafePrompt?.params).toMatchObject({ latest_prompt_tokens: null,
-      effective_context_window_tokens: 1_000_000, context_window_usage_percent: null });
-    const missingPromptPart = build({ type: 'result', usage: { input_tokens: 2,
-      cache_creation_input_tokens: 22_133 }, modelUsage: { 'claude-opus-5-5[1m]': selected } });
-    expect(missingPromptPart?.params).toMatchObject({ latest_prompt_tokens: null,
-      effective_context_window_tokens: 1_000_000, context_window_usage_percent: null });
-    const missingSelected = build({ type: 'result', usage: { input_tokens: 2 },
-      modelUsage: { 'claude-haiku-4-5': haiku } });
-    expect(missingSelected?.params).toMatchObject({ selected_match_state: 'missing',
-      effective_context_window_tokens: null, context_window_usage_percent: null });
+    expect(result?.params).toMatchObject({ reports_model_call: false, usage_scope: 'per_turn',
+      latest_prompt_tokens: null, effective_context_window_tokens: null, context_window_usage_percent: null,
+      context_compaction_threshold_tokens: null });
+    expect(result?.params).not.toHaveProperty('claude_sdk_main_loop_usage');
+    expect(JSON.stringify(result)).not.toContain('24993');
   });
 
   it('sorts mixed actual models independent of SDK map order and never selects an alias', () => {

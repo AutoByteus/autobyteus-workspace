@@ -1,0 +1,9 @@
+file:///private/tmp/tma-r2/scripts/drive-run.mjs:66
+  throw new Error(`Timed out waiting for ${label}; seen ${messages.map((m) => m.type).join(",")}`);
+        ^
+
+Error: Timed out waiting for idle; seen CONNECTED,AGENT_STATUS,AGENT_INPUT_STATE,AGENT_STATUS,AGENT_INPUT_STATE,AGENT_STATUS,TURN_STARTED,AGENT_INPUT_STATE,AGENT_COMMAND_ACK,AGENT_INPUT_STATE,ERROR,AGENT_STATUS,AGENT_INPUT_STATE
+    at waitFor (file:///private/tmp/tma-r2/scripts/drive-run.mjs:66:9)
+    at async file:///private/tmp/tma-r2/scripts/drive-run.mjs:82:1
+
+Node.js v22.23.1

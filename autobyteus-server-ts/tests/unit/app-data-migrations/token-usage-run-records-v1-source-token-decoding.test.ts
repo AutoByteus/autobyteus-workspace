@@ -25,6 +25,7 @@ const schemaMigrations = [
   "20260819090000_add_token_usage_run_records",
   // Historical source rows are converted only after current target expansion.
   "20260923130000_add_claude_sdk_usage_state",
+  "20261009120000_token_meter_context_readings",
 ] as const;
 
 type JsonSourceValue = null | number | string | boolean | readonly unknown[] | Readonly<Record<string, unknown>>;

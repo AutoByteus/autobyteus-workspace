@@ -1,0 +1,74 @@
+[
+ {
+  "t": 819,
+  "type": "AGENT_COMMAND_ACK",
+  "phase": {
+   "status": "running",
+   "recoverableBlock": null,
+   "agent_id": "tma_api_e2e_autobyteus_2158a1f9_699b9ec5bfef43a39a4ce1c6b926b4e0"
+  },
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null,
+  "accepted": true
+ },
+ {
+  "t": 1983,
+  "type": "TOKEN_USAGE_UPDATED",
+  "phase": null,
+  "ingestion": "autobyteus_llm_phase",
+  "rev": 7,
+  "count": 7,
+  "prompt": 22118
+ },
+ {
+  "t": 1983,
+  "type": "COMPACTION_STATUS",
+  "phase": "requested",
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 1984,
+  "type": "COMPACTION_STATUS",
+  "phase": "started",
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 1984,
+  "type": "SENT_INTERRUPT"
+ },
+ {
+  "t": 1991,
+  "type": "AGENT_COMMAND_ACK",
+  "phase": null,
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 1995,
+  "type": "COMPACTION_STATUS",
+  "phase": "stopped",
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 1998,
+  "type": "TURN_INTERRUPTED",
+  "phase": null,
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ }
+]

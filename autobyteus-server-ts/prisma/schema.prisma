@@ -149,6 +149,7 @@ model TokenUsageRunRecord {
   latestPromptTokens                   BigInt?   @map("latest_prompt_tokens")
   effectiveContextWindowTokens         BigInt?   @map("effective_context_window_tokens")
   contextWindowUsagePercent            Float?    @map("context_window_usage_percent")
+  contextCompactionThresholdTokens     BigInt?   @map("context_compaction_threshold_tokens")
   snapshotSeriesStateJson              String    @map("snapshot_series_state_json")
   claudeSdkUsageStateJson               String?   @map("claude_sdk_usage_state_json")
   recentIdempotencyDigestsJson         String    @map("recent_idempotency_digests_json")

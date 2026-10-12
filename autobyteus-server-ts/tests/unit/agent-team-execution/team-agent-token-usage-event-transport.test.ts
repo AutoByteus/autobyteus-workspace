@@ -64,6 +64,7 @@ const productionFixture = (): {
       runtime_kind: "codex_app_server",
       ingestion_kind: "codex_thread_token_usage",
       usage_scope: "per_turn",
+      reports_model_call: true,
       input_token_semantic: "gross_includes_cache",
       reported_input_tokens: 300,
       reported_output_tokens: 50,
@@ -164,10 +165,14 @@ describe("Team token usage cumulative snapshot transport", () => {
       payload: {
         change_sequence: 9,
         agent_run_id: "member-run-1",
+        reports_model_call: true,
+        context_compaction_threshold_tokens: null,
         run_summary_after_event: {
           run_id: "member-run-1",
           root_team_run_id: "team-run-1",
           usage_report_count: 1,
+          revision: 1,
+          context_compaction_threshold_tokens: null,
           latest_runtime_kind: "codex_app_server",
           unit_prices: { reasoning_output: { status: "single", price_per_million: 30 } },
         },

@@ -47,11 +47,12 @@ const addCost = (left: number | null, right: number | null): number | null => {
 const firstNonblank = (current: string | null, next: string | null): string | null =>
   current ?? (next?.trim() || null);
 const summarizeAdmittedCacheState = (
-  record: Pick<TokenUsageRunRecord, "cacheState" | "usageReportCount">,
+  record: Pick<TokenUsageRunRecord, "cacheState" | "usageReportCount" | "tokenTotals">,
   next: TokenUsageUpdatedPayload["cache_state"],
-): TokenUsageUpdatedPayload["cache_state"] => record.usageReportCount === 0n
-  ? next
-  : summarizeCacheState([record.cacheState, next]);
+): TokenUsageUpdatedPayload["cache_state"] =>
+  record.usageReportCount === 0n && record.tokenTotals.accounting_total_tokens === 0n
+    ? next
+    : summarizeCacheState([record.cacheState, next]);
 
 export const emptyTokenUsageTokenTotals = (): TokenUsageTokenTotals => Object.fromEntries(
   TOKEN_USAGE_TOKEN_FIELDS.map((field) => [field, 0n]),
@@ -110,21 +111,32 @@ export const createEmptyRunRecord = (
     latestPromptTokens: null,
     effectiveContextWindowTokens: null,
     contextWindowUsagePercent: null,
+    contextCompactionThresholdTokens: null,
     snapshotSeriesState: [],
     claudeSdkUsageStateJson: null,
     recentIdempotencyDigests: [],
   };
 };
 
+/** True when the observation adds tokens or reports a model call (D-4); only then are totals and facets touched. */
+export const tokenUsageObservationContributes = (payload: TokenUsageUpdatedPayload): boolean =>
+  payload.reports_model_call || TOKEN_USAGE_TOKEN_FIELDS.some((field) => (payload[field] ?? 0) > 0);
+
+/**
+ * Applies one admitted observation (D-4, D-9): totals iff it contributes; one model call iff
+ * `reports_model_call`; latest runtime/model iff it is the latest model call; the latest context
+ * reading iff it carries one. Every save advances `revision`, the live freshness key.
+ */
 export const applyTokenUsageContribution = (input: {
   record: TokenUsageRunRecord;
   payload: TokenUsageUpdatedPayload;
   marker: AdmissionMarker;
-  incrementReport: boolean;
-  incrementRevision: boolean;
 }): TokenUsageRunRecord => {
   const { record, payload, marker } = input;
   const isLatest = compareAdmissionMarkers(marker, record.latestObservation) >= 0;
+  const contributes = tokenUsageObservationContributes(payload);
+  const latestCall = isLatest && payload.reports_model_call;
+  const latestReading = isLatest && payload.latest_prompt_tokens !== null;
   const identitySummary: TokenUsageIdentitySummary = {
     runtimeKinds: mergeDistinctValueWith(record.identitySummary.runtimeKinds, payload.runtime_kind),
     modelProviders: mergeDistinctValueWith(record.identitySummary.modelProviders, payload.model_provider),
@@ -133,14 +145,14 @@ export const applyTokenUsageContribution = (input: {
     modelValues: mergeDistinctValueWith(record.identitySummary.modelValues, payload.model_value),
     rootTeamRunIds: mergeDistinctValueWith(record.identitySummary.rootTeamRunIds, payload.root_team_run_id),
   };
-  const pricingSummary = input.incrementReport
+  const pricingSummary = contributes
     ? mergeTokenUsagePricingSummaries(record.pricingSummary, pricingSummaryFromPayload(payload))
     : record.pricingSummary;
   const rootSummary = identitySummary.rootTeamRunIds;
   const nextDate = new Date(marker.observedAt);
   return {
     ...record,
-    revision: record.revision + (input.incrementRevision ? 1n : 0n),
+    revision: record.revision + 1n,
     persistedAt: new Date(),
     rootTeamRunId: distinctValueOrNull(rootSummary),
     rootAttributionStatus: rootSummary.status,
@@ -155,16 +167,16 @@ export const applyTokenUsageContribution = (input: {
     firstObservedAt: nextDate < record.firstObservedAt ? nextDate : record.firstObservedAt,
     latestObservedAt: isLatest ? nextDate : record.latestObservedAt,
     latestObservation: isLatest ? marker : record.latestObservation,
-    usageReportCount: record.usageReportCount + (input.incrementReport ? 1n : 0n),
+    usageReportCount: record.usageReportCount + (payload.reports_model_call ? 1n : 0n),
     tokenTotals: Object.fromEntries(TOKEN_USAGE_TOKEN_FIELDS.map((field) => [
       field,
-      record.tokenTotals[field] + (input.incrementReport ? nonNegativeBigInt(payload[field], field) : 0n),
+      record.tokenTotals[field] + (contributes ? nonNegativeBigInt(payload[field], field) : 0n),
     ])) as TokenUsageTokenTotals,
     costTotals: Object.fromEntries(TOKEN_USAGE_COST_FIELDS.map((field) => [
       field,
-      input.incrementReport ? addCost(record.costTotals[field], payload[field]) : record.costTotals[field],
+      contributes ? addCost(record.costTotals[field], payload[field]) : record.costTotals[field],
     ])) as TokenUsageCostTotals,
-    cacheState: input.incrementReport
+    cacheState: contributes
       ? summarizeAdmittedCacheState(record, payload.cache_state)
       : record.cacheState,
     currency: distinctValueOrNull(pricingSummary.currencies),
@@ -173,16 +185,21 @@ export const applyTokenUsageContribution = (input: {
       : pricingSummary.apiCostStatuses.status === "mixed" ? "mixed" : "price_missing") as TokenUsageApiCostStatus,
     pricingSummary,
     qualityFlags: [...new Set([...record.qualityFlags, ...payload.quality_flags])],
-    latestRuntimeKind: isLatest ? payload.runtime_kind : record.latestRuntimeKind,
-    latestModelProvider: isLatest ? payload.model_provider : record.latestModelProvider,
-    latestProviderName: isLatest ? payload.provider_name : record.latestProviderName,
-    latestModelIdentifier: isLatest ? payload.model_identifier : record.latestModelIdentifier,
-    latestModelValue: isLatest ? payload.model_value : record.latestModelValue,
+    latestRuntimeKind: latestCall ? payload.runtime_kind : record.latestRuntimeKind,
+    latestModelProvider: latestCall ? payload.model_provider : record.latestModelProvider,
+    latestProviderName: latestCall ? payload.provider_name : record.latestProviderName,
+    latestModelIdentifier: latestCall ? payload.model_identifier : record.latestModelIdentifier,
+    latestModelValue: latestCall ? payload.model_value : record.latestModelValue,
     identitySummary,
-    latestPromptTokens: isLatest ? nullableBigInt(payload.latest_prompt_tokens, "latest_prompt_tokens") : record.latestPromptTokens,
-    effectiveContextWindowTokens: isLatest
+    latestPromptTokens: latestReading
+      ? nullableBigInt(payload.latest_prompt_tokens, "latest_prompt_tokens")
+      : record.latestPromptTokens,
+    effectiveContextWindowTokens: latestReading
       ? nullableBigInt(payload.effective_context_window_tokens, "effective_context_window_tokens")
       : record.effectiveContextWindowTokens,
-    contextWindowUsagePercent: isLatest ? payload.context_window_usage_percent : record.contextWindowUsagePercent,
+    contextWindowUsagePercent: latestReading ? payload.context_window_usage_percent : record.contextWindowUsagePercent,
+    contextCompactionThresholdTokens: latestReading
+      ? nullableBigInt(payload.context_compaction_threshold_tokens, "context_compaction_threshold_tokens")
+      : record.contextCompactionThresholdTokens,
   };
 };

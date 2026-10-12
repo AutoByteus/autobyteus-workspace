@@ -1,0 +1,162 @@
+{
+  "backendUrl": "http://127.0.0.1:52183",
+  "runtimeKind": "claude_agent_sdk",
+  "modelIdentifier": null,
+  "runId": "tma_api_e2e_claude_agent_sdk_1d491065_aaffa8d5271a4137a4825ff7f5fb47f5",
+  "idleIndex": 14,
+  "idleAt": 4927,
+  "usage": [
+    {
+      "index": 11,
+      "t": 4927,
+      "ingestion": "claude_sdk_result",
+      "call": false,
+      "model": "claude-haiku-5-5",
+      "input": 1998,
+      "cacheRead": 13795,
+      "cacheCreation": 6902,
+      "output": 889,
+      "accountingTotal": 23584,
+      "prompt": null,
+      "window": null,
+      "percent": null,
+      "threshold": null,
+      "flags": [
+        "reported_input_tokens_missing",
+        "reported_output_tokens_missing",
+        "reported_total_tokens_missing",
+        "input_token_semantic_unknown",
+        "claude_sdk_cache_write_1h_assumed"
+      ],
+      "summaryCount": 1,
+      "summaryRevision": 3
+    }
+  ],
+  "midTurnSummaries": [
+    {
+      "t": 409,
+      "summary": {
+        "runId": "tma_api_e2e_claude_agent_sdk_1d491065_aaffa8d5271a4137a4825ff7f5fb47f5",
+        "grossInputTokens": 21870,
+        "standardInputTokens": 1185,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 20685,
+        "outputTokens": 33,
+        "totalTokens": 21903,
+        "usageReportCount": 1,
+        "latestPromptTokens": 20687,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 2.0687,
+        "latestModelIdentifier": "claude-haiku-5-5",
+        "latestRuntimeKind": "claude_agent_sdk",
+        "estimatedApiTotalCost": 0.004272,
+        "apiCostStatus": "estimated",
+        "contextCompactionThresholdTokens": 967000,
+        "revision": 2
+      }
+    },
+    {
+      "t": 1923,
+      "summary": {
+        "runId": "tma_api_e2e_claude_agent_sdk_1d491065_aaffa8d5271a4137a4825ff7f5fb47f5",
+        "grossInputTokens": 21870,
+        "standardInputTokens": 1185,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 20685,
+        "outputTokens": 33,
+        "totalTokens": 21903,
+        "usageReportCount": 1,
+        "latestPromptTokens": 20687,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 2.0687,
+        "latestModelIdentifier": "claude-haiku-5-5",
+        "latestRuntimeKind": "claude_agent_sdk",
+        "estimatedApiTotalCost": 0.004272,
+        "apiCostStatus": "estimated",
+        "contextCompactionThresholdTokens": 967000,
+        "revision": 2
+      }
+    },
+    {
+      "t": 3432,
+      "summary": {
+        "runId": "tma_api_e2e_claude_agent_sdk_1d491065_aaffa8d5271a4137a4825ff7f5fb47f5",
+        "grossInputTokens": 21870,
+        "standardInputTokens": 1185,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 20685,
+        "outputTokens": 33,
+        "totalTokens": 21903,
+        "usageReportCount": 1,
+        "latestPromptTokens": 20687,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 2.0687,
+        "latestModelIdentifier": "claude-haiku-5-5",
+        "latestRuntimeKind": "claude_agent_sdk",
+        "estimatedApiTotalCost": 0.004272,
+        "apiCostStatus": "estimated",
+        "contextCompactionThresholdTokens": 967000,
+        "revision": 2
+      }
+    },
+    {
+      "t": 4943,
+      "summary": {
+        "runId": "tma_api_e2e_claude_agent_sdk_1d491065_aaffa8d5271a4137a4825ff7f5fb47f5",
+        "grossInputTokens": 44565,
+        "standardInputTokens": 3183,
+        "cacheReadInputTokens": 13795,
+        "cacheCreationInputTokens": 27587,
+        "outputTokens": 922,
+        "totalTokens": 45487,
+        "usageReportCount": 1,
+        "latestPromptTokens": 20687,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 2.0687,
+        "latestModelIdentifier": "claude-haiku-5-5",
+        "latestRuntimeKind": "claude_agent_sdk",
+        "estimatedApiTotalCost": 0.00643465,
+        "apiCostStatus": "estimated",
+        "contextCompactionThresholdTokens": 967000,
+        "revision": 3
+      }
+    }
+  ],
+  "finalSummary": {
+    "runId": "tma_api_e2e_claude_agent_sdk_1d491065_aaffa8d5271a4137a4825ff7f5fb47f5",
+    "grossInputTokens": 44565,
+    "standardInputTokens": 3183,
+    "cacheReadInputTokens": 13795,
+    "cacheCreationInputTokens": 27587,
+    "outputTokens": 922,
+    "totalTokens": 45487,
+    "usageReportCount": 1,
+    "latestPromptTokens": 20687,
+    "effectiveContextWindowTokens": 1000000,
+    "contextWindowUsagePercent": 2.0687,
+    "latestModelIdentifier": "claude-haiku-5-5",
+    "latestRuntimeKind": "claude_agent_sdk",
+    "estimatedApiTotalCost": 0.00643465,
+    "apiCostStatus": "estimated",
+    "contextCompactionThresholdTokens": 967000,
+    "revision": 3
+  },
+  "messageTypes": [
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "AGENT_STATUS",
+    "TURN_STARTED",
+    "AGENT_INPUT_STATE",
+    "AGENT_COMMAND_ACK",
+    "AGENT_INPUT_STATE",
+    "COMPACTION_STATUS",
+    "AGENT_INPUT_STATE",
+    "COMPACTION_STATUS",
+    "AGENT_INPUT_STATE",
+    "TOKEN_USAGE_UPDATED",
+    "AGENT_INPUT_STATE",
+    "TURN_COMPLETED",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE"
+  ]
+}

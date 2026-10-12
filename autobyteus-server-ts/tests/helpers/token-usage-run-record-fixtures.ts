@@ -78,6 +78,8 @@ type PayloadInput = Readonly<{
   agentName?: string | null;
   memberDisplayName?: string | null;
   usageScope?: "per_call" | "per_turn" | "cumulative_snapshot";
+  /** Fixture observations model one provider call each unless a test says otherwise. */
+  reportsModelCall?: boolean;
   snapshotSeriesKey?: string | null;
   inputTokens?: number;
   outputTokens?: number;
@@ -159,6 +161,7 @@ export const buildCurrentTokenUsagePayload = (input: PayloadInput = {}): TokenUs
       runtime_kind: input.runtimeKind ?? "autobyteus",
       ingestion_kind: input.ingestionKind ?? "autobyteus_llm_phase",
       usage_scope: input.usageScope ?? "per_call",
+      reports_model_call: input.reportsModelCall ?? true,
       snapshot_series_key: input.snapshotSeriesKey,
       input_token_semantic: "gross_includes_cache",
       reported_input_tokens: inputTokens,
