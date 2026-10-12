@@ -11,6 +11,7 @@ Package: fix-legacy-docker-workspace-builds
 | SR-004 | Evidence | User asks error/monorepo sufficiency | Scope hold | Scope hold, retirement recommended | U-004..006; no deletion approval yet |
 | SR-005 | Requirements | Explicit user removal approval | Scope hold | R2 Approved, D1 Superseded | REQ-005..008, AC-007..011, DEC-004..006 |
 | SR-006 | Design | R2 + R/AR evidence | D1 Superseded | D2 Ready, Medium/High | /software_engineering_team/architecture_reviewer; solution-handoff.md |
+| SR-007 | Design/Evidence | IR-001 IMPL-BASE-001/ENV-001/ENV-002 | R2/D2; implementation disposition hold | R2 unchanged / D3 Ready, Medium/High | Product TODO registered; local test-only baseline refinement, review pending |
 
 ## SR-001 — Repair the two documented legacy Docker build/start flows
 - Phase/classification: Requirements / Initial Baseline.
@@ -85,3 +86,23 @@ Package: fix-legacy-docker-workspace-builds
 - Applied handoff: 2026-10-12 get_handoff_rules selected the single Architecture Design Complete / High-risk rule to exact /software_engineering_team/architecture_reviewer; solution-handoff.md contains full result/routing context. Dispatch awaits tool confirmation; no duplicate direct implementation route.
 - Remaining risks: moving-base consumer changes; saved user state left protected, no resource cleanup; current source-check execution remains specialist-owned.
 - Next action: persist full context, consult handoff rules and route exact applicable recipient.
+
+## Informational Architecture Review Receipt — ARCH-REV-001
+- Received 2026-10-12 from /software_engineering_team/architecture_reviewer, run architecture_reviewer_4d030aae9b004783aa653c3ab5dc92b2.
+- Read authoritative design-review-report.md and architecture-review-revision-record.md in full. Result Pass, no findings; reviewed SR-005/SR-006, R2/D2; Medium/High confirmed. Review artifacts committed at 828e727c3.
+- Absolute report: /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/tickets/in-progress/fix-legacy-docker-workspace-builds/design-review-report.md.
+- Absolute review history: /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/tickets/in-progress/fix-legacy-docker-workspace-builds/architecture-review-revision-record.md.
+- Reviewer confirms its primary cumulative-package handoff succeeded to /software_engineering_team/implementation_engineer, target run implementation_engineer_a8c7b5673de342dfb980d1cb1c586562. This is an informational receipt only; no duplicate forwarding, approval reopening, design revision or new SR round.
+- Current R2/D2 remains unchanged. Architecture readiness is not implementation/executable/image validation, user verification or repository finalization. Those remain downstream-owned.
+
+## SR-007 — Baseline Product Ownership And Local Test-Only Recovery
+- Trigger: Implementation Engineer IR-001 Unclear handoff, read before acting; source bf0d12776 and evidence be48220fa.
+- Classification: Design Impact / evidence disposition, not Requirement Gap. R2 intended/preserved behavior and user approval unchanged; D2 test-file scope needed bounded refinement for Rule9 local test causes.
+- Findings: IMPL-BASE-001 product installer quoting defect separately registered TODO project_task_9599b2a7-3ae6-4e7f-9875-1e039f4db2e6, Project project_a1377344-25db-482a-97cc-ecfdb0fb495a, durable context copies confirmed. Backlog manager /project_task_manager; no dispatch/fix/closure claim. IMPL-ENV-001/002 local test-owned compatibility/ambient-port causes returned to Implementation after revised independent design review, not ignored separate deferrals.
+- Changes: D3 adds existing fake-launcher test file only, Python3.9 exact-length compatibility and scoped external probe fixture control; production launcher/monorepo inputs and original assertions remain unchanged. Canonical investigation, requirements clarification and baseline-disposition.md/baseline-launcher-quoting.md added. No implementation/reviewer artifact edited or test rerun by Solution Designer.
+- Approval impact: None; no changed intended behavior/supplement. R2/SR-005 remains approved. ARCH-REV-001 covers unchanged D2 retirement; D3 requires independent next-round review before dependent test corrections.
+- Current result: Architecture Design Complete, R2 Approved/D3 Ready; Medium/High unchanged. Current retirement is implemented but not independently validated/finalized.
+- Evidence closure: exact retirement/preserved-input/entrypath/ignore/docs/contracts/license/hygiene + corrected local fixture checks, retaining original non-green broad logs and tracked product risk; no all-green/fresh image claim.
+- Next action: persist full recovery handoff, apply rules to revised design, review D3 then Implementation updates its own readiness and follows normal source review.
+
+SR-007 routing: get_handoff_rules selected the High-risk revised-architecture rule to /software_engineering_team/architecture_reviewer; full-context baseline-disposition.md persisted. No direct implementation forwarding or new Task dispatch; separate product TODO is registered, not started.
