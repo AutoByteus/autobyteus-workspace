@@ -5,6 +5,7 @@ import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { buildTeamRunTemplate, cloneTeamConfig } from '~/composables/useDefinitionLaunchDefaults'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import type { MemberLaunchSeed } from '~/utils/runSettings/memberLaunchDefaults'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { buildTeamMemberTreeFromDefinition, normalizeMemberAddress, type TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
 import {
@@ -180,6 +181,17 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
       return draftId
     },
     setTemplate(definition: AgentTeamDefinition) { this.createDraft(buildTeamRunTemplate(definition), normalizeMemberAddress(definition.coordinatorMemberName)) },
+    /**
+     * DS-006 (mobile): a fresh draft's members seeded from their own defaults, applied only to that exact
+     * draft while it is still editable; a member the user already set keeps its setting. This path keeps
+     * overrides as set (no parent normalization), so seeded rows need no pin.
+     */
+    applySeededMemberDefaults(draftId: TeamLaunchDraftId, seed: MemberLaunchSeed) {
+      const draft = this.selectedDraft
+      if (!draft || draft.draftId !== draftId || this.isDraftLaunchInFlight(draftId) || !Object.keys(seed.agentOverrides).length) return
+      const agentOverrides = { ...seed.agentOverrides, ...draft.config.agentOverrides }
+      this.replaceSelectedDraft(replaceDraft(draft, { config: freezeConfig({ ...draft.config, agentOverrides }) }))
+    },
     setConfig(config: TeamRunConfig) {
       const definition = useAgentTeamDefinitionStore().getCatalogAgentTeamDefinitionById(config.teamDefinitionId)
       this.createDraft(config, normalizeMemberAddress(definition?.coordinatorMemberName || Object.keys(config.agentOverrides)[0] || 'coordinator'))

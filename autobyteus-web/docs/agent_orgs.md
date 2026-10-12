@@ -185,15 +185,22 @@ direct Agent: Agent override -> Org root
 Team Agent:   Agent override -> Team override -> Org root
 ```
 
-Referenced Agent/Team definition defaults remain standalone defaults and do not
-silently override Org choices.
+Referenced Agent/Team definition defaults never change Org choices silently.
+On a fresh **Run** they seed visible, editable member rows instead (below).
 
 Initial settings follow one rule for every start page:
 
 - **Run:** the Org's default launch config; if it has no usable model, the last
   model used in chat, then the default runtime's first model. Workspace is the
   temp workspace. Tool approval defaults to **Auto-approve**, as for Agents and
-  Teams (the Antigravity lock still applies).
+  Teams (the Antigravity lock still applies). Each placed team is then seeded
+  from its Team default, and each agent (direct or inside a placed team) from
+  its agent default, when that default is usable (`orgMemberSeedTargets` and
+  `seedMemberLaunchDefaults` in `utils/runSettings/memberLaunchDefaults.ts`). The
+  effective order is agent default → its placed team → Org → the root seed. A
+  seeded row is customized and pinned like a Team member row; an unusable
+  default leaves the row following its parent, with a note. See
+  [Member Launch Defaults](./agent_teams.md#member-launch-defaults).
 - **+:** the source run's settings and member overrides. A placed team keeps its
   workspace only where it differs from the Org's. If the run cannot be read or
   copied, the Org defaults are used.

@@ -1,0 +1,127 @@
+{
+  "startedAt": "2026-10-12T11:54:54.417Z",
+  "cases": {
+    "DLP-001": {
+      "title": "AC-011/AC-013: New chat for a Team seeds members from their defaults; root changes keep seeded rows; member change and reset; Run launches what is shown",
+      "result": "Fail",
+      "ms": 10922,
+      "error": "locator.getAttribute: Target page, context or browser has been closed\nCall log:\n  - waiting for locator('[data-test=\"run-member-settings-drawer\"]').locator('[data-test=\"run-member-/unoffered\"]').first()\n",
+      "details": null
+    },
+    "DLP-002": {
+      "title": "AC-012: Org launch page seeds the placed team from its team default and agents from their agent defaults; Run launches what is shown",
+      "result": "Fail",
+      "ms": 3,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    },
+    "DLP-003": {
+      "title": "AC-001/003/004/005/007/010: Manager chat from the UI; copy, bring-ins and extra copy from its composer; teammate, helper and Grok engineer from the copy lead's conversation; Settings rows",
+      "result": "Fail",
+      "ms": 4,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    },
+    "DLP-004": {
+      "title": "AC-010: Team run (New chat) and Org run (Org launch page) whose manager delegates the Squad and brings in the Pair from the composer: Settings lists the rows",
+      "result": "Fail",
+      "ms": 2,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    },
+    "DLP-005": {
+      "title": "AC-006/REQ-004: the root model is retired mid-run; delegation and bring-in that need the inherited layer fail in the conversation with today's text and add nothing; an own usable default still works",
+      "result": "Fail",
+      "ms": 15,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    },
+    "DLP-006": {
+      "title": "AC-009/QR-002: runs saved before this change (stripped while the backend is down, as after an upgrade) reopen: Settings shows \"Source not recorded\" and Team values; a copy member starts on the Team value",
+      "result": "Fail",
+      "ms": 2,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    },
+    "DLP-007": {
+      "title": "AC-008/DEC-008: copy A; the engineer's default edited in the Agents editor; copy B; Settings shows each copy's recorded values; stop and reopen from the UI; copy A's engineer then starts on Grok",
+      "result": "Fail",
+      "ms": 1,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 56224
+    },
+    {
+      "label": "frontend",
+      "pid": 56572
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 56572,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 56224,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-jTrzAU"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-jTrzAU",
+  "backendUrl": "http://127.0.0.1:57945",
+  "frontUrl": "http://127.0.0.1:57946",
+  "definitions": {
+    "ids": {
+      "manager": "manager-a48d",
+      "lead": "lead-f8ae",
+      "worker": "worker-55bd",
+      "plain": "plain-a0ca",
+      "engineer": "engineer-b338",
+      "reviewer": "reviewer-4831",
+      "writer": "writer-829d",
+      "offline": "offline-9dd4",
+      "unoffered": "unoffered-f0b2",
+      "badsettings": "badsettings-1af9",
+      "incomplete": "incomplete-2b15",
+      "build": "build-team-4c5a",
+      "pair": "pair-team-4e39",
+      "squad": "squad-team-8a33",
+      "home": "home-team-3155",
+      "launchOrg": "launchorg-org-0197",
+      "hostOrg": "hostorg-org-3173"
+    },
+    "names": {
+      "manager": "Manager a48d",
+      "lead": "Lead f8ae",
+      "worker": "Worker 55bd",
+      "plain": "Plain a0ca",
+      "engineer": "Engineer b338",
+      "reviewer": "Reviewer 4831",
+      "writer": "Writer 829d",
+      "offline": "Offline 9dd4",
+      "unoffered": "Unoffered f0b2",
+      "badsettings": "Badsettings 1af9",
+      "incomplete": "Incomplete 2b15",
+      "build": "Build Team 4c5a",
+      "pair": "Pair Team 4e39",
+      "squad": "Squad Team 8a33",
+      "home": "Home Team 3155",
+      "launchOrg": "LaunchOrg Org 0197",
+      "hostOrg": "HostOrg Org 3173"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 7
+  },
+  "completedAt": "2026-10-12T11:55:40.251Z"
+}

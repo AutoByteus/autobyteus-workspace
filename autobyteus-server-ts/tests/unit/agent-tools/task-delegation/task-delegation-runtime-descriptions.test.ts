@@ -132,7 +132,7 @@ describe("task delegation runtime descriptions", () => {
     expect(publicCopy).toContain("target_agent_run_id");
   });
 
-  it("publishes the delegate_task MCP output schema as the explicit-ID union; success may carry the created task_id (AC-001, REQ-001)", () => {
+  it("publishes the delegate_task MCP output schema as the explicit-ID union; success may carry the created task_id and launch_notes (AC-001, REQ-001, REQ-008)", () => {
     const provider = new TaskDelegationToolsMcpAdapterProvider({} as never);
     const catalog = new AgentToolMcpCatalog({ adapters: provider.getAdapters() });
     const [mcpDefinition] = catalog.listMcpToolsForSession({
@@ -152,7 +152,11 @@ describe("task delegation runtime descriptions", () => {
       properties: { delegated: { const: true }, target_kind: { const: "agent" }, target_agent_run_id: { type: "string", minLength: 1 },
         task_id: { type: "string", minLength: 1 } },
     });
-    expect(Object.keys(agentCopy!.properties as object)).toEqual(["delegated", "target_kind", "target_agent_run_id", "task_id"]);
+    expect(Object.keys(agentCopy!.properties as object)).toEqual(["delegated", "target_kind", "target_agent_run_id", "task_id", "launch_notes"]);
+    // launch_notes: an optional, non-empty list of non-blank fallback notes.
+    expect((agentCopy!.properties as Record<string, unknown>).launch_notes).toMatchObject({ type: "array", minItems: 1, items: { type: "string", minLength: 1 } });
+    expect((agentCopy!.required as string[])).not.toContain("launch_notes");
+    expect(Object.keys(teamCopy!.properties as object)).toContain("launch_notes");
     expect(teamCopy).toMatchObject({
       type: "object",
       additionalProperties: false,
@@ -169,7 +173,7 @@ describe("task delegation runtime descriptions", () => {
       properties: { delegated: { const: false }, message: { type: "string", minLength: 1 } },
     });
     // task_id is only an optional success field; no Task status or failed-start Task identity.
-    expect(JSON.stringify(notDelegated)).not.toMatch(/task_id|target_/);
+    expect(JSON.stringify(notDelegated)).not.toMatch(/task_id|target_|launch_notes/);
     expect(JSON.stringify(outputSchema)).not.toMatch(/"status"/);
   });
 

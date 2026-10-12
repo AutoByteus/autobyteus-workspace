@@ -21,15 +21,25 @@ export interface DelegationSourceIndexPort {
  * A delegation target in any root: an Agent or Agent Team placement. `source` is present only
  * when the copy starts from a definition snapshot (a catalog definition, or a teammate inside
  * a catalog Team copy); otherwise the root resolves the source from its own placements.
+ * `launchNotes` are present only on a fresh catalog admission's placement (never on a snapshot
+ * re-projection or an in-run placement), so a recorded fallback is never repeated as new.
  */
 export type DelegationPlacement =
-  | Readonly<{ kind: "agent"; address: AgentTeamAddress; source?: TaskAgentExecutionSource }>
-  | Readonly<{ kind: "agent_team"; address: AgentTeamAddress; coordinatorAddress: AgentTeamAddress; source?: TaskTeamExecutionSource }>;
+  | Readonly<{ kind: "agent"; address: AgentTeamAddress; source?: TaskAgentExecutionSource; launchNotes?: readonly string[] }>
+  | Readonly<{
+      kind: "agent_team";
+      address: AgentTeamAddress;
+      coordinatorAddress: AgentTeamAddress;
+      source?: TaskTeamExecutionSource;
+      launchNotes?: readonly string[];
+    }>;
 
-const sourcedPlacement = (address: AgentTeamAddress, source: TaskExecutionSource): DelegationPlacement =>
-  source.kind === "agent"
-    ? Object.freeze({ kind: "agent", address, source })
-    : Object.freeze({ kind: "agent_team", address, coordinatorAddress: source.coordinatorAddress, source });
+const sourcedPlacement = (address: AgentTeamAddress, source: TaskExecutionSource, launchNotes: readonly string[] = []): DelegationPlacement => {
+  const notes = launchNotes.length ? { launchNotes } : {};
+  return source.kind === "agent"
+    ? Object.freeze({ kind: "agent", address, source, ...notes })
+    : Object.freeze({ kind: "agent_team", address, coordinatorAddress: source.coordinatorAddress, source, ...notes });
+};
 
 /**
  * `delegate_task(address)` placement (DS-003), called inside the root gate:
@@ -70,6 +80,6 @@ export const resolveDelegationPlacement = async (input: Readonly<{
       throw cause;
     }
     if (!catalog) throw error;
-    return sourcedPlacement(input.address, catalog.source);
+    return sourcedPlacement(input.address, catalog.source, catalog.launchNotes);
   }
 };

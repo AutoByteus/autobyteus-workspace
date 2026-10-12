@@ -13,19 +13,26 @@ import {
   type CollaboratorCandidatePolicy,
   type CollaboratorMention,
 } from "./collaborator-candidate-policy.js";
-import type { CollaboratorEntryBuilder, CollaboratorEntryPlan } from "./collaborator-entry-builder.js";
+import type {
+  CollaboratorDefinitionPlan,
+  CollaboratorEntryBuilder,
+  CollaboratorEntryPlan,
+} from "./collaborator-entry-builder.js";
 import type { CollaboratorRootPort } from "./collaborator-root-port.js";
 import { CollaboratorAddError, CollaboratorMentionError } from "./collaborator-errors.js";
-import type { CollaboratorRunnabilityValidator } from "./collaborator-runnability-validator.js";
+import type { CollaboratorLaunchResolver } from "./collaborator-launch-resolver.js";
+import { entryPlanLaunchNotes } from "./launch-configuration-notes.js";
 import { CollaboratorIdentityAllocator, type CollaboratorIdentityPorts } from "./collaborator-identity-allocator.js";
 import { catalogDefinitionKey, type CatalogDefinitionRef } from "./catalog-address-map.js";
 
 /**
  * The outcome of ensuring collaborators: every requested definition, in order, at its
- * collaborator address; or the collaborator that could not be added and why (nothing was added).
+ * collaborator address, with the launch notes of the collaborators this call added (empty when
+ * none fell back, and always for `@` resolution); or the collaborator that could not be added
+ * and why (nothing was added).
  */
 export type CollaboratorAdmissionResult =
-  | Readonly<{ admitted: true; collaborators: readonly MentionedCollaborator[] }>
+  | Readonly<{ admitted: true; collaborators: readonly MentionedCollaborator[]; launchNotes: readonly string[] }>
   | Readonly<{ admitted: false; code: typeof COLLABORATOR_ADD_FAILED; collaboratorName: string; message: string }>;
 
 /** A root's answer to a send with mentions: the admission result, or a send the root cannot admit at all. */
@@ -41,22 +48,25 @@ export const toCollaboratorMentions = (
 export type { CollaboratorMention };
 
 export type CollaboratorAdmissionPlan = Readonly<{
-  /** Collaborators to add: validated and allocated before the root commits them. */
-  newPlans: readonly CollaboratorEntryPlan[];
+  /** Collaborators to add, before their launch is resolved and their run IDs are allocated. */
+  newPlans: readonly CollaboratorDefinitionPlan[];
   /** Every requested definition, in order, at its collaborator address. */
   resolved: readonly MentionedCollaborator[];
 }>;
 
-/** A catalog task copy's definition snapshot (REQ-005): no collaborator entry, no identities. */
-export type CatalogTaskSource = Readonly<{ name: string; source: TaskExecutionSource }>;
+/**
+ * A catalog task copy's definition snapshot (REQ-005): no collaborator entry, no identities.
+ * `launchNotes` describe this admission's skipped configured layers (empty when none).
+ */
+export type CatalogTaskSource = Readonly<{ name: string; source: TaskExecutionSource; launchNotes: readonly string[] }>;
 
 /**
  * Stateless collaborator coordinator. `@` only resolves: `resolveMentions` validates each
  * mentioned definition and answers its address without adding anything. Agent-initiated
  * bring-in admits: the root calls `ensure` inside the operation gate it already holds (never
  * re-entering it): it plans every definition (reusing the entry of one that is already a
- * collaborator), checks that each new collaborator can run with the root settings, allocates
- * its run IDs at its catalog address, and lets the root commit and publish the new entries.
+ * collaborator), resolves each new agent's launch by the layer order (`CollaboratorLaunchResolver`),
+ * allocates its run IDs at its catalog address, and lets the root commit and publish the new entries.
  * All or nothing: any failure returns `COLLABORATOR_ADD_FAILED` and nothing is added. The `@`
  * mention note is composed by the `@` callers, not here.
  */
@@ -64,7 +74,7 @@ export class CollaboratorAdmission {
   constructor(private readonly dependencies: Readonly<{
     policy: CollaboratorCandidatePolicy;
     entries: CollaboratorEntryBuilder;
-    runnability: CollaboratorRunnabilityValidator;
+    launches: CollaboratorLaunchResolver;
   }>) {}
 
   get policy(): CollaboratorCandidatePolicy { return this.dependencies.policy; }
@@ -81,26 +91,27 @@ export class CollaboratorAdmission {
      */
     addEntries(entries: readonly CollaboratorEntry[]): Promise<void>;
   }>): Promise<CollaboratorAdmissionResult> {
-    if (input.definitions.length === 0) return Object.freeze({ admitted: true, collaborators: Object.freeze([]) });
+    if (input.definitions.length === 0) return admitted(Object.freeze([]));
     let plan: CollaboratorAdmissionPlan;
+    let resolved: CollaboratorEntryPlan[];
     try {
       plan = await this.plan(port, { senderRunId: input.senderRunId, definitions: input.definitions, now: new Date().toISOString() });
-      await this.dependencies.runnability.validate(plan.newPlans);
+      resolved = await this.dependencies.launches.resolve(plan.newPlans, port.rootLaunchConfiguration());
       const allocator = new CollaboratorIdentityAllocator(input.identities);
       const entries: CollaboratorEntry[] = [];
-      for (const newPlan of plan.newPlans) {
+      for (const newPlan of resolved) {
         try { entries.push(await allocator.allocate(newPlan)); }
         catch (error) { throw new CollaboratorAddError(newPlan.name, `Its run could not be prepared: ${messageOf(error)}`); }
       }
       if (entries.length) {
         try { await input.addEntries(entries); }
-        catch (error) { throw new CollaboratorAddError(plan.newPlans[0]!.name, messageOf(error)); }
+        catch (error) { throw new CollaboratorAddError(resolved[0]!.name, messageOf(error)); }
       }
     } catch (error) {
       if (error instanceof CollaboratorAddError) return addFailed(error);
       throw error;
     }
-    return Object.freeze({ admitted: true, collaborators: plan.resolved });
+    return admitted(plan.resolved, resolved.flatMap(entryPlanLaunchNotes));
   }
 
   /**
@@ -111,7 +122,7 @@ export class CollaboratorAdmission {
    * ineligible mention returns `COLLABORATOR_ADD_FAILED` with its name.
    */
   async resolveMentions(port: CollaboratorRootPort, definitions: readonly CollaboratorMention[]): Promise<CollaboratorAdmissionResult> {
-    if (definitions.length === 0) return Object.freeze({ admitted: true, collaborators: Object.freeze([]) });
+    if (definitions.length === 0) return admitted(Object.freeze([]));
     try {
       const eligible: AdmissibleCollaboratorDefinition[] = [];
       for (const ref of definitions) eligible.push(await this.checked(() => this.dependencies.policy.requireEligible(port, ref), ref));
@@ -125,7 +136,7 @@ export class CollaboratorAdmission {
         const presence = entry ? "in_run" : preferred?.rank === "run_agent" ? "run_agent" : preferred ? "in_run" : "not_in_run";
         return Object.freeze({ name: definition.definition.name, kind: definition.kind, address, presence });
       });
-      return Object.freeze({ admitted: true, collaborators: Object.freeze(collaborators) });
+      return admitted(Object.freeze(collaborators));
     } catch (error) {
       if (error instanceof CollaboratorAddError) return addFailed(error);
       throw error;
@@ -140,9 +151,9 @@ export class CollaboratorAdmission {
 
   /**
    * The source snapshot of a task copy of the catalog definition at `address` (DS-003): the
-   * definition, its Team layout and handoffs, and the root launch settings, checked to run
-   * like a new collaborator. Null when `address` is no catalog address. Throws
-   * `CollaboratorAddError` when the copy cannot run.
+   * definition, its Team layout and handoffs, and each agent's launch resolved like a new
+   * collaborator's, with this admission's launch notes. Null when `address` is no catalog
+   * address. Throws `CollaboratorAddError` when the copy cannot run.
    */
   async catalogTaskSource(port: CollaboratorRootPort, input: Readonly<{
     address: string;
@@ -154,8 +165,8 @@ export class CollaboratorAdmission {
     const plan = await this.buildPlan(definition, port, {
       address: input.address, senderRunId: input.senderRunId, now: new Date().toISOString(),
     });
-    await this.dependencies.runnability.validate([plan]);
-    return Object.freeze({ name: plan.name, source: toTaskExecutionSource(plan) });
+    const [resolved] = await this.dependencies.launches.resolve([plan], port.rootLaunchConfiguration());
+    return Object.freeze({ name: resolved!.name, source: toTaskExecutionSource(resolved!), launchNotes: Object.freeze(entryPlanLaunchNotes(resolved!)) });
   }
 
   /** Plans every definition; never writes or allocates. Throws `CollaboratorAddError`. */
@@ -167,7 +178,7 @@ export class CollaboratorAdmission {
     const admissible: AdmissibleCollaboratorDefinition[] = [];
     for (const ref of input.definitions) admissible.push(await this.admissible(port, ref));
     const addresses = await this.dependencies.policy.catalogAddressMap(port);
-    const newPlans: CollaboratorEntryPlan[] = [];
+    const newPlans: CollaboratorDefinitionPlan[] = [];
     const resolved: MentionedCollaborator[] = [];
     for (const definition of admissible) {
       const sameDefinition = sameDefinitionAs(definition);
@@ -202,11 +213,10 @@ export class CollaboratorAdmission {
     definition: AdmissibleCollaboratorDefinition,
     port: CollaboratorRootPort,
     input: Readonly<{ address: string; senderRunId: string; now: string }>,
-  ): Promise<CollaboratorEntryPlan> {
+  ): Promise<CollaboratorDefinitionPlan> {
     try {
       return await this.dependencies.entries.build(definition, {
-        address: input.address as CollaboratorEntryPlan["address"],
-        rootLaunchConfiguration: port.rootLaunchConfiguration(),
+        address: input.address as CollaboratorDefinitionPlan["address"],
         addedAt: input.now,
         addedViaAgentRunId: input.senderRunId,
       });
@@ -218,11 +228,16 @@ export class CollaboratorAdmission {
 
 /** An entry (or planned entry) of the same definition as the mention. */
 const sameDefinitionAs = (definition: AdmissibleCollaboratorDefinition) =>
-  (entry: CollaboratorEntry | CollaboratorEntryPlan): boolean => entry.kind === definition.kind
+  (entry: CollaboratorEntry | CollaboratorDefinitionPlan): boolean => entry.kind === definition.kind
     && (entry.kind === "agent" ? entry.agentDefinitionId : entry.teamDefinitionId) === definition.definition.id;
 
 const toTaskExecutionSource = (plan: CollaboratorEntryPlan): TaskExecutionSource => plan.kind === "agent"
-  ? Object.freeze({ kind: "agent", agentDefinitionId: plan.agentDefinitionId, launchConfiguration: plan.launchConfiguration })
+  ? Object.freeze({
+      kind: "agent",
+      agentDefinitionId: plan.agentDefinitionId,
+      launchConfiguration: plan.launchConfiguration,
+      launchSource: plan.launchSource,
+    })
   : Object.freeze({
       kind: "agent_team",
       teamDefinitionId: plan.teamDefinitionId,
@@ -230,7 +245,11 @@ const toTaskExecutionSource = (plan: CollaboratorEntryPlan): TaskExecutionSource
       members: plan.members,
       handoffs: plan.handoffs,
       defaultLaunchConfiguration: plan.defaultLaunchConfiguration,
+      defaultLaunchSource: plan.defaultLaunchSource,
     });
+
+const admitted = (collaborators: readonly MentionedCollaborator[], launchNotes: readonly string[] = []): CollaboratorAdmissionResult =>
+  Object.freeze({ admitted: true, collaborators, launchNotes: Object.freeze([...launchNotes]) });
 
 const addFailed = (error: CollaboratorAddError): CollaboratorAdmissionResult => Object.freeze({
   admitted: false, code: COLLABORATOR_ADD_FAILED, collaboratorName: error.collaboratorName, message: error.reason,

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { chatNavStartOrder, definitionStartOrder, loadStartRuntimes, resolveStartModel, type StartModelCatalog } from '../startModelDefaults'
+import { chatNavStartOrder, definitionStartOrder, loadStartRuntimes, resolveStartModel, usableStartCandidate, type StartModelCatalog } from '../startModelDefaults'
 
 const catalog = (models: Record<string, string[]>, disabled: string[] = []): StartModelCatalog => ({
   ensureAvailability: async () => undefined,
@@ -68,5 +68,20 @@ describe('loadStartRuntimes (CR-004)', () => {
     await loadStartRuntimes(['autobyteus', 'claude_agent_sdk', 'autobyteus', 'codex_app_server', null, ' ', undefined], catalog)
     expect(order[0]).toBe('availability')
     expect(order.slice(1).sort()).toEqual(['autobyteus', 'claude_agent_sdk'])
+  })
+})
+
+describe('usableStartCandidate (the shared usability rule, DS-006)', () => {
+  const models = { codex_app_server: ['gpt-codex'] }
+  it('says why a candidate cannot be used, loading only its own runtime catalog', async () => {
+    const ensureCatalog = vi.fn(async () => undefined)
+    const checked = { ...catalog(models, ['grok_build']), ensureCatalog }
+    await expect(usableStartCandidate({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-codex', llmConfig: { effort: 'high' } }, checked))
+      .resolves.toEqual({ usable: true, choice: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-codex', llmConfig: { effort: 'high' } } })
+    await expect(usableStartCandidate({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'retired' }, checked)).resolves.toEqual({ usable: false, reason: 'model_unavailable' })
+    await expect(usableStartCandidate({ runtimeKind: 'grok_build', llmModelIdentifier: 'grok-4' }, checked)).resolves.toEqual({ usable: false, reason: 'runtime_unavailable' })
+    await expect(usableStartCandidate({ runtimeKind: 'codex_app_server', llmModelIdentifier: ' ' }, checked)).resolves.toEqual({ usable: false, reason: 'incomplete' })
+    await expect(usableStartCandidate({ llmModelIdentifier: 'gpt-codex' }, checked)).resolves.toEqual({ usable: false, reason: 'incomplete' })
+    expect(ensureCatalog.mock.calls.map(([runtimeKind]) => runtimeKind)).toEqual(['codex_app_server', 'codex_app_server'])
   })
 })

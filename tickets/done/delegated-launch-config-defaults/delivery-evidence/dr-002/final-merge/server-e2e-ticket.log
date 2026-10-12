@@ -1,0 +1,1084 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:48006) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Agent Definition created successfully with ID: dlc-manager-e6fccc
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Agent Definition created successfully with ID: dlc-worker-6830f3
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Agent Definition created successfully with ID: dlc-plain-d406a8
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Agent Definition created successfully with ID: dlc-engineer-df66cb
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Agent Definition created successfully with ID: dlc-reviewer-575097
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Agent Definition created successfully with ID: dlc-offline-489fed
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Agent Definition created successfully with ID: dlc-unoffered-9bc94a
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Agent Definition created successfully with ID: dlc-badsettings-3ff40d
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Agent Definition created successfully with ID: dlc-incomplete-9deedd
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Agent Team Definition created successfully with ID: dlc-squad-f9c35d
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Agent Team Definition created successfully with ID: dlc-pair-3876c2
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)
+Agent Team Definition created successfully with ID: dlc-home-3e30f7
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Created and registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Agent team websocket attached for team run dlc_home_3e30f7_bb2c254c21e24aeaa00fc6a422f6b055
+Created agent session c18a7b46-ef92-41e0-b276-4cca204ab871 for run dlc_home_3e30f7_bb2c254c21e24aeaa00fc6a422f6b055
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Agent Team WebSocket connected: session=c18a7b46-ef92-41e0-b276-4cca204ab871, run=dlc_home_3e30f7_bb2c254c21e24aeaa00fc6a422f6b055
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_teams/dlc_home_3e30f7_bb2c254c21e24aeaa00fc6a422f6b055/dlc_manager_e6fccc_72807419aee94b3caf1d5cb8a43c489d/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_teams/dlc_home_3e30f7_bb2c254c21e24aeaa00fc6a422f6b055/dlc_manager_e6fccc_72807419aee94b3caf1d5cb8a43c489d/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_teams/dlc_home_3e30f7_bb2c254c21e24aeaa00fc6a422f6b055/dlc_manager_e6fccc_72807419aee94b3caf1d5cb8a43c489d/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_orgs/dlc_org_ff7955_32bec96a276f4d4388408c94addac0ff/dlc_manager_e6fccc_f0164e4030554ca387c718fe13e4352f/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_orgs/dlc_org_ff7955_32bec96a276f4d4388408c94addac0ff/dlc_manager_e6fccc_f0164e4030554ca387c718fe13e4352f/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_teams/dlc_home_3e30f7_bb2c254c21e24aeaa00fc6a422f6b055/dlc_manager_e6fccc_72807419aee94b3caf1d5cb8a43c489d/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_manager_e6fccc_2de8843c4f0e44bea44de39ba7f50750: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_orgs/dlc_org_ff7955_32bec96a276f4d4388408c94addac0ff/dlc_manager_e6fccc_f0164e4030554ca387c718fe13e4352f/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_manager_e6fccc_72807419aee94b3caf1d5cb8a43c489d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_manager_e6fccc_f0164e4030554ca387c718fe13e4352f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_teams/dlc_home_3e30f7_bb2c254c21e24aeaa00fc6a422f6b055/dlc_manager_e6fccc_72807419aee94b3caf1d5cb8a43c489d/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_orgs/dlc_org_ff7955_32bec96a276f4d4388408c94addac0ff/dlc_manager_e6fccc_f0164e4030554ca387c718fe13e4352f/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Agent websocket attached for run dlc_manager_e6fccc_2de8843c4f0e44bea44de39ba7f50750
+Created agent session 565557b8-0957-45cf-b97f-2208902ae54c for run dlc_manager_e6fccc_2de8843c4f0e44bea44de39ba7f50750
+Agent WebSocket connected: session=565557b8-0957-45cf-b97f-2208902ae54c, run=dlc_manager_e6fccc_2de8843c4f0e44bea44de39ba7f50750
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agents/dlc_manager_e6fccc_2de8843c4f0e44bea44de39ba7f50750/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_orgs/dlc_org_ff7955_32bec96a276f4d4388408c94addac0ff/dlc_manager_e6fccc_f0164e4030554ca387c718fe13e4352f/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_worker_6830f3_c05d3c73de97422aa4afc05ee5e1a309: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_worker_6830f3_e5046fb59e1843bfb7220cf4a091546f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_worker_6830f3_98a4d4e5ca0a4fe78a6b18df69104293: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_reviewer_575097_e50704431edb470a9b81387e1e51eb9c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_reviewer_575097_bc2ddd5b0d024e829be0f22a9b39377c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_reviewer_575097_0c6bacf4793d42f6be9a4e476e3d05db: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_unoffered_9bc94a_5a984836c994484fbf8f866883cdf909: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_unoffered_9bc94a_a61617a6d999428e8d53a447b8aad60b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_unoffered_9bc94a_d6853852ac4d4f449e5100972c7bab61: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_unoffered_9bc94a_ad2fc6159c5440ad83870c735e5e439d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_unoffered_9bc94a_ac12b13c0a9d449eb5ef6fdfc9832a83: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_unoffered_9bc94a_ea242c56ae074d8482a8e83ccdc2d1c1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_badsettings_3ff40d_6e61237f4f8340758c944e3b0cffea6f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_badsettings_3ff40d_c58dc73b5242468a9d829f1c3e599dfc: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_badsettings_3ff40d_158654c682564161ac6fb4efbd93c439: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_plain_d406a8_3ad2837505c244589f4aa4b124a6d200: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_plain_d406a8_7af846ac236a4e04a44b2c6729c97744: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_plain_d406a8_f6b4a01c58cb48a5a80b7eaa478d7c69: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_reviewer_575097_b334110dccc84f7c870891a7bda0fb0e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_reviewer_575097_4865abfb3fd24f06b341a2b9d96234b8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_reviewer_575097_478caeaffef545bb8b92abe17261a831: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_unoffered_9bc94a_9d708ce2c26b4089a6582545eb650de9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_unoffered_9bc94a_ab562db2806a4d88ab45b7ed829245a3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_unoffered_9bc94a_e35ab67aa08f4f79bd4b32a4e5e3626f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_worker_6830f3_8b09020ec33f48f8bf2fe30938a10350: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_worker_6830f3_05788ec218fa4d4f9981cf05cef33f58: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_worker_6830f3_62d5fc3bf7df442c907a0d1aefa14fe0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_worker_6830f3_e4ca562d2c4f486aa31420a3c747296e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_worker_6830f3_0ef921fcd19d4fda87224e4b4838b1c9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_worker_6830f3_5cc071f3e6674a568617798f11bed4cf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_unoffered_9bc94a_26ca842cbf734fa9bdb214b15da9b729: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Closed agent session c18a7b46-ef92-41e0-b276-4cca204ab871
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_unoffered_9bc94a_2094f980d9884e15b93d5aea7bb2dfeb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+AGY compaction detection off for run dlc_unoffered_9bc94a_e3c205db9ace4ae0920bc88bbbdbde73: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values
+Closed agent session 565557b8-0957-45cf-b97f-2208902ae54c
+Agent WebSocket disconnected: 565557b8-0957-45cf-b97f-2208902ae54c
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated or brought in (today's text, nothing added); a usable own default still starts; a user `@` mention admits nothing (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated or brought in (today's text, nothing added); a usable own default still starts; a user `@` mention admits nothing (AC-006)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated or brought in (today's text, nothing added); a usable own default still starts; a user `@` mention admits nothing (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated or brought in (today's text, nothing added); a usable own default still starts; a user `@` mention admits nothing (AC-006)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated or brought in (today's text, nothing added); a usable own default still starts; a user `@` mention admits nothing (AC-006)
+AGY compaction detection off for run dlc_manager_e6fccc_3a62072593374ac290ff8ff5beaf3b53: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated or brought in (today's text, nothing added); a usable own default still starts; a user `@` mention admits nothing (AC-006)
+Agent websocket attached for run dlc_manager_e6fccc_3a62072593374ac290ff8ff5beaf3b53
+Created agent session fab1373c-6942-4353-bd78-741930282ba5 for run dlc_manager_e6fccc_3a62072593374ac290ff8ff5beaf3b53
+Agent WebSocket connected: session=fab1373c-6942-4353-bd78-741930282ba5, run=dlc_manager_e6fccc_3a62072593374ac290ff8ff5beaf3b53
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated or brought in (today's text, nothing added); a usable own default still starts; a user `@` mention admits nothing (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated or brought in (today's text, nothing added); a usable own default still starts; a user `@` mention admits nothing (AC-006)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated or brought in (today's text, nothing added); a usable own default still starts; a user `@` mention admits nothing (AC-006)
+AGY compaction detection off for run dlc_reviewer_575097_8399e9a256a04d9993ffaea3c8b8b3b3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated or brought in (today's text, nothing added); a usable own default still starts; a user `@` mention admits nothing (AC-006)
+Closed agent session fab1373c-6942-4353-bd78-741930282ba5
+Agent WebSocket disconnected: fab1373c-6942-4353-bd78-741930282ba5
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Agent team websocket attached for team run dlc_home_3e30f7_50f86f26a8c7491badcef113875a86a0
+Created agent session 6ed5448d-6b8c-489e-99aa-9b618b14a0ad for run dlc_home_3e30f7_50f86f26a8c7491badcef113875a86a0
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Agent Team WebSocket connected: session=6ed5448d-6b8c-489e-99aa-9b618b14a0ad, run=dlc_home_3e30f7_50f86f26a8c7491badcef113875a86a0
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_teams/dlc_home_3e30f7_50f86f26a8c7491badcef113875a86a0/dlc_manager_e6fccc_ce86f99e2178402bb8dc8360208726eb/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_teams/dlc_home_3e30f7_50f86f26a8c7491badcef113875a86a0/dlc_manager_e6fccc_ce86f99e2178402bb8dc8360208726eb/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_teams/dlc_home_3e30f7_50f86f26a8c7491badcef113875a86a0/dlc_manager_e6fccc_ce86f99e2178402bb8dc8360208726eb/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_manager_e6fccc_99b3be927b8449d4bbaa4930c8998959: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_manager_e6fccc_ce86f99e2178402bb8dc8360208726eb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_teams/dlc_home_3e30f7_50f86f26a8c7491badcef113875a86a0/dlc_manager_e6fccc_ce86f99e2178402bb8dc8360208726eb/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Agent websocket attached for run dlc_manager_e6fccc_99b3be927b8449d4bbaa4930c8998959
+Created agent session 5048b1f0-54d1-4999-bc94-a9f61e365509 for run dlc_manager_e6fccc_99b3be927b8449d4bbaa4930c8998959
+Agent WebSocket connected: session=5048b1f0-54d1-4999-bc94-a9f61e365509, run=dlc_manager_e6fccc_99b3be927b8449d4bbaa4930c8998959
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agents/dlc_manager_e6fccc_99b3be927b8449d4bbaa4930c8998959/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/memory/agent_teams/dlc_home_3e30f7_50f86f26a8c7491badcef113875a86a0/dlc_manager_e6fccc_ce86f99e2178402bb8dc8360208726eb/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_worker_6830f3_93f2318e0d69442fb15d8c79e31f078f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_worker_6830f3_9057c724a8614c379cf25397d0db2c1c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_worker_6830f3_e506616484874f75883bb192e6467c7d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_worker_6830f3_c933429c6feb46428da879d3771919ed: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Agent Definition with ID dlc-engineer-df66cb updated successfully.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_worker_6830f3_a99262ce36514aeeba38e409a7344e8b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_worker_6830f3_0e2cca40404a45038b7e0a557376520f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Closed agent session 6ed5448d-6b8c-489e-99aa-9b618b14a0ad
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Closed agent session 5048b1f0-54d1-4999-bc94-a9f61e365509
+Agent WebSocket disconnected: 5048b1f0-54d1-4999-bc94-a9f61e365509
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Agent websocket attached for run dlc_manager_e6fccc_99b3be927b8449d4bbaa4930c8998959
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Created agent session 530c845e-e4e0-4dd9-9cab-bfeb959d3202 for run dlc_manager_e6fccc_99b3be927b8449d4bbaa4930c8998959
+Agent WebSocket connected: session=530c845e-e4e0-4dd9-9cab-bfeb959d3202, run=dlc_manager_e6fccc_99b3be927b8449d4bbaa4930c8998959
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Agent team websocket attached for team run dlc_home_3e30f7_50f86f26a8c7491badcef113875a86a0
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Created agent session 768d9182-7470-4fb3-83b0-da85bf9d918c for run dlc_home_3e30f7_50f86f26a8c7491badcef113875a86a0
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Agent Team WebSocket connected: session=768d9182-7470-4fb3-83b0-da85bf9d918c, run=dlc_home_3e30f7_50f86f26a8c7491badcef113875a86a0
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_manager_e6fccc_99b3be927b8449d4bbaa4930c8998959: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_manager_e6fccc_ce86f99e2178402bb8dc8360208726eb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_worker_6830f3_9057c724a8614c379cf25397d0db2c1c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_worker_6830f3_93f2318e0d69442fb15d8c79e31f078f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_worker_6830f3_a99262ce36514aeeba38e409a7344e8b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_worker_6830f3_0e2cca40404a45038b7e0a557376520f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_engineer_df66cb_1ad4189359eb4a6b83363215e9405a3f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_engineer_df66cb_6a7c0766e663414698d0edc471b8ce0a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_reviewer_575097_3936f23e9f8e4c4cb2e9039f9b2af1f3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-CVT7rI/workspace.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Reusing registered workspace ID: agent_ws_9f3a78645d6dc126978a25f3a6a14d433b7e4c82f9aeb808a8a5c4e04aa2ebfe
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AGY compaction detection off for run dlc_reviewer_575097_ddac4bbb609c43499deb29429107d7a4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Closed agent session 768d9182-7470-4fb3-83b0-da85bf9d918c
+
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+Closed agent session 530c845e-e4e0-4dd9-9cab-bfeb959d3202
+Agent WebSocket disconnected: 530c845e-e4e0-4dd9-9cab-bfeb959d3202
+
+ ✓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests) 17961ms
+     ✓ in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values  9328ms
+     ✓ Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated or brought in (today's text, nothing added); a usable own default still starts; a user `@` mention admits nothing (AC-006)  1386ms
+     ✓ Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)  5718ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  14:40:14
+   Duration  26.20s (transform 5.45s, setup 26ms, import 7.74s, tests 17.96s, environment 0ms)
+

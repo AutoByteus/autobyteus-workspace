@@ -1,0 +1,804 @@
+// Delegated launch defaults probe (ticket delegated-launch-config-defaults, SR-002).
+//
+// Real browser (Chrome via playwright-core) → real Nuxt dev → real backend (`dist/app.js`) with scripted runtimes only,
+// no inference and no credentials. Every run is started, driven, stopped and reopened through the UI:
+// - AGY: a probe-owned wrapper around `autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs`. A message containing
+//   `CALL_TOOL:{…}` makes the agent call the real agent tool and answer `CALLED:<result>` (the user types it into the
+//   composer, standing in for a model's tool call); anything else is answered `OK`. The wrapper answers `agy models` from
+//   a probe-owned file, so the probe can retire a model while a run is active (AC-006).
+// - Grok Build: the recorded-fixture fake CLI (a second runtime). Codex: a command path that does not exist (unavailable).
+// Everything runs in an owned temp data root and HOME on free ports with a sanitized environment; the user's app and
+// `~/.autobyteus` are never touched.
+//
+// Definitions: Build team (no default) = lead, engineer (Grok), reviewer (AGY ALT), unoffered (AGY model not offered);
+// Pair team (default AGY ALT) = lead, engineer (Grok), unoffered; Squad team (default AGY model not offered) = lead,
+// engineer (Grok), reviewer (ALT), offline (Codex), unoffered, badsettings (AGY model + settings it has none of),
+// incomplete (runtime only); Writer (ALT); Plain (none); Org (default AGY) = writer + placed Pair; Host Org = manager.
+//
+// Cases:
+//   DLP-001 (AC-011, AC-013, DEC-009, AR-003) New chat for the Build team: seeded rows, unusable-default note, root changes
+//           keep seeded rows (also when equal to the root), member edit, reset; Run → the team run has what was shown.
+//   DLP-002 (AC-012) Org launch page seeds the placed team and agents; Run → readback.
+//   DLP-003 (AC-001, AC-003..AC-005, AC-007, AC-010; DS-004 b) Manager chat started from the UI. From its composer: the
+//           Squad copy (five notes: team default + four reasons), the Pair brought in (note), the Writer brought in (no
+//           note), an extra copy at the Pair address (no note). From the copy lead's own conversation: a teammate
+//           delegation (no note), a helper brought in (note once, then none), a message to the Grok engineer (its Grok
+//           reply shows). Settings lists every row read-only; the run's own settings stay editable.
+//   DLP-004 (AC-010) A Team run (New chat) and an Org run (Org launch page) whose manager delegates the Squad and brings
+//           in the Pair from the composer: their Settings list the rows.
+//   DLP-005 (AC-006, REQ-004) Manager chat on a model that is then retired: delegation and bring-in of agents that need
+//           the inherited layer fail in the conversation with today's text and add nothing; an own usable default works.
+//   DLP-006 (AC-009, QR-002) Agent and Team runs whose saved trees are given the pre-change shape (no sources, no member
+//           launches) while the backend is down, as after an upgrade: Settings shows "Source not recorded" and the Team
+//           values; a copy member then starts on the Team value.
+//   DLP-007 (AC-008, DEC-008) A copy started, the engineer's default edited in the Agents editor, a second copy: Settings
+//           shows each copy's recorded values; the run is stopped and reopened from the UI; the first copy's engineer
+//           then starts on Grok (its recorded value). Runs last (it edits a definition).
+//
+// Prerequisites: `pnpm -C autobyteus-server-ts build`, Google Chrome. No CLI logins.
+// Usage: pnpm -C autobyteus-web test:e2e:delegated-launch-defaults [--output-dir <fresh dir>] [--cases DLP-001,DLP-003] [--keep]
+import { spawn } from 'node:child_process'
+import { createWriteStream, existsSync } from 'node:fs'
+import fs from 'node:fs/promises'
+import net from 'node:net'
+import os from 'node:os'
+import path from 'node:path'
+import process from 'node:process'
+import { randomUUID } from 'node:crypto'
+import { createRequire } from 'node:module'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+
+const require = createRequire(import.meta.url)
+const { chromium } = require('playwright-core')
+const scriptDir = path.dirname(fileURLToPath(import.meta.url))
+const webDir = path.resolve(scriptDir, '../..')
+const rootDir = path.resolve(webDir, '..')
+const serverDir = path.join(rootDir, 'autobyteus-server-ts')
+
+const arg = (name, fallback) => {
+  const i = process.argv.indexOf(`--${name}`)
+  return i !== -1 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : fallback
+}
+const outDir = path.resolve(webDir, arg('output-dir', `test-results/delegated-launch-defaults-${Date.now()}`))
+const keep = process.argv.includes('--keep')
+const onlyCases = arg('cases', null)?.split(',') ?? null
+const chrome = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH
+  ?? ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find(existsSync))
+const AGY = 'antigravity_cli'
+const GROK = 'grok_build'
+const MODEL = 'gemini-3.8-flash-low'
+const ALT = 'dlc-alt-model'
+const RETIRING = 'dlc-retiring-model'
+const NOT_OFFERED = 'dlc-no-such-model'
+const TEAM_NOT_OFFERED = 'dlc-no-such-team-model'
+const GROK_MODEL = 'grok-4.7'
+// Display names the probe's `agy models` answers with; rows and summaries show these.
+const MODEL_LABEL = 'Gemini test'
+const ALT_LABEL = 'Alt test model'
+const RETIRING_LABEL = 'Retiring test model'
+
+const evidence = { startedAt: new Date().toISOString(), cases: {}, processes: [], cleanup: [], observations: [] }
+const delay = (ms) => new Promise((r) => setTimeout(r, ms))
+const assert = (cond, message, details) => { if (!cond) { const e = new Error(message); e.details = details; throw e } }
+const freePort = () => new Promise((resolve, reject) => {
+  const s = net.createServer(); s.unref(); s.on('error', reject)
+  s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => resolve(port)) })
+})
+const waitFor = async (label, fn, timeout = 90000, interval = 500) => {
+  const start = Date.now()
+  let last
+  while (Date.now() - start < timeout) { try { const v = await fn(); if (v) return v } catch (error) { last = error } await delay(interval) }
+  throw new Error(`Timed out waiting for ${label}${last ? ` (${last.message})` : ''}`)
+}
+const baseEnv = () => Object.fromEntries(['HOME', 'PATH', 'USER', 'LANG', 'TMPDIR', 'SHELL', 'TERM']
+  .filter((k) => process.env[k] !== undefined).map((k) => [k, process.env[k]]))
+const owned = []
+const spawnOwned = (label, command, args, cwd, env) => {
+  const log = createWriteStream(path.join(outDir, `${label}.log`), { flags: 'a' })
+  const child = spawn(command, args, { cwd, env, detached: process.platform !== 'win32', stdio: ['ignore', 'pipe', 'pipe'] })
+  child.stdout.pipe(log); child.stderr.pipe(log)
+  owned.push(child); evidence.processes.push({ label, pid: child.pid })
+  return child
+}
+const stopOwned = async (child) => {
+  if (!child || child.exitCode !== null || child.signalCode) return 'already-exited'
+  try { process.kill(-child.pid, 'SIGTERM') } catch { child.kill('SIGTERM') }
+  const exited = await Promise.race([new Promise((r) => child.once('exit', () => r(true))), delay(15000).then(() => false)])
+  if (!exited) { try { process.kill(-child.pid, 'SIGKILL') } catch { child.kill('SIGKILL') } }
+  return exited ? 'SIGTERM' : 'SIGKILL'
+}
+
+let ownedRoot, dataRoot, workspace, backendUrl, frontUrl, browser, backend, backendPort, dbUrl, agyModelsFile, argvLog, missingCodex
+const backendEnv = {}
+const gql = async (query, variables = {}) => {
+  const res = await fetch(`${backendUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }), signal: AbortSignal.timeout(30000) })
+  const json = await res.json()
+  if (json.errors?.length) throw new Error(`GraphQL: ${JSON.stringify(json.errors).slice(0, 400)}`)
+  return json.data
+}
+const startBackend = async (label) => {
+  const child = spawnOwned(label, process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir, backendEnv)
+  await waitFor(`${label} health`, async () => { assert(child.exitCode === null, `${label} exited`); return (await fetch(`${backendUrl}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok }, 120000, 500)
+  return child
+}
+/** What `agy models` offers from now on (the scripted CLI reads it on every catalog request). */
+const offerAgyModels = (ids) => fs.writeFile(agyModelsFile, ids.map((id) => `${id}\t${{ [MODEL]: MODEL_LABEL, [ALT]: ALT_LABEL, [RETIRING]: RETIRING_LABEL }[id]}\n`).join(''))
+/** AGY launches of one run so far, with their `--model`. */
+const agyLaunchesOf = async (runId) => (await fs.readFile(argvLog, 'utf8').catch(() => '')).trim().split('\n').filter(Boolean).map((line) => JSON.parse(line))
+  .filter((entry) => entry.cwd.includes(`/${runId}/`)).map((entry) => entry.argv.includes('--model') ? entry.argv[entry.argv.indexOf('--model') + 1] : null)
+const segment = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '')
+const callTool = (name, args) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`
+const objectsIn = (value) => Array.isArray(value) ? value.flatMap(objectsIn) : value && typeof value === 'object' ? [value, ...Object.values(value).flatMap(objectsIn)] : []
+const pick = (record, camel) => record?.[camel] ?? record?.[camel.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`)]
+const lc = (c) => ({ runtime: pick(c, 'runtimeKind'), model: pick(c, 'llmModelIdentifier') })
+
+// ---------------------------------------------------------------------------------------------
+// Fixtures: definitions through the product's GraphQL API.
+const ids = {}
+const names = {}
+const seed = async () => {
+  const agent = async (key, defaultLaunchConfig = null) => {
+    names[key] = `${key[0].toUpperCase()}${key.slice(1)} ${randomUUID().slice(0, 4)}`
+    ids[key] = (await gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}', { input: {
+      name: names[key], description: `${key}.`, instructions: 'Follow the request.', toolNames: [], ...(defaultLaunchConfig ? { defaultLaunchConfig } : {}) } })).createAgentDefinition.id
+  }
+  await agent('manager'); await agent('lead'); await agent('worker'); await agent('plain')
+  await agent('engineer', { runtimeKind: GROK, llmModelIdentifier: GROK_MODEL })
+  await agent('reviewer', { runtimeKind: AGY, llmModelIdentifier: ALT })
+  await agent('writer', { runtimeKind: AGY, llmModelIdentifier: ALT })
+  await agent('offline', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.5' })
+  await agent('unoffered', { runtimeKind: AGY, llmModelIdentifier: NOT_OFFERED })
+  await agent('badsettings', { runtimeKind: AGY, llmModelIdentifier: MODEL, llmConfig: { temperature: 0.2 } })
+  await agent('incomplete', { runtimeKind: AGY })
+  const team = async (key, members, coordinator, defaultLaunchConfig = null) => {
+    names[key] = `${key[0].toUpperCase()}${key.slice(1)} Team ${randomUUID().slice(0, 4)}`
+    ids[key] = (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}', { input: {
+      name: names[key], description: `${key}.`, instructions: 'Work together.', coordinatorMemberName: coordinator, handoffs: [],
+      ...(defaultLaunchConfig ? { defaultLaunchConfig } : {}),
+      nodes: Object.entries(members).map(([memberName, ref]) => ({ memberName, ref: ids[ref], refScope: 'SHARED' })) } })).createAgentTeamDefinition.id
+  }
+  await team('build', { lead: 'lead', engineer: 'engineer', reviewer: 'reviewer', unoffered: 'unoffered' }, 'lead')
+  await team('pair', { lead: 'lead', engineer: 'engineer', unoffered: 'unoffered' }, 'lead', { runtimeKind: AGY, llmModelIdentifier: ALT })
+  await team('squad', { lead: 'lead', engineer: 'engineer', reviewer: 'reviewer', offline: 'offline', unoffered: 'unoffered',
+    badsettings: 'badsettings', incomplete: 'incomplete' }, 'lead', { runtimeKind: AGY, llmModelIdentifier: TEAM_NOT_OFFERED })
+  await team('home', { manager: 'manager', worker: 'worker' }, 'manager')
+  const org = async (key, members, defaultLaunchConfig) => {
+    names[key] = `${key[0].toUpperCase()}${key.slice(1)} Org ${randomUUID().slice(0, 4)}`
+    ids[key] = (await gql('mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}', { input: {
+      name: names[key], description: `${key}.`, instructions: 'Plan.', handoffs: [], members, ...(defaultLaunchConfig ? { defaultLaunchConfig } : {}) } })).createAgentOrgDefinition.id
+  }
+  await org('launchOrg', [{ memberName: 'writer', ref: ids.writer, refType: 'AGENT', refScope: 'SHARED' },
+    { memberName: 'pair', ref: ids.pair, refType: 'AGENT_TEAM', refScope: 'SHARED' }], { runtimeKind: AGY, llmModelIdentifier: MODEL })
+  await org('hostOrg', [{ memberName: 'manager', ref: ids.manager, refType: 'AGENT', refScope: 'SHARED' }], null)
+}
+const address = (key) => `/${segment(names[key])}`
+/** The `launch_notes` sentence of the server's notes renderer for one skipped layer. */
+const noteText = ({ name, layer, runtime, model, detail, runsOn, origin, team = false }) => `${name}: its ${layer} default ${runtime ?? '(no runtime)'} / `
+  + `${model ?? '(no model)'} could not be used (${detail.replace(/\.$/, '')}); ${team ? 'its members without their own default run on' : 'it runs on'} ${runsOn} (${origin}).`
+const squadNotes = () => {
+  const runsOn = `${AGY} / ${MODEL}`
+  const inherited = 'inherited from the run'
+  return [
+    noteText({ name: names.squad, layer: 'team', runtime: AGY, model: TEAM_NOT_OFFERED, detail: `The model '${TEAM_NOT_OFFERED}' is not available on ${AGY}.`, runsOn, origin: inherited, team: true }),
+    noteText({ name: 'offline', layer: 'agent', runtime: 'codex_app_server', model: 'gpt-5.5', detail: `Codex App Server command '${missingCodex}' is not available.`, runsOn, origin: inherited }),
+    noteText({ name: 'unoffered', layer: 'agent', runtime: AGY, model: NOT_OFFERED, detail: `The model '${NOT_OFFERED}' is not available on ${AGY}.`, runsOn, origin: inherited }),
+    noteText({ name: 'badsettings', layer: 'agent', runtime: AGY, model: MODEL, detail: 'Its model settings are invalid: This model has no adjustable settings.', runsOn, origin: inherited }),
+    noteText({ name: 'incomplete', layer: 'agent', runtime: AGY, model: null, detail: 'It names no model.', runsOn, origin: inherited }),
+  ]
+}
+
+// ---------------------------------------------------------------------------------------------
+// Server reads (assertion readback only; every action goes through the UI)
+const agentTree = async (runId) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: runId })).agentRunCollaboration?.root_agent?.execution_tree
+const teamTree = async (teamRunId) => (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: teamRunId })).getTeamRunResumeConfig.executionTree
+const orgTree = async (orgRunId) => (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: orgRunId })).getAgentOrgRootHistory.org
+const teamCopies = (tree, key) => objectsIn(tree).filter((r) => pick(r, 'teamRunId') && pick(r, 'startedAt') && Array.isArray(r.members) && r.address === address(key))
+const membersOf = (copy) => Object.fromEntries(copy.members.map((m) => [String(m.address).split('/').pop(), pick(m, 'agentRunId')]))
+const collaboratorAt = (tree, key) => objectsIn(tree).find((r) => pick(r, 'addedViaAgentRunId') && r.address === address(key))
+const teamRunIds = async (teamDefinitionId) => {
+  const h = await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { teamDefinitions { teamDefinitionId runs { teamRunId } } } }')
+  return h.listWorkspaceRunHistory.flatMap((w) => w.teamDefinitions).filter((t) => t.teamDefinitionId === teamDefinitionId).flatMap((t) => t.runs.map((x) => x.teamRunId))
+}
+
+// ---------------------------------------------------------------------------------------------
+// Page helpers (the product's data-test attributes)
+const sel = (t) => `[data-test="${t}"]`
+const MODEL_ROW = 'button[role="menuitemradio"][data-test^="chat-model-option-"]'
+const settle = async (page, ms = 600) => { await delay(ms); await page.waitForLoadState('domcontentloaded').catch(() => {}) }
+const shot = async (page, name, width) => {
+  const before = page.viewportSize()
+  if (width) { await page.setViewportSize({ width, height: width < 600 ? 844 : 900 }); await delay(700) }
+  await page.screenshot({ path: path.join(outDir, `${name}.png`) })
+  if (width) { await page.setViewportSize(before); await delay(400) }
+}
+const chooseModel = async (page, scope, runtimeKind, model) => {
+  await scope.locator(sel('chat-model-trigger')).first().click()
+  await page.locator(sel('chat-model-menu')).first().waitFor()
+  await waitFor(`${runtimeKind} model list`, async () => {
+    if (await page.locator(sel(`chat-model-list-${runtimeKind}`)).isVisible().catch(() => false)) return true
+    await page.locator(sel(`chat-runtime-${runtimeKind}`)).hover(); await delay(300)
+    if (!(await page.locator(sel(`chat-model-list-${runtimeKind}`)).isVisible().catch(() => false))) await page.locator(sel(`chat-runtime-${runtimeKind}`)).click()
+    await delay(700)
+    return page.locator(sel(`chat-model-list-${runtimeKind}`)).isVisible().catch(() => false)
+  }, 120000, 500)
+  const row = page.locator(sel(`chat-model-list-${runtimeKind}`)).locator(`${MODEL_ROW}${sel(`chat-model-option-${model}`)}`).first()
+  await row.waitFor({ timeout: 60000 })
+  const runtimeRow = await page.locator(sel(`chat-runtime-${runtimeKind}`)).boundingBox({ timeout: 1000 }).catch(() => null)
+  const flyoutBox = await page.locator(sel(`chat-model-list-${runtimeKind}`)).boundingBox({ timeout: 1000 }).catch(() => null)
+  if (runtimeRow && flyoutBox && flyoutBox.x > runtimeRow.x) await page.mouse.move(flyoutBox.x + 12, Math.min(Math.max(runtimeRow.y + runtimeRow.height / 2, flyoutBox.y + 6), flyoutBox.y + flyoutBox.height - 6), { steps: 5 })
+  await row.click()
+  await settle(page, 500)
+}
+const openDrawer = async (page) => {
+  await page.locator(sel('run-members-open')).click()
+  const drawer = page.locator(sel('run-member-settings-drawer')); await drawer.waitFor(); await delay(500)
+  return drawer
+}
+const closeDrawer = async (drawer) => { await drawer.locator(sel('run-member-settings-done')).click(); await delay(500) }
+const memberRow = (root, addr) => root.locator(sel(`run-member-${addr}`)).first()
+const openMember = async (root, addr) => {
+  const row = memberRow(root, addr)
+  const toggle = row.locator(sel('run-member-toggle')).first()
+  if (await toggle.getAttribute('aria-expanded') !== 'true') await toggle.click()
+  await row.locator(sel('run-member-detail')).first().waitFor(); await delay(300)
+  return row
+}
+const rowState = async (root, addr) => {
+  const row = memberRow(root, addr)
+  return {
+    customized: await row.getAttribute('data-customized'),
+    summary: (await row.locator(sel('run-member-summary')).first().innerText()).replace(/\s+/g, ' '),
+    note: await row.locator(sel('run-member-launch-note')).first().innerText({ timeout: 1000 }).catch(() => null),
+  }
+}
+/** Agents / Agent Teams page → Run on the named card → a fresh New chat. */
+const newChatFor = async (page, route, name) => {
+  await page.goto(`${frontUrl}${route}`, { waitUntil: 'domcontentloaded' }); await settle(page, 1500)
+  const card = page.locator('main').getByText(name, { exact: true }).first()
+  await card.waitFor({ timeout: 120000 })
+  await card.locator('xpath=ancestor::*[.//button[normalize-space()="Run"]][1]').getByRole('button', { name: 'Run', exact: true }).first().click()
+  await page.locator(sel('chat-new')).waitFor({ timeout: 120000 }); await settle(page, 2500)
+}
+// Quotes in agent text are rendered typographically; compare on straight quotes.
+const normalized = (text) => text.replace(/[‘’]/g, "'").replace(/[“”]/g, '"')
+// Every main region (the conversation, and side panels such as Team messages that open beside it); only the
+// conversation carries the scripted agent's `CALLED:` answers.
+const conversationText = async (page) => normalized((await page.locator('main').allInnerTexts()).join('\n'))
+const calledCount = async (page) => (await conversationText(page)).split('CALLED:').length - 1
+/** Types into the visible composer and sends with Enter (the product's submit key). */
+const typeAndSend = async (page, text) => {
+  // New chat uses the chat composer; a run's conversation has its own composer: the visible message textarea either way.
+  const input = page.locator('main textarea:visible').last()
+  await input.waitFor({ timeout: 60000 }); await input.click(); await input.fill(text); await delay(200)
+  await input.press('Enter')
+}
+/** The user types a tool instruction for the scripted agent; returns the conversation text of its `CALLED:` answer. */
+const callFromComposer = async (page, label, tool, args) => {
+  const before = await calledCount(page)
+  await typeAndSend(page, callTool(tool, args))
+  await waitFor(`${label}: tool result in the conversation`, async () => (await calledCount(page)) > before, 120000, 1000)
+  const text = await conversationText(page)
+  const parts = text.split('CALLED:')
+  return parts[before + 1] ?? ''
+}
+/** Opens the conversation of an agent in the sidebar tree (a copy member, collaborator or helper) by its run ID. */
+const openSidebarAgent = async (page, agentRunId) => {
+  const row = page.locator(`${sel('workspace-team-transient-execution-row')}[data-agent-run-id="${agentRunId}"]`).first()
+  await waitFor(`sidebar row ${agentRunId}`, async () => {
+    if (await row.isVisible().catch(() => false)) return true
+    for (const toggle of await page.locator(`${sel('workspace-team-transient-disclosure')}`).all()) {
+      const holder = toggle.locator('xpath=ancestor::*[@aria-expanded][1]')
+      if (await holder.getAttribute('aria-expanded').catch(() => null) === 'false') await toggle.click().catch(() => {})
+    }
+    await expandWorkspaces(page)
+    return row.isVisible().catch(() => false)
+  }, 60000, 1500)
+  await row.click(); await settle(page, 2500)
+}
+const expandWorkspaces = async (page) => {
+  const folders = page.locator(sel('workspace-row'))
+  for (let i = 0; i < await folders.count(); i += 1) {
+    const row = folders.nth(i)
+    const expandable = row.locator('xpath=ancestor-or-self::*[@aria-expanded][1]')
+    if (await expandable.count() && await expandable.getAttribute('aria-expanded') === 'false') { await row.click(); await delay(500) }
+  }
+}
+const openAgentRun = async (page, runId) => {
+  await page.goto(`${frontUrl}/chat?id=${runId}`, { waitUntil: 'domcontentloaded' })
+  await page.locator('[data-testid="agent-workspace-surface"]').waitFor({ timeout: 120000 }); await settle(page, 2500)
+}
+const openTeamRun = async (page, teamRunId, teamDefinitionId) => {
+  await page.goto(`${frontUrl}/workspace`, { waitUntil: 'domcontentloaded' }); await settle(page, 2500)
+  const teamRow = page.locator(sel(`workspace-team-row-${teamRunId}`))
+  await waitFor('team run row', async () => {
+    if (await teamRow.isVisible().catch(() => false)) return true
+    await expandWorkspaces(page)
+    const definitionRow = page.locator(sel(`workspace-team-definition-row-${teamDefinitionId}`)).first()
+    if (await definitionRow.isVisible().catch(() => false) && await definitionRow.getAttribute('aria-expanded') !== 'true') await definitionRow.click()
+    return false
+  }, 60000, 1500)
+  await teamRow.click(); await settle(page, 2500)
+}
+const openSettings = async (page) => {
+  await page.locator(sel('workspace-header-edit-config')).click()
+  const view = page.locator(sel('existing-run-settings')); await view.waitFor({ timeout: 60000 }); await settle(page, 2000)
+  return view
+}
+const backToConversation = async (page) => {
+  const back = page.locator(sel('run-config-back-to-events'))
+  if (await back.isVisible().catch(() => false)) { await back.click(); await settle(page, 1200) }
+}
+/** The read-only Settings rows (RunDelegatedLaunchList) as rendered. */
+const delegatedRows = async (page) => {
+  const section = page.locator(sel('run-delegated-launches'))
+  await section.waitFor({ timeout: 60000 })
+  return section.locator('li[data-source]').evaluateAll((els) => els.map((el) => ({
+    test: el.getAttribute('data-test').replace('run-delegated-', ''),
+    member: el.classList.contains('pl-9'),
+    source: el.getAttribute('data-source'),
+    badge: el.querySelector('span.rounded-full')?.textContent?.trim() ?? null,
+    launch: el.querySelector('[data-test="run-delegated-launch"]')?.textContent?.replace(/\s+/g, ' ').trim() ?? '',
+    fallbacks: [...el.querySelectorAll('[data-test="run-delegated-fallback"]')].map((n) => n.textContent.replace(/\s+/g, ' ').trim()),
+  })))
+}
+const rowsAt = (rows, addr) => rows.filter((row) => row.test === addr)
+/** The Squad copy rows (AC-010, AC-005): the Team, its seven members, their sources and notes. */
+const assertSquadRows = (rows, label) => {
+  const squad = address('squad')
+  const team = rowsAt(rows, squad).find((row) => !row.member && row.badge === 'Delegated copy')
+  assert(team && team.source === 'inherited' && team.fallbacks.length === 1 && team.fallbacks[0].includes(TEAM_NOT_OFFERED)
+    && /not available/.test(team.fallbacks[0]) && team.launch.includes(MODEL_LABEL), `${label}: Squad Team row`, { team, rows })
+  const member = (name) => rowsAt(rows, `${squad}/${name}`).find((row) => row.member)
+  const m = Object.fromEntries(['lead', 'engineer', 'reviewer', 'offline', 'unoffered', 'badsettings', 'incomplete'].map((name) => [name, member(name)]))
+  assert(Object.values(m).every(Boolean), `${label}: Squad member rows`, { m, rows })
+  assert(m.engineer.source === 'agent_default' && /grok/i.test(m.engineer.launch) && m.engineer.fallbacks.length === 0, `${label}: engineer row (Grok, agent default)`, m.engineer)
+  assert(m.reviewer.source === 'agent_default' && m.reviewer.launch.includes(ALT_LABEL) && m.reviewer.fallbacks.length === 0, `${label}: reviewer row (ALT, agent default)`, m.reviewer)
+  // A member without its own default shows its Team's source (DS-005), here the skipped team default.
+  assert(m.lead.source === 'inherited' && m.lead.launch.includes(MODEL_LABEL) && JSON.stringify(m.lead.fallbacks) === JSON.stringify(team.fallbacks), `${label}: lead row (the Team's source)`, m.lead)
+  const own = (row, pattern) => row.source === 'inherited' && row.launch.includes(MODEL_LABEL) && row.fallbacks.length === 1 && pattern.test(row.fallbacks[0])
+  assert(own(m.offline, /gpt-5\.5.*is not available/), `${label}: offline row (Codex unavailable)`, m.offline)
+  assert(own(m.unoffered, new RegExp(`${NOT_OFFERED}.*not available`)), `${label}: unoffered row (model not offered)`, m.unoffered)
+  assert(own(m.badsettings, /settings are invalid/), `${label}: badsettings row (settings invalid)`, m.badsettings)
+  assert(own(m.incomplete, /names no model/), `${label}: incomplete row (incomplete default)`, m.incomplete)
+}
+const assertPairCollaboratorRows = (rows, label) => {
+  const pair = address('pair')
+  const team = rowsAt(rows, pair).find((row) => row.badge === 'Collaborator')
+  assert(team && team.source === 'team_default' && team.launch.includes(ALT_LABEL) && team.fallbacks.length === 0, `${label}: Pair collaborator Team row`, { team, rows })
+  const engineer = rowsAt(rows, `${pair}/engineer`).find((row) => row.source === 'agent_default')
+  const unoffered = rowsAt(rows, `${pair}/unoffered`).find((row) => row.source === 'team_default')
+  assert(engineer && /grok/i.test(engineer.launch), `${label}: Pair engineer row`, engineer)
+  assert(unoffered && unoffered.launch.includes(ALT_LABEL) && unoffered.fallbacks.length === 1 && unoffered.fallbacks[0].includes(NOT_OFFERED), `${label}: Pair unoffered row`, unoffered)
+}
+
+// ---------------------------------------------------------------------------------------------
+const cases = []
+const defineCase = (id, title, fn) => cases.push({ id, title, fn })
+
+defineCase('DLP-001', 'AC-011/AC-013: New chat for a Team seeds members from their defaults; root changes keep seeded rows; member change and reset; Run launches what is shown', async (page) => {
+  const r = {}
+  await newChatFor(page, '/agent-teams', names.build)
+  const composer = page.locator(sel('chat-composer'))
+  await chooseModel(page, composer, AGY, MODEL)
+  let drawer = await openDrawer(page)
+  await waitFor('engineer seeded', async () => (await rowState(drawer, '/engineer')).customized === 'true', 60000)
+  r.seeded = { lead: await rowState(drawer, '/lead'), engineer: await rowState(drawer, '/engineer'), reviewer: await rowState(drawer, '/reviewer'), unoffered: await rowState(drawer, '/unoffered') }
+  assert(r.seeded.engineer.customized === 'true' && /grok/i.test(r.seeded.engineer.summary), 'engineer seeded from its Grok default', r.seeded)
+  assert(r.seeded.reviewer.customized === 'true' && r.seeded.reviewer.summary.includes(ALT_LABEL), 'reviewer seeded from its ALT default', r.seeded)
+  assert(r.seeded.lead.customized === 'false' && r.seeded.lead.summary.includes(MODEL_LABEL) && r.seeded.lead.note === null, 'lead (no default) follows the root', r.seeded)
+  assert(r.seeded.unoffered.customized === 'false' && r.seeded.unoffered.note?.includes(NOT_OFFERED), 'unusable default: follows the root with a note', r.seeded)
+  await shot(page, 'DLP-001-new-chat-team-seeded-880', 880)
+  await shot(page, 'DLP-001-new-chat-team-seeded-390', 390)
+  await closeDrawer(drawer)
+  // AR-003: the root set to the reviewer's own model and back; the pinned reviewer keeps its own value.
+  await chooseModel(page, composer, AGY, ALT)
+  await chooseModel(page, composer, AGY, MODEL)
+  drawer = await openDrawer(page)
+  r.afterRootChanges = { lead: await rowState(drawer, '/lead'), engineer: await rowState(drawer, '/engineer'), reviewer: await rowState(drawer, '/reviewer') }
+  assert(r.afterRootChanges.reviewer.customized === 'true' && r.afterRootChanges.reviewer.summary.includes(ALT_LABEL) && r.afterRootChanges.engineer.customized === 'true'
+    && /grok/i.test(r.afterRootChanges.engineer.summary) && r.afterRootChanges.lead.customized === 'false' && r.afterRootChanges.lead.summary.includes(MODEL_LABEL), 'seeded rows kept through root changes', r.afterRootChanges)
+  const lead = await openMember(drawer, '/lead')
+  await chooseModel(page, lead, AGY, ALT)
+  await memberRow(drawer, '/reviewer').locator(sel('run-member-reset')).first().click(); await delay(600)
+  r.afterEdits = { lead: await rowState(drawer, '/lead'), reviewer: await rowState(drawer, '/reviewer'), engineer: await rowState(drawer, '/engineer') }
+  assert(r.afterEdits.lead.customized === 'true' && r.afterEdits.lead.summary.includes(ALT_LABEL) && r.afterEdits.reviewer.customized === 'false'
+    && r.afterEdits.reviewer.summary.includes(MODEL_LABEL) && r.afterEdits.engineer.customized === 'true', 'member change and reset', r.afterEdits)
+  await closeDrawer(drawer)
+  const before = new Set(await teamRunIds(ids.build))
+  await typeAndSend(page, 'Start the work.')
+  await page.waitForURL(/\/workspace/, { timeout: 180000 })
+  r.teamRunId = await waitFor('new team run', async () => (await teamRunIds(ids.build)).find((id) => !before.has(id)), 60000)
+  const tree = await teamTree(r.teamRunId)
+  r.members = Object.fromEntries((tree.root_team.members ?? []).map((m) => [m.address, lc(m.launch_configuration ?? m.launchConfiguration)]))
+  const want = { '/lead': { runtime: AGY, model: ALT }, '/engineer': { runtime: GROK, model: GROK_MODEL }, '/reviewer': { runtime: AGY, model: MODEL }, '/unoffered': { runtime: AGY, model: MODEL } }
+  assert(JSON.stringify(Object.fromEntries(Object.keys(want).map((k) => [k, r.members[k]]))) === JSON.stringify(want), 'launched team run is not what the form showed', { got: r.members, want })
+  return r
+})
+
+defineCase('DLP-002', 'AC-012: Org launch page seeds the placed team from its team default and agents from their agent defaults; Run launches what is shown', async (page) => {
+  const r = {}
+  await page.goto(`${frontUrl}/agent-orgs`, { waitUntil: 'domcontentloaded' }); await settle(page, 1500)
+  await page.locator(sel(`org-card-${ids.launchOrg}`)).getByRole('button', { name: 'Run', exact: true }).click()
+  await page.locator(sel('org-launch-page')).waitFor({ timeout: 120000 }); await settle(page, 3000)
+  r.root = (await page.locator(`${sel('org-launch-card')} ${sel('chat-model-trigger')}`).innerText()).replace(/\s+/g, ' ')
+  const drawer = await openDrawer(page)
+  await waitFor('writer seeded', async () => (await rowState(drawer, '/writer')).customized === 'true', 60000)
+  const toggle = memberRow(drawer, '/pair').locator(sel('run-member-toggle')).first()
+  if (await toggle.getAttribute('aria-expanded') !== 'true') { await toggle.click(); await delay(600) }
+  r.seeded = { writer: await rowState(drawer, '/writer'), pair: await rowState(drawer, '/pair'), pairLead: await rowState(drawer, '/pair/lead'),
+    pairEngineer: await rowState(drawer, '/pair/engineer'), pairUnoffered: await rowState(drawer, '/pair/unoffered') }
+  assert(r.root.includes(MODEL_LABEL), 'Org root seeded from the Org default', r.root)
+  assert(r.seeded.writer.customized === 'true' && r.seeded.writer.summary.includes(ALT_LABEL) && r.seeded.pair.customized === 'true' && r.seeded.pair.summary.includes(ALT_LABEL), 'writer and placed team seeded', r.seeded)
+  assert(r.seeded.pairEngineer.customized === 'true' && /grok/i.test(r.seeded.pairEngineer.summary), 'placed-team engineer seeded (Grok)', r.seeded)
+  assert(r.seeded.pairLead.customized === 'false' && r.seeded.pairUnoffered.customized === 'false' && r.seeded.pairUnoffered.note?.includes(NOT_OFFERED), 'unseeded team members follow the team; unusable default has a note', r.seeded)
+  await shot(page, 'DLP-002-org-launch-seeded-1280', 1280)
+  await shot(page, 'DLP-002-org-launch-seeded-390', 390)
+  await closeDrawer(drawer)
+  await page.locator(sel('org-launch-run')).click()
+  await page.waitForURL(/mode=active/, { timeout: 180000 }); await settle(page, 2500)
+  const params = new URL(page.url()).searchParams
+  r.orgRunId = params.get('runId') ?? params.get('rootRunId') ?? params.get('orgRunId')
+  const tree = (await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}', { id: r.orgRunId })).getAgentOrgRunConfig.executionTree
+  const root = tree.rootOrg ?? tree.root_org
+  const writer = root.members.find((m) => m.address === '/writer')
+  const pair = root.members.find((m) => m.address === '/pair')
+  r.launched = { root: lc(pick(root, 'defaultLaunchConfiguration')), writer: lc(pick(writer, 'launchConfiguration')), pair: lc(pick(pair, 'defaultLaunchConfiguration')),
+    pairMembers: Object.fromEntries(pair.members.map((m) => [m.address, lc(pick(m, 'launchConfiguration'))])) }
+  const alt = { runtime: AGY, model: ALT }
+  assert(JSON.stringify(r.launched) === JSON.stringify({ root: { runtime: AGY, model: MODEL }, writer: alt, pair: alt,
+    pairMembers: { '/pair/lead': alt, '/pair/engineer': { runtime: GROK, model: GROK_MODEL }, '/pair/unoffered': alt } }), 'launched Org run is not what the form showed', r.launched)
+  return r
+})
+
+/** New chat for the Manager on the given AGY model; the first message is sent; returns the new run ID. */
+const startManagerChat = async (page, model, firstMessage) => {
+  await newChatFor(page, '/agents', names.manager)
+  await chooseModel(page, page.locator(sel('chat-composer')), AGY, model)
+  await typeAndSend(page, firstMessage)
+  await page.waitForURL((u) => /\/chat\?id=/.test(u.toString()) && !/id=temp-/.test(u.toString()), { timeout: 180000 })
+  const runId = new URL(page.url()).searchParams.get('id')
+  await page.locator('[data-testid="agent-workspace-surface"]').waitFor({ timeout: 120000 }); await settle(page, 1500)
+  return runId
+}
+
+defineCase('DLP-003', 'AC-001/003/004/005/007/010: Manager chat from the UI; copy, bring-ins and extra copy from its composer; teammate, helper and Grok engineer from the copy lead\'s conversation; Settings rows', async (page) => {
+  const r = {}
+  r.runId = await startManagerChat(page, MODEL, 'Hello. Marker DLP-003.')
+  await waitFor('manager answered', async () => /DLP-003[\s\S]*OK/.test(await conversationText(page)), 60000)
+  // The Squad copy: the delegating conversation shows its five notes (AC-005).
+  r.squadCall = await callFromComposer(page, 'delegate Squad', 'delegate_task', { recipient_address: address('squad'), description: 'Squad work.' })
+  r.squadNotesShown = squadNotes().map((note) => r.squadCall.includes(note))
+  assert(r.squadCall.includes('"delegated":true') && r.squadNotesShown.every(Boolean), 'delegation result in the conversation lacks a note', { call: r.squadCall, expected: squadNotes() })
+  await shot(page, 'DLP-003-conversation-squad-notes-1280', 1280)
+  // Bring-ins: the Pair (its unoffered member falls back to the team default) and the Writer (usable default, no note).
+  r.pairCall = await callFromComposer(page, 'bring in Pair', 'send_message_to', { recipient_address: address('pair'), content: 'Pair work.' })
+  const pairNote = noteText({ name: 'unoffered', layer: 'agent', runtime: AGY, model: NOT_OFFERED, detail: `The model '${NOT_OFFERED}' is not available on ${AGY}.`, runsOn: `${AGY} / ${ALT}`, origin: 'its team default' })
+  assert(r.pairCall.includes('"accepted":true') && r.pairCall.includes('Launch configuration notes:') && r.pairCall.includes(pairNote), 'Pair bring-in note not shown', { call: r.pairCall, pairNote })
+  r.writerCall = await callFromComposer(page, 'bring in Writer', 'send_message_to', { recipient_address: address('writer'), content: 'Write.' })
+  assert(r.writerCall.includes('"accepted":true') && !r.writerCall.includes('Launch configuration notes'), 'Writer bring-in should carry no note', r.writerCall)
+  // AC-007: an extra copy at the Pair address reuses its record; no note.
+  r.extraCall = await callFromComposer(page, 'extra Pair copy', 'delegate_task', { recipient_address: address('pair'), description: 'Extra Pair work.' })
+  assert(r.extraCall.includes('"delegated":true') && !r.extraCall.includes('launch_notes'), 'extra copy should carry no note', r.extraCall)
+  await shot(page, 'DLP-003-conversation-bring-ins-1280', 1280)
+
+  // From the copy lead's own conversation (a copy member the user opens in the sidebar).
+  const tree = await agentTree(r.runId)
+  const squad = membersOf(teamCopies(tree, 'squad')[0])
+  r.squadMembers = squad
+  await openSidebarAgent(page, squad.lead)
+  r.teammateCall = await callFromComposer(page, 'teammate delegation', 'delegate_task', { recipient_address: `${address('squad')}/unoffered`, description: 'Teammate work.' })
+  assert(r.teammateCall.includes('"delegated":true') && !r.teammateCall.includes('launch_notes'), 'teammate delegation should repeat no note (AR-002)', r.teammateCall)
+  r.helperCall = await callFromComposer(page, 'helper bring-in', 'send_message_to', { recipient_address: address('badsettings'), content: 'Helper work.' })
+  const helperNote = noteText({ name: names.badsettings, layer: 'agent', runtime: AGY, model: MODEL, detail: 'Its model settings are invalid: This model has no adjustable settings.', runsOn: `${AGY} / ${MODEL}`, origin: 'inherited from the run' })
+  assert(r.helperCall.includes('"accepted":true') && r.helperCall.includes(helperNote), 'helper bring-in note not shown', { call: r.helperCall, helperNote })
+  r.helperAgainCall = await callFromComposer(page, 'helper again', 'send_message_to', { recipient_address: address('badsettings'), content: 'More helper work.' })
+  assert(r.helperAgainCall.includes('"accepted":true') && !r.helperAgainCall.includes('Launch configuration notes'), 'reused helper should carry no note', r.helperAgainCall)
+  r.engineerCall = await callFromComposer(page, 'message the Grok engineer', 'send_message_to', { recipient_address: `${address('squad')}/engineer`, content: 'Please list the directory.' })
+  assert(r.engineerCall.includes('"accepted":true'), 'message to the engineer not accepted', r.engineerCall)
+  await shot(page, 'DLP-003-copy-lead-conversation-1280', 1280)
+  // AC-001: the engineer answers on Grok (only the recorded Grok replay lists alpha.txt); it never started on AGY.
+  await openSidebarAgent(page, squad.engineer)
+  await waitFor('engineer Grok reply', async () => (await conversationText(page)).includes('alpha.txt'), 90000, 1500)
+  assert((await agyLaunchesOf(squad.engineer)).length === 0, 'the engineer started on AGY', await agyLaunchesOf(squad.engineer))
+  await shot(page, 'DLP-003-engineer-grok-reply-1280', 1280)
+
+  // Settings (AC-010).
+  await openAgentRun(page, r.runId)
+  const view = await openSettings(page)
+  r.rootEditable = await view.locator(sel('existing-run-root-card')).count()
+  r.rows = await delegatedRows(page)
+  assert(r.rootEditable === 1, 'the run root card is still shown', r)
+  assertSquadRows(r.rows, 'Agent run')
+  assertPairCollaboratorRows(r.rows, 'Agent run')
+  const writer = rowsAt(r.rows, address('writer'))[0]
+  assert(writer && writer.badge === 'Collaborator' && writer.source === 'agent_default' && writer.launch.includes(ALT_LABEL), 'Writer collaborator row', writer)
+  const extra = rowsAt(r.rows, address('pair')).find((row) => row.badge === 'Delegated copy')
+  const extraEngineer = rowsAt(r.rows, `${address('pair')}/engineer`).filter((row) => row.source === 'configured')
+  assert(extra && extra.source === 'configured' && extraEngineer.length === 1 && /grok/i.test(extraEngineer[0].launch), 'extra Pair copy rows (as configured; engineer on Grok)', { extra, extraEngineer })
+  const teammateRow = rowsAt(r.rows, `${address('squad')}/unoffered`).find((row) => !row.member && row.badge === 'Delegated copy')
+  assert(teammateRow && teammateRow.launch.includes(MODEL_LABEL), 'teammate copy row on its recorded (inherited) value', { teammateRow, rows: r.rows })
+  r.readOnly = await page.locator(`${sel('run-delegated-launches')} button, ${sel('run-delegated-launches')} input, ${sel('run-delegated-launches')} select`).count()
+  assert(r.readOnly === 0, 'delegated rows offer no controls', r.readOnly)
+  await shot(page, 'DLP-003-agent-run-settings-880', 880)
+  await shot(page, 'DLP-003-agent-run-settings-390', 390)
+  return r
+})
+
+defineCase('DLP-004', 'AC-010: Team run (New chat) and Org run (Org launch page) whose manager delegates the Squad and brings in the Pair from the composer: Settings lists the rows', async (page) => {
+  const r = {}
+  await newChatFor(page, '/agent-teams', names.home)
+  await chooseModel(page, page.locator(sel('chat-composer')), AGY, MODEL)
+  const before = new Set(await teamRunIds(ids.home))
+  await typeAndSend(page, callTool('delegate_task', { recipient_address: address('squad'), description: 'Squad work.' }))
+  await page.waitForURL(/\/workspace/, { timeout: 180000 })
+  r.teamRunId = await waitFor('new team run', async () => (await teamRunIds(ids.home)).find((id) => !before.has(id)), 60000)
+  await waitFor('Squad copy in the team run', async () => teamCopies(await teamTree(r.teamRunId), 'squad').length === 1, 120000, 1500)
+  await settle(page, 1500)
+  r.teamPairCall = await callFromComposer(page, 'team: bring in Pair', 'send_message_to', { recipient_address: address('pair'), content: 'Pair work.' })
+  assert(r.teamPairCall.includes('"accepted":true') && r.teamPairCall.includes('Launch configuration notes:'), 'team root: Pair bring-in note not shown', r.teamPairCall)
+  await openTeamRun(page, r.teamRunId, ids.home)
+  await openSettings(page)
+  r.teamRows = await delegatedRows(page)
+  assertSquadRows(r.teamRows, 'Team run')
+  assertPairCollaboratorRows(r.teamRows, 'Team run')
+  await shot(page, 'DLP-004-team-run-settings-880', 880)
+
+  await page.goto(`${frontUrl}/agent-orgs`, { waitUntil: 'domcontentloaded' }); await settle(page, 1500)
+  await page.locator(sel(`org-card-${ids.hostOrg}`)).getByRole('button', { name: 'Run', exact: true }).click()
+  await page.locator(sel('org-launch-page')).waitFor({ timeout: 120000 }); await settle(page, 2500)
+  await chooseModel(page, page.locator(sel('org-launch-card')), AGY, MODEL)
+  await page.locator(sel('org-launch-run')).click()
+  await page.waitForURL(/mode=active/, { timeout: 180000 }); await settle(page, 2500)
+  const params = new URL(page.url()).searchParams
+  r.orgRunId = params.get('runId') ?? params.get('rootRunId') ?? params.get('orgRunId')
+  await page.locator('[data-test^="agent-org-agent-row-"]').filter({ hasText: /manager/i }).first().click(); await settle(page, 2500)
+  r.orgSquadCall = await callFromComposer(page, 'org: delegate Squad', 'delegate_task', { recipient_address: address('squad'), description: 'Squad work.' })
+  assert(r.orgSquadCall.includes('"delegated":true') && squadNotes().every((note) => r.orgSquadCall.includes(note)), 'org root: Squad notes not shown', r.orgSquadCall)
+  r.orgPairCall = await callFromComposer(page, 'org: bring in Pair', 'send_message_to', { recipient_address: address('pair'), content: 'Pair work.' })
+  assert(r.orgPairCall.includes('"accepted":true') && r.orgPairCall.includes('Launch configuration notes:'), 'org root: Pair bring-in note not shown', r.orgPairCall)
+  await openSettings(page)
+  r.orgRows = await delegatedRows(page)
+  assertSquadRows(r.orgRows, 'Org run')
+  assertPairCollaboratorRows(r.orgRows, 'Org run')
+  await shot(page, 'DLP-004-org-run-settings-880', 880)
+  return r
+})
+
+defineCase('DLP-005', 'AC-006/REQ-004: the root model is retired mid-run; delegation and bring-in that need the inherited layer fail in the conversation with today\'s text and add nothing; an own usable default still works', async (page) => {
+  const r = {}
+  await offerAgyModels([MODEL, ALT, RETIRING])
+  r.runId = await startManagerChat(page, RETIRING, 'Hello. Marker DLP-005.')
+  await waitFor('manager answered', async () => /DLP-005[\s\S]*OK/.test(await conversationText(page)), 60000)
+  await offerAgyModels([MODEL, ALT])
+  const reason = `The model '${RETIRING}' is not available on ${AGY}.`
+  r.plainCall = await callFromComposer(page, 'delegate Plain', 'delegate_task', { recipient_address: address('plain'), description: 'Plain work.' })
+  assert(!r.plainCall.includes('"delegated":true') && r.plainCall.includes(`${names.plain} cannot be delegated to: ${reason}`), 'delegation failure text', { call: r.plainCall, reason })
+  r.squadCall = await callFromComposer(page, 'delegate Squad', 'delegate_task', { recipient_address: address('squad'), description: 'Squad work.' })
+  assert(!r.squadCall.includes('"delegated":true') && r.squadCall.includes(`${names.squad} cannot be delegated to: ${reason}`), 'team delegation failure text', r.squadCall)
+  r.bringCall = await callFromComposer(page, 'bring in Unoffered', 'send_message_to', { recipient_address: address('unoffered'), content: 'Help.' })
+  assert(r.bringCall.includes('"accepted":false') && r.bringCall.includes('COLLABORATOR_ADD_FAILED') && r.bringCall.includes(reason), 'bring-in failure text', r.bringCall)
+  const tree = await agentTree(r.runId)
+  assert(teamCopies(tree, 'squad').length === 0 && !collaboratorAt(tree, 'unoffered') && !objectsIn(tree).some((x) => x.address === address('plain')), 'a failed delegation or bring-in added something', tree)
+  r.ownCall = await callFromComposer(page, 'delegate Reviewer', 'delegate_task', { recipient_address: address('reviewer'), description: 'Review work.' })
+  assert(r.ownCall.includes('"delegated":true'), 'an own usable default should still delegate', r.ownCall)
+  await shot(page, 'DLP-005-conversation-failures-1280', 1280)
+  await openSettings(page)
+  r.rows = await delegatedRows(page)
+  assert(r.rows.length === 1 && r.rows[0].test === address('reviewer') && r.rows[0].source === 'agent_default' && r.rows[0].launch.includes(ALT_LABEL), 'Settings lists only the reviewer copy', r.rows)
+  await shot(page, 'DLP-005-settings-880', 880)
+  return r
+})
+
+/** Strips the new optional launch fields from Team records in saved run trees (the shape every pre-change run has). */
+const stripToPreChangeShape = async (teamRunIds) => {
+  const files = []
+  const visit = async (dir) => {
+    for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+      const file = path.join(dir, entry.name)
+      if (entry.isDirectory()) { if (!['agy-project', '.agents', 'db'].includes(entry.name)) await visit(file); continue }
+      if (!entry.isFile() || !/^(collaboration_tree|team_run_execution_tree|agent_org_run_execution_tree)\.json$/.test(entry.name)) continue
+      const text = await fs.readFile(file, 'utf8')
+      if (teamRunIds.some((id) => text.includes(id))) files.push(file)
+    }
+  }
+  await visit(dataRoot)
+  let stripped = 0
+  const stripTeam = (team) => {
+    if (!team || !('defaultLaunchConfiguration' in team)) return
+    delete team.defaultLaunchSource
+    for (const member of team.members) { delete member.launchConfiguration; delete member.launchSource }
+    stripped += 1
+  }
+  for (const file of files) {
+    const saved = JSON.parse(await fs.readFile(file, 'utf8'))
+    for (const entry of objectsIn(saved)) if (teamRunIds.includes(entry.teamRunId)) { stripTeam(entry); stripTeam(entry.source) }
+    await fs.writeFile(file, JSON.stringify(saved, null, 2))
+  }
+  return { files: files.map((f) => path.relative(dataRoot, f)), stripped }
+}
+
+defineCase('DLP-006', 'AC-009/QR-002: runs saved before this change (stripped while the backend is down, as after an upgrade) reopen: Settings shows "Source not recorded" and Team values; a copy member starts on the Team value', async (page) => {
+  const r = {}
+  r.runId = await startManagerChat(page, MODEL, callTool('delegate_task', { recipient_address: address('squad'), description: 'Squad work.' }))
+  await waitFor('Squad copy', async () => teamCopies(await agentTree(r.runId), 'squad').length === 1, 120000, 1500)
+  r.pairCall = await callFromComposer(page, 'bring in Pair', 'send_message_to', { recipient_address: address('pair'), content: 'Pair work.' })
+  await newChatFor(page, '/agent-teams', names.home)
+  await chooseModel(page, page.locator(sel('chat-composer')), AGY, MODEL)
+  const before = new Set(await teamRunIds(ids.home))
+  await typeAndSend(page, callTool('delegate_task', { recipient_address: address('squad'), description: 'Squad work.' }))
+  await page.waitForURL(/\/workspace/, { timeout: 180000 })
+  r.teamRunId = await waitFor('new team run', async () => (await teamRunIds(ids.home)).find((id) => !before.has(id)), 60000)
+  await waitFor('Squad copy in the team run', async () => teamCopies(await teamTree(r.teamRunId), 'squad').length === 1, 120000, 1500)
+  const agentRun = await agentTree(r.runId)
+  const agentCopy = teamCopies(agentRun, 'squad')[0]
+  const pair = collaboratorAt(agentRun, 'pair')
+  const teamCopy = teamCopies(await teamTree(r.teamRunId), 'squad')[0]
+  r.copies = { agentCopy: pick(agentCopy, 'teamRunId'), pair: pick(pair, 'teamRunId'), teamCopy: pick(teamCopy, 'teamRunId') }
+  r.agentCopyMembers = membersOf(agentCopy)
+  // The app is quit, its saved runs are in the pre-change shape, and it starts again.
+  await stopOwned(backend)
+  r.stripped = await stripToPreChangeShape(Object.values(r.copies))
+  assert(r.stripped.stripped >= 3, 'pre-change shape not applied', r.stripped)
+  backend = await startBackend('backend-restarted')
+  await openAgentRun(page, r.runId)
+  await openSettings(page)
+  r.agentRows = await delegatedRows(page)
+  const notRecorded = (rows, addr, label) => { const row = rowsAt(rows, addr).find((x) => !x.member); assert(row && row.source === 'not_recorded', `${label}: ${addr} source not recorded`, { row, rows }); return row }
+  notRecorded(r.agentRows, address('squad'), 'Agent run')
+  notRecorded(r.agentRows, address('pair'), 'Agent run')
+  const agentEngineer = rowsAt(r.agentRows, `${address('squad')}/engineer`).find((x) => x.member)
+  const pairEngineer = rowsAt(r.agentRows, `${address('pair')}/engineer`).find((x) => x.member)
+  assert(agentEngineer?.source === 'not_recorded' && agentEngineer.launch.includes(MODEL_LABEL), 'Agent run: copy engineer on the Team value, source not recorded', agentEngineer)
+  assert(pairEngineer?.source === 'not_recorded' && pairEngineer.launch.includes(ALT_LABEL), 'Agent run: Pair engineer on the Team value, source not recorded', pairEngineer)
+  await shot(page, 'DLP-006-agent-run-settings-not-recorded-880', 880)
+  // The copy member starts on the Team value (AGY, root model), not on its agent default.
+  await backToConversation(page)
+  await typeAndSend(page, 'Resume. Marker DLP-006.')
+  await waitFor('manager answered after restart', async () => /DLP-006[\s\S]*OK/.test(await conversationText(page)), 90000)
+  await openSidebarAgent(page, r.agentCopyMembers.lead)
+  r.toEngineer = await callFromComposer(page, 'pre-change copy: message engineer', 'send_message_to', { recipient_address: `${address('squad')}/engineer`, content: 'Old-shape work.' })
+  assert(r.toEngineer.includes('"accepted":true'), 'message to the engineer not accepted', r.toEngineer)
+  await waitFor('engineer started on AGY', async () => (await agyLaunchesOf(r.agentCopyMembers.engineer)).length > 0, 90000, 1000)
+  r.engineerLaunches = await agyLaunchesOf(r.agentCopyMembers.engineer)
+  assert(JSON.stringify(r.engineerLaunches) === JSON.stringify([MODEL]), 'pre-change copy engineer did not start on the Team value', r.engineerLaunches)
+  await openTeamRun(page, r.teamRunId, ids.home)
+  await openSettings(page)
+  r.teamRows = await delegatedRows(page)
+  notRecorded(r.teamRows, address('squad'), 'Team run')
+  const teamEngineer = rowsAt(r.teamRows, `${address('squad')}/engineer`).find((x) => x.member)
+  assert(teamEngineer?.source === 'not_recorded' && teamEngineer.launch.includes(MODEL_LABEL), 'Team run: copy engineer on the Team value', teamEngineer)
+  await shot(page, 'DLP-006-team-run-settings-not-recorded-880', 880)
+  return r
+})
+
+defineCase('DLP-007', 'AC-008/DEC-008: copy A; the engineer\'s default edited in the Agents editor; copy B; Settings shows each copy\'s recorded values; stop and reopen from the UI; copy A\'s engineer then starts on Grok', async (page) => {
+  const r = {}
+  r.runId = await startManagerChat(page, MODEL, callTool('delegate_task', { recipient_address: address('squad'), description: 'Copy A work.' }))
+  await waitFor('copy A', async () => teamCopies(await agentTree(r.runId), 'squad').length === 1, 120000, 1500)
+  const copyA = membersOf(teamCopies(await agentTree(r.runId), 'squad')[0])
+  // The user edits the engineer's default launch in the Agents editor: AGY with the ALT model.
+  await page.goto(`${frontUrl}/agents?view=edit&id=${encodeURIComponent(ids.engineer)}`, { waitUntil: 'domcontentloaded' }); await settle(page, 3000)
+  await page.locator('#agent-definition-runtime-kind').waitFor({ timeout: 60000 })
+  await page.locator('#agent-definition-runtime-kind').selectOption(AGY); await settle(page, 1500)
+  const modelField = page.locator('label', { hasText: /^Model$/ }).first().locator('xpath=..')
+  await modelField.locator('button[aria-haspopup="listbox"], button').first().click(); await delay(800)
+  await page.locator('[role="option"]').filter({ hasText: ALT_LABEL }).first().click(); await delay(500)
+  await page.locator('form button[type="submit"]').last().click()
+  r.savedDefault = await waitFor('engineer default saved', async () => {
+    const saved = (await gql('query($id:String!){agentDefinition(id:$id){defaultLaunchConfig{runtimeKind llmModelIdentifier}}}', { id: ids.engineer })).agentDefinition?.defaultLaunchConfig
+    return saved?.runtimeKind === AGY && saved?.llmModelIdentifier === ALT ? saved : null
+  }, 60000, 1000)
+  await openAgentRun(page, r.runId)
+  r.copyBCall = await callFromComposer(page, 'delegate copy B', 'delegate_task', { recipient_address: address('squad'), description: 'Copy B work.' })
+  assert(r.copyBCall.includes('"delegated":true'), 'copy B not delegated', r.copyBCall)
+  let view = await openSettings(page)
+  r.rowsBefore = await delegatedRows(page)
+  const engineers = (rows) => rowsAt(rows, `${address('squad')}/engineer`).filter((x) => x.member)
+  const showsCopies = (rows) => { const e = engineers(rows); return e.length === 2 && e.some((x) => /grok/i.test(x.launch)) && e.some((x) => x.launch.includes(ALT_LABEL) && x.source === 'agent_default') }
+  assert(showsCopies(r.rowsBefore), 'Settings: copy A engineer on Grok and copy B engineer on ALT', engineers(r.rowsBefore))
+  // Stop the run from Settings, then reopen it by sending a message.
+  await view.locator(sel('existing-run-stop')).click()
+  await waitFor('run stopped', async () => /Stopped/.test(await view.locator(sel('run-subject-status')).innerText()), 120000, 1000)
+  await shot(page, 'DLP-007-settings-stopped-880', 880)
+  await backToConversation(page)
+  await typeAndSend(page, 'Resume. Marker DLP-007.')
+  await waitFor('manager answered after reopen', async () => /DLP-007[\s\S]*OK/.test(await conversationText(page)), 90000)
+  view = await openSettings(page)
+  r.rowsAfter = await delegatedRows(page)
+  assert(showsCopies(r.rowsAfter), 'Settings after reopen keeps the recorded values', engineers(r.rowsAfter))
+  // Copy A's engineer (never started) starts on Grok, its recorded value, not on the edited default.
+  await backToConversation(page)
+  await openSidebarAgent(page, copyA.lead)
+  r.toEngineer = await callFromComposer(page, 'copy A: message engineer', 'send_message_to', { recipient_address: `${address('squad')}/engineer`, content: 'Please list the directory.' })
+  assert(r.toEngineer.includes('"accepted":true'), 'message to copy A engineer not accepted', r.toEngineer)
+  await openSidebarAgent(page, copyA.engineer)
+  await waitFor('copy A engineer Grok reply', async () => (await conversationText(page)).includes('alpha.txt'), 90000, 1500)
+  assert((await agyLaunchesOf(copyA.engineer)).length === 0, 'copy A engineer started on AGY', await agyLaunchesOf(copyA.engineer))
+  await shot(page, 'DLP-007-copy-a-engineer-grok-after-reopen-1280', 1280)
+  return r
+})
+
+// ---------------------------------------------------------------------------------------------
+let exitCode = 0
+try {
+  assert(chrome && existsSync(chrome), 'Google Chrome not found (use --browser-executable)')
+  assert(existsSync(path.join(serverDir, 'dist/app.js')), 'Build the server first: pnpm -C autobyteus-server-ts build')
+  assert(!existsSync(outDir), `Output directory exists; pass a fresh --output-dir (${outDir})`)
+  await fs.mkdir(outDir, { recursive: true })
+  ownedRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'delegated-launch-defaults-'))
+  dataRoot = path.join(ownedRoot, 'server-data')
+  workspace = path.join(ownedRoot, 'workspace')
+  const home = path.join(ownedRoot, 'home')
+  const toolsDir = path.join(ownedRoot, 'tools')
+  for (const dir of [path.join(dataRoot, 'db'), workspace, home, toolsDir]) await fs.mkdir(dir, { recursive: true })
+  missingCodex = path.join(ownedRoot, 'missing', 'codex')
+  argvLog = path.join(ownedRoot, 'agy-argv.jsonl')
+  agyModelsFile = path.join(toolsDir, 'agy-models.tsv')
+  await offerAgyModels([MODEL, ALT])
+  const agy = path.join(toolsDir, 'agy')
+  await fs.writeFile(agy, `#!/bin/sh\nif [ "$1" = "models" ]; then cat "${agyModelsFile}"; exit 0; fi\nexec "${process.execPath}" "${path.join(serverDir, 'tests/fixtures/agy-failure-cli.mjs')}" "$@"\n`, { mode: 0o755 })
+  const grok = path.join(toolsDir, 'grok')
+  await fs.writeFile(grok, `#!/bin/sh\nexec "${process.execPath}" "${path.join(serverDir, 'tests/fixtures/grok-acp/fake-grok-cli.mjs')}" "$@"\n`, { mode: 0o755 })
+  dbUrl = pathToFileURL(path.join(dataRoot, 'db', 'probe.db')).href
+  backendPort = await freePort(); const frontendPort = await freePort()
+  backendUrl = `http://127.0.0.1:${backendPort}`; frontUrl = `http://127.0.0.1:${frontendPort}`
+  Object.assign(evidence, { ownedRoot, backendUrl, frontUrl })
+  await fs.writeFile(path.join(dataRoot, '.env'), `APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${dbUrl}\nAUTOBYTEUS_SERVER_HOST=${backendUrl}\n`)
+  await new Promise((resolve, reject) => {
+    const child = spawn('pnpm', ['exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'], { cwd: serverDir, env: { ...baseEnv(), DATABASE_URL: dbUrl, DB_TYPE: 'sqlite', APP_ENV: 'development' }, stdio: 'ignore' })
+    child.once('exit', (code) => (code === 0 ? resolve() : reject(new Error(`prisma migrate deploy exited ${code}`))))
+  })
+  Object.assign(backendEnv, {
+    ...baseEnv(), HOME: home, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, DISABLE_HTTP_REQUEST_LOGS: 'true',
+    ANTIGRAVITY_CLI_COMMAND: agy, AGY_FAKE_CASE: 'linked_skills', AGY_FAKE_ARGV_LOG: argvLog,
+    GROK_BUILD_COMMAND: grok, FAKE_ACP_FIXTURE: path.join(serverDir, 'tests/fixtures/grok-acp/prompt.jsonl'), FAKE_ACP_REPORT_MCP_READY: '1',
+    CODEX_APP_SERVER_COMMAND: missingCodex,
+  })
+  backend = await startBackend('backend')
+  await seed()
+  evidence.definitions = { ids, names }
+  spawnOwned('frontend', 'pnpm', ['dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...baseEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: backendUrl })
+  await waitFor('Nuxt dev', async () => (await fetch(`${frontUrl}/chat`, { signal: AbortSignal.timeout(5000) })).ok, 240000, 1000)
+  browser = await chromium.launch({ headless: true, executablePath: chrome, args: ['--no-sandbox'] })
+  const context = await browser.newContext({ viewport: { width: 1512, height: 952 }, locale: 'en-US' })
+  const page = await context.newPage(); page.setDefaultTimeout(30000)
+  const browserErrors = []; page.on('pageerror', (e) => browserErrors.push(e.message)); evidence.browserErrors = browserErrors
+  // Warm up Nuxt's dependency optimizer (a cold optimize reload would otherwise disrupt the first journey).
+  for (const route of ['/chat', '/agents', '/agent-teams', '/agent-orgs', '/workspace']) {
+    await page.goto(`${frontUrl}${route}`, { waitUntil: 'domcontentloaded' }).catch(() => {}); await delay(4000)
+  }
+  browserErrors.length = 0
+  for (const c of cases) {
+    if (onlyCases && !onlyCases.includes(c.id)) continue
+    const started = Date.now()
+    const errorsBefore = browserErrors.length
+    try {
+      const details = await c.fn(page, context)
+      const errors = browserErrors.slice(errorsBefore)
+      assert(errors.length === 0, `browser errors during ${c.id}`, errors)
+      evidence.cases[c.id] = { title: c.title, result: 'Pass', ms: Date.now() - started, details }
+    } catch (error) {
+      exitCode = 1
+      await page.screenshot({ path: path.join(outDir, `${c.id}-failure.png`) }).catch(() => {})
+      evidence.cases[c.id] = { title: c.title, result: 'Fail', ms: Date.now() - started, error: error.message, details: error.details ?? null }
+    }
+    const outcome = evidence.cases[c.id]
+    console.log(`${c.id} ${outcome.result} ${c.title}${outcome.error ? ` — ${outcome.error}` : ''}`)
+    await fs.writeFile(path.join(outDir, 'delegated-launch-defaults-evidence.json'), JSON.stringify(evidence, null, 2))
+  }
+  const results = Object.values(evidence.cases).map((outcome) => outcome.result)
+  evidence.summary = { pass: results.filter((x) => x === 'Pass').length, fail: results.filter((x) => x === 'Fail').length }
+  console.log(`Summary: ${evidence.summary.pass} Pass, ${evidence.summary.fail} Fail`)
+} catch (error) {
+  exitCode = 1
+  evidence.fatal = String(error?.stack ?? error)
+  console.error(`[delegated-launch-defaults] ${error.message}`)
+} finally {
+  await browser?.close().catch(() => {})
+  for (const child of owned.reverse()) evidence.cleanup.push({ pid: child.pid, stop: await stopOwned(child) })
+  if (ownedRoot && !keep) { await fs.rm(ownedRoot, { recursive: true, force: true }); evidence.cleanup.push({ removed: ownedRoot }) }
+  evidence.completedAt = new Date().toISOString()
+  await fs.mkdir(outDir, { recursive: true })
+  await fs.writeFile(path.join(outDir, 'delegated-launch-defaults-evidence.json'), JSON.stringify(evidence, null, 2))
+  process.exitCode = exitCode
+}

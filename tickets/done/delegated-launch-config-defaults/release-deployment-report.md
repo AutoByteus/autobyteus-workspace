@@ -1,0 +1,172 @@
+# Delivery / Release / Deployment Report
+
+## Release / Publication / Deployment Scope
+
+- Ticket `delegated-launch-config-defaults`: `task_size=Large`, `architectural_risk=High`, reviewed route.
+- Scope: finalize into `personal`. Any release (none, beta or stable) is the user's decision at verification, per `RELEASE.md`.
+- Decision: the user asked for finalization and a new beta on 2026-10-12. The beta is `v1.5.3-beta.1`, the next beta after stable `v1.5.2`.
+
+## Project Release Guide
+
+- Release guide path and revision: `RELEASE.md` at `3514fe48e` (arrived with the DR-001 base merge).
+- Deviations from the guide and why: None so far.
+- Proposed guide fixes, and whether the user agreed:
+  - "Never commit build output: `*/dist/` …" is wrong for `autobyteus-agent-presentation-contracts`, `autobyteus-team-stream-contracts` and `autobyteus-collaboration-stream-contracts`. These packages track their `dist/` and their consumers import it.
+  - Proposed: add an exception naming these three packages. Their rebuilt `dist/` must be committed with source changes, the same as the `TESTING.md` fix in this ticket.
+  - Asked at verification; not agreed yet.
+
+## Handoff Summary
+
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/done/delegated-launch-config-defaults/handoff-summary.md`
+- Handoff summary status: `Updated`
+- Delivery revision record: `delivery-revision-record.md`
+- Current delivery revision ID: `DR-002`
+
+## Initial Delivery Integration Refresh
+
+- Bootstrap base reference: `origin/personal` @ `beb6b3b49`
+- Latest tracked remote base reference checked: `origin/personal` @ `3514fe48e` (fetched 2026-10-12)
+- Base advanced since bootstrap: `Yes` (remote-provider removal, `v1.5.2-beta.1/2` version bumps, `RELEASE.md`, Windows-path hygiene check, `TESTING.md` local-model note)
+- New base commits integrated into the ticket branch: `Yes`
+- Local checkpoint commit result: `Completed` (`a33d8ad66`, explicit paths only: durable tests, `autobyteus-web/package.json`, review and validation records)
+- Integration method: `Merge` (`c421f5b86`)
+- Integration result: `Completed`. No conflicts. The only file changed on both sides is `autobyteus-web/package.json` (base version bump and the ticket's probe script), and the merge combined both.
+- Post-integration executable checks rerun: `Yes`. See Verification Checks.
+- Post-integration verification result: `Passed`
+- Delivery edits started only after integrated state was current: `Yes`
+- Handoff state current with latest tracked remote base: `Yes` (DR-001)
+
+### DR-002 Re-integration
+
+- Trigger: the round-3 upstream update (API-REV-003, CRR-005) arrived, and `origin/personal` advanced to `449d639de`.
+- Delivery-owned edits protected before re-integration: `Completed`.
+  - `39925ea16`: round-3 checkpoint, explicit paths.
+  - `02de957e0`: docs.
+  - `44441f4ab`: `docs(testing)`.
+  - `74f5b8efd`: the DR-001 records.
+- Integration method: `Merge` (`7f750e1e5`). There were no conflicts.
+  - Files changed on both sides: `TESTING.md`, the web `settings.md`, `generated/graphql.ts` (both query changes kept) and `autobyteus-web/package.json`.
+  - Rebuilding the three contract packages left no `dist/` diff.
+- Post-integration checks: all 16 passed (`delivery-evidence/dr-002/`). See Verification Checks.
+
+### DR-002 Finalization Re-integration
+
+- At the finalization fetch, `origin/personal` had advanced again, to `4d315fd24` (`agent-package-auto-refresh`).
+- Delivery-owned edits protected before re-integration: `Completed`. Everything was committed, including the archive commit `68febeb64`.
+- Re-integration: `Merge` (`f3760a679`). There were no conflicts.
+  - Overlapping files: six docs, `generated/graphql.ts` and `agentOrgDefinitionQueries.ts`.
+  - Our doc sections were kept. The base's agent-package docs sit in other sections.
+  - No source file of this ticket changed in the base.
+- Checks (`delivery-evidence/dr-002/final-merge/`): 15 of 16 passed on the first run.
+  - Server unit failed once: `run-file-change-service.test.ts` › "projects FILE_CHANGE events…" timed out waiting for live projection status.
+  - Neither this ticket nor the merged base touched that test or its source; the last change was `061d4698b`, 2026-10-06.
+  - It passed 5/5 alone, and the full suite rerun passed: 679 files, 5357 passed, 7 skipped.
+  - Classified as a load-timing flake, not a regression.
+- Other results:
+  - ticket server E2E: 3/3;
+  - browser probe: 7/7;
+  - web: 610 files, 4236 passed;
+  - contracts: 13/24/17;
+  - web guards, licensing and hygiene: pass.
+- The user's acceptance stands, because the re-integration changed no behavior of this ticket. No renewed verification was required.
+
+## User Verification
+
+- Initial explicit user completion/verification received: `Yes`. The user's instruction is the acceptance.
+- Initial verification / acceptance reference: the user, 2026-10-12: "now finalize and release a new beta."
+  - The AC-015 result with the user's own definitions was not separately reported.
+  - AC-015's setup was proven by ISO-001 with real runtimes.
+- Renewed verification required after later re-integration: `No`.
+  - The instruction came after the DR-002 re-integration had started; the user had seen the DR-002 status.
+  - The re-integration changed no product behavior of this ticket. All checks passed.
+
+## Docs Sync Result
+
+- Docs sync artifact: `docs-sync-report.md`
+- Docs sync result: `Updated`
+- Docs updated:
+  - Server modules: `agent_communication.md`, `agent_tools.md`, `agent_definition.md`, `agent_team_definition.md`, `agent_orgs.md`, `run_history.md`.
+  - Web: `agent_teams.md`, `agent_orgs.md`, `settings.md`.
+  - `TESTING.md`, which will be its own `docs(testing)` commit.
+
+## Ticket State Transition
+
+- Ticket moved to `tickets/done/delegated-launch-config-defaults`: `Yes`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/done/delegated-launch-config-defaults` (in the repository: `tickets/done/delegated-launch-config-defaults/`)
+
+## Version / Tag / Release Commit
+
+- Pending the user's release decision. The next beta would be `v1.5.2-beta.3` (`scripts/release_versions.py next-beta`).
+
+## Repository Finalization
+
+- Bootstrap context source: the ticket branch's recorded base and `RELEASE.md` → Finalization Target.
+- Ticket branch: `codex/delegated-launch-config-defaults` (local)
+- Finalization target: `origin` / `personal`, through `finalize/delegated-launch-config-defaults` with `--no-ff`, per `RELEASE.md`.
+- Repository finalization status: not started (waiting for verification).
+
+## Release / Publication / Deployment
+
+- Applicable: pending the user's decision.
+- Release notes: `release-notes.md` prepared before verification.
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults`
+- Planned after finalization: remove the worktree, prune, and delete the local ticket and finalize branches. Also remove `/tmp/dlcd-ac015-agents` (the verification copy of the agent package).
+
+## Release Notes Summary
+
+- Release notes artifact created before verification: `tickets/done/delegated-launch-config-defaults/release-notes.md`
+- Release notes status: `Updated`
+
+## Environment Or Persisted-Data Transition Notes
+
+- Approved persisted-data decision: `Directly Usable — No Migration` (optional fields with truthful absence).
+- Delivery action required: `None`.
+- Result and evidence: AC-009 is covered by the durable server E2E (pre-change saved tree restores on the Team value), rerun in DR-001.
+
+## Verification Checks
+
+DR-002, on the merged state `7f750e1e5`. Logs and probe screenshots are in `delivery-evidence/dr-002/`. All 16 checks passed:
+
+- `autobyteus-ts` build;
+- server prebuild, typecheck and build;
+- server unit: 673 files, 5291 passed, 7 skipped;
+- contracts: team 13/13, collaboration 24/24, presentation 17/17;
+- ticket server E2E (scripted AGY, clean env): 3/3;
+- real-UI browser probe `pnpm -C autobyteus-web test:e2e:delegated-launch-defaults --output-dir <fresh>`: DLP-001..007, 7 Pass, 0 Fail;
+- web `test:nuxt`: 605 files, 4216 passed, 3 skipped;
+- the three web guards;
+- licensing and path hygiene.
+
+DR-001, on the merged state `c421f5b86` with the delivery docs edits present (docs only). Logs are in `delivery-evidence/dr-001/`.
+
+| Check | Command | Result |
+| --- | --- | --- |
+| Core build | `pnpm -C autobyteus-ts build` | Pass |
+| Server prebuild / typecheck / build | `pnpm -C autobyteus-server-ts prebuild`, `typecheck`, `build` | Pass |
+| Server unit | `pnpm -C autobyteus-server-ts test:unit` | 671 files passed, 4 skipped; 5265 tests passed, 7 skipped |
+| Ticket server E2E | `env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts --no-watch` | 3/3 |
+| Contracts | `pnpm -C autobyteus-team-stream-contracts test`, `pnpm -C autobyteus-collaboration-stream-contracts test` | 11/11, 24/24 |
+| Web | `pnpm -C autobyteus-web test:nuxt --run` | 605 files passed, 2 skipped; 4199 tests passed, 3 skipped |
+| Web guards | `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | Pass |
+| Before tagging | `python3 scripts/check_licensing.py`, `python3 scripts/check_repository_artifact_hygiene.py` | Pass. The longest tracked path is exactly 200 characters, from an older ticket |
+
+Server unit counts are lower than API/E2E's 5277 because the base removed the remote-provider tests. No test failed.
+
+## Rollback Criteria
+
+- Before the merge: drop the local branch; nothing is published.
+- After the merge: revert the `--no-ff` merge commit on `personal`. The persisted fields are optional, so records written by this build stay readable by the reverted build, which ignores unknown keys. Members of such copies then restore on their Team value.
+- After a release: fix forward with the next version; never move a published tag.
+
+## Final Status
+
+- Explicit user testing/verification complete: `No`
+- Repository finalization complete: `No`
+- Applicable release/deployment/rollout complete or not required: `No` (pending decision)
+- Applicable safe cleanup complete or not required: `No`
+- Unresolved blocker: None. Waiting for user verification.
+- Successful terminal package eligible for return: `No`
+- Terminal package sent to `/solution_designer`: `No`

@@ -1,0 +1,128 @@
+{
+  "startedAt": "2026-10-12T11:40:44.334Z",
+  "cases": {
+    "DLP-003": {
+      "title": "AC-001/003/004/005/007/010: Manager chat from the UI; copy, bring-ins and extra copy from its composer; teammate, helper and Grok engineer from the copy lead's conversation; Settings rows",
+      "result": "Fail",
+      "ms": 131563,
+      "error": "Timed out waiting for bring in Pair: tool result in the conversation",
+      "details": null
+    },
+    "DLP-004": {
+      "title": "AC-010: Team run (New chat) and Org run (Org launch page) whose manager delegates the Squad and brings in the Pair from the composer: Settings lists the rows",
+      "result": "Fail",
+      "ms": 130614,
+      "error": "Timed out waiting for team: bring in Pair: tool result in the conversation",
+      "details": null
+    },
+    "DLP-005": {
+      "title": "AC-006/REQ-004: the root model is retired mid-run; delegation and bring-in that need the inherited layer fail in the conversation with today's text and add nothing; an own usable default still works",
+      "result": "Pass",
+      "ms": 17324,
+      "details": {
+        "runId": "manager_521f_0106f792d65f4972b0e476f569ad4b2c",
+        "plainCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": false,\\n \"message\": \"Plain 91a2 cannot be delegated to: The model 'dlc-retiring-model' is not available on antigravity_cli.\"\\n}\"}],\"structuredContent\":{\"delegated\":false,\"message\":\"Plain 91a2 cannot be delegated to: The model 'dlc-retiring-model' is not available on antigravity_cli.\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nBackground Tasks\n0 running · 0 total\nActivity\n0 Events\nNo activity history yet.",
+        "squadCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": false,\\n \"message\": \"Squad Team 77a5 cannot be delegated to: The model 'dlc-retiring-model' is not available on antigravity_cli.\"\\n}\"}],\"structuredContent\":{\"delegated\":false,\"message\":\"Squad Team 77a5 cannot be delegated to: The model 'dlc-retiring-model' is not available on antigravity_cli.\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nBackground Tasks\n0 running · 0 total\nActivity\n0 Events\nNo activity history yet.",
+        "bringCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":false,\"code\":\"COLLABORATOR_ADD_FAILED\",\"message\":\"Unoffered 47de could not be added: The model 'dlc-retiring-model' is not available on antigravity_cli.\",\"target_agent_run_id\":null}\"}],\"structuredContent\":{\"accepted\":false,\"code\":\"COLLABORATOR_ADD_FAILED\",\"message\":\"Unoffered 47de could not be added: The model 'dlc-retiring-model' is not available on antigravity_cli.\",\"target_agent_run_id\":null},\"isError\":true}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nBackground Tasks\n0 running · 0 total\nActivity\n0 Events\nNo activity history yet.",
+        "ownCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"reviewer_f8db_649eab808a914230a696fd6a0ef6a103\",\\n \"task_id\": \"ad_hoc_task_4f4bb811-240a-4cc9-97c1-39f52a77a6f5\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"reviewer_f8db_649eab808a914230a696fd6a0ef6a103\",\"task_id\":\"ad_hoc_task_4f4bb811-240a-4cc9-97c1-39f52a77a6f5\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "rows": [
+          {
+            "test": "/reviewer_f8db",
+            "member": false,
+            "source": "agent_default",
+            "badge": "Delegated copy",
+            "launch": "Alt test model · Antigravity·Agent default",
+            "fallbacks": []
+          }
+        ]
+      }
+    },
+    "DLP-006": {
+      "title": "AC-009/QR-002: runs saved before this change (stripped while the backend is down, as after an upgrade) reopen: Settings shows \"Source not recorded\" and Team values; a copy member starts on the Team value",
+      "result": "Fail",
+      "ms": 128867,
+      "error": "Timed out waiting for bring in Pair: tool result in the conversation",
+      "details": null
+    },
+    "DLP-007": {
+      "title": "AC-008/DEC-008: copy A; the engineer's default edited in the Agents editor; copy B; Settings shows each copy's recorded values; stop and reopen from the UI; copy A's engineer then starts on Grok",
+      "result": "Fail",
+      "ms": 151723,
+      "error": "Timed out waiting for copy A: message engineer: tool result in the conversation",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 41875
+    },
+    {
+      "label": "frontend",
+      "pid": 41912
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 41912,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 41875,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-uCchuv"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-uCchuv",
+  "backendUrl": "http://127.0.0.1:57062",
+  "frontUrl": "http://127.0.0.1:57063",
+  "definitions": {
+    "ids": {
+      "manager": "manager-521f",
+      "lead": "lead-4b4b",
+      "worker": "worker-019f",
+      "plain": "plain-91a2",
+      "engineer": "engineer-f8c0",
+      "reviewer": "reviewer-f8db",
+      "writer": "writer-c68b",
+      "offline": "offline-48a5",
+      "unoffered": "unoffered-47de",
+      "badsettings": "badsettings-e61d",
+      "incomplete": "incomplete-b7a9",
+      "build": "build-team-edad",
+      "pair": "pair-team-65cc",
+      "squad": "squad-team-77a5",
+      "home": "home-team-fc31",
+      "launchOrg": "launchorg-org-bf21",
+      "hostOrg": "hostorg-org-9e88"
+    },
+    "names": {
+      "manager": "Manager 521f",
+      "lead": "Lead 4b4b",
+      "worker": "Worker 019f",
+      "plain": "Plain 91a2",
+      "engineer": "Engineer f8c0",
+      "reviewer": "Reviewer f8db",
+      "writer": "Writer c68b",
+      "offline": "Offline 48a5",
+      "unoffered": "Unoffered 47de",
+      "badsettings": "Badsettings e61d",
+      "incomplete": "Incomplete b7a9",
+      "build": "Build Team edad",
+      "pair": "Pair Team 65cc",
+      "squad": "Squad Team 77a5",
+      "home": "Home Team fc31",
+      "launchOrg": "LaunchOrg Org bf21",
+      "hostOrg": "HostOrg Org 9e88"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 4
+  },
+  "completedAt": "2026-10-12T11:50:39.665Z"
+}

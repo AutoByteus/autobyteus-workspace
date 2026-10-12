@@ -13,27 +13,70 @@ export declare const agentOrgLaunchConfigurationDtoSchema: z.ZodObject<{
     workspaceRootPath: z.ZodNullable<z.ZodString>;
 }, z.core.$strict>;
 type LaunchConfigurationDto = Readonly<z.infer<typeof agentOrgLaunchConfigurationDtoSchema>>;
+/**
+ * Where an agent's (or a Team's) launch values came from and the configured layers skipped before
+ * it. Absent on records written before sources existed ("not recorded").
+ */
+export declare const collaborationLaunchConfigurationSourceDtoSchema: z.ZodObject<{
+    origin: z.ZodEnum<{
+        agent_default: "agent_default";
+        team_default: "team_default";
+        inherited: "inherited";
+    }>;
+    fallbacks: z.ZodArray<z.ZodObject<{
+        layer: z.ZodEnum<{
+            agent_default: "agent_default";
+            team_default: "team_default";
+        }>;
+        runtimeKind: z.ZodNullable<z.ZodString>;
+        llmModelIdentifier: z.ZodNullable<z.ZodString>;
+        reason: z.ZodEnum<{
+            incomplete: "incomplete";
+            runtime_unavailable: "runtime_unavailable";
+            model_unavailable: "model_unavailable";
+            model_settings_invalid: "model_settings_invalid";
+        }>;
+        detail: z.ZodString;
+    }, z.core.$strict>>;
+}, z.core.$strict>;
+export type CollaborationLaunchConfigurationSourceDto = Readonly<z.infer<typeof collaborationLaunchConfigurationSourceDtoSchema>>;
+/** A recorded Team member's own launch: present only when it runs on its own agent default. */
+type MemberLaunchDto = Readonly<{
+    launchConfiguration?: LaunchConfigurationDto;
+    launchSource?: CollaborationLaunchConfigurationSourceDto;
+}>;
+type TeamLaunchDto = Readonly<{
+    defaultLaunchConfiguration: LaunchConfigurationDto;
+    defaultLaunchSource?: CollaborationLaunchConfigurationSourceDto;
+}>;
+/**
+ * The launch a collaborator-Team or catalog-Team-copy member runs with: its own, else its Team's.
+ * Every reader of such a member's launch uses this, never the Team's value directly.
+ */
+export declare const collaborationMemberLaunchConfiguration: (team: Pick<TeamLaunchDto, "defaultLaunchConfiguration">, member: MemberLaunchDto) => LaunchConfigurationDto;
+/** The recorded source of such a member's launch: its own, else its Team's; null when not recorded. */
+export declare const collaborationMemberLaunchSource: (team: Pick<TeamLaunchDto, "defaultLaunchSource">, member: MemberLaunchDto) => CollaborationLaunchConfigurationSourceDto | null;
 /** The definition snapshot of a task copy started from the catalog (absent for every other copy). */
 export type TaskAgentExecutionSourceDto = Readonly<{
     kind: "agent";
     agentDefinitionId: string;
     launchConfiguration: LaunchConfigurationDto;
+    launchSource?: CollaborationLaunchConfigurationSourceDto;
 }>;
 export type TaskTeamExecutionSourceDto = Readonly<{
     kind: "agent_team";
     teamDefinitionId: string;
     coordinatorAddress: string;
-    members: readonly Readonly<{
+    members: readonly (Readonly<{
         address: string;
         agentDefinitionId: string;
-    }>[];
+    }> & MemberLaunchDto)[];
     handoffs: readonly Readonly<{
         from: string;
         to: string;
         rules: readonly string[];
     }>[];
-    defaultLaunchConfiguration: LaunchConfigurationDto;
-}>;
+}> & TeamLaunchDto;
 type TaskAgentExecutionDto = Readonly<{
     address: string;
     agentRunId: string;
@@ -101,8 +144,8 @@ export declare const taskExecutionsReopenedEventDtoSchema: z.ZodObject<{
     }, z.core.$strict>]>>;
 }, z.core.$strict>;
 /**
- * One collaborator of a run: one instance of a shared Agent or Agent Team definition added
- * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
+ * One collaborator of a run: one instance of a shared Agent or Agent Team definition brought in.
+ * Its run IDs and resolved launches are recorded in the entry; it starts on its first message.
  */
 export declare const collaboratorEntryDtoSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
     kind: z.ZodLiteral<"agent">;
@@ -123,6 +166,28 @@ export declare const collaboratorEntryDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
         autoExecuteTools: z.ZodBoolean;
         workspaceRootPath: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
+    launchSource: z.ZodOptional<z.ZodObject<{
+        origin: z.ZodEnum<{
+            agent_default: "agent_default";
+            team_default: "team_default";
+            inherited: "inherited";
+        }>;
+        fallbacks: z.ZodArray<z.ZodObject<{
+            layer: z.ZodEnum<{
+                agent_default: "agent_default";
+                team_default: "team_default";
+            }>;
+            runtimeKind: z.ZodNullable<z.ZodString>;
+            llmModelIdentifier: z.ZodNullable<z.ZodString>;
+            reason: z.ZodEnum<{
+                incomplete: "incomplete";
+                runtime_unavailable: "runtime_unavailable";
+                model_unavailable: "model_unavailable";
+                model_settings_invalid: "model_settings_invalid";
+            }>;
+            detail: z.ZodString;
+        }, z.core.$strict>>;
+    }, z.core.$strict>>;
     addedAt: z.ZodString;
     addedViaAgentRunId: z.ZodString;
 }, z.core.$strict>, z.ZodObject<{
@@ -132,6 +197,41 @@ export declare const collaboratorEntryDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
     teamRunId: z.ZodString;
     coordinatorAddress: z.ZodString;
     members: z.ZodArray<z.ZodObject<{
+        launchConfiguration: z.ZodOptional<z.ZodObject<{
+            runtimeKind: z.ZodEnum<{
+                autobyteus: "autobyteus";
+                claude_agent_sdk: "claude_agent_sdk";
+                codex_app_server: "codex_app_server";
+                antigravity_cli: "antigravity_cli";
+                grok_build: "grok_build";
+            }>;
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            autoExecuteTools: z.ZodBoolean;
+            workspaceRootPath: z.ZodNullable<z.ZodString>;
+        }, z.core.$strict>>;
+        launchSource: z.ZodOptional<z.ZodObject<{
+            origin: z.ZodEnum<{
+                agent_default: "agent_default";
+                team_default: "team_default";
+                inherited: "inherited";
+            }>;
+            fallbacks: z.ZodArray<z.ZodObject<{
+                layer: z.ZodEnum<{
+                    agent_default: "agent_default";
+                    team_default: "team_default";
+                }>;
+                runtimeKind: z.ZodNullable<z.ZodString>;
+                llmModelIdentifier: z.ZodNullable<z.ZodString>;
+                reason: z.ZodEnum<{
+                    incomplete: "incomplete";
+                    runtime_unavailable: "runtime_unavailable";
+                    model_unavailable: "model_unavailable";
+                    model_settings_invalid: "model_settings_invalid";
+                }>;
+                detail: z.ZodString;
+            }, z.core.$strict>>;
+        }, z.core.$strict>>;
         address: z.ZodString;
         agentDefinitionId: z.ZodString;
         agentRunId: z.ZodString;
@@ -155,6 +255,28 @@ export declare const collaboratorEntryDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
         autoExecuteTools: z.ZodBoolean;
         workspaceRootPath: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
+    defaultLaunchSource: z.ZodOptional<z.ZodObject<{
+        origin: z.ZodEnum<{
+            agent_default: "agent_default";
+            team_default: "team_default";
+            inherited: "inherited";
+        }>;
+        fallbacks: z.ZodArray<z.ZodObject<{
+            layer: z.ZodEnum<{
+                agent_default: "agent_default";
+                team_default: "team_default";
+            }>;
+            runtimeKind: z.ZodNullable<z.ZodString>;
+            llmModelIdentifier: z.ZodNullable<z.ZodString>;
+            reason: z.ZodEnum<{
+                incomplete: "incomplete";
+                runtime_unavailable: "runtime_unavailable";
+                model_unavailable: "model_unavailable";
+                model_settings_invalid: "model_settings_invalid";
+            }>;
+            detail: z.ZodString;
+        }, z.core.$strict>>;
+    }, z.core.$strict>>;
     taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
     addedAt: z.ZodString;
     addedViaAgentRunId: z.ZodString;
@@ -273,6 +395,28 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
                 autoExecuteTools: z.ZodBoolean;
                 workspaceRootPath: z.ZodNullable<z.ZodString>;
             }, z.core.$strict>;
+            launchSource: z.ZodOptional<z.ZodObject<{
+                origin: z.ZodEnum<{
+                    agent_default: "agent_default";
+                    team_default: "team_default";
+                    inherited: "inherited";
+                }>;
+                fallbacks: z.ZodArray<z.ZodObject<{
+                    layer: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                    }>;
+                    runtimeKind: z.ZodNullable<z.ZodString>;
+                    llmModelIdentifier: z.ZodNullable<z.ZodString>;
+                    reason: z.ZodEnum<{
+                        incomplete: "incomplete";
+                        runtime_unavailable: "runtime_unavailable";
+                        model_unavailable: "model_unavailable";
+                        model_settings_invalid: "model_settings_invalid";
+                    }>;
+                    detail: z.ZodString;
+                }, z.core.$strict>>;
+            }, z.core.$strict>>;
             addedAt: z.ZodString;
             addedViaAgentRunId: z.ZodString;
         }, z.core.$strict>, z.ZodObject<{
@@ -282,6 +426,41 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
             teamRunId: z.ZodString;
             coordinatorAddress: z.ZodString;
             members: z.ZodArray<z.ZodObject<{
+                launchConfiguration: z.ZodOptional<z.ZodObject<{
+                    runtimeKind: z.ZodEnum<{
+                        autobyteus: "autobyteus";
+                        claude_agent_sdk: "claude_agent_sdk";
+                        codex_app_server: "codex_app_server";
+                        antigravity_cli: "antigravity_cli";
+                        grok_build: "grok_build";
+                    }>;
+                    llmModelIdentifier: z.ZodString;
+                    llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                    autoExecuteTools: z.ZodBoolean;
+                    workspaceRootPath: z.ZodNullable<z.ZodString>;
+                }, z.core.$strict>>;
+                launchSource: z.ZodOptional<z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                        }>;
+                        runtimeKind: z.ZodNullable<z.ZodString>;
+                        llmModelIdentifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            model_unavailable: "model_unavailable";
+                            model_settings_invalid: "model_settings_invalid";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>>;
                 address: z.ZodString;
                 agentDefinitionId: z.ZodString;
                 agentRunId: z.ZodString;
@@ -305,6 +484,28 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
                 autoExecuteTools: z.ZodBoolean;
                 workspaceRootPath: z.ZodNullable<z.ZodString>;
             }, z.core.$strict>;
+            defaultLaunchSource: z.ZodOptional<z.ZodObject<{
+                origin: z.ZodEnum<{
+                    agent_default: "agent_default";
+                    team_default: "team_default";
+                    inherited: "inherited";
+                }>;
+                fallbacks: z.ZodArray<z.ZodObject<{
+                    layer: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                    }>;
+                    runtimeKind: z.ZodNullable<z.ZodString>;
+                    llmModelIdentifier: z.ZodNullable<z.ZodString>;
+                    reason: z.ZodEnum<{
+                        incomplete: "incomplete";
+                        runtime_unavailable: "runtime_unavailable";
+                        model_unavailable: "model_unavailable";
+                        model_settings_invalid: "model_settings_invalid";
+                    }>;
+                    detail: z.ZodString;
+                }, z.core.$strict>>;
+            }, z.core.$strict>>;
             taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
             addedAt: z.ZodString;
             addedViaAgentRunId: z.ZodString;
@@ -484,6 +685,28 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                     autoExecuteTools: z.ZodBoolean;
                     workspaceRootPath: z.ZodNullable<z.ZodString>;
                 }, z.core.$strict>;
+                launchSource: z.ZodOptional<z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                        }>;
+                        runtimeKind: z.ZodNullable<z.ZodString>;
+                        llmModelIdentifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            model_unavailable: "model_unavailable";
+                            model_settings_invalid: "model_settings_invalid";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>>;
                 addedAt: z.ZodString;
                 addedViaAgentRunId: z.ZodString;
             }, z.core.$strict>, z.ZodObject<{
@@ -493,6 +716,41 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                 teamRunId: z.ZodString;
                 coordinatorAddress: z.ZodString;
                 members: z.ZodArray<z.ZodObject<{
+                    launchConfiguration: z.ZodOptional<z.ZodObject<{
+                        runtimeKind: z.ZodEnum<{
+                            autobyteus: "autobyteus";
+                            claude_agent_sdk: "claude_agent_sdk";
+                            codex_app_server: "codex_app_server";
+                            antigravity_cli: "antigravity_cli";
+                            grok_build: "grok_build";
+                        }>;
+                        llmModelIdentifier: z.ZodString;
+                        llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                        autoExecuteTools: z.ZodBoolean;
+                        workspaceRootPath: z.ZodNullable<z.ZodString>;
+                    }, z.core.$strict>>;
+                    launchSource: z.ZodOptional<z.ZodObject<{
+                        origin: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            inherited: "inherited";
+                        }>;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                            }>;
+                            runtimeKind: z.ZodNullable<z.ZodString>;
+                            llmModelIdentifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                model_unavailable: "model_unavailable";
+                                model_settings_invalid: "model_settings_invalid";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                    }, z.core.$strict>>;
                     address: z.ZodString;
                     agentDefinitionId: z.ZodString;
                     agentRunId: z.ZodString;
@@ -516,6 +774,28 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                     autoExecuteTools: z.ZodBoolean;
                     workspaceRootPath: z.ZodNullable<z.ZodString>;
                 }, z.core.$strict>;
+                defaultLaunchSource: z.ZodOptional<z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                        }>;
+                        runtimeKind: z.ZodNullable<z.ZodString>;
+                        llmModelIdentifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            model_unavailable: "model_unavailable";
+                            model_settings_invalid: "model_settings_invalid";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>>;
                 taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
                 addedAt: z.ZodString;
                 addedViaAgentRunId: z.ZodString;
@@ -668,6 +948,28 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
             autoExecuteTools: z.ZodBoolean;
             workspaceRootPath: z.ZodNullable<z.ZodString>;
         }, z.core.$strict>;
+        launchSource: z.ZodOptional<z.ZodObject<{
+            origin: z.ZodEnum<{
+                agent_default: "agent_default";
+                team_default: "team_default";
+                inherited: "inherited";
+            }>;
+            fallbacks: z.ZodArray<z.ZodObject<{
+                layer: z.ZodEnum<{
+                    agent_default: "agent_default";
+                    team_default: "team_default";
+                }>;
+                runtimeKind: z.ZodNullable<z.ZodString>;
+                llmModelIdentifier: z.ZodNullable<z.ZodString>;
+                reason: z.ZodEnum<{
+                    incomplete: "incomplete";
+                    runtime_unavailable: "runtime_unavailable";
+                    model_unavailable: "model_unavailable";
+                    model_settings_invalid: "model_settings_invalid";
+                }>;
+                detail: z.ZodString;
+            }, z.core.$strict>>;
+        }, z.core.$strict>>;
         addedAt: z.ZodString;
         addedViaAgentRunId: z.ZodString;
     }, z.core.$strict>, z.ZodObject<{
@@ -677,6 +979,41 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
         teamRunId: z.ZodString;
         coordinatorAddress: z.ZodString;
         members: z.ZodArray<z.ZodObject<{
+            launchConfiguration: z.ZodOptional<z.ZodObject<{
+                runtimeKind: z.ZodEnum<{
+                    autobyteus: "autobyteus";
+                    claude_agent_sdk: "claude_agent_sdk";
+                    codex_app_server: "codex_app_server";
+                    antigravity_cli: "antigravity_cli";
+                    grok_build: "grok_build";
+                }>;
+                llmModelIdentifier: z.ZodString;
+                llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                autoExecuteTools: z.ZodBoolean;
+                workspaceRootPath: z.ZodNullable<z.ZodString>;
+            }, z.core.$strict>>;
+            launchSource: z.ZodOptional<z.ZodObject<{
+                origin: z.ZodEnum<{
+                    agent_default: "agent_default";
+                    team_default: "team_default";
+                    inherited: "inherited";
+                }>;
+                fallbacks: z.ZodArray<z.ZodObject<{
+                    layer: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                    }>;
+                    runtimeKind: z.ZodNullable<z.ZodString>;
+                    llmModelIdentifier: z.ZodNullable<z.ZodString>;
+                    reason: z.ZodEnum<{
+                        incomplete: "incomplete";
+                        runtime_unavailable: "runtime_unavailable";
+                        model_unavailable: "model_unavailable";
+                        model_settings_invalid: "model_settings_invalid";
+                    }>;
+                    detail: z.ZodString;
+                }, z.core.$strict>>;
+            }, z.core.$strict>>;
             address: z.ZodString;
             agentDefinitionId: z.ZodString;
             agentRunId: z.ZodString;
@@ -700,6 +1037,28 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
             autoExecuteTools: z.ZodBoolean;
             workspaceRootPath: z.ZodNullable<z.ZodString>;
         }, z.core.$strict>;
+        defaultLaunchSource: z.ZodOptional<z.ZodObject<{
+            origin: z.ZodEnum<{
+                agent_default: "agent_default";
+                team_default: "team_default";
+                inherited: "inherited";
+            }>;
+            fallbacks: z.ZodArray<z.ZodObject<{
+                layer: z.ZodEnum<{
+                    agent_default: "agent_default";
+                    team_default: "team_default";
+                }>;
+                runtimeKind: z.ZodNullable<z.ZodString>;
+                llmModelIdentifier: z.ZodNullable<z.ZodString>;
+                reason: z.ZodEnum<{
+                    incomplete: "incomplete";
+                    runtime_unavailable: "runtime_unavailable";
+                    model_unavailable: "model_unavailable";
+                    model_settings_invalid: "model_settings_invalid";
+                }>;
+                detail: z.ZodString;
+            }, z.core.$strict>>;
+        }, z.core.$strict>>;
         taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
         addedAt: z.ZodString;
         addedViaAgentRunId: z.ZodString;

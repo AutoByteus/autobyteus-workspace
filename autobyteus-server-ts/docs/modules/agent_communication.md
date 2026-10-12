@@ -360,7 +360,9 @@ user's `@` no longer adds collaborators: it steers the focused agent to
 `delegate_task` (see `@` below). Stored runs keep, restore and message the
 collaborators that earlier releases added on `@`; nothing is migrated. The run hosts **one instance per
 collaborator**, recorded as a root-level entry in the run's execution tree
-(`collaborators`), at its root-level catalog address. An entry snapshots the run's root launch settings,
+(`collaborators`), at its root-level catalog address. An entry snapshots each
+agent's resolved launch settings and their source (see
+[Launch configuration](#launch-configuration-of-collaborators-and-catalog-copies)),
 and for a Team, its member layout and Team-local handoffs. Its runs are recorded
 in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
 `agentRunId` per member and the Team's own `taskExecutions` for a Team.
@@ -422,9 +424,9 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
      (`requireAdmissible` = `requireEligible` plus "not already in the run unless
      it is a collaborator whose entry is reused"), so a bring-in never creates a
      second instance;
-  2. each new placement (an Agent, or every member of a Team) is checked with
-     `RunModelSelectionValidator.validateMany` against the run's runtime, model,
-     model settings and workspace;
+  2. each new placement (an Agent, or every member of a Team) gets its runtime,
+     model and model settings from `CollaboratorLaunchResolver` (see
+     [Launch configuration](#launch-configuration-of-collaborators-and-catalog-copies));
   3. run IDs are allocated (`agentRunId`, `teamRunId`, member run IDs);
   4. the root prepares the hosted executions, commits the new entry in one
      tree write, publishes the executions (Offline) and emits
@@ -451,8 +453,8 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   not in the run starts a task copy only (no collaborator entry). Placement
   order: a teammate inside the sender's own catalog Team copy (from that copy's
   snapshot), configured, collaborator, then catalog. A catalog placement carries
-  a source snapshot built by `CollaboratorEntryBuilder` with the root launch
-  settings and checked by the runnability validator; the task record persists it
+  a source snapshot built by `CollaboratorEntryBuilder` and resolved per agent by
+  `CollaboratorLaunchResolver`, exactly as for a bring-in; the task record persists it
   as the optional `source` (`TaskExecutionSource`). Activation and restore use the
   record's `source` first. Each call is a new copy, so parallel copies are
   allowed. The task DTOs (`task_execution_started` and the views) carry `source`.
@@ -503,7 +505,64 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   membership-checked (an unknown ID gets the non-host view of the menu; the
   send-time re-check verifies). Application-owned runs list none.
 
-The shared policy, admission, runnability validator, identity allocator, entry
+### Launch configuration of collaborators and catalog copies
+
+A collaborator or catalog copy is started by an agent, not by a user launch form,
+so nobody picks its runtime and model. `CollaboratorLaunchResolver`
+(`collaborator-launch-resolver.ts`) is the single owner of that choice for a
+bring-in and a catalog copy. For each agent it takes runtime, model and model
+settings **together** from the first usable layer:
+
+```text
+Agent copy or collaborator Agent:   agent default -> inherited from the run root
+Team copy or collaborator Team:
+  the Team itself:                  team default  -> inherited from the run root
+  each member:                      agent default -> the Team's resolved launch
+```
+
+- **Layers.** The agent default is the member's agent definition
+  `defaultLaunchConfig` (shared or team-local). The team default is the Team
+  definition's `defaultLaunchConfig`. "Inherited" is the run root's launch
+  configuration, as before this rule existed. It is never the delegating
+  member's. Workspace and auto-approve always come from the run root. Antigravity
+  still forces auto-approve.
+- **Usable.** A configured layer is usable only when it names both a runtime and
+  a model, the runtime is available (`RuntimeAvailabilityService`), and the model
+  and its settings pass `RunModelSelectionValidator.validateMany` for the run's
+  workspace. Fields are never mixed across layers. The inherited layer keeps the
+  previous runnability check and its error wording. A delegation checks each
+  distinct configured runtime once and validates all candidates in one batch.
+- **Fallback.** An unusable configured layer is skipped, and the next layer is
+  used. The skip is recorded with a reason: `incomplete`,
+  `runtime_unavailable`, `model_unavailable` or `model_settings_invalid`. The
+  agent still starts. When no layer is usable for some agent, the bring-in or
+  copy fails as before (`COLLABORATOR_ADD_FAILED`, or `delegated: false` with
+  "<name> cannot be delegated to: <reason>"), and nothing is added.
+- **Notes.** `launch-configuration-notes.ts` renders each skip as one line, for
+  example `reviewer: its agent default codex_app_server / sol-6.1 could not be
+  used (<reason>); it runs on claude_agent_sdk / sonnet (inherited from the
+  run).` A Team-level skip is written once, as "its members without their own
+  default run on …". `delegate_task` returns these lines as `launch_notes` (see
+  [Agent Tools](./agent_tools.md)). A `send_message_to` that brought the agent or
+  team in appends them to its accepted `message` under
+  `Launch configuration notes:`. Only the call that started the instance carries
+  notes. Reusing a collaborator, a Task helper, or delegating to a teammate inside
+  a copy carries none.
+- **Recorded, not re-read.** The resolved values and their source
+  (`launchSource` / `defaultLaunchSource`: the origin and the skipped layers) are
+  written into the collaborator entry or the copy's `source` when it starts. A
+  member that runs on its own default also records its own `launchConfiguration`
+  (see [Run History](./run_history.md)). Extra copies at a collaborator address,
+  teammates delegated inside a copy, and restore use these recorded values
+  through `effectiveMemberLaunchConfiguration`. Editing a definition default later
+  changes only copies and collaborators started afterwards. Records written
+  before this rule have no source and restore on their recorded Team-level value.
+- **Unchanged.** Delegation to a configured placement uses that placement's
+  launch configuration. Single-agent starts and application launch baselines
+  have their own rules. An installed but unauthenticated runtime passes these
+  checks and fails at its first turn as a run error, not as a fallback.
+
+The shared policy, admission, launch resolver, identity allocator, entry
 builder, catalog address map, message-recipient resolution, catalog delegation
 and source projection live in
 `src/agent-collaboration/collaborators/`; each root implements

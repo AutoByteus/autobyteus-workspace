@@ -1,0 +1,28 @@
+{
+  "catalogs": {
+    "codex": 7,
+    "native": 35,
+    "claude": 12
+  },
+  "chosen": {
+    "codex": "gpt-5.6-luna",
+    "native": "deepseek-v4-flash",
+    "claude": "haiku"
+  },
+  "ids": {
+    "manager": "iso-manager",
+    "lead": "iso-lead",
+    "engineer": "iso-engineer",
+    "reviewer": "iso-reviewer",
+    "auditor": "iso-auditor",
+    "team": "iso-se-team"
+  },
+  "names": {
+    "manager": "ISO Manager",
+    "lead": "ISO Lead",
+    "engineer": "ISO Engineer",
+    "reviewer": "ISO Reviewer",
+    "auditor": "ISO Auditor",
+    "team": "ISO SE Team"
+  }
+}

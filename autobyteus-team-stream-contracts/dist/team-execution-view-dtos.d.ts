@@ -21,27 +21,57 @@ export type ConfiguredAgentExecutionDto = Readonly<{
     platform_agent_run_id: string | null;
     launch_configuration: AgentLaunchConfigurationDto;
 }>;
+/**
+ * Where an agent's (or a Team's) launch values came from and the configured layers skipped before
+ * it. Absent on records written before sources existed ("not recorded").
+ */
+export type LaunchConfigurationSourceDto = Readonly<{
+    origin: "agent_default" | "team_default" | "inherited";
+    fallbacks: readonly Readonly<{
+        layer: "agent_default" | "team_default";
+        runtime_kind: string | null;
+        llm_model_identifier: string | null;
+        reason: "incomplete" | "runtime_unavailable" | "model_unavailable" | "model_settings_invalid";
+        detail: string;
+    }>[];
+}>;
+/** A recorded Team member's own launch: present only when it runs on its own agent default. */
+type MemberLaunchDto = Readonly<{
+    launch_configuration?: AgentLaunchConfigurationDto;
+    launch_source?: LaunchConfigurationSourceDto;
+}>;
+type TeamLaunchDto = Readonly<{
+    default_launch_configuration: AgentLaunchConfigurationDto;
+    default_launch_source?: LaunchConfigurationSourceDto;
+}>;
+/**
+ * The launch a collaborator-Team or catalog-Team-copy member runs with: its own, else its Team's.
+ * Every reader of such a member's launch uses this, never the Team's value directly.
+ */
+export declare const teamMemberLaunchConfiguration: (team: Pick<TeamLaunchDto, "default_launch_configuration">, member: MemberLaunchDto) => AgentLaunchConfigurationDto;
+/** The recorded source of such a member's launch: its own, else its Team's; null when not recorded. */
+export declare const teamMemberLaunchSource: (team: Pick<TeamLaunchDto, "default_launch_source">, member: MemberLaunchDto) => LaunchConfigurationSourceDto | null;
 /** The definition snapshot of a task copy started from the catalog (absent for every other copy). */
 export type TaskAgentExecutionSourceDto = Readonly<{
     kind: "agent";
     agent_definition_id: string;
     launch_configuration: AgentLaunchConfigurationDto;
+    launch_source?: LaunchConfigurationSourceDto;
 }>;
 export type TaskTeamExecutionSourceDto = Readonly<{
     kind: "agent_team";
     team_definition_id: string;
     coordinator_address: string;
-    members: readonly Readonly<{
+    members: readonly (Readonly<{
         address: string;
         agent_definition_id: string;
-    }>[];
+    }> & MemberLaunchDto)[];
     handoffs: readonly Readonly<{
         from: string;
         to: string;
         rules: readonly string[];
     }>[];
-    default_launch_configuration: AgentLaunchConfigurationDto;
-}>;
+}> & TeamLaunchDto;
 /** A delegated child Agent; `delegator_agent_run_id` is the AgentRun that started it (null when not recorded). */
 export type TaskAgentExecutionDto = Readonly<{
     kind: "task_agent";
@@ -92,8 +122,8 @@ export type ConfiguredTeamExecutionDto = Readonly<{
 }>;
 export type ConfiguredMemberExecutionDto = ConfiguredAgentExecutionDto | ConfiguredTeamExecutionDto;
 /**
- * One collaborator of the run: one instance of a shared Agent or Agent Team definition added
- * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
+ * One collaborator of the run: one instance of a shared Agent or Agent Team definition brought in.
+ * Its run IDs and resolved launches are recorded in the entry; it starts on its first message.
  */
 export type CollaboratorEntryDto = Readonly<{
     kind: "agent";
@@ -102,6 +132,7 @@ export type CollaboratorEntryDto = Readonly<{
     agent_run_id: string;
     platform_agent_run_id: string | null;
     launch_configuration: AgentLaunchConfigurationDto;
+    launch_source?: LaunchConfigurationSourceDto;
     added_at: string;
     added_via_agent_run_id: string;
 }> | Readonly<{
@@ -110,22 +141,21 @@ export type CollaboratorEntryDto = Readonly<{
     team_definition_id: string;
     team_run_id: string;
     coordinator_address: string;
-    members: readonly Readonly<{
+    members: readonly (Readonly<{
         address: string;
         agent_definition_id: string;
         agent_run_id: string;
         platform_agent_run_id: string | null;
-    }>[];
+    }> & MemberLaunchDto)[];
     handoffs: readonly Readonly<{
         from: string;
         to: string;
         rules: readonly string[];
     }>[];
-    default_launch_configuration: AgentLaunchConfigurationDto;
     task_executions: readonly TaskExecutionDto[];
     added_at: string;
     added_via_agent_run_id: string;
-}>;
+}> & TeamLaunchDto;
 export declare const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto>;
 export declare const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto>;
 export declare const collaboratorEntryDtoSchema: z.ZodType<CollaboratorEntryDto>;
@@ -189,4 +219,5 @@ export declare const teamAgentStatusDtoSchema: z.ZodObject<{
 }, z.core.$strict>;
 export type TeamMemberExecutionIdentityDto = Readonly<z.infer<typeof teamMemberExecutionIdentityDtoSchema>>;
 export type TeamAgentStatusDto = Readonly<z.infer<typeof teamAgentStatusDtoSchema>>;
+export {};
 //# sourceMappingURL=team-execution-view-dtos.d.ts.map
