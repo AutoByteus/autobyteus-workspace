@@ -1,6 +1,6 @@
 # Implementation Handoff
 
-**Current round: IR-003 (reopened; SR-005 + SR-006; `Medium` / `Low`, direct route).** Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied`, branch `codex/delegated-launch-config-defaults-r2` (base `origin/personal` @ `2756d7b29`, which contains round 1 as released in `v1.5.3-beta.1`). The section "Reopened Round (IR-003)" below is authoritative for this round; the rest of this document describes round 1 (IR-001/IR-002), which this round builds on unchanged except where IR-003 says so.
+**Current round: IR-003 (reopened; SR-005 + SR-006; `Medium` / `Low`, direct route).** Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied`, branch `codex/delegated-launch-config-defaults-r2` (base `origin/personal` @ `2756d7b29`, which contains round 1 as released in `v1.5.3-beta.1`). Round commits: `0ac4e4b07` (web), `6cddfce4d` (ticket reopen + artifacts). The section "Reopened Round (IR-003)" below is authoritative for this round; the rest of this document describes round 1 (IR-001/IR-002), which this round builds on unchanged except where IR-003 says so.
 
 Round 1 commits: `55092536a` (server + contracts), `035b208d5` (web), `823237259` (ticket artifacts); round 1 worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults`, branch `codex/delegated-launch-config-defaults` (base `origin/personal` @ `beb6b3b49`).
 
