@@ -95,8 +95,7 @@ const emptyTeamAggregate = (teamRunId: string): TokenUsageRunSummary => ({
 const normalizedId = (value: string | null | undefined): string => value?.trim() || '';
 const memberCacheKey = (identity: TeamTokenUsageMemberIdentity): string =>
   `${identity.teamRunId}\u0000${identity.agentRunId}`;
-const rate = (numerator: number, denominator: number): number | null =>
-  denominator > 0 ? numerator / denominator : null;
+const rate = (numerator: number, denominator: number): number | null => denominator > 0 ? numerator / denominator : null;
 const addCost = (current: number | null, delta: number | null): number | null =>
   current === null && delta === null ? null : (current ?? 0) + (delta ?? 0);
 
@@ -131,8 +130,7 @@ const mergeCacheState = (current: TokenUsageCacheState, next: string): TokenUsag
   return 'unknown';
 };
 
-const mergeUniqueStrings = (current: string[], next: string[]): string[] =>
-  Array.from(new Set([...current, ...next].filter(Boolean))).sort();
+const mergeUniqueStrings = (current: string[], next: string[]): string[] => Array.from(new Set([...current, ...next].filter(Boolean))).sort();
 
 const applyPersistedEventToPartialTeamAggregate = (
   summary: TokenUsageRunSummary,
@@ -234,7 +232,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   /** Standalone run roll-ups (host plus collaborators and copies), apart from the host's exact live summary. */
   const standaloneRunSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
   const standaloneRunRequests = new Map<string, Promise<TokenUsageRunSummary | null>>();
-  const compactionMarks = createTokenUsageCompactionMarks(runSummaries, teamMemberSummaries);
+  const { clearOnLiveModelCall, ...compactionMarks } = createTokenUsageCompactionMarks();
 
   function getRunSummary(runId: string | null | undefined): TokenUsageRunSummary | null {
     const id = normalizedId(runId);
@@ -319,6 +317,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     if (seenKey && seenUsageKeys.has(seenKey)) return false;
     const summary = mapTokenUsageRunSummaryDto(payload.run_summary_after_event, { runId });
     if (seenKey) seenUsageKeys.add(seenKey);
+    clearOnLiveModelCall(runId, payload.reports_model_call);
     return upsertRecordBackedAgentRunSummary({ runId, summary });
   }
 
@@ -337,6 +336,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
       rootTeamRunId: teamRunId,
     });
     seenUsageKeys.add(seenKey);
+    clearOnLiveModelCall(runId, details.reports_model_call);
     upsertRecordBackedTeamMemberSummary({ teamRunId, agentRunId: runId, summary });
 
     const current = teamAggregateEntries[teamRunId];

@@ -543,21 +543,24 @@ describe('TokenUsageMeterPanel', () => {
       expect(primary().get('[data-test="context-bar-fill"]').classes()).toContain('bg-slate-300');
       expect(primary().get('[data-test="context-tokens"]').classes()).toContain('text-slate-400');
 
-      // A save without a model call (a turn-end remainder after a manual /compact) and a child's calls
-      // in the roll-up keep the note (SR-012).
-      meterStore.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ latestRuntimeKind: runtime,
-        latestPromptTokens: 911_000, effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 91.1,
-        usageReportCount: 12, revision: 16 }) });
-      upsertStandaloneRunSummary(meterStore, buildSummary({ latestRuntimeKind: runtime, latestPromptTokens: 911_000,
-        effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 91.1, usageReportCount: 35, revision: 45 }));
+      // A live event without a model call (the turn-end remainder after a manual /compact), a fetched
+      // summary and a child's live call all keep the note (SR-014).
+      const reading = { latestRuntimeKind: runtime, latestPromptTokens: 911_000, effectiveContextWindowTokens: 1_000_000,
+        contextWindowUsagePercent: 91.1 };
+      meterStore.applyTokenUsageUpdated({ usage_event_id: 'remainder', idempotency_key: 'remainder', run_id: 'run-1',
+        reports_model_call: false, run_summary_after_event: buildSummaryDto(buildSummary({ ...reading, usageReportCount: 12, revision: 16 })) } as any);
+      meterStore.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ ...reading, usageReportCount: 12, revision: 17 }) });
+      meterStore.applyTokenUsageUpdated({ usage_event_id: 'child-call', idempotency_key: 'child-call', run_id: 'child-run',
+        reports_model_call: true, run_summary_after_event: buildSummaryDto(buildSummary({ ...reading, runId: 'child-run' })) } as any);
       await nextTick();
       expect(primary().find('[data-test="context-compacted-note"]').exists()).toBe(true);
 
-      // The host's next counted call: the note goes and the value shows normally.
-      meterStore.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ latestRuntimeKind: runtime,
-        latestPromptTokens: 42_000, effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 4.2,
-        usageReportCount: 13, revision: 17 }) });
-      await nextTick();
+      // The host's next live model call: the note goes and the value shows normally.
+      meterStore.applyTokenUsageUpdated({ usage_event_id: 'next-call', idempotency_key: 'next-call', run_id: 'run-1',
+        reports_model_call: true, run_summary_after_event: buildSummaryDto(buildSummary({ latestRuntimeKind: runtime,
+          latestPromptTokens: 42_000, effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 4.2,
+          usageReportCount: 13, revision: 18 })) } as any);
+      await flushPromises();
       expect(primary().find('[data-test="context-compacted-note"]').exists()).toBe(false);
       expect(primary().get('[data-test="context-bar-fill"]').classes()).toContain('bg-blue-500');
     });

@@ -513,46 +513,57 @@ describe('tokenUsageMeterStore', () => {
     expect(JSON.stringify(store.getRunSummary('run-1'))).not.toContain('haiku');
   });
 
-  it('awaits the next reading after a completed compaction until the next counted model call (D-13)', () => {
+  it('keeps a mark made with no exact summary loaded through a remainder event and a fetched summary (D-13, SR-014)', () => {
+    // A reopened standalone run: only its roll-up was fetched when the compaction completes.
     const store = useTokenUsageMeterStore();
-    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 12, revision: 7, latestPromptTokens: 911_000 }) });
-    expect(store.isAwaitingPostCompactionReading('run-1')).toBe(false);
+    store.upsertRecordBackedStandaloneRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 30, revision: 40 }) });
     store.markCompactionCompleted('run-1');
     expect(store.isAwaitingPostCompactionReading('run-1')).toBe(true);
-    // A save without a call (the Claude turn-end remainder after a manual /compact) keeps the mark (SR-012).
-    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 12, revision: 8, latestPromptTokens: 911_000 }) });
+    // The Claude turn-end remainder after a manual /compact is a live event without a model call.
+    store.applyTokenUsageUpdated(buildPayload({
+      usage_event_id: 'turn-end-remainder', reports_model_call: false,
+      run_summary_after_event: buildSummaryDto({ usage_report_count: 12, revision: 13 }),
+    }));
+    // Fetched or hydrated summaries never clear the mark.
+    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 12, revision: 14 }) });
+    store.upsertRecordBackedStandaloneRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 31, revision: 41 }) });
     expect(store.isAwaitingPostCompactionReading('run-1')).toBe(true);
-    // The standalone roll-up advances with children's calls; only the run's exact count clears the mark.
-    store.upsertRecordBackedStandaloneRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 30, revision: 20 }) });
-    expect(store.isAwaitingPostCompactionReading('run-1')).toBe(true);
-    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 13, revision: 9, latestPromptTokens: 42_000 }) });
+    // The run's next live model call clears it, even when its summary is not newer than the stored one.
+    store.applyTokenUsageUpdated(buildPayload({
+      usage_event_id: 'next-call', reports_model_call: true,
+      run_summary_after_event: buildSummaryDto({ usage_report_count: 13, revision: 14 }),
+    }));
     expect(store.isAwaitingPostCompactionReading('run-1')).toBe(false);
-    expect(store.isAwaitingPostCompactionReading('other-run')).toBe(false);
   });
 
-  it('marks a Team member through its member summary and clears on its next counted call (D-13)', () => {
+  it("does not clear the host mark on a child's live model call (D-13)", () => {
     const store = useTokenUsageMeterStore();
-    const member = (eventId: string, usage_report_count: number, revision: number, reportsModelCall = true) =>
+    store.markCompactionCompleted('run-1');
+    store.applyTokenUsageUpdated(buildPayload({
+      usage_event_id: 'child-call', run_id: 'child-run', reports_model_call: true,
+      run_summary_after_event: buildSummaryDto({ run_id: 'child-run' }),
+    }));
+    expect(store.isAwaitingPostCompactionReading('run-1')).toBe(true);
+    expect(store.isAwaitingPostCompactionReading('child-run')).toBe(false);
+  });
+
+  it('clears a Team member mark only on its next live model call, idempotently (D-13, SR-014)', () => {
+    const store = useTokenUsageMeterStore();
+    const member = (eventId: string, reportsModelCall: boolean, revision: number) =>
       store.applyTeamTokenUsage('team-run-1', 'member-run-1', buildTeamPayload('member-run-1', {
-        usage_event_id: eventId,
-        reports_model_call: reportsModelCall,
-        run_summary_after_event: buildSummaryDto({ run_id: 'member-run-1', root_team_run_id: 'team-run-1', usage_report_count, revision }),
+        usage_event_id: eventId, reports_model_call: reportsModelCall,
+        run_summary_after_event: buildSummaryDto({ run_id: 'member-run-1', root_team_run_id: 'team-run-1', revision }),
       }));
-    member('before-compaction', 4, 4);
     store.markCompactionCompleted('member-run-1');
+    member('turn-end-remainder', false, 5);
     expect(store.isAwaitingPostCompactionReading('member-run-1')).toBe(true);
-    member('turn-end-remainder', 4, 5, false);
-    expect(store.isAwaitingPostCompactionReading('member-run-1')).toBe(true);
-    member('next-call', 5, 6);
+    member('next-call', true, 6);
     expect(store.isAwaitingPostCompactionReading('member-run-1')).toBe(false);
-  });
-
-  it('keeps a mark made before any exact summary until the first one arrives (D-13)', () => {
-    const store = useTokenUsageMeterStore();
-    store.markCompactionCompleted('run-1');
-    expect(store.isAwaitingPostCompactionReading('run-1')).toBe(true);
-    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 1, revision: 1 }) });
-    expect(store.isAwaitingPostCompactionReading('run-1')).toBe(false);
+    // A replayed event and the same event reaching the agent entry point are harmless.
+    member('next-call', true, 6);
+    store.applyTokenUsageUpdated(buildPayload({ usage_event_id: 'next-call', run_id: 'member-run-1', reports_model_call: true,
+      run_summary_after_event: buildSummaryDto({ run_id: 'member-run-1', root_team_run_id: 'team-run-1', revision: 6 }) }));
+    expect(store.isAwaitingPostCompactionReading('member-run-1')).toBe(false);
   });
 
   it('rejects unsafe report generations at the wire and GraphQL admission boundaries', () => {
