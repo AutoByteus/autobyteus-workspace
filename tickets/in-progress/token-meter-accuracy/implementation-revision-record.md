@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 round 1 (Fail — Local Fix) | CR-F-001 | `Local Fix` | SR-005, ARCH-REV-003, CRR-001 | Ledger-era consolidation nulls Claude SDK readings; consolidation test added; returned for targeted delta review; **Pass** in CRR-002 (round 2, targeted delta), forwarded by Code Reviewer to API/E2E |
 | IR-003 | Delivery blocker DR-002 → Solution Designer SR-008 (D-11) → Architecture Reviewer ARCH-REV-004 Pass | DR-002 native-compaction reading conflict | `Design Impact` (implemented design delta) | SR-008, ARCH-REV-004, DR-002, CRR-001/002 | Native compaction usage resets the context reading; upstream test adapted; returned for code review; **Pass** in CRR-004 (round 3, no findings), forwarded by Code Reviewer to API/E2E for affected-scope validation |
 | IR-004 | Solution Designer SR-010 (D-12) and SR-011 (D-13) → Architecture Reviewer ARCH-REV-005/006 Pass | User withdrawal of D-11; user request REQ-012 / AC-012 | `Design Impact` (implemented design delta) | SR-010, SR-011, ARCH-REV-005, ARCH-REV-006 | D-11 reverted (D-12), compacted note added (D-13), standalone roll-up refetch moved to revision; returned for code review; **Pass** in CRR-005 (round 4, no open findings), forwarded by Code Reviewer to API/E2E |
+| IR-005 | API/E2E API-REV-002 Fail (F-API-002-01 / DESK-004d) → Code Reviewer CRR-006 → Solution Designer SR-012/SR-013 → Architecture Reviewer ARCH-REV-008 Pass | F-API-002-01 | `Design Impact` (implemented design correction) | SR-012, SR-013, ARCH-REV-008, CRR-006, API-REV-002 | D-13 marks hold the exact-run model-call count; a save without a call keeps the note; returned for code review |
 
 ## Revision Entries
 
@@ -132,4 +133,31 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - The note is a live-session hint only.
   - The over-window mark is hidden while the note shows.
   - AC-011 and AC-012 need user checks in the desktop app.
+
+### IR-005 — Clear the "Compacted" note only on the next model call (SR-012)
+
+- Triggering role, report path, and round: API/E2E failed round 2 (API-REV-002, F-API-002-01 / DESK-004d): after a Claude manual `/compact`, the note disappeared immediately. Code Reviewer CRR-006 traced the origin (`code-review-report.md` § Round 5) to the design rule. The Solution Designer corrected it in SR-012/SR-013, and the Architecture Reviewer passed the correction as ARCH-REV-008 (round 8).
+- Triggering finding IDs: F-API-002-01.
+- Classification: `Design Impact` (the clear rule), implemented here as a design correction.
+- Prior authoritative result: IR-004 (CRR-005 Pass). Marks used the exact-run `revision`, so the Claude turn-end remainder of a manual `/compact` turn (a save without a call, `reports_model_call: false`, about 8 ms after completion) cleared the note at once.
+- Current authoritative result:
+  - Marks hold the exact-run `usageReportCount` at `completed`, and only the next counted model call clears them. A save without a call keeps the note.
+  - The standalone roll-up uses the host's exact count.
+  - `revision` stays the freshness key only.
+  - Marking, runtime scope and the live-session limit are unchanged.
+- Related solution revision IDs: SR-012, SR-013.
+- Related architecture-review revision IDs: ARCH-REV-008.
+- Related code-review revision IDs: CRR-005 (IR-004), CRR-006 (failure origin).
+- Related API/E2E revision IDs: API-REV-002.
+- Related delivery revision IDs: N/A.
+- Why this revision is recorded: it implements the corrected D-13 clear rule.
+- Approved behavior or requirement IDs affected: REQ-012, AC-012 (Claude manual `/compact` branch).
+- Implementation delta: commit `8dd8fdf3e`.
+  - `autobyteus-web/stores/tokenUsageCompactionMarks.ts`: `modelCallsAtCompaction`, compared against the exact-run `usageReportCount`.
+  - `TokenUsageMeterPanel.vue`: comment only.
+  - Store spec: a remainder save keeps the mark, the next call clears it, roll-up calls don't clear it, and a Team-member remainder with `reports_model_call: false` keeps it.
+  - Panel spec: the note is kept through a remainder save and a roll-up change, and cleared by the next counted call.
+- Local validation and result: targeted specs 68 pass; the revision-based mutation fails 4; full Nuxt suite 4,190 pass / 5 skipped.
+- Next recipient or routing: Code Reviewer, per `get_handoff_rules`. Route: code review → API/E2E rerun (DESK-004d, AC-012) → user checks → delivery.
+- Remaining limitations or risks: RR-7 (narrowed): a counted Claude call whose context read timed out clears the note while the value is still pre-compaction. Accepted.
 
