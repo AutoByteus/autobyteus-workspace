@@ -6,7 +6,7 @@
 - Git isolated workspace: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview`; branch `codex/resume-pdf-search-preview`.
 - Refreshed base: `origin/personal` at `2756d7b298ca5b203ebd2310d172b37a5d381b5c`; `git fetch origin` succeeded 2026-10-12. Target `origin/personal` per RELEASE.md.
 - Bootstrap: successful; new templates initialized before deep investigation. Shared checkout at `/home/autobyteus/workspace/autobyteus-workspace` remains untouched (untracked .claude/, computer-use-runs/, task-plans/, web-ui-sites/).
-- Current revision: SR-003; status: ARCH-REV-001 / ARCH-F-001 Design Impact investigated; revised design complete for re-review, no implementation yet.
+- Current revision: SR-004; status: CRR-001 / CR-F-001 Design Impact investigated; revised design ready for architecture re-review. Existing implementation IR-001 search conversion and prior removals executed; no API/E2E or live delivery yet.
 - Authorities read: solution-designer SKILL; requirements-engineering, architecture-design, design-principles and requirements/investigation/revision/design templates; root AGENTS.md, DESIGN.md, TESTING.md with refreshed-base delta, RELEASE.md; web and server AGENTS.md. 2026-10-12. No closer applicable DESIGN.md found.
 
 ## Initial Request And Clarifications
@@ -60,7 +60,7 @@ The file IS lexically within the selected workspace; generic rejection wording i
 
 ## Structural And Payload Surface Inventory
 Payloads: transient search string arrays, deterministic synthetic regression PDFs/text; user PDF read only for metadata/hash, never copied or changed. No content volume or persistence schema change.
-Structural: one public workspace file-search method and its GraphQL-return format, plus bounded removal of two unused methods from that touched class (E-012); internal strategies/index/cancellation and protected content readers unchanged. Browser/store consumers already accept relative tree paths. Contract semantics correction is material enough for High risk despite Small implementation.
+Structural: one public workspace file-search method and its GraphQL-return format, plus bounded removal of three unused methods from that touched class (E-012/013; two executed IR-001, third planned SR-004); internal strategies/index/cancellation and protected content readers unchanged. Browser/store consumers already accept relative tree paths. Contract semantics correction is material enough for High risk despite Small implementation.
 Deployment: backend /app process is live and hosts ongoing agent conversations. No Docker executable or `/var/run/docker.sock` available in this agent container. Public port8001 was corroborated via startup/log configuration; actual host docker mapping/image digest not independently enumerated.
 
 ## Runtime, Probe, Or Reproduction Findings
@@ -80,13 +80,20 @@ Canonical root for owned artifacts: `/home/autobyteus/workspace/.codex/worktrees
 | evidence/installed-module-checksums.txt | Solution Designer; installed baseline module identity | REQ-003; AC-004 | Captured; not exact image digest/source commit proof |
 | evidence/baseline-isolated-reproduction.log | Solution Designer; baseline candidate-to-reader assertion and cleanup | REQ-001/002 | Passed reproduction of failure; not changed-build pass |
 | Original screenshot absolute path E-001 | User/delegator evidence | SCN-001 | Inspected; externally owned, not copied |
-| design-review-report.md | Architecture Reviewer; authoritative ARCH-REV-001 / round1 Fail — Design Impact, ARCH-F-001 removal-plan omission | REQ-004/AC-003; preserved REQ-001/003 | Reviewed R1/SR-001/SR-002; externally owned, latest decision remains Fail until reviewer re-review |
-| architecture-review-revision-record.md | Architecture Reviewer; cumulative independent review history | Same basis | ARCH-REV-001, read-only external authority |
-No implementation/validation/delivery artifacts yet.
+| design-review-report.md | Architecture Reviewer; latest ARCH-REV-002 / round2 Pass on SR-003; prior ARCH-F-001 omission resolved at plan boundary | REQ-004/AC-003; preserved REQ-001/003 | Reviewed R1/SR-001–003, externally owned; SR-004 not yet reviewed |
+| architecture-review-revision-record.md | Architecture Reviewer; cumulative independent review history | Same basis | ARCH-REV-001 Fail then ARCH-REV-002 Pass, read-only external authority |
+Implementation IR-001 and source review CRR-001 exist; no API/E2E/delivery/test-code-review artifacts yet.
+
+Additional retained specialist artifact/evidence inventory (all under canonical root; independently owned, not amended by designer):
+- `implementation-handoff.md`, `implementation-revision-record.md`: IR-001/source bc820093753dee510294b42879043daec243d4e8; prepared changed build, method/path tests, not joined PDF/render or deployment proof; REQ-001–004 context.
+- `code-review-report.md`, `code-review-revision-record.md`: CRR-001 at ddf1d7828, source baseline bc820093753dee510294b42879043daec243d4e8; Fail solely CR-F-001 retention inventory. Reviewer reports 16files/86tests pass with no skips, not future-edit/source-pass or PDF/render/delivery proof.
+- `evidence/implementation-{install,prebuild,typecheck-before-prisma,typecheck,prepare,unit,integration,reference-check,js-parity,build-identity,cleanup}.log`: implementation-owned results, source/build identity, prerequisites including initial resolved Prisma-ordering failure, 75unit +11integration passes, four TS/JS parity checks (JS not executed), fixtures/tool cleanup.
+- `evidence/code-review-{checks,reference-check}.log`: independent source-review focused checks and owner-specific serializer trace, cleanup.
+All evidentiary, not behavior-defining supplements; no extra approval. Current architecture report ARCH-REV-002 Pass on SR-003 supersedes initial ARCH-REV-001 Fail entry for its prior basis; CRR-001 remains Fail until source correction reviewed.
 
 ## Assumptions, Unknowns, And Risks
 - Actual host Docker image/tag/digest and frontend packaged version are unknown; installed functions/logs are the observed runtime basis. Delivery must inventory and pin candidate, not assume git source is active.
-- No changed source, executable regression or viewer render proof yet. Those belong to implementation/API-E2E.
+- IR-001 changed source/current built prerequisites and focused method/path regression exist, corroborated by CRR-001 focused tests. Joined GraphQL→REST PDF bytes/HTTP safety and real viewer render/client behavior remain unverified and belong to API/E2E after source-review Pass.
 - Safe rollout may require user-authorized interruption and host Docker tooling. No restart performed; no public release requested.
 - External consumers outside repository that relied on absolute search results are not evidenced. Correcting public response format is a material contract delta to review; do not add compatibility dual formats.
 - Existing symlink/TOCTOU policy is not changed or represented as stronger than current lexical containment.
@@ -108,3 +115,15 @@ Independent corroboration E-012:
 - Both area docs call current snapshot traversal getAllFilePaths (server doc:30, web doc:922); wording is factually obsolete and must describe snapshot tree/index refresh with current abort/watcher semantics.
 
 This is correction of initial incomplete dead-code inventory, NOT another PDF root cause, new scenario, security policy or performance claim. Source/test/doc edits remain assigned to Implementation/Delivery. No suites, new fixtures, live requests, server/browser processes, /app edits, restart or production data mutations performed in this revision.
+
+## Design Impact Recovery — CRR-001 / CR-F-001 (SR-004)
+Read incoming code-review report/history and implementation package before action; R1 approval, original evidence and current design/history reconfirmed. Current source bc820093753dee510294b42879043daec243d4e8 and artifact chain ddf1d7828; retained local dist outputs and designer informational receipt dirty at intake, no other owner changes discarded.
+
+E-013 independent read-only corroboration: `git grep -n toJson -- autobyteus-server-ts/src`; broad tracked explorer/fileExplorer.toJson and optional diagnostic stub reference search; explorer173–175, unit explorer.test.{ts,js}, path-boundary E2E98–110, all current class importers, private package/index/config/script inspection; SkillService385–393 and SkillResolver191.
+- WorkspaceFileExplorer.toJson only delegates to rootNode.toJson; direct unit tests and path-boundary E2E diagnostic getter are its only observed consumers. No production/reflection/script/configuration entry invokes explorer serialization. Existing package/index has no supported exported explorer contract.
+- SkillService.getSkillFileTree returns Promise<TreeNode> from DirectoryTraversal; SkillResolver calls that TreeNode.toJson. Same method name on a different owner is not a live explorer caller. Preserve live TreeNode.toJson, getTree, projections, and all readers/controller/watchers.
+- E2E diagnostic treeJson is used to assert ignored/escaping folder rejection did not mutate cached tree. Adapt observation at existing tree owner and preserve null/no-tree behavior and unchanged-tree/watcher/lease assertions, rather than deleting those useful tests or adding a runtime diagnostic API. Unit TS/JS serial-shape assertions likewise belong to existing TreeNode returned by getTree.
+- The earlier SR-003 retain-toJson sentence was an incomplete owner-specific inventory. CR-F-001 is a static mandatory cleanup gap, not an extra PDF failure/security defect or new user scenario. ARCH-F-001's named removals were executed, closure unchanged.
+- Current source review reports 86 focused passes/parity; designer did not rerun specialist checks or modify source/tests/manifests/reports. Future cleanup needs current typecheck, exact-reference/parity checks and focused unit plus path-boundary E2E on test-owned environment, then source re-review. Actual supported consumer discovery would require evidence/reassessment before deletion.
+
+No approved intent changes, renewed requirements approval, new owner/layer/persistence/security policy or broad generated-test sweep. Same Small/High classification. Full cumulative specialist contexts retained for architecture re-review → implementation correction → code re-review → API/E2E → safe delivery/user verification. This revision starts no fixture/test server/browser, sends no live request, edits no /app/user document/registry/config/database, performs no restart.
