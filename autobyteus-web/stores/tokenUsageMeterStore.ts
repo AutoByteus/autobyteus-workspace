@@ -22,6 +22,7 @@ import {
   mergeUnitPrices,
   unitPricesOrEmpty,
 } from '~/stores/tokenUsageUnitPriceSummary';
+import { createTokenUsageCompactionMarks } from '~/stores/tokenUsageCompactionMarks';
 
 export interface TeamTokenUsageMemberIdentity {
   teamRunId: string;
@@ -99,12 +100,9 @@ const rate = (numerator: number, denominator: number): number | null =>
 const addCost = (current: number | null, delta: number | null): number | null =>
   current === null && delta === null ? null : (current ?? 0) + (delta ?? 0);
 
-const normalizedStatus = (status: string): TokenUsageApiCostStatus => {
-  if (status === 'estimated' || status === 'price_missing' || status === 'partial_price_missing' || status === 'mixed' || status === 'local_no_api_bill') {
-    return status;
-  }
-  return 'price_missing';
-};
+const normalizedStatus = (status: string): TokenUsageApiCostStatus => (
+  status === 'estimated' || status === 'price_missing' || status === 'partial_price_missing' || status === 'mixed' || status === 'local_no_api_bill'
+) ? status : 'price_missing';
 
 const mergeStatus = (
   current: TokenUsageApiCostStatus,
@@ -236,6 +234,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   /** Standalone run roll-ups (host plus collaborators and copies), apart from the host's exact live summary. */
   const standaloneRunSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
   const standaloneRunRequests = new Map<string, Promise<TokenUsageRunSummary | null>>();
+  const compactionMarks = createTokenUsageCompactionMarks(runSummaries, teamMemberSummaries);
 
   function getRunSummary(runId: string | null | undefined): TokenUsageRunSummary | null {
     const id = normalizedId(runId);
@@ -512,6 +511,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     || Object.keys(teamMemberSummaries).length > 0);
 
   return {
+    ...compactionMarks,
     hasAnyUsage,
     getRunSummary,
     getStandaloneRunSummary,

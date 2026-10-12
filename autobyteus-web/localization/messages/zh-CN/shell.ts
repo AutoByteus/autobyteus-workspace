@@ -31,6 +31,7 @@ const shellMessages = {
   'shell.tokenUsage.latestPromptTooltip': '运行时自身报告的最新一次模型调用的上下文 token 数，按运行时使用的窗口计算。压缩后会下降，并不是累计运行总量。',
   'shell.tokenUsage.autoCompactsAt': '在 {{tokens}} 时自动压缩',
   'shell.tokenUsage.overContextWindow': '超出运行时的窗口',
+  'shell.tokenUsage.compactedAwaitingReading': '已压缩 — 将在下一次模型调用时更新',
   'shell.tokenUsage.runTotalMetricTooltip': '此 Autobyteus 运行的累计值。',
   'shell.tokenUsage.cacheHitTooltip': '运行累计缓存输入除以运行累计总输入。压缩可以降低最新提示词大小，但不会重置这个累计比例。',
   'shell.tokenUsage.runTotalEstimateTooltip': '此 Autobyteus 运行的累计 token 总量和预估 API 费用。',

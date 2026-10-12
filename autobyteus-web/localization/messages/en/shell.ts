@@ -31,6 +31,7 @@ const shellMessages = {
   'shell.tokenUsage.latestPromptTooltip': "The runtime's own count of tokens in context for its latest model call, measured against the window the runtime uses. It drops after compaction and is not a cumulative run total.",
   'shell.tokenUsage.autoCompactsAt': 'Auto-compacts at {{tokens}}',
   'shell.tokenUsage.overContextWindow': "Over the runtime's window",
+  'shell.tokenUsage.compactedAwaitingReading': 'Compacted — updates on the next model call',
   'shell.tokenUsage.runTotalMetricTooltip': 'Cumulative for this Autobyteus run.',
   'shell.tokenUsage.cacheHitTooltip': 'Run-total cached input divided by run-total gross input. Compaction can reduce the latest prompt without resetting this cumulative rate.',
   'shell.tokenUsage.runTotalEstimateTooltip': 'Cumulative token total and estimated API cost for this Autobyteus run.',

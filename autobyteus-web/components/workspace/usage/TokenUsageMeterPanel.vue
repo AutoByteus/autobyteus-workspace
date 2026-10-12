@@ -14,7 +14,7 @@
               <span
                 v-if="hasKnownContextCapacity(primarySummary)"
                 class="text-sm font-semibold tabular-nums"
-                :class="isOverContextWindow(primarySummary) ? 'text-amber-700' : 'text-slate-900'"
+                :class="awaitingPostCompactionReading ? 'text-slate-400' : isOverContextWindow(primarySummary) ? 'text-amber-700' : 'text-slate-900'"
                 data-test="context-percent"
               >{{ formatPercent(primarySummary.contextWindowUsagePercent ?? 0) }}</span>
             </div>
@@ -22,7 +22,7 @@
               <div class="h-2 overflow-hidden rounded-full bg-slate-100">
                 <div
                   class="h-full rounded-full"
-                  :class="isOverContextWindow(primarySummary) ? 'bg-amber-500' : 'bg-blue-500'"
+                  :class="awaitingPostCompactionReading ? 'bg-slate-300' : isOverContextWindow(primarySummary) ? 'bg-amber-500' : 'bg-blue-500'"
                   :style="{ width: formatProgressWidth(primarySummary.contextWindowUsagePercent ?? 0) }"
                   data-test="context-bar-fill"
                 />
@@ -36,7 +36,7 @@
               />
             </div>
             <div v-if="hasKnownContextCapacity(primarySummary)" class="mt-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-xs text-slate-500">
-              <p>
+              <p :class="{ 'text-slate-400': awaitingPostCompactionReading }" data-test="context-tokens">
                 {{ formatInteger(primarySummary.latestPromptTokens ?? 0) }} /
                 {{ formatInteger(primarySummary.effectiveContextWindowTokens ?? 0) }}
                 {{ $t('shell.tokenUsage.contextTokens') }}
@@ -45,10 +45,13 @@
                 {{ t('shell.tokenUsage.autoCompactsAt', { tokens: formatInteger(primarySummary.contextCompactionThresholdTokens) }) }}
               </p>
             </div>
-            <p v-else class="mt-2 text-sm text-slate-600" data-test="context-limit-unavailable">
+            <p v-else class="mt-2 text-sm" :class="awaitingPostCompactionReading ? 'text-slate-400' : 'text-slate-600'" data-test="context-limit-unavailable">
               {{ formatInteger(primarySummary.latestPromptTokens ?? 0) }} · {{ $t('shell.tokenUsage.contextLimitUnavailable') }}
             </p>
-            <p v-if="isOverContextWindow(primarySummary)" class="mt-1 text-xs font-medium text-amber-700" data-test="context-over-window">
+            <p v-if="awaitingPostCompactionReading" class="mt-2 text-xs font-medium text-slate-600" data-test="context-compacted-note">
+              {{ $t('shell.tokenUsage.compactedAwaitingReading') }}
+            </p>
+            <p v-else-if="isOverContextWindow(primarySummary)" class="mt-1 text-xs font-medium text-amber-700" data-test="context-over-window">
               {{ $t('shell.tokenUsage.overContextWindow') }}
             </p>
           </section>
@@ -225,6 +228,7 @@ import { computed, ref } from 'vue';
 import TeamTokenUsageSummary from '~/components/workspace/usage/TeamTokenUsageSummary.vue';
 import { createTokenUsageFormatter } from '~/components/workspace/usage/tokenUsageFormatting';
 import { useTokenUsageWorkspaceScope } from '~/composables/useTokenUsageWorkspaceScope';
+import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
 import type { TokenUsageRunSummary, TokenUsageUnitPriceSummary } from '~/types/tokenUsageMeter';
 
 const { t } = useLocalization();
@@ -254,6 +258,18 @@ const {
   teamTotalLoading,
   teamTotalSummary,
 } = useTokenUsageWorkspaceScope();
+
+const meterStore = useTokenUsageMeterStore();
+/**
+ * D-13: after a completed compaction on a runtime whose new size arrives only with its next call,
+ * the previous reading stays, muted, with a note. The card's run (the host for a standalone
+ * roll-up) owns the mark through its exact-run revision.
+ */
+const awaitingPostCompactionReading = computed(() => {
+  const summary = primarySummary.value;
+  return Boolean(summary && (summary.latestRuntimeKind === 'autobyteus' || summary.latestRuntimeKind === 'claude_agent_sdk')
+    && meterStore.isAwaitingPostCompactionReading(summary.runId));
+});
 
 const calculationDetailsExpanded = ref(false);
 const calculationDetailsPanelId = 'token-usage-calculation-details';

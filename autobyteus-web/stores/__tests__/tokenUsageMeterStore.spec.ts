@@ -513,6 +513,43 @@ describe('tokenUsageMeterStore', () => {
     expect(JSON.stringify(store.getRunSummary('run-1'))).not.toContain('haiku');
   });
 
+  it('awaits the next reading after a completed compaction until a newer exact revision arrives (D-13)', () => {
+    const store = useTokenUsageMeterStore();
+    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ revision: 7, latestPromptTokens: 911_000 }) });
+    expect(store.isAwaitingPostCompactionReading('run-1')).toBe(false);
+    store.markCompactionCompleted('run-1');
+    expect(store.isAwaitingPostCompactionReading('run-1')).toBe(true);
+    // The standalone roll-up advances with children; only the run's exact revision clears the mark.
+    store.upsertRecordBackedStandaloneRunSummary({ runId: 'run-1', summary: buildSummary({ revision: 20 }) });
+    expect(store.isAwaitingPostCompactionReading('run-1')).toBe(true);
+    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ revision: 8, latestPromptTokens: 42_000 }) });
+    expect(store.isAwaitingPostCompactionReading('run-1')).toBe(false);
+    expect(store.isAwaitingPostCompactionReading('other-run')).toBe(false);
+  });
+
+  it('marks a Team member through its member summary and clears on its next live summary (D-13)', () => {
+    const store = useTokenUsageMeterStore();
+    store.applyTeamTokenUsage('team-run-1', 'member-run-1', buildTeamPayload('member-run-1', {
+      usage_event_id: 'before-compaction',
+      run_summary_after_event: buildSummaryDto({ run_id: 'member-run-1', root_team_run_id: 'team-run-1', revision: 4 }),
+    }));
+    store.markCompactionCompleted('member-run-1');
+    expect(store.isAwaitingPostCompactionReading('member-run-1')).toBe(true);
+    store.applyTeamTokenUsage('team-run-1', 'member-run-1', buildTeamPayload('member-run-1', {
+      usage_event_id: 'next-call',
+      run_summary_after_event: buildSummaryDto({ run_id: 'member-run-1', root_team_run_id: 'team-run-1', revision: 5 }),
+    }));
+    expect(store.isAwaitingPostCompactionReading('member-run-1')).toBe(false);
+  });
+
+  it('keeps a mark made before any exact summary until the first one arrives (D-13)', () => {
+    const store = useTokenUsageMeterStore();
+    store.markCompactionCompleted('run-1');
+    expect(store.isAwaitingPostCompactionReading('run-1')).toBe(true);
+    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ revision: 1 }) });
+    expect(store.isAwaitingPostCompactionReading('run-1')).toBe(false);
+  });
+
   it('rejects unsafe report generations at the wire and GraphQL admission boundaries', () => {
     expect(() => mapTokenUsageRunSummaryDto({
       ...buildSummaryDto(),
