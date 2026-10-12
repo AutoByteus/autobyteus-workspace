@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID,
   TokenUsageProviderNameSnapshotBackfillMigration,
+  classifyTokenUsageProviderNameSnapshotRow,
   type RawTokenUsageProviderNameBackfillRow,
   type TokenUsageProviderNameSnapshotBackfillDatabase,
 } from "../../../src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.js";
@@ -74,5 +75,22 @@ describe("token usage provider-name snapshot backfill", () => {
     expect((await migration.execute()).status).toBe("FAILED");
     expect(database.rows[0]?.provider_name).toBeNull();
     expect((await migration.execute()).status).toBe("SUCCEEDED");
+  });
+
+  it("classifies built-in providers with the released display names, including the removed remote AutoByteus provider", () => {
+    const custom = new Map([["provider_A", "Alibaba Cloud"]]);
+    const classify = (input: Partial<RawTokenUsageProviderNameBackfillRow>) =>
+      classifyTokenUsageProviderNameSnapshotRow(row(1, input), custom);
+    expect(classify({ model_provider: "AUTOBYTEUS", model_identifier: "gpt-4o:autobyteus@host:8000" }))
+      .toEqual({ kind: "MIGRATE", providerName: "AutoByteus" });
+    expect(classify({ model_provider: " autobyteus " })).toEqual({ kind: "MIGRATE", providerName: "AutoByteus" });
+    expect(classify({ model_provider: "OPENAI" })).toEqual({ kind: "MIGRATE", providerName: "OpenAI" });
+    expect(classify({ model_provider: "LMSTUDIO" })).toEqual({ kind: "MIGRATE", providerName: "LM Studio" });
+    expect(classify({})).toEqual({ kind: "MIGRATE", providerName: "Alibaba Cloud" });
+    expect(classify({ model_identifier: "openai-compatible:provider_B:model" }))
+      .toEqual({ kind: "SKIP", reason: "SKIPPED_PROVIDER_NAME_UNRECOVERABLE" });
+    expect(classify({ model_provider: "UNKNOWN_VENDOR" }))
+      .toEqual({ kind: "SKIP", reason: "SKIPPED_PROVIDER_NAME_UNRECOVERABLE" });
+    expect(classify({ model_provider: null })).toEqual({ kind: "SKIP", reason: "SKIPPED_PROVIDER_NAME_UNRECOVERABLE" });
   });
 });

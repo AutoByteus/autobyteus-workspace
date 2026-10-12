@@ -50,7 +50,7 @@ describe("grok_build runtime registration", () => {
 
   it("serves the Grok Build catalog for grok_build selections", async () => {
     const model = { model_identifier: "grok-4.7" };
-    const service = new ModelCatalogService({} as never, {} as never, {} as never, {} as never, {} as never, {} as never, {} as never,
+    const service = new ModelCatalogService({} as never, {} as never, {} as never, {} as never, {} as never, {} as never,
       { listModels: async () => [model] } as never);
     const catalog = await service.runtimeModelSelectionCatalog("grok_build");
     expect(catalog.offeredModels).toEqual([model]);

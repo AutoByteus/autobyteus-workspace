@@ -49,12 +49,12 @@ const credentialStatus = async (serverUrl: string) =>
     }
   `);
 
-const autoByteusStatus = async (serverUrl: string) => {
+const lmStudioStatus = async (serverUrl: string) => {
   const result = await credentialStatus(serverUrl);
   const provider = result.providerCredentialSettings.find(
-    ({ provider: candidate }) => candidate.id === 'AUTOBYTEUS',
+    ({ provider: candidate }) => candidate.id === 'LMSTUDIO',
   );
-  if (!provider) throw new Error('AUTOBYTEUS_PROVIDER_STATUS_MISSING');
+  if (!provider) throw new Error('LMSTUDIO_PROVIDER_STATUS_MISSING');
   return {
     vaultHealth: result.getSecretVaultStatus.health,
     storageState: provider.apiKeyConfigured ? 'CONFIGURED' : 'MISSING',
@@ -121,7 +121,7 @@ describe('server restart one-database secret-vault lifecycle', () => {
       key: AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
       value: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
     });
-    const missing = await autoByteusStatus(firstServer.serverUrl);
+    const missing = await lmStudioStatus(firstServer.serverUrl);
     expect(missing).toEqual({
       vaultHealth: 'READY',
       storageState: 'MISSING',
@@ -136,13 +136,13 @@ describe('server restart one-database secret-vault lifecycle', () => {
           apiKeyConfigured
         }
       }
-    `, { providerId: 'AUTOBYTEUS', apiKey: syntheticCanary });
+    `, { providerId: 'LMSTUDIO', apiKey: syntheticCanary });
     expect(saved.saveProviderApiKey).toEqual({
-      provider: { id: 'AUTOBYTEUS' },
+      provider: { id: 'LMSTUDIO' },
       apiKeyConfigured: true,
     });
     expect(JSON.stringify(saved)).not.toContain(syntheticCanary);
-    expect((await autoByteusStatus(firstServer.serverUrl)).storageState).toBe('CONFIGURED');
+    expect((await lmStudioStatus(firstServer.serverUrl)).storageState).toBe('CONFIGURED');
     await firstServer.stop();
     runningServers.delete(firstServer);
     const runtimeEnvironmentAfterFirstStart = fs.readFileSync(
@@ -180,7 +180,7 @@ describe('server restart one-database secret-vault lifecycle', () => {
         .split(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)
         .length - 1,
     ).toBe(1);
-    const reopened = await autoByteusStatus(secondServer.serverUrl);
+    const reopened = await lmStudioStatus(secondServer.serverUrl);
     expect(reopened).toEqual({
       vaultHealth: 'READY',
       storageState: 'CONFIGURED',

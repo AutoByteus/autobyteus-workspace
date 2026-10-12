@@ -6,7 +6,6 @@ import { AnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
 import { GeminiLLM } from '../../../../src/llm/api/gemini-llm.js';
 import { MistralLLM } from '../../../../src/llm/api/mistral-llm.js';
 import { OllamaLLM } from '../../../../src/llm/api/ollama-llm.js';
-import { AutobyteusLLM } from '../../../../src/llm/api/autobyteus-llm.js';
 import { DeepSeekLLM } from '../../../../src/llm/api/deepseek-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
@@ -14,7 +13,6 @@ import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
 import { providerApiKeyResolver, geminiRuntimeResolver } from '../../provider-api-key-resolver-test-helpers.js';
 import type { BaseLLM } from '../../../../src/llm/base.js';
-import axios, { AxiosError } from 'axios';
 
 // Only the local transport is substituted; production adapters and installed SDK calls/retries run.
 vi.mock('../../../../src/llm/transport/local-long-running-fetch.js', () => ({
@@ -70,15 +68,5 @@ describe('compaction invocation-local SDK retry bound', () => {
     expect(fetch).toHaveBeenCalledOnce();
     // The normal cached client was not constructed or overwritten by the isolated invocation.
     expect((llm as any).clientPromise).toBeNull();
-  });
-  it('counts one remote generation request through the real axios client (not remote host internal work)', async () => {
-    const create = axios.create.bind(axios); const requests: string[] = [];
-    vi.spyOn(axios, 'create').mockImplementation(options => create({ ...options, adapter: async config => {
-      requests.push(config.url!); throw new AxiosError('Synthetic 503', 'ERR_BAD_RESPONSE', config, null,
-        { status: 503, statusText: 'Unavailable', data: {}, headers: {}, config });
-    } }));
-    const llm = new AutobyteusLLM(model(LLMProvider.AUTOBYTEUS), config(), key);
-    await expect(llm.sendMessages(messages, { logicalConversationId: 'synthetic-op' }, { retryMode: 'single_attempt' })).rejects.toThrow();
-    expect(requests).toHaveLength(1); expect(requests[0]).toMatch(/\/send-message$/);
   });
 });

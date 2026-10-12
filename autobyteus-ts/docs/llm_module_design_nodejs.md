@@ -198,16 +198,6 @@ Local runtimes:
 
 - **LM Studio**: `LMStudioLLM`, `LMStudioModelProvider`
 - **Ollama**: `OllamaLLM`, `OllamaModelProvider`
-- **Autobyteus**: `AutobyteusLLM`, `AutobyteusModelProvider`
-
-Autobyteus runtime models are remote RPA-backed LLMs discovered from
-`AUTOBYTEUS_LLM_SERVER_HOSTS`. `AutobyteusLLM` forwards `LLMConfig.extraParams`
-as the chat request `generation_config` for both `/send-message` and
-`/stream-message`, allowing remote Gemini UI/App integrators to receive the same
-kind of model-specific controls used by native providers, such as
-`thinking_level`. `AutobyteusModelProvider` preserves
-server-provided `config_schema` metadata on `LLMModel.configSchema` so UI and
-caller layers can discover those controls through `LLMModel.toModelInfo()`.
 
 Dynamic custom runtime:
 
@@ -372,7 +362,7 @@ models, see `docs/provider_model_catalogs.md`.
 - `LLMFactory.ensureInitialized()` registers built-in models and probes local
   runtimes.
 - `LLMFactory.reloadModels(provider)` supports provider-scoped reload for
-  reloadable built-in providers such as LM Studio, Ollama, and Autobyteus.
+  reloadable built-in providers such as LM Studio and Ollama.
 - Anthropic provider-scoped reload is not dynamic discovery. It returns the
   current static Anthropic catalog count until the built-in catalog is updated.
 - Reload is **replace-on-success / preserve-on-failure**. Failed built-in
@@ -502,145 +492,18 @@ can override the default live model for targeted provider compatibility checks.
 The test is a provider-acceptance and simple transcription-signal guard; token
 accounting and broad transcription-quality validation remain separate concerns.
 
-## 9. Autobyteus RPA Runtime Conversation Contract
-
-`AutobyteusLLM` is the TypeScript adapter for browser-backed RPA LLM models
-served by the AutoByteus RPA LLM server. Unlike stateless API providers, this
-runtime has a remote browser/UI conversation cache, so the adapter must send
-enough conversation context for the server to resume semantically when the
-server-side cache is absent.
-
-Every AutoByteus RPA text request must provide a stable logical id through
-`logicalConversationId`. Agent-driven requests pass the restored agent/run id;
-direct `AutobyteusLLM` callers must provide their own stable id. Missing,
-empty, or non-string ids are rejected before any HTTP request is sent.
-`AutobyteusLLM.cleanup()` tracks and cleans every explicit remote conversation
-id used by the instance.
-
-`AutobyteusClient.sendMessage(...)` and `AutobyteusClient.streamMessage(...)`
-use the same request object. Both methods also accept `{ signal }` as the
-second options argument; `AutobyteusLLM` passes `LLMInvocationOptions.signal`
-through to those client calls so native runtime interrupts abort the underlying
-Axios `/send-message` and `/stream-message` requests:
-
-```ts
-const abortController = new AbortController();
-let responseText = '';
-
-for await (const chunk of client.streamMessage({
-  conversationId: 'stable-agent-or-run-id',
-  modelName: 'gpt-5-instant-rpa',
-  payload: {
-    messages: [
-      {
-        role: 'system',
-        content: 'You are helpful.',
-        image_urls: [],
-        audio_urls: [],
-        video_urls: []
-      },
-      {
-        role: 'user',
-        content: 'Previous question',
-        image_urls: [],
-        audio_urls: [],
-        video_urls: []
-      },
-      {
-        role: 'assistant',
-        content: 'Previous answer',
-        image_urls: [],
-        audio_urls: [],
-        video_urls: []
-      },
-      {
-        role: 'user',
-        content: 'Current question',
-        image_urls: ['data:image/png;base64,...'],
-        audio_urls: [],
-        video_urls: []
-      }
-    ],
-    current_message_index: 3
-  }
-}, { signal: abortController.signal })) {
-  responseText += chunk.content ?? '';
-  if (chunk.is_complete) {
-    break;
-  }
-}
-```
-
-`AutobyteusClient.streamMessage(...)` parses RPA server-sent-event `data:`
-frames before yielding them. A parseable JSON frame with an `error` field is a
-server/provider error and is thrown with that error text; only a syntactically
-invalid JSON `data:` frame should be reported as `Invalid stream response
-format`.
-
-The payload invariants are:
-
-- `messages` is the rendered conversation transcript and must be non-empty.
-- `current_message_index` must point to the current user message.
-- HTTP transcript messages carry only `role`, rendered `content`, and media URL
-  arrays. There is no `tool_payload` field in the RPA HTTP DTO, and the server
-  request schema rejects stale extra fields.
-- Before transport, `AutobyteusPromptRenderer` reads working-context
-  `ToolCallPayload` and `ToolResultPayload` objects and renders them into
-  message `content`: assistant tool calls become canonical AutoByteus XML, and
-  tool results become deterministic records containing id, tool name, result,
-  and error information.
-- If XML-mode history ends with tool results and no current user/media carrier,
-  `AutobyteusPromptRenderer` may synthesize a current user continuation whose
-  content is only semantic completed-tool wording. It does not duplicate the
-  deterministic `Tool result:` record inside that synthetic current message.
-- Current-turn media stays attached to the current user message.
-- Historical media is represented textually by the renderer and is not
-  re-uploaded in prior transcript entries.
-- Before sending the HTTP request, `AutobyteusClient` keeps small media inline
-  as data URIs but stages larger media through the RPA server's
-  `POST /media/stage` endpoint and replaces the source with the returned
-  `media://...` URI. Default inline thresholds are 10 MiB for images, 50 MiB
-  for audio, and 25 MiB for video. They can be overridden with
-  `AUTOBYTEUS_INLINE_IMAGE_MAX_BYTES`, `AUTOBYTEUS_INLINE_AUDIO_MAX_BYTES`,
-  and `AUTOBYTEUS_INLINE_VIDEO_MAX_BYTES`.
-- Remote HTTP(S) media is staged when its size cannot be proven below the
-  inline threshold, avoiding the older full arraybuffer/base64 path for
-  unknown-size remote media.
-- The older single-field text body shape is not supported by this contract.
-
-On the RPA server, an existing cached session sends only the current user
-message to the remote UI. A cache miss creates a new browser-backed LLM
-instance and sends one neutral browser-visible user input by flattening the
-already rendered role/content transcript through
-`messages[current_message_index]`. The cache-miss input intentionally avoids
-visible resume/session/cache wrappers and never emits `Prior transcript:`,
-`Current user request:`, or a `System:` header. System-role content is included
-as an unlabeled preface when present. A first call with `[system, current user]`
-therefore appears as `<system content>\n\n<current user content>`; a first call
-with only `[current user]` appears as exactly the current user content. Multi-
-turn reconstruction keeps the unlabeled system preface, then uses ordered
-`User:`, `Assistant:`, and `Tool:` blocks for non-system history and ends with
-the current `User:` block. The server does not parse tool payloads and does not
-generate tool XML. The TypeScript renderer therefore provides deterministic
-rendered `Tool:` records and minimal completed-tool current-user wording; the
-browser-cache-hit composition that decides how much prior rendered `Tool:`
-history to include remains an RPA-server responsibility.
-
-## 10. Testing
+## 9. Testing
 
 Focused unit coverage for this contract lives in:
 
 - `tests/unit/llm/models.test.ts`
 - `tests/unit/llm/openai-compatible-endpoint-provider.test.ts`
-- `tests/unit/llm/api/autobyteus-llm.test.ts`
 - `tests/unit/llm/api/provider-native-request-payloads.test.ts`
-- `tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts`
 - `tests/unit/llm/prompt-renderers/openai-chat-renderer.test.ts`
 - `tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts`
 - `tests/unit/llm/utils/media-payload-formatter.test.ts`
 - `tests/unit/utils/media-file-kind.test.ts`
 - `tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts`
-- `tests/unit/clients/autobyteus-client.test.ts`
 - `tests/unit/agent/loop/agent-turn-input-box.test.ts`
 - `tests/unit/agent/loop/tool-result-continuation-builder.test.ts`
 - `tests/unit/agent/message/tool-continuation-display-text.test.ts`
@@ -651,8 +514,7 @@ Provider-native continuation integration coverage lives in
 drives the local agent event loop across the in-scope native providers, verifies
 that native tool results continue through provider-native carriers, and rejects
 the old synthetic aggregate user message. Renderer unit coverage also verifies
-semantic media-carrier wording for OpenAI-compatible, Gemini, and AutoByteus RPA
-payloads. Broader integration tests remain under `tests/integration/llm/...`.
+semantic media-carrier wording for OpenAI-compatible and Gemini payloads. Broader integration tests remain under `tests/integration/llm/...`.
 
 Direct-Gemini media continuation coverage also includes
 `tests/integration/agent/read-media-file-continuation-flow.test.ts` for the
@@ -661,7 +523,7 @@ and the env-gated
 `tests/integration/agent/gemini-read-media-file-m4a-live.test.ts` for live
 `.m4a` provider acceptance.
 
-## 11. Where to Update
+## 10. Where to Update
 
 - Add built-in LLM API models in `src/llm/supported-model-definitions.ts`.
 - Add docs-backed static LLM context/input/output metadata, multimodal

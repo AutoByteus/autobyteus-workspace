@@ -13,9 +13,9 @@ describe('LlmProviderService', () => {
   });
   const openAiProvider = provider(LLMProvider.OPENAI, 'OpenAI');
   const geminiProvider = provider(LLMProvider.GEMINI, 'Gemini');
-  const autobyteusProvider = provider(LLMProvider.AUTOBYTEUS, 'AutoByteus', 'DISCOVERED');
+  const lmStudioProvider = provider(LLMProvider.LMSTUDIO, 'LM Studio', 'DISCOVERED');
   const qwenProvider = provider(LLMProvider.QWEN, 'Qwen');
-  const builtInProviders = [openAiProvider, geminiProvider, autobyteusProvider, qwenProvider];
+  const builtInProviders = [openAiProvider, geminiProvider, lmStudioProvider, qwenProvider];
   const customEndpoint = {
     id: 'provider_internal_gateway',
     name: 'Internal Gateway',
@@ -30,7 +30,7 @@ describe('LlmProviderService', () => {
     listProviders: vi.fn(), getProviderById: vi.fn(), createProvider: vi.fn(), deleteProvider: vi.fn(),
   };
   const modelCatalogService = {
-    notifyCredentialRevision: vi.fn(), seedCustomProvider: vi.fn(), removeCustomProvider: vi.fn(),
+    seedCustomProvider: vi.fn(), removeCustomProvider: vi.fn(),
   };
   const discovery = { probeEndpoint: vi.fn() };
   const secretManagement = {
@@ -103,10 +103,9 @@ describe('LlmProviderService', () => {
 
     expect(result.find(({ provider: descriptor }) => descriptor.id === LLMProvider.OPENAI))
       .toEqual({ provider: openAiProvider, apiKeyConfigured: true });
-    expect(result.find(({ provider: descriptor }) => descriptor.id === LLMProvider.AUTOBYTEUS))
-      .toEqual({ provider: autobyteusProvider, apiKeyConfigured: true });
+    expect(result.find(({ provider: descriptor }) => descriptor.id === LLMProvider.LMSTUDIO))
+      .toEqual({ provider: lmStudioProvider, apiKeyConfigured: true });
     expect(result[0]?.provider).not.toHaveProperty('apiKeyConfigured');
-    expect(modelCatalogService.notifyCredentialRevision).not.toHaveBeenCalled();
     expect(modelCatalogService.seedCustomProvider).not.toHaveBeenCalled();
   });
 
@@ -167,16 +166,15 @@ describe('LlmProviderService', () => {
       .rejects.toThrow("Deleting built-in providers is not supported. Received 'OPENAI'.");
   });
 
-  it('saves ordinary static credentials without model work and schedules AutoByteus separately', async () => {
+  it('saves static and discovered provider credentials without model catalog work', async () => {
     await expect(createService().setProviderApiKey('OPENAI', 'synthetic-key')).resolves.toEqual({
       provider: openAiProvider, apiKeyConfigured: true,
     });
-    expect(modelCatalogService.notifyCredentialRevision).not.toHaveBeenCalled();
-
-    await expect(createService().setProviderApiKey('AUTOBYTEUS', 'synthetic-key')).resolves.toEqual({
-      provider: autobyteusProvider, apiKeyConfigured: true,
+    await expect(createService().setProviderApiKey('LMSTUDIO', 'synthetic-key')).resolves.toEqual({
+      provider: lmStudioProvider, apiKeyConfigured: true,
     });
-    expect(modelCatalogService.notifyCredentialRevision).toHaveBeenCalledWith(LLMProvider.AUTOBYTEUS);
+    expect(modelCatalogService.seedCustomProvider).not.toHaveBeenCalled();
+    expect(modelCatalogService.removeCustomProvider).not.toHaveBeenCalled();
     await expect(createService().setProviderApiKey('QWEN', 'synthetic-key'))
       .rejects.toThrow('saveQwenConfiguration');
   });
@@ -195,7 +193,7 @@ describe('LlmProviderService', () => {
     expect(discovery.probeEndpoint).toHaveBeenCalledWith({
       baseUrl: 'https://regional.example.com/compatible-mode/v1', apiKey: 'new-key',
     });
-    expect(modelCatalogService.notifyCredentialRevision).not.toHaveBeenCalled();
+    expect(modelCatalogService.seedCustomProvider).not.toHaveBeenCalled();
   });
 
   it('restores the previous Qwen key when durable URL persistence fails', async () => {
@@ -233,7 +231,7 @@ describe('LlmProviderService', () => {
       { option: 'AI_STUDIO', apiKey: 'synthetic-key' }, true,
     )).resolves.toEqual(expected);
     await expect(service.activateGeminiOption('AI_STUDIO')).resolves.toEqual(expected);
-    expect(modelCatalogService.notifyCredentialRevision).not.toHaveBeenCalled();
+    expect(modelCatalogService.seedCustomProvider).not.toHaveBeenCalled();
   });
 
   it('projects the default and configured Qwen endpoint source', async () => {

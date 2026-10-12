@@ -253,7 +253,7 @@ describe('LlmProviderResolver', () => {
   it('delegates exact-provider ensure and reload mutations', async () => {
     const snapshot = {
       runtimeKind: 'autobyteus',
-      ownerProvider: { ...provider('AUTOBYTEUS'), catalogMode: 'DISCOVERED' },
+      ownerProvider: { ...provider('OLLAMA'), catalogMode: 'DISCOVERED' },
       sources: [{
         modelKind: 'LLM', state: 'READY', modelCount: 0,
         successfulUnitCount: 1, failedUnitCount: 0, safeMessage: null,
@@ -264,13 +264,13 @@ describe('LlmProviderResolver', () => {
     mockModelCatalogService.reloadProviderModelCatalog.mockResolvedValue(snapshot);
     const resolver = new LlmProviderResolver();
 
-    await expect(resolver.ensureProviderModelCatalog('AUTOBYTEUS', 'autobyteus'))
-      .resolves.toMatchObject({ ownerProvider: { id: 'AUTOBYTEUS' } });
-    await expect(resolver.reloadProviderModelCatalog('AUTOBYTEUS', 'autobyteus'))
+    await expect(resolver.ensureProviderModelCatalog('OLLAMA', 'autobyteus'))
+      .resolves.toMatchObject({ ownerProvider: { id: 'OLLAMA' } });
+    await expect(resolver.reloadProviderModelCatalog('OLLAMA', 'autobyteus'))
       .resolves.toMatchObject({ sources: [expect.objectContaining({ state: 'READY' })] });
     expect(mockModelCatalogService.ensureProviderModelCatalog)
-      .toHaveBeenCalledWith('AUTOBYTEUS', 'autobyteus');
+      .toHaveBeenCalledWith('OLLAMA', 'autobyteus');
     expect(mockModelCatalogService.reloadProviderModelCatalog)
-      .toHaveBeenCalledWith('AUTOBYTEUS', 'autobyteus');
+      .toHaveBeenCalledWith('OLLAMA', 'autobyteus');
   });
 });

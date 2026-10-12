@@ -104,7 +104,6 @@ describe('custom provider metadata GraphQL E2E', () => {
       VERTEX_AI_LOCATION: process.env.VERTEX_AI_LOCATION,
       OLLAMA_HOSTS: process.env.OLLAMA_HOSTS,
       LMSTUDIO_HOSTS: process.env.LMSTUDIO_HOSTS,
-      AUTOBYTEUS_LLM_SERVER_HOSTS: process.env.AUTOBYTEUS_LLM_SERVER_HOSTS,
     };
     delete process.env.DATABASE_URL;
     delete process.env.GEMINI_SETUP_MODE;
@@ -112,7 +111,6 @@ describe('custom provider metadata GraphQL E2E', () => {
     delete process.env.VERTEX_AI_LOCATION;
     process.env.OLLAMA_HOSTS = ' ';
     process.env.LMSTUDIO_HOSTS = ' ';
-    process.env.AUTOBYTEUS_LLM_SERVER_HOSTS = ' ';
 
     const suffix = `${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     tempDirectory = path.join(testRuntimeRoot, `custom-provider-metadata-${suffix}`);

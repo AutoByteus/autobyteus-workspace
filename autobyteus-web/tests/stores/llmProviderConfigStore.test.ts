@@ -41,7 +41,7 @@ const setting = (id: string, apiKeyConfigured: boolean, catalogMode: 'STATIC' | 
   provider: provider(id, catalogMode),
   apiKeyConfigured,
 })
-const model = (id: string, owner = 'AUTOBYTEUS') => ({
+const model = (id: string, owner = 'LMSTUDIO') => ({
   modelIdentifier: id,
   name: id,
   value: id,
@@ -72,15 +72,15 @@ const snapshot = (
 })
 const catalogResponse = (runtimeKind: string, rows = ['current']) => ({
   providerModelCatalogSnapshots: [snapshot(
-    runtimeKind === 'autobyteus' ? 'AUTOBYTEUS' : runtimeKind.toUpperCase(),
+    runtimeKind === 'autobyteus' ? 'LMSTUDIO' : runtimeKind.toUpperCase(),
     'READY',
     rows.map(row => `${runtimeKind}-${row}`),
     runtimeKind,
   )],
 })
-const autobyteusMultimediaSnapshot = (suffix: string) => ({
+const discoveredSnapshotWithMedia = (suffix: string) => ({
   runtimeKind: 'autobyteus',
-  ownerProvider: provider('AUTOBYTEUS', 'DISCOVERED'),
+  ownerProvider: provider('LMSTUDIO', 'DISCOVERED'),
   sources: (['LLM', 'AUDIO', 'IMAGE'] as const).map(modelKind => ({
     modelKind,
     state: 'READY' as const,
@@ -157,25 +157,25 @@ describe('llmProviderConfig provider-scoped catalog state', () => {
   it('runs exact-provider ensure/reload mutations and retains rows while refreshing', async () => {
     const reload = deferred<unknown>()
     const query = vi.fn().mockResolvedValue({
-      data: { providerModelCatalogSnapshots: [snapshot('AUTOBYTEUS', 'READY', ['known'])] },
+      data: { providerModelCatalogSnapshots: [snapshot('LMSTUDIO', 'READY', ['known'])] },
     })
     const mutate = vi.fn()
-      .mockResolvedValueOnce({ data: { ensureProviderModelCatalog: snapshot('AUTOBYTEUS', 'READY', ['known']) } })
+      .mockResolvedValueOnce({ data: { ensureProviderModelCatalog: snapshot('LMSTUDIO', 'READY', ['known']) } })
       .mockReturnValueOnce(reload.promise)
     vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as never)
     const store = useLLMProviderConfigStore()
     await store.fetchProvidersWithModels('autobyteus')
 
-    await store.ensureProviderModelCatalog('autobyteus', 'AUTOBYTEUS')
+    await store.ensureProviderModelCatalog('autobyteus', 'LMSTUDIO')
     expect(mutate).toHaveBeenNthCalledWith(1, expect.objectContaining({
       mutation: ENSURE_PROVIDER_MODEL_CATALOG,
-      variables: { providerId: 'AUTOBYTEUS', runtimeKind: 'autobyteus' },
+      variables: { providerId: 'LMSTUDIO', runtimeKind: 'autobyteus' },
     }))
 
-    const action = store.reloadProvider('autobyteus', 'AUTOBYTEUS')
+    const action = store.reloadProvider('autobyteus', 'LMSTUDIO')
     expect(store.models('autobyteus')).toEqual(['known'])
-    expect(store.providerSnapshot('autobyteus', 'AUTOBYTEUS')?.sources[0]?.state).toBe('REFRESHING')
-    reload.resolve({ data: { reloadProviderModelCatalog: snapshot('AUTOBYTEUS', 'READY', ['current']) } })
+    expect(store.providerSnapshot('autobyteus', 'LMSTUDIO')?.sources[0]?.state).toBe('REFRESHING')
+    reload.resolve({ data: { reloadProviderModelCatalog: snapshot('LMSTUDIO', 'READY', ['current']) } })
     await expect(action).resolves.toMatchObject({ llmModels: [expect.objectContaining({ modelIdentifier: 'current' })] })
     expect(mutate).toHaveBeenNthCalledWith(2, expect.objectContaining({ mutation: RELOAD_PROVIDER_MODEL_CATALOG }))
   })
@@ -184,13 +184,13 @@ describe('llmProviderConfig provider-scoped catalog state', () => {
     const query = vi.fn().mockResolvedValue({
       data: {
         providerModelCatalogSnapshots: [
-          snapshot('AUTOBYTEUS', 'IDLE', ['retained']),
+          snapshot('LMSTUDIO', 'IDLE', ['retained']),
           snapshot('OLLAMA', 'IDLE'),
         ],
       },
     })
     const mutate = vi.fn().mockImplementation(({ variables }) =>
-      variables.providerId === 'AUTOBYTEUS'
+      variables.providerId === 'LMSTUDIO'
         ? Promise.reject(new Error('sensitive discovery failure'))
         : Promise.resolve({
             data: { ensureProviderModelCatalog: snapshot('OLLAMA', 'READY', ['local-current']) },
@@ -200,7 +200,7 @@ describe('llmProviderConfig provider-scoped catalog state', () => {
 
     await expect(store.ensureMissingDynamicProviders('autobyteus')).resolves.toBeUndefined()
     expect(mutate).toHaveBeenCalledTimes(2)
-    expect(store.providerSnapshot('autobyteus', 'AUTOBYTEUS')).toMatchObject({
+    expect(store.providerSnapshot('autobyteus', 'LMSTUDIO')).toMatchObject({
       llmModels: [expect.objectContaining({ modelIdentifier: 'retained' })],
       sources: [expect.objectContaining({
         state: 'STALE_ERROR',
@@ -217,57 +217,55 @@ describe('llmProviderConfig provider-scoped catalog state', () => {
     const old = deferred<unknown>()
     const current = deferred<unknown>()
     const query = vi.fn().mockResolvedValue({
-      data: { providerModelCatalogSnapshots: [snapshot('AUTOBYTEUS', 'IDLE')] },
+      data: { providerModelCatalogSnapshots: [snapshot('LMSTUDIO', 'IDLE')] },
     })
     const mutate = vi.fn().mockReturnValueOnce(old.promise).mockReturnValueOnce(current.promise)
     vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as never)
     const store = useLLMProviderConfigStore()
     await store.fetchProvidersWithModels('autobyteus')
 
-    const oldAction = store.ensureProviderModelCatalog('autobyteus', 'AUTOBYTEUS')
-    const currentAction = store.reloadProvider('autobyteus', 'AUTOBYTEUS')
-    current.resolve({ data: { reloadProviderModelCatalog: snapshot('AUTOBYTEUS', 'READY', ['current']) } })
+    const oldAction = store.ensureProviderModelCatalog('autobyteus', 'LMSTUDIO')
+    const currentAction = store.reloadProvider('autobyteus', 'LMSTUDIO')
+    current.resolve({ data: { reloadProviderModelCatalog: snapshot('LMSTUDIO', 'READY', ['current']) } })
     await currentAction
-    old.resolve({ data: { ensureProviderModelCatalog: snapshot('AUTOBYTEUS', 'READY', ['old']) } })
+    old.resolve({ data: { ensureProviderModelCatalog: snapshot('LMSTUDIO', 'READY', ['old']) } })
     await oldAction
     expect(store.models('autobyteus')).toEqual(['current'])
   })
 
-  it('clears exact discovery-setting sources before a guarded non-forcing ensure', async () => {
+  it('clears only the discovery-setting LLM source before a guarded non-forcing ensure', async () => {
     const old = deferred<unknown>()
     const current = deferred<unknown>()
     const mutate = vi.fn().mockReturnValueOnce(old.promise).mockReturnValueOnce(current.promise)
     vi.mocked(getApolloClient).mockReturnValue({ mutate } as never)
     const store = useLLMProviderConfigStore()
-    store.applyProviderSnapshotLocal('autobyteus', autobyteusMultimediaSnapshot('known'))
+    store.applyProviderSnapshotLocal('autobyteus', discoveredSnapshotWithMedia('known'))
 
-    const oldAction = store.ensureProviderModelCatalog('autobyteus', 'AUTOBYTEUS')
-    const convergence = store.convergeAfterDiscoverySettingCommit('autobyteus', {
-      ownerProviderId: 'AUTOBYTEUS',
-      modelKinds: ['LLM', 'AUDIO', 'IMAGE'],
-    })
+    const oldAction = store.ensureProviderModelCatalog('autobyteus', 'LMSTUDIO')
+    const convergence = store.convergeAfterDiscoverySettingCommit('autobyteus', { ownerProviderId: 'LMSTUDIO' })
 
-    const during = store.providerSnapshot('autobyteus', 'AUTOBYTEUS')!
+    const during = store.providerSnapshot('autobyteus', 'LMSTUDIO')!
     expect(during.llmModels).toEqual([])
-    expect(during.audioModels).toEqual([])
-    expect(during.imageModels).toEqual([])
+    expect(during.audioModels.map(row => row.modelIdentifier)).toEqual(['audio-known'])
+    expect(during.imageModels.map(row => row.modelIdentifier)).toEqual(['image-known'])
     expect(during.videoModels.map(row => row.modelIdentifier)).toEqual(['video-known'])
-    expect(during.sources).toEqual(expect.arrayContaining([
-      expect.objectContaining({ modelKind: 'LLM', state: 'LOADING', modelCount: 0, safeMessage: null }),
-      expect.objectContaining({ modelKind: 'AUDIO', state: 'LOADING', modelCount: 0, safeMessage: null }),
-      expect.objectContaining({ modelKind: 'IMAGE', state: 'LOADING', modelCount: 0, safeMessage: null }),
-    ]))
+    // Media rows survive the LLM-only reset, so the LLM source refreshes rather than cold-loads.
+    expect(during.sources).toEqual([
+      expect.objectContaining({ modelKind: 'LLM', state: 'REFRESHING', modelCount: 0, safeMessage: null }),
+      expect.objectContaining({ modelKind: 'AUDIO', modelCount: 1 }),
+      expect.objectContaining({ modelKind: 'IMAGE', modelCount: 1 }),
+    ])
     expect(mutate).toHaveBeenNthCalledWith(2, expect.objectContaining({
       mutation: ENSURE_PROVIDER_MODEL_CATALOG,
-      variables: { providerId: 'AUTOBYTEUS', runtimeKind: 'autobyteus' },
+      variables: { providerId: 'LMSTUDIO', runtimeKind: 'autobyteus' },
     }))
 
-    current.resolve({ data: { ensureProviderModelCatalog: autobyteusMultimediaSnapshot('current') } })
+    current.resolve({ data: { ensureProviderModelCatalog: discoveredSnapshotWithMedia('current') } })
     await convergence
-    old.resolve({ data: { ensureProviderModelCatalog: autobyteusMultimediaSnapshot('old') } })
+    old.resolve({ data: { ensureProviderModelCatalog: discoveredSnapshotWithMedia('old') } })
     await oldAction
 
-    const final = store.providerSnapshot('autobyteus', 'AUTOBYTEUS')!
+    const final = store.providerSnapshot('autobyteus', 'LMSTUDIO')!
     expect(final.llmModels.map(row => row.modelIdentifier)).toEqual(['llm-current'])
     expect(final.videoModels.map(row => row.modelIdentifier)).toEqual(['video-current'])
   })
@@ -281,26 +279,23 @@ describe('llmProviderConfig provider-scoped catalog state', () => {
     const store = useLLMProviderConfigStore()
 
     const oldRead = store.fetchProvidersWithModels('autobyteus')
-    const convergence = store.convergeAfterDiscoverySettingCommit('autobyteus', {
-      ownerProviderId: 'AUTOBYTEUS',
-      modelKinds: ['LLM', 'AUDIO', 'IMAGE'],
-    })
+    const convergence = store.convergeAfterDiscoverySettingCommit('autobyteus', { ownerProviderId: 'LMSTUDIO' })
     currentEnsure.resolve({
-      data: { ensureProviderModelCatalog: snapshot('AUTOBYTEUS', 'READY', ['current-endpoint']) },
+      data: { ensureProviderModelCatalog: snapshot('LMSTUDIO', 'READY', ['current-endpoint']) },
     })
     await convergence
 
     wholeCatalog.resolve({
       data: {
         providerModelCatalogSnapshots: [
-          snapshot('AUTOBYTEUS', 'READY', ['old-endpoint']),
+          snapshot('LMSTUDIO', 'READY', ['old-endpoint']),
           snapshot('OPENAI', 'READY', ['unrelated']),
         ],
       },
     })
     await oldRead
 
-    expect(store.providerSnapshot('autobyteus', 'AUTOBYTEUS')?.llmModels
+    expect(store.providerSnapshot('autobyteus', 'LMSTUDIO')?.llmModels
       .map(row => row.modelIdentifier)).toEqual(['current-endpoint'])
     expect(store.providerSnapshot('autobyteus', 'OPENAI')?.llmModels
       .map(row => row.modelIdentifier)).toEqual(['unrelated'])
@@ -357,17 +352,17 @@ describe('llmProviderConfig provider-scoped catalog state', () => {
 
   it('localizes transport failure to the exact provider and retains last-known rows', async () => {
     const query = vi.fn().mockResolvedValue({
-      data: { providerModelCatalogSnapshots: [snapshot('AUTOBYTEUS', 'READY', ['known'])] },
+      data: { providerModelCatalogSnapshots: [snapshot('LMSTUDIO', 'READY', ['known'])] },
     })
     const mutate = vi.fn().mockRejectedValue(new Error('sensitive transport response'))
     vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as never)
     const store = useLLMProviderConfigStore()
     await store.fetchProvidersWithModels('autobyteus')
 
-    await expect(store.reloadProvider('autobyteus', 'AUTOBYTEUS'))
+    await expect(store.reloadProvider('autobyteus', 'LMSTUDIO'))
       .rejects.toThrow('sensitive transport response')
     expect(store.models('autobyteus')).toEqual(['known'])
-    expect(store.providerSnapshot('autobyteus', 'AUTOBYTEUS')?.sources[0]).toMatchObject({
+    expect(store.providerSnapshot('autobyteus', 'LMSTUDIO')?.sources[0]).toMatchObject({
       state: 'STALE_ERROR', safeMessage: 'MODEL_CATALOG_REQUEST_FAILED',
     })
   })

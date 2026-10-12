@@ -47,7 +47,6 @@ upsert_env_var() {
   mv "${tmp_file}" "${ENV_FILE}"
 }
 
-upsert_env_var "AUTOBYTEUS_LLM_SERVER_HOSTS" "${AUTOBYTEUS_LLM_SERVER_HOSTS:-}"
 upsert_env_var "OLLAMA_HOSTS" "${OLLAMA_HOSTS:-http://host.docker.internal:11434}"
 upsert_env_var "LMSTUDIO_HOSTS" "${LMSTUDIO_HOSTS:-http://host.docker.internal:1234}"
 upsert_env_var "AUTOBYTEUS_LOG_DIR" "${AUTOBYTEUS_LOG_DIR}"

@@ -34,8 +34,8 @@ aggregate catalog cache, own discovery fingerprints, one in-flight operation,
 generation fencing, partial/stale status, and provider-targeted ensure/reload.
 The public server snapshot read is local and does not start discovery. There is
 no global capability reload: static providers have no Reload action, while
-AutoByteus, Ollama, LM Studio, and each custom OpenAI-compatible provider are
-independent discovered sources.
+Ollama, LM Studio, and each custom OpenAI-compatible provider are independent
+discovered sources. Audio, image, and video models are static registrations.
 
 Host-scoped model identifiers preserve normalized full endpoint identity,
 including path and query. After restart, construction may ensure only the exact
@@ -209,8 +209,8 @@ for external provider requests: `logicalConversationId`,
 `requestId`. It drops null/undefined values and lets each adapter name
 its own controlled request fields such as `stream`, `tools`, or `tool_choice`.
 
-`logicalConversationId` remains required for `AutobyteusLLM` hosted/browser
-conversations. The filtering rule applies when requests leave AutoByteus for
+`LlmPhase` passes the agent's conversation id as `logicalConversationId`. The
+filtering rule applies when requests leave AutoByteus for
 external providers such as Anthropic, Mistral, or OpenAI-compatible endpoints.
 Do not remove the internal kwarg from `LlmPhase` to fix an external provider
 request error.
