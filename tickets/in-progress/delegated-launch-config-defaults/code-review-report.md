@@ -14,20 +14,20 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/in-progress/delegated-launch-config-defaults/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation handoff IR-001 from `/software_engineering_team/implementation_engineer`
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1): the delta `035b208d5..881c4e4ce` changes only `root-team-run.ts`, which removes the dead method and an unused import, and two test files: `team-root-collaborators.test.ts` and its harness. These are exactly CR-001's files. The delta touches no data-flow spine, shared interface, data shape, web or contract file. Round-1 evidence for all other checks carries forward unchanged.
+- Trigger: local-fix handoff IR-002 from `/software_engineering_team/implementation_engineer` (CR-001)
+- Prior Review Round Reviewed: 1 (CRR-001, `Fail`, CR-001)
+- Latest Authoritative Round: 2
 - Coverage Investigation / Execution Coverage / API/E2E Revision Record: N/A (implementation review)
 - Delivery Revision Record: N/A
 - Failing Scenario IDs / Commands / Evidence: N/A
 
-Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults`, branch `codex/delegated-launch-config-defaults`, `beb6b3b49..035b208d5` (server + contracts `55092536a`, web `035b208d5`).
+Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults`, branch `codex/delegated-launch-config-defaults`, `beb6b3b49..881c4e4ce` (server + contracts `55092536a`, web `035b208d5`, CR-001 fix `881c4e4ce`). Round 2 delta: `035b208d5..881c4e4ce`.
 
 ## Routing Classification Review
 
@@ -115,10 +115,10 @@ Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delega
 | Naming quality | Pass | Names match the design vocabulary | — |
 | No unjustified duplication | Pass | Two DTO projections differ only by casing (design-sanctioned) | — |
 | Patch-on-patch complexity control | Pass | — | — |
-| Dead code removed in the touched files and modules | Fail | `RootTeamRun.getAgentExecution` retained (CR-001) | Remove it and its test-only usages |
+| Dead code removed in the touched files and modules | Pass | Round 2: `getAgentExecution` and its now-unused `AgentLaunchConfiguration` import removed. `grep getAgentExecution` finds nothing in server src/tests. The remaining identity imports are still used | — |
 | Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Tests named by AC/REQ/QR; QR-001 batching asserted; AR-002 no-repeat cases covered | — |
 | Test fixtures/helpers reusable, structure coherent | Pass | — | — |
-| No stale, duplicated, or compatibility-only tests | Pass | Runnability validator tests removed with the file | — |
+| No stale, duplicated, or compatibility-only tests | Pass | The runnability validator tests were removed with the file. Round 2: the three dead-method assertions were removed. The two placement assertions are re-expressed through the production `createStoredTeamRunExecutionTreeLocationService(...).findAgent` (used in production by `collaboration-execution-location-service.ts`). The extra-copy assertion was dropped because its placement is already asserted on the execution tree | — |
 | API/E2E readiness | Pass | Behavior complete; downstream hints in handoff are concrete | — |
 
 ## Source File Size And Structure Audit (If Applicable)
@@ -127,7 +127,7 @@ Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delega
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `autobyteus-web/services/teamExecution/teamExecutionViewState.ts` | 497 | Pass | Pass (+3) | Pass | Pass | Near limit | None now |
 | `autobyteus-web/stores/chatDraftStore.ts` | 492 | Pass | Pass (77) | Pass | Pass | Near limit (pressure) | None now; next growth should extract |
-| `autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts` | 472 | Pass | Pass (2) | Pass | Pass | CR-001 | Remove dead method |
+| `autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts` | ~450 | Pass | Pass | Pass | Pass | CR-001 resolved | — |
 | `autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts` | 449 | Pass | Pass | Pass | Pass | — | — |
 | `autobyteus-web/stores/agentOrgLaunchDraftStore.ts` | 425 | Pass | Pass (44) | Pass | Pass | — | — |
 | `autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-launch-resolver.ts` (new) | 186 | Pass | Pass | Pass | Pass | — | — |
@@ -140,7 +140,7 @@ Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delega
 | --- | --- | --- |
 | No backward-compatibility mechanisms in changed scope | Pass | Optional current-schema fields with truthful absence |
 | No legacy old-behavior retention in changed scope | Pass | Root-clone path and runnability validator removed |
-| Dead code removed in the touched files and modules | Fail | CR-001 |
+| Dead code removed in the touched files and modules | Pass | CR-001 resolved in round 2 |
 | Approved persisted-data transition decision followed without unnecessary migration | Pass | `Directly Usable — No Migration`; no migration added |
 | No version-specific dual reads/writes or request-time old-shape fallback | Pass | `effectiveMemberLaunchConfiguration` is the current rule, not a version branch |
 | Approved transition mechanics match the reviewed design | Pass | AC-009 fixture test |
@@ -149,7 +149,7 @@ Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delega
 
 | Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
 | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts` `getAgentExecution` (lines 241–262) | DeadCode | Only callers: `tests/unit/agent-team-execution/team-root-collaborators.test.ts:59,62,117`; typecheck/search show no production reference; the handoff itself classifies it as dead | Core Principle 7 (touched file); design Removal Plan "Dead code in touched files — In This Change"; it now holds a member-launch read that bypasses `effectiveMemberLaunchConfiguration` | Remove the method; in `team-root-collaborators.test.ts`, drop the three assertions or re-express any still-needed placement assertion through the production surface that exposes it |
+| `root-team-run.ts` `getAgentExecution` | DeadCode | — | — | **Removed in round 2 (`881c4e4ce`)**; nothing remaining |
 
 ## Docs-Impact Verdict
 
@@ -171,8 +171,8 @@ No new or reclassified premise.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.2
-- Overall score (`/100`): 92
+- Overall score (`/10`): 9.3
+- Overall score (`/100`): 93
 - Score calculation note: simple average; not the decision rule.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
@@ -186,11 +186,15 @@ No new or reclassified premise.
 | `7` | `API/E2E Readiness` | 9.2 | Complete behavior, concrete coverage hints, targeted suites pass | Settings section unrendered so far (left to API/E2E) | — |
 | `8` | `Runtime Correctness And Behavioral Fidelity` | 9.3 | Layer order, unit-per-layer, inherited wording, fresh-only notes, pin rules and old-record reads verified | — | — |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Validator and root-clone path removed; no version branches | — | — |
-| `10` | `Cleanup Completeness` | 8.5 | Designed removals done; an eighth site found and fixed | CR-001: dead method retained in a touched file, now with a divergent member-launch read | Remove `getAgentExecution` and its test usages |
+| `10` | `Cleanup Completeness` | 9.3 | Designed removals done; an eighth site found and fixed; CR-001 dead method removed with test usages re-expressed through a production surface | — | — |
 
 ## Findings
 
-### CR-001 — Dead `RootTeamRun.getAgentExecution` retained in a touched file (Low, Local Fix)
+### CR-001 — Dead `RootTeamRun.getAgentExecution` retained in a touched file (Low, Local Fix) — **Resolved (round 2)**
+
+- Resolution: `881c4e4ce` removed the method and its unused import. Its three test uses were removed: two placement assertions are re-expressed through the stored-tree location service, and the extra-copy assertion is already covered by the execution-tree assertion. Verified with a reviewer-run typecheck (exit 0) and `team-root-collaborators.test.ts` (7/7 pass). No open findings remain.
+
+Original record:
 
 - Contract: Core Principle 7 (remove dead code in touched files, including pre-existing dead code); design-spec Removal Plan row "Dead code in touched files — In This Change"; DS-005 Boundary Encapsulation Map (member launch read only through the effective-member rule). Candidate C-001.
 - Evidence: `autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts:241-262`. No production caller; only `tests/unit/agent-team-execution/team-root-collaborators.test.ts:59,62,117`. This change edited its line 258 to `execution.source.launchConfiguration ?? null`. For a collaborator-Team member without its own launch (`team-execution-index.ts:39`, `source: CollaboratorTeamMember`), that returns `null` rather than the Team's launch. That is a second member-launch reading, which this ticket removed everywhere else. The handoff lists the method as a follow-up instead of removing it.
@@ -199,12 +203,11 @@ No new or reclassified premise.
 
 ## Classification
 
-- `Local Fix` (bounded implementation cleanup; no design or requirement change).
+- Round 2: N/A (Pass). Round 1 was `Local Fix` for CR-001, now resolved.
 
 ## Recommended Recipient
 
-- `/software_engineering_team/implementation_engineer`
-- Routing note: after the fix, source review (targeted delta) and then API/E2E.
+- `/software_engineering_team/api_e2e_engineer` (primary). Informational pass notice to `/software_engineering_team/implementation_engineer`.
 
 ## Residual Risks
 
@@ -218,11 +221,11 @@ No new or reclassified premise.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 2, Targeted Delta Review)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.2 / 92; every category ≥ 9.0 except Cleanup Completeness 8.5 (CR-001)
+- Score Summary: 9.3 / 93; every category is at least 9.0
 - Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/implementation_engineer`
-- Notes: The core design is implemented correctly and cleanly. The only blocker is CR-001, a small dead-code removal. The next round can be a targeted delta review.
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Notes: CR-001 is resolved. The package is ready for API/E2E. Use the coverage hints in `implementation-handoff.md` and check the residual risks above, especially AC-001/AC-015 mixed-runtime copies, AC-005 notes per reason, and the Settings section (AC-010).

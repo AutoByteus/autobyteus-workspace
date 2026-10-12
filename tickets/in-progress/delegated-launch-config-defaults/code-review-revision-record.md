@@ -7,6 +7,9 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 handoff | N/A | Fail (Local Fix) | CR-001 |
+| CRR-002 | `code-review-report.md` | Implementation Review round 2 / IR-002 local fix | Fail (Local Fix) | Pass | CR-001 (resolved) |
+| CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-001 pass | N/A (first test review) | Fail (Local Fix) | TR-001 |
+| CRR-004 | `api-e2e-test-review-report.md` | Targeted proportional test-code review / API-REV-002 | Fail (Local Fix) | Pass | TR-001 (resolved) |
 
 ## Revision Entries
 
@@ -34,3 +37,86 @@ None.
 - Material score or classification changes: baseline score 9.2 / 92. Cleanup Completeness is 8.5. Classification unchanged: `Large` / `High`.
 - Recommended recipient: `/software_engineering_team/implementation_engineer`
 - Remaining risks or uncertainty: UNK-001; DEC-006; Settings reads the editor's loaded tree; source label for copies without a recorded source; two web files near 500 lines; `TESTING.md` `dist/` discrepancy.
+
+### CRR-002 — Targeted delta review of IR-002: CR-001 resolved; Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/in-progress/delegated-launch-config-defaults/code-review-report.md`
+- Review entry point and round: Implementation Review, round 2
+- Review scope: `Targeted Delta Review`. The delta `035b208d5..881c4e4ce` is confined to CR-001's file and its two test files; it changes no spine, interface, shape, web or contract file.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-handoff.md` (IR-002), CR-001
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Fail` (CRR-001, Local Fix)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: the dead method and its unused import were removed. Its test uses were removed or re-expressed through the production stored-tree location service. Reviewer-run checks: typecheck exit 0; `team-root-collaborators.test.ts` 7/7 pass; `grep getAgentExecution` is empty in server src/tests.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Open (Low) | Resolved | IR-002, `881c4e4ce` | `root-team-run.ts` diff removes lines 241–262 and the unused import; the remaining identity imports are still used; test assertions are re-expressed via `createStoredTeamRunExecutionTreeLocationService(...).findAgent`; typecheck and the test pass |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: Cleanup Completeness 8.5 → 9.3; overall 9.2 → 9.3. Classification unchanged: `Large` / `High`.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational notice to `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: unchanged from CRR-001 (UNK-001; DEC-006; Settings reads the editor's loaded tree; source label for copies without a recorded source; two web files near 500 lines; `TESTING.md` `dist/` discrepancy).
+
+### CRR-003 — Proportional test-code review of API-REV-001: one vacuous mobile case
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/in-progress/delegated-launch-config-defaults/api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review). Reviewed the server E2E `delegated-launch-config-defaults.e2e.test.ts`, the probe `delegated-launch-defaults-probe.mjs` and its `package.json` script, and the spec `MobileRunSetupMemberSeeding.spec.ts`.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md`; DLC-001..008, DLP-001..004, MOB-001
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A for test review. The source review stays `Pass` (CRR-002).
+- Current authoritative result: `Fail` — `Local Fix` → `/software_engineering_team/api_e2e_engineer`
+- What changed in the review result and why: the server E2E suite and the browser probe pass the proportional checks. MOB-001 case 2 is vacuous: its catalog gate keeps one resolver while two `ensureCatalog` calls are held, so the seed never resolves. A reviewer-run temporary probe, removed afterwards, showed that a held-then-released seed without a Team switch also stays unapplied.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: TR-001
+- Material score or classification changes: N/A (no scorecard for test review). Classification unchanged: `Large` / `High`.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`
+- Remaining risks or uncertainty: AC-015 user verification stays with delivery. API/E2E observations O-1..O-5 are recorded as follow-up candidates.
+
+### CRR-004 — Targeted test-code review of API-REV-002: TR-001 resolved; Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/in-progress/delegated-launch-config-defaults/api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 2 (targeted)
+- Review scope: `N/A` (test review). The only changed durable file is `autobyteus-web/components/mobile/__tests__/MobileRunSetupMemberSeeding.spec.ts`. The `git status` check shows no source change.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-revision-record.md` (API-REV-002); TR-001, MOB-001
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Fail` (CRR-003, Local Fix)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: the gate releases every held catalog load. A positive control proves that a held seed applies when no switch happens. The switch case is now meaningful: the API/E2E mutation M3 (both guards removed) fails it. Reviewer re-run: 3/3 pass.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| TR-001 | Open | Resolved | API-REV-002 | Spec diff: `pending` array + `releaseAll`; new control case; `pending.length > 0` precondition in the switch case. Mutations M0..M3 per the API/E2E record. Reviewer re-run passes 3/3 |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A. Classification unchanged: `Large` / `High`.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - AC-015 user verification stays with delivery.
+  - API/E2E observations O-1..O-5 are follow-up candidates.
+  - The two stale-seed guards are redundant, so removing only one is not detected by tests.
+  - The durable tests are uncommitted.
