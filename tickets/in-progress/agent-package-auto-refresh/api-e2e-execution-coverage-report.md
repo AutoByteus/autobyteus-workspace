@@ -18,11 +18,11 @@
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/api-e2e-coverage-investigation.md`
 - API/E2E Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Execution Round: 2
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Execution Round: 3
 - Trigger: CRR-004 Pass (IR-003 `bd4c63796`: SR-008/DSN-004 resolves CR-004 = APE-001); the review flagged that the durable E2E was stale after the `catalogIssues` contract change
-- Prior Round Reviewed: 1 (API-REV-001, Fail — APE-001)
-- Latest Authoritative Round: 2
+- Prior Round Reviewed: 2 (API-REV-002, Pass)
+- Latest Authoritative Round: 3
 - Code under test: branch `codex/agent-package-auto-refresh`. Round 2: product at `214836c83` (IR-003 `bd4c63796`); test commits `6b3a10822` (baseline fix), `a28465175` (new E2E + fixture route) and round 2's `33d290187` (SR-008 contract update + DCF-E2E-009). No product source changed by API/E2E.
 
 ## Routing Classification
@@ -32,6 +32,26 @@
 - Input route: `Reviewed`
 - Successful-output route: `Code Review`
 - Proportional test-code review decision: `Required`, requested now (round 2 passes) for `6b3a10822`, `a28465175` and `33d290187`.
+
+## Round 3 (API-REV-003) Summary — authoritative
+
+- **Trigger:** CRR-007 Pass (round 6). IR-004 `e89085f3e` (SR-009/DSN-005) is a clean-cut rename of the public contracts: `/ws/agent-package-definitions`, frame `agent_package_definitions_changed` with `changedLists`, `loadIssue`/`loadIssues`, `definitionProblems`, one `reloadAgentPackageDefinitions`, `FOLDER_MISSING`, `DEFINITION_SOURCE_UNAVAILABLE`. N-7 moves application-package agents/teams out of the store, read on demand per list. Code under test: `8d89b8cdf`, plus API/E2E commit `705e699b1` (test only).
+- **Durable E2E:** IR-004's renamed `agent-package-definitions-live-refresh.e2e.test.ts` was reviewed line by line against `33d290187`: a faithful rename with no weakened assertion. I added DCF-E2E-010 (`705e699b1`):
+  - the retired `/ws/definition-catalog` gets HTTP 404 with no upgrade;
+  - `catalogIssue`/`catalogIssues`, `definitionDiagnostics` and the three `refresh*DefinitionCatalog` mutations are all rejected by the schema;
+  - the new names answer, and `AgentPackageAutoRefreshState` is exactly FOLDER_MISSING/UNAVAILABLE/WATCHING.
+  - Result: 10/10 in 3 consecutive gated runs; ungated 8 pass, 2 skipped.
+- **Baselines:** typecheck clean; server unit 673 files; integration 72 files (only the 2 documented `agent-status-websocket` cases fail); web `test:nuxt` 606 files; the sibling definition/package E2E and AGY-fixture coexistence show only the 7 known base failures already reported to their owners.
+- **Desktop, authoritative human-like journey** on instance `iso-53429-718d`, built at `705e699b1` (the packaged app carries only the new names). Real clicks and typing; package changes by agents on real Codex; recorded (`round3/desktop/round3-human-journey.mp4`, 67 min).
+  - **Live updates:** team-local break → Team card badge with name, file and reason; restore → cleared in 1.06 s. Org-owned break → Org card (2) at 1.07 s; restore → cleared in 1.11 s.
+  - **Reload buttons:** the Agents, Teams and Orgs Reload buttons each produced the new frame with all four `changedLists` on an independent client (~0.85 s).
+  - **SCN-012:** the Project Task Manager delegated to the Agent Package Creator, which created, edited and deleted definitions. Cards appeared in 1.28 s and the deleted card vanished in 1.24 s. The typed `@APAR` menu and `list_available_agents` stayed current, and delegating to the deleted agent was refused. Team copies replied V1, then V2 with the new coordinator "Lead".
+  - **Phone-paired second client:** live update in 1.09 s.
+  - **Restart server:** both clients caught up.
+  - **Settings row:** "Folder not found" (FOLDER_MISSING), then "Auto-refreshing".
+  - **Idle CPU:** 0.00 s over 60 s.
+- **N-7 (desktop):** importing an application package that contains malformed agents is refused by the existing import validation. After importing a valid copy and then placing two malformed agents on disk, Agents-page Reload and GraphQL `agentDefinitions` still return the full list (valid application agent shown, malformed ones skipped, no error).
+- **Round 3 confidence:** 96%. Requirement and AC proof 96, boundary directness 97, integration realism 96, environment fidelity 95, failure/lifecycle 95, user surface 97, durable regression 95. No category below 90.
 
 ## Round 2 (API-REV-002) Summary
 
@@ -303,16 +323,16 @@ Round-1 sections below are carried forward. Where they say `Fail` or APE-001 is 
 
 ## Latest Authoritative Result
 
-- Result: `Pass` (round 2, API-REV-002)
-- Final validation confidence: 95%
+- Result: `Pass` (round 3, API-REV-003)
+- Final validation confidence: 96%
 - Default `95%` confidence target met: `Yes`
 - Any final applicable confidence category below `90%`: `No`
-- Broader validation decision: `Required`, executed in both rounds (isolated desktop instances `iso-53228-c43b`, `iso-58692-7f20`)
+- Broader validation decision: `Required`, executed: an authoritative human-like desktop journey on the IR-004 build, with a phone-paired second client and real Codex agents
 - Critical acceptance criteria lacking direct proof: none
-- Prior failure resolution: APE-001 (round 1) is resolved by IR-003 (SR-008/DSN-004) and verified live and durably
-- Next recipient from `get_handoff_rules`: proportional test-code review (code reviewer) of `6b3a10822`, `a28465175`, `33d290187`
+- Prior failure resolution: none open (APE-001 resolved in round 2; re-verified on the renamed build)
+- Next recipient from `get_handoff_rules`: proportional test-code review (code reviewer) of `705e699b1` plus IR-004's durable test changes (`e89085f3e`), plus `6b3a10822`, `a28465175` and `33d290187` if still pending
 - Notes for delivery:
-  - DSN-002 effect: a Team/Org duplicated across packages is no longer offered by `list_available_agents` or `@`.
-  - SR-008: nested issues show on the owning Team/Org card.
-  - TESTING.md should list the `definition-catalog-live-refresh.e2e.test.ts` command (gated cases need `RUN_AGY_FAILURE_E2E=1` and the AGY fixture).
-  - Base failures reported to their owners: `agent-team-definitions-graphql` ×5, `agent-package-private-skills` ×2.
+  - The docs from `061ea7ab3` must follow SR-009 names.
+  - TESTING.md should list `agent-package-definitions-live-refresh.e2e.test.ts` (gated cases need `RUN_AGY_FAILURE_E2E=1` and the AGY fixture).
+  - DSN-002 effect and SR-008 owning-card badges are unchanged.
+  - Importing an application package with a malformed agent is refused (existing validation; N-7 covers malformed files after import).

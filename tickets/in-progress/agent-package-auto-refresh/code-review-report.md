@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 4, IR-003 / SR-008). Round 3 was an `API/E2E Failure-Origin Review` (APE-001 → CR-004, Design Impact); its section is kept below for history.
+- Review Entry Point: `Implementation Review` (round 6, IR-004 / SR-009: rename plus the application-package accuracy change). Earlier rounds are kept below for history.
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/requirements-doc.md` (Approved SR-005; editorial SR-007)
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/investigation-notes.md`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/solution-revision-record.md`
@@ -16,16 +16,14 @@
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
-- Current Review Round: 4
+- Current Code Review Revision ID: `CRR-007`
+- Current Review Round: 6
 - Review Scope: `Full Re-Audit`
-- Review Scope Evidence (round >1):
-  - IR-003 changes a shared interface: `catalogIssues: [DefinitionUnitIssue!]!` replaces `catalogIssue` on `AgentTeamDefinition` and `AgentOrgDefinition`.
-  - It also changes the catalog's nested-node ordering and adds catalog, service, GraphQL and web badge contracts.
-  - All structural checks and the full scorecard were rerun. Evidence for files IR-003 does not touch is carried forward from rounds 1–2.
-- Trigger: IR-003 (SR-008 / DSN-004, resolving CR-004) from `/software_engineering_team/implementation_engineer`. Commits `bd4c63796`, `214836c83` on base `a28465175`
-- Prior Review Round Reviewed: 3 (CRR-003, failure-origin Fail, Design Impact)
-- Latest Authoritative Round: 4
+- Review Scope Evidence (round >1): IR-004 renames every public contract, plus the subsystem, the services and the web. It also changes the data flow: application-package agents and Teams leave the store and are read on demand (N-7), and the readiness reload is removed. All structural checks were rerun on the renamed code, and the full scorecard was rescored.
+- Trigger: IR-004 (SR-009 / DSN-005, resolving CR-005…CR-011) from `/software_engineering_team/implementation_engineer`. Commits `e89085f3e`, `8d89b8cdf` on base `061ea7ab3`
+- Prior Review Round Reviewed: 5 (CRR-006, naming Fail, Design Impact)
+- Latest Authoritative Round: 6
+- Round-5 trigger: direct user request (2026-10-11): "why don't we call it … agent package definition … make the naming more clear … there's so many definitions. What definition? … we must improve the naming"
 - Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/api-e2e-revision-record.md`
@@ -51,6 +49,82 @@
   - Round 1: catalog unit tests and journey integration read and run (6 files, 81 tests pass).
   - Round 2: the IR-002 delta in `definition-catalog-sync.ts`, `definition-catalog.ts`, `package-definition-monitor.ts`, `build-studio-server.ts`, `definitionDiagnosticsStore.ts`, `projectChangeFeed.ts`, localization and the new or changed tests. Reran `vitest run tests/unit/definition-catalog tests/integration/definition-catalog` (7 files, 86 tests pass), server `typecheck` (clean) and the affected web specs (5 files, 18 tests pass).
 - Explicit exclusions: `generated/graphql.ts` (regenerated; skimmed only), localization strings (content only), the pre-existing E2E failures listed in the handoff (owned elsewhere), and the desktop/remote-auth journeys left to API/E2E.
+
+## Round 6 — SR-009 Rename And Application-Package Change (IR-004)
+
+**Rename verification**
+- **Design-spec § Naming (SR-009) map:** every row was checked against the code.
+  - The server subsystem is `src/agent-package-definitions/`, with `AgentPackageDefinitionStore`, `AgentPackageDefinitionReloader`, `AgentPackageDefinitions`, `AgentPackageFolderWatcher`, the `*FolderReader`s, `agent-package-layout.ts` and `AgentPackageDefinitionChange*`.
+  - The WebSocket is `/ws/agent-package-definitions`, with frame `agent_package_definitions_changed {changedLists}` and a strict zod schema.
+  - GraphQL has `loadIssue` / `loadIssues`, `DefinitionLoadIssue(Entry)` (field `kind`), `definitionProblems(kind: DefinitionKind!)` and one `reloadAgentPackageDefinitions` mutation, used by the Agents, Teams and Orgs Reload paths.
+  - The codes are `FOLDER_MISSING` and `DEFINITION_SOURCE_UNAVAILABLE`.
+  - The web uses `agentPackageDefinitionsWs`, `services/` / `composables/` / `utils/agentPackages/`, `DefinitionLoadIssueBadge.vue`, `DefinitionProblemsNotice.vue`, `definitionProblemsStore` and the localization namespace `agentPackageDefinitions.*`.
+  - Docs live in `docs/modules/agent_package_definitions.md`.
+- **Spec verification search** (`definition-catalog|definitionCatalog|DefinitionCatalog|catalogIssue|definitionDiagnostics|DefinitionSubject|definitions_changed|refreshCache|refresh*DefinitionCatalog|PackageDefinitionMonitor|ROOT_MISSING|DEFINITION_SOURCE_MISSING`, excluding `tickets/` and build outputs). The only hits are these:
+  - (a) `CollaboratorDefinitionCatalog` / `collaborator-definition-catalog.ts`: pre-existing at base `359d2c0ef`, a different concept (the collaborator candidate port), and not in the SR-009 rename map;
+  - (b) the web type `TeamLocalDefinitionSubject`: pre-existing, also not in the map;
+  - (c) one web spec asserting that the **old** frame is rejected. This is intentional.
+
+  None of these is part of this feature's names. The spec's search pattern is broader than its rename map, which is a wording discrepancy only. Renaming (a)/(b) is an optional follow-up.
+- **Logic preservation:** `AgentPackageDefinitionReloader` and `AgentPackageDefinitionStore` were read in full. Settle, flush, queue, the trailing re-check (read flushes only), per-root readability isolation, the last-good rule, nested path order and the list-expansion table (`listsAffectedBy`) match round 4 apart from the renames. The application-owned enumeration and `fromRegisteredRoot` are removed as designed.
+- **R-2 applied:** `kindFoldersUnreadableError` and `errorText` live in `domain/definition-files.ts`, shared by the watcher and the reloader.
+
+**N-7 (mandatory), verified**
+- `FileAgentDefinitionProvider.listApplicationOwnedAgents()` and `FileAgentTeamDefinitionProvider.listApplicationOwnedTeams()` read one definition at a time inside a try/catch. A failure is logged (`APPLICATION_PACKAGE_AGENT_SKIPPED` / `APPLICATION_PACKAGE_TEAM_SKIPPED`) and that entry is skipped.
+- A failing source listing reads as empty (logged).
+- Team-local agents of application-package Teams go through `listTeamLocalAgentDefinitions`, which already isolates each agent.
+- The services merge these after the store's entries, de-duplicated by ID (`agent-definition-service.ts:233–254`, `agent-team-definition-service.ts:205–212`).
+- `ApplicationDefinitionRuntimeReadiness.prepare()` no longer reloads. Its validator still uses both services (not dead).
+- Test `tests/unit/agent-package-definitions/application-package-list-isolation.test.ts` covers three cases: malformed beside valid, a failing listing, and not held in the store.
+
+**Accepted visible effects (designer-recorded; out of scope per the requirements)**
+- A malformed application-package agent is now logged and skipped. Before, it appeared as a load issue in the Agents problems notice (IR-001), and at base it failed the whole list.
+- Application-package files are read on each list call. Exact-ID reads already did this, and there are few application packages. No measured problem, so no machinery is required (DESIGN.md "start simple").
+
+**Reruns (round 6)**
+- Server `typecheck`: clean.
+- Server `vitest run` over `tests/unit/agent-package-definitions`, `tests/integration/agent-package-definitions`, `tests/unit/api/graphql`, `tests/{unit,integration}/collaboration-definition-admission`, `tests/unit/agent-packages`, `tests/unit/built-in-agents`, `tests/unit/application-platform` and `tests/integration/agent-definition`: 63 files pass (1 skipped), 428 tests.
+- Gated E2E `agent-package-definitions-live-refresh` plus `agent-definitions-graphql`: 2 files, 16/16 pass.
+- Web `vitest run` over `components/{definitions,agentTeams,agentOrgs,agents,settings}`, `stores/__tests__`, `services` and `utils/agentPackages`: 227 files, 1855 tests pass.
+- Size audit: no changed source file is above 500 effective lines. The largest are `AgentOrgExperience.vue` at 489 (pre-existing) and `agent-package-service.ts` at 461.
+
+## Round 5 — Naming Review (User-Requested)
+
+**Basis.** The user's direct instruction: the feature's names must say *which* definitions they mean. They are the definitions in the user's **agent packages** (Settings → Agent Packages), so the user wants "agent package definition(s)". Under Core Principle 3 and the Derived Checks ("Names that do not describe the actual owner or role" is a listed design smell), the generic `definition catalog` / `definitions_changed` names do not tell a reader what is held, watched or changed. The repository already has many other "definitions": application definitions, run definitions, tool definitions, the GraphQL schema. Several names also leak internal design terms (`catalog`, `unit`, `subject`) into the public API, or no longer describe what the code does (`refreshCache` with no cache; `DEFINITION_SOURCE_MISSING` used for unreadable folders).
+
+**Scope note for the Solution Designer (naming accuracy).** The catalog also holds *application-owned* agents and Teams (from application bundles) as list entries, refreshed only by full reconciles. These are not agent-package definitions. "Agent package definitions" is exact for everything watched and published, and nearly exact for the catalog. The designer should either accept that, with a one-line note in the catalog's doc comment, or keep application-owned entries outside the renamed catalog's name. **Proposed names below are recommendations; the final names need the user's confirmation through the Solution Designer.**
+
+### Proposed rename map
+
+| Area | Current | Proposed | Finding |
+| --- | --- | --- | --- |
+| WebSocket path | `/ws/definition-catalog` | `/ws/agent-package-definitions` | CR-005 |
+| Change frame type | `definitions_changed` | `agent_package_definitions_changed` | CR-005 |
+| Web endpoint key | `definitionCatalogWs` (`utils/nodeEndpoints.ts`, `types/node.ts`) | `agentPackageDefinitionsWs` | CR-005 |
+| Server subsystem folder | `src/definition-catalog/` | `src/agent-package-definitions/` | CR-006 |
+| Catalog store | `DefinitionCatalog` (`definition-catalog.ts`) | `AgentPackageDefinitionCatalog` | CR-006 |
+| Sync | `DefinitionCatalogSync`, `DefinitionCatalogPublisher`, `DefinitionCatalogSyncOptions` | `AgentPackageDefinitionSync`, `…Publisher`, `…SyncOptions` | CR-006 |
+| Runtime | `DefinitionCatalogRuntime`, `createDefinitionCatalogRuntime`, `getDefaultDefinitionCatalogRuntime` | `AgentPackageDefinitionRuntime`, … | CR-006 |
+| Monitor | `PackageDefinitionMonitor` | `AgentPackageDefinitionMonitor` | CR-006 |
+| Hub and messages | `DefinitionCatalogChangeHub`, `DefinitionCatalogChangeMessage(Schema)`, `definition-catalog-change-*.ts` | `AgentPackageDefinitionChangeHub`, `AgentPackageDefinitionChangeMessage(Schema)`, `agent-package-definition-change-*.ts` | CR-006 |
+| Studio composition | `definition-catalog-feed-composition.ts`, `composeDefinitionCatalogFeed`, `definitionCatalogSync`, `definitionCatalogChangeHub` | `agent-package-definition-feed-composition.ts`, `composeAgentPackageDefinitionFeed`, `agentPackageDefinitionSync`, `agentPackageDefinitionChangeHub` | CR-006 |
+| WS route file | `api/websocket/definition-catalog.ts`, `registerDefinitionCatalogWebsocket` | `api/websocket/agent-package-definitions.ts`, `registerAgentPackageDefinitionsWebsocket` | CR-005 |
+| Web feed | `services/definitionCatalog/definitionCatalogChangeFeed.ts`, `DefinitionCatalogChangeFeed`, `deliverDefinitionCatalogChange`, `reloadDefinitionCatalogSubjects`, `getDefinitionCatalogChangeFeed` | `services/agentPackageDefinitions/agentPackageDefinitionChangeFeed.ts`, `AgentPackageDefinitionChangeFeed`, … | CR-007 |
+| Web composable, utils, types | `composables/definitionCatalog/useDefinitionCatalogChangeFeed.ts`, `utils/definitionCatalog/`, `types/definitionCatalog.ts` | `…/agentPackageDefinitions/…`, `useAgentPackageDefinitionChangeFeed` | CR-007 |
+| Localization namespace | `definitionCatalog.*` (en, zh-CN) | `agentPackageDefinitions.*` | CR-007 |
+| Badge component | `components/definitions/DefinitionCatalogIssueBadge.vue` | `DefinitionIssueBadge.vue` (it marks *a definition's* problem) | CR-007 / CR-008 |
+| GraphQL agent field | `AgentDefinition.catalogIssue` | `definitionIssue` | CR-008 |
+| GraphQL Team/Org field | `catalogIssues` | `definitionIssues` | CR-008 |
+| GraphQL types | `DefinitionCatalogIssue`, `DefinitionUnitIssue` | `DefinitionIssue`, `DefinitionIssueEntry` (no internal "catalog" or "unit") | CR-008 |
+| Domain types | `DefinitionCatalogIssue`, `DefinitionUnitIssueEntry` | `AgentPackageDefinitionIssue`, `AgentPackageDefinitionIssueEntry` | CR-008 |
+| Service reload method | `refreshCache()` on the three definition services (no cache exists any more; it runs a full catalog reconcile) | `reloadAgentPackageDefinitions()` | CR-009 |
+| Package service | `refreshCatalogCaches()` (private), dependency `reloadDefinitionCatalog` | `reloadAgentPackageDefinitions` | CR-009 |
+| Issue code | `DEFINITION_SOURCE_MISSING` (also used for **unreadable** folders since IR-002; the method is already `markSourceUnavailable` and the badge says "unavailable") | `DEFINITION_SOURCE_UNAVAILABLE` | CR-010 |
+| GraphQL enum | `DefinitionSubject` (`AGENT/AGENT_TEAM/AGENT_ORG`) in `definitionDiagnostics(subject:)` | `DefinitionKind` and argument `kind` ("subject" is design jargon) | CR-011 |
+
+Out of scope (pre-existing names this ticket did not introduce): `refreshAgentDefinitionCatalog` / `refreshAgentTeamDefinitionCatalog` mutations, and `refreshAgentOrgDefinitionCatalog`, which deliberately mirrors them. Rename them only if the user wants the whole family changed.
+
+Internal-only terms (`unit`, `node`, reader `subject`) may stay inside the server subsystem, where they are defined in the design spec's Terminology. They must not appear in the GraphQL schema or web types (CR-008, CR-011).
 
 ## Round 4 — SR-008 Nested-Surface Trace And Delta Review (IR-003)
 
@@ -275,7 +349,7 @@ None remaining. The round-1 item (`projectChangeRetryDelayMs` alias) was removed
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.3
+- Overall score (`/10`): 9.3 (round 6)
 - Overall score (`/100`): 93
 - Score calculation note: simple average of the ten categories (round 4, Full Re-Audit); the decision follows the findings.
 
@@ -285,14 +359,49 @@ None remaining. The round-1 item (`projectChangeRetryDelayMs` alias) was removed
 | `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Unit issues come from the catalog and are exposed only through the Team/Org services (N-5); resolvers never touch the catalog | Static monitor process instance for package status (existing pattern, C-06) | — |
 | `3` | `API / Interface / Query / Command Clarity` | 9.2 | `catalogIssues` is unit-scoped with an explicit node identity (`subject`, `definitionId`); one subject per accessor | — | — |
 | `4` | `Separation of Concerns and File Placement` | 9.2 | The badge owns presentation; the catalog owns ordering and issue collection; one GraphQL mapper | Monitor and sync dense but single-owner | — |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.0 | `DefinitionUnitIssueEntry` composes `DefinitionCatalogIssue` instead of duplicating it; one mapper (N-6) | The readability check is still duplicated in the sync and the monitor (optional R-2) | R-2 |
-| `6` | `Naming Quality and Local Readability` | 9.2 | Natural names (`listUnitIssues`, `catalogIssues`, `DefinitionUnitIssue`) | — | — |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | Tight load-issue and read-result types; R-2 applied (one readability rule in `definition-files.ts`); one GraphQL mapper (N-6) | — | — |
+| `6` | `Naming Quality and Local Readability` | 9.3 | Round 6: names now say what each thing is (agent package definitions, definition folder, kind, load issue, definition problem); internal terms no longer leak into the API; `reloadAgentPackageDefinitions` and `DEFINITION_SOURCE_UNAVAILABLE` match their behavior | Pre-existing `CollaboratorDefinitionCatalog` / `TeamLocalDefinitionSubject` remain (outside the map) | Optional follow-up rename |
 | `7` | `API/E2E Readiness` | 9.1 | GraphQL, component and integration coverage for nested surfaces | The API/E2E durable test must switch Teams/Orgs to `catalogIssues` (stale after the approved contract change; API/E2E-owned) | API/E2E updates its query |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.2 | REQ-009 now holds for shared and every nested kind. CR-001…CR-004 resolved. Last-good rules, settle/queue, expansion and root state unchanged | Recovery from an unreadable root waits for a full reconcile (REQ-016 fallback, C-10) | — |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.2 | Round 6: reloader and store logic unchanged apart from renames; N-7 per-definition isolation for application-package lists; reruns green | Recovery from an unreadable root waits for a full reload (REQ-016 fallback, C-10) | — |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Clean replacement of the root-only Team/Org `catalogIssue` (no dual field); unused Team/Org `getDefinitionIssue` removed | — | — |
 | `10` | `Cleanup Completeness` | 9.3 | Stale accessors removed; web queries, stores and types updated together | — | — |
 
 ## Findings
+
+### CR-005 — Feed contract names do not say which definitions (WebSocket path, frame type, endpoint key) — **Resolved (round 6, IR-004 / SR-009)**
+
+- Evidence: `/ws/definition-catalog` (`api/websocket/definition-catalog.ts`, `index.ts`); `definitions_changed` (`definition-catalog-change-messages.ts`, web feed parser, sync publisher); web `definitionCatalogWs`.
+- Required action: rename per § Round 5 map (`/ws/agent-package-definitions`, `agent_package_definitions_changed`, `agentPackageDefinitionsWs`). This is a clean cut with no old-path alias, because the server and web ship together.
+
+### CR-006 — Server subsystem and class names ("definition catalog") are generic — **Resolved (round 6, IR-004 / SR-009)**
+
+- Evidence: `src/definition-catalog/**` (47 files reference it), `DefinitionCatalog*`, `PackageDefinitionMonitor`, `definition-catalog-feed-composition.ts`, `HostDefinitionServices.definitionCatalogSync`.
+- Required action: rename to `agent-package-definitions` / `AgentPackageDefinition*` per the map. Resolve the application-owned-entries naming note.
+
+### CR-007 — Web feed, composable, utils, types, localization and badge names repeat the generic term — **Resolved (round 6, IR-004 / SR-009)**
+
+- Evidence: `services/definitionCatalog/`, `composables/definitionCatalog/`, `utils/definitionCatalog/`, `types/definitionCatalog.ts`, `localization/messages/*/definitionCatalog.ts`, `DefinitionCatalogIssueBadge.vue` (25 web files).
+- Required action: rename per the map. Regenerate `generated/graphql.ts`.
+
+### CR-008 — Public API leaks internal design terms ("catalog", "unit") — **Resolved (round 6, IR-004 / SR-009)**
+
+- Evidence: GraphQL `catalogIssue`, `catalogIssues`, `DefinitionCatalogIssue`, `DefinitionUnitIssue`; domain `DefinitionUnitIssueEntry`.
+- Required action: `definitionIssue` / `definitionIssues`, `DefinitionIssue` / `DefinitionIssueEntry` (GraphQL); `AgentPackageDefinitionIssue(Entry)` (domain). Update the converters, queries, stores, the badge and the E2E query constants (`ISSUE`, `UNIT_ISSUES`).
+
+### CR-009 — `refreshCache()` names a cache that no longer exists — **Resolved (round 6, IR-004 / SR-009)**
+
+- Evidence: `refreshCache()` on `AgentDefinitionService:360`, `AgentTeamDefinitionService:322`, `AgentOrgDefinitionService:91` now calls `sync.reloadAll()`; the caches were removed in this ticket. Callers: GraphQL refresh mutations, `application-definition-runtime-readiness.ts:36–37`, `built-in-agent-bootstrapper.ts:20`, `agent-package-service.ts:88` (plus its private `refreshCatalogCaches`).
+- Required action: rename to `reloadAgentPackageDefinitions()` everywhere (clean cut).
+
+### CR-010 — `DEFINITION_SOURCE_MISSING` also means "unreadable" — **Resolved (round 6, IR-004 / SR-009)**
+
+- Evidence: since IR-002, `catalog.markSourceUnavailable(…, unreadableReason)` emits `DEFINITION_SOURCE_MISSING` for unreadable folders; the web badge text already says "Package folder unavailable".
+- Required action: rename the code to `DEFINITION_SOURCE_UNAVAILABLE` (domain type, catalog, admission code union, web badge check, tests).
+
+### CR-011 — GraphQL enum `DefinitionSubject` uses design jargon — **Resolved (round 6, IR-004 / SR-009)**
+
+- Evidence: `definitionDiagnostics(subject: DefinitionSubject!)`; `DefinitionUnitIssue.subject`.
+- Required action: `DefinitionKind` with argument and field `kind`. The internal server type may keep "subject".
 
 ### CR-004 — Nested definitions' last-good issues have no web surface (REQ-009 / DSN-003) — **Resolved (round 4)**: SR-008/DSN-004 design, IR-003 implementation; see § Round 4 trace
 
@@ -341,13 +450,18 @@ Round-1 findings CR-001…CR-003 are resolved in IR-002 (verified in round 2; se
 
 ## Classification
 
-- Round 4: N/A (Pass). CR-004 resolved.
-- History: round 3 `Design Impact` (CR-004); round 2 Pass (superseded by round 3); round 1 `Local Fix` (CR-001…CR-003, resolved).
+- Round 6: N/A (Pass). CR-005…CR-011 are resolved.
+- History:
+  - round 5: `Design Impact` (naming, resolved);
+  - round 4: Pass;
+  - round 3: `Design Impact` (CR-004, resolved);
+  - round 1: `Local Fix` (CR-001…CR-003, resolved).
 
 ## Recommended Recipient
 
-- Primary: `/software_engineering_team/api_e2e_engineer`. Implementation review passed. The API/E2E rerun must update the stale `catalogIssue` query in `definition-catalog-live-refresh.e2e.test.ts`, rerun DESK-002 nested, and add the org-owned case (SR-008 Verification Additions).
+- Primary: `/software_engineering_team/api_e2e_engineer`, for the API/E2E rerun of the renamed contracts. The durable E2E has been updated; it needs reruns, evidence and the desktop spot checks.
 - Informational: `/software_engineering_team/implementation_engineer`.
+- After that: proportional test review, then delivery (redo docs sync).
 
 ## Residual Risks
 
@@ -360,14 +474,12 @@ Round-1 findings CR-001…CR-003 are resolved in IR-002 (verified in round 2; se
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review` (round 4, Full Re-Audit)
-- Supported Product Scenario Gate: `Pass` (SCN-004 shared and nested: Supported Normal Scenario)
+- Review Entry Point: `Implementation Review` (round 6, Full Re-Audit)
+- Supported Product Scenario Gate: `Pass` (no intended-behavior change; application packages are out of scope)
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.3/10 (93/100); every category ≥ 9.0
+- Score Summary: 9.3/10; every category ≥ 9.0 (Naming 9.3)
 - Failure Origin: N/A
 - Recommended Recipient: `/software_engineering_team/api_e2e_engineer` (primary); `/software_engineering_team/implementation_engineer` (informational)
 - Notes:
-  - CR-004 is resolved; every nested kind is traced to a rendered surface.
-  - Required API/E2E action: update the stale Team/Org `catalogIssue` query in the durable E2E (3 of 8 cases fail on a schema error after the approved contract change).
-  - The API/E2E test commits `a28465175` and `6b3a10822` still wait for proportional test-code review after a passing run.
-  - Optional R-2 remains.
+  - Rename and N-7 verified.
+  - Optional follow-ups: the pre-existing `CollaboratorDefinitionCatalog` / `TeamLocalDefinitionSubject` names; the spec's verification-search wording is broader than its rename map.

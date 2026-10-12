@@ -5,16 +5,22 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/requirements-doc.md` (Approved SR-005; editorial SR-007)
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/investigation-notes.md`
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/design-spec.md` (SR-008)
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/design-spec.md` (SR-009)
 - Supplemental Task Artifacts Reviewed: `probes/apar-cache-probe.test.ts`, `probes/apar-watch-probe.test.ts`, `probes/apar-watch-probe2.test.ts` (evidence only)
-- Relevant Solution Revision IDs: SR-005 (approval), SR-006 (design), SR-007 (revision for ARCH-REV-001), SR-008 (CR-004 web surface for nested last-good issues)
-- Triggering downstream evidence: `code-review-report.md` CRR-003, CR-004 (failure-origin `Design Impact` from API-REV-001 DESK-002)
+- Relevant Solution Revision IDs: SR-005 (approval), SR-006 (design), SR-007 (revision for ARCH-REV-001), SR-008 (CR-004 web surface for nested last-good issues), SR-009 (naming; application-package entries leave the store)
+- Triggering downstream evidence: `code-review-report.md` CRR-003, CR-004 (round 3); CRR-006, CR-005…CR-011 (round 4, naming), plus the user's naming direction (DSN-005, confirmed 2026-10-11)
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3 (delta review of SR-008)
-- Trigger: `Revised Architecture Design Complete` (SR-008) from `/software_engineering_team/solution_designer`
-- Prior Review Round Reviewed: 2 (ARCH-REV-002, `Pass`). Round 1: ARCH-REV-001, `Fail — Design Impact`, AR-001…AR-006, resolved in round 2.
-- Latest Authoritative Round: 3
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4 (delta review of SR-009)
+- Trigger: `Revised Architecture Design Complete` (SR-009) from `/software_engineering_team/solution_designer`
+- Prior Review Round Reviewed: 3 (ARCH-REV-003, `Pass`, SR-008). Round 2: `Pass`. Round 1: ARCH-REV-001, `Fail — Design Impact`, AR-001…AR-006, resolved in round 2.
+- Latest Authoritative Round: 4
+- Round-4 evidence (branch HEAD `061ea7ab3`):
+  - `design-spec.md` § Naming (SR-009, authoritative) and the Removal Plan rows for SR-009.
+  - `application-definition-runtime-readiness.ts:35–38`: `prepare()` only calls the two `refreshCache()`s before its own validation.
+  - `application-owned-agent-source.ts`: application-package reads throw `AgentMdParseError` / `ApplicationOwnedAgentConfigParseError` on malformed files.
+  - The store readers currently enumerate application-owned list ids (`agent-definition-source-reader.ts:40`, `agent-team-definition-source-reader.ts:95`).
+  - Repository grep: the three `refresh*DefinitionCatalog` mutations are used only by in-repo server, web, tests and docs, plus the build output `autobyteus-web/dist-mobile`.
 - Round-3 evidence (implementation branch `codex/agent-package-auto-refresh` @ `a28465175`):
   - `autobyteus-web/components/agents/AgentList.vue:170` filters `TEAM_LOCAL` agents from the Agents page (existing behavior).
   - `AgentTeamCard.vue:31` and `AgentOrgCatalogCard.vue:8` pass only the root `catalogIssue`.
@@ -46,6 +52,7 @@
   - DSN-002 and DSN-003 are recorded as solution details.
   - DSN-003 applies REQ-007 as written.
   - DSN-002 aligns delegation listing with launch's existing duplicate rejection. It falls under REQ-002 ("every reader agrees"), not a new policy.
+- SR-009 (DSN-005) changes names and moves application-package agents/teams out of the store. It changes no approved behavior: lists still include application-package entries (read on demand), the Reload buttons still trigger one full reload plus publication (REQ-017), and badges and notices keep their meaning. The user confirmed the name map on 2026-10-11. Application packages stay out of scope; see N-7 for the one preservation condition.
 - SR-008 requirements edits do not change intended behavior:
   - **DSN-004** puts a nested definition's error on its owning Team/Org card. Team-local agents have no Agents-page card (existing `AgentList.vue` filter), and org-owned definitions are listed only within their org, so the owning card is the only card on which they appear. This applies REQ-009 ("on the affected card or row") and the approved UI section ("error indicator on the affected agent/team/org card, with the file path and reason"). No new product surface or policy.
   - **FU-001** (collaborator candidates are not filtered by admission availability) is identical at base. It concerns the admission-availability policy, not freshness or agreement with disk (REQ-002). Recording it as an out-of-scope follow-up is correct.
@@ -117,7 +124,9 @@
 | Service `get…ById` (shared / nested → catalog; application-owned → disk) | Pass | Pass | Pass | Low | Pass |
 | `noteUnitChange` / `noteRootChanged` / `settle` / `reloadAll` / `reconcileNow` | Pass | Pass | Pass | Low | Pass |
 | `DefinitionAdmissionService.scan` / `requireAvailable` | Pass | Pass | Pass | Low | Pass |
-| GraphQL `AgentDefinition.catalogIssue` | Pass | Pass | Pass | Low | Pass |
+| SR-009 public renames: WS `/ws/agent-package-definitions` + `agent_package_definitions_changed {changedLists}`; GraphQL `loadIssue`/`loadIssues`, `DefinitionLoadIssue(Entry)` (`kind`), `definitionProblems(kind: DefinitionKind!)`, `FOLDER_MISSING`, `DEFINITION_SOURCE_UNAVAILABLE` | Pass | Pass | Pass | Low | Pass. The names state what each thing is; `DefinitionKind` (not `AgentPackageDefinitionKind`) fits because problems also cover application-package teams through admission. |
+| GraphQL `reloadAgentPackageDefinitions: Boolean!` (replaces three identical mutations) | Pass | Pass | N/A | Low | Pass. All callers are in-repo, with no aliases. |
+| GraphQL `AgentDefinition.catalogIssue` (renamed `loadIssue` in SR-009) | Pass | Pass | Pass | Low | Pass |
 | GraphQL `AgentTeamDefinition.catalogIssues` / `AgentOrgDefinition.catalogIssues` (SR-008, replaces the root-only field) | Pass (team/org unit) | Pass (every issue in the unit, root first then path order) | Pass (each entry carries `subject`, `definitionId`, path) | Low | Pass (N-5: sourced per unit through the services) |
 | GraphQL `definitionDiagnostics(subject: DefinitionSubject!)` | Pass | Pass | Pass (enum) | Low | Pass |
 | GraphQL `AgentPackage.autoRefresh` | Pass | Pass | Pass | Low | Pass |
@@ -184,6 +193,8 @@
 | Fresh path + callers | Pass | Pass | Pass | Pass | — |
 | Registry shared-root enumeration; dead `implementationPackageRoots` (only tests use it: verified) | Pass | Pass | Pass | Pass | Registry org-owned team enumeration moves to the org reader (N-1) |
 | `definitionAdmissionDiagnostics` + type + test | Pass | Pass | Pass | Pass | No live consumer (verified); regenerate web `generated/graphql.ts` |
+| SR-009: old names (folder, classes, WS path and frame, GraphQL fields, types, mutations, codes, web files, localization, docs from `061ea7ab3`) | Pass | Pass | Pass | Pass | A clean cut, verified by the spec's repository-wide search list. Build outputs (`resources/server`, `electron-dist`, `dist-mobile`) are regenerated, not edited. |
+| SR-009: application-package list entries in the store; readiness `prepare()` reload calls | Pass | Pass (services merge on-demand application-package lists) | Pass | Pass | Readiness keeps its validation; N-7 |
 | Nested exact disk reads | Pass | Pass | Pass | Pass | — |
 | Package service refresh dependencies; projects socket lifecycle | Pass | Pass | Pass | Pass | — |
 
@@ -248,7 +259,7 @@ None.
 
 ## Review Decision
 
-`Pass` (round 3, SR-008 delta). SR-008 resolves CR-004 within the approved REQ-009 and UI section. Nested last-good issues now have a rendered surface on the owning Team/Org card, through the unit-wide `catalogIssues`. Unusable nested nodes stay visible in the subject notice with file and reason. The contract change is limited to the two Team/Org GraphQL fields and their web consumers, and the verification additions are adequate (source-review surface trace, component, GraphQL and DESK-002 nested plus org-owned re-runs). Round-2 conclusions stand: SR-007 resolves AR-001…AR-006 in the canonical design spec (verification is in the revision record). The catalog is now the single inventory for shared and nested definitions. Admission enumerates it, publication follows list dependencies, one diagnostics surface replaces the unused admission query, and the monitor lifecycle is complete. The design is ready for implementation, subject to the implementation notes below.
+`Pass` (round 4, SR-009 delta). SR-009 is a clean-cut rename that resolves CRR-006 CR-005…CR-011 under user-confirmed names (DSN-005). It also makes one small accuracy change: application-package agents/teams are read on demand instead of held in the store, and the readiness reload is removed. Public contracts change only in name or by consolidation, and every consumer is in-repo. No approved behavior changes, provided N-7 holds. Round 3: `Pass` (SR-008 delta). SR-008 resolves CR-004 within the approved REQ-009 and UI section. Nested last-good issues now have a rendered surface on the owning Team/Org card, through the unit-wide `catalogIssues`. Unusable nested nodes stay visible in the subject notice with file and reason. The contract change is limited to the two Team/Org GraphQL fields and their web consumers, and the verification additions are adequate (source-review surface trace, component, GraphQL and DESK-002 nested plus org-owned re-runs). Round-2 conclusions stand: SR-007 resolves AR-001…AR-006 in the canonical design spec (verification is in the revision record). The catalog is now the single inventory for shared and nested definitions. Admission enumerates it, publication follows list dependencies, one diagnostics surface replaces the unused admission query, and the monitor lifecycle is complete. The design is ready for implementation, subject to the implementation notes below.
 
 ## Findings
 
@@ -261,6 +272,7 @@ Implementation notes. Carry these in the handoff; they do not change the design:
 - **N-3:** In-app writes of nested definitions call `reconcileNow` on their **owning unit**: the team or org ID derived through the existing ID helpers, not the nested ID.
 - **N-4:** Readers apply the team/org duplicate rule only after de-duplicating identical resolved paths, as admission's `seenPaths` does today, so one physical folder never reads as duplicated.
 - **N-5 (SR-008):** Source `catalogIssues` **per unit** through a team/org service accessor (for example `listUnitIssues()` returning issues grouped by unit ID, with `usingLastGood` and the last-good name). `DefinitionCatalog.listIssueEntries(subject)` groups by **node** subject, so filtering it by `agent_team` / `agent_org` would miss the team-local and org-owned agent nodes, the CR-004 defect again. Resolve once per list query, not once per card. Resolvers must not reach into the catalog directly.
+- **N-7 (SR-009, mandatory):** The on-demand application-package list merge in the agent and team services must isolate each definition. If reading one application-package agent or team fails (`AgentMdParseError`, `ApplicationOwnedAgentConfigParseError`, a team codec error), log it and skip that entry; never fail the whole list. Today the store's readers classify those entries one by one. A raw on-demand read would reintroduce the whole-list failure that CR-001 and REQ-003/QR-004 removed, for `list_available_agents`, the `@` menu and the Agents/Teams lists. Add one unit test with a malformed application-package agent beside valid ones.
 - **N-6 (SR-008):** Build `DefinitionUnitIssue` from `DefinitionCatalogIssue` in one mapper shared by the team and org converters. This keeps the code and reason fields from drifting from `AgentDefinition.catalogIssue`.
 
 ## Classification
@@ -279,10 +291,11 @@ Primary: `/software_engineering_team/implementation_engineer`. Informational: `/
 - **Flush-on-read during long bursts.** It can split one burst into a few publications. AC-006 asserts a bound, not exactly one.
 - **U-001.** The restore-after-removal UX is validated under AC-008.
 - **FU-001** (out of scope; separate-ticket candidate). `list_available_agents` and `@` offer a team that admission rejects because a member is missing. This is the same at base, and the launch fails with the existing error.
+- **SR-009, application packages.** Application-package agents/teams no longer get load issues or live publication. Live publication was only an effect of the readiness reload during this ticket; base had neither, and application packages are out of scope. Their lists are read fresh on demand, and their admission problems remain in `definitionProblems` through the application-owned registry.
 - **Superseded reviews.** CRR-001/002's source-review Pass is superseded per CRR-003. The SR-008 implementation returns through source review, which includes the nested-surface trace, and then API/E2E (DESK-002 nested plus org-owned).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (ARCH-REV-003, SR-008 delta)
+- Review Decision: `Pass` (ARCH-REV-004, SR-009 delta)
 - Material-Premise Gate: `Pass`
-- Notes: Implementation must honor N-1 (mandatory) and N-2…N-6.
+- Notes: Implementation must honor N-1 and N-7 (mandatory) and N-2…N-6. N-5 and N-6 apply under the new names (`loadIssues`, `DefinitionLoadIssueEntry`).

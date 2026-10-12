@@ -11,6 +11,9 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 APE-001 | Pass | Fail (Design Impact) | CR-004 (new) |
 | CRR-004 | `code-review-report.md` | Implementation Review round 4 / IR-003 (SR-008) | Fail (Design Impact) | Pass | CR-004 resolved |
 | CRR-005 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review / API-REV-002 Pass | Pass (CRR-004) | Pass | None |
+| CRR-006 | `code-review-report.md` | Implementation Review round 5 / user-requested naming review | Pass (CRR-004/005) | Fail (Design Impact: naming) | CR-005…CR-011 (new) |
+| CRR-007 | `code-review-report.md` | Implementation Review round 6 / IR-004 (SR-009) | Fail (Design Impact: naming) | Pass | CR-005…CR-011 resolved |
+| CRR-008 | `api-e2e-test-review-report.md` | Proportional test-code review round 2 / API-REV-003 Pass | Pass (CRR-007) | Pass | None |
 
 ## Revision Entries
 
@@ -182,3 +185,117 @@ None (no prior test-review findings). CR-004 stays resolved (CRR-004) and is now
   - Linux evidence comes from the probe only.
   - GitHub Update was validated only against controlled HTTP.
   - Base failures `agent-team-definitions-graphql` ×5 and `agent-package-private-skills` ×2 are reported to their owners.
+
+### CRR-006 — User-requested naming review: "definition catalog" names are too generic
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/code-review-report.md` (§ Round 5 rename map; Findings CR-005…CR-011; Naming score; Classification; Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review` (naming of the feature's contracts and owned files; code unchanged at `33d290187`)
+- Triggering role, report path, and finding or scenario IDs: the user, directly (2026-10-11): rename to "agent package definition(s)"; names must say which definitions; "we must improve the naming"
+- Relevant solution revision IDs: SR-008
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: N/A (delivery in progress; not yet recorded)
+- Prior authoritative result: `Pass` (CRR-004 implementation; CRR-005 test review)
+- Current authoritative result: `Fail`, `Design Impact` (naming of design contracts)
+- What changed in the review result and why:
+  - Naming was re-reviewed against the user's direction.
+  - Generic "definition catalog" / `definitions_changed` names appear on the WebSocket path, the frame type, the server subsystem and classes, and the web services, composables, types, localization and badge (about 50 files).
+  - Internal design terms leak into GraphQL (`catalogIssue(s)`, `DefinitionUnitIssue`, `DefinitionSubject`).
+  - `refreshCache()` names a cache removed by this ticket.
+  - `DEFINITION_SOURCE_MISSING` also covers unreadable folders since IR-002.
+  - A proposed rename map is recorded. The application-owned catalog entries need a naming decision.
+- Supported product scenario / material-premise basis changes: none (no behavior change)
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001…CR-004 | Resolved | Resolved (unchanged) | IR-002, IR-003 | No code change since CRR-004 |
+
+- New or remaining finding IDs: CR-005, CR-006, CR-007, CR-008, CR-009, CR-010 (must fix); CR-011 (must fix, Low). Optional R-2 remains.
+- Material score or classification changes: Naming Quality and Local Readability 9.2 → 7.5; other round-4 scores unchanged. Large / High unchanged.
+- Recommended recipient: `/software_engineering_team/solution_designer` (confirm names with the user, update the design spec, pause delivery, route to implementation)
+- Remaining risks or uncertainty:
+  - The final names depend on the user's confirmation.
+  - The rename touches the durable E2E (path, frame type, issue fields), so API/E2E must rerun and its test changes need proportional review.
+
+### CRR-007 — IR-004 / SR-009 rename and application-package change; Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/code-review-report.md` (§ Round 6; Findings CR-005…CR-011; scorecard; Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 6
+- Review scope: `Full Re-Audit` (all public contracts renamed; application-package entries leave the store)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-handoff.md` / `implementation-revision-record.md` IR-004 (`e89085f3e`, `8d89b8cdf`); CR-005…CR-011; SR-009 / DSN-005; ARCH-REV-004 N-7
+- Relevant solution revision IDs: SR-005, SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-002 (rerun pending)
+- Relevant delivery revision IDs: N/A (the delivery docs at `061ea7ab3` were renamed by IR-004; delivery redoes its docs sync later)
+- Prior authoritative result: `Fail` (CRR-006, Design Impact, naming)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - The SR-009 rename map was verified across the server, web, GraphQL, WebSocket, localization and docs.
+  - The verification search leaves only pre-existing, out-of-map names (`CollaboratorDefinitionCatalog`, `TeamLocalDefinitionSubject`) and one intentional old-frame rejection test.
+  - The reloader and store logic is preserved, and R-2 is applied.
+  - N-7 isolation is verified, with its test.
+  - Reruns pass:
+    - server typecheck: clean;
+    - server suites: 63 files, 428 tests;
+    - gated E2E: 16/16;
+    - web: 227 files, 1855 tests.
+- Supported product scenario / material-premise basis changes: none. Application packages are out of scope; their malformed entries are now logged and skipped (N-7).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-005 | Open | Resolved | SR-009, IR-004 | `/ws/agent-package-definitions`, `agent_package_definitions_changed {changedLists}`, `agentPackageDefinitionsWs` |
+| CR-006 | Open | Resolved | SR-009, IR-004 | `src/agent-package-definitions/**`, `AgentPackageDefinitionStore` / `Reloader` / `FolderWatcher` / `ChangeHub` |
+| CR-007 | Open | Resolved | SR-009, IR-004 | Web `services/` / `composables/` / `utils/agentPackages/`, `types/agentPackageDefinitions.ts`, `agentPackageDefinitions.*` localization, `DefinitionLoadIssueBadge.vue`, `DefinitionProblemsNotice.vue` |
+| CR-008 | Open | Resolved | SR-009, IR-004 | GraphQL `loadIssue` / `loadIssues`, `DefinitionLoadIssue(Entry)` |
+| CR-009 | Open | Resolved | SR-009, IR-004 | `reloadAgentPackageDefinitions()` services; one mutation; readiness reload removed |
+| CR-010 | Open | Resolved | SR-009, IR-004 | `DEFINITION_SOURCE_UNAVAILABLE` (store, badge); `FOLDER_MISSING` |
+| CR-011 | Open | Resolved | SR-009, IR-004 | `definitionProblems(kind: DefinitionKind!)`, `kind` fields |
+
+- New or remaining finding IDs: none open. Optional follow-ups: rename the pre-existing `CollaboratorDefinitionCatalog` / `TeamLocalDefinitionSubject`; tighten the spec's verification-search wording.
+- Material score or classification changes: Naming 7.5 → 9.3; overall 9.3. Large / High unchanged.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer` (primary); `/software_engineering_team/implementation_engineer` (informational)
+- Remaining risks or uncertainty:
+  - Application-package files are read on each list call (not measured as a problem).
+  - API/E2E evidence for the renamed contracts is pending.
+  - The test-code changes in IR-004 and any API/E2E changes need proportional review after a passing run.
+
+### CRR-008 — Proportional test-code review after API-REV-003 (SR-009); Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/api-e2e-test-review-report.md` (round 2)
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md` § Round 3 (API-REV-003); commit `705e699b1` (DCF-E2E-010) plus IR-004 test changes in `e89085f3e`
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Pass` (CRR-007 implementation; CRR-005 test review round 1)
+- Current authoritative result: `Pass` (test review round 2)
+- What changed in the review result and why:
+  - The renamed durable tests keep their assertions.
+  - The deleted sync/catalog/refresh tests are replaced case for case (verified against `061ea7ab3`).
+  - The N-7 isolation test proves the observable list behavior with real malformed files.
+  - DCF-E2E-010 asserts the user-confirmed clean cut, following the repository's removal-sentinel pattern.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None (no prior test-review findings).
+
+- New or remaining finding IDs: None. Non-blocking note TN-1 (DCF-E2E-010 retired-name list overlaps the unit guard; optional trim).
+- Material score or classification changes: N/A. Large / High unchanged.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - Linux evidence comes from the probe only.
+  - GitHub Update was validated only against controlled HTTP.
+  - Rare slow folder detection (REQ-018 scope).
+  - FU-001 (out of scope).
+  - Optional rename of the pre-existing `CollaboratorDefinitionCatalog` / `TeamLocalDefinitionSubject`.

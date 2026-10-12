@@ -16,12 +16,12 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
+- Current API/E2E Revision ID: `API-REV-003`
 - API/E2E Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/api-e2e-test-case-ledger.md`
-- Current Investigation Round: 2
-- Trigger: round 2: CRR-004 Pass (IR-003 `bd4c63796`, SR-008/DSN-004 resolving CR-004 = APE-001) from `/software_engineering_team/code_reviewer`; round 1: CRR-002 Pass
+- Current Investigation Round: 3
+- Trigger: round 3: CRR-007 Pass (IR-004 `e89085f3e`: SR-009/DSN-005 clean-cut rename, N-7 application-package lists on demand). Round 2: CRR-004 Pass (IR-003 `bd4c63796`, SR-008/DSN-004 resolving CR-004 = APE-001) from `/software_engineering_team/code_reviewer`; round 1: CRR-002 Pass
 - Prior Investigation Reviewed: round 1 (API-REV-001, Fail — APE-001)
-- Latest Authoritative Investigation: this file (round 2)
+- Latest Authoritative Investigation: this file (round 3)
 
 ## Routing Classification
 
@@ -156,6 +156,14 @@ One server-side definition catalog (`src/definition-catalog/**`) is now the sing
 
 Committed as `33d290187`.
 
+### Round 3 plan (SR-009 / DSN-005 / N-7)
+
+- **Existing durable E2E:** IR-004 renamed it to `agent-package-definitions-live-refresh.e2e.test.ts`. Reviewed line by line against `33d290187`: a faithful rename (route, frame, `changedLists`, `loadIssue(s)`, `definitionProblems`, the single `reloadAgentPackageDefinitions`, `FOLDER_MISSING`, `DEFINITION_SOURCE_UNAVAILABLE`) with no weakened assertion. Decision: Still Valid.
+- **Added DCF-E2E-010** (commit `705e699b1`): the clean cut. The retired `/ws/definition-catalog` gets HTTP 404 with no upgrade; the seven retired GraphQL names are rejected; the new names answer; `AgentPackageAutoRefreshState` is exactly FOLDER_MISSING/UNAVAILABLE/WATCHING.
+- **N-7:** the unit `application-package-list-isolation.test.ts` (IR-004) is Still Valid. Broader: on the desktop, import a copy of the Brief Studio importable package with one valid and two malformed application-package agents through Settings → Application Packages. The lists must load with the valid agent and without the malformed ones, and the `@` menu must stay available.
+- **Desktop (Required):** the authoritative human-like journey on an IR-004 worktree build, reusing the round-3 rehearsal test package and driver. Clicks and typing only; agents on real Codex make the package changes; a phone-paired `/mobile` second client; Restart server; the Settings row (`FOLDER_MISSING` → "Folder not found"); Reload buttons; recorded.
+- **Baselines (product changed):** typecheck, server unit, integration, web `test:nuxt`, and the sibling definition/package E2E plus AGY-fixture coexistence.
+
 ## Durable Coverage To Remove
 
 None.
@@ -210,6 +218,20 @@ None.
 | Durable regression coverage quality and relevance | 94% | E2E covers both nested kinds | — | — |
 
 - Overall round-2 post-repository confidence: 91%; User-surface below 90% → broader validation `Required` (desktop rechecks of APE-001 and the org-owned case).
+
+### Round 3 Scorecard (post-repository → final)
+
+| Confidence Category | Post-Repository | Final | Evidence |
+| --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 93% | 96% | DCF-E2E-001…010 ×3; desktop journey re-proves AC-001…016 on the renamed build |
+| Changed-boundary execution directness | 94% | 97% | new route and frame observed from real UI Reload buttons; renamed GraphQL fields behind real cards |
+| Cross-boundary integration realism and mock gap | 93% | 96% | real Codex agents make every change; phone-paired client |
+| Environment, configuration, identity, and fixture fidelity | 94% | 95% | worktree build, copies of the user's packages, a real application package; Linux only by probe |
+| Failure, edge-case, lifecycle, and recovery evidence | 93% | 95% | break/restore, folder missing, restart/reconnect, N-7 malformed application agents |
+| User-surface, browser, and desktop-shell confidence | 85% | 97% | every surface clicked and read in the packaged app plus the mobile client |
+| Durable regression coverage quality and relevance | 95% | 95% | clean-cut contract asserted durably |
+
+- Round 3 final: **96%**, no category below 90%; broader validation `Required` and executed.
 
 ## Broader Validation Decision (Mandatory)
 

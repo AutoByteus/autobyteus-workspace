@@ -1,0 +1,1 @@
+{"text": "Create the folder /tmp/apar-r4/apar-ux-test-package/agents/apar-phone-seen with agent.md containing the lines ---, name: APAR Phone Seen, description: Created while a phone watches, ---, Reply OK. and agent-config.json containing {\"toolNames\": [], \"skillNames\": []}"}

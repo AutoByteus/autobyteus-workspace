@@ -8,6 +8,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code Reviewer / `code-review-report.md` / CRR-002 Pass (round 2) | SR-005, SR-007, ARCH-REV-002, IR-001, IR-002, CRR-001, CRR-002 | N/A | Fail / 90% (APE-001) |
 | API-REV-002 | Code Reviewer / `code-review-report.md` / CRR-004 Pass (round 4) | SR-008, DSN-004, ARCH-REV-003, IR-003, CRR-003 (CR-004), CRR-004 | Fail / 90% | Pass / 95% |
+| API-REV-003 | Code Reviewer / `code-review-report.md` / CRR-007 Pass (round 6) | SR-009, DSN-005, ARCH-REV-004 (N-7), IR-004, CRR-006, CRR-007 | Pass / 95% | Pass / 96% |
 
 ## Revision Entries
 
@@ -74,3 +75,41 @@ None.
   - Rare slow folder detection under load (REQ-018 scope, QR-003 bound).
   - The real-model journey, reconnect, Settings row, second client and idle CPU were not rerun in round 2; IR-003 does not touch those paths.
   - Base failures reported to owners (unchanged).
+
+### API-REV-003 — SR-009 renamed contracts: clean cut asserted, authoritative human-like desktop journey
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md`, CRR-007 (round 6, Pass). IR-004 `e89085f3e` at `8d89b8cdf`.
+- Triggering finding or case IDs: none open. This is a contract change (SR-009/DSN-005) plus N-7.
+- Related revision IDs: SR-009, ARCH-REV-004, IR-004, CRR-006, CRR-007.
+- Why recorded: rerun of all evidence on the renamed contracts.
+- Coverage decisions or durable test paths changed:
+  - IR-004's renamed `agent-package-definitions-live-refresh.e2e.test.ts` was reviewed as a faithful rename (Still Valid).
+  - Added DCF-E2E-010, clean cut (commit `705e699b1`).
+  - The new unit `application-package-list-isolation.test.ts` (N-7) is Still Valid.
+- Cases added, changed, removed, or rechecked:
+  - DCF-E2E-001…010 ×3;
+  - REPO-002…005, REG-001/002;
+  - human-like desktop HUMAN-001…012 and N7-001 (instance `iso-53429-718d`).
+  - A rehearsal on the pre-rename build (2026-10-12, `round3-rehearsal/`) is non-authoritative.
+- Commands, environment, fixture, or broader-validation delta:
+  - The worktree build was driven only by clicks and typing.
+  - The real Codex agents were the APAR Package Breaker (test package) and the Project Task Manager → Agent Package Creator.
+  - A phone-paired `/mobile` client ran in a separate test-owned Chrome.
+  - N-7 used a modified Brief Studio importable package.
+  - The run was recorded (`round3/desktop/round3-human-journey.mp4`).
+
+#### Prior Failure Resolution
+
+None (no failure open after API-REV-002).
+
+- Canonical artifacts and sections updated: investigation (round-3 plan and scorecard); execution report (round-3 summary, latest result); ledger (R3-1…R3-4, plus the rehearsal entry); `api-e2e-evidence/round3/**`.
+- Prior result and confidence: Pass, 95%
+- Current result and confidence: **Pass, 96%** (no category below 90%)
+- New or remaining failure IDs: none
+- Recommended owner: code reviewer, for proportional test-code review (`705e699b1` plus IR-004's durable test changes)
+- Remaining risks, blocked evidence, or untested scope:
+  - Linux evidence by probe only.
+  - GitHub Update against controlled HTTP only.
+  - Rare slow folder detection under load (REQ-018 scope).
+  - Base failures reported to owners: `agent-team-definitions-graphql` ×5, `agent-package-private-skills` ×2.
+  - FU-001 (collaborator candidates not filtered by admission) is unchanged and out of scope.

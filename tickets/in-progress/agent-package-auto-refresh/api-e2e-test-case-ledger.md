@@ -77,11 +77,28 @@ New case: DCF-E2E-009 (org-owned nodes on the Org's `catalogIssues`; REQ-007, RE
 | R2-8 | DESK-002 shared / DESK-007 / DESK-001 | 2026-10-11 | Completed | shared agent badge; new invalid team-local folder; live Team add/remove | badges and live list | shared (1) at 865 ms, cleared; "Some members couldn't be loaded (1) · No working version" plus list notice, cleared; Team live 1,010 ms / gone 1,119 ms | Pass | receipt, `r2-d03-team-card-unusable-member.png` | — |
 | R2-9 | — | 2026-10-11 | Completed | `pnpm --silent isolated-app stop iso-58692-7f20`; `rm -rf /tmp/apar-desk2` | owned resources removed | stopped (not forced), data root removed, both ports released; temp removed | Pass | console | — |
 
+### Round 3 rehearsal (non-authoritative; user request 2026-10-12)
+
+The user asked for a fully human-like desktop run with agents making the changes. Meanwhile CRR-006 (naming, Design Impact) had started the SR-009 public-contract rename, and the implementer's work is uncommitted and in flight in this worktree. So this ran as a rehearsal on the existing IR-003 build (`--from-worktree`, no build, working tree untouched). It is not an API-REV round.
+
+| Sequence | Case ID | Timestamp | Event | Command / Entry Point / Material Configuration | Expected Observable Result | Observed Result Or Checkpoint | Result | Evidence / Artifact Path | Next Action / Unresolved Issue |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| R3-R1 | HUMAN-001…012 | 2026-10-12 | Completed | instance `iso-62126-fb22`; clicks and typing only; APAR Package Breaker plus PTM → Agent Package Creator on real Codex; second client = phone-paired `/mobile` in a separate Chrome; whole run recorded | live lists, badges (team-local, org-owned), `@`, delegation, phone live update, restart/reconnect, Settings row | all pass; see receipt for timings (1.1–1.3 s live updates; phone 1.23 s; reconnect on both clients) | Pass (rehearsal) | `round3-rehearsal/rehearsal-receipt.json`, `round3-human-journey.mp4`, `r3-*.png`, `apar-ux-test-package/` | rerun the same journey on the IR-004 build when routed |
+
+### Round 3 (API-REV-003, authoritative; IR-004 renamed contracts)
+
+| Sequence | Case ID | Timestamp | Event | Command / Entry Point / Material Configuration | Expected Observable Result | Observed Result Or Checkpoint | Result | Evidence / Artifact Path | Next Action / Unresolved Issue |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| R3-1 | DCF-E2E-001…010 | 2026-10-12 | Completed (×3 gated + ungated) | renamed E2E reviewed as a faithful rename; new DCF-E2E-010 (`705e699b1`) | 10/10 | 10/10 ×3; ungated 8 pass, 2 skipped; retired route HTTP 404; 7 retired GraphQL names rejected | Pass | `round3/apd-e2e-run{1,2,3}.log`, `round3/apd-run*/…json`, `round3/apd-e2e-ungated.log` | — |
+| R3-2 | REPO-002…005, REG-001/002 | 2026-10-12 | Completed | typecheck → unit → integration → web → sibling E2E + AGY fixture | baseline | typecheck clean; unit 673 files; integration 72 (only the 2 documented cases fail); web 606 files; sibling: only the 7 known base failures (reported) | Pass | `round3/*.log` | — |
+| R3-3 | HUMAN-001…012, N7-001 | 2026-10-12 | Completed | isolated instance `iso-53429-718d` built at `705e699b1`; human-like journey recorded; real Codex agents; phone-paired second client | as receipt | all pass (live 1.06–1.28 s; phone 1.09 s; Reload buttons publish the new frame; restart/reconnect both clients; Settings row; N-7 lists intact) | Pass | `round3/desktop/desktop-round3-receipt.json`, `round3-human-journey.mp4`, `r4-*.png` | — |
+| R3-4 | — | 2026-10-12 | Completed | cleanup | owned resources removed | instance stopped, ports released, data removed; owned Chrome terminated; temp removed | Pass | console | — |
+
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: R2-9 (round 2); round-1 events end at 22
-- Last completed case and result: round 2: all Pass (APE-001 resolved)
+- Last durably recorded event: R3-4 (round 3)
+- Last completed case and result: round 3: all Pass
 - Cases still running, interrupted, or not started: none
-- Next case or recovery action: none (handoff for proportional test-code review)
-- Interruption, context-compression, or rerun note: round 2 reused the case IDs; new IDs DCF-E2E-009, DESK-006, DESK-007
-- Reconciled into execution coverage report: `Yes` — `api-e2e-execution-coverage-report.md` § Test-Case Ledger Reconciliation (round 2)
+- Next case or recovery action: none (proportional test-code review)
+- Interruption, context-compression, or rerun note: round 3 was interrupted once by a session restart after H11. The instance was still running, so it resumed at H12.
+- Reconciled into execution coverage report: `Yes` — round 3 section

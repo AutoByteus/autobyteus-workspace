@@ -12,6 +12,7 @@
 | SR-006 | Design (+ Evidence) | Architecture investigation and design (2026-10-11) | N/A | Approved / no design | Approved / Design Ready | All BEH/REQ mapped; DSN-001 added | Design spec complete; Large / High; catalog-bricking defect evidenced |
 | SR-007 | Design (+ Evidence, editorial requirements) | ARCH-REV-001 Fail — Design Impact (AR-001…AR-006) | AR-001…AR-006 | Design Ready (SR-006) | Design Ready (resubmitted) | BEH-003, BEH-004, BEH-006, BEH-008; REQ-002, REQ-005, REQ-007, REQ-009, REQ-015, REQ-016; DSN-002, DSN-003 | All findings resolved in design; no approved behavior changed |
 | SR-008 | Design | CRR-003 failure-origin review of API-REV-001 DESK-002 (Design Impact) | CR-004 | Design Ready (SR-007; ARCH-REV-002 Pass) | Design Ready (revised) | BEH-004; REQ-009; AC-004; DSN-004; FU-001 | Nested last-good issues surface on the owning Team/Org card via unit-wide `catalogIssues` |
+| SR-009 | Design (naming plus accuracy) | CRR-006 (CR-005…CR-011) plus the user's naming direction (2026-10-11) | CR-005…CR-011 | Design Ready (SR-008) | Design Ready (names confirmed by the user) | DSN-005; public WS/GraphQL contract names | Full rename map; application-package entries out of the store; one reload mutation |
 
 ## Revision Entries
 
@@ -144,3 +145,24 @@
   - The CRR-001/002 source-review Pass is superseded per CRR-003.
 - Classification: Large / High (unchanged).
 - Next action: Apply handoff rules for the revised package.
+
+### SR-009 — Naming (CRR-006 plus user direction)
+
+- Phase and classification: Design (naming plus a small accuracy refactor). No intended-behavior change.
+- Trigger:
+  - code reviewer CRR-006 (`code-review-report.md` § Round 5, CR-005…CR-011);
+  - the user, 2026-10-11: "definition catalog … what kind of definition? … evaluate the naming from implemented and update your design … each naming should reflect what they really are".
+- Evaluation: I listed the implemented identifiers and found three problems:
+  - bare "definition"/"catalog" names;
+  - internal words leaking into public contracts ("catalog", "unit", "subject", "diagnostics");
+  - stale names (`refreshCache` after the cache was removed; `ROOT_MISSING`/`SOURCE_MISSING` for unreadable folders).
+- Resolution (`design-spec.md` § Naming (SR-009, authoritative), Removal Plan):
+  - vocabulary: agent package definitions, definition folder, kind, load issue, definition problem;
+  - the full rename map;
+  - application-package agents/teams removed from the store (read on demand), which makes the term exact; the readiness reload calls are removed;
+  - one `reloadAgentPackageDefinitions` mutation replaces three.
+- Delivery: paused (DR-002). The delivery docs commit `061ea7ab3` is included in the rename scope.
+- Approval impact: none on behavior. The name map is shown to the user for confirmation because the user directed the naming.
+- Classification: Large / High (unchanged).
+- User confirmation: 2026-10-11, "I believe you have a good reasoning. Follow your reasoning … then send for further handoff … I trust you."
+- Next action: apply handoff rules.

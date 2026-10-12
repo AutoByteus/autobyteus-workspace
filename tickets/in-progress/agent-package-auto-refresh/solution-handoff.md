@@ -102,3 +102,26 @@ Architecture re-review (ARCH-REV-002) of the SR-007 package, focused on AR-001�
 - Downstream artifacts (reviewer/implementation/validation-owned) at the same folder: `code-review-report.md`, `code-review-revision-record.md`, `implementation-handoff.md`, `implementation-revision-record.md`, `api-e2e-*.md`, `api-e2e-evidence/`, `implementation-evidence/`.
 - Route applied (SR-008): `get_handoff_rules` → the revised Large/High package matches the architecture-review rule → `/software_engineering_team/architecture_reviewer` (delta review of SR-008). After that review, the route continues implementation → source review → API/E2E, as CRR-003 noted.
 - 2026-10-11: ARCH-REV-003 **Pass** (informational) on the SR-008 delta. CR-004 is resolved by design; DSN-004 and `catalogIssues` are within REQ-009; FU-001 is out of scope. The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer` with notes N-5 (unit issues via the services) and N-6 (one `DefinitionUnitIssue` mapper). No Solution Designer forwarding required.
+
+## SR-009 Pending — naming (CRR-006, CR-005…CR-011), 2026-10-11
+
+- The code reviewer's CRR-006 (Fail, Design Impact, naming; user-directed) proposes the rename map in `code-review-report.md` § Round 5.
+- Delivery paused: a HOLD was sent to `/software_engineering_team/delivery_engineer` (delivered). Branch already has delivery commits `8187bac0f` (merge of origin/personal) and `061ea7ab3` (docs); the rename must cover those docs.
+- Waiting for the user to confirm the final names, with two decisions:
+  - (1) Accept "agent package definitions" with a doc note for application-owned list entries (recommended).
+  - (2) Leave the pre-existing `refresh*DefinitionCatalog` mutations out of scope (recommended).
+- No design-spec change until confirmation.
+- Delivery HOLD confirmed (DR-002): nothing pushed, merged, released or cleaned up; `origin/personal` still `beb6b3b49`. Local delivery commits `ff9d81048` (artifact checkpoint), `8187bac0f` (merge of origin/personal `beb6b3b49`; checks green except 7 known base E2E failures) and `061ea7ab3` (docs with pre-rename names: `docs/modules/definition_catalog.md` plus server and web module docs). The SR-009 implementation must also rename those docs. Implementation builds on `061ea7ab3`.
+
+## SR-009 Revision — Naming (2026-10-11)
+
+- Trigger: code reviewer CRR-006 (CR-005…CR-011) plus the user's naming direction.
+- Resolution:
+  - `design-spec.md` § Naming (SR-009, authoritative): collective term "agent package definitions" (any agent/team/org definition from a registered agent package); definition folder; kind; load issue; definition problem; the full clean-cut rename map (server, web, WS, GraphQL, docs, localization).
+  - Application-package agents/teams are removed from the store (read on demand) and the readiness reload calls go with them.
+  - One `reloadAgentPackageDefinitions` mutation replaces three.
+- The user confirmed the names on 2026-10-11. Requirements: DSN-005 (solution detail; no intended-behavior change).
+- Delivery: paused (DR-002). The rename must also cover delivery docs commit `061ea7ab3`. Implementation builds on branch HEAD `061ea7ab3`.
+- Expected route after review: implementation (clean-cut rename plus store change, regenerate `generated/graphql.ts`) → source review (naming delta plus application-owned list change) → API/E2E rerun (path, frame, fields) → test review → delivery (redo docs sync, release notes, handoff summary).
+- Route applied (SR-009): `get_handoff_rules` → revised Large/High package → `/software_engineering_team/architecture_reviewer` (delta review of SR-009).
+- 2026-10-11: ARCH-REV-004 **Pass** (informational) on the SR-009 naming delta. The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer` with mandatory note N-7 (the on-demand application-package list merge skips and logs malformed entries instead of failing the list). No Solution Designer forwarding required.

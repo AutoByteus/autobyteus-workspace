@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-008`
+- Current solution revision ID: `SR-009`
 - Package identifier: `agent-package-auto-refresh`
 - Request / ticket: Project Task from `/project_task_manager`; user problem statement 2026-10-10
 - Requirements owner: Solution Designer
@@ -222,6 +222,7 @@
 | DSN-003 | Do nested definitions (team-local agents, org-owned agents/teams) get last good? | ARCH-REV-001 AR-004; REQ-007 plain reading; 111/156 of the user's agents are nested | **Decided (Solution Designer): yes.** REQ-007/REQ-009 apply to every definition under a registered root, nested ones included. Implemented by reconciling a team or org together with its nested definitions as one unit. No requirement narrowing. | Solution Designer | Decided (solution detail; matches the approved requirement) |
 | DSN-004 | Where is a nested definition's error shown in the web (REQ-009 "on the affected card or row")? | CR-004: team-local agents are intentionally not listed on the Agents page (existing `AgentList.vue` filter), so the SR-007 assumption of an Agents-page card was wrong | **Decided (Solution Designer, 2026-10-11):** the affected card is the **owning** Team card (team-local agents) or Org card (org-owned agents, org-owned teams and their agents). The card's issue badge lists every issue in the unit with the name/folder, file and reason. Unusable definitions stay in the list notice. Consistent with the approved UI section; no new product surface. | Solution Designer | Decided (solution detail) |
 | FU-001 | `list_available_agents` (and `@`) lists a team whose member agent is missing, while the Teams page hides it as admission-unavailable. Seen in API/E2E; identical at base. | Readers agree on disk content; they differ on the admission-availability policy that predates this ticket. REQ-002 concerns freshness and agreement with disk, not adding admission filtering to collaborator candidates. | **Out of scope; separate-ticket candidate:** filter collaborator candidates by admission availability. Delegating to such a team already fails at launch with the existing error. | Solution Designer → user | Recorded for follow-up |
+| DSN-005 | Naming: what should the new parts and public contracts be called? | The user's direction (2026-10-11): bare "definition"/"catalog" are too general; names must reflect what things really are. CRR-006 CR-005…CR-011. | **Decided (Solution Designer), pending the user's confirmation of the map:** the collective term is "agent package definitions". The full rename map is in `design-spec.md` § Naming (SR-009). Application-package agents/teams move out of the store so the term is exact, and the three refresh mutations become one `reloadAgentPackageDefinitions`. No intended-behavior change: every list and badge behaves the same. | Solution Designer → user | **Confirmed by the user 2026-10-11** ("I believe you have a good reasoning. Follow your reasoning … I trust you"), after the clarification that an agent package definition is any agent, team or org definition from an agent package |
 
 ## Traceability
 

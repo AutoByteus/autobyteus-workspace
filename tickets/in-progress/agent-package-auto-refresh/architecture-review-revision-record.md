@@ -9,6 +9,7 @@ The latest `design-review-report.md` remains authoritative.
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (SR-006) | SR-005, SR-006 | N/A | Fail (Design Impact) | AR-001, AR-002, AR-003, AR-004, AR-005, AR-006 |
 | ARCH-REV-002 | Round 2 / Revised Architecture Design Complete (SR-007) | SR-005, SR-007 | Fail (Design Impact) | Pass | AR-001…AR-006 resolved; implementation notes N-1…N-4 |
 | ARCH-REV-003 | Round 3 / Revised Architecture Design Complete (SR-008; CR-004 from CRR-003) | SR-005, SR-008 | Pass | Pass | No new findings; implementation notes N-5, N-6 added |
+| ARCH-REV-004 | Round 4 / Revised Architecture Design Complete (SR-009; CRR-006 CR-005…CR-011 plus user naming direction) | SR-005, SR-009 | Pass | Pass | No new findings; implementation note N-7 added (mandatory) |
 
 ## Revision Entries
 
@@ -103,3 +104,32 @@ None.
 - Remaining risks or uncertainty:
   - FU-001 is a follow-up candidate.
   - The CRR-001/002 source-review Pass is superseded. Source review (with the nested-surface trace) and API/E2E re-runs are required after implementation.
+
+### ARCH-REV-004 — SR-009 naming and application-package store change; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/tickets/in-progress/agent-package-auto-refresh/design-review-report.md`
+- Review round and trigger: Round 4, a delta review. `Revised Architecture Design Complete` (SR-009) from `/software_engineering_team/solution_designer`.
+- Triggering role, report path, and finding IDs: Code Reviewer, `code-review-report.md` CRR-006 (CR-005…CR-011), plus the user's naming direction. DSN-005 confirmed by the user on 2026-10-11.
+- Relevant solution revision IDs: SR-005, SR-009
+- Prior authoritative decision: `Pass` (ARCH-REV-003)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - Reviewed `design-spec.md` § Naming (SR-009, authoritative) and the SR-009 Removal Plan rows against branch HEAD `061ea7ab3`.
+  - The rename map covers CR-005…CR-011 as a clean cut with no aliases. CR-008's suggested `definitionIssue` became the more specific, user-confirmed `loadIssue`.
+  - Public contract changes are renames or a consolidation of the three identical refresh mutations. All consumers are in-repo; `dist-mobile`, `resources/server` and `electron-dist` are build outputs.
+  - The readiness `prepare()` reload existed only to refresh store entries. Its validation stays.
+  - Moving application-package agents/teams to on-demand list reads keeps the lists the same, provided per-definition isolation is kept: mandatory note N-7, because application-package reads throw on malformed files.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001…AR-006 | Resolved | Resolved (unchanged) | SR-007 | Unaffected; names change only |
+| CR-005…CR-011 (downstream, code review) | Open (CRR-006, must fix) | Design resolved; implementation and re-review pending | SR-009, DSN-005 | `design-spec.md` § Naming rename map and Removal Plan; verification search list |
+
+- New or remaining finding IDs: None. Implementation notes N-1 and N-7 are mandatory; N-2…N-6 still apply (N-5/N-6 under the new names).
+- Material classification changes: None (Large / High).
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (primary); `/software_engineering_team/solution_designer` (informational).
+- Remaining risks or uncertainty:
+  - Application-package entries lose load issues and live publication. That is out of scope and matches base.
+  - Delivery stays paused (DR-002). Its docs sync must be redone under the new names.

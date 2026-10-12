@@ -1,0 +1,218 @@
+{
+  "dcf001": {
+    "invalid": {
+      "code": 4401,
+      "reason": "REMOTE_ACCESS_AUTH_INVALID"
+    },
+    "sibling": {
+      "code": 4401,
+      "reason": "REMOTE_ACCESS_AUTH_INVALID"
+    },
+    "revoked": {
+      "code": 4403,
+      "reason": "REMOTE_ACCESS_DEVICE_REVOKED"
+    },
+    "pairedFrames": [
+      {
+        "type": "connected"
+      },
+      {
+        "type": "agent_package_definitions_changed",
+        "changedLists": [
+          "agents",
+          "agent_teams",
+          "agent_orgs",
+          "agent_packages"
+        ]
+      }
+    ]
+  },
+  "dcf002": {
+    "createdVisibleMs": 72,
+    "createdFrames": [
+      {
+        "type": "agent_package_definitions_changed",
+        "changedLists": [
+          "agents",
+          "agent_teams",
+          "agent_orgs"
+        ]
+      }
+    ],
+    "editVisibleMs": 8,
+    "fixClearedMs": 60,
+    "deleteVisibleMs": 9
+  },
+  "dcf003": {
+    "missing": {
+      "state": "FOLDER_MISSING",
+      "message": "Its definitions keep their last loaded version until the folder returns."
+    },
+    "missingMs": 71,
+    "restoredMs": 62
+  },
+  "dcf004": {
+    "Agents/Teams/Orgs page Reload": [
+      {
+        "type": "agent_package_definitions_changed",
+        "changedLists": [
+          "agents",
+          "agent_teams",
+          "agent_orgs",
+          "agent_packages"
+        ]
+      }
+    ],
+    "package Reload": [
+      {
+        "type": "agent_package_definitions_changed",
+        "changedLists": [
+          "agents",
+          "agent_teams",
+          "agent_orgs",
+          "agent_packages"
+        ]
+      }
+    ]
+  },
+  "dcf005": {
+    "githubRequests": [
+      "https://api.github.com/repos/apar-e2e/agents",
+      "https://api.github.com/repos/apar-e2e/agents/branches/main",
+      "https://codeload.github.com/apar-e2e/agents/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "https://api.github.com/repos/apar-e2e/agents",
+      "https://api.github.com/repos/apar-e2e/agents/branches/main",
+      "https://api.github.com/repos/apar-e2e/agents",
+      "https://api.github.com/repos/apar-e2e/agents/branches/main",
+      "https://codeload.github.com/apar-e2e/agents/tar.gz/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "updateFrames": [
+      {
+        "type": "agent_package_definitions_changed",
+        "changedLists": [
+          "agents",
+          "agent_teams",
+          "agent_orgs",
+          "agent_packages"
+        ]
+      },
+      {
+        "type": "agent_package_definitions_changed",
+        "changedLists": [
+          "agent_packages"
+        ]
+      }
+    ],
+    "autoRefreshAfterUpdate": {
+      "state": "WATCHING",
+      "message": null
+    }
+  },
+  "dcf010": {
+    "retiredRoute": {
+      "status": 404,
+      "opened": false
+    },
+    "rejected": {
+      "{ agentDefinitions { id catalogIssue { code } } }": "Cannot query field \"catalogIssue\" on type \"AgentDefinition\".",
+      "{ agentTeamDefinitions { id catalogIssues { code } } }": "Cannot query field \"catalogIssues\" on type \"AgentTeamDefinition\". Did you mean \"loadIssues\"?",
+      "{ agentOrgDefinitions { id catalogIssues { code } } }": "Cannot query field \"catalogIssues\" on type \"AgentOrgDefinition\". Did you mean \"loadIssues\"?",
+      "{ definitionDiagnostics(subject: AGENT) { definitionId } }": "Cannot query field \"definitionDiagnostics\" on type \"Query\". Did you mean \"definitionProblems\"?",
+      "mutation { refreshAgentDefinitionCatalog }": "Cannot query field \"refreshAgentDefinitionCatalog\" on type \"Mutation\". Did you mean \"createAgentDefinition\" or \"deleteAgentDefinition\"?",
+      "mutation { refreshAgentTeamDefinitionCatalog }": "Cannot query field \"refreshAgentTeamDefinitionCatalog\" on type \"Mutation\". Did you mean \"createAgentTeamDefinition\", \"deleteAgentTeamDefinition\", or \"updateAgentTeamDefinition\"?",
+      "mutation { refreshAgentOrgDefinitionCatalog }": "Cannot query field \"refreshAgentOrgDefinitionCatalog\" on type \"Mutation\". Did you mean \"createAgentOrgDefinition\" or \"deleteAgentOrgDefinition\"?"
+    }
+  },
+  "dcf006": {
+    "diagnostic": {
+      "kind": "AGENT_TEAM",
+      "definitionId": "apar-dup-team",
+      "code": "DEFINITION_IDENTITY_DUPLICATED",
+      "reason": "Definition identity 'agent_team:apar-dup-team' is registered by multiple packages: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-CGcBPc/dup-a-2a9266/agent-teams/apar-dup-team, /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-CGcBPc/dup-b-87105e/agent-teams/apar-dup-team.",
+      "definitionPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-CGcBPc/dup-a-2a9266/agent-teams/apar-dup-team",
+      "packageRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-CGcBPc/dup-a-2a9266",
+      "usingLastGood": false,
+      "dependencyChain": []
+    }
+  },
+  "dcf009": {
+    "brokenVisibleMs": 5,
+    "issues": [
+      {
+        "kind": "AGENT",
+        "definitionId": "agent-org-owned-agent:apar-studio:writer",
+        "name": "APAR Studio Writer",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "Invalid JSON: Unexpected end of JSON input",
+        "definitionPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-CGcBPc/org-package-573446/agent-orgs/apar-studio/agents/writer/agent-config.json",
+        "packageRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-CGcBPc/org-package-573446",
+        "usingLastGood": true
+      },
+      {
+        "kind": "AGENT_TEAM",
+        "definitionId": "agent-org-owned-team:apar-studio:squad",
+        "name": "APAR Studio Squad",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "team.md must start with '---' frontmatter delimiter (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-CGcBPc/org-package-573446/agent-orgs/apar-studio/agent-teams/squad/team.md)",
+        "definitionPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-CGcBPc/org-package-573446/agent-orgs/apar-studio/agent-teams/squad/team.md",
+        "packageRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-CGcBPc/org-package-573446",
+        "usingLastGood": true
+      },
+      {
+        "kind": "AGENT",
+        "definitionId": "team-local-agent:agent-org-owned-team%3Aapar-studio%3Asquad:lead",
+        "name": "APAR Studio Squad Lead",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "agent.md must start with '---' frontmatter delimiter (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-CGcBPc/org-package-573446/agent-orgs/apar-studio/agent-teams/squad/agents/lead/agent.md)",
+        "definitionPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-CGcBPc/org-package-573446/agent-orgs/apar-studio/agent-teams/squad/agents/lead/agent.md",
+        "packageRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-CGcBPc/org-package-573446",
+        "usingLastGood": true
+      }
+    ],
+    "clearedMs": 4
+  },
+  "dcf007": {
+    "listAfterWriteMs": 385,
+    "framesWhenListed": [
+      {
+        "type": "agent_package_definitions_changed",
+        "changedLists": [
+          "agents",
+          "agent_teams",
+          "agent_orgs"
+        ]
+      }
+    ],
+    "teamListedAfterWriteMs": 449,
+    "squadV1Members": [
+      "/apar_fresh_squad/lead",
+      "/apar_fresh_squad/mate"
+    ],
+    "squadV2Members": [
+      "/apar_fresh_squad/chief",
+      "/apar_fresh_squad/scout"
+    ],
+    "deletedDelegation": {
+      "isError": false,
+      "text": "{\n  \"delegated\": false,\n  \"message\": \"'/apar_doomed' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\"\n}"
+    }
+  },
+  "dcf008": {
+    "restored": {
+      "success": false,
+      "message": "Error: AGY_AGENT_DEFINITION_MISSING: apar-steady",
+      "runId": null
+    },
+    "launchesBefore": 6,
+    "launchesAfterEdit": 6
+  },
+  "frames": {
+    "total": 54,
+    "invalid": []
+  },
+  "cleanup": {
+    "baseRemoved": true,
+    "serverClosed": true,
+    "errors": []
+  }
+}
