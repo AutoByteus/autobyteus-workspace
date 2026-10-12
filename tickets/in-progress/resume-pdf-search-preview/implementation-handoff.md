@@ -2,132 +2,109 @@
 
 ## Upstream Artifact Package
 
-- Approved basis: R1 / SR-001; cumulative design SR-003 (includes SR-002). Independent architecture review **Pass**, ARCH-REV-002 / round2; no open findings. The current review report supersedes the prior-Fail snapshot in solution-handoff.md.
+- Approved requirements: **R1 / SR-001**, unchanged. Cumulative design **SR-004** (SR-001–003 retained).
+- Current architecture: **ARCH-REV-003 / round3 Pass** on SR-004. ARCH-F-001 remains resolved for its two named removals. This does not supersede current source review **CRR-001 Fail / CR-F-001 open**; only Code Reviewer can close that source finding.
 - Requirements: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/requirements-doc.md`
 - Investigation: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/investigation-notes.md`
-- Solution history: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/solution-revision-record.md`
 - Design: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/design-spec.md`
-- Upstream manifest: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/solution-handoff.md`
-- Authoritative design review: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/design-review-report.md`
-- Architecture review history: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/architecture-review-revision-record.md`
-- Still-relevant evidence: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/runtime-failure-excerpts.log`, `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/installed-module-checksums.txt`, `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/baseline-isolated-reproduction.log`.
-- Evidence-only screenshot personally inspected: `/home/autobyteus/data/projects/project_f34a9537-07d7-449a-b78f-16368f1aa619/tasks/project_task_1aefbe1a-dfb5-4ec1-b893-8423b09a12dd/context/ctx_7cbb18ffeeeb__ctx_27db61845e57_image.png`.
-- Product/behavior-defining supplements: N/A — not applicable. Triggering implementation rework: N/A — initial implementation.
+- Solution history: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/solution-revision-record.md`
+- Solution manifest: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/solution-handoff.md` (its authoring-snapshot prior ARCH-REV-002 pointer is superseded for architecture only by current report).
+- Architecture report/history: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/design-review-report.md`, `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/architecture-review-revision-record.md`
+- Triggering code review/report/history: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/code-review-report.md`, `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/code-review-revision-record.md` — CRR-001 / round1 / CR-F-001.
+- Baseline evidence retained: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/baseline-isolated-reproduction.log`, `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/runtime-failure-excerpts.log`, `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/installed-module-checksums.txt`; all historical implementation logs and `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/code-review-checks.log`, `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/code-review-reference-check.log`.
+- Original evidentiary screenshot (inspected during IR-001): `/home/autobyteus/data/projects/project_f34a9537-07d7-449a-b78f-16368f1aa619/tasks/project_task_1aefbe1a-dfb5-4ec1-b893-8423b09a12dd/context/ctx_7cbb18ffeeeb__ctx_27db61845e57_image.png`.
+- Product/behavior-defining supplements, API-REV, DR: N/A — not applicable/not yet performed. No specialist report/history was edited by implementation.
 
 ## Current Implementation Summary
 
-**Implementation Complete — ready for independent source review**, not API/E2E, rendered PDF, deployment or delivery sign-off.
+**Implementation Complete — corrected source ready for independent re-review**, not source-review Pass, API/E2E, PDF render, deployment or delivery sign-off.
 
-Public `WorkspaceFileExplorer.searchFiles` awaits the unchanged snapshot controller, maps each absolute candidate using `path.relative(workspaceRootPath, candidate)`, validates with the existing `getPath` owner, and returns relative locators in original order. No client workaround, reader change, dual path format or new runtime owner. Removed test-only explorer `toShallowJson` / `getAllFilePaths`, adapted their exact TS/JS tests to live tree/projection owners, aligned the named stale converter JS counterpart with its current metadata TS tests, and corrected both area docs.
+Public search still awaits the unchanged snapshot owner, maps each internal absolute candidate using `path.relative(workspaceRootPath, candidate)`, validates with existing `getPath` and emits ordered workspace-relative locators. All internal strategy/index/ranking, cancellation, watcher/lease and protected-reader code remains unchanged. IR-001's two named removals, exact test/doc/converter parity remain implemented.
 
-- Cycle: Initial; current revision **IR-001**.
-- Implementation history: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/implementation-revision-record.md`
-- Related revisions: SR-001, SR-002, SR-003; ARCH-REV-002 (ARCH-REV-001 prior plan finding); CRR / API-REV / DR: N/A — not yet performed.
-- Triggering finding IDs: N/A for baseline. The completed removal executes SR-003's plan originating in ARCH-F-001; it is not a new product defect or a rework round.
-- Source/tests/docs commit: `bc820093753dee510294b42879043daec243d4e8` (`fix(file-explorer): return workspace-relative search locators`). Checked source and current local build are identical to this commit; see build identity evidence.
-- Worktree: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview`; branch `codex/resume-pdf-search-preview`. Upstream input HEAD `e4ddf9dbf`; target base `origin/personal` `2756d7b298ca5b203ebd2310d172b37a5d381b5c`.
+**IR-002** additionally removes only the unused `WorkspaceFileExplorer.toJson` facade, adapts its exact unit TS/JS callers and path-boundary E2E diagnostic accessor/type to existing `getTree` / **TreeNode.toJson**, and adds focused unit null/relative JSON/tree-nonmutation assertions. It introduces no replacement facade or diagnostic runtime API. The earlier IR-001 manifest wrongly called explorer.toJson live; that owner-specific claim is corrected here. Real SkillService/SkillResolver serialization uses a TreeNode returned by DirectoryTraversal and is retained unchanged.
 
-## Routing Classification (Mandatory)
+- Cycle: **Rework**; classification: **Local Fix implementing approved SR-004 Design Impact recovery**.
+- Current implementation revision: **IR-002**; history `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/implementation-revision-record.md` (IR-001 retained).
+- Trigger: CRR-001 / CR-F-001, recovered by SR-004 / ARCH-REV-003. Related cumulative SR-001–004, ARCH-REV-001–003, CRR-001; API-REV/DR N/A.
+- Current source/test correction commit: `7f321575058d744c8e635b3aff0a6d1f4557e2c4`; prior source baseline `bc820093753dee510294b42879043daec243d4e8`, implementation artifacts `51dcdb626`; incoming review/design HEAD `1921e5096` (design `74a4364f4`, code review `ddf1d7828`).
+- Worktree `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview`, branch `codex/resume-pdf-search-preview`; target base `origin/personal` `2756d7b298ca5b203ebd2310d172b37a5d381b5c`.
 
-- `task_size=Small`; `architectural_risk=High` — **Confirmed**, unchanged from design classification and ARCH-REV-002.
-- Evidence: one existing production method strengthened, same-class dead-method deletions, exact associated tests/docs. Public search identity semantics and live-runtime rollout remain material contract/deployment concerns; small source volume does not reduce risk.
-- Selected route: **Code Review**. `get_handoff_rules` on 2026-10-12 selected the initial complete/High-risk independent-source-review rule → `/software_engineering_team/code_reviewer`; Local Fix, low-risk and design-gap rules do not match.
-- Lightweight direct-route self-review: Not Applicable — independent review required. Implementation diff was inspected against reviewed ownership, scope, test parity and source-size limits; not independent review.
-- New design impact/escalation trigger: None.
+## Routing Classification
+
+- `task_size=Small`, `architectural_risk=High` — **Confirmed**, unchanged from SR-004 and ARCH-REV-003. Bounded same-class deletion/exact callers do not remove public-result semantics/live-delivery risk.
+- Selected route: **Code Review**. Fresh `get_handoff_rules` 2026-10-12: most-specific completed High-risk Local Fix/re-review rule → `/software_engineering_team/code_reviewer` only. Initial complete/High rule has same destination; direct low-risk and upstream-gap rules do not match.
+- Direct-route lightweight self-review: Not Applicable. Local source diff/owner trace/parity/size checked; this is not independent approval.
+- New Design Impact/Requirement Gap/Unclear: None. CR-F-001 source closure remains exclusively reviewer-owned.
 
 ## Reviewed Behavior Implementation Trace
 
-| IDs | Actual production path / files | Implementation result / remaining gate |
+| IDs | Actual implementation / preserved owner | Local outcome / remaining gate |
 | --- | --- | --- |
-| BEH-001 / REQ-001,004 / AC-001 | GraphQL resolver → public search in `src/file-explorer/file-explorer.ts:214–221` → existing client search node/preview → unchanged protected content reader/viewer | Search produces validated relative PDF-compatible locators for fuzzy and ripgrep candidates. Real HTTP/MIME/PDF bytes/canvas rendering remains API/E2E-owned and **not yet verified**. |
-| BEH-002 / REQ-004 / AC-003 | Same public search → existing tree `getPath`, `FileSystemWorkspace.getAbsolutePath`, explorer `readFileContent` | Real nested previously unprojected text result has matching tree identity and exact readable bytes; ranking order, abort propagation and snapshot-only watcher absence covered locally. Client lazy-node/reuse/preview interactions remain browser validation. |
-| BEH-003 / REQ-002 / AC-002 | Existing `getPath` → `resolveWorkspaceRelativePath`; unchanged workspace path owner and REST route | No guard relaxation. Real path-owner/explorer denials cover absolute in-root/outside, parent traversal and same-prefix sibling; public conversion rejects escaping candidate. HTTP denial/no-byte assertions still required downstream. |
-| BEH-004 / REQ-003 / AC-004 | No source/data writer/operational-runtime delta; downstream delivery spine unchanged | Original SHA rechecked equal; no original/registry/database/config or /app edits, live HTTP test, PID61 restart or deployment. Exact rollout/build pin, rollback, timing approval, explicit user verification and final cleanup are delivery-owned/pending. |
+| BEH-001 / REQ-001,004 / AC-001 | `src/file-explorer/file-explorer.ts:210–217` public candidate→relative conversion; existing GraphQL/client/content/PDF path | Conversion retained unchanged; order/fuzzy/ripgrep mapping/abort locally green. Joined PDF transport/real canvases still unverified. |
+| BEH-002 / REQ-004 / AC-003 | Search/path/tree/text readers unchanged; serialization observations now through `getTree()?.toJson() ?? null` on TreeNode | Real nested text identity/bytes and snapshot null/relative JSON serialization pass. Client lazy-node reuse/click/tree remains browser gate. |
+| BEH-003 / REQ-002 / AC-002 | Existing getPath/workspace lexical path owner and reader guards untouched | Local absolute/traversal/sibling denial, snapshot nonmutation and watcher/lease regression assertions pass. Existing E2E denial/watchers/lease assertions were preserved by diagnostic-only change but not executed here; real HTTP denial proof pending. |
+| BEH-004 / REQ-003 / AC-004 | No data/deployed runtime/config transition | Original hash unchanged read-only; no original/registry/database/config or /app mutation, live-user test, restart or ports. Actual8001 build pin/rollout/rollback/timing authority/user verification/final cleanup still delivery-owned. |
 
-- Scope Guardrail respected: **Yes**. No ranking/index/strategy/lifecycle/security redesign, persisted migration, PDF-specific bypass or production frontend modification.
+Scope Guardrail respected: **Yes**. No product behavior/requirements change, new API/owner, security relaxation, compatibility or migration. This correction addresses mandatory cleanup, not another PDF failure.
 
-## Key Files Or Areas
+## Key Files / Current Delta
 
-All relative paths below are inside `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview`:
+Only four source/test files changed in IR-002 (all under `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview`):
 
-- `autobyteus-server-ts/src/file-explorer/file-explorer.ts`: sole production delta, validated public identity and two dead-method removals.
-- `autobyteus-server-ts/tests/unit/file-explorer/workspace-file-search.test.ts`: six boundary cases: fuzzy/ripgrep candidate order and once-only validation, empty result, sibling-candidate denial, pre-abort/no traversal, in-flight abort/no late conversion. Uses real snapshot/path owners with controlled strategy results; not a real-ripgrep fallback availability claim.
-- `autobyteus-server-ts/tests/integration/file-explorer/file-search.integration.test.{ts,js}`: replaces erroneous absolute-result expectation; real root/nested text search → reader/path/tree interoperability, exact fixture bytes and preserved rejection contract. Removed obsolete polling of awaited snapshot work.
-- `autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.{ts,js}`: shallow depth/relative identity via actual tree projection instead of removed facade; explicit explorer close.
-- `autobyteus-server-ts/tests/integration/file-explorer/file-explorer.integration.test.{ts,js}`: relative file identity via live tree lookup instead of unused list method.
-- `autobyteus-server-ts/tests/unit/api/graphql/converters/workspace-converter.test.js`: narrow metadata TS parity; no converter source change. The changed direct explorer JS counterparts also use the current `WorkspaceFileExplorer` import, not the removed historical `FileExplorer` export.
-- `autobyteus-server-ts/docs/modules/file_explorer.md`, `autobyteus-web/docs/file_explorer.md`: relative public search contract and actual snapshot/index tree owners; no global testing policy edit.
+1. `autobyteus-server-ts/src/file-explorer/file-explorer.ts`: delete only explorer.toJson, formerly173–175 (4physical lines including separator). Search conversion unchanged.
+2. `autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts`: existing serialization observes actual tree; nested relative JSON/path assertion, one normal unloaded-snapshot null case, before/after rejected-read tree equality. Existing useful assertions retained.
+3. Exact tracked `.test.js` counterpart: regenerated from current TS, no unrelated sweep.
+4. `autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts`: type-only TreeNode import; diagnostic stub uses `getTree: () => TreeNode | null`; only diagnostic call changes to `fileExplorer?.getTree()?.toJson() ?? null`. No E2E case/fixture/protocol/denial/watcher/lease assertion changed, new API test case authored or production diagnostic API added.
 
-## Important Assumptions / Known Risks
+IR-001 search regression tests, associated explorer/integration/converter counterparts and both area docs remain current. Exact file map and historical checks are indexed in IR-001/source commit, not replaced by this delta.
 
-- Existing strategies' current internal contract is absolute candidates. Public representation is corrected once; strategy internals and ranking remain unchanged.
-- Existing lexical containment is preserved, not upgraded to symlink/TOCTOU policy. No external absolute-consuming supported client was found.
-- Changed-build browser PDF rendering and GraphQL-to-REST joined tests are still required; a relative string or successful text read does not prove PDF pages render.
-- `/app` is the installed baseline, **not this worktree build**. PID61 still runs `/app/autobyteus-server-ts/dist/app.js` on8000; user's advertised external port is8001. No Docker tool/socket or exact host image/frontend pin was established here. Delivery must obtain scoped access/authority or report the precise blocker; no source-only8001 success claim.
+## Design Health / Cleanup / Persisted Transition Checks
 
-## Task Design Health Assessment Implementation Check
+- Reviewed posture/root cause/refactor: Bug Fix / Missing Invariant at correct search owner / No Refactor Needed. Matches implementation; serializer deletion is approved bounded cleanup, no new product spine.
+- Compatibility wrappers or dual formats: **None**. Obsolete public absolute forwarding: removed. Private absolute search candidates: live current internal contract.
+- Touched-class test-only `toShallowJson`, `getAllFilePaths`, **toJson** and obsolete direct scaffolding: removed. Repeated owner-specific broad source/test/member/importer/index/config/script/entrypoint trace: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/implementation-ir002-reference-check.log`; no supported explorer serializer consumer found.
+- **Retained live owners:** explorer.getTree, TreeNode.toJson/toShallowDict, SkillService's DirectoryTraversal→TreeNode and SkillResolver serialization, directory traversal, search snapshot/index/strategies, protected readers, watchers/leases. Do not confuse identical method names across owners.
+- Deferred unrelated generated-test debt unchanged: `tests/integration/file-explorer/file-system-watcher.integration.test.js:6` imports obsolete FileExplorer; excluded by default TS runner; no broad sweep requested/performed.
+- Shared structures tight and ownership guidance reapplied: Yes. No new runtime helper/facade/cache or optional diagnostic production shape.
+- Guardrails: **403 effective non-empty source lines**; this round **0added/4removed physical source lines**, cumulative search source delta7added/38removed from pre-IR-001. No500-line/220-delta pressure.
+- Persisted transition: **Not Affected**, unchanged design decision; no migration/version fallback/writer/schema/root or registry change; no deviation.
 
-- Reviewed posture: Bug Fix; root cause: Missing Invariant at correct existing public owner; refactor: No Refactor Needed.
-- Matched: Yes. No new boundary, bypass, duplicated path policy or data owner was needed.
-- Design Impact routing: N/A — no new mismatch found. Static removal trace and compilation corroborate SR-003.
+## Current Local Implementation Checks / Environment
 
-## Legacy / Compatibility Removal Check
+Node `v22.23.3`, repository pnpm `10.28.2`; retained frozen-lockfile installed worktree dependencies from IR-001, no dependency change. Fresh task-owned Corepack shim (`corepack enable --install-directory /tmp/resume-preview-ir002.EF0Fzw/bin`) and empty test home; commands below ran serially under `env -i PATH="/tmp/resume-preview-ir002.EF0Fzw/bin:$PATH" HOME=/tmp/resume-preview-ir002.EF0Fzw/home TMPDIR=/tmp`. Unit/integration setup additionally isolates inherited variables and worktree-owned SQLite test data.
 
-- Compatibility wrappers introduced: None. Absolute public-result forwarding retained: No. Internal absolute candidates are live current mechanics, not compatibility.
-- Touched-class dead code and direct obsolete scaffolding removed: Yes. Pre/post broad tracked-name, importer, index/export, configuration/reflection/script checks recorded at `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/implementation-reference-check.log`; after removal no deprecated-method references remain outside task history/evidence.
-- Live owners preserved: tree `toShallowDict`, explorer `getTree`/`toJson`, folder projection, directory traversal, snapshot controller/index, strategy ranking, watcher and lease/cancellation code.
-- Follow-up outside bounded cleanup: `autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.js:6` still imports obsolete `FileExplorer`; no such source export exists. Default Vitest executes TS only. Listed as deferred unrelated generated-test debt per SR-003's no-sweep boundary; not run or altered here.
-- Shared structures remain tight: Yes; existing `string[]`, no DTO expansion or parallel format.
-- Shared guidance reapplied: Yes; root DESIGN.md/TESTING.md, package AGENTS and canonical design principles reviewed.
-- Source guardrails: Yes; changed explorer has **406 effective non-empty lines**, production delta **7 added /34 removed**; neither500-line nor220-changed-line trigger is crossed. Tests are excluded from the source limit.
-
-## Persisted Data Transition Check
-
-- Reviewed decision: **Not Affected** (design's Persisted Data / State Transition Decision).
-- Followed without migration/version-specific runtime fallback: Yes. No model/schema/writer/root or registry edits. Current stored documents/state remain untouched; failed transient tab/search can be closed/refreshed through ordinary user action after rollout.
-- Migration/direct-use proof: N/A — no persistence transition. Deviation: None.
-
-## Environment / Dependencies / Local Implementation Checks
-
-Current Node `v22.23.3`, pnpm `10.28.2` (repository packageManager), installed with frozen lockfile. No pnpm executable initially on PATH: created a task-owned Corepack shim using `corepack enable --install-directory /tmp/resume-pdf-search-preview-tools`. Clean build/check environment was `env -i PATH="/tmp/resume-pdf-search-preview-tools:$PATH" HOME=/tmp/resume-pdf-search-preview-tools/home TMPDIR=/tmp ...`. That temporary shim/home was removed after checks; downstream may recreate its own equivalent. Unit/integration setup additionally strips inherited app/provider variables and uses the worktree-owned test SQLite DB.
-
-| Exact command (from worktree root, clean env except install) | Local result | Evidence under `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/` |
+| Command from worktree root | IR-002 local result | Evidence under `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/` |
 | --- | --- | --- |
-| `pnpm install --frozen-lockfile` | exit0; missing prebuild bin links and ignored optional dependency build-script warnings retained, not upgraded/approved | implementation-install.log |
-| `pnpm -C autobyteus-server-ts prebuild` | exit0; shared library/SDK builds and Prisma generation completed | implementation-prebuild.log |
-| `pnpm -C autobyteus-server-ts typecheck` | exit0 after prerequisites | implementation-typecheck.log |
-| `pnpm -C autobyteus-server-ts test:integration:prepare` | exit0; **current worktree server build**, sanitized built-module/bootstrap smoke, SDK/devkit/Brief Studio outputs prepared | implementation-prepare.log |
-| `pnpm -C autobyteus-server-ts exec vitest run tests/unit/file-explorer tests/unit/workspaces/workspace-path-utils.test.ts tests/unit/api/graphql/converters/workspace-converter.test.ts --no-watch` | **13 files /75 tests passed**, no skips. Existing real ripgrep strategy tests found rg and exercised its internal absolute format; new fallback conversion unit case uses spies. | implementation-unit.log |
-| `pnpm -C autobyteus-server-ts exec vitest run tests/integration/file-explorer/file-explorer.integration.test.ts tests/integration/file-explorer/file-search.integration.test.ts tests/integration/file-explorer/file-name-indexer.integration.test.ts --no-watch` | **3 files /11 tests passed**, no skips | implementation-integration.log |
-| `git diff --check`; targeted TypeScript `transpileModule` equality for four named tracked JS counterparts | clean diff; exact TS→JS parity. JS files are excluded by default runner and **not claimed executed** | implementation-js-parity.log; implementation-reference-check.log |
+| `pnpm -C autobyteus-server-ts prebuild` | exit0; shared outputs and Prisma current | implementation-ir002-prebuild.log |
+| `pnpm -C autobyteus-server-ts typecheck` | exit0 after prebuild | implementation-ir002-typecheck.log |
+| `pnpm -C autobyteus-server-ts test:integration:prepare` | exit0; fresh current-worktree server build, sanitized built bootstrap, SDK/devkit/Brief Studio prerequisites | implementation-ir002-prepare.log |
+| `pnpm -C autobyteus-server-ts exec vitest run tests/unit/file-explorer tests/unit/workspaces/workspace-path-utils.test.ts tests/unit/api/graphql/converters/workspace-converter.test.ts tests/integration/file-explorer/file-explorer.integration.test.ts tests/integration/file-explorer/file-search.integration.test.ts tests/integration/file-explorer/file-name-indexer.integration.test.ts --no-watch` | **16files /87tests passed, no skips** (76unit +11integration). Actual TreeNode serialization, null/relative identity/nonmutation, current search/order/abort/guard/watcher coverage included. | implementation-ir002-focused.log |
+| Four exact TS→JS transpilation comparisons; E2E diagnostic adapter syntax transpilation; removed-member/reference checks and committed diff check | pass for stated static scope; JS files and E2E file **not executed** | implementation-ir002-js-parity.log; implementation-ir002-reference-check.log |
 
-Invocation error retained: initial typecheck was mistakenly run before mandatory Prisma prebuild and failed with missing generated Prisma exports; see `implementation-typecheck-before-prisma.log`. Fixed setup ordering, ran prebuild and repeated typecheck successfully. No source workaround, unresolved baseline failure or global guideline change.
+Logs normalize only ANSI escapes/trailing whitespace; failures/results are not discarded. IR-001's initial pre-Prisma typecheck invocation failure and subsequent successful checks remain historical evidence, not this round's validation. No current local failed check or baseline waiver. Build/source identity: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/implementation-ir002-build-identity.log`; local build only, not /app/deployed8001 proof.
 
-Build/source checksums and generated public-search excerpt: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/implementation-build-identity.log`. These pin local source/build only, **not deployment**. Evidence logs are normalized only for ANSI escapes/trailing whitespace; failures and results are retained. Full repository unit/integration suites, API/E2E and browser probes were not run by implementation.
+### Verification Ownership Conflict / Outstanding Diagnostic E2E Check
+
+SR-004/upstream asks implementation to execute the focused path-boundary E2E. The authoritative implementation-engineer skill assigns **API/E2E execution and API/E2E test authoring** to api_e2e_engineer and requires recording such conflicts. Therefore this round performs only the exact removed-method diagnostic adapter update (no new E2E cases), syntax/owner checks and implementation-scoped unit/integration validation; it **does not execute or claim pass** for `tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts`. Its required clean test-owned execution remains outstanding for the authorized validation owner after required source re-review. This is an ownership-boundary limitation, not a waived assertion or source-review Pass. No duplicate early API/E2E handoff bypasses the High-risk source gate.
 
 ## Frontend Rendered-Result Check
 
-- Applicable indirectly to Files search→preview interaction; **no production web/render/layout code changed**. R1/SR-003 require established interaction and style, not a UI redesign.
-- Reviewed existing user failure screenshot, `fileExplorerSearchActions.ts` unchanged locator-to-node mapping, area interaction docs and `components/fileExplorer/viewers/PdfViewer.vue` (authorized URL, loading/error and real `VuePdfEmbed`). No source-level visual change/polish defect identified.
-- **No post-change rendered/interaction pass claimed.** There was no current-worktree preview stack running. Bringing up the joined real backend/Nuxt/browser PDF journey would be the broader API/E2E environment, intentionally left to its owner for this backend-only implementation. No live desktop/app process was used or disrupted as a substitute.
-- Remaining uncertainty: lazy client result click/node reuse, protected byte fetch and actual two-page canvases/no-alert/loading completion. Unit/reader assertions and original screenshot are not rendering evidence. Required browser loop remains downstream; report any independent viewer defect to the appropriate owner instead of weakening readers.
+IR-002: **Not Applicable — test-only serialization-facade cleanup, no rendered frontend or interaction change**. Existing search/PDF UI and screenshot were inspected during IR-001; no source UI/style change to polish. The overall search fix's actual lazy result click/PDF pages/canvases/loading/error state remain unrendered here, as reported in IR-001. No current-worktree preview stack was running; bringing up the broader joined browser/backend stack remains API/E2E-owned. No live app/desktop process was used as a substitute; no rendering pass claimed.
 
 ## Cleanup / Safety Receipt
 
-`/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/implementation-cleanup.log`: all logged owned fixture directories absent; test SQLite DB/journal removed; install/build/test processes exited; no stack/listening ports created; task-owned Corepack shim/cache/home removed. Current worktree, installed dependencies and untracked local SDK/devkit/Brief Studio build outputs retained intentionally for downstream checks. Never stage generated outputs here; three tracked stream/presentation-contract distributions were not changed.
+`/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/implementation-ir002-cleanup.log`: all logged owned fixtures absent, owned SQLite DB/journal removed, fresh temporary Corepack shim/cache/home removed, build/check processes exited, no servers/browser/ports created. Current dependencies/build prerequisites/worktree retained for downstream. No SDK/devkit/Brief Studio untracked outputs staged; tracked presentation/stream contract outputs unchanged.
 
-Original résumé SHA rechecked read-only, equal to upstream baseline:
-`7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5`.
-No original document copy, registry/database/user CLI config edit, /app mutation, live automated test or PID61 restart. Delivery must recheck integrity at actual rollout/finalization.
+Original résumé read-only SHA remains `7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5`; PID61 still runs installed8000 server, untouched. No original/registry/user CLI/config/production data or /app edits. Delivery must recheck integrity at actual rollout/finalization.
 
-Concurrent upstream-owned `solution-revision-record.md` contains a new informational ARCH-REV-002 receipt; it was not edited or staged by implementation. Preserve that owner-authored change during downstream finalization. Do not infer this worktree is entirely git-clean merely because implementation code is committed.
+Upstream-owned informational ARCH-REV-003 receipt dirties solution-revision-record.md; implementation did not author/edit/stage it. Do not call this worktree entirely git-clean; preserve that receipt and retained local build prerequisites during finalization.
 
 ## Downstream Coverage / Execution Still Required
 
-1. Independent **source review** on the cumulative Small/High package, including SR-003 bounded removals and the exact TS/JS/doc parity. No low-risk bypass.
-2. API/E2E owner: create/extend durable real GraphQL `searchFiles`→protected REST content assertions using test-owned valid multi-page PDF nested under unexpanded folders; assert relative result,200, `application/pdf` and exact fixture bytes. Use real workspace/path resolver, not a mock that accepts absolutes.
-3. Current-worktree browser: search `resume`, click lazy nested PDF; assert real pages/canvases, loading completion and no PDF load-error alert/browser errors; screenshot supports assertions. Check representative text read and search/tree identity/reuse. Do not use original personal PDF as fixture or installed /app as changed-build proof.
-4. Preserve explicit protected REST denials for absolute in-root/outside, parent traversal and same-prefix sibling escape, with no outside bytes; retain abort/order/watchers. Current local scope covers owners, not HTTP/browser sign-off.
-5. Delivery only after selected review/validation: sync docs, integrate per RELEASE.md; inventory/pin host runtime/build and frontend, get disruption timing approval if required, plan rollback, coordinate safe8001 rollout or exact blocker, obtain explicit user re-search/open verification, recheck original SHA and finish task-owned cleanup. No public release requested.
+1. **Independent code re-review** with CRR-001/CR-F-001, SR-004/ARCH-REV-003, IR-001/002 context. Architecture approval and this implementation correction do not close source Fail.
+2. Authorized API/E2E owner executes the updated existing path-boundary E2E in clean test-owned env, verifies null/tree diagnostics and retained denial/watchers/lease assertions; investigate any failure before sign-off.
+3. Joined real GraphQL search→protected REST200, `application/pdf`, exact valid synthetic multipage bytes; real lazy/unexpanded nested PDF click→pages/canvases/no load alert/browser errors. Current worktree build/data/ports only; not original personal PDF or installed /app as fixture/proof.
+4. Client search/tree node reuse/identity and representative text read; real HTTP absolute in-root/outside, traversal and sibling escape denials/no outside bytes. Local guards/text/87passes do not substitute for transport/browser proof.
+5. Delivery after gates: docs sync/integration per RELEASE.md, exact host build/frontend/runtime pin or precise Docker-access blocker, timing approval for disruption if needed, safe8001 rollout/rollback, explicit user close-failed-tab/re-search/open verification, résumé integrity and final task-owned cleanup. **No public release requested**.
 
 Caller `/project_task_manager`, run `project_task_manager_2f7a8ea2d421446f8f22e4f616528547`; Project `project_f34a9537-07d7-449a-b78f-16368f1aa619`, Task `project_task_1aefbe1a-dfb5-4ec1-b893-8423b09a12dd`.
