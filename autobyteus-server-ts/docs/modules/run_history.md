@@ -481,13 +481,36 @@ Team persisted files:
   `@` or by an agent's first message; read as `[]` when absent, always written).
   A delegated child that is a **catalog copy** carries an optional `source`
   (`store/task-execution-source-schema.ts`):
-  - for an Agent: `{kind: "agent", agentDefinitionId, launchConfiguration}`;
-  - for a Team: `{kind: "agent_team", teamDefinitionId, coordinatorAddress, members, handoffs, defaultLaunchConfiguration}`.
+  - for an Agent: `{kind: "agent", agentDefinitionId, launchConfiguration, launchSource?}`;
+  - for a Team: `{kind: "agent_team", teamDefinitionId, coordinatorAddress, members, handoffs, defaultLaunchConfiguration, defaultLaunchSource?}`.
 
   Activation and restore read it first. When it is absent, the copy's source is
   the configured placement or collaborator at its address, as for every record
   written before catalog copies. The same field is used in the Org and Agent-root
-  trees. The tree is read tolerantly
+  trees.
+
+  Per-agent launch records (collaborator entries and catalog-copy sources; see
+  [Launch configuration of collaborators and catalog copies](./agent_communication.md#launch-configuration-of-collaborators-and-catalog-copies)):
+  - `launchSource` (an Agent, or a Team member) and `defaultLaunchSource` (a
+    Team) are `{origin, fallbacks}`. `origin` is `agent_default`,
+    `team_default` or `inherited`. Each fallback is `{layer, runtimeKind,
+    llmModelIdentifier, reason, detail}` for a configured layer that was skipped.
+    Note text is rendered from it and never stored.
+  - A Team member (`members[]` of a collaborator Team or a Team-copy source)
+    carries its own `launchConfiguration` only when it runs on its own agent
+    default, and a `launchSource` only when its agent definition had a default
+    (used or skipped). Otherwise the member runs on the Team's
+    `defaultLaunchConfiguration` and shares its source. The run-history domain
+    functions `effectiveMemberLaunchConfiguration` and
+    `effectiveMemberLaunchSource` are the only readers of a member's launch.
+  - All of these fields are optional, with truthful absence, so no migration is
+    needed. A record written before them restores every member on the Team
+    value, and its source reads as not recorded. Writers emit the fields only
+    when they carry information. A build older than these fields ignores them
+    on restore and runs every member of such a Team on the Team value (downgrade
+    only).
+
+  The tree is read tolerantly
   (known required fields and invariants; `schemaVersion`, `settledAt`, and
   unknown keys ignored) and written exactly with no `schemaVersion`.
 - member runtime memory artifacts: direct members use

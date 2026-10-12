@@ -96,8 +96,12 @@ Agent definitions now persist `defaultLaunchConfig` alongside the rest of the de
 These defaults are consumed by:
 
 - the native agent create/edit/detail surfaces,
-- direct agent launch preparation, and
+- direct agent launch preparation,
+- delegated catalog copies and collaborators that an agent starts with `delegate_task` or `send_message_to`. The agent, or each Team member, runs on its own usable default first, then its Team's default, then the run root's settings. See [Launch configuration of collaborators and catalog copies](./agent_communication.md#launch-configuration-of-collaborators-and-catalog-copies),
+- the web Team and Org launch forms, which seed each member row from its usable default (see [Agent Team Definition](./agent_team_definition.md#default-launch-preferences)), and
 - application-authored backend orchestration flows that choose to reuse persisted defaults when calling `context.agentExecution.startAgent(...)`.
+
+A default is used only as a whole (runtime, model and model settings together) and only when it is usable: it names both a runtime and a model, the runtime is available, and the model and its settings are valid for it. An unusable default is skipped with a visible note. Delegation to a configured placement uses that placement's own launch configuration, not the definition default.
 
 The generic Applications host no longer launches embedded agents directly at page-load time.
 

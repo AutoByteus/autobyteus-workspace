@@ -288,17 +288,26 @@ The result is a strict union, also published as the MCP output schema
 (`anyOf`). It names every ID for what it is:
 
 ```text
-{ delegated: true, target_kind: "agent", target_agent_run_id: "<Agent copy run ID>", task_id?: "…" }
+{ delegated: true, target_kind: "agent", target_agent_run_id: "<Agent copy run ID>", task_id?: "…", launch_notes?: ["…"] }
 { delegated: true, target_kind: "team", target_team_run_id: "<Team copy run ID>",
-  target_team_coordinator_agent_run_id: "<its coordinator AgentRun ID>", task_id?: "…" }
+  target_team_coordinator_agent_run_id: "<its coordinator AgentRun ID>", task_id?: "…", launch_notes?: ["…"] }
 { delegated: false, message: "<why nothing started>" }
 ```
+
+A catalog copy runs each of its agents on its own configured default, then its
+Team's, then the run root's (see
+[Launch configuration of collaborators and catalog copies](./agent_communication.md#launch-configuration-of-collaborators-and-catalog-copies)).
+`launch_notes` is present, and non-empty, only when this call started a catalog
+copy and a configured default of one of its agents could not be used. Each line
+names the agent, the skipped default, the reason and what it runs on instead.
+The tool description explains the field.
 
 An address that is neither a configured placement, a collaborator nor an
 available catalog agent of the run returns `{ delegated: false,
 message }` ("'…' is not a mounted Agent or Agent Team, a collaborator or an
-available agent of this run."); it is not a tool error. A catalog copy that
-cannot run with the run's settings also starts nothing and returns
+available agent of this run."); it is not a tool error. A catalog copy in which
+some agent has no usable layer, including the run root's settings, also starts
+nothing and returns
 `{ delegated: false, message: "<name> cannot be delegated to: <reason>" }`.
 Collaborators are added by the user's `@` send or by an agent's first
 `send_message_to` to a listed address; both use the same admission, and a

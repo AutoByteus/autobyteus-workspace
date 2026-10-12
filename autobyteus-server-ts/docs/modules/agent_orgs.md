@@ -162,9 +162,14 @@ direct Org Agent: exact Agent override -> Org root
 mounted Team Agent: exact Agent override -> Team placement override -> Org root
 ```
 
-Definition defaults continue to seed standalone Agent or Team launches; merely
-referencing a definition does not make its default replace the active Org
-configuration.
+The server never reads a referenced definition's default into an Org launch.
+The web Org launch page seeds the form instead: the root from the Org default,
+each placed Team row from its Team default, and each Agent row from its agent
+default, when that default is usable. The user sees and can change or reset
+every seeded row. The launch payload then carries them as ordinary placement
+overrides. Collaborators and catalog copies started by Org agents resolve their
+own launch per agent; see
+[Launch configuration of collaborators and catalog copies](./agent_communication.md#launch-configuration-of-collaborators-and-catalog-copies).
 
 All exact root, Team, and Agent scopes must have resolved valid runtime/model
 schema state before launch. Pending, invalid, or unavailable catalog/schema
