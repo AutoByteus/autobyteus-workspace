@@ -34,15 +34,15 @@ Other runtimes and the meter:
 - **Meter** shows the threshold marker and label, and marks a genuine over-window reading.
 - **Pre-fix Claude readings** are cleared by one Prisma migration.
 
-- Implementation cycle: `Rework` (IR-003 implements design delta D-11; IR-002 Local Fix for CR-F-001; IR-001 initial baseline)
+- Implementation cycle: `Rework` (IR-004 implements D-12 (revert of the withdrawn D-11) and D-13; IR-003 D-11, withdrawn; IR-002 Local Fix for CR-F-001; IR-001 initial baseline)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
-- Related solution revision IDs: `SR-008` (cumulative SR-001–SR-008)
-- Related architecture-review revision IDs: `ARCH-REV-004` (cumulative ARCH-REV-001–004)
-- Related code-review revision IDs: `CRR-001`, `CRR-002`
+- Current implementation revision ID: `IR-004`
+- Related solution revision IDs: `SR-011` (cumulative SR-001–SR-011)
+- Related architecture-review revision IDs: `ARCH-REV-006` (cumulative ARCH-REV-001–006)
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-004`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `DR-002`
-- Triggering finding IDs: `CR-F-001` (IR-002); DR-002 native-compaction reading conflict (IR-003)
+- Triggering finding IDs: `CR-F-001` (IR-002); DR-002 (IR-003, superseded); user withdrawal of D-11 and request for the compacted note (SR-010/SR-011, IR-004)
 
 ## Routing Classification (Mandatory)
 
@@ -71,7 +71,8 @@ Other runtimes and the meter:
 | BEH-007 | Attribution preserved; live within one call for every run kind | Strict contract schemas plus team and collaboration projectors carry `revision`, threshold and `reports_model_call`; GraphQL fields; web guards on `revision`; team partial aggregate counts only model calls | Standalone, team-member and collaboration paths parse through the strict schemas (contract and transport tests) |
 | BEH-008 | Only genuine overflow above 100 %, marked | Claude counting artefact removed at the source; Prisma migration clears pre-fix Claude readings; aggregate's Claude read-time derivation removed; panel over-window mark with clamped amber bar | P3 failed compaction shows 94.6 % with the threshold at 67,000; P7 Codex 100.3 % is marked |
 
-| BEH-005 (D-11, AC-011) | A native compaction summary call counts as a call with tokens and cost; its usage resets the latest reading to unknown (window and threshold kept) until the agent's next call | `agent-run-token-usage.ts` server-internal `context_reading_reset` (builder default `false`); `autobyteus-stream-event-converter.ts` sets it only for `ingestion_kind === "autobyteus_compaction"` (`reports_model_call` stays `true`); `token-usage-run-record-state.ts` `applyTokenUsageContribution` reset rule (no ingestion-kind branch in the fold); legacy ledger payload sets `false` | Upstream compaction test: 2 calls, totals and cost, reading null, window kept, revision +1; the next agent call restores the reading. A readingless observation without the fact still keeps the reading (D-4). Converter test: compaction sets the reset, an agent call does not. A mutation disabling the rule fails 2 tests |
+| BEH-005 (D-12, AC-011) | A native compaction summary call counts as a model call with its tokens and cost; it carries no reading, so the previous prompt, percent, window and threshold stay until the agent's next call (D-4 unchanged). IR-003's D-11 reset is reverted | `autobyteus-stream-event-converter.ts` keeps `reports_model_call: true` only; no reset field anywhere (`git grep context_reading_reset` outside tickets is empty) | Upstream compaction test adapted: 2 calls, totals and cost as upstream, reading kept (911,000 / 91.1 %, window, threshold), revision +1, the next call replaces the reading; converter test: compaction usage is a model call |
+| REQ-012 (D-13, AC-012) | After a completed compaction on native or Claude SDK, the meter keeps the previous reading muted with "Compacted — updates on the next model call" until the run's next reading. No note for Codex or AGY, after failed or stopped compactions, or after a reload | `stores/tokenUsageCompactionMarks.ts` (marks keyed to the exact-run revision: `runSummaries[runId]` or the Team-member summary), wired into `tokenUsageMeterStore` (`markCompactionCompleted`, `isAwaitingPostCompactionReading`); `agentStatusHandler.ts` `handleCompactionStatus` marks only on a newly completed operation; `TokenUsageMeterPanel.vue` muted percent, bar and tokens plus the note for `autobyteus`/`claude_agent_sdk`, keyed by the card's run (the host for a standalone roll-up); `shell.tokenUsage.compactedAwaitingReading` (en, zh-CN) | Handler: completed marks, failed/stopped never, a repeated completion of the same operation doesn't re-mark, a new operation does. Store: newer exact revision clears; a roll-up revision change doesn't; Team-member lookup; mark before any exact summary. Panel: note and muted styles for native and Claude, cleared by the host's next revision; none for Codex or AGY |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`. Pricing catalog values and `TokenCostCalculator` are untouched (REQ-011). Docs edits are limited to the fold/adapter/frontend-contract sections of `token_usage.md`.
 
@@ -97,8 +98,10 @@ Other runtimes and the meter:
 
 ## Known Risks
 
-- D-11 accepted edge (AC-011): a failed native compaction summary attempt also resets the reading to unknown until the agent's next call. Unknown is never false.
-- `context_reading_reset` is server-internal. The strict team and collaboration projectors copy fields one by one, so it does not reach those contracts. The standalone agent socket (`agent-run-event-message-mapper.ts`) forwards the whole persisted payload, as it already does for other non-contract fields such as `ingestion_kind`. The flag is therefore visible there but unused, and the web handler is not strict.
+- D-12: during and after a native compaction the meter shows the pre-compaction reading until the agent's next call (by design; AC-011). D-13 marks it as pre-compaction on native and Claude SDK while the session is live.
+- D-13 RR-7 (accepted): a Claude observation without a reading after compaction, such as a context read that timed out or a turn ending with only the remainder, advances the exact revision and clears the note early.
+- D-13 is a live-session hint. After an app reload before the next call, no note is shown and the stored pre-compaction value stays.
+- While the note is shown, the over-window mark is hidden: it would describe the stale pre-compaction value.
 
 - RR-1 (accepted): per-call Claude pricing uses the API response model's exact Anthropic catalog identity. Checked: Opus 5.5, Sonnet 5 and Fable 5.1 resolve to trusted prices. Haiku 4.5 calls stay `price_missing` because the catalog has no entry (AF-10).
 - RR-4 (accepted): a dated API response model id would split per-call identity from the turn-end canonical identity.
@@ -159,7 +162,26 @@ Other runtimes and the meter:
 
 ## Local Implementation Checks Run
 
-IR-003 (D-11), on top of the delivery merge `168900db7`:
+IR-004 (D-12 revert plus D-13), on top of the delivery merge `168900db7`:
+
+- Server:
+  - `git grep context_reading_reset` outside tickets is empty.
+  - Typecheck clean.
+  - `test:unit`: 669 files, 5,263 pass / 7 skipped.
+  - `vitest run tests/unit/token-usage tests/unit/agent-execution/backends/autobyteus tests/unit/app-data-migrations`: 546 pass.
+- Web, targeted:
+  - `agentStatusHandler.spec.ts`: 30 pass.
+  - `tokenUsageMeterStore.spec.ts`: 16 pass.
+  - Panel specs: 22 pass.
+  - A mutation that restores the count-based roll-up refetch fails the new refetch test.
+- Web, full Nuxt suite: 601 files, 4,190 pass / 5 skipped.
+- Rendered check: Nuxt dev with a temporary, uncommitted preview page rendering the real panel, inspected in a browser tab. The page, the process and the port were removed or released afterwards.
+  - Native compacted at 340 px: muted 91.1 %, slate-300 bar, muted tokens, note on one line, no overflow.
+  - Claude compacted at 760 px: note and muted bar.
+  - The next exact revision clears the note and restores the blue bar.
+  - Codex with a mark: no note.
+
+IR-003 (D-11, since reverted), on top of the delivery merge `168900db7`:
 
 - `vitest run tests/unit/token-usage/projections/token-usage-compaction-ingestion.test.ts` → 3 pass. A mutation that disables the reset rule fails 2.
 - `pnpm -C autobyteus-server-ts typecheck` → clean.

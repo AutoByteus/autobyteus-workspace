@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture Reviewer pass, `design-review-report.md`, round 3 | N/A | `Initial Baseline` | SR-005, ARCH-REV-003 | Implementation complete; local checks green; ready for Code Review |
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 round 1 (Fail — Local Fix) | CR-F-001 | `Local Fix` | SR-005, ARCH-REV-003, CRR-001 | Ledger-era consolidation nulls Claude SDK readings; consolidation test added; returned for targeted delta review; **Pass** in CRR-002 (round 2, targeted delta), forwarded by Code Reviewer to API/E2E |
 | IR-003 | Delivery blocker DR-002 → Solution Designer SR-008 (D-11) → Architecture Reviewer ARCH-REV-004 Pass | DR-002 native-compaction reading conflict | `Design Impact` (implemented design delta) | SR-008, ARCH-REV-004, DR-002, CRR-001/002 | Native compaction usage resets the context reading; upstream test adapted; returned for code review; **Pass** in CRR-004 (round 3, no findings), forwarded by Code Reviewer to API/E2E for affected-scope validation |
+| IR-004 | Solution Designer SR-010 (D-12) and SR-011 (D-13) → Architecture Reviewer ARCH-REV-005/006 Pass | User withdrawal of D-11; user request REQ-012 / AC-012 | `Design Impact` (implemented design delta) | SR-010, SR-011, ARCH-REV-005, ARCH-REV-006 | D-11 reverted (D-12), compacted note added (D-13), standalone roll-up refetch moved to revision; returned for code review |
 
 ## Revision Entries
 
@@ -97,4 +98,38 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - Contracts: 17 + 10 pass, no `dist` diff.
 - Next recipient or routing: Code Reviewer, per `get_handoff_rules` (SR-008 route: code review → affected-scope validation → delivery resumes finalization).
 - Remaining limitations or risks: the accepted D-11 edge (a failed summary attempt also hides the reading). The flag is visible but unused on the standalone socket, which forwards whole payloads. AC-011 needs user verification in the desktop app.
+
+### IR-004 — Keep the reading through native compaction (D-12) and show the "Compacted" note (D-13)
+
+- Triggering role, report path, and round: the Solution Designer issued SR-010 (D-12, which withdraws D-11 at the user's direction) and SR-011 (D-13, user-approved REQ-012 / AC-012). The Architecture Reviewer passed both as ARCH-REV-005 (round 5) and ARCH-REV-006 (round 6), recorded in `design-review-report.md`.
+- Triggering finding IDs: the user's stated behaviour (the reading stays unchanged during compaction) and the user's request for the note.
+- Classification: `Design Impact`, resolved upstream and implemented here as a design delta.
+- Prior authoritative result: IR-003 (D-11, CRR-004 Pass), now withdrawn.
+- Current authoritative result:
+  - D-12: IR-003 (`5b48c2b47`) is reverted in the converter, payload contract, fold and legacy payload builder. Native compaction usage is a model call with tokens and cost and carries no reading, so the D-4 rule keeps the previous reading. The upstream compaction test asserts the kept reading.
+  - D-13: frontend-only compaction marks keyed to the exact-run revision. The handler marks on a newly completed compaction. The panel shows the muted previous value with the note for native and Claude SDK only, keyed by the card's run (the host for a standalone roll-up).
+- Related solution revision IDs: SR-010, SR-011.
+- Related architecture-review revision IDs: ARCH-REV-005, ARCH-REV-006.
+- Related code-review revision IDs: CRR-004 (IR-003, superseded).
+- Related API/E2E revision IDs: N/A.
+- Related delivery revision IDs: DR-002.
+- Why this revision is recorded: it implements the D-12/D-13 design delta.
+- Approved behavior or requirement IDs affected: BEH-005, BEH-001, REQ-010, REQ-012, AC-011, AC-012; D-9 (refetch fix).
+- Implementation delta:
+  - `2cd590603`: the D-12 revert, the adapted `token-usage-compaction-ingestion.test.ts` and the native-section statement in `token_usage.md`. The bullet that lists native compaction as a readingless observation was already present after the merge.
+  - `d6a89cbdd`: D-13.
+    - New `autobyteus-web/stores/tokenUsageCompactionMarks.ts`.
+    - `stores/tokenUsageMeterStore.ts`: instantiates the marks and exposes them. `normalizedStatus` was condensed to stay at 499 effective lines, within the guardrail.
+    - `services/agentStreaming/handlers/agentStatusHandler.ts`.
+    - `components/workspace/usage/TokenUsageMeterPanel.vue`.
+    - The `compactedAwaitingReading` key in en and zh-CN.
+    - Tests: handler, store and panel specs.
+  - Same commit, implementation-owned fix to my IR-001 D-9 work: `composables/useTokenUsageWorkspaceScope.ts` refetched the standalone roll-up when the host's `usageReportCount` changed. A reading-only save (Codex compaction) or a Claude turn-end remainder changes only the revision, so the standalone panel stayed stale. It now watches the host's exact revision, with a test that fails under the old rule.
+- Local validation and result: see `implementation-handoff.md` § Local Implementation Checks Run, IR-004 block.
+- Next recipient or routing: Code Reviewer, per `get_handoff_rules`. SR-011 route: code review → validation → AC-011/AC-012 user checks → delivery.
+- Remaining limitations or risks:
+  - RR-7: a Claude observation without a reading can clear the note early.
+  - The note is a live-session hint only.
+  - The over-window mark is hidden while the note shows.
+  - AC-011 and AC-012 need user checks in the desktop app.
 
