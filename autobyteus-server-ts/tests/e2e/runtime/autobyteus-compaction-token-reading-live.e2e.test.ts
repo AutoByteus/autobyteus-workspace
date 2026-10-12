@@ -10,7 +10,7 @@
  *   - the `autobyteus_compaction` summary call is one model call; its tokens and cost go into the totals;
  *   - it carries no reading, so "Latest prompt" keeps the pre-compaction value (D-12, unchanged D-4 rule);
  *   - its usage reaches the meter before COMPACTION_STATUS `completed`, so the completed compaction marks the
- *     reading that is current then, and the agent's next call (a newer revision) clears the note (D-13);
+ *     run after it; only the run's next live model call clears the note (D-13, SR-014);
  *   - the agent's next call reports a smaller reading.
  *
  * Gate: RUN_NATIVE_COMPACTION_METER_E2E=1. Provider: NATIVE_COMPACTION_METER_E2E_PROVIDER = DEEPSEEK (default; needs
@@ -112,10 +112,10 @@ describeLive(`Native compaction keeps the Token Meter reading until the next cal
       latest_prompt_tokens: beforeSummary.latest_prompt_tokens,
       effective_context_window_tokens: beforeSummary.effective_context_window_tokens,
     });
-    // No observation between the summary call and the completed status changes the revision the note records.
+    // No meter save lands between the summary call and the completed status, so the mark follows the summary call.
     const between = usageFrames(all.slice(summaryCallIndex + 1, done));
     expect(between, "no other meter save between the summary call and completed").toEqual([]);
-    // The agent's next call reports a smaller reading and a newer revision (clears the note).
+    // The agent's next call is the run's next live model call (it clears the note) and reports a smaller reading.
     const next = usageFrames(all.slice(done)).find((frame) => frame.payload.ingestion_kind === "autobyteus_llm_phase");
     expect(next, "an agent call after the completed compaction").toBeTruthy();
     expect(num(next!.payload.latest_prompt_tokens)!).toBeLessThan(num(beforeSummary.latest_prompt_tokens)!);
