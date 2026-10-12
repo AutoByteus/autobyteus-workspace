@@ -14,17 +14,18 @@ Package: `delegated-launch-config-defaults` · Worktree `/Users/normy/autobyteus
 - Supplemental task artifacts: N/A — not applicable
 - Design review report: `tickets/in-progress/delegated-launch-config-defaults/design-review-report.md` (ARCH-REV-002, `Pass`)
 - Architecture review revision record: `tickets/in-progress/delegated-launch-config-defaults/architecture-review-revision-record.md`
-- Triggering rework report: N/A (initial implementation)
+- Triggering rework report: `tickets/in-progress/delegated-launch-config-defaults/code-review-report.md`, `code-review-revision-record.md` (CRR-001, CR-001)
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, Local Fix for CRR-001 / CR-001; IR-001 is the initial baseline)
 - Implementation revision record: `tickets/in-progress/delegated-launch-config-defaults/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
-- Related code-review / API/E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` (`Fail`, Local Fix)
+- Related API/E2E / delivery revision IDs: `N/A`
+- Triggering finding IDs: `CR-001` — removed the dead `RootTeamRun.getAgentExecution` and its three test uses (see IR-002).
 
 Summary:
 
@@ -84,6 +85,7 @@ Web (`autobyteus-web`):
 
 - UNK-001 (accepted, out of scope): an installed but unauthenticated Codex/Claude passes resolution and fails at its first turn as a run error.
 - DEC-006: application launch baselines keep the opposite order (follow-up candidate).
+- A copy without a recorded source (copy of a configured placement or an extra copy at a collaborator address) shows "As configured in this run"; its Team row shows no model (CRR-001 residual).
 - Settings for a saved Team/Org run reads the canonical draft tree loaded with the editor; a copy started while the editor is open appears after Refresh/reopen. Closed-copy filtering uses the live Team view / standalone collaboration view / Org history row when available (no filtering when that source is not loaded).
 - Codex catalog listing starts the Codex app server when a configured layer names Codex (first-use latency for that delegation only), as the design noted.
 
@@ -101,10 +103,11 @@ Web (`autobyteus-web`):
 - Backward-compatibility mechanisms introduced: `None` (optional fields with truthful absence; no version branches)
 - Legacy old-behavior retained in scope: `No`
 - Dead code in the touched files and modules removed: `Yes` — `collaborator-runnability-validator.ts`, `cloneLaunch` in the builder, `rootLaunchConfiguration` builder input; the standalone `collaboratorLaunchConfiguration` is no longer exported (no other users).
-- Dead code found elsewhere, listed as follow-up: `RootTeamRun.getAgentExecution` (`agent-team-execution/domain/root-team-run.ts`) has no production caller (only `tests/unit/agent-team-execution/team-root-collaborators.test.ts` uses it); touched only for a type fix. Candidate for removal with its test usages.
+- Dead code removed in IR-002 (CR-001): `RootTeamRun.getAgentExecution` (no production caller; it also read a collaborator-Team member's launch outside `effectiveMemberLaunchConfiguration`) and its three test uses.
+- Dead code found elsewhere, listed as follow-up: None
 - Shared structures remain tight: `Yes` (`RecordedMemberLaunch` / `RecordedTeamLaunch` composed into record types; no mostly-optional base)
 - Canonical shared design guidance reapplied: `Yes`
-- Changed source implementation files stayed within size guardrails: `Yes` — largest touched: `chatDraftStore.ts` 492, `teamExecutionViewState.ts` 497, `root-team-run.ts` 472 effective non-empty lines (all < 500). Launch-source parsing was moved into its own schema file to keep `run-execution-tree-shared-record-schemas.ts` at 449.
+- Changed source implementation files stayed within size guardrails: `Yes` — largest touched: `chatDraftStore.ts` 492, `teamExecutionViewState.ts` 497, `root-team-run.ts` 448 effective non-empty lines (all < 500). Launch-source parsing was moved into its own schema file to keep `run-execution-tree-shared-record-schemas.ts` at 449.
 - Notes: `TESTING.md` says SDK `dist/` outputs are untracked; the two stream-contract packages' `dist/` are tracked and earlier feature commits update them, so the rebuilt `dist/` is committed (discrepancy recorded).
 
 ## Persisted Data Transition Check (When Applicable)
@@ -121,6 +124,10 @@ Web (`autobyteus-web`):
 - Web has no `vue-tsc`; `tsc --noEmit -p autobyteus-web/tsconfig.json` reports 626 pre-existing errors; none are in the new files, and the hits in touched files are on unchanged lines or follow the existing test fixture pattern.
 
 ## Local Implementation Checks Run
+
+IR-002 (CR-001): server typecheck 0 errors; `vitest run tests/unit/agent-team-execution tests/unit/agent-collaboration` 65 files / 532 tests pass; `team-root-collaborators.test.ts` with the two placement assertions re-expressed through `TeamRunExecutionTreeLocationService.findAgent` 7/7; full server `test:unit` 673 files / 5277 tests passed, 7 skipped (exit 0; run after the method removal, before the re-expressed test assertions, which were run separately). No web or contract file changed in IR-002.
+
+IR-001 baseline:
 
 All run in the worktree; implementation-scoped only.
 
