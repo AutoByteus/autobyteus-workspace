@@ -1,0 +1,80 @@
+# API/E2E Test-Case Ledger — remove-autobyteus-remote-provider
+
+## Ledger Meta
+
+- Assigned task workspace / worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-remote-provider`
+- Coverage investigation: `tickets/in-progress/remove-autobyteus-remote-provider/api-e2e-coverage-investigation.md`
+- Execution coverage report: `tickets/in-progress/remove-autobyteus-remote-provider/api-e2e-execution-coverage-report.md`
+- API/E2E revision record: `tickets/in-progress/remove-autobyteus-remote-provider/api-e2e-revision-record.md`
+- Ledger scope and reason it is required: many independent cases plus long desktop, Docker and real-runtime runs that could be interrupted
+- Last updated: 2026-10-12
+
+## Planned Cases
+
+| Case ID | Case / Journey | Requirement / Acceptance-Criteria IDs | Boundary / Execution Surface | Planned Command Or Entry Point | Planned Order | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| REPO-001 | Core unit suite | REQ-001/002/010, AC-008 | autobyteus-ts unit | `pnpm -C autobyteus-ts exec vitest run tests/unit` | 1 | |
+| REPO-002 | Core build type check, server typecheck | AC-008 | tsc | `tsc --noEmit -p tsconfig.build.json`; `pnpm -C autobyteus-server-ts typecheck` | 2 | |
+| REPO-003 | Server unit | AC-003/004/005/006, REQ-004/005 | server unit | `pnpm -C autobyteus-server-ts test:unit` | 3 | |
+| REPO-004 | Server integration | AC-008, AC-007 | server integration | `test:integration` | 4 | Known baseline exception: 2 cadence cases |
+| REPO-005 | Server build | AC-008 | build | `pnpm -C autobyteus-server-ts build` | 5 | Needed for built-server E2E |
+| REPO-006 | Affected server E2E (existing) | AC-003/005/007/009 | built server / in-process GraphQL | `vitest run <files>` with a clean env | 6 | |
+| API-E2E-005 | Upgrade restart with a real orphan vault row and the `.env` key | AC-005, AC-003, REQ-004/007/009 | built server restart | new E2E file | 7 | |
+| API-E2E-004A/B | Saved remote selection: create blocked; stopped-run restore blocked, value kept, re-select, restore | AC-004, AC-007 | built server GraphQL | new E2E file | 8 | |
+| API-E2E-004C | Remote media default → tool unavailable, setting kept | AC-004 | in-process tool path | updated media E2E | 9 | |
+| API-E2E-004D | Launch-profile policy with a remote identifier is blocking | AC-004 | unit | updated policy unit test | 10 | |
+| API-E2E-006 | Backfill with AUTOBYTEUS ledger rows through real Prisma | AC-006 | real Prisma runner | updated backfill E2E | 11 | |
+| REPO-007 | Web unit, Electron main, guards | AC-002, AC-008 | web | `test:nuxt`, `test:electron`, guards | 12 | |
+| REPO-008 | AC-001 static search | AC-001 | git grep | `git grep` | 13 | |
+| API-E2E-007A | Native runtime with a real LM Studio model (gated suite) | AC-007 | in-process GraphQL + WS + real LM Studio | `RUN_LMSTUDIO_E2E=1 vitest run tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts` | 14 | Local inference |
+| API-E2E-007B | Native runtime with a custom OpenAI-compatible provider → LM Studio endpoint | AC-007 | built server probe | temp probe | 15 | |
+| API-E2E-007C | Native runtime with an API model (only if a test vault key exists) | AC-007 | built server probe | temp probe | 16 | Credits |
+| API-E2E-002 | Isolated desktop: Settings rows and cards | AC-002 | packaged app | isolated-app | 17 | |
+| API-E2E-007D | Isolated desktop: native runtime label, run launch, saved remote selection shown unavailable | AC-007, AC-004 | packaged app | isolated-app | 18 | |
+| API-E2E-008 | Docker remote-server image start | AC-008 | container | docker build/run | 19 | |
+
+## Execution Events
+
+| Sequence | Case ID | Timestamp | Event | Command / Entry Point / Material Configuration | Expected Observable Result | Observed Result Or Checkpoint | Result | Evidence / Artifact Path | Next Action / Unresolved Issue |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | REPO-001 | 2026-10-12 05:34 | Completed | `pnpm -C autobyteus-ts exec vitest run tests/unit` | All pass | 298 files / 2011 tests pass | Pass | `api-e2e-evidence/logs/autobyteus-ts-unit.log` | — |
+| 2 | REPO-002/003 | 2026-10-12 | Started | tsc; server typecheck; server test:unit (background) | All pass | running | — | `api-e2e-evidence/logs/` | — |
+| 3 | API-E2E-004D | 2026-10-12 05:45 | Completed | `vitest run tests/unit/application-platform/application-current-model-selection-policy.test.ts tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts` | Remote launch selection blocked (CURRENT_MODEL_SELECTION_REQUIRED); snapshot displays "AutoByteus" | 2 files / 18 tests pass | Pass | console | — |
+| 4 | API-E2E-004C | 2026-10-12 05:46 | Completed | clean env `vitest run tests/e2e/media/server-owned-media-tools.e2e.test.ts` | Remote default image/speech → MODEL_IDENTIFIER_NOT_AVAILABLE; no client; setting kept | 7/7 pass | Pass | console | — |
+| 5 | API-E2E-006 | 2026-10-12 05:47 | Completed | clean env backfill startup e2e; plus a mutation check (frozen AUTOBYTEUS entry removed → new case fails; reverted) | AUTOBYTEUS rows → "AutoByteus" via real Prisma | 3/3 pass; mutation detected | Pass | console | — |
+| 6 | REPO-002 | 2026-10-12 05:50 | Completed | core `tsc -p tsconfig.build.json`; server `typecheck` | exit 0 | exit 0 both | Pass | `logs/autobyteus-ts-tsc.log`, `logs/server-typecheck.log` | — |
+| 7 | REPO-003 | 2026-10-12 05:50 | Completed | `pnpm -C autobyteus-server-ts test:unit` | All pass | 665 passed / 4 skipped files; 5230 passed / 7 skipped tests | Pass | `logs/server-unit.log` | — |
+| 8 | API-E2E-008 | 2026-10-12 05:50 | Checkpoint | `docker build -f docker/Dockerfile.remote-server` | Image builds | FAILED at `pnpm install`: `@autobyteus/agent-presentation-contracts` not in the image workspace. Dockerfiles unchanged vs base; pre-existing baseline defect (also `collaboration-stream-contracts` missing) | — | `logs/docker-build.log` | Build from a validation-only Dockerfile copy; report the defect |
+| 9 | REPO-005 | 2026-10-12 05:51 | Completed | `pnpm -C autobyteus-server-ts build` | exit 0 | exit 0, bootstrap smoke passed | Pass | `logs/server-build.log` | — |
+| 10 | API-E2E-005, 004A/B | 2026-10-12 05:52 | Checkpoint | new built-server E2E, first run | — | 3 failures, all test assumptions: (a) server writes `.env` without a trailing newline, so the appended key merged into its line; (b) a refused launch keeps the established FAILED_ATTEMPT package; (c) the unchanged native-run replacement rule refuses swapping an unavailable saved model ("Both models need verified context capacities before replacement."), which is pre-existing behavior | — | `logs/server-e2e-new.log` | Fix tests; record (c) as an observation |
+| 11 | API-E2E-005, 004A/B | 2026-10-12 05:56 | Completed | clean env `vitest run` of both new files | All pass | 2 files / 3 tests pass; owned runtimes removed | Pass | `logs/server-e2e-new.log` | — |
+| 12 | REPO-006 | 2026-10-12 05:58 | Completed | clean env `vitest run` of llm-management, media, secret-management, token-usage, server-settings, stopped-run, new files, runtime-capability, token-usage-runtime, agent-definitions | All pass | 30 passed / 3 skipped (gated) files; 109 passed / 3 skipped tests | Pass | `logs/server-e2e-affected.log` | — |
+| 14 | REPO-007 | 2026-10-12 06:03 | Completed | `test:nuxt --run`; `test:electron`; `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | All pass | nuxt 601 passed / 2 skipped files, 4174 tests; electron 36 / 191; guards and audit exit 0 | Pass | `logs/web-*.log` | — |
+| 15 | REPO-004 | 2026-10-12 06:10 | Completed | `pnpm -C autobyteus-server-ts test:integration` | All pass except the documented known exception | 71 passed / 18 skipped files; 2 failed = the 2 content-cadence cases in `agent-status-websocket.integration.test.ts` (TESTING.md known baseline exception, reported product defect) | Pass (baseline exception) | `logs/server-integration.log` | — |
+| 16 | REPO-008 | 2026-10-12 06:08 | Completed | AC-001 `git grep` (symbol list; excluding top-level tickets, ui-prototypes, test-results) | No production matches | 76 lines: intentional leftover-behavior test fixtures (server/web), leftover-data doc notes, historical nested ticket folders, a historical test-results log; 0 in `src/` | Pass | `logs/ac001-grep.log` | — |
+| 17 | API-E2E-007A | 2026-10-12 06:12 | Completed | `RUN_LMSTUDIO_E2E=1 vitest run tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts` | Native runtime with a real LM Studio model | All 6 AutoByteus cases fail in setup before any model call: "Studio application API services are not configured" (requirement since 37d05c7f7). With the E2E Studio helper the next blocker is `agentRunService` not implemented. The stale gated harness is not caused by this branch (neither file is in the diff). Partial fix reverted. | Blocked (baseline harness defect) | `logs/lmstudio-native-runtime.log` | Report to owner; prove AC-007 with real LM Studio in the isolated desktop instance (007D) |
+| 18 | API-E2E-002 | 2026-10-12 06:10 | Completed | `pnpm --silent isolated-app start --build` → `iso-51478-6703` (control 51478, backend 51479); Settings → API Keys / Server Settings → Basics, DOM queries | No AutoByteus row; no LLM Hosts card; others intact | Provider nav: Anthropic…Qwen + New Provider (no AutoByteus); cards LMSTUDIO_HOSTS, OLLAMA_HOSTS, AUTOBYTEUS_VNC_SERVER_HOSTS; no "AutoByteus LLM Hosts" text; model picker groups have no AutoByteus | Pass | `desktop/api-keys.png`, `desktop/server-settings-quick.png` | — |
+| 19 | API-E2E-007D | 2026-10-12 06:12 | Checkpoint | LM Studio host saved via card (127.0.0.1:1234); custom provider "Local Gateway" created via New Provider form (→ LM Studio `/v1`, key in vault); run launched with `qwen/qwen3.8-27b` | Real reply | Discovery works for both; composer shows runtime "AutoByteus"; qwen3.8-27b too slow; the user interrupted and swapped in `qwen/qwen3.6-35b-a3b`; run terminated | — | `desktop/new-run-composer-runtime-label.png` | Rerun one local-model run at a time on qwen3.6 |
+| 20 | API-E2E-007D | 2026-10-12 06:20 | Completed | UI Reload Models (LM Studio, Local Gateway); native run `qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234` → "PINEAPPLE"; terminate, reload, follow-up → restored and recalled "PINEAPPLE" | Launch/reply/terminate/restore/continue | Pass | Pass | `desktop/lmstudio-run-first-reply.png`, `desktop/lmstudio-run-after-restore.png` | — |
+| 21 | API-E2E-007B | 2026-10-12 06:23 | Completed | native run `openai-compatible:provider_local_gateway:qwen/qwen3.6-35b-a3b` → "MANGO"; terminate, reload, follow-up → restored and recalled | Same, via a custom OpenAI-compatible provider with a vault key | Pass; runtimeKind `autobyteus` | Pass | `desktop/custom-provider-run-first-reply.png` | — |
+| 22 | API-E2E-007C | 2026-10-12 06:25 | Completed | native run `gpt-5.6-luna` (no key in the isolated vault) | Run created; clean missing-key error | Run created on AutoByteus; "API key not provided for OPENAI. Configure the OPENAI API key before sending a request." Paid inference not run (no test key; production vault off-limits) | Pass (credential path); inference Not Tested | `desktop/api-model-run-no-key.png` | — |
+| 23 | API-E2E-004 (UI) | 2026-10-12 06:27 | Completed | Stopped run metadata given the provider-era remote id `gpt-4o:autobyteus@remote-llm.example.invalid:8000`; opened Edit Config | Shown unavailable, value kept | Value shown with "No longer offered by AutoByteus. Choose another model before this run resumes."; chooser shows "No models available". Control: an ordinary no-longer-offered LM Studio model shows the same (pre-existing native-run replacement rule) | Pass (observation recorded) | `desktop/stopped-run-remote-model-unavailable.png` | Report the pre-existing "Choose another model / No models available" UX separately |
+| 24 | API-E2E-004 (UI media) | 2026-10-12 06:33 | Completed | `updateServerSetting` remote image/speech defaults; app restart; Default media models card; re-select gpt-image-1.5, Save | Value kept, stale note, reselect works | "Current: imagen@…" / "Current: tts@…" with "not in the loaded catalog and will be preserved…"; reselect saved `gpt-image-1.5`. (The renderer caches settings per binding until restart; that is pre-existing and not real-use) | Pass | `desktop/media-defaults-remote-unavailable.png` | — |
+| 25 | Cleanup | 2026-10-12 06:36 | Completed | `isolated-app stop iso-51478-6703`; `isolated-app list` | Own instance gone | Data root removed, ports released; only other worktrees' instances remain; LM Studio left with the user's qwen3.6 loaded | Pass | `logs/isolated-app-instance.log` | — |
+| 26 | API-E2E-004B | 2026-10-12 07:08 | Completed | Round 2 (CRR-002 TR-001): reselection block removed; clean env `vitest run tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts` (built dist) | AC-004 assertions only | 2/2 pass | Pass | `logs/server-e2e-saved-selection-tr001.log` | — |
+| 27 | API-E2E-009 (new, round 3) | 2026-10-12 07:45 | Completed | `pnpm -C autobyteus-ts exec vitest run tests/unit/multimedia/gemini-runtime-resolver-gate.test.ts`; mutation check (image gate → OPENAI: 2 fail; reverted) | Gemini resolver required only for Gemini media models | 7/7 pass; mutation detected | Pass | console | — |
+| 28 | REPO-001/002/005 (round 3) | 2026-10-12 07:50 | Completed | core unit; core tsc; server typecheck; server build (fresh) | All pass | 298 / 2017; exit 0; exit 0; build pass | Pass | `logs/round3/*` | — |
+| 29 | REPO-006 (round 3) | 2026-10-12 07:53 | Completed | clean-env affected E2E (same set as round 1) on the fresh build | All pass | 30 passed / 2 skipped (gated) files; 109 tests | Pass | `logs/round3/server-e2e-affected.log` | — |
+| 30 | REPO-003/004 (round 3) | 2026-10-12 08:10 | Completed | server `test:unit`; `test:integration` | All pass except the documented exception | unit 665 / 5230; integration 71 pass, 2 known content-cadence failures | Pass (baseline exception) | `logs/round3/server-unit.log`, `logs/round3/server-integration.log` | — |
+| 31 | REPO-008 (round 3) | 2026-10-12 07:55 | Completed | `git grep MultimediaRuntime` | Only historical | historical tickets and test-results logs only | Pass | `logs/round3/multimediaruntime-grep.log` | — |
+| 13 | API-E2E-008 | 2026-10-12 06:05 | Completed | validation Dockerfile build; `docker run` fresh volume with `-e AUTOBYTEUS_LLM_SERVER_HOSTS=…`; then stop, add provider-era `AUTOBYTEUS_LLM_SERVER_HOSTS=` line, start | Entrypoint never writes the key; server healthy; no AUTOBYTEUS; leftover deletable | Fresh `.env` has 0 occurrences; health ok; 12 providers without AUTOBYTEUS; ensure → UNKNOWN_MODEL_PROVIDER; upgrade start healthy; leftover listed custom/deletable and deleted | Pass | `api-e2e-evidence/docker/*` | Container, image and data removed |
+
+## Re-entry And Reconciliation
+
+- Last durably recorded event: 25
+- Last completed case and result: Cleanup Pass
+- Cases still running, interrupted, or not started: None. API-E2E-007A is Blocked (baseline harness defect), with its AC-007 evidence replaced by 007D/007B on the packaged app.
+- Next case or recovery action: none
+- Interruption, context-compression, or rerun note: the user interrupted the qwen3.8-27b run (too slow) and provided qwen3.6-35b-a3b; local-model runs were then serialized
+- Reconciled into execution coverage report: `Yes` — `api-e2e-execution-coverage-report.md`, "Test-Case Ledger Reconciliation"
+- Reconciliation note for any case missing a terminal result: —

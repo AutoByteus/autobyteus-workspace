@@ -1,0 +1,367 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.remote-server
+#1 transferring dockerfile: 3.18kB 0.0s done
+#1 DONE 0.1s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 ...
+
+#3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 3.2s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#4 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 ...
+
+#6 [auth] library/node:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#7 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#7 ...
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 DONE 1.5s
+
+#7 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#7 DONE 1.5s
+
+#8 [internal] load .dockerignore
+#8 transferring context: 282B done
+#8 DONE 0.0s
+
+#9 [internal] load build context
+#9 DONE 0.0s
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 resolve docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8 0.1s done
+#10 DONE 0.1s
+
+#11 [runtime  1/14] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#11 resolve docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392 0.1s done
+#11 DONE 0.1s
+
+#9 [internal] load build context
+#9 transferring context: 54.21MB 3.2s done
+#9 DONE 3.3s
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 DONE 0.1s
+
+#11 [runtime  1/14] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#11 sha256:a8e3f40b26e8ab8419b3b90a177118d69162cdcd4799bd0c6bae541309993590 447B / 447B 0.2s done
+#11 sha256:aa7268e3e147e6faaf14f99734d2c8565bb9080ec0f292ae2aae65879bfd2727 1.71MB / 1.71MB 0.3s done
+#11 sha256:a7d3259c055657a65a0815a6a5d07333f0b859c90cb197f4c7853941f77e78f2 19.92MB / 49.96MB 2.7s
+#11 sha256:8d752b15e16356e3c5fddfe9c08b5cd27a091835fe465cdef26dd30d3d856171 3.31kB / 3.31kB 0.3s done
+#11 sha256:c75f989a229d12b2d2613a5997de9ff3546f664c22da9248720033a2410220f6 5.24MB / 28.14MB 2.6s
+#11 sha256:a7d3259c055657a65a0815a6a5d07333f0b859c90cb197f4c7853941f77e78f2 23.07MB / 49.96MB 3.2s
+#11 sha256:a7d3259c055657a65a0815a6a5d07333f0b859c90cb197f4c7853941f77e78f2 27.26MB / 49.96MB 3.6s
+#11 sha256:c75f989a229d12b2d2613a5997de9ff3546f664c22da9248720033a2410220f6 7.34MB / 28.14MB 3.3s
+#11 sha256:a7d3259c055657a65a0815a6a5d07333f0b859c90cb197f4c7853941f77e78f2 30.41MB / 49.96MB 4.2s
+#11 sha256:c75f989a229d12b2d2613a5997de9ff3546f664c22da9248720033a2410220f6 9.44MB / 28.14MB 4.4s
+#11 sha256:a7d3259c055657a65a0815a6a5d07333f0b859c90cb197f4c7853941f77e78f2 33.55MB / 49.96MB 4.8s
+#11 sha256:a7d3259c055657a65a0815a6a5d07333f0b859c90cb197f4c7853941f77e78f2 36.70MB / 49.96MB 5.6s
+#11 sha256:c75f989a229d12b2d2613a5997de9ff3546f664c22da9248720033a2410220f6 11.53MB / 28.14MB 5.7s
+#11 sha256:a7d3259c055657a65a0815a6a5d07333f0b859c90cb197f4c7853941f77e78f2 39.85MB / 49.96MB 6.2s
+#11 sha256:a7d3259c055657a65a0815a6a5d07333f0b859c90cb197f4c7853941f77e78f2 42.99MB / 49.96MB 6.8s
+#11 sha256:c75f989a229d12b2d2613a5997de9ff3546f664c22da9248720033a2410220f6 13.63MB / 28.14MB 6.8s
+#11 sha256:a7d3259c055657a65a0815a6a5d07333f0b859c90cb197f4c7853941f77e78f2 46.14MB / 49.96MB 7.5s
+#11 sha256:c75f989a229d12b2d2613a5997de9ff3546f664c22da9248720033a2410220f6 15.73MB / 28.14MB 7.8s
+#11 sha256:a7d3259c055657a65a0815a6a5d07333f0b859c90cb197f4c7853941f77e78f2 49.28MB / 49.96MB 8.3s
+#11 sha256:a7d3259c055657a65a0815a6a5d07333f0b859c90cb197f4c7853941f77e78f2 49.96MB / 49.96MB 8.4s done
+#11 sha256:c75f989a229d12b2d2613a5997de9ff3546f664c22da9248720033a2410220f6 17.83MB / 28.14MB 8.7s
+#11 ...
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 sha256:5eabe5bac1ca88918c3a434ff6891f79a5e442d844e8cce29cd47430753f4a20 447B / 447B 0.3s done
+#10 sha256:be515062341f6ee6675e4289d717814f372ca97fde11544a9cc90fd2de8dcfe3 1.25MB / 1.25MB 0.7s done
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 11.53MB / 58.58MB 5.6s
+#10 sha256:8139def24e494c7de5f5cdda325f4b3c224ee7252d08c8dbba861629bf594eb0 3.33kB / 3.33kB 0.2s done
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 10.49MB / 203.25MB 5.0s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 2.10MB / 66.77MB 0.8s
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 14.68MB / 58.58MB 6.6s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 6.29MB / 66.77MB 2.1s
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 17.83MB / 58.58MB 8.0s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 10.49MB / 66.77MB 3.3s
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 20.97MB / 58.58MB 9.2s
+#10 sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 0B / 23.44MB 0.2s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 14.68MB / 66.77MB 4.5s
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 24.12MB / 58.58MB 10.2s
+#10 sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 2.10MB / 23.44MB 1.2s
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 20.97MB / 203.25MB 9.8s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 18.87MB / 66.77MB 5.7s
+#10 sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 4.19MB / 23.44MB 2.0s
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 27.26MB / 58.58MB 11.4s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 23.07MB / 66.77MB 6.9s
+#10 sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 6.29MB / 23.44MB 2.9s
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 30.41MB / 58.58MB 12.3s
+#10 sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 8.39MB / 23.44MB 3.8s
+#10 ...
+
+#11 [runtime  1/14] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#11 sha256:c75f989a229d12b2d2613a5997de9ff3546f664c22da9248720033a2410220f6 28.14MB / 28.14MB 12.4s done
+#11 extracting sha256:c75f989a229d12b2d2613a5997de9ff3546f664c22da9248720033a2410220f6 3.9s done
+#11 extracting sha256:8d752b15e16356e3c5fddfe9c08b5cd27a091835fe465cdef26dd30d3d856171 0.0s done
+#11 DONE 17.3s
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 33.55MB / 58.58MB 13.2s
+#10 sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 10.49MB / 23.44MB 4.5s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 27.26MB / 66.77MB 8.7s
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 36.70MB / 58.58MB 14.3s
+#10 sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 12.58MB / 23.44MB 5.3s
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 31.46MB / 203.25MB 14.1s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 31.46MB / 66.77MB 10.4s
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 39.85MB / 58.58MB 15.5s
+#10 sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 14.68MB / 23.44MB 6.5s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 35.65MB / 66.77MB 11.4s
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 42.99MB / 58.58MB 16.5s
+#10 sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 16.78MB / 23.44MB 7.5s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 39.85MB / 66.77MB 12.5s
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 46.14MB / 58.58MB 17.6s
+#10 sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 18.87MB / 23.44MB 8.7s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 44.04MB / 66.77MB 13.5s
+#10 sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 20.97MB / 23.44MB 9.3s
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 49.28MB / 58.58MB 18.8s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 48.23MB / 66.77MB 14.6s
+#10 sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 23.07MB / 23.44MB 10.4s
+#10 sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 23.44MB / 23.44MB 10.5s done
+#10 ...
+
+#11 [runtime  1/14] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#11 extracting sha256:a7d3259c055657a65a0815a6a5d07333f0b859c90cb197f4c7853941f77e78f2 6.6s done
+#11 extracting sha256:aa7268e3e147e6faaf14f99734d2c8565bb9080ec0f292ae2aae65879bfd2727 0.1s done
+#11 DONE 24.0s
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 ...
+
+#11 [runtime  1/14] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#11 extracting sha256:a8e3f40b26e8ab8419b3b90a177118d69162cdcd4799bd0c6bae541309993590 0.0s done
+#11 DONE 24.0s
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 52.43MB / 58.58MB 19.7s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 0B / 48.40MB 0.2s
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 41.94MB / 203.25MB 19.4s
+#10 ...
+
+#12 [runtime  2/14] WORKDIR /app
+#12 DONE 0.4s
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 ...
+
+#13 [runtime  3/14] COPY LICENSE LICENSING.md NOTICE /app/
+#13 DONE 0.1s
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 52.43MB / 66.77MB 15.8s
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 55.57MB / 58.58MB 20.7s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 3.15MB / 48.40MB 2.0s
+#10 sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 58.58MB / 58.58MB 21.6s done
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 56.62MB / 66.77MB 17.0s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 60.82MB / 66.77MB 18.0s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 6.29MB / 48.40MB 3.3s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 65.01MB / 66.77MB 18.9s
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 52.43MB / 203.25MB 23.6s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 9.44MB / 48.40MB 4.5s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 12.58MB / 48.40MB 5.4s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 15.73MB / 48.40MB 6.2s
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 63.96MB / 203.25MB 26.0s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 18.87MB / 48.40MB 6.9s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 22.02MB / 48.40MB 7.5s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 25.17MB / 48.40MB 8.1s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 28.31MB / 48.40MB 8.7s
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 74.45MB / 203.25MB 27.8s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 66.77MB / 66.77MB 24.0s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 31.46MB / 48.40MB 9.2s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 34.60MB / 48.40MB 9.8s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 37.75MB / 48.40MB 10.4s
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 84.93MB / 203.25MB 29.6s
+#10 ...
+
+#14 [runtime  4/14] RUN apt-get update   && apt-get install -y --no-install-recommends openssl   && rm -rf /var/lib/apt/lists/*
+#14 0.860 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+#14 0.990 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+#14 1.084 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+#14 1.206 Get:4 http://deb.debian.org/debian bookworm/main arm64 Packages [8689 kB]
+#14 5.581 Get:5 http://deb.debian.org/debian bookworm-updates/main arm64 Packages [6936 B]
+#14 5.597 Get:6 http://deb.debian.org/debian-security bookworm-security/main arm64 Packages [347 kB]
+#14 7.415 Fetched 9285 kB in 7s (1386 kB/s)
+#14 7.415 Reading package lists...
+#14 8.314 Reading package lists...
+#14 9.200 Building dependency tree...
+#14 9.469 Reading state information...
+#14 9.764 The following additional packages will be installed:
+#14 9.765   libssl3
+#14 9.765 Suggested packages:
+#14 9.765   ca-certificates
+#14 9.899 The following NEW packages will be installed:
+#14 9.899   libssl3 openssl
+#14 10.06 0 upgraded, 2 newly installed, 0 to remove and 1 not upgraded.
+#14 10.06 Need to get 3238 kB of archives.
+#14 10.06 After this operation, 8542 kB of additional disk space will be used.
+#14 10.06 Get:1 http://deb.debian.org/debian-security bookworm-security/main arm64 libssl3 arm64 3.0.22-1~deb12u1 [1828 kB]
+#14 ...
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 40.89MB / 48.40MB 11.0s
+#10 sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 66.77MB / 66.77MB 25.9s done
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 44.04MB / 48.40MB 11.7s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 47.19MB / 48.40MB 12.5s
+#10 sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 48.40MB / 48.40MB 12.7s done
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 95.42MB / 203.25MB 31.7s
+#10 extracting sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 105.91MB / 203.25MB 32.7s
+#10 ...
+
+#14 [runtime  4/14] RUN apt-get update   && apt-get install -y --no-install-recommends openssl   && rm -rf /var/lib/apt/lists/*
+#14 10.92 Get:2 http://deb.debian.org/debian-security bookworm-security/main arm64 openssl arm64 3.0.22-1~deb12u1 [1410 kB]
+#14 12.12 debconf: delaying package configuration, since apt-utils is not installed
+#14 12.17 Fetched 3238 kB in 2s (1693 kB/s)
+#14 12.25 Selecting previously unselected package libssl3:arm64.
+#14 12.25 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6090 files and directories currently installed.)
+#14 12.26 Preparing to unpack .../libssl3_3.0.22-1~deb12u1_arm64.deb ...
+#14 12.28 Unpacking libssl3:arm64 (3.0.22-1~deb12u1) ...
+#14 12.49 Selecting previously unselected package openssl.
+#14 12.49 Preparing to unpack .../openssl_3.0.22-1~deb12u1_arm64.deb ...
+#14 12.50 Unpacking openssl (3.0.22-1~deb12u1) ...
+#14 12.62 Setting up libssl3:arm64 (3.0.22-1~deb12u1) ...
+#14 12.66 Setting up openssl (3.0.22-1~deb12u1) ...
+#14 12.73 Processing triggers for libc-bin (2.36-9+deb12u14) ...
+#14 DONE 13.3s
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 117.44MB / 203.25MB 33.8s
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 128.97MB / 203.25MB 35.3s
+#10 extracting sha256:2a02c40189e361a19e7cb07374fe9925f5c4f7db254ae2b9196348c27c286b03 3.6s done
+#10 extracting sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 139.46MB / 203.25MB 36.3s
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 150.99MB / 203.25MB 37.4s
+#10 extracting sha256:bdc7363672c63abfefdedaf5e03be8e39cb662841d4f31237c4b7d7e3729f65c 1.9s done
+#10 extracting sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 162.53MB / 203.25MB 38.4s
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 174.06MB / 203.25MB 39.5s
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 184.55MB / 203.25MB 40.6s
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 195.04MB / 203.25MB 41.4s
+#10 sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 203.25MB / 203.25MB 42.5s done
+#10 ...
+
+#15 [runtime  5/14] RUN corepack enable && corepack prepare pnpm@10.30.2 --activate
+#15 0.563 Preparing pnpm@10.30.2 for immediate activation...
+#15 ...
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 extracting sha256:99713dbe79ee22ead7509cd8c7c37d309206e5ddd834ba41611459b49e6ddc06 6.6s done
+#10 DONE 45.3s
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 extracting sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458
+#10 ...
+
+#15 [runtime  5/14] RUN corepack enable && corepack prepare pnpm@10.30.2 --activate
+#15 DONE 12.3s
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 extracting sha256:4562cb873c99b9446ba4daee7180b2d40bbac13aefcf459f2e516776c1ed0458 10.3s done
+#10 DONE 55.6s
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 extracting sha256:8139def24e494c7de5f5cdda325f4b3c224ee7252d08c8dbba861629bf594eb0 0.0s done
+#10 extracting sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f
+#10 extracting sha256:f2f269f541ea9b2af2ca256cb32e9df4773d25165a12e300399088c1f193736f 5.2s done
+#10 DONE 60.8s
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 extracting sha256:be515062341f6ee6675e4289d717814f372ca97fde11544a9cc90fd2de8dcfe3 0.1s done
+#10 DONE 60.9s
+
+#10 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#10 extracting sha256:5eabe5bac1ca88918c3a434ff6891f79a5e442d844e8cce29cd47430753f4a20 0.0s done
+#10 DONE 61.0s
+
+#16 [builder  2/21] WORKDIR /app
+#16 DONE 0.6s
+
+#17 [builder  3/21] RUN corepack enable
+#17 DONE 0.5s
+
+#18 [builder  4/21] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#18 DONE 0.2s
+
+#19 [builder  5/21] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#19 DONE 0.1s
+
+#20 [builder  6/21] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+#20 DONE 0.2s
+
+#21 [builder  7/21] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+#21 DONE 0.2s
+
+#22 [builder  8/21] COPY autobyteus-team-stream-contracts/package.json autobyteus-team-stream-contracts/tsconfig.build.json autobyteus-team-stream-contracts/tsconfig.json ./autobyteus-team-stream-contracts/
+#22 DONE 0.2s
+
+#23 [builder  9/21] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#23 DONE 0.1s
+
+#24 [builder 10/21] COPY autobyteus-web/package.json ./autobyteus-web/
+#24 DONE 0.1s
+
+#25 [builder 11/21] COPY autobyteus-ts ./autobyteus-ts
+#25 DONE 0.7s
+
+#26 [builder 12/21] COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+#26 DONE 0.1s
+
+#27 [builder 13/21] COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+#27 DONE 0.1s
+
+#28 [builder 14/21] COPY autobyteus-team-stream-contracts ./autobyteus-team-stream-contracts
+#28 DONE 0.1s
+
+#29 [builder 15/21] COPY autobyteus-server-ts ./autobyteus-server-ts
+#29 DONE 1.2s
+
+#30 [builder 16/21] COPY autobyteus-web ./autobyteus-web
+#30 DONE 1.2s
+
+#31 [builder 17/21] RUN pnpm install --no-frozen-lockfile
+#31 0.434 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+#31 6.768 Scope: all 7 workspace projects
+#31 7.385 /app/autobyteus-server-ts:
+#31 7.385  ERR_PNPM_WORKSPACE_PKG_NOT_FOUND  In autobyteus-server-ts: "@autobyteus/agent-presentation-contracts@workspace:*" is in the dependencies but no package named "@autobyteus/agent-presentation-contracts" is present in the workspace
+#31 7.385 
+#31 7.385 This error happened while installing a direct dependency of /app/autobyteus-server-ts
+#31 7.385 
+#31 7.385 Packages found in the workspace: 
+#31 7.592 Progress: resolved 0, reused 0, downloaded 1, added 0
+#31 ERROR: process "/bin/sh -c pnpm install --no-frozen-lockfile" did not complete successfully: exit code: 1
+------
+ > [builder 17/21] RUN pnpm install --no-frozen-lockfile:
+0.434 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+6.768 Scope: all 7 workspace projects
+7.385 /app/autobyteus-server-ts:
+7.385  ERR_PNPM_WORKSPACE_PKG_NOT_FOUND  In autobyteus-server-ts: "@autobyteus/agent-presentation-contracts@workspace:*" is in the dependencies but no package named "@autobyteus/agent-presentation-contracts" is present in the workspace
+7.385 
+7.385 This error happened while installing a direct dependency of /app/autobyteus-server-ts
+7.385 
+7.385 Packages found in the workspace: 
+7.592 Progress: resolved 0, reused 0, downloaded 1, added 0
+------
+Dockerfile.remote-server:26
+--------------------
+  24 |     COPY autobyteus-web ./autobyteus-web
+  25 |     
+  26 | >>> RUN pnpm install --no-frozen-lockfile
+  27 |     RUN pnpm -C autobyteus-team-stream-contracts build
+  28 |     RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c pnpm install --no-frozen-lockfile" did not complete successfully: exit code: 1
+EXIT=1
