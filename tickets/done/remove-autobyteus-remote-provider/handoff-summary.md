@@ -5,7 +5,10 @@
 - Verified by the user on 2026-10-12: "i just verified. all working. now finalize and release a new beta"
 - Decisions:
   1. **Accepted as done.** This covers the Settings check (AC-002) and the native AutoByteus runtime check (AC-007) from How To Verify.
-  2. **Release:** a new beta. The next beta is `v1.5.2-beta.1`, computed by `scripts/release_versions.py next-beta`.
+  2. **Release:** a new beta.
+     - The beta shipped as `v1.5.2-beta.2`.
+     - `v1.5.2-beta.1` is a partial pre-release: its Windows build failed at checkout on `:` in evidence log names.
+     - See `release-deployment-report.md`.
   3. **OBS-001:** the user did not decide on a ticket. It goes to the Solution Designer as a separate-ticket candidate.
 
 ## State For User Verification
