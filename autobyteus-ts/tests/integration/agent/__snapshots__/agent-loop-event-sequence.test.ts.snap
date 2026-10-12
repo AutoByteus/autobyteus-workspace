@@ -373,6 +373,7 @@ exports[`agent loop golden event sequences > after-final compaction requested an
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": 5895,
         "context_window_usage_percent": 1.6666666666666667,
         "effective_context_window_tokens": 12000,
         "idempotency_key": "<agent>:turn_0001:llm:1",
@@ -601,6 +602,7 @@ exports[`agent loop golden event sequences > after-final compaction requested an
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": 5895,
         "context_window_usage_percent": 1.6666666666666667,
         "effective_context_window_tokens": 12000,
         "idempotency_key": "<agent>:turn_0002:llm:1",
@@ -841,6 +843,7 @@ exports[`agent loop golden event sequences > after-final compaction requested an
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": 5895,
         "context_window_usage_percent": 1.6666666666666667,
         "effective_context_window_tokens": 12000,
         "idempotency_key": "<agent>:turn_0003:llm:1",
@@ -1093,6 +1096,7 @@ exports[`agent loop golden event sequences > after-final compaction requested an
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": 5895,
         "context_window_usage_percent": 58.333333333333336,
         "effective_context_window_tokens": 12000,
         "idempotency_key": "<agent>:turn_0004:llm:1",
@@ -1454,6 +1458,7 @@ exports[`agent loop golden event sequences > after-final compaction requested an
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": 5895,
         "context_window_usage_percent": 1.6666666666666667,
         "effective_context_window_tokens": 12000,
         "idempotency_key": "<agent>:turn_0005:llm:1",
@@ -1962,6 +1967,7 @@ exports[`agent loop golden event sequences > compaction_blocked, then the retry 
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": 5895,
         "context_window_usage_percent": 1.6666666666666667,
         "effective_context_window_tokens": 12000,
         "idempotency_key": "<agent>:turn_0001:llm:1",
@@ -2190,6 +2196,7 @@ exports[`agent loop golden event sequences > compaction_blocked, then the retry 
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": 5895,
         "context_window_usage_percent": 1.6666666666666667,
         "effective_context_window_tokens": 12000,
         "idempotency_key": "<agent>:turn_0002:llm:1",
@@ -2430,6 +2437,7 @@ exports[`agent loop golden event sequences > compaction_blocked, then the retry 
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": 5895,
         "context_window_usage_percent": 1.6666666666666667,
         "effective_context_window_tokens": 12000,
         "idempotency_key": "<agent>:turn_0003:llm:1",
@@ -2956,6 +2964,7 @@ exports[`agent loop golden event sequences > compaction_blocked, then the retry 
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 2,
+        "context_compaction_threshold_tokens": 5895,
         "context_window_usage_percent": 1.6666666666666667,
         "effective_context_window_tokens": 12000,
         "idempotency_key": "<agent>:turn_0004:llm:2",
@@ -3214,6 +3223,7 @@ exports[`agent loop golden event sequences > compaction_blocked, then the retry 
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": 5895,
         "context_window_usage_percent": 1.6666666666666667,
         "effective_context_window_tokens": 12000,
         "idempotency_key": "<agent>:turn_0005:llm:1",
@@ -3847,6 +3857,7 @@ exports[`agent loop golden event sequences > final text answer with reasoning 1`
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:1",
@@ -4904,6 +4915,7 @@ exports[`agent loop golden event sequences > malformed tool call is rejected, th
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:1",
@@ -5144,6 +5156,7 @@ exports[`agent loop golden event sequences > malformed tool call is rejected, th
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 2,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:2",
@@ -5620,6 +5633,7 @@ exports[`agent loop golden event sequences > one tool cycle 1`] = `
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:1",
@@ -5906,6 +5920,7 @@ weather: sunny",
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 2,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:2",
@@ -6276,6 +6291,7 @@ System note: your previous response hit the output limit of 256 tokenâ€¦(989 cha
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:1",
@@ -6405,6 +6421,7 @@ System note: your previous response hit the output limit of 256 tokenâ€¦(341 cha
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 2,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:2",
@@ -6534,6 +6551,7 @@ System note: your previous response hit the output limit of 256 tokenâ€¦(665 cha
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 3,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:3",
@@ -6663,6 +6681,7 @@ System note: your previous response hit the output limit of 256 tokenâ€¦(989 cha
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 4,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:4",
@@ -7089,6 +7108,7 @@ System note: your previous response hit the output limit of 256 tokens while gâ€
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:1",
@@ -7211,6 +7231,7 @@ System note: your previous response hit the output limit of 256 tokens while gâ€
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 2,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:2",
@@ -7501,6 +7522,7 @@ System note: your previous response hit the output limit of 256 tokens while gâ€
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 3,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:3",
@@ -7905,6 +7927,7 @@ exports[`agent loop golden event sequences > output-limit recovery: text cut, th
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 1,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:1",
@@ -8024,6 +8047,7 @@ exports[`agent loop golden event sequences > output-limit recovery: text cut, th
       "kind": "event.agent_token_usage_updated",
       "payload": {
         "call_sequence": 2,
+        "context_compaction_threshold_tokens": null,
         "context_window_usage_percent": null,
         "effective_context_window_tokens": null,
         "idempotency_key": "<agent>:turn_0001:llm:2",
