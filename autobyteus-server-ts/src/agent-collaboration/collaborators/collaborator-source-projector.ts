@@ -5,12 +5,13 @@ import type {
   TeamRunAgentTeamNode,
 } from "../../agent-team-execution/domain/team-run-config.js";
 import { getAgentTeamAddressSegments, type AgentTeamAddress } from "../domain/agent-team-address.js";
-import type {
-  CollaboratorAgentEntry,
-  CollaboratorEntry,
-  CollaboratorTeamEntry,
-  TaskExecution,
-  TaskExecutionSource,
+import {
+  effectiveMemberLaunchConfiguration,
+  type CollaboratorAgentEntry,
+  type CollaboratorEntry,
+  type CollaboratorTeamEntry,
+  type TaskExecution,
+  type TaskExecutionSource,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
 /** Extra copies get fresh identities from the task lifecycle; these only fill the shape. */
@@ -49,7 +50,7 @@ export const projectCollaboratorTeamNode = (entry: CollaboratorTeamEntry): TeamR
     platformAgentRunId: member.platformAgentRunId,
     role: null,
     description: null,
-    ...entry.defaultLaunchConfiguration,
+    ...effectiveMemberLaunchConfiguration(entry, member),
   }))),
 });
 
@@ -102,7 +103,7 @@ export const resolveCollaboratorCopySource = (
       platformAgentRunId: null,
       role: null,
       description: null,
-      ...team.defaultLaunchConfiguration,
+      ...effectiveMemberLaunchConfiguration(team, member),
     }) });
   }
   return null;
@@ -146,7 +147,7 @@ export const projectTaskExecutionSource = (address: AgentTeamAddress, source: Ta
         platformAgentRunId: null,
         role: null,
         description: null,
-        ...source.defaultLaunchConfiguration,
+        ...effectiveMemberLaunchConfiguration(source, member),
       }))),
     }),
   });
@@ -163,7 +164,7 @@ export const projectTaskSourceMember = (
   if (source.kind !== "agent_team") return null;
   const member = source.members.find((candidate) => candidate.address === address);
   return member
-    ? Object.freeze({ kind: "agent", agentDefinitionId: member.agentDefinitionId, launchConfiguration: source.defaultLaunchConfiguration })
+    ? Object.freeze({ kind: "agent", agentDefinitionId: member.agentDefinitionId, launchConfiguration: effectiveMemberLaunchConfiguration(source, member) })
     : null;
 };
 
@@ -191,7 +192,7 @@ export const collaboratorExecutionSource = (
   }
   const member = entry.members.find((candidate) => candidate.address === memberAddress);
   return member
-    ? Object.freeze({ agentDefinitionId: member.agentDefinitionId, launchConfiguration: entry.defaultLaunchConfiguration })
+    ? Object.freeze({ agentDefinitionId: member.agentDefinitionId, launchConfiguration: effectiveMemberLaunchConfiguration(entry, member) })
     : null;
 };
 
@@ -216,7 +217,7 @@ export const catalogCopyExecutionSource = (
       const member = task.source ? task.members.find((candidate) => "agentRunId" in candidate && candidate.agentRunId === agentRunId) : null;
       const definition = member && task.source?.members.find((candidate) => candidate.address === member.address);
       if (definition && task.source) {
-        return Object.freeze({ agentDefinitionId: definition.agentDefinitionId, launchConfiguration: task.source.defaultLaunchConfiguration });
+        return Object.freeze({ agentDefinitionId: definition.agentDefinitionId, launchConfiguration: effectiveMemberLaunchConfiguration(task.source, definition) });
       }
       const nested = visit(task.taskExecutions);
       if (nested) return nested;

@@ -494,3 +494,45 @@ describe("RootTaskExecutionLifecycle wake leases", () => {
     expect(timers.pendingCount()).toBe(0);
   });
 });
+
+describe("RootTaskExecutionLifecycle launch notes (DS-003, DS-004 b; REQ-008)", () => {
+  /** Each activation gets its own run ID; a started helper is found at its address among the Task's open helpers. */
+  const notesSetup = () => {
+    let next = 0;
+    const fake = setup({
+      planActivation: vi.fn(async input => {
+        const id = `run-${++next}`;
+        return { ...input, ownedAgentRunIds: [id], target: { root: caller.root, execution: { agentRunId: id }, ingressAgentRunId: id } };
+      }),
+      taskExecutionAt: (address, among) => {
+        const found = address === "/helper" ? among.find((reference) => "agentRunId" in reference && reference.agentRunId !== "run-1") : undefined;
+        return found && "agentRunId" in found ? { root: caller.root, execution: found, ingressAgentRunId: found.agentRunId } : null;
+      },
+    });
+    return fake;
+  };
+  const worker = createCollaborationMemberExecutionIdentity({ root: caller.root, memberAddress: "/worker", agentRunId: "run-1" });
+
+  it("dispatch attaches the placement's notes to the delegated outcome, and only non-empty ones", async () => {
+    const { lifecycle } = notesSetup();
+    await expect(lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, { launchNotes: ["worker: fell back"] }))
+      .resolves.toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "run-1" }, taskId: "ad_hoc_task_1", launchNotes: ["worker: fell back"] });
+    await expect(lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Again" }, { launchNotes: [] }))
+      .resolves.toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "run-2" }, taskId: "ad_hoc_task_2" });
+  });
+
+  it("a Task helper returns notes only from the dispatch that started it (or the attempt it joined); a reused helper has none", async () => {
+    const { lifecycle, state } = notesSetup();
+    await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, {});
+    state.chains.set("run-1", [{ agentRunId: "run-1" }]);
+    const placement = { launchNotes: ["helper: its agent default could not be used"] };
+    const [first, joined] = await Promise.all([
+      lifecycle.ensureTaskHelper({ identity: worker }, "/helper", placement),
+      lifecycle.ensureTaskHelper({ identity: worker }, "/helper", placement),
+    ]);
+    expect(first).toEqual({ target: { root: caller.root, execution: { agentRunId: "run-2" }, ingressAgentRunId: "run-2" }, launchNotes: placement.launchNotes });
+    expect(joined).toEqual(first);
+    const reused = await lifecycle.ensureTaskHelper({ identity: worker }, "/helper", placement);
+    expect(reused).toEqual({ target: { root: caller.root, execution: { agentRunId: "run-2" }, ingressAgentRunId: "run-2" } });
+  });
+});

@@ -8,7 +8,7 @@ import type {
 } from "../../agent-collaboration/execution/domain/located-execution-structure.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
-import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import { effectiveMemberLaunchConfiguration, type CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { getStandaloneRootTreePath } from "../persistence/standalone-root-tree-path.js";
 import { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
 import type { StandaloneRootTreeSnapshot } from "../domain/standalone-root-tree.js";
@@ -40,8 +40,10 @@ type ActiveRoots = Readonly<{
 type AgentLookup = { rootRunId?: string | null; agentRunId?: string | null; memberAddress?: string | null; containingTeamRunId?: string | null };
 const STORED_ONLY: ActiveRoots = Object.freeze({ getActiveTree: () => null });
 
-export const collaboratorLaunchConfiguration = (entry: CollaboratorEntry | null): AgentLaunchConfiguration | null =>
-  !entry ? null : entry.kind === "agent" ? entry.launchConfiguration : entry.defaultLaunchConfiguration;
+/** The launch of the agent at `memberAddress` inside a collaborator: the Agent's, or a Team member's effective launch. */
+const collaboratorLaunchConfiguration = (entry: CollaboratorEntry | null, memberAddress: string): AgentLaunchConfiguration | null =>
+  !entry ? null : entry.kind === "agent" ? entry.launchConfiguration
+    : effectiveMemberLaunchConfiguration(entry, entry.members.find((member) => member.address === memberAddress) ?? {});
 
 /**
  * The third location family: children of Agent roots, stored under
@@ -172,7 +174,7 @@ export class StandaloneRootLocationService {
       memberAddress: agent.address,
       platformAgentRunId: agent.platformAgentRunId,
       configuredPlacement: null,
-      launchConfiguration: collaboratorLaunchConfiguration(index.getCollaborator(collaboratorAddress))
+      launchConfiguration: collaboratorLaunchConfiguration(index.getCollaborator(collaboratorAddress), agent.address)
         ?? catalogCopyExecutionSource(taskExecutionListsOf(tree), agentRunId)?.launchConfiguration ?? null,
       executionKind: agent.executionKind,
       startedAt: agent.startedAt,

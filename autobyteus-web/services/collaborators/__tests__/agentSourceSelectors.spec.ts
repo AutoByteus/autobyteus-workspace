@@ -179,3 +179,57 @@ describe('collaborator-aware sources', () => {
     expect(catalogAgentSourceAt(tasks, '/nobody')).toBeNull()
   })
 })
+
+describe('per-member launch of collaborator Teams and catalog Team copies (DS-005, AC-001, AC-007)', () => {
+  const sol = { ...launch, llm_model_identifier: 'sol-6.1', llm_config: { effort: 'high' } }
+  const mixedTeam = {
+    ...productTeamEntry,
+    members: [
+      productTeamEntry.members[0]!,
+      { ...productTeamEntry.members[1]!, launch_configuration: sol, launch_source: { origin: 'agent_default' as const, fallbacks: [] } },
+    ],
+  }
+
+  it('Team root: a collaborator member and a catalog copy member show the launch they actually ran on', () => {
+    const tree = teamTree()
+    tree.root_team.collaborators = [mixedTeam]
+    tree.root_team.task_executions = [{
+      kind: 'task_team', address: '/se_team', team_run_id: 'copy-run', members: [], task_executions: [],
+      delegator_agent_run_id: 'researcher-run', started_at: created,
+      source: {
+        kind: 'agent_team', team_definition_id: 'se', coordinator_address: '/se_team/lead', handoffs: [],
+        members: [{ address: '/se_team/lead', agent_definition_id: 'lead' }, { address: '/se_team/ie', agent_definition_id: 'ie', launch_configuration: sol }],
+        default_launch_configuration: launch,
+      },
+    }]
+    expect(teamAgentSourceAt(tree, '/product_team/bootstrapper')?.launch_configuration).toEqual(sol)
+    expect(teamAgentSourceAt(tree, '/product_team/prototyper')?.launch_configuration).toEqual(launch)
+    expect(teamAgentSourceAt(tree, '/se_team/ie')?.launch_configuration).toEqual(sol)
+    expect(teamAgentSourceAt(tree, '/se_team/lead')?.launch_configuration).toEqual(launch)
+  })
+
+  it('Org and Agent roots: the camelCase selectors use the same rule', () => {
+    const camel = { runtimeKind: 'codex_app_server' as const, llmModelIdentifier: 'root-model', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null }
+    const solCamel = { ...camel, llmModelIdentifier: 'sol-6.1' }
+    const collaborator = {
+      kind: 'agent_team' as const, address: '/se', teamDefinitionId: 'se', teamRunId: 'se-run', coordinatorAddress: '/se/lead',
+      members: [
+        { address: '/se/lead', agentDefinitionId: 'lead', agentRunId: 'lead-run', platformAgentRunId: null },
+        { address: '/se/ie', agentDefinitionId: 'ie', agentRunId: 'ie-run', platformAgentRunId: null, launchConfiguration: solCamel },
+      ],
+      handoffs: [], defaultLaunchConfiguration: camel, taskExecutions: [], addedAt: created, addedViaAgentRunId: 'host',
+    }
+    expect(collaboratorAgentSourceAt([collaborator], '/se/ie')?.launchConfiguration).toEqual(solCamel)
+    expect(collaboratorAgentSourceAt([collaborator], '/se/lead')?.launchConfiguration).toEqual(camel)
+    const copy = {
+      address: '/se_copy', teamRunId: 'copy', members: [], taskExecutions: [], startedAt: created,
+      source: {
+        kind: 'agent_team' as const, teamDefinitionId: 'se', coordinatorAddress: '/se_copy/lead', handoffs: [],
+        members: [{ address: '/se_copy/lead', agentDefinitionId: 'lead' }, { address: '/se_copy/ie', agentDefinitionId: 'ie', launchConfiguration: solCamel }],
+        defaultLaunchConfiguration: camel,
+      },
+    }
+    expect(catalogAgentSourceAt([copy], '/se_copy/ie')?.launchConfiguration).toEqual(solCamel)
+    expect(catalogAgentSourceAt([copy], '/se_copy/lead')?.launchConfiguration).toEqual(camel)
+  })
+})

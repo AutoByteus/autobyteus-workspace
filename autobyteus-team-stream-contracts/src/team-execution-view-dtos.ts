@@ -39,21 +39,61 @@ export type ConfiguredAgentExecutionDto = Readonly<{
   launch_configuration: AgentLaunchConfigurationDto;
 }>;
 
+/**
+ * Where an agent's (or a Team's) launch values came from and the configured layers skipped before
+ * it. Absent on records written before sources existed ("not recorded").
+ */
+export type LaunchConfigurationSourceDto = Readonly<{
+  origin: "agent_default" | "team_default" | "inherited";
+  fallbacks: readonly Readonly<{
+    layer: "agent_default" | "team_default";
+    runtime_kind: string | null;
+    llm_model_identifier: string | null;
+    reason: "incomplete" | "runtime_unavailable" | "model_unavailable" | "model_settings_invalid";
+    detail: string;
+  }>[];
+}>;
+
+/** A recorded Team member's own launch: present only when it runs on its own agent default. */
+type MemberLaunchDto = Readonly<{
+  launch_configuration?: AgentLaunchConfigurationDto;
+  launch_source?: LaunchConfigurationSourceDto;
+}>;
+type TeamLaunchDto = Readonly<{
+  default_launch_configuration: AgentLaunchConfigurationDto;
+  default_launch_source?: LaunchConfigurationSourceDto;
+}>;
+
+/**
+ * The launch a collaborator-Team or catalog-Team-copy member runs with: its own, else its Team's.
+ * Every reader of such a member's launch uses this, never the Team's value directly.
+ */
+export const teamMemberLaunchConfiguration = (
+  team: Pick<TeamLaunchDto, "default_launch_configuration">,
+  member: MemberLaunchDto,
+): AgentLaunchConfigurationDto => member.launch_configuration ?? team.default_launch_configuration;
+
+/** The recorded source of such a member's launch: its own, else its Team's; null when not recorded. */
+export const teamMemberLaunchSource = (
+  team: Pick<TeamLaunchDto, "default_launch_source">,
+  member: MemberLaunchDto,
+): LaunchConfigurationSourceDto | null => member.launch_source ?? team.default_launch_source ?? null;
+
 /** The definition snapshot of a task copy started from the catalog (absent for every other copy). */
 export type TaskAgentExecutionSourceDto = Readonly<{
   kind: "agent";
   agent_definition_id: string;
   launch_configuration: AgentLaunchConfigurationDto;
+  launch_source?: LaunchConfigurationSourceDto;
 }>;
 
 export type TaskTeamExecutionSourceDto = Readonly<{
   kind: "agent_team";
   team_definition_id: string;
   coordinator_address: string;
-  members: readonly Readonly<{ address: string; agent_definition_id: string }>[];
+  members: readonly (Readonly<{ address: string; agent_definition_id: string }> & MemberLaunchDto)[];
   handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[] }>[];
-  default_launch_configuration: AgentLaunchConfigurationDto;
-}>;
+}> & TeamLaunchDto;
 
 /** A delegated child Agent; `delegator_agent_run_id` is the AgentRun that started it (null when not recorded). */
 export type TaskAgentExecutionDto = Readonly<{
@@ -113,8 +153,8 @@ export type ConfiguredTeamExecutionDto = Readonly<{
 export type ConfiguredMemberExecutionDto = ConfiguredAgentExecutionDto | ConfiguredTeamExecutionDto;
 
 /**
- * One collaborator of the run: one instance of a shared Agent or Agent Team definition added
- * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
+ * One collaborator of the run: one instance of a shared Agent or Agent Team definition brought in.
+ * Its run IDs and resolved launches are recorded in the entry; it starts on its first message.
  */
 export type CollaboratorEntryDto =
   | Readonly<{
@@ -124,6 +164,7 @@ export type CollaboratorEntryDto =
       agent_run_id: string;
       platform_agent_run_id: string | null;
       launch_configuration: AgentLaunchConfigurationDto;
+      launch_source?: LaunchConfigurationSourceDto;
       added_at: string;
       added_via_agent_run_id: string;
     }>
@@ -133,18 +174,17 @@ export type CollaboratorEntryDto =
       team_definition_id: string;
       team_run_id: string;
       coordinator_address: string;
-      members: readonly Readonly<{
+      members: readonly (Readonly<{
         address: string;
         agent_definition_id: string;
         agent_run_id: string;
         platform_agent_run_id: string | null;
-      }>[];
+      }> & MemberLaunchDto)[];
       handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[] }>[];
-      default_launch_configuration: AgentLaunchConfigurationDto;
       task_executions: readonly TaskExecutionDto[];
       added_at: string;
       added_via_agent_run_id: string;
-    }>;
+    }> & TeamLaunchDto;
 
 const launchConfigurationSchema: z.ZodType<AgentLaunchConfigurationDto> = z.object({
   runtime_kind: z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build"]),
@@ -153,6 +193,18 @@ const launchConfigurationSchema: z.ZodType<AgentLaunchConfigurationDto> = z.obje
   auto_execute_tools: z.boolean(),
   workspace_root_path: nullableNonEmptyStringSchema,
 }).strict();
+
+const launchSourceSchema: z.ZodType<LaunchConfigurationSourceDto> = z.object({
+  origin: z.enum(["agent_default", "team_default", "inherited"]),
+  fallbacks: z.array(z.object({
+    layer: z.enum(["agent_default", "team_default"]),
+    runtime_kind: nullableNonEmptyStringSchema,
+    llm_model_identifier: nullableNonEmptyStringSchema,
+    reason: z.enum(["incomplete", "runtime_unavailable", "model_unavailable", "model_settings_invalid"]),
+    detail: nonEmptyStringSchema,
+  }).strict()),
+}).strict();
+const memberLaunchSchema = { launch_configuration: launchConfigurationSchema.optional(), launch_source: launchSourceSchema.optional() };
 
 const handoffDtoSchema = z.object({ from: nonEmptyStringSchema, to: nonEmptyStringSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
 
@@ -165,12 +217,16 @@ const configuredAgentSchema: z.ZodType<ConfiguredAgentExecutionDto> = z.object({
 
 const taskAgentSourceSchema: z.ZodType<TaskAgentExecutionSourceDto> = z.object({
   kind: z.literal("agent"), agent_definition_id: nonEmptyStringSchema, launch_configuration: launchConfigurationSchema,
+  launch_source: launchSourceSchema.optional(),
 }).strict();
 
 const taskTeamSourceSchema: z.ZodType<TaskTeamExecutionSourceDto> = z.object({
   kind: z.literal("agent_team"), team_definition_id: nonEmptyStringSchema, coordinator_address: agentTeamAddressDtoSchema,
-  members: z.array(z.object({ address: agentTeamAddressDtoSchema, agent_definition_id: nonEmptyStringSchema }).strict()).min(1),
+  members: z.array(z.object({
+    address: agentTeamAddressDtoSchema, agent_definition_id: nonEmptyStringSchema, ...memberLaunchSchema,
+  }).strict()).min(1),
   handoffs: z.array(handoffDtoSchema), default_launch_configuration: launchConfigurationSchema,
+  default_launch_source: launchSourceSchema.optional(),
 }).strict();
 
 export const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto> = z.object({
@@ -202,17 +258,18 @@ export const collaboratorEntryDtoSchema: z.ZodType<CollaboratorEntryDto> = z.dis
   z.object({
     kind: z.literal("agent"), address: agentTeamAddressDtoSchema, agent_definition_id: nonEmptyStringSchema,
     agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema,
-    launch_configuration: launchConfigurationSchema, added_at: nonEmptyStringSchema,
-    added_via_agent_run_id: nonEmptyStringSchema,
+    launch_configuration: launchConfigurationSchema, launch_source: launchSourceSchema.optional(),
+    added_at: nonEmptyStringSchema, added_via_agent_run_id: nonEmptyStringSchema,
   }).strict(),
   z.object({
     kind: z.literal("agent_team"), address: agentTeamAddressDtoSchema, team_definition_id: nonEmptyStringSchema,
     team_run_id: nonEmptyStringSchema, coordinator_address: agentTeamAddressDtoSchema,
     members: z.array(z.object({
       address: agentTeamAddressDtoSchema, agent_definition_id: nonEmptyStringSchema,
-      agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema,
+      agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema, ...memberLaunchSchema,
     }).strict()).min(1),
     handoffs: z.array(handoffDtoSchema), default_launch_configuration: launchConfigurationSchema,
+    default_launch_source: launchSourceSchema.optional(),
     task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
     added_at: nonEmptyStringSchema, added_via_agent_run_id: nonEmptyStringSchema,
   }).strict(),

@@ -129,12 +129,31 @@ remain run-configuration concerns rather than definition-default fields. Skills
 are neither: each member's own agent definition (`skillScope` / `skillNames`)
 is the only skill authority, and no Team or run setting changes it.
 
-When a Team is mounted in an AgentOrg, its definition defaults do not silently
-override the Org run configuration. Effective Org launch resolution is:
+Each member's own agent default comes before the Team default. The order is the
+same wherever a Team is started:
+
+```text
+member agent default -> Team default -> starting run (or the launch form's root)
+```
+
+- **User start (New chat, mobile, Org launch page).** The web form seeds the
+  root from the Team or Org default as before, and seeds every member row, and
+  each Org placed Team, from its own usable default. The user can change or
+  reset any row before Run. What the form holds at Run is what runs, so the
+  server receives ordinary per-member overrides.
+- **Delegated copy or collaborator Team.** The server resolves each member by
+  the same order, with the run root's settings as the last layer. See
+  [Launch configuration of collaborators and catalog copies](./agent_communication.md#launch-configuration-of-collaborators-and-catalog-copies).
+
+The server's effective Org launch resolution is unchanged. A definition default
+reaches an Org run only through the rows the launch form seeded:
 
 ```text
 exact Agent placement override -> mounted Team placement override -> Org root
 ```
+
+Application launch baselines keep their own order (Team default before agent
+default); aligning them is a separate follow-up.
 
 ## Runtime Relationship
 

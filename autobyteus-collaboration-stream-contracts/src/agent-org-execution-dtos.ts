@@ -25,20 +25,62 @@ const configuredAgent = z.object({
 }).strict();
 
 type LaunchConfigurationDto = Readonly<z.infer<typeof agentOrgLaunchConfigurationDtoSchema>>;
+
+/**
+ * Where an agent's (or a Team's) launch values came from and the configured layers skipped before
+ * it. Absent on records written before sources existed ("not recorded").
+ */
+export const collaborationLaunchConfigurationSourceDtoSchema = z.object({
+  origin: z.enum(["agent_default", "team_default", "inherited"]),
+  fallbacks: z.array(z.object({
+    layer: z.enum(["agent_default", "team_default"]),
+    runtimeKind: nullableText,
+    llmModelIdentifier: nullableText,
+    reason: z.enum(["incomplete", "runtime_unavailable", "model_unavailable", "model_settings_invalid"]),
+    detail: nonEmptyStringSchema,
+  }).strict()),
+}).strict();
+export type CollaborationLaunchConfigurationSourceDto = Readonly<z.infer<typeof collaborationLaunchConfigurationSourceDtoSchema>>;
+
+/** A recorded Team member's own launch: present only when it runs on its own agent default. */
+type MemberLaunchDto = Readonly<{
+  launchConfiguration?: LaunchConfigurationDto;
+  launchSource?: CollaborationLaunchConfigurationSourceDto;
+}>;
+type TeamLaunchDto = Readonly<{
+  defaultLaunchConfiguration: LaunchConfigurationDto;
+  defaultLaunchSource?: CollaborationLaunchConfigurationSourceDto;
+}>;
+
+/**
+ * The launch a collaborator-Team or catalog-Team-copy member runs with: its own, else its Team's.
+ * Every reader of such a member's launch uses this, never the Team's value directly.
+ */
+export const collaborationMemberLaunchConfiguration = (
+  team: Pick<TeamLaunchDto, "defaultLaunchConfiguration">,
+  member: MemberLaunchDto,
+): LaunchConfigurationDto => member.launchConfiguration ?? team.defaultLaunchConfiguration;
+
+/** The recorded source of such a member's launch: its own, else its Team's; null when not recorded. */
+export const collaborationMemberLaunchSource = (
+  team: Pick<TeamLaunchDto, "defaultLaunchSource">,
+  member: MemberLaunchDto,
+): CollaborationLaunchConfigurationSourceDto | null => member.launchSource ?? team.defaultLaunchSource ?? null;
+
 /** The definition snapshot of a task copy started from the catalog (absent for every other copy). */
 export type TaskAgentExecutionSourceDto = Readonly<{
   kind: "agent";
   agentDefinitionId: string;
   launchConfiguration: LaunchConfigurationDto;
+  launchSource?: CollaborationLaunchConfigurationSourceDto;
 }>;
 export type TaskTeamExecutionSourceDto = Readonly<{
   kind: "agent_team";
   teamDefinitionId: string;
   coordinatorAddress: string;
-  members: readonly Readonly<{ address: string; agentDefinitionId: string }>[];
+  members: readonly (Readonly<{ address: string; agentDefinitionId: string }> & MemberLaunchDto)[];
   handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[] }>[];
-  defaultLaunchConfiguration: LaunchConfigurationDto;
-}>;
+}> & TeamLaunchDto;
 type TaskAgentExecutionDto = Readonly<{
   address: string;
   agentRunId: string;
@@ -73,13 +115,17 @@ type TaskTeamExecutionDto = Readonly<{
 type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 
 const handoff = z.object({ from: agentAddressSchema, to: agentAddressSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
+const launchSource = collaborationLaunchConfigurationSourceDtoSchema.optional();
+const memberLaunch = { launchConfiguration: agentOrgLaunchConfigurationDtoSchema.optional(), launchSource };
 const taskAgentSource: z.ZodType<TaskAgentExecutionSourceDto> = z.object({
   kind: z.literal("agent"), agentDefinitionId: nonEmptyStringSchema, launchConfiguration: agentOrgLaunchConfigurationDtoSchema,
+  launchSource,
 }).strict();
 const taskTeamSource: z.ZodType<TaskTeamExecutionSourceDto> = z.object({
   kind: z.literal("agent_team"), teamDefinitionId: nonEmptyStringSchema, coordinatorAddress: agentAddressSchema,
-  members: z.array(z.object({ address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema }).strict()).min(1),
+  members: z.array(z.object({ address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema, ...memberLaunch }).strict()).min(1),
   handoffs: z.array(handoff), defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
+  defaultLaunchSource: launchSource,
 }).strict();
 const taskAgent: z.ZodType<TaskAgentExecutionDto> = z.object({
   address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
@@ -133,23 +179,25 @@ const configuredTeam = z.object({
 
 
 /**
- * One collaborator of a run: one instance of a shared Agent or Agent Team definition added
- * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
+ * One collaborator of a run: one instance of a shared Agent or Agent Team definition brought in.
+ * Its run IDs and resolved launches are recorded in the entry; it starts on its first message.
  */
 export const collaboratorEntryDtoSchema = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("agent"), address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema,
     agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
-    launchConfiguration: agentOrgLaunchConfigurationDtoSchema, addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema,
+    launchConfiguration: agentOrgLaunchConfigurationDtoSchema, launchSource,
+    addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema,
   }).strict(),
   z.object({
     kind: z.literal("agent_team"), address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
     teamRunId: nonEmptyStringSchema, coordinatorAddress: agentAddressSchema,
     members: z.array(z.object({
       address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema,
-      agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
+      agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText, ...memberLaunch,
     }).strict()).min(1),
     handoffs: z.array(handoff), defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
+    defaultLaunchSource: launchSource,
     taskExecutions: z.array(taskExecution),
     addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema,
   }).strict(),

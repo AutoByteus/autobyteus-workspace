@@ -1023,6 +1023,21 @@ The saved-run view uses the start surfaces' visual language:
   models.
 - **Members** list for Teams and Orgs. Changing the team- or org-wide model
   updates every non-customized member, including members of placed teams.
+- **Collaborators and delegated copies** (`RunDelegatedLaunchList.vue`, rows from
+  `utils/runSettings/delegatedLaunchRows.ts`), for Agent, Team and Org runs that
+  have any: "Started by agents in this run. Shown as they run; they cannot be
+  edited here." Each collaborator and open delegated copy is listed, read-only,
+  with a Collaborator or Delegated copy badge, and each of its members below it.
+  Every row shows the runtime and model it runs on and its source: Agent
+  default, Team default, Inherited from the run, As configured in this run (a
+  copy of a configured placement or an extra copy at a collaborator address,
+  which has no recorded source), or Source not recorded (a record from before
+  sources were recorded). A skipped default shows an amber line: "{layer}
+  {model} was not used: {detail}". A Team row describes what its members
+  without their own default run on. Member values are read through the contract
+  packages' effective-member functions. Copies whose Task is DONE or CANCELLED,
+  and everything under them, are left out. For a saved Team or Org run, a copy
+  started while Settings is open appears after Refresh or reopening.
 - **Save bar** only when there are changes: "Unsaved changes · they apply when
   this run resumes · Cancel · Save". Cancel calls
   `existingRunConfigStore.discardChanges()`. Save shows "Saving…", then "Saved.

@@ -1,0 +1,5 @@
+
+> autobyteus@1.5.2 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.

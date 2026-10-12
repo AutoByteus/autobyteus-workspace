@@ -3,6 +3,7 @@ import {
   type AgentLaunchConfigurationDto,
   type CollaboratorEntryDto,
   type ConfiguredMemberExecutionDto,
+  type LaunchConfigurationSourceDto,
   type TaskExecutionDto,
   type TaskTeamMemberExecutionDto,
   type TeamCommunicationMessageDto,
@@ -12,7 +13,8 @@ import {
   type TeamTaskExecutionReferenceDto,
 } from "@autobyteus/team-stream-contracts";
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
-import { isCollaboratorTeamEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import { isCollaboratorTeamEntry, type RecordedMemberLaunch } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type {
   CollaboratorEntry,
   CollaboratorTeamEntry,
@@ -156,11 +158,27 @@ export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRu
   },
 });
 
+const projectLaunchSource = (source: LaunchConfigurationSource): LaunchConfigurationSourceDto => ({
+  origin: source.origin,
+  fallbacks: source.fallbacks.map((fallback) => ({
+    layer: fallback.layer, runtime_kind: fallback.runtimeKind, llm_model_identifier: fallback.llmModelIdentifier,
+    reason: fallback.reason, detail: fallback.detail,
+  })),
+});
+/** A recorded Team member's own launch fields, emitted only when recorded. */
+const projectMemberLaunch = (member: RecordedMemberLaunch) => ({
+  ...(member.launchConfiguration ? { launch_configuration: projectLaunchConfiguration(member.launchConfiguration) } : {}),
+  ...(member.launchSource ? { launch_source: projectLaunchSource(member.launchSource) } : {}),
+});
+const optionalSource = <K extends string>(key: K, source: LaunchConfigurationSource | undefined) =>
+  (source ? { [key]: projectLaunchSource(source) } : {}) as Partial<Record<K, LaunchConfigurationSourceDto>>;
+
 export const projectCollaboratorEntry = (entry: CollaboratorEntry): CollaboratorEntryDto => entry.kind === "agent"
   ? {
       kind: "agent", address: entry.address, agent_definition_id: entry.agentDefinitionId,
       agent_run_id: entry.agentRunId, platform_agent_run_id: entry.platformAgentRunId,
       launch_configuration: projectLaunchConfiguration(entry.launchConfiguration),
+      ...optionalSource("launch_source", entry.launchSource),
       added_at: entry.addedAt, added_via_agent_run_id: entry.addedViaAgentRunId,
     }
   : {
@@ -168,10 +186,11 @@ export const projectCollaboratorEntry = (entry: CollaboratorEntry): Collaborator
       team_run_id: entry.teamRunId, coordinator_address: entry.coordinatorAddress,
       members: entry.members.map((member) => ({
         address: member.address, agent_definition_id: member.agentDefinitionId,
-        agent_run_id: member.agentRunId, platform_agent_run_id: member.platformAgentRunId,
+        agent_run_id: member.agentRunId, platform_agent_run_id: member.platformAgentRunId, ...projectMemberLaunch(member),
       })),
       handoffs: entry.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
       default_launch_configuration: projectLaunchConfiguration(entry.defaultLaunchConfiguration),
+      ...optionalSource("default_launch_source", entry.defaultLaunchSource),
       task_executions: entry.taskExecutions.map(projectTaskExecution),
       added_at: entry.addedAt, added_via_agent_run_id: entry.addedViaAgentRunId,
     };
@@ -203,6 +222,7 @@ const projectTaskExecution = (execution: TaskExecution): TaskExecutionDto => {
     ...(execution.source ? { source: {
       kind: "agent" as const, agent_definition_id: execution.source.agentDefinitionId,
       launch_configuration: projectLaunchConfiguration(execution.source.launchConfiguration),
+      ...optionalSource("launch_source", execution.source.launchSource),
     } } : {}),
   };
   return {
@@ -213,9 +233,12 @@ const projectTaskExecution = (execution: TaskExecution): TaskExecutionDto => {
     ...(execution.source ? { source: {
       kind: "agent_team" as const, team_definition_id: execution.source.teamDefinitionId,
       coordinator_address: execution.source.coordinatorAddress,
-      members: execution.source.members.map((member) => ({ address: member.address, agent_definition_id: member.agentDefinitionId })),
+      members: execution.source.members.map((member) => ({
+        address: member.address, agent_definition_id: member.agentDefinitionId, ...projectMemberLaunch(member),
+      })),
       handoffs: execution.source.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
       default_launch_configuration: projectLaunchConfiguration(execution.source.defaultLaunchConfiguration),
+      ...optionalSource("default_launch_source", execution.source.defaultLaunchSource),
     } } : {}),
   };
 };

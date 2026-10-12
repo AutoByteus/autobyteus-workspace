@@ -1,5 +1,6 @@
 import {
   agentOrgLaunchConfigurationDtoSchema,
+  type CollaborationLaunchConfigurationSourceDto,
   type AgentOrgExecutionTreeDto,
   type AgentRunCollaborationTreeDto,
   type CollaborationTaskExecutionDto,
@@ -9,11 +10,12 @@ import {
 } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
+import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { StandaloneRootTreeSnapshot } from "../../standalone-agent-run-root/domain/standalone-root-tree.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
 import type {
   CollaboratorEntry, ConfiguredAgentExecutionNode, ConfiguredExecutionNode,
-  TaskExecution, TaskTeamMemberExecution,
+  RecordedMemberLaunch, TaskExecution, TaskTeamMemberExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
 type TaskTeamDto = Extract<CollaborationTaskExecutionDto, { teamRunId: string }>;
@@ -27,6 +29,21 @@ const projectLaunch = (value: AgentLaunchConfiguration): TaskAgentExecutionSourc
     workspaceRootPath: value.workspaceRootPath,
   });
 const projectHandoff = ({ from, to, rules }: CollaborationHandoff) => ({ from, to, rules: [...rules] });
+const projectSource = (value: LaunchConfigurationSource): CollaborationLaunchConfigurationSourceDto => ({
+  origin: value.origin,
+  fallbacks: value.fallbacks.map(({ layer, runtimeKind, llmModelIdentifier, reason, detail }) =>
+    ({ layer, runtimeKind, llmModelIdentifier, reason, detail })),
+});
+/** Optional launch fields, emitted only when recorded. */
+const projectOptionalLaunch = <K extends "launchSource" | "defaultLaunchSource">(
+  value: Readonly<{ launchConfiguration?: AgentLaunchConfiguration }> & Partial<Record<K, LaunchConfigurationSource>>,
+  sourceKey: K,
+  includeLaunch: boolean,
+) => ({
+  ...(includeLaunch && value.launchConfiguration ? { launchConfiguration: projectLaunch(value.launchConfiguration) } : {}),
+  ...(value[sourceKey] ? { [sourceKey]: projectSource(value[sourceKey]!) } : {}),
+});
+const projectMemberLaunch = (member: RecordedMemberLaunch) => projectOptionalLaunch(member, "launchSource", true);
 
 const projectTaskMember = (member: TaskTeamMemberExecution): TaskTeamDto["members"][number] =>
   "agentRunId" in member
@@ -43,6 +60,7 @@ export const projectCollaborationTaskExecution = (execution: TaskExecution): Col
     const source: TaskAgentExecutionSourceDto | undefined = execution.source && {
       kind: "agent", agentDefinitionId: execution.source.agentDefinitionId,
       launchConfiguration: projectLaunch(execution.source.launchConfiguration),
+      ...projectOptionalLaunch(execution.source, "launchSource", false),
     };
     return { ...identity, agentRunId: execution.agentRunId, platformAgentRunId: execution.platformAgentRunId,
       ...(source === undefined ? {} : { source }) };
@@ -50,9 +68,11 @@ export const projectCollaborationTaskExecution = (execution: TaskExecution): Col
   const source: TaskTeamExecutionSourceDto | undefined = execution.source && {
     kind: "agent_team", teamDefinitionId: execution.source.teamDefinitionId,
     coordinatorAddress: execution.source.coordinatorAddress,
-    members: execution.source.members.map(({ address, agentDefinitionId }) => ({ address, agentDefinitionId })),
+    members: execution.source.members.map((member) =>
+      ({ address: member.address, agentDefinitionId: member.agentDefinitionId, ...projectMemberLaunch(member) })),
     handoffs: execution.source.handoffs.map(projectHandoff),
     defaultLaunchConfiguration: projectLaunch(execution.source.defaultLaunchConfiguration),
+    ...projectOptionalLaunch(execution.source, "defaultLaunchSource", false),
   };
   return { ...identity, teamRunId: execution.teamRunId, members: execution.members.map(projectTaskMember),
     taskExecutions: execution.taskExecutions.map(projectCollaborationTaskExecution), ...(source === undefined ? {} : { source }) };
@@ -63,13 +83,17 @@ export const projectCollaborationCollaborator = (entry: CollaboratorEntry): Coll
   if (entry.kind === "agent") return {
     ...identity, kind: "agent", agentDefinitionId: entry.agentDefinitionId, agentRunId: entry.agentRunId,
     platformAgentRunId: entry.platformAgentRunId, launchConfiguration: projectLaunch(entry.launchConfiguration),
+    ...projectOptionalLaunch(entry, "launchSource", false),
   };
   return {
     ...identity, kind: "agent_team", teamDefinitionId: entry.teamDefinitionId, teamRunId: entry.teamRunId,
     coordinatorAddress: entry.coordinatorAddress,
-    members: entry.members.map(({ address, agentDefinitionId, agentRunId, platformAgentRunId }) =>
-      ({ address, agentDefinitionId, agentRunId, platformAgentRunId })),
+    members: entry.members.map((member) => ({
+      address: member.address, agentDefinitionId: member.agentDefinitionId,
+      agentRunId: member.agentRunId, platformAgentRunId: member.platformAgentRunId, ...projectMemberLaunch(member),
+    })),
     handoffs: entry.handoffs.map(projectHandoff), defaultLaunchConfiguration: projectLaunch(entry.defaultLaunchConfiguration),
+    ...projectOptionalLaunch(entry, "defaultLaunchSource", false),
     taskExecutions: entry.taskExecutions.map(projectCollaborationTaskExecution),
   };
 };

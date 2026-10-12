@@ -1,5 +1,6 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
+import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 
 export type IsoTimestamp = string;
@@ -29,24 +30,45 @@ export type ConfiguredTeamExecutionNode = Readonly<{
 export type ConfiguredExecutionNode = ConfiguredAgentExecutionNode | ConfiguredTeamExecutionNode;
 
 /**
+ * One member's own launch inside a recorded Team (a collaborator Team or a catalog Team copy).
+ * `launchConfiguration` is present only when the member runs on its own agent default; absent,
+ * the member runs on the Team's `defaultLaunchConfiguration` (every record written before
+ * per-member values existed). `launchSource` is present only when the member's agent definition
+ * had a default (used or skipped); absent, the member's source is the Team's.
+ */
+export type RecordedMemberLaunch = Readonly<{
+  launchConfiguration?: AgentLaunchConfiguration;
+  launchSource?: LaunchConfigurationSource;
+}>;
+
+/** A recorded Team's own resolved launch; `defaultLaunchSource` is absent on records written before sources existed. */
+export type RecordedTeamLaunch = Readonly<{
+  defaultLaunchConfiguration: AgentLaunchConfiguration;
+  defaultLaunchSource?: LaunchConfigurationSource;
+}>;
+
+/**
  * The definition snapshot of a task copy started from the catalog (a listed Agent that is not
- * in the run): what the copy ran with, so it restores without the catalog.
+ * in the run): what the copy ran with, so it restores without the catalog. `launchSource` is
+ * absent on records written before sources existed ("not recorded").
  */
 export type TaskAgentExecutionSource = Readonly<{
   kind: "agent";
   agentDefinitionId: string;
   launchConfiguration: AgentLaunchConfiguration;
+  launchSource?: LaunchConfigurationSource;
 }>;
+
+export type TaskTeamExecutionSourceMember = Readonly<{ address: AgentTeamAddress; agentDefinitionId: string }> & RecordedMemberLaunch;
 
 /** The Team counterpart: its layout (mounted at the copy's address), handoffs and settings. */
 export type TaskTeamExecutionSource = Readonly<{
   kind: "agent_team";
   teamDefinitionId: string;
   coordinatorAddress: AgentTeamAddress;
-  members: readonly Readonly<{ address: AgentTeamAddress; agentDefinitionId: string }>[];
+  members: readonly TaskTeamExecutionSourceMember[];
   handoffs: readonly CollaborationHandoff[];
-  defaultLaunchConfiguration: AgentLaunchConfiguration;
-}>;
+}> & RecordedTeamLaunch;
 
 export type TaskExecutionSource = TaskAgentExecutionSource | TaskTeamExecutionSource;
 
@@ -94,10 +116,11 @@ export type TaskTeamExecution = Readonly<{
 export type TaskExecution = TaskAgentExecution | TaskTeamExecution;
 
 /**
- * A collaborator of a run: one instance of a shared Agent definition added with `@`, with a
- * snapshot of the run's root launch settings and its single execution identity. It is hosted
+ * A collaborator of a run: one instance of a shared Agent definition brought in, with a
+ * snapshot of its resolved launch settings and its single execution identity. It is hosted
  * by the root and starts on its first message; it is not a task execution.
- * `addedViaAgentRunId` is the focused agent whose user message carried the mention.
+ * `addedViaAgentRunId` is the agent that brought it in. `launchSource` is absent on records
+ * written before sources existed ("not recorded").
  */
 export type CollaboratorAgentEntry = Readonly<{
   kind: "agent";
@@ -106,17 +129,18 @@ export type CollaboratorAgentEntry = Readonly<{
   agentRunId: string;
   platformAgentRunId: string | null;
   launchConfiguration: AgentLaunchConfiguration;
+  launchSource?: LaunchConfigurationSource;
   addedAt: IsoTimestamp;
   addedViaAgentRunId: string;
 }>;
 
-/** A collaborator Team member: its layout and identity; it uses the Team's `defaultLaunchConfiguration`. */
+/** A collaborator Team member: its layout, identity and own launch (see `RecordedMemberLaunch`). */
 export type CollaboratorTeamMember = Readonly<{
   address: AgentTeamAddress;
   agentDefinitionId: string;
   agentRunId: string;
   platformAgentRunId: string | null;
-}>;
+}> & RecordedMemberLaunch;
 
 /**
  * A collaborator Agent Team: one TeamRun with one run per member, its layout and rebased
@@ -130,11 +154,10 @@ export type CollaboratorTeamEntry = Readonly<{
   coordinatorAddress: AgentTeamAddress;
   members: readonly CollaboratorTeamMember[];
   handoffs: readonly CollaborationHandoff[];
-  defaultLaunchConfiguration: AgentLaunchConfiguration;
   taskExecutions: readonly TaskExecution[];
   addedAt: IsoTimestamp;
   addedViaAgentRunId: string;
-}>;
+}> & RecordedTeamLaunch;
 
 export type CollaboratorEntry = CollaboratorAgentEntry | CollaboratorTeamEntry;
 
@@ -173,3 +196,19 @@ export const listCollaboratorAgentRunIds = (collaborators: readonly Collaborator
 
 export const isCollaboratorTeamEntry = (entry: CollaboratorEntry): entry is CollaboratorTeamEntry =>
   entry.kind === "agent_team";
+
+/**
+ * The launch a recorded Team member runs with: its own, else the Team's (DS-005). Every reader
+ * of a collaborator-Team or catalog-Team-copy member's launch uses this; none reads the Team's
+ * `defaultLaunchConfiguration` for a member directly.
+ */
+export const effectiveMemberLaunchConfiguration = (
+  team: Pick<RecordedTeamLaunch, "defaultLaunchConfiguration">,
+  member: RecordedMemberLaunch,
+): AgentLaunchConfiguration => member.launchConfiguration ?? team.defaultLaunchConfiguration;
+
+/** The recorded source of a Team member's launch: its own, else the Team's; null when not recorded. */
+export const effectiveMemberLaunchSource = (
+  team: Pick<RecordedTeamLaunch, "defaultLaunchSource">,
+  member: RecordedMemberLaunch,
+): LaunchConfigurationSource | null => member.launchSource ?? team.defaultLaunchSource ?? null;

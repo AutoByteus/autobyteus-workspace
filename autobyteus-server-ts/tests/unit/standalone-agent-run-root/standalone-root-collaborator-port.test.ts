@@ -59,7 +59,7 @@ describe("Agent-root collaborator port per viewer (REQ-001..REQ-003)", () => {
     expect((await policy.listCandidates(childView)).candidates.map((candidate) => candidate.definitionId))
       .toEqual(["pm", "reviewer", "lead", "designer", "product"]);
     await expect(admission.resolveMentions(childView, [{ kind: "agent", definitionId: "pm" }, { kind: "agent_team", definitionId: "product" }]))
-      .resolves.toEqual({ admitted: true, collaborators: [
+      .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [
         { name: "Project Task Manager", kind: "agent", address: "/project_task_manager", presence: "run_agent" },
         { name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" },
       ] });
@@ -109,6 +109,6 @@ describe("Agent-root collaborator port per viewer (REQ-001..REQ-003)", () => {
     expect(added.map((entry) => entry.address)).toEqual(["/product_team"]);
     const childView = standaloneRootCollaboratorPortFor({ ...leadHost, collaborators: added }, launch, "designer-run-3");
     await expect(run.resolveMentions(childView, [{ kind: "agent", definitionId: "lead" }]))
-      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Lead", kind: "agent", address: "/lead", presence: "run_agent" }] });
+      .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [{ name: "Lead", kind: "agent", address: "/lead", presence: "run_agent" }] });
   });
 });

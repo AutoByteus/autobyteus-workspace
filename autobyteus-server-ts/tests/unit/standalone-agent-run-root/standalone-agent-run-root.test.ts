@@ -29,6 +29,7 @@ import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/exe
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { buildBackgroundTaskUpdatedPayload, type AgentBackgroundTaskStatus } from "../../../src/agent-execution/domain/agent-background-task.js";
 
+const allAvailable = { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) };
 const runnable = {
   validate: vi.fn(),
   validateMany: async (inputs: readonly unknown[]) => inputs.map(() => ({ kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } })),
@@ -140,7 +141,7 @@ const buildManager = async (taskExecutionResources: InMemoryTaskExecutionResourc
       teamDefinitions: { getDefinitionById: (id) => catalog.getTeamDefinition(id) },
       memoryLocator: new RootedAgentMemoryLocator({ memoryDir }),
       activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
-      collaboratorAdmission: createCollaboratorAdmission(catalog, runnable),
+      collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable),
     },
   });
   const hostIdentity = createCollaborationMemberExecutionIdentity({
@@ -209,7 +210,7 @@ describe("Agent root of a standalone run", () => {
     // An address that is neither in the run nor in the catalog starts nothing.
     expect(await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/nobody", description: "Review" }))
       .toEqual({ delegated: false, message: "'/nobody' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run." });
-    const policy = createCollaboratorAdmission(definitions().catalog, runnable).policy;
+    const policy = createCollaboratorAdmission(definitions().catalog, runnable, allAvailable).policy;
     expect((await policy.listCandidates(root.collaboratorPortFor(HOST))).candidates.map((c) => c.definitionId))
       .toEqual(["code-reviewer", "lead", "designer", "product-team"]);
 
@@ -218,7 +219,7 @@ describe("Agent root of a standalone run", () => {
       focusedAgentRunId: HOST,
       mentions: [{ kind: "agent", definitionId: "code-reviewer" }, { kind: "agent_team", definitionId: "product-team" }],
     });
-    expect(resolved).toEqual({ admitted: true, collaborators: [
+    expect(resolved).toEqual({ admitted: true, launchNotes: [], collaborators: [
       { name: "Code Reviewer", kind: "agent", address: "/code_reviewer", presence: "not_in_run" },
       { name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" },
     ] });
@@ -251,7 +252,7 @@ describe("Agent root of a standalone run", () => {
     expect((await policy.listCandidates(root.collaboratorPortFor(HOST))).candidates.map((c) => c.definitionId))
       .toEqual(["code-reviewer", "lead", "designer", "product-team"]);
     await expect(root.resolveCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "lead" }] }))
-      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Lead", kind: "agent", address: "/product_team/lead", presence: "in_run" }] });
+      .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [{ name: "Lead", kind: "agent", address: "/product_team/lead", presence: "in_run" }] });
     // The host's own definition is never offered (it is the run itself).
     expect((await policy.listCandidates(root.collaboratorPortFor(HOST))).candidates.some((c) => c.definitionId === "research-assistant")).toBe(false);
     // A collaborator execution that got no message yet is Offline.
@@ -459,7 +460,7 @@ describe("agent-initiated collaborators of a standalone run", () => {
     expect(f.handles.get("code-reviewer-run-1")!.handle.reserveInput).toHaveBeenCalledTimes(2);
     // `@` after the agent's bring-in resolves to the instance's address and adds nothing (AC-010).
     await expect(root.resolveCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] }))
-      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer", presence: "in_run" }] });
+      .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer", presence: "in_run" }] });
     expect(root.getExecutionTreeSnapshot().collaborators).toHaveLength(1);
   });
 
@@ -471,7 +472,7 @@ describe("agent-initiated collaborators of a standalone run", () => {
     await flushMicrotasks();
     const [copy] = root.getExecutionTreeSnapshot().taskExecutions as unknown as Parameters<typeof memberRun>[0][];
     const designer = childIdentity("/product_team/designer", memberRun(copy!, "/product_team/designer"));
-    const policy = createCollaboratorAdmission(definitions().catalog, runnable).policy;
+    const policy = createCollaboratorAdmission(definitions().catalog, runnable, allAvailable).policy;
 
     // REQ-001: the copy member's `@` offers the host; the host's own does not.
     expect((await policy.listCandidates(root.collaboratorPortFor(designer.agentRunId))).candidates.map((c) => c.definitionId))
@@ -481,7 +482,7 @@ describe("agent-initiated collaborators of a standalone run", () => {
 
     // REQ-002: the mention resolves to the existing host's address as the run agent; nothing is added.
     await expect(root.resolveCollaboratorMentions({ focusedAgentRunId: designer.agentRunId, mentions: [{ kind: "agent", definitionId: "research-assistant" }] }))
-      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Research Assistant", kind: "agent", address: "/research_assistant", presence: "run_agent" }] });
+      .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [{ name: "Research Assistant", kind: "agent", address: "/research_assistant", presence: "run_agent" }] });
     await expect(root.resolveCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "research-assistant" }] }))
       .resolves.toMatchObject({ admitted: false, code: "COLLABORATOR_ADD_FAILED", message: "Research Assistant is this run's own definition." });
 

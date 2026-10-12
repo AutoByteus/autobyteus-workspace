@@ -197,6 +197,8 @@ const teamMembers = computed(() => {
       autoExecuteTools: current.autoExecuteTools,
     },
     agentOverrides: current.teamAgentOverrides,
+    pinnedAddresses: current.pinnedMemberAddresses,
+    launchNotes: current.memberLaunchNotes,
   }, {
     schemaFor: (runtimeKind, llmModelIdentifier) => catalogs.modelConfigSchemaByIdentifier(runtimeKind, llmModelIdentifier),
     sameWorkspace: sameRunWorkspaceChoice,

@@ -6,7 +6,7 @@ import type { TaskExecutionReference } from "./task-execution-reference.js";
 import { asTaskDelegationError } from "./root-task-execution-resource-scope.js";
 import {
   RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError, TaskDispatchIndeterminateError, delegatedCopyOf,
-  type TaskDelegationContext, type TaskDelegationOutcome,
+  type TaskCopyPlacementLaunchNotes, type TaskDelegationContext, type TaskDelegationOutcome,
 } from "./task-delegation-command.js";
 
 /**
@@ -21,8 +21,10 @@ export type TaskExecutionJoin =
  * One staged dispatch on the root lifecycle's queue. A Task copy is linked after identity planning
  * and before registration, so DONE or CANCELLED always reaches it; every await is followed by an open check.
  * The accepted outcome names the copy and carries `taskId` only when the join created a Task with no Project.
+ * It is also the single attachment point of `delegate_task` launch notes: the placement's (set only for a
+ * fresh catalog admission), when there are any.
  */
-export async function dispatchTaskCopy<T>(input: {
+export async function dispatchTaskCopy<T extends TaskCopyPlacementLaunchNotes>(input: {
   adapter: RootTaskExecutionAdapter<T>; queue: RootTaskExecutionCommandQueue;
   context: TaskDelegationContext; placement: T; workPacket?: AgentInputUserMessage;
   join: TaskExecutionJoin; resources: TaskExecutionResourcePort;
@@ -70,7 +72,9 @@ export async function dispatchTaskCopy<T>(input: {
       accepted = true;
     }
     await input.resources.markStarted(exact.target.execution);
-    return { delegated: true, copy: delegatedCopyOf(exact.target), ...(createdTaskId ? { taskId: createdTaskId } : {}) };
+    const launchNotes = input.placement.launchNotes;
+    return { delegated: true, copy: delegatedCopyOf(exact.target), ...(createdTaskId ? { taskId: createdTaskId } : {}),
+      ...(launchNotes?.length ? { launchNotes } : {}) };
   } catch (error) {
     operation?.cancel();
     let released = true;

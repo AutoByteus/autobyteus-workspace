@@ -91,6 +91,38 @@ is gone, any member's effective runtime is unavailable, or any member has no
 model. See [Org readiness](./agent_orgs.md#readiness) for the shared rule; this
 does not change Team coordinator/focus semantics.
 
+### Member Launch Defaults
+
+A fresh Team start (**Run** on a Team, and mobile run setup) seeds each member
+from its own agent default (`utils/runSettings/memberLaunchDefaults.ts`,
+`seedMemberLaunchDefaults`). The root is seeded from the Team default as before.
+The order is the member's agent default, then the root's settings:
+
+- A member whose default is usable gets it as its row's own runtime, model and
+  model settings, taken together. The row counts as customized. Usable follows
+  the start-default rule (`usableStartCandidate` in `startModelDefaults.ts`): it
+  names a runtime and a model, the runtime is available, and the model is
+  offered. Unlike a root start, there is no "first model of the default runtime"
+  fallback for a member.
+- A member without a default follows the root.
+- A member whose default cannot be used follows the root, and its row shows
+  "Its default (…) can't be used: <reason>. It follows the settings above."
+- Seeded rows are pinned (`normalizeMemberOverride(…, { pinnedModel })`):
+  changing the root model does not move them, even when the root is set to the
+  same model. A pin is released only by resetting that member's model, the row,
+  or **Reset all**. The member then follows the root.
+- **+** (copy settings from a run) and the heading switcher carry the run's own
+  settings and are never seeded or pinned.
+- Mobile setup has no member rows. It applies the seeds asynchronously, only to
+  the draft it was computed for and only while the same Team is still selected,
+  and shows no note.
+
+What the form holds at Run is what runs: seeded rows are sent as ordinary member
+overrides. Delegated copies and collaborator Teams that an agent starts resolve
+their members on the server with the same order; see the server
+`docs/modules/agent_communication.md` ("Launch configuration of collaborators and
+catalog copies").
+
 Fresh definition-based standalone Team setup starts the root automatic-approval
 setting **on**, on desktop (New chat) and mobile and after application restart. Members
 without an approval override inherit the root value; an explicit member false

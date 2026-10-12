@@ -1,0 +1,13 @@
+
+> autobyteus@1.5.2-beta.2 test:e2e:delegated-launch-defaults /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/autobyteus-web
+> node tests/e2e/delegated-launch-defaults-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/in-progress/delegated-launch-config-defaults/api-e2e-evidence/browser-probe-run-9
+
+DLP-001 Pass AC-011/AC-013: New chat for a Team seeds members from their defaults; root changes keep seeded rows; member change and reset; Run launches what is shown
+DLP-002 Pass AC-012: Org launch page seeds the placed team from its team default and agents from their agent defaults; Run launches what is shown
+DLP-003 Pass AC-001/003/004/005/007/010: Manager chat from the UI; copy, bring-ins and extra copy from its composer; teammate, helper and Grok engineer from the copy lead's conversation; Settings rows
+DLP-004 Pass AC-010: Team run (New chat) and Org run (Org launch page) whose manager delegates the Squad and brings in the Pair from the composer: Settings lists the rows
+DLP-005 Pass AC-006/REQ-004: the root model is retired mid-run; delegation and bring-in that need the inherited layer fail in the conversation with today's text and add nothing; an own usable default still works
+DLP-006 Pass AC-009/QR-002: runs saved before this change (stripped while the backend is down, as after an upgrade) reopen: Settings shows "Source not recorded" and Team values; a copy member starts on the Team value
+DLP-007 Pass AC-008/DEC-008: copy A; the engineer's default edited in the Agents editor; copy B; Settings shows each copy's recorded values; stop and reopen from the UI; copy A's engineer then starts on Grok
+Summary: 7 Pass, 0 Fail
+exit 0

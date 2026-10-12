@@ -20,6 +20,9 @@ import {
  * How a member's own settings (an `AgentConfigOverride`: a Team member, an Org direct agent, a
  * placed team or its member) change in the Member settings drawer. Only fields that differ from
  * the parent are kept (REQ-009): a member whose settings match its parent's again follows it again.
+ * A row seeded from its own definition default is pinned (`pinnedModel`): it keeps its own runtime,
+ * model and model settings even when they equal the parent's, until its model, the row or all
+ * rows are reset (DEC-009, REQ-010); the draft store holds the pin.
  */
 export interface MemberOverrideDeps {
   /** The model config a newly chosen model starts with (its defaults, as in the message box). */
@@ -28,6 +31,8 @@ export interface MemberOverrideDeps {
 }
 
 type Settings = Pick<RunSettingsValues, 'runtimeKind' | 'llmModelIdentifier' | 'llmConfig' | 'autoExecuteTools'>
+
+export type MemberOverrideOptions = Readonly<{ pinnedModel?: boolean }>
 
 /** What a member runs with: its own fields over its parent's. */
 export const resolveMemberSettings = <T extends Settings>(parent: T, override: AgentConfigOverride | null | undefined): T => ({
@@ -38,17 +43,22 @@ export const resolveMemberSettings = <T extends Settings>(parent: T, override: A
   autoExecuteTools: override?.autoExecuteTools ?? parent.autoExecuteTools,
 })
 
-/** Keep only what differs from the parent. An own model always carries its own model config. */
+/**
+ * Keep only what differs from the parent. An own model always carries its own model config. A
+ * pinned member always keeps its own runtime, model and model config.
+ */
 export const normalizeMemberOverride = (
   override: AgentConfigOverride | null | undefined,
   parent: Settings,
+  options: MemberOverrideOptions = {},
 ): AgentConfigOverride | null => {
   if (!override) return null
   const effective = resolveMemberSettings(parent, override)
   const result: AgentConfigOverride = {}
-  const sameModel = effective.runtimeKind === parent.runtimeKind && effective.llmModelIdentifier === parent.llmModelIdentifier
+  const sameModel = !options.pinnedModel
+    && effective.runtimeKind === parent.runtimeKind && effective.llmModelIdentifier === parent.llmModelIdentifier
   if (!sameModel) {
-    if (effective.runtimeKind !== parent.runtimeKind) result.runtimeKind = effective.runtimeKind
+    if (options.pinnedModel || effective.runtimeKind !== parent.runtimeKind) result.runtimeKind = effective.runtimeKind
     result.llmModelIdentifier = effective.llmModelIdentifier
     result.llmConfig = normalizeModelConfig(effective.llmConfig)
   } else if (!modelConfigsEqual(effective.llmConfig, parent.llmConfig)) {
@@ -64,6 +74,7 @@ export const editMemberOverride = (
   parent: Settings,
   change: Exclude<RunMemberSettingChange, { field: 'workspace' }>,
   deps: MemberOverrideDeps,
+  options: MemberOverrideOptions = {},
 ): AgentConfigOverride | null => {
   const effective = resolveMemberSettings(parent, current)
   let next: AgentConfigOverride = {
@@ -85,15 +96,19 @@ export const editMemberOverride = (
   } else {
     next.autoExecuteTools = change.value
   }
-  return normalizeMemberOverride(next, parent)
+  return normalizeMemberOverride(next, parent, options)
 }
 
-/** Reset one field, one other model setting, or the whole member to the parent's value. */
+/**
+ * Reset one field, one other model setting, or the whole member to the parent's value. Resetting
+ * the model or the whole row releases a pin; the store drops it (see `releasesMemberPin`).
+ */
 export const resetMemberOverride = (
   current: AgentConfigOverride | null | undefined,
   parent: Settings,
   reset: RunMemberSettingReset,
   deps: MemberOverrideDeps,
+  options: MemberOverrideOptions = {},
 ): AgentConfigOverride | null => {
   if (!current || reset.field === 'all') return null
   const effective = resolveMemberSettings(parent, current)
@@ -115,5 +130,9 @@ export const resetMemberOverride = (
   } else if (reset.field === 'approval') {
     delete next.autoExecuteTools
   }
-  return normalizeMemberOverride(next, parent)
+  return normalizeMemberOverride(next, parent, releasesMemberPin(reset) ? {} : options)
 }
+
+/** A row's model reset or row reset makes a seeded row follow its parent again (REQ-010). */
+export const releasesMemberPin = (reset: RunMemberSettingReset): boolean => reset.field === 'model' || reset.field === 'all'
+

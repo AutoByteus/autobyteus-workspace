@@ -50,7 +50,7 @@ export const admission = (runnable = true) => createCollaboratorAdmission({
   validateMany: async (inputs: readonly unknown[]) => inputs.map(() => runnable
     ? { kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } }
     : { kind: "model_unavailable" as const }),
-} as unknown as RunModelSelectionValidator);
+} as unknown as RunModelSelectionValidator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
 
 export const harness = async (options: { runnable?: boolean } = {}) => {
   vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
@@ -96,7 +96,7 @@ export const harness = async (options: { runnable?: boolean } = {}) => {
     sender: buildDeliveryEndpointForParticipant({ kind: "agent", identity: sender, displayName: sender.memberAddress.split("/").at(-1)! }),
     recipientAddress, content,
   });
-  return { root, handles, reopen, identity, message, dependencies, teamMemoryDir };
+  return { root, handles, reopen, identity, message, dependencies, memoryDir, teamMemoryDir };
 };
 
 /** `@` of both catalog definitions by the coordinator: resolves their addresses, adds nothing. */

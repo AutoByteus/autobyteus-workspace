@@ -1,0 +1,58 @@
+import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
+import {
+  CONFIGURED_LAUNCH_LAYERS,
+  LAUNCH_CONFIGURATION_FALLBACK_REASONS,
+  LAUNCH_CONFIGURATION_ORIGINS,
+  type LaunchConfigurationSource,
+} from "../../agent-collaboration/domain/launch-configuration-source.js";
+import {
+  nullableString,
+  objectRecord,
+  parseLaunchConfiguration,
+  requireKeys,
+  requiredArray,
+  requiredString,
+} from "./run-execution-tree-shared-record-schemas.js";
+
+const oneOf = <T extends string>(value: unknown, allowed: readonly T[], label: string): T => {
+  if (!allowed.includes(value as T)) throw new Error(`${label} must be one of ${allowed.join(", ")}.`);
+  return value as T;
+};
+
+export const parseLaunchConfigurationSource = (value: unknown, label: string): LaunchConfigurationSource => {
+  const source = objectRecord(value, label);
+  requireKeys(source, ["origin", "fallbacks"], label);
+  return {
+    origin: oneOf(source.origin, LAUNCH_CONFIGURATION_ORIGINS, `${label}.origin`),
+    fallbacks: requiredArray(source.fallbacks, `${label}.fallbacks`).map((item, index) => {
+      const at = `${label}.fallbacks[${index}]`;
+      const fallback = objectRecord(item, at);
+      requireKeys(fallback, ["layer", "runtimeKind", "llmModelIdentifier", "reason", "detail"], at);
+      return {
+        layer: oneOf(fallback.layer, CONFIGURED_LAUNCH_LAYERS, `${at}.layer`),
+        runtimeKind: nullableString(fallback.runtimeKind, `${at}.runtimeKind`),
+        llmModelIdentifier: nullableString(fallback.llmModelIdentifier, `${at}.llmModelIdentifier`),
+        reason: oneOf(fallback.reason, LAUNCH_CONFIGURATION_FALLBACK_REASONS, `${at}.reason`),
+        detail: requiredString(fallback.detail, `${at}.detail`),
+      };
+    }),
+  };
+};
+
+/**
+ * Optional launch fields of collaborator and catalog-copy records: absent keys truthfully mean
+ * "runs on the Team's launch" (member `launchConfiguration`) or "source not recorded"; present
+ * values are validated and projected exactly.
+ */
+export const parseOptionalLaunchFields = (
+  record: Record<string, unknown>,
+  keys: Readonly<{ launch?: "launchConfiguration"; source: "launchSource" | "defaultLaunchSource" }>,
+  label: string,
+): { launchConfiguration?: AgentLaunchConfiguration; launchSource?: LaunchConfigurationSource; defaultLaunchSource?: LaunchConfigurationSource } => ({
+  ...(keys.launch && record[keys.launch] !== undefined
+    ? { launchConfiguration: parseLaunchConfiguration(record[keys.launch], `${label}.${keys.launch}`) }
+    : {}),
+  ...(record[keys.source] !== undefined
+    ? { [keys.source]: parseLaunchConfigurationSource(record[keys.source], `${label}.${keys.source}`) }
+    : {}),
+});

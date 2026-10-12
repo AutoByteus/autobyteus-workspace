@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.5.2",
+  "version": "1.5.3-beta.1",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "AGPL-3.0-only",
@@ -80,6 +80,7 @@
     "test:e2e:composer-mention-discoverability": "node tests/e2e/composer-mention-discoverability-probe.mjs",
     "test:e2e:fresh-run-auto-approval": "node tests/e2e/fresh-run-auto-approval-probe.mjs",
     "test:e2e:run-settings-live": "node tests/e2e/run-settings-live-probe.mjs",
+    "test:e2e:delegated-launch-defaults": "node tests/e2e/delegated-launch-defaults-probe.mjs",
     "test:e2e:workspace-folder-picker": "node tests/e2e/workspace-folder-picker-probe.mjs",
     "test:e2e:composer-context-file-removal": "node tests/e2e/composer-context-file-removal-probe.mjs"
   },
