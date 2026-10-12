@@ -170,10 +170,6 @@ export class WorkspaceFileExplorer {
     return this.rootNode;
   }
 
-  toJson(): string | null {
-    return this.rootNode ? this.rootNode.toJson() : null;
-  }
-
   async loadFolderChildren(
     folderPath: string,
     options: FolderProjectionOptions = {},

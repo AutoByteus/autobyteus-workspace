@@ -7,6 +7,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema, GraphQLError } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+import type { TreeNode } from "../../../src/file-explorer/tree-node.js";
 
 const workspaceManager = getWorkspaceManager();
 
@@ -100,14 +101,14 @@ describe("File explorer GraphQL path-boundary e2e", () => {
       fileExplorer?: {
         fileWatcher?: unknown;
         watcherLeaseCount?: number;
-        toJson?: () => string | null;
+        getTree: () => TreeNode | null;
       } | null;
     }).fileExplorer ?? null;
 
     return {
       watcher: fileExplorer?.fileWatcher ?? null,
       leaseCount: fileExplorer?.watcherLeaseCount ?? 0,
-      treeJson: fileExplorer?.toJson?.() ?? null,
+      treeJson: fileExplorer?.getTree()?.toJson() ?? null,
     };
   };
 

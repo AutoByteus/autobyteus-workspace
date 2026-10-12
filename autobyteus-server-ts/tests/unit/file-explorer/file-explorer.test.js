@@ -41,15 +41,27 @@ describe("WorkspaceFileExplorer", () => {
         const tree = explorer.getTree();
         expect(tree.name).toBe(path.basename(tempDir));
     });
-    it("serializes the tree to JSON", () => {
-        const jsonValue = explorer.toJson();
+    it("serializes the live tree to JSON with workspace-relative identity", async () => {
+        fs.mkdirSync(path.join(tempDir, "docs"));
+        fs.writeFileSync(path.join(tempDir, "docs", "notes.txt"), "notes", "utf-8");
+        await explorer.buildWorkspaceDirectoryTree();
+        const jsonValue = explorer.getTree()?.toJson() ?? null;
         expect(jsonValue).toBeTruthy();
         const parsed = JSON.parse(jsonValue);
         expect(parsed.name).toBeTruthy();
         expect(Array.isArray(parsed.children)).toBe(true);
+        expect(explorer.getTree()?.findNodeByPath(path.join("docs", "notes.txt"))?.getPath()).toBe(path.join("docs", "notes.txt"));
+        expect(parsed.children[0]?.children[0]?.path).toBe(path.join("docs", "notes.txt"));
+    });
+    it("keeps an unloaded snapshot's tree JSON null", async () => {
+        const unloadedExplorer = new WorkspaceFileExplorer(tempDir);
+        expect(unloadedExplorer.getTree()?.toJson() ?? null).toBeNull();
+        await unloadedExplorer.close();
     });
     it("rejects reading files outside the workspace", async () => {
+        const treeBeforeDenial = explorer.getTree()?.toJson() ?? null;
         await expect(explorer.readFileContent("../outside.txt")).rejects.toThrow("Access denied: File is outside the workspace.");
+        expect(explorer.getTree()?.toJson() ?? null).toBe(treeBeforeDenial);
     });
     it("projects the live tree with limited depth and relative paths", async () => {
         const folder2 = path.join(tempDir, "folder1", "folder2");
