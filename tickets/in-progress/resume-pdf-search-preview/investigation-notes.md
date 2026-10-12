@@ -6,7 +6,7 @@
 - Git isolated workspace: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview`; branch `codex/resume-pdf-search-preview`.
 - Refreshed base: `origin/personal` at `2756d7b298ca5b203ebd2310d172b37a5d381b5c`; `git fetch origin` succeeded 2026-10-12. Target `origin/personal` per RELEASE.md.
 - Bootstrap: successful; new templates initialized before deep investigation. Shared checkout at `/home/autobyteus/workspace/autobyteus-workspace` remains untouched (untracked .claude/, computer-use-runs/, task-plans/, web-ui-sites/).
-- Current revision: SR-002; status: root cause established, design complete, no implementation yet.
+- Current revision: SR-003; status: ARCH-REV-001 / ARCH-F-001 Design Impact investigated; revised design complete for re-review, no implementation yet.
 - Authorities read: solution-designer SKILL; requirements-engineering, architecture-design, design-principles and requirements/investigation/revision/design templates; root AGENTS.md, DESIGN.md, TESTING.md with refreshed-base delta, RELEASE.md; web and server AGENTS.md. 2026-10-12. No closer applicable DESIGN.md found.
 
 ## Initial Request And Clarifications
@@ -31,6 +31,7 @@ All sources/commands on 2026-10-12; code paths below relative to isolated worksp
 | E-009 | `env -i PATH="$PATH" HOME=/tmp node --input-type=module` importing installed FileSystemWorkspace; own mkdtemp workspace and synthetic named file | Search `resume` returns absolute fixture path; `getAbsolutePath(searchResult)` throws Access denied, same relative file resolves; watcher remains absent | Baseline reproduction log; not PDF rendering proof |
 | E-010 | `rg -n '\.searchFiles\(' autobyteus-server-ts/src`; source resolver | Only production public-search caller is GraphQL resolver, lease released in finally, abort forwarded | No known internal absolute-result consumers |
 | E-011 | Existing search-strategy unit, file-search integration, GraphQL E2E and REST/path boundary tests | Integration explicitly expects absolute paths; GraphQL suffix assertion misses mismatch; REST test mocks path owner | Revise erroneous public format expectation and add real-owner cross-boundary regression |
+| E-012 | ARCH-REV-001 / ARCH-F-001; `git grep -n -E 'toShallowJson\|getAllFilePaths'` excluding ticket/history/dist/resource artifacts; `rg -n 'file-explorer/file-explorer\|WorkspaceFileExplorer' autobyteus-server-ts/src`; src/index.ts, package.json, vitest.config.ts; method bodies and direct TS/JS tests | Both methods are test-only; no production/dynamic/configuration caller found; package private and public index does not expose class. Two stale converter JS mock properties also found. Vitest includes only test.ts | Bounded removal/test/doc disposition recorded in SR-003; current typecheck/focused suites required at implementation |
 
 ## Relevant Existing Behavior And Supported Product Paths
 - BEH-001 / SCN-001: user searches and clicks nested PDF → tab opens → error before PDF bytes. Direct screenshot, runtime request and read-only logs establish actual supported failure.
@@ -59,7 +60,7 @@ The file IS lexically within the selected workspace; generic rejection wording i
 
 ## Structural And Payload Surface Inventory
 Payloads: transient search string arrays, deterministic synthetic regression PDFs/text; user PDF read only for metadata/hash, never copied or changed. No content volume or persistence schema change.
-Structural: one public workspace file-search method and its GraphQL-return format; internal strategies/index/cancellation and protected content readers unchanged. Browser/store consumers already accept relative tree paths. Contract semantics correction is material enough for High risk despite Small implementation.
+Structural: one public workspace file-search method and its GraphQL-return format, plus bounded removal of two unused methods from that touched class (E-012); internal strategies/index/cancellation and protected content readers unchanged. Browser/store consumers already accept relative tree paths. Contract semantics correction is material enough for High risk despite Small implementation.
 Deployment: backend /app process is live and hosts ongoing agent conversations. No Docker executable or `/var/run/docker.sock` available in this agent container. Public port8001 was corroborated via startup/log configuration; actual host docker mapping/image digest not independently enumerated.
 
 ## Runtime, Probe, Or Reproduction Findings
@@ -79,7 +80,9 @@ Canonical root for owned artifacts: `/home/autobyteus/workspace/.codex/worktrees
 | evidence/installed-module-checksums.txt | Solution Designer; installed baseline module identity | REQ-003; AC-004 | Captured; not exact image digest/source commit proof |
 | evidence/baseline-isolated-reproduction.log | Solution Designer; baseline candidate-to-reader assertion and cleanup | REQ-001/002 | Passed reproduction of failure; not changed-build pass |
 | Original screenshot absolute path E-001 | User/delegator evidence | SCN-001 | Inspected; externally owned, not copied |
-No independent review artifact yet: N/A — not applicable to initial authoring round (review requested next). No implementation/validation/delivery artifacts yet.
+| design-review-report.md | Architecture Reviewer; authoritative ARCH-REV-001 / round1 Fail — Design Impact, ARCH-F-001 removal-plan omission | REQ-004/AC-003; preserved REQ-001/003 | Reviewed R1/SR-001/SR-002; externally owned, latest decision remains Fail until reviewer re-review |
+| architecture-review-revision-record.md | Architecture Reviewer; cumulative independent review history | Same basis | ARCH-REV-001, read-only external authority |
+No implementation/validation/delivery artifacts yet.
 
 ## Assumptions, Unknowns, And Risks
 - Actual host Docker image/tag/digest and frontend packaged version are unknown; installed functions/logs are the observed runtime basis. Delivery must inventory and pin candidate, not assume git source is active.
@@ -93,3 +96,15 @@ Reconfirmed clean isolated worktree and approved R1. Traced search-only producer
 
 ## Requirement Implications / Notes For Architecture
 Approved REQ-001/004 need one consistent workspace-relative search identity, including unexpanded nested PDFs; REQ-002 prohibits reader relaxation. REQ-003 requires honest isolation/deployment/user verification and no uncoordinated restart. Durable tests must join search output to actual protected content/read path rather than asserting a suffix. Capture both primary fuzzy and ripgrep/fallback path conversion without revising ranking or snapshot cancellation.
+
+## Design Impact Recovery — ARCH-REV-001 / ARCH-F-001 (SR-003)
+Incoming canonical handoff/review/history read before work. R1 approval and BEH-001–004 remain unchanged; gates read earlier in this conversation still apply. Independent architecture review confirms fix and Small/High classification, but requires mandatory touched-file dead-code removal disposition. No renewed requirements approval is needed: removing unreachable methods does not change supported behavior. Reviewer artifacts remain untouched.
+
+Independent corroboration E-012:
+- `src/file-explorer/file-explorer.ts:177–182` toShallowJson serializes rootNode.toShallowDict; `:220–244` getAllFilePaths traverses rootNode. Direct method calls occur only in `tests/unit/file-explorer/file-explorer.test.{ts,js}` (shallow projection) and `tests/integration/file-explorer/file-explorer.integration.test.{ts,js}` (relative file path listing).
+- `git grep` adds `tests/unit/api/graphql/converters/workspace-converter.test.js:12,26`: stale toShallowJson mock properties inside obsolete getFileExplorer scaffolding, not production invocations. Current converter TS tests and implementation use metadata only. This single tracked JS counterpart needs a narrow parity update/removal of those stale mocks, not a global generated-JS sweep.
+- Live search uses snapshot controller.buildWorkspaceDirectoryTree(null) then FileNameIndexer.refreshSnapshotIndex; indexer traverses getTree. Live folder GraphQL uses returned TreeNode.toShallowDict(1). TreeNode depth/path/id tests already exist in tree-node.test.ts; no production method replacement is necessary.
+- Existing consumer imports in filesystem workspace, streaming and watcher modules contain no invocation; exact-name broad tracked grep found no runtime/reflection/configuration caller. Server package is private; src/index.ts exports server/host entrypoints, not explorer methods. Compiler cannot by itself prove unused public members; implementation must repeat reference search and run current typecheck/focused suites to corroborate safe removal. External deep imports are not evidenced as supported contract. If a real consumer is discovered, return Design Impact with evidence rather than remove its supported functionality.
+- Both area docs call current snapshot traversal getAllFilePaths (server doc:30, web doc:922); wording is factually obsolete and must describe snapshot tree/index refresh with current abort/watcher semantics.
+
+This is correction of initial incomplete dead-code inventory, NOT another PDF root cause, new scenario, security policy or performance claim. Source/test/doc edits remain assigned to Implementation/Delivery. No suites, new fixtures, live requests, server/browser processes, /app edits, restart or production data mutations performed in this revision.

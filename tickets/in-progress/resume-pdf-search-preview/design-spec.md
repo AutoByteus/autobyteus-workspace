@@ -1,10 +1,10 @@
 # Design Spec — résumé PDF search preview
 
 ## Solution And Approval Basis
-- Package: `resume-pdf-search-preview`; current solution revision SR-002.
+- Package: `resume-pdf-search-preview`; current solution revision SR-003.
 - Approved requirements: R1/SR-001, Solution Designer within delegated direction; user informed by message beginning “The server logs show that search results contain absolute paths”, 2026-10-12.
 - Behavior-defining supplements: None; evidence inventory in investigation-notes.
-- Design status: Ready for independent review, not yet reviewed.
+- Design status: Ready for re-review. Prior ARCH-REV-001 reviewed SR-001/SR-002 and returned Fail — Design Impact (ARCH-F-001); SR-003 proposes the bounded plan correction. No reviewer Pass is inferred.
 - Canonical investigation: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/investigation-notes.md`.
 - Authorities read: solution-designer references/architecture-design.md and design-principles.md in full, design-spec-template.md; `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/DESIGN.md`, root and package AGENTS.md, TESTING.md including refreshed-base additions, RELEASE.md. 2026-10-12. design-examples not needed for this bounded conversion.
 - Project/general principle conflicts: None. TESTING.md forbids live-user-app tests; deliver isolated proof and separate user verification rather than treating the requested8001 target as a test sandbox.
@@ -14,7 +14,7 @@ Investigation E-004/006/007/008/009 establishes an identity mismatch, not a PDF 
 
 ## Task Size And Architectural Risk (Mandatory)
 - `task_size`: Small.
-- Size evidence: one existing public search method conversion; bounded existing unit/integration/E2E assertions, browser coverage and area documentation. No new subsystem, data store, UI design or schema.
+- Size evidence: one existing public search method conversion, bounded removal of two test-only methods in the same class and their direct TS/JS test/doc references; existing unit/integration/E2E assertions, browser coverage and area documentation. No new subsystem, data store, UI design or schema.
 - `architectural_risk`: High.
 - Risk evidence: semantics of public GraphQL `searchFiles: [String]` change from host absolute to workspace-relative; current integration explicitly asserts absolutes. It borders security-sensitive content access, whose guard remains unchanged. Actual rollout into live /app backend may disrupt conversations unless coordinated; image/host deployment tooling still unknown. These material contract/deployment concerns require independent review despite local size.
 - Payload inventory: transient path strings, synthetic fixtures and evidence only; résumé untouched. Structural delta: WorkspaceFileExplorer public return identity/GraphQL consumer contract. Not inflated for content volume.
@@ -28,6 +28,7 @@ Investigation E-004/006/007/008/009 establishes an identity mismatch, not a PDF 
 | E-008 and tree-node.ts/getPath inspection | Tree paths are workspace relative; store/viewer uses returned path verbatim | Existing frontend works with corrected response; no PDF-specific fetch |
 | E-011 | Existing integration asserts wrong public result format; E2E only suffix | Replace public-format assertions, preserve internal strategy expectations, test cross-boundary content |
 | E-002 and deployment inventory | /app runtime differs from worktree, no Docker tool/socket here | Delivery must establish safe rollout/pin or report blocker |
+| E-012 / ARCH-F-001 | toShallowJson/getAllFilePaths are test-only; current tree/projection/search owners already carry supported behavior, two area docs and one JS-only converter mock stale | Remove dead methods and bounded references; retain assertions through live owners |
 Remaining evidence gap: changed-build tests/browser rendering and actual runtime rollout/user confirmation, assigned downstream.
 
 ## Intended Change
@@ -46,7 +47,7 @@ Do not replace `getPath`/REST validation, accept absolute paths at reader, or tr
 | BEH-004 | REQ-003; AC-004 | Validated fix needs live delivery; E-002 | Preserve state, report actual rollout and user verification | DS-003 delivery-owned operational path |
 
 ## Relevant Supplemental Task Artifacts
-Evidence-only: `evidence/runtime-failure-excerpts.log`, `evidence/installed-module-checksums.txt`, `evidence/baseline-isolated-reproduction.log` under canonical ticket root; original external screenshot E-001. All inspected/captured, related to REQ-001/002/003; no behavior approval required. Review artifacts N/A — not applicable before independent review. Implementation/validation/delivery artifacts not yet produced.
+Evidence-only: `evidence/runtime-failure-excerpts.log`, `evidence/installed-module-checksums.txt`, `evidence/baseline-isolated-reproduction.log` under canonical ticket root; original external screenshot E-001. All inspected/captured, related to REQ-001/002/003; no behavior approval required. Independent review artifacts: `design-review-report.md` and `architecture-review-revision-record.md`, Architecture Reviewer-owned ARCH-REV-001 Fail on SR-001/SR-002; read but not edited. SR-003 addresses ARCH-F-001 for re-review, not self-certified review closure. Implementation/validation/delivery artifacts not yet produced.
 
 ## Task Design Health Assessment (Mandatory)
 - Change posture: Bug Fix.
@@ -55,14 +56,14 @@ Evidence-only: `evidence/runtime-failure-excerpts.log`, `evidence/installed-modu
 - Refactor needed now: No. Strengthen existing owner's return contract with bounded conversion.
 - Evidence: strategies/index must use root-qualified filesystem candidates internally, while same workspace's read/content operations reject absolutes; public search forwarding is the only incompatible boundary.
 - Structural triggers: ambiguous identity risk addressed by documenting relative string contract, not a new DTO with overlapping identities. No boundary bypass: resolver uses public explorer; client uses content endpoint. No duplicated conversion to extract; no new responsibility beyond workspace-search return identity. File placement and lifecycle remain healthy. No broad split warranted.
-- Design response: remove raw absolute forwarding at public search boundary; internal search mechanics/reader remain unchanged.
+- Design response: remove raw absolute forwarding at public search boundary; internal search mechanics/reader remain unchanged. Remove the two unreachable explorer methods and adapt only their direct tests/docs (ARCH-F-001/E-012), retaining meaningful tree/projection/search assertions. No new production owner or broader refactor.
 - Deferrals: symlink/TOCTOU hardening, duplicate-name index behavior, frontend-host mapping generalization and ranking are not needed for approved fix; no stronger safety claim than current lexical validation.
 
 ## Terminology
 Candidate = internal absolute strategy result. Locator = public workspace-relative file identity paired with request workspaceId. They are not interchangeable.
 
 ## Legacy Removal Policy (Mandatory)
-Remove public raw absolute forwarding and absolute-public-result integration expectations. Keep no compatibility wrappers/dual formats/fallbacks. Internal absolute search strategies are actively used, not legacy or dead code; their tests stay absolute. No dead code identified in touched search method/module during consumer/import trace.
+Remove public raw absolute forwarding and absolute-public-result integration expectations. Keep no compatibility wrappers/dual formats/fallbacks. Internal absolute search strategies are actively used, not legacy or dead code; their tests stay absolute. Correct the initial incomplete dead-code assessment: E-012 confirms test-only `WorkspaceFileExplorer.toShallowJson` and `getAllFilePaths` in the touched class. Remove those methods, direct method-only assertions and stale doc/mock references. Do not delete live TreeNode projections, getTree, toJson, snapshot controller or indexing. No compatibility wrappers in place of removed methods.
 
 ## Persisted Data / State Transition Decision
 Not Affected. No persisted-data model/reader/writer/schema/physical-store change; documents and registry remain directly used without rewrites. Transient search response strings change only. Existing preview tab/search cache can be closed and refreshed by the user after rollout; no hidden client-state migration. No migration/startup gate/backup subsystem needed.
@@ -98,7 +99,12 @@ Thin entry facade: resolver is transport/lease adapter to WorkspaceFileExplorer,
 | --- | --- | --- |
 | Raw absolute result pass-through in public search | Contradicts reader; replace with bounded root-relative conversion | In this change |
 | Integration assertion “returns absolute paths for matches” | Tests defect, not approved usable workspace identity | In this change, replace with relative/reader interoperability |
-No strategy removal, frontend workaround or dead-code follow-up discovered.
+| WorkspaceFileExplorer.toShallowJson (current177–182) | Dead: only direct unit calls; folder GraphQL already serializes TreeNode.toShallowDict. Retain depth/path assertions via actual TreeNode/getTree/folder projection owners, no forwarding shim | In this change; ARCH-F-001/E-012 |
+| WorkspaceFileExplorer.getAllFilePaths (current220–244) | Dead: only direct integration calls; snapshot index traverses getTree. Retain relative-path assertions through getTree/findNodeByPath and public search regression | In this change; ARCH-F-001/E-012 |
+| Direct tests in unit/file-explorer/file-explorer.test.{ts,js}, integration/file-explorer/file-explorer.integration.test.{ts,js} | Adapt only removed-method calls and method-only expectations to live tree/projection/search owners; keep useful behavior assertions and tracked counterparts consistent | In this change; no generated-test sweep |
+| Obsolete toShallowJson/getFileExplorer mocks in unit/api/graphql/converters/workspace-converter.test.js | Dead test scaffolding: current converter/TS counterpart use workspace.metadata only. Narrowly align this counterpart with current TS metadata tests; no production converter delta | In this change; additional E-012 reference |
+| server docs/modules/file_explorer.md:30 and web docs/file_explorer.md:922 references to getAllFilePaths | Obsolete description: replace with buildWorkspaceDirectoryTree + FileNameIndexer.refreshSnapshotIndex/getTree and preserved abort/watcher lifecycle | In this change; existing area docs |
+No strategy removal or frontend workaround. Removal is bounded touched-file dead code, not an extra PDF defect or performance premise.
 
 ## Return Or Event Spine / Bounded Local Spines
 Return: strategies → snapshot controller abort race → public conversion → resolver/GraphQL → store → renderer. Async refresh/cancellation stays existing controller-owned lifecycle. N/A for new event loop/state machine: none added, watcher behavior unchanged.
@@ -129,12 +135,15 @@ Reuse file-explorer public operation, workspace-path-utils and shared PDF viewer
 Draft and final coincide: bounded change in existing owner, no extraction required. Existing string[] remains tight once relative semantics is explicit; do not add parallel abs/rel fields.
 | Change | Path | Responsibility |
 | --- | --- | --- |
-| Modify | autobyteus-server-ts/src/file-explorer/file-explorer.ts | Public search result conversion and existing-owner validation |
+| Modify / remove methods | autobyteus-server-ts/src/file-explorer/file-explorer.ts | Public search result conversion/validation; remove test-only toShallowJson and getAllFilePaths, no wrappers |
 | Modify | autobyteus-server-ts/tests/integration/file-explorer/file-search.integration.test.ts | Replace absolute-public expectation; result usable by workspace reader |
+| Modify | autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts and .js counterpart | Replace toShallowJson method-only test calls with assertions on actual TreeNode/getTree projection; preserve depth/path behavior, avoid duplicate new facade |
+| Modify | autobyteus-server-ts/tests/integration/file-explorer/file-explorer.integration.test.ts and .js counterpart | Replace getAllFilePaths call with actual tree/findNodeByPath relative identity assertion; public search tests own search-list identity |
+| Modify narrowly | autobyteus-server-ts/tests/unit/api/graphql/converters/workspace-converter.test.js | Remove stale toShallowJson/getFileExplorer mocks; parity with current TS metadata tests without unrelated JS churn |
 | Modify/add proportionately | autobyteus-server-ts/tests/unit/file-explorer tests | Public conversion across existing fuzzy/ripgrep candidate strategies, preserved ordering/abort, no escaping publication |
 | Modify/add proportionately | autobyteus-server-ts/tests/e2e/file-explorer + tests/unit/api/rest/workspaces.test.ts | GraphQL search → real protected content path, MIME/bytes, unchanged denial paths using real resolver rather than only mock |
 | Add/extend | autobyteus-web/tests/e2e browser probe | Real product search→click→PDF canvases using test-owned backend/build and valid fixture, not mocked path transformation |
-| Modify | server docs/modules/file_explorer.md and web docs/file_explorer.md search contract sections | Correct public relative identity and explain internal candidate format; no global TESTING/RELEASE edits for task-specific details |
+| Modify | server docs/modules/file_explorer.md and web docs/file_explorer.md search contract sections | Correct public relative identity, internal candidate format and obsolete getAllFilePaths traversal description; no global TESTING/RELEASE edits for task-specific details |
 Validation specialist owns final executable coverage location; Implementation owns source and implementation checks. No production web files need modification on current evidence.
 
 ## Applied Patterns / Folder Boundary Check
@@ -155,7 +164,7 @@ N/A — existing architecture sufficient; no invented layer.
 
 ## Change / Refactor Sequence
 1. Replace public pass-through in existing method; internal strategies stay unchanged; validate derived locator with existing path owner.
-2. Update old public-contract assertion and add focused regression/self-check on real reader interoperation and search lifecycle.
+2. Remove toShallowJson/getAllFilePaths from the touched class; adapt only named TS/JS direct tests and the one stale JS converter mock counterpart. Keep useful assertions via current tree/projection/search owners and correct both obsolete area-doc descriptions; repeat repository reference/importer/entrypoint search, ensuring no runtime consumer and no live-owner removal. If a supported consumer is found, return Design Impact rather than delete it. Update old public-contract assertion and add focused regression/self-check on real reader interoperation and search lifecycle; current typecheck plus focused tree/projection/search suites must corroborate the bounded removal (not yet run by designer).
 3. Independent source review as rules dictate, then API/E2E test-owned changed build/real UI proof and safety denial checks. Do not reuse /app baseline as post-change proof.
 4. Delivery syncs area documentation, integrates per RELEASE.md, obtains explicit user verification and safe rollout authority. Coordinate host Docker/image pin or a scoped approved deployment candidate, record rollback and active conversation risk; no unapproved process61 restart.
 5. User closes failed tab, refreshes/re-enters search, opens result on8001; delivery records actual user outcome and preserves original checksum. Final report distinguishes any host/user-only remaining check. Stop/remove only task-owned instances/worktree/branches according to finalization; record cleanup.
@@ -165,3 +174,6 @@ One bounded server conversion is simpler than rebuilding each client/viewer and 
 
 ## Guidance For Implementation / Verification Intent
 Follow DESIGN/TESTING and package AGENTS. Do not modify original résumé or production registry/database, /app files, user CLI configs or live server in implementation. Install/build in worktree with clean test environment, current Prisma/shared outputs and serial build/dev processes. Test smallest directly proving method/reader first, then cross-boundary GraphQL→REST and browser render. Preserve original search abort behavior/ranking/watchers. Retain baseline-failure truth and cleanup logs. Explicit user verification is delivery's gate, not implied by automation. No source-only port8001 success claim.
+
+## SR-003 Recovery Disposition
+ARCH-REV-001 / ARCH-F-001 is a Design Impact within existing REQ-004/AC-003 and preserved REQ-001/003, plus governing touched-file dead-code cleanup. Approved R1/scenario basis/fix placement, Small/High and operational guardrails unchanged. No requirements reapproval, broad refactor, renderer change or live rollout is authorized by this cleanup revision. Independent reviewer owns resolution/pass; return this revised package for re-review before implementation.
