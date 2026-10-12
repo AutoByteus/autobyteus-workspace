@@ -10,6 +10,7 @@ const MODELS_OUTPUT_LIMIT = 1024 * 1024;
 export type AgyDiscoveryDiagnosticCode =
   | "AGY_CLI_UNAVAILABLE"
   | "AGY_CLI_UNSUPPORTED"
+  | "AGY_SIGN_IN_REQUIRED"
   | "AGY_MODEL_DISCOVERY_TIMEOUT"
   | "AGY_MODEL_DISCOVERY_FAILED"
   | "AGY_MODEL_CATALOG_INVALID";
@@ -17,8 +18,9 @@ export type AgyDiscoveryDiagnosticCode =
 export type AgyDiscoveryDiagnostic = Readonly<{ code: AgyDiscoveryDiagnosticCode; message: string }>;
 
 const DIAGNOSTICS: Readonly<Record<AgyDiscoveryDiagnosticCode, AgyDiscoveryDiagnostic>> = Object.freeze({
-  AGY_CLI_UNAVAILABLE: { code: "AGY_CLI_UNAVAILABLE", message: "Antigravity CLI is unavailable; install or configure it and retry." },
-  AGY_CLI_UNSUPPORTED: { code: "AGY_CLI_UNSUPPORTED", message: "Antigravity CLI is missing required features; update the CLI and retry." },
+  AGY_CLI_UNAVAILABLE: { code: "AGY_CLI_UNAVAILABLE", message: "Antigravity CLI is not installed or not on this node's PATH. Install it, or set ANTIGRAVITY_CLI_COMMAND, then try again." },
+  AGY_CLI_UNSUPPORTED: { code: "AGY_CLI_UNSUPPORTED", message: "Antigravity CLI is too old for AutoByteus (required options are missing). Run `agy update`, then try again." },
+  AGY_SIGN_IN_REQUIRED: { code: "AGY_SIGN_IN_REQUIRED", message: "Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again." },
   AGY_MODEL_DISCOVERY_TIMEOUT: { code: "AGY_MODEL_DISCOVERY_TIMEOUT", message: "Antigravity model discovery timed out; check the CLI and retry." },
   AGY_MODEL_DISCOVERY_FAILED: { code: "AGY_MODEL_DISCOVERY_FAILED", message: "Antigravity model discovery failed; check authentication or network and retry." },
   AGY_MODEL_CATALOG_INVALID: { code: "AGY_MODEL_CATALOG_INVALID", message: "Antigravity CLI returned an invalid or empty model catalog; check authentication and network and retry." },
@@ -41,7 +43,17 @@ export const antigravityCommand = (): string => COMMAND;
 
 type CommandOutput = Readonly<{ stdout: string; stderr: string }>;
 
-/** Child I/O is bounded and nonblocking; provider stderr never becomes a user-facing error. */
+/**
+ * Known `agy` sign-in phrasings in a failed command's output, e.g. 1.3.3 `agy models`:
+ * "Please sign in to view available models. Launch the CLI without arguments to sign in."
+ * Unrecognised wording stays the generic discovery failure.
+ */
+const AGY_SIGN_IN_PATTERN = /\b(?:please (?:sign|log) ?in|not (?:signed|logged) ?in(?:to)?|(?:sign|log)[- ]?in required)\b/i;
+
+/**
+ * Child I/O is bounded and nonblocking; provider output never becomes a user-facing error.
+ * A failed command's bounded output only selects a fixed diagnostic code.
+ */
 const runCommand = (args: readonly string[], timeoutMs: number, outputLimit: number): Promise<CommandOutput> =>
   new Promise((resolve, reject) => {
     let child: ReturnType<typeof spawn>;
@@ -72,9 +84,12 @@ const runCommand = (args: readonly string[], timeoutMs: number, outputLimit: num
     });
     child.once("error", (error: NodeJS.ErrnoException) => finish(undefined,
       new AgyDiscoveryError(error.code === "ENOENT" ? "AGY_CLI_UNAVAILABLE" : "AGY_MODEL_DISCOVERY_FAILED")));
-    child.once("close", (code) => finish(code === 0
-      ? { stdout: stdout.toString("utf8"), stderr: stderr.toString("utf8") }
-      : undefined, code === 0 ? undefined : new AgyDiscoveryError("AGY_MODEL_DISCOVERY_FAILED")));
+    child.once("close", (code) => {
+      const output = { stdout: stdout.toString("utf8"), stderr: stderr.toString("utf8") };
+      if (code === 0) return finish(output);
+      finish(undefined, new AgyDiscoveryError(AGY_SIGN_IN_PATTERN.test(output.stdout + "\n" + output.stderr)
+        ? "AGY_SIGN_IN_REQUIRED" : "AGY_MODEL_DISCOVERY_FAILED"));
+    });
   });
 
 export const listAntigravityModels = async (): Promise<{ id: string; name: string }[]> => {

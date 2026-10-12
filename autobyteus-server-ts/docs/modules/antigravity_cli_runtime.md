@@ -43,7 +43,13 @@ request that needs its answer, but it does not synchronously block unrelated
 health requests. Probe timeout, process, authentication/network, unsupported
 capability, and unparseable/empty catalog failures are classified into safe
 diagnostics; raw child stderr, paths, commands, and credentials are not sent
-to GraphQL or the browser. A successfully read catalog that lacks the selected
+to GraphQL or the browser. A CLI that is not signed in gets its own diagnostic,
+`AGY_SIGN_IN_REQUIRED` ("Antigravity CLI is not signed in. Run `agy` in this
+node's terminal and complete sign-in, then try again."): a failed command whose
+bounded output contains known sign-in wording (for example agy 1.3.3 `agy
+models`: "Please sign in to view available models…") selects it. The output is
+only matched, never echoed; unrecognised wording stays the generic discovery
+failure. A successfully read catalog that lacks the selected
 model is a different, ordinary model-unavailable result. Discovery is fresh
 for each operation, not a process-global model cache.
 

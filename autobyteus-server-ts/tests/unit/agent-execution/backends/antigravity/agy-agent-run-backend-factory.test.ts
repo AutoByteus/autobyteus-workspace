@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { AgyAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.js";
-import { listAntigravityModels, readAntigravityCliVersion } from "../../../../../src/runtime-management/antigravity-cli-capability.js";
+import { AgyDiscoveryError, listAntigravityModels, readAntigravityCliVersion } from "../../../../../src/runtime-management/antigravity-cli-capability.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
@@ -170,6 +170,13 @@ describe("AGY backend capability admission and preserved bindings", () => {
   it("propagates actual discovery failure without starting a process", async () => {
     vi.mocked(listAntigravityModels).mockRejectedValue(new Error("AGY_CLI_UNSUPPORTED"));
     await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }))).rejects.toThrow("AGY_CLI_UNSUPPORTED");
+    expect(start).not.toHaveBeenCalled();
+  });
+
+  it("fails a run start on a signed-out CLI with the sign-in recovery text", async () => {
+    vi.mocked(listAntigravityModels).mockRejectedValue(new AgyDiscoveryError("AGY_SIGN_IN_REQUIRED"));
+    await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }))).rejects.toThrow(
+      "Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again.");
     expect(start).not.toHaveBeenCalled();
   });
 

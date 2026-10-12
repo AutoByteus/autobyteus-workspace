@@ -39,6 +39,10 @@ describe('RunModelSelectionService', () => {
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new AgyDiscoveryError('AGY_MODEL_DISCOVERY_TIMEOUT'));
     await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable',
       catalogDiagnostic: { code: 'AGY_MODEL_DISCOVERY_TIMEOUT', message: 'Antigravity model discovery timed out; check the CLI and retry.' } });
+    catalog.runtimeModelSelectionCatalog.mockRejectedValue(new AgyDiscoveryError('AGY_SIGN_IN_REQUIRED'));
+    await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable',
+      catalogDiagnostic: { code: 'AGY_SIGN_IN_REQUIRED',
+        message: "Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again." } });
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new Error('secret /private/token'));
     await expect(service.validate({ context: agy, selection })).resolves.toMatchObject({ kind: 'model_unavailable',
       catalogDiagnostic: { code: 'AGY_MODEL_DISCOVERY_FAILED' } });

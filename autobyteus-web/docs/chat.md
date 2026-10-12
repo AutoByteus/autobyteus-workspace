@@ -251,6 +251,23 @@ Thinking menus always open upward and never flip down. Each menu passes
   floor. The running-conversation `/` skill menu (`useSkillTagMenu.ts`) uses
   `auto`.
 
+### Unavailable runtimes in the Model menu
+
+A runtime whose availability is `enabled: false` stays in the runtime list but
+is not selectable (`aria-disabled`, skipped by the arrow keys, no flyout). Its
+row shows the neutral label "Unavailable" on the right and the server's reason
+under the runtime name (small gray text, at most two lines; the row tooltip has
+the full text). Without a reason only the label shows. The menu never claims a
+runtime is "not installed"; the reason text names the cause, for example
+"Antigravity CLI is not signed in. Run `agy` in this node's terminal…".
+
+`useChatModelCatalog.ensureAvailability` loads availability once and, on each
+later menu open, re-checks only the runtimes currently shown as unavailable
+(`runtimeAvailabilityStore.fetchRuntimeAvailability(kind, true)`). A runtime
+fixed meanwhile, for example after signing in, becomes selectable without an
+app reload; a row keeps its last state until its re-check answers. Available
+runtimes are not re-checked on open.
+
 ### Model labels
 
 Chat names models the same way on every surface that uses the chat model menu (D-16). `useChatModelCatalog.toChatModelOption` is the only place Chat builds a row's `label`, `secondary` and `recommended`, using `utils/modelSelectionLabel.ts`:

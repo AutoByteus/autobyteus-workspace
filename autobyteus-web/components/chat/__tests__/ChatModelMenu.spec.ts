@@ -3,6 +3,9 @@ import { ref } from 'vue'
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import ChatModelMenu from '../ChatModelMenu.vue'
 
+const { SIGN_IN_REASON } = vi.hoisted(() => ({
+  SIGN_IN_REASON: "Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again.",
+}))
 const model = (llmModelIdentifier: string) => ({
   runtimeKind: 'autobyteus', llmModelIdentifier, label: llmModelIdentifier, secondary: null, recommended: false,
   providerName: 'Provider', displayName: null, canonicalName: null,
@@ -11,7 +14,8 @@ vi.mock('~/composables/chat/useChatModelCatalog', () => ({
   useChatModelCatalog: () => ({
     runtimes: ref([
       { runtimeKind: 'autobyteus', label: 'AutoByteus', shortLabel: 'AutoByteus', enabled: true, reason: null },
-      { runtimeKind: 'codex_app_server', label: 'Codex', shortLabel: 'Codex', enabled: false, reason: 'Not installed' },
+      { runtimeKind: 'antigravity_cli', label: 'Antigravity CLI', shortLabel: 'Antigravity', enabled: false, reason: SIGN_IN_REASON },
+      { runtimeKind: 'grok_build', label: 'Grok Build', shortLabel: 'Grok', enabled: false, reason: null },
     ]),
     enabledRuntimeKinds: ref(['autobyteus']),
     ensureAvailability: vi.fn(async () => undefined),
@@ -122,5 +126,52 @@ describe('ChatModelMenu placement', () => {
     await flushPromises()
     expect(menu.find('[data-test="chat-model-submenu"]').exists()).toBe(false)
     expect(menu.find('[data-test="chat-model-drill-back"]').exists()).toBe(true)
+  })
+})
+
+describe('ChatModelMenu unavailable runtimes (AC-003)', () => {
+  it('labels an unavailable runtime "Unavailable" and shows its reason under the name', async () => {
+    vi.stubGlobal('innerWidth', 1512)
+    vi.stubGlobal('innerHeight', 952)
+    const menu = mountMenu()
+    await open(menu, 604)
+
+    const agy = menu.get('[data-test="chat-runtime-antigravity_cli"]')
+    expect(agy.attributes('aria-disabled')).toBe('true')
+    expect(agy.attributes('title')).toBe(SIGN_IN_REASON)
+    expect(agy.get('[data-test="chat-runtime-unavailable"]').text()).toBe('Unavailable')
+    const reason = agy.get('[data-test="chat-runtime-reason"]')
+    expect(reason.text()).toBe(SIGN_IN_REASON)
+    expect(reason.classes()).toEqual(expect.arrayContaining(['line-clamp-2', 'whitespace-normal', 'text-xs']))
+    expect(menu.text()).not.toMatch(/not installed/i)
+
+    await agy.trigger('click')
+    await flushPromises()
+    expect(menu.find('[data-test="chat-model-submenu"]').exists()).toBe(false)
+  })
+
+  it('shows only the label for an unavailable runtime without a reason', async () => {
+    vi.stubGlobal('innerWidth', 1512)
+    vi.stubGlobal('innerHeight', 952)
+    const menu = mountMenu()
+    await open(menu, 604)
+
+    const grok = menu.get('[data-test="chat-runtime-grok_build"]')
+    expect(grok.get('[data-test="chat-runtime-unavailable"]').text()).toBe('Unavailable')
+    expect(grok.find('[data-test="chat-runtime-reason"]').exists()).toBe(false)
+    expect(grok.attributes('title')).toBeUndefined()
+  })
+
+  it('skips unavailable runtimes with the arrow keys', async () => {
+    vi.stubGlobal('innerWidth', 1512)
+    vi.stubGlobal('innerHeight', 952)
+    const menu = mountMenu()
+    await open(menu, 604)
+
+    const autobyteus = menu.get('[data-test="chat-runtime-autobyteus"]')
+    ;(autobyteus.element as HTMLElement).focus()
+    await autobyteus.trigger('keydown', { key: 'ArrowDown' })
+    expect(document.activeElement?.getAttribute('data-runtime')).not.toBe('antigravity_cli')
+    expect(document.activeElement?.getAttribute('data-runtime')).not.toBe('grok_build')
   })
 })
