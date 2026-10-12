@@ -76,7 +76,6 @@ A key architectural distinction is made between **provider identity**,
     base URL + API key and modeled as its own runtime.
   - `OLLAMA`: Locally hosted via `ollama serve`.
   - `LMSTUDIO`: Locally hosted via LM Studio.
-  - `AUTOBYTEUS`: Internal or custom serving layer.
 
 This allows a model like `Llama 3` to exist as both an API model (via a cloud
 provider) and a local model (via Ollama), while also allowing a user-configured
@@ -398,9 +397,8 @@ such as `logicalConversationId` and `requestId`, attaches `tools`, and passes
 `tool_choice` only when a lower-level direct caller explicitly supplies
 `kwargs.tool_choice`. The same sanitizer is used by external provider adapters
 such as Anthropic and Mistral so agent bookkeeping identifiers do not leak to
-provider SDK request payloads. `logicalConversationId` remains valid for
-`AutobyteusLLM`; external adapters filter it at their request boundary instead
-of requiring upstream callers to remove it.
+provider SDK request payloads. External adapters filter `logicalConversationId`
+at their request boundary instead of requiring upstream callers to remove it.
 Provider adapters can still normalize provider-specific request legality before
 delegating to this builder. For example, `KimiLLM` keeps `kimi-k2.6` on
 Moonshot-safe temperature defaults unless a caller explicitly passes a
@@ -481,10 +479,6 @@ user/media carrier, but its text is limited to semantic completed-tool wording
 such as `The read_media_file tool call completed successfully.` and must not
 include internal continuation labels or generated tool-call formatting guidance.
 
-The AutoByteus conversation renderer is content/media-only because that path
-does not expose a normalized native local-tool channel. It does not emulate
-calls or results as XML, JSON, sentinel, or bracketed assistant text.
-
 OpenAI Responses is stricter than Chat Completions-style history for reasoning
 models. When a streamed Responses turn records `responseOutputItems` on the
 native tool-call context, `OpenAIResponsesRenderer` treats that completed
@@ -519,7 +513,7 @@ invocation instead of silently continuing with a text-only request.
 
 ## 7. Dynamic Model Reloading
 
-For reloadable built-in runtimes (`OLLAMA`, `LMSTUDIO`, `AUTOBYTEUS`),
+For reloadable built-in runtimes (`OLLAMA`, `LMSTUDIO`),
 `LLMFactory.reloadModels(provider)` performs a provider-scoped reload:
 
 1.  **Fetch** the latest model list for that provider.

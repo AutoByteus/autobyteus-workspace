@@ -171,7 +171,6 @@ const VNC_HOSTS_KEY = 'AUTOBYTEUS_VNC_SERVER_HOSTS'
 const quickSetupFields: QuickSetupField[] = [
   { key: 'LMSTUDIO_HOSTS', label: 'LM Studio', description: 'Local LLM inference server', format: 'url', defaultProtocol: 'http' },
   { key: 'OLLAMA_HOSTS', label: 'Ollama', description: 'Run open-source models locally', format: 'url', defaultProtocol: 'http' },
-  { key: 'AUTOBYTEUS_LLM_SERVER_HOSTS', label: 'AutoByteus LLM Hosts', description: 'Remote language model providers', format: 'url', defaultProtocol: 'https' },
   { key: VNC_HOSTS_KEY, label: 'AutoByteus VNC Hosts', description: 'Remote desktop access', format: 'hostPort', defaultProtocol: 'ws' },
 ]
 

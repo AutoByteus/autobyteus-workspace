@@ -14,9 +14,7 @@ export class BuiltInLlmProviderCatalog {
       providerType: providerId,
       isCustom: false,
       baseUrl: null,
-      catalogMode: providerId === 'AUTOBYTEUS'
-        || providerId === 'OLLAMA'
-        || providerId === 'LMSTUDIO'
+      catalogMode: providerId === 'OLLAMA' || providerId === 'LMSTUDIO'
         ? 'DISCOVERED'
         : 'STATIC',
     };

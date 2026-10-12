@@ -53,6 +53,8 @@ export * from './llmProviderConfigSupport'
 export const PROVIDER_SETTINGS_RUNTIME_KIND = 'autobyteus'
 const inFlightCatalogReads = new Map<string, Promise<RuntimeCatalogSnapshot>>()
 const requestKey = (runtime: string, providerId: string): string => `${runtime}:${providerId}`
+/** Discovery settings (Ollama and LM Studio hosts) own only an LLM model source. */
+const DISCOVERY_SETTING_MODEL_KINDS: ReadonlySet<ModelKind> = new Set<ModelKind>(['LLM'])
 const throwGraphqlErrors = (errors: readonly { message: string }[] | null | undefined): void => {
   if (errors?.length) throw new Error(errors.map(error => error.message).join(', '))
 }
@@ -258,7 +260,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       const runtime = normalizeCatalogRuntimeKind(runtimeKind)
       const providerId = target.ownerProviderId.trim()
       if (!providerId) throw new Error('Provider is required')
-      const affectedKinds = new Set<ModelKind>(target.modelKinds)
+      const affectedKinds = DISCOVERY_SETTING_MODEL_KINDS
       const epoch = this.catalogEpoch
       const requestId = ++this.nextCatalogRequestId
       const key = requestKey(runtime, providerId)
@@ -278,10 +280,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
                 safeMessage: null,
               }
             : source),
-          llmModels: affectedKinds.has('LLM') ? [] : previous.llmModels,
-          audioModels: affectedKinds.has('AUDIO') ? [] : previous.audioModels,
-          imageModels: affectedKinds.has('IMAGE') ? [] : previous.imageModels,
-          videoModels: affectedKinds.has('VIDEO') ? [] : previous.videoModels,
+          llmModels: [],
         })
       }
       return this.runProviderCatalogMutation(

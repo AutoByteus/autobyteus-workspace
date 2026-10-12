@@ -74,7 +74,7 @@ describe("UserInputContextBuildingProcessor", () => {
     expect(result.content).toContain("absolute content");
   });
 
-  it("resolves media files for AUTOBYTEUS provider models without ingestion", async () => {
+  it("resolves media files for Anthropic provider models without ingestion", async () => {
     const imagePath = path.join(tempDir, "image.png");
     fs.writeFileSync(imagePath, "fake image data");
 
@@ -82,7 +82,7 @@ describe("UserInputContextBuildingProcessor", () => {
     const context = buildContext({
       workspace,
       modelName: "claude-opus",
-      provider: LLMProvider.AUTOBYTEUS,
+      provider: LLMProvider.ANTHROPIC,
     });
     const message = new AgentInputUserMessage("req", SenderType.USER, [new ContextFile("image.png")]);
     const processor = new UserInputContextBuildingProcessor();
@@ -93,7 +93,7 @@ describe("UserInputContextBuildingProcessor", () => {
     expect(result.content).not.toContain("fake image data");
   });
 
-  it("does not ingest media files for non-AUTOBYTEUS providers", async () => {
+  it("does not ingest media files for OpenAI provider models", async () => {
     const imagePath = path.join(tempDir, "image.png");
     fs.writeFileSync(imagePath, "fake image data");
 
@@ -111,13 +111,13 @@ describe("UserInputContextBuildingProcessor", () => {
     expect(result.contextFiles?.[0].uri).toBe(imagePath);
   });
 
-  it("does not prepend system prompt for first-turn AUTOBYTEUS models", async () => {
+  it("does not prepend system prompt for first-turn Anthropic models", async () => {
     const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: tempDir }));
     const context = buildContext({
       workspace,
       modelName: "test-model",
-      provider: LLMProvider.AUTOBYTEUS,
-      systemMessage: "AUTOBYTEUS System Message.",
+      provider: LLMProvider.ANTHROPIC,
+      systemMessage: "Agent System Message.",
       customData: { is_first_user_turn: true },
     });
     const message = new AgentInputUserMessage("My Requirement", SenderType.USER);
@@ -126,7 +126,7 @@ describe("UserInputContextBuildingProcessor", () => {
     const result = await processor.process(message, context, new UserMessageReceivedEvent(message));
 
     expect(result.content).toBe("My Requirement");
-    expect(result.content).not.toContain("AUTOBYTEUS System Message.");
+    expect(result.content).not.toContain("Agent System Message.");
     expect(context.customData.is_first_user_turn).toBe(false);
   });
 
@@ -138,7 +138,7 @@ describe("UserInputContextBuildingProcessor", () => {
   ])("passes through authored %s content without a generic sender heading", async (senderType) => {
     const context = buildContext({
       workspaceRootPath: tempDir,
-      provider: LLMProvider.AUTOBYTEUS,
+      provider: LLMProvider.ANTHROPIC,
       customData: { is_first_user_turn: true },
     });
     const message = new AgentInputUserMessage("sender body", senderType);
@@ -156,8 +156,8 @@ describe("UserInputContextBuildingProcessor", () => {
     const context = buildContext({
       workspace,
       modelName: "test-model",
-      provider: LLMProvider.AUTOBYTEUS,
-      systemMessage: "AUTOBYTEUS System Message.",
+      provider: LLMProvider.ANTHROPIC,
+      systemMessage: "Agent System Message.",
       customData: { is_first_user_turn: false },
     });
     const message = new AgentInputUserMessage("My Requirement", SenderType.USER);
@@ -165,17 +165,17 @@ describe("UserInputContextBuildingProcessor", () => {
 
     const result = await processor.process(message, context, new UserMessageReceivedEvent(message));
 
-    expect(result.content.startsWith("AUTOBYTEUS System Message.")).toBe(false);
+    expect(result.content.startsWith("Agent System Message.")).toBe(false);
     expect(result.content).toBe("My Requirement");
   });
 
-  it("does not prepend system prompt for non-AUTOBYTEUS model on first turn", async () => {
+  it("does not prepend system prompt for an OpenAI model on first turn", async () => {
     const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: tempDir }));
     const context = buildContext({
       workspace,
       modelName: "test-model",
       provider: LLMProvider.OPENAI,
-      systemMessage: "AUTOBYTEUS System Message.",
+      systemMessage: "Agent System Message.",
       customData: { is_first_user_turn: true },
     });
     const message = new AgentInputUserMessage("My Requirement", SenderType.USER);
@@ -183,7 +183,7 @@ describe("UserInputContextBuildingProcessor", () => {
 
     const result = await processor.process(message, context, new UserMessageReceivedEvent(message));
 
-    expect(result.content.startsWith("AUTOBYTEUS System Message.")).toBe(false);
+    expect(result.content.startsWith("Agent System Message.")).toBe(false);
     expect(result.content).toBe("My Requirement");
     expect(context.customData.is_first_user_turn).toBe(false);
   });

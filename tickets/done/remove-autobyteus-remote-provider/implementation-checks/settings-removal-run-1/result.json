@@ -1,0 +1,90 @@
+{
+  "startedAt": "2026-10-12T03:21:24.549Z",
+  "result": "Pass",
+  "checks": {
+    "server": {
+      "result": "Pass",
+      "providerIds": [
+        "ANTHROPIC",
+        "DEEPSEEK",
+        "GEMINI",
+        "GLM",
+        "GROK",
+        "KIMI",
+        "LMSTUDIO",
+        "MINIMAX",
+        "MISTRAL",
+        "OLLAMA",
+        "OPENAI",
+        "QWEN"
+      ],
+      "snapshotIds": [
+        "ANTHROPIC",
+        "DEEPSEEK",
+        "GEMINI",
+        "GLM",
+        "GROK",
+        "KIMI",
+        "LMSTUDIO",
+        "MINIMAX",
+        "MISTRAL",
+        "OLLAMA",
+        "OPENAI",
+        "QWEN"
+      ],
+      "ensureError": "UNKNOWN_MODEL_PROVIDER",
+      "saveKeyError": "Unsupported built-in provider 'AUTOBYTEUS'.",
+      "leftover": {
+        "key": "AUTOBYTEUS_LLM_SERVER_HOSTS",
+        "value": "https://remote-llm.example.invalid:8000",
+        "description": "Custom user-defined setting",
+        "isEditable": true,
+        "isDeletable": true
+      }
+    },
+    "apiKeys": {
+      "result": "Pass",
+      "providerLabels": [
+        "Anthropic",
+        "DeepSeek",
+        "Gemini",
+        "GLM",
+        "Grok",
+        "Kimi",
+        "LM Studio",
+        "MiniMax",
+        "Mistral",
+        "Ollama",
+        "OpenAI",
+        "Qwen",
+        "New Provider"
+      ]
+    },
+    "quickSetup": {
+      "result": "Pass",
+      "cards": [
+        "quick-setting-card-LMSTUDIO_HOSTS",
+        "quick-setting-card-OLLAMA_HOSTS",
+        "quick-setting-card-AUTOBYTEUS_VNC_SERVER_HOSTS"
+      ]
+    },
+    "advanced": {
+      "result": "Pass",
+      "leftoverShownAsCustomAndDeleted": true
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "frontend": "terminated:11195",
+    "backend": "terminated:11169",
+    "tempRoot": "removed"
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-settings-removal-Yv54OE",
+    "backendPort": 64825,
+    "frontendPort": 64826
+  },
+  "unexpectedBrowserErrors": [],
+  "finishedAt": "2026-10-12T03:21:40.911Z"
+}

@@ -48,7 +48,7 @@ server's centralized encrypted vault:
 API Keys starts the credential read and local catalog snapshot independently,
 but it awaits only the credential read before rendering provider navigation and
 the selected credential editor. Static providers show curated rows immediately
-and never show Reload. `AUTOBYTEUS`, `OLLAMA`, `LMSTUDIO`, and saved custom
+and never show Reload. `OLLAMA`, `LMSTUDIO`, and saved custom
 providers are `DISCOVERED`: selecting a cold source starts only that provider's
 `ensureProviderModelCatalog` operation. A later read reuses its in-process
 snapshot; only provider-local Reload forces `reloadProviderModelCatalog`. There
@@ -76,11 +76,16 @@ operation fails, the UI keeps the committed configured state rather than
 relabeling the save as failed. The removed `qwen3.8-max-preview` value must not
 reappear after save, catalog read, or recovery.
 
-An ordinary AutoByteus credential save returns after the vault commit. The
-server invalidates and starts only the AutoByteus LLM/audio/image sources in the
-background, and the mounted client separately starts or joins the matching
-non-forcing ensure after it has published credential success. Neither side
-turns the credential command into an awaited global refresh.
+A built-in provider credential save returns after the vault commit and starts
+no model-catalog operation on either side.
+
+The remote AutoByteus LLM provider has been removed: Settings shows no
+`AutoByteus` provider row and no "AutoByteus LLM Hosts" endpoint card. A saved
+model selection that names one of its former models stays visible as
+unavailable until the user picks another model. A leftover
+`AUTOBYTEUS_LLM_SERVER_HOSTS` value appears under Server Settings as an ordinary
+custom setting that can be deleted. The native AutoByteus runtime and the
+"AutoByteus VNC Hosts" card are unaffected.
 
 Custom OpenAI-compatible provider drafts still accept an API key for the probe
 and create transaction, but only non-secret provider metadata is persisted in
@@ -89,9 +94,7 @@ readable ID from the normalized name (for example `provider_alibaba_cloud`) and
 atomically rejects invalid names or canonical-name/ID collisions; the browser
 does not submit an ID. The credential is stored separately, and deleting the
 custom provider through the provider-entity lifecycle removes both its
-credential and metadata. AutoByteus gateway models retain their downstream
-display provider while credential configuration remains owned by the
-`AUTOBYTEUS` gateway provider.
+credential and metadata.
 
 An upgrade from legacy UUID providers deliberately resets provider records,
 Base URLs, and credentials after migrating only exact allowlisted selector

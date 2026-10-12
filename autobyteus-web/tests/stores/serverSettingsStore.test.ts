@@ -495,7 +495,7 @@ describe('serverSettings store', () => {
   it('starts exact provider catalog convergence after a discovery setting commit without awaiting it', async () => {
     const mutateMock = vi.fn().mockResolvedValue({
       data: {
-        updateServerSetting: "Server setting 'AUTOBYTEUS_LLM_SERVER_HOSTS' has been updated successfully.",
+        updateServerSetting: "Server setting 'OLLAMA_HOSTS' has been updated successfully.",
       },
     })
     const queryMock = vi.fn().mockResolvedValue({
@@ -512,22 +512,22 @@ describe('serverSettings store', () => {
 
     await expect(
       useServerSettingsStore().updateServerSetting(
-        'AUTOBYTEUS_LLM_SERVER_HOSTS',
-        '["https://models.example.invalid/v2"]',
+        'OLLAMA_HOSTS',
+        '["http://ollama.example.invalid:11434"]',
       ),
     ).resolves.toBe(true)
 
-    expect(convergence).toHaveBeenCalledWith('autobyteus', {
-      ownerProviderId: 'AUTOBYTEUS',
-      modelKinds: ['LLM', 'AUDIO', 'IMAGE'],
-    })
+    expect(convergence).toHaveBeenCalledWith('autobyteus', { ownerProviderId: 'OLLAMA' })
     expect(convergence.mock.invocationCallOrder[0]).toBeLessThan(queryMock.mock.invocationCallOrder[0]!)
   })
 
-  it('does not converge a model catalog for an unrelated server setting', async () => {
+  it.each([
+    ['AUTOBYTEUS_COMPACTION_TRIGGER_RATIO', '0.6'],
+    ['AUTOBYTEUS_LLM_SERVER_HOSTS', 'https://leftover.example.invalid'],
+  ])('does not converge a model catalog for the unrelated server setting %s', async (key, value) => {
     const mutateMock = vi.fn().mockResolvedValue({
       data: {
-        updateServerSetting: "Server setting 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO' has been updated successfully.",
+        updateServerSetting: `Server setting '${key}' has been updated successfully.`,
       },
     })
     const queryMock = vi.fn().mockResolvedValue({
@@ -542,10 +542,7 @@ describe('serverSettings store', () => {
       'convergeAfterDiscoverySettingCommit',
     )
 
-    await useServerSettingsStore().updateServerSetting(
-      'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO',
-      '0.6',
-    )
+    await useServerSettingsStore().updateServerSetting(key, value)
 
     expect(convergence).not.toHaveBeenCalled()
   })
