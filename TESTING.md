@@ -106,8 +106,12 @@ not paid inference. Agent-run testing is not the user's verification.
   real delegation, Tasks and streams without provider calls.
 - **Data.** Every run uses its own data root, database, ports and processes. Create data
   through public APIs or the UI, never by editing another run's files.
-- **Build outputs** such as SDK `dist/` and `autobyteus-web/electron-dist/` are untracked.
-  Stage paths explicitly; never `git add -A`.
+- **Build outputs** such as the application SDK `dist/` folders and
+  `autobyteus-web/electron-dist/` are untracked. Stage paths explicitly; never `git add -A`.
+  Exception: the three contract packages (`autobyteus-agent-presentation-contracts`,
+  `autobyteus-team-stream-contracts`, `autobyteus-collaboration-stream-contracts`) track
+  their `dist/`, which their consumers import. After changing their source, rebuild with
+  `pnpm -C <package> build` and commit the `dist/` changes too.
 - **Known baseline exception.** Two content-cadence cases in
   `tests/integration/agent/agent-status-websocket.integration.test.ts` fail because of a
   reported product defect. Remove this note when it is fixed.
