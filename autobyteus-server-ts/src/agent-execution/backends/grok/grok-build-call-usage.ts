@@ -29,6 +29,7 @@ export const buildGrokBuildCallUsagePayload = (
     runtime_kind: GROK_BUILD_USAGE_RUNTIME_KIND,
     ingestion_kind: GROK_BUILD_USAGE_INGESTION_KIND,
     usage_scope: "per_call",
+    reports_model_call: true,
     call_sequence: context.callOrdinal,
     model_provider: "GROK",
     provider_name: "Grok Build",
@@ -42,6 +43,11 @@ export const buildGrokBuildCallUsagePayload = (
     cache_creation_input_tokens: cacheCreation,
     cache_state: cacheRead === null ? "not_reported" : cacheRead > 0 ? "positive" : "zero_reported",
     reasoning_output_tokens: count(usage.reasoning_tokens),
+    // The prompt of this call: Grok reports no window or compaction threshold (REQ-007).
+    latest_prompt_tokens: input + (cacheRead ?? 0) + (cacheCreation ?? 0),
+    effective_context_window_tokens: null,
+    context_window_usage_percent: null,
+    context_compaction_threshold_tokens: null,
     raw_usage_json: usage,
   };
 };

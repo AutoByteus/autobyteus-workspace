@@ -203,6 +203,7 @@ export const legacyRowToCurrentPayload = (
       : ["input_token_semantic"]
     : [];
   const outputOnlyPartialCost = semanticUnknown ? row.estimated_api_output_cost : row.estimated_api_total_cost;
+  const claudeSdkReading = row.runtime_kind === "claude_agent_sdk";
 
   return {
     usage_event_id: row.usage_event_id,
@@ -228,6 +229,8 @@ export const legacyRowToCurrentPayload = (
     model_value: row.model_value,
     ingestion_kind: row.ingestion_kind,
     usage_scope: oneOf(row.usage_scope, ["per_call", "per_turn", "cumulative_snapshot"] as const, "per_call"),
+    // Every released ledger row was one counted report; the consolidation validates that count.
+    reports_model_call: true,
     snapshot_series_key: row.snapshot_series_key,
     previous_snapshot_event_id: row.previous_snapshot_event_id,
     input_token_semantic: inputTokenSemantic,
@@ -285,9 +288,13 @@ export const legacyRowToCurrentPayload = (
     meter_delta_output_tokens: asSafeInt(row.accounting_output_tokens, "accounting_output_tokens"),
     meter_delta_total_tokens: asSafeInt(row.accounting_total_tokens, "accounting_total_tokens"),
     run_summary_after_event: null,
-    latest_prompt_tokens: asSafeInt(row.latest_prompt_tokens, "latest_prompt_tokens"),
-    effective_context_window_tokens: asSafeInt(row.effective_context_window_tokens, "effective_context_window_tokens"),
-    context_window_usage_percent: row.context_window_usage_percent,
+    // Released Claude Agent SDK readings summed every call of a turn and cannot be recomputed
+    // (token-meter-accuracy DEC-005); they consolidate as "not available". Totals stay exact.
+    latest_prompt_tokens: claudeSdkReading ? null : asSafeInt(row.latest_prompt_tokens, "latest_prompt_tokens"),
+    effective_context_window_tokens: claudeSdkReading
+      ? null : asSafeInt(row.effective_context_window_tokens, "effective_context_window_tokens"),
+    context_window_usage_percent: claudeSdkReading ? null : row.context_window_usage_percent,
+    context_compaction_threshold_tokens: null,
     raw_usage_json: null,
     raw_event_json: null,
     quality_flags: stringArray(row.quality_flags_json),

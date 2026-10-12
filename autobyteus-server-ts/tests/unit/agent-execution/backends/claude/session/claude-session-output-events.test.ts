@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { resolveClaudeTurnTerminalError } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-output-events.js";
+import {
+  CLAUDE_NORMAL_REPLY_MENTIONING_LOGIN_FRAMES,
+  CLAUDE_NOT_LOGGED_IN_FRAMES,
+  claudeResultFrame,
+} from "../../../../../fixtures/claude-result-frames/claude-auth-marker-result-frames.js";
 
 const resolve = (payload: Record<string, unknown>) => resolveClaudeTurnTerminalError({
   type: "result", is_error: true, ...payload,
@@ -41,6 +46,26 @@ describe("Claude terminal error text", () => {
     expect(resolve({ errors: ["Not logged in · Please run /login"] })).toEqual({
       code: "CLAUDE_RUNTIME_AUTHENTICATION_FAILED", message: "Not logged in · Please run /login",
     });
+  });
+
+  it("classifies the real not-logged-in SDK result as an authentication failure (AC-002)", () => {
+    expect(resolveClaudeTurnTerminalError(claudeResultFrame(CLAUDE_NOT_LOGGED_IN_FRAMES))).toEqual({
+      code: "CLAUDE_RUNTIME_AUTHENTICATION_FAILED", message: "Not logged in · Please run /login",
+    });
+  });
+
+  it("never treats a successful reply as an error because its text mentions auth markers (AC-001)", () => {
+    expect(resolveClaudeTurnTerminalError(claudeResultFrame(CLAUDE_NORMAL_REPLY_MENTIONING_LOGIN_FRAMES))).toBeNull();
+    for (const reply of ["authentication_failed", "You are Not Logged In.", "Please run /login first."]) {
+      expect(resolveClaudeTurnTerminalError({ type: "result", subtype: "success", is_error: false, result: reply })).toBeNull();
+      expect(resolveClaudeTurnTerminalError({ type: "result", subtype: "success", result: reply })).toBeNull();
+    }
+  });
+
+  it("uses the auth code only for SDK-reported errors whose code or text carries a marker", () => {
+    expect(resolveClaudeTurnTerminalError({ type: "result", error: "authentication_failed" })?.code)
+      .toBe("CLAUDE_RUNTIME_AUTHENTICATION_FAILED");
+    expect(resolve({ result: "Overloaded." })?.code).toBe("CLAUDE_RUNTIME_RESULT_ERROR");
   });
 
   it("does not classify unrelated events or a successful result as errors just for an errors field", () => {

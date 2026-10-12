@@ -34,6 +34,11 @@ vi.mock('~/stores/agentActivityStore', () => ({
   useAgentActivityStore: () => mockActivityStore,
 }));
 
+const mockTokenUsageMeterStore = vi.hoisted(() => ({ markCompactionCompleted: vi.fn() }));
+vi.mock('~/stores/tokenUsageMeterStore', () => ({
+  useTokenUsageMeterStore: () => mockTokenUsageMeterStore,
+}));
+
 const { mockFindOrCreateAIMessage, mockFindSegmentById } = vi.hoisted(() => ({
   mockFindOrCreateAIMessage: vi.fn((context) => {
     const last = context.conversation.messages[context.conversation.messages.length - 1];
@@ -152,6 +157,29 @@ describe('agentStatusHandler', () => {
   });
 
   describe('handleCompactionStatus', () => {
+    const compaction = (phase: CompactionStatusPayload['phase'], operationId = 'operation-1'): CompactionStatusPayload => ({
+      phase, turn_id: 'turn-1', compaction_operation_id: operationId,
+    } as CompactionStatusPayload);
+
+    it('marks the run as awaiting its next reading only when a compaction completes (D-13)', () => {
+      handleCompactionStatus(compaction('requested'), mockContext);
+      handleCompactionStatus(compaction('started'), mockContext);
+      expect(mockTokenUsageMeterStore.markCompactionCompleted).not.toHaveBeenCalled();
+      handleCompactionStatus(compaction('completed'), mockContext);
+      expect(mockTokenUsageMeterStore.markCompactionCompleted).toHaveBeenCalledExactlyOnceWith('run-1');
+      // A repeated completion of the same operation does not mark again; a later operation does.
+      handleCompactionStatus(compaction('completed'), mockContext);
+      expect(mockTokenUsageMeterStore.markCompactionCompleted).toHaveBeenCalledTimes(1);
+      handleCompactionStatus(compaction('completed', 'operation-2'), mockContext);
+      expect(mockTokenUsageMeterStore.markCompactionCompleted).toHaveBeenCalledTimes(2);
+    });
+
+    it.each(['failed', 'stopped'] as const)('never marks a %s compaction (D-13)', (phase) => {
+      handleCompactionStatus(compaction('started'), mockContext);
+      handleCompactionStatus(compaction(phase), mockContext);
+      expect(mockTokenUsageMeterStore.markCompactionCompleted).not.toHaveBeenCalled();
+    });
+
     it('stores a started compaction status with a friendly message', () => {
       const payload: CompactionStatusPayload = {
         phase: 'started',

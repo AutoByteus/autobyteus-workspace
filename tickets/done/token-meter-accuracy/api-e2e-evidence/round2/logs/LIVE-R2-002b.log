@@ -1,0 +1,348 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:60027) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-zwB5Z8
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-zwB5Z8/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-zwB5Z8/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-zwB5Z8/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-zwB5Z8
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-zwB5Z8/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-zwB5Z8/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-zwB5Z8/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-zwB5Z8/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-12T04:24:04.880Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-zwB5Z8/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-zwB5Z8/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-zwB5Z8/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Agent definition cache populated with 47 items.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Populating agent definition cache for the first time...
+[2026-10-12T04:24:05.343Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+[2026-10-12T04:24:05.349Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Agent definition cache populated with 47 items.
+
+stderr | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real codex-app-server runtime turn and exposes it through GraphQL
+[CodexAppServerClient] stderr: 2026-10-12T04:24:05.715348Z ERROR codex_app_server: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real codex-app-server runtime turn and exposes it through GraphQL
+In-memory cache: Added new agent definition with ID token-usage-runtime-codex-app-server-ca6fe2c8-c991-4368-99e8-e380f28be02d.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real codex-app-server runtime turn and exposes it through GraphQL
+Agent Definition created successfully with ID: token-usage-runtime-codex-app-server-ca6fe2c8-c991-4368-99e8-e380f28be02d
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real codex-app-server runtime turn and exposes it through GraphQL
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-token-usage-workspace-e1rqqF
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-token-usage-workspace-e1rqqF.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real codex-app-server runtime turn and exposes it through GraphQL
+Created and registered workspace ID: agent_ws_352ee0381eed89c9f585787d0a41cc3d8cdb7902e77aaf31ef336c90760b6724
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real codex-app-server runtime turn and exposes it through GraphQL
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-token-usage-workspace-e1rqqF
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-token-usage-workspace-e1rqqF.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real codex-app-server runtime turn and exposes it through GraphQL
+Reusing registered workspace ID: agent_ws_352ee0381eed89c9f585787d0a41cc3d8cdb7902e77aaf31ef336c90760b6724
+
+stderr | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real codex-app-server runtime turn and exposes it through GraphQL
+[CodexAppServerClient] stderr: 2026-10-12T04:24:06.159287Z ERROR codex_app_server: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real codex-app-server runtime turn and exposes it through GraphQL
+Agent websocket attached for run token_usage_runtime_codex_app_server_ca6fe2c8_c9_df7e4452cec042c2bedb024fafe1a9fd
+Created agent session f8d4a4d9-2b20-4b3f-ac10-39c54901edbd for run token_usage_runtime_codex_app_server_ca6fe2c8_c9_df7e4452cec042c2bedb024fafe1a9fd
+Agent WebSocket connected: session=f8d4a4d9-2b20-4b3f-ac10-39c54901edbd, run=token_usage_runtime_codex_app_server_ca6fe2c8_c9_df7e4452cec042c2bedb024fafe1a9fd
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real codex-app-server runtime turn and exposes it through GraphQL
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real codex-app-server runtime turn and exposes it through GraphQL
+Closed agent session f8d4a4d9-2b20-4b3f-ac10-39c54901edbd
+Agent WebSocket disconnected: f8d4a4d9-2b20-4b3f-ac10-39c54901edbd
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real claude-agent-sdk runtime turn and exposes it through GraphQL
+In-memory cache: Added new agent definition with ID token-usage-runtime-claude-agent-sdk-5becfd48-8322-4323-90d4-4036220dfb3c.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real claude-agent-sdk runtime turn and exposes it through GraphQL
+Agent Definition created successfully with ID: token-usage-runtime-claude-agent-sdk-5becfd48-8322-4323-90d4-4036220dfb3c
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real claude-agent-sdk runtime turn and exposes it through GraphQL
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-agent-sdk-token-usage-workspace-vygyQ4
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-agent-sdk-token-usage-workspace-vygyQ4.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real claude-agent-sdk runtime turn and exposes it through GraphQL
+Created and registered workspace ID: agent_ws_166cea9b496edb1b6abd39082c50f0948ff4180bed1e0d62d1a2dd0d5e84404c
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real claude-agent-sdk runtime turn and exposes it through GraphQL
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-agent-sdk-token-usage-workspace-vygyQ4
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-agent-sdk-token-usage-workspace-vygyQ4.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real claude-agent-sdk runtime turn and exposes it through GraphQL
+Reusing registered workspace ID: agent_ws_166cea9b496edb1b6abd39082c50f0948ff4180bed1e0d62d1a2dd0d5e84404c
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real claude-agent-sdk runtime turn and exposes it through GraphQL
+Agent websocket attached for run token_usage_runtime_claude_agent_sdk_5becfd48_83_0962f2e5c41f4a8682d42ddb45a70f7c
+Created agent session bb7ceb30-b9d2-4766-afae-269a6458148f for run token_usage_runtime_claude_agent_sdk_5becfd48_83_0962f2e5c41f4a8682d42ddb45a70f7c
+Agent WebSocket connected: session=bb7ceb30-b9d2-4766-afae-269a6458148f, run=token_usage_runtime_claude_agent_sdk_5becfd48_83_0962f2e5c41f4a8682d42ddb45a70f7c
+
+(node:60027) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task, create_or_update_task, mcp__autobyteus_agent_tools__create_or_update_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real claude-agent-sdk runtime turn and exposes it through GraphQL
+Closed agent session bb7ceb30-b9d2-4766-afae-269a6458148f
+Agent WebSocket disconnected: bb7ceb30-b9d2-4766-afae-269a6458148f
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > publishes every Claude model call of a multi-call turn live, each with the SDK's own reading, and totals equal the calls plus the turn-end remainder
+In-memory cache: Added new agent definition with ID token-usage-runtime-claude-multi-call-0a102897-9fa8-45fb-a3e5-2d05bb1eaf82.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > publishes every Claude model call of a multi-call turn live, each with the SDK's own reading, and totals equal the calls plus the turn-end remainder
+Agent Definition created successfully with ID: token-usage-runtime-claude-multi-call-0a102897-9fa8-45fb-a3e5-2d05bb1eaf82
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > publishes every Claude model call of a multi-call turn live, each with the SDK's own reading, and totals equal the calls plus the turn-end remainder
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-multi-call-token-usage-workspace-guLbmr
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-multi-call-token-usage-workspace-guLbmr.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > publishes every Claude model call of a multi-call turn live, each with the SDK's own reading, and totals equal the calls plus the turn-end remainder
+Created and registered workspace ID: agent_ws_5a921401409b7ca4c1a6cb8f81717d48d78055e67cda98ffb28d8b92643fdd55
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > publishes every Claude model call of a multi-call turn live, each with the SDK's own reading, and totals equal the calls plus the turn-end remainder
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-multi-call-token-usage-workspace-guLbmr
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-multi-call-token-usage-workspace-guLbmr.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > publishes every Claude model call of a multi-call turn live, each with the SDK's own reading, and totals equal the calls plus the turn-end remainder
+Reusing registered workspace ID: agent_ws_5a921401409b7ca4c1a6cb8f81717d48d78055e67cda98ffb28d8b92643fdd55
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > publishes every Claude model call of a multi-call turn live, each with the SDK's own reading, and totals equal the calls plus the turn-end remainder
+Agent websocket attached for run token_usage_runtime_claude_multi_call_0a102897_9_6cef32cd5976409fbe48d7cfcf08d240
+Created agent session 7df1db79-44f8-4944-84ab-e1e5387e9dc3 for run token_usage_runtime_claude_multi_call_0a102897_9_6cef32cd5976409fbe48d7cfcf08d240
+Agent WebSocket connected: session=7df1db79-44f8-4944-84ab-e1e5387e9dc3, run=token_usage_runtime_claude_multi_call_0a102897_9_6cef32cd5976409fbe48d7cfcf08d240
+
+(node:60027) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task, create_or_update_task, mcp__autobyteus_agent_tools__create_or_update_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > publishes every Claude model call of a multi-call turn live, each with the SDK's own reading, and totals equal the calls plus the turn-end remainder
+[claude multi-call] calls: [{"index":14,"model":"claude-sonnet-5-5","input":2,"cacheRead":12469,"cacheCreation":8332,"output":72,"prompt":20803,"window":1000000,"threshold":967000,"summary":1},{"index":24,"model":"claude-sonnet-5-5","input":2,"cacheRead":20801,"cacheCreation":102,"output":72,"prompt":20905,"window":1000000,"threshold":967000,"summary":2},{"index":36,"model":"claude-sonnet-5-5","input":2,"cacheRead":20903,"cacheCreation":102,"output":32,"prompt":21007,"window":1000000,"threshold":967000,"summary":3}] result: [{"index":38,"accounting":0,"flags":["reported_input_tokens_missing","reported_output_tokens_missing","reported_total_tokens_missing","input_token_semantic_unknown"],"modelUsage":[]}] idleIndex: 41 midTurnSummary: {"runId":"token_usage_runtime_claude_multi_call_0a102897_9_6cef32cd5976409fbe48d7cfcf08d240","grossInputTokens":20803,"standardInputTokens":2,"cacheReadInputTokens":12469,"outputTokens":72,"billableOutputTokens":72,"totalTokens":20875,"reasoningOutputTokens":0,"cacheState":"positive","estimatedApiReasoningOutputCost":null,"estimatedApiTotalCost":0.0352989,"currency":"USD","apiCostStatus":"estimated","latestPromptTokens":20803,"effectiveContextWindowTokens":1000000,"contextWindowUsagePercent":2.0803,"contextCompactionThresholdTokens":967000,"latestModelIdentifier":"claude-sonnet-5-5","latestRuntimeKind":"claude_agent_sdk","usageReportCount":1,"revision":1}
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > publishes every Claude model call of a multi-call turn live, each with the SDK's own reading, and totals equal the calls plus the turn-end remainder
+Closed agent session 7df1db79-44f8-4944-84ab-e1e5387e9dc3
+Agent WebSocket disconnected: 7df1db79-44f8-4944-84ab-e1e5387e9dc3
+
+ ✓ tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts (4 tests | 1 skipped) 20565ms
+     ✓ persists token usage from a real codex-app-server runtime turn and exposes it through GraphQL  5012ms
+     ✓ persists token usage from a real claude-agent-sdk runtime turn and exposes it through GraphQL  5395ms
+     ✓ publishes every Claude model call of a multi-call turn live, each with the SDK's own reading, and totals equal the calls plus the turn-end remainder  9635ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 1 skipped (4)
+   Start at  06:23:57
+   Duration  27.90s (transform 4.81s, setup 26ms, import 6.70s, tests 20.56s, environment 0ms)
+

@@ -1,0 +1,151 @@
+{
+  "rootId": "tma_org_77ab67e2_24f89cc36eeb4d23b13656b332154365",
+  "managerRunId": "tma_org_manager_77ab67e2_18e86c0171914d9cb959d0874eeff57e",
+  "tokenFrameCount": 5,
+  "tokenFrames": [
+    {
+      "t": 2730,
+      "type": "ROOT_EXECUTION_EVENT",
+      "keys": [
+        "root_subject_kind",
+        "root_run_id",
+        "change_sequence",
+        "event"
+      ]
+    },
+    {
+      "t": 4951,
+      "type": "ROOT_EXECUTION_EVENT",
+      "keys": [
+        "root_subject_kind",
+        "root_run_id",
+        "change_sequence",
+        "event"
+      ]
+    },
+    {
+      "t": 6010,
+      "type": "ROOT_EXECUTION_EVENT",
+      "keys": [
+        "root_subject_kind",
+        "root_run_id",
+        "change_sequence",
+        "event"
+      ]
+    },
+    {
+      "t": 7232,
+      "type": "ROOT_EXECUTION_EVENT",
+      "keys": [
+        "root_subject_kind",
+        "root_run_id",
+        "change_sequence",
+        "event"
+      ]
+    },
+    {
+      "t": 7237,
+      "type": "ROOT_EXECUTION_EVENT",
+      "keys": [
+        "root_subject_kind",
+        "root_run_id",
+        "change_sequence",
+        "event"
+      ]
+    }
+  ],
+  "samples": [
+    {
+      "t": 205,
+      "usageReportCount": 0,
+      "revision": 0,
+      "latestPromptTokens": null,
+      "effectiveContextWindowTokens": null,
+      "contextCompactionThresholdTokens": null,
+      "latestModelIdentifier": null,
+      "latestRuntimeKind": null,
+      "totalTokens": 0
+    },
+    {
+      "t": 1413,
+      "usageReportCount": 0,
+      "revision": 0,
+      "latestPromptTokens": null,
+      "effectiveContextWindowTokens": null,
+      "contextCompactionThresholdTokens": null,
+      "latestModelIdentifier": null,
+      "latestRuntimeKind": null,
+      "totalTokens": 0
+    },
+    {
+      "t": 2617,
+      "usageReportCount": 0,
+      "revision": 0,
+      "latestPromptTokens": null,
+      "effectiveContextWindowTokens": null,
+      "contextCompactionThresholdTokens": null,
+      "latestModelIdentifier": null,
+      "latestRuntimeKind": null,
+      "totalTokens": 0
+    },
+    {
+      "t": 3822,
+      "usageReportCount": 1,
+      "revision": 1,
+      "latestPromptTokens": 21310,
+      "effectiveContextWindowTokens": 1000000,
+      "contextCompactionThresholdTokens": 967000,
+      "latestModelIdentifier": "claude-haiku-5-5",
+      "latestRuntimeKind": "claude_agent_sdk",
+      "totalTokens": 21384
+    },
+    {
+      "t": 5028,
+      "usageReportCount": 2,
+      "revision": 2,
+      "latestPromptTokens": 21414,
+      "effectiveContextWindowTokens": 1000000,
+      "contextCompactionThresholdTokens": 967000,
+      "latestModelIdentifier": "claude-haiku-5-5",
+      "latestRuntimeKind": "claude_agent_sdk",
+      "totalTokens": 42872
+    },
+    {
+      "t": 6233,
+      "usageReportCount": 3,
+      "revision": 3,
+      "latestPromptTokens": 21518,
+      "effectiveContextWindowTokens": 1000000,
+      "contextCompactionThresholdTokens": 967000,
+      "latestModelIdentifier": "claude-haiku-5-5",
+      "latestRuntimeKind": "claude_agent_sdk",
+      "totalTokens": 64464
+    },
+    {
+      "t": 7438,
+      "usageReportCount": 4,
+      "revision": 5,
+      "latestPromptTokens": 21622,
+      "effectiveContextWindowTokens": 1000000,
+      "contextCompactionThresholdTokens": 967000,
+      "latestModelIdentifier": "claude-haiku-5-5",
+      "latestRuntimeKind": "claude_agent_sdk",
+      "totalTokens": 87366
+    },
+    {
+      "t": 8643,
+      "usageReportCount": 4,
+      "revision": 5,
+      "latestPromptTokens": 21622,
+      "effectiveContextWindowTokens": 1000000,
+      "contextCompactionThresholdTokens": 967000,
+      "latestModelIdentifier": "claude-haiku-5-5",
+      "latestRuntimeKind": "claude_agent_sdk",
+      "totalTokens": 87366
+    }
+  ],
+  "frameTypes": [
+    "ROOT_EXECUTION_EVENT",
+    "AGENT_COMMAND_ACK"
+  ]
+}

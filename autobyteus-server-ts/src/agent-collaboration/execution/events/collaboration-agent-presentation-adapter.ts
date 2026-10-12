@@ -245,6 +245,8 @@ const token = (payload: Record<string, unknown>, expectedIdentity: Collaboration
   latestPromptTokens: number(raw(payload, "latest_prompt_tokens", "latestPromptTokens")),
   effectiveContextWindowTokens: number(raw(payload, "effective_context_window_tokens", "effectiveContextWindowTokens")),
   contextWindowUsagePercent: number(raw(payload, "context_window_usage_percent", "contextWindowUsagePercent")),
+  contextCompactionThresholdTokens: number(raw(payload, "context_compaction_threshold_tokens", "contextCompactionThresholdTokens")),
+  reportsModelCall: raw(payload, "reports_model_call", "reportsModelCall") === true,
   runSummaryAfterEvent: tokenRunSummary(payload, expectedIdentity),
   qualityFlags: strings(raw(payload, "quality_flags", "qualityFlags")),
   });

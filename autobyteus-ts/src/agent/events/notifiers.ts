@@ -161,6 +161,7 @@ export class AgentExternalEventNotifier extends EventEmitter {
     latest_prompt_tokens?: number | null;
     effective_context_window_tokens?: number | null;
     context_window_usage_percent?: number | null;
+    context_compaction_threshold_tokens?: number | null;
     raw_event_json?: Record<string, unknown> | null;
   }): void {
     this.emitEvent(EventType.AGENT_TOKEN_USAGE_UPDATED, payload);

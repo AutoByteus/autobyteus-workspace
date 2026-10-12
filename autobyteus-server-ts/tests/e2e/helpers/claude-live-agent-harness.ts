@@ -98,14 +98,17 @@ export const createClaudeLiveAgentHarness = async (input: {
 }): Promise<ClaudeLiveAgentHarness> => {
   const runContext = buildRunContext(input.runId, input.workspaceRoot, input.memoryDir ?? null);
   const sessionManager = new ClaudeSessionManager(
-    { activateForRun: () => ({ kind: "not_exposed" as const }) } as never,
+    { activateForRun: () => ({ kind: "not_exposed" as const }), deactivateForRun: () => 0 } as never,
     {} as never,
     new ClaudeSdkClient(),
     { cleanupMaterializedWorkspaceSkills: async () => undefined } as never,
   );
+  // The harness owns the session through the returned value; the exact-ownership callback the
+  // backend factory uses for release on a cancelled preparation has nothing to record here.
+  const ownSession = () => undefined;
   const session = input.restoreSessionId
-    ? await sessionManager.restoreRunSession(runContext, input.restoreSessionId)
-    : await sessionManager.createRunSession(runContext);
+    ? await sessionManager.restoreRunSession(runContext, input.restoreSessionId, ownSession)
+    : await sessionManager.createRunSession(runContext, ownSession);
   const agentRun = new AgentRun({
     providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
     context: runContext,

@@ -24,6 +24,7 @@ import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
 import { CompactionPolicy } from '../../../../src/memory/policies/compaction-policy.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
+import { createEnabledMemoryCompactionConfiguration } from '../../../../src/memory/compaction/memory-compaction-configuration.js';
 
 class ObservedUsageLeafLLM extends BaseLLM {
   constructor(
@@ -149,6 +150,8 @@ describe('LlmPhase disabled automatic compaction', () => {
       expect(notifyAgentTokenUsageUpdated).toHaveBeenCalledWith(expect.objectContaining({
         latest_prompt_tokens: observedPromptTokens,
         effective_context_window_tokens: 617_024,
+        // Compaction is off, so no threshold is reported (token-meter-accuracy REQ-010).
+        context_compaction_threshold_tokens: null,
       }));
     } finally {
       classifyPressure.mockRestore();
@@ -162,5 +165,54 @@ describe('LlmPhase disabled automatic compaction', () => {
 
   it('reports capacity but performs no automatic-compaction work at the policy hard cap', async () => {
     await runDisabledObservation(615_744, 'hard-cap');
+  });
+});
+
+describe('LlmPhase compaction threshold report', () => {
+  it('reports the automatic-compaction trigger with each call when compaction is enabled', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'enabled-memory-compaction-threshold-'));
+    try {
+      const llm = new ObservedUsageLeafLLM(
+        new LLMModel({
+          name: 'enabled-leaf-model', value: 'enabled-leaf-model', canonicalName: 'enabled-leaf-model',
+          provider: LLMProvider.OPENAI, activeContextTokens: 617_024, maxContextTokens: 617_024,
+          maxOutputTokens: 1_024, defaultCompactionRatio: 0.2, defaultSafetyMarginTokens: 256,
+        }),
+        new LLMConfig({ maxTokens: 1_024, compactionRatio: 0.2, safetyMarginTokens: 256 }),
+        1_000,
+      );
+      const memoryManager = new MemoryManager({
+        store: new FileMemoryStore(tempDir, 'enabled-leaf'),
+        memoryCompaction: createEnabledMemoryCompactionConfiguration(new CompactionPolicy(), () => {
+          throw new Error('A below-threshold call must not compact.');
+        }),
+      });
+      const state = new AgentRuntimeState('enabled-leaf');
+      state.llmInstance = llm;
+      state.memoryManager = memoryManager;
+      state.toolInstances = {};
+      state.statusManagerRef = { notifier: { notifyAgentCompactionStatus: vi.fn() } } as any;
+      const context = new AgentContext('enabled-leaf', new AgentConfig('leaf', 'compactor', 'one-shot leaf', llm), state);
+      const turn = new AgentTurn('turn-enabled');
+      const notifyAgentTokenUsageUpdated = vi.fn();
+      const content = 'below the trigger';
+      await new LlmPhase().run(
+        {
+          llmUserMessage: new LLMUserMessage({ content }),
+          turnId: turn.turnId,
+          sourceEvent: new UserMessageReceivedEvent(new AgentInputUserMessage(content)),
+        },
+        context,
+        turn,
+        { notifyAgentSegmentEvent: vi.fn(), notifyAgentTokenUsageUpdated, notifyAgentErrorOutputGeneration: vi.fn() } as any,
+      );
+      expect(notifyAgentTokenUsageUpdated).toHaveBeenCalledWith(expect.objectContaining({
+        latest_prompt_tokens: 1_000,
+        effective_context_window_tokens: 617_024,
+        context_compaction_threshold_tokens: 123_148,
+      }));
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
   });
 });

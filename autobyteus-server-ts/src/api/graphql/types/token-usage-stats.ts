@@ -37,6 +37,13 @@ export class TokenUsageRunSummaryGraphql extends TokenUsageCostSummaryAggregateG
   @Field(() => Float, { nullable: true })
   contextWindowUsagePercent?: number | null;
 
+  @Field(() => GraphQLSafeInt, { nullable: true })
+  contextCompactionThresholdTokens?: number | null;
+
+  /** Sum of the summarized records' revisions; orders live and fetched summaries (D-9). */
+  @Field(() => GraphQLSafeInt)
+  revision!: number;
+
   @Field(() => String, { nullable: true })
   latestModelProvider?: string | null;
 
@@ -223,6 +230,8 @@ export const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPaylo
   latestPromptTokens: summary.latest_prompt_tokens,
   effectiveContextWindowTokens: summary.effective_context_window_tokens,
   contextWindowUsagePercent: summary.context_window_usage_percent,
+  contextCompactionThresholdTokens: summary.context_compaction_threshold_tokens,
+  revision: summary.revision,
   latestModelProvider: summary.latest_model_provider,
   latestModelIdentifier: summary.latest_model_identifier,
   latestRuntimeKind: summary.latest_runtime_kind,

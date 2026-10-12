@@ -42,13 +42,7 @@ export class LegacyTokenUsageRunFold {
       ordinal: legacyRowId(row),
     };
     this.record ??= createEmptyRunRecord(payload, marker);
-    this.record = applyTokenUsageContribution({
-      record: this.record,
-      payload,
-      marker,
-      incrementReport: true,
-      incrementRevision: true,
-    });
+    this.record = applyTokenUsageContribution({ record: this.record, payload, marker });
     if (this.record.pricingSummary.missingPriceDimensions.length > MAX_LEGACY_MISSING_PRICE_DIMENSIONS) {
       throw new Error("Legacy token usage merged missing-price dimensions exceed the target bound.");
     }

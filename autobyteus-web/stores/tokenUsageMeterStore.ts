@@ -22,6 +22,7 @@ import {
   mergeUnitPrices,
   unitPricesOrEmpty,
 } from '~/stores/tokenUsageUnitPriceSummary';
+import { createTokenUsageCompactionMarks } from '~/stores/tokenUsageCompactionMarks';
 
 export interface TeamTokenUsageMemberIdentity {
   teamRunId: string;
@@ -80,29 +81,27 @@ const emptyTeamAggregate = (teamRunId: string): TokenUsageRunSummary => ({
   latestPromptTokens: null,
   effectiveContextWindowTokens: null,
   contextWindowUsagePercent: null,
+  contextCompactionThresholdTokens: null,
   latestModelProvider: null,
   latestModelIdentifier: null,
   latestSelectedRawModelId: null,
   hasCacheWriteRateAssumption: false,
   latestRuntimeKind: null,
   usageReportCount: 0,
+  revision: 0,
   updatedAt: null,
 });
 
 const normalizedId = (value: string | null | undefined): string => value?.trim() || '';
 const memberCacheKey = (identity: TeamTokenUsageMemberIdentity): string =>
   `${identity.teamRunId}\u0000${identity.agentRunId}`;
-const rate = (numerator: number, denominator: number): number | null =>
-  denominator > 0 ? numerator / denominator : null;
+const rate = (numerator: number, denominator: number): number | null => denominator > 0 ? numerator / denominator : null;
 const addCost = (current: number | null, delta: number | null): number | null =>
   current === null && delta === null ? null : (current ?? 0) + (delta ?? 0);
 
-const normalizedStatus = (status: string): TokenUsageApiCostStatus => {
-  if (status === 'estimated' || status === 'price_missing' || status === 'partial_price_missing' || status === 'mixed' || status === 'local_no_api_bill') {
-    return status;
-  }
-  return 'price_missing';
-};
+const normalizedStatus = (status: string): TokenUsageApiCostStatus => (
+  status === 'estimated' || status === 'price_missing' || status === 'partial_price_missing' || status === 'mixed' || status === 'local_no_api_bill'
+) ? status : 'price_missing';
 
 const mergeStatus = (
   current: TokenUsageApiCostStatus,
@@ -131,8 +130,7 @@ const mergeCacheState = (current: TokenUsageCacheState, next: string): TokenUsag
   return 'unknown';
 };
 
-const mergeUniqueStrings = (current: string[], next: string[]): string[] =>
-  Array.from(new Set([...current, ...next].filter(Boolean))).sort();
+const mergeUniqueStrings = (current: string[], next: string[]): string[] => Array.from(new Set([...current, ...next].filter(Boolean))).sort();
 
 const applyPersistedEventToPartialTeamAggregate = (
   summary: TokenUsageRunSummary,
@@ -204,7 +202,8 @@ const applyPersistedEventToPartialTeamAggregate = (
           reasoningOutputTokens,
         })
       : mergedUnitPrices,
-    usageReportCount: summary.usageReportCount + 1,
+    // Reading-only and reconciliation events are not model calls (D-9).
+    usageReportCount: summary.usageReportCount + (details.reports_model_call ? 1 : 0),
     latestSelectedRawModelId: details.run_summary_after_event?.latest_selected_raw_model_id
       ?? summary.latestSelectedRawModelId,
     hasCacheWriteRateAssumption: Boolean(summary.hasCacheWriteRateAssumption
@@ -218,6 +217,9 @@ const normalizeRecordBackedSummary = (summary: TokenUsageRunSummary): TokenUsage
   if (!Number.isSafeInteger(summary.usageReportCount) || summary.usageReportCount < 0) {
     throw new Error('Record-backed token summary requires a non-negative safe-integer usage report count.');
   }
+  if (!Number.isSafeInteger(summary.revision) || summary.revision < 0) {
+    throw new Error('Record-backed token summary requires a non-negative safe-integer revision.');
+  }
   return { ...summary, unitPrices: unitPricesOrEmpty(summary.unitPrices) };
 };
 
@@ -230,6 +232,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   /** Standalone run roll-ups (host plus collaborators and copies), apart from the host's exact live summary. */
   const standaloneRunSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
   const standaloneRunRequests = new Map<string, Promise<TokenUsageRunSummary | null>>();
+  const { clearOnLiveModelCall, ...compactionMarks } = createTokenUsageCompactionMarks();
 
   function getRunSummary(runId: string | null | undefined): TokenUsageRunSummary | null {
     const id = normalizedId(runId);
@@ -285,7 +288,8 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
       throw new Error('Standalone token summary returned a different AgentRun ID.');
     }
     const current = runSummaries[runId];
-    if (current && summary.usageReportCount <= current.usageReportCount) return false;
+    // Revision, not the model-call count, orders summaries: a reading-only save keeps the count (D-9).
+    if (current && summary.revision <= current.revision) return false;
     runSummaries[runId] = summary;
     return true;
   }
@@ -301,7 +305,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     }
     const key = memberCacheKey({ teamRunId, agentRunId });
     const current = teamMemberSummaries[key];
-    if (current && summary.usageReportCount <= current.usageReportCount) return false;
+    if (current && summary.revision <= current.revision) return false;
     teamMemberSummaries[key] = summary;
     return true;
   }
@@ -313,6 +317,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     if (seenKey && seenUsageKeys.has(seenKey)) return false;
     const summary = mapTokenUsageRunSummaryDto(payload.run_summary_after_event, { runId });
     if (seenKey) seenUsageKeys.add(seenKey);
+    clearOnLiveModelCall(runId, payload.reports_model_call);
     return upsertRecordBackedAgentRunSummary({ runId, summary });
   }
 
@@ -331,6 +336,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
       rootTeamRunId: teamRunId,
     });
     seenUsageKeys.add(seenKey);
+    clearOnLiveModelCall(runId, details.reports_model_call);
     upsertRecordBackedTeamMemberSummary({ teamRunId, agentRunId: runId, summary });
 
     const current = teamAggregateEntries[teamRunId];
@@ -375,7 +381,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     return id ? standaloneRunSummaries[id] ?? null : null;
   }
 
-  /** A standalone run's roll-up; a refetch never moves it back to fewer usage reports. */
+  /** A standalone run's roll-up; a refetch never moves it back to an older revision. */
   function upsertRecordBackedStandaloneRunSummary(input: {
     runId: string;
     summary: TokenUsageRunSummary;
@@ -386,7 +392,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
       throw new Error('Standalone run token summary returned a different AgentRun ID.');
     }
     const current = standaloneRunSummaries[runId];
-    if (current && summary.usageReportCount < current.usageReportCount) return false;
+    if (current && summary.revision < current.revision) return false;
     standaloneRunSummaries[runId] = summary;
     return true;
   }
@@ -505,6 +511,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     || Object.keys(teamMemberSummaries).length > 0);
 
   return {
+    ...compactionMarks,
     hasAnyUsage,
     getRunSummary,
     getStandaloneRunSummary,

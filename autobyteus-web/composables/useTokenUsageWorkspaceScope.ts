@@ -149,13 +149,14 @@ export function useTokenUsageWorkspaceScope() {
     };
   });
   watch([directIdentity, scopeKey], ([identity]) => { if (identity) void hydrateIdentity(identity); }, { immediate: true });
-  // The host's live usage reports advance its exact summary; the roll-up follows by refetching.
-  const standaloneHostReportCount = computed(() => target.value?.kind === 'standalone_agent'
-    ? meter.getRunSummary(target.value.context.state.runId)?.usageReportCount ?? null
+  // Every save of the host's exact summary (a model call, a reading-only update or a turn-end
+  // remainder) advances its revision (D-9); the roll-up follows by refetching.
+  const standaloneHostRevision = computed(() => target.value?.kind === 'standalone_agent'
+    ? meter.getRunSummary(target.value.context.state.runId)?.revision ?? null
     : null);
-  watch(standaloneHostReportCount, (count, previous) => {
+  watch(standaloneHostRevision, (revision, previous) => {
     const current = target.value;
-    if (current?.kind !== 'standalone_agent' || count === null || count === previous) return;
+    if (current?.kind !== 'standalone_agent' || revision === null || revision === previous) return;
     void meter.fetchStandaloneRunSummary(current.context.state.runId).catch((error: unknown) => {
       errorByKey[memberKey(scopeKey.value, current.context.state.runId)] = fetchErrorMessage(error);
     });

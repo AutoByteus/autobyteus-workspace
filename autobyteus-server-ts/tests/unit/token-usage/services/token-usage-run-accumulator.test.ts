@@ -52,6 +52,7 @@ const directPayload = (eventId: string) => createTokenUsageUpdatedPayload({
     runtime_kind: "autobyteus",
     ingestion_kind: "autobyteus_llm_phase",
     usage_scope: "per_call",
+    reports_model_call: true,
     input_token_semantic: "gross_includes_cache",
     reported_input_tokens: 1,
     reported_output_tokens: 0,
@@ -80,6 +81,7 @@ const localPayload = createTokenUsageUpdatedPayload({
     runtime_kind: "OLLAMA",
     ingestion_kind: "autobyteus_llm_phase",
     usage_scope: "per_call",
+    reports_model_call: true,
     input_token_semantic: "gross_includes_cache",
     reported_input_tokens: 2,
     reported_output_tokens: 1,
@@ -145,10 +147,13 @@ describe("TokenUsageRunAccumulator", () => {
       expect(second.run_summary_after_event?.estimated_api_total_cost).toBeCloseTo(15 * 10 / 1e6, 9);
       const persisted = await repository.getByRunId("sdk-selected-sql");
       expect(persisted?.claudeSdkUsageStateJson).toContain("claude-haiku");
-      expect(persisted?.usageReportCount).toBe(2n);
+      // Turn-end results reconcile totals but are not model calls (D-3, D-4).
+      expect(persisted?.usageReportCount).toBe(0n);
+      expect(persisted?.revision).toBe(2n);
+      expect(second.run_summary_after_event?.revision).toBe(2);
       expect(await accumulator.recordObservation(usage("two", 15, "resume"))).toMatchObject({
         meter_delta_total_tokens: 0 });
-      expect((await repository.getByRunId("sdk-selected-sql"))?.usageReportCount).toBe(2n);
+      expect((await repository.getByRunId("sdk-selected-sql"))?.revision).toBe(2n);
       await prisma.tokenUsageRunRecord.update({ where: { runId: "sdk-selected-sql" },
         data: { claudeSdkUsageStateJson: null } });
       expect((await repository.getByRunId("sdk-selected-sql"))?.claudeSdkUsageStateJson).toBeNull();

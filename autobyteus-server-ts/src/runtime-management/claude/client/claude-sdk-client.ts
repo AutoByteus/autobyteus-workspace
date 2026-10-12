@@ -86,6 +86,7 @@ export type ClaudeSdkQueryLike = AsyncIterable<unknown> & {
   initializationResult: () => Promise<unknown>;
   supportedModels?: () => Promise<unknown>;
   setMcpServers?: (servers: Record<string, unknown>) => Promise<unknown>;
+  getContextUsage?: (options: { detail: "summary" | "full" }) => Promise<unknown>;
 };
 
 let sdkSessionSpawnQueue: Promise<void> = Promise.resolve();
@@ -414,6 +415,8 @@ export class ClaudeSdkClient {
       ...(options.mcpServers ? { mcpServers: options.mcpServers } : {}),
       ...(options.stderr ? { stderr: options.stderr } : {}),
       settingSources,
+      // Per-call usage arrives only on `message_delta` stream events (token-meter-accuracy D-2).
+      includePartialMessages: true,
       ...(options.thinking ? { thinking: options.thinking } : {}),
       ...(options.effort ? { effort: options.effort } : {}),
       ...(options.canUseTool ? { canUseTool: options.canUseTool } : {}),

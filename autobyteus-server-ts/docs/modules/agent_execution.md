@@ -540,6 +540,15 @@ It is not a new diagnostic/log feed or recovery policy.
   uses the same existing credential redaction. Existing authentication
   recognition, error-code/generic fallback and tracker settlement remain. An
   `errors[]` field alone does not make an unrelated event terminal.
+- Only SDK error fields decide whether a Claude `result` is a turn error:
+  `is_error: true`, or a non-empty string `error` or `code`. On a successful
+  result, `result` is the agent's own final reply and is never scanned for
+  failure, so a reply that mentions "not logged in", "please run /login" or
+  `authentication_failed` completes the turn normally. The authentication
+  markers only choose `CLAUDE_RUNTIME_AUTHENTICATION_FAILED` over
+  `CLAUDE_RUNTIME_RESULT_ERROR` for a result that is already an error, such as
+  the SDK's not-logged-in result (`is_error: true`,
+  `result: "Not logged in · Please run /login"`).
 - Native AutoByteus, Codex and ACP/Grok keep their existing informative error
   paths. There is no recognized-cause allowlist or quota-specific translation,
   invented reset time/code, whole-response dump or arbitrary ordinary-message
@@ -729,10 +738,11 @@ raw model; auxiliary-model usage is not charged to the selected-model meter.
 The meter reports an AutoByteus-configured API-equivalent estimate, not the
 Claude subscription's actual charge. See [Token Usage](token_usage.md) for
 checkpoint, cache-write approximation, and migration details.
-The same selected raw result row supplies a context-window capacity only when
-it is positive and safe; a safe full prompt sum then yields the latest prompt
-percentage. Older valid rows with null percentage are repaired by the
-run-summary read projection, not by a data backfill.
+Context readings do not come from the result: every main-loop model call is
+reported live from the stream's `message_start`/`message_delta` usage with the
+SDK's own `getContextUsage()` reading (tokens in context, window and
+auto-compaction threshold), and the result only reconciles what per-call data
+cannot see, such as the SDK's own compaction calls.
 
 Claude interrupt is owned by the session, not by WebSocket, GraphQL, or
 frontend button state, and it ends only the current turn. The process, the

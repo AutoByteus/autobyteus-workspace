@@ -73,6 +73,9 @@ export interface TokenUsageUpdatedPayload {
   latest_prompt_tokens?: number | null;
   effective_context_window_tokens?: number | null;
   context_window_usage_percent?: number | null;
+  context_compaction_threshold_tokens?: number | null;
+  /** True when the observation reports exactly one provider model call. */
+  reports_model_call?: boolean;
   run_summary_after_event: TokenUsageRunSummaryDto | null;
   quality_flags?: string[];
 }
@@ -115,12 +118,17 @@ export interface TokenUsageRunSummary {
   latestPromptTokens: number | null;
   effectiveContextWindowTokens: number | null;
   contextWindowUsagePercent: number | null;
+  /** The runtime's own auto-compaction threshold for the latest reading; null when not reported. */
+  contextCompactionThresholdTokens: number | null;
   latestModelProvider: string | null;
   latestModelIdentifier: string | null;
   latestSelectedRawModelId?: string | null;
   hasCacheWriteRateAssumption?: boolean;
   latestRuntimeKind: string | null;
+  /** Model calls. */
   usageReportCount: number;
+  /** Monotonic freshness key: the sum of the summarized records' revisions. */
+  revision: number;
   updatedAt: string | null;
 }
 
