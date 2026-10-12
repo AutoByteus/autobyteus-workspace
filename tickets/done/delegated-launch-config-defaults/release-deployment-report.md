@@ -49,6 +49,27 @@
   - Rebuilding the three contract packages left no `dist/` diff.
 - Post-integration checks: all 16 passed (`delivery-evidence/dr-002/`). See Verification Checks.
 
+### DR-002 Finalization Re-integration
+
+- At the finalization fetch, `origin/personal` had advanced again, to `4d315fd24` (`agent-package-auto-refresh`).
+- Delivery-owned edits protected before re-integration: `Completed`. Everything was committed, including the archive commit `68febeb64`.
+- Re-integration: `Merge` (`f3760a679`). There were no conflicts.
+  - Overlapping files: six docs, `generated/graphql.ts` and `agentOrgDefinitionQueries.ts`.
+  - Our doc sections were kept. The base's agent-package docs sit in other sections.
+  - No source file of this ticket changed in the base.
+- Checks (`delivery-evidence/dr-002/final-merge/`): 15 of 16 passed on the first run.
+  - Server unit failed once: `run-file-change-service.test.ts` › "projects FILE_CHANGE events…" timed out waiting for live projection status.
+  - Neither this ticket nor the merged base touched that test or its source; the last change was `061d4698b`, 2026-10-06.
+  - It passed 5/5 alone, and the full suite rerun passed: 679 files, 5357 passed, 7 skipped.
+  - Classified as a load-timing flake, not a regression.
+- Other results:
+  - ticket server E2E: 3/3;
+  - browser probe: 7/7;
+  - web: 610 files, 4236 passed;
+  - contracts: 13/24/17;
+  - web guards, licensing and hygiene: pass.
+- The user's acceptance stands, because the re-integration changed no behavior of this ticket. No renewed verification was required.
+
 ## User Verification
 
 - Initial explicit user completion/verification received: `Yes`. The user's instruction is the acceptance.

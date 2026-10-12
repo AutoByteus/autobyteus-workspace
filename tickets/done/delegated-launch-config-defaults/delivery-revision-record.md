@@ -48,6 +48,8 @@
   - `449d639de` merged cleanly as `7f750e1e5`.
   - All 16 checks passed, including the real-UI probe (7/7).
   - The user's instruction is recorded as acceptance. AC-015 was not separately reported by the user.
+  - At finalization, `origin/personal` @ `4d315fd24` (`agent-package-auto-refresh`) was merged cleanly as `f3760a679`.
+    - Checks passed, after one unrelated flaky unit test was rerun green; see `release-deployment-report.md` → DR-002 Finalization Re-integration.
   - Finalization and beta `v1.5.3-beta.1` follow; their outcome is in `release-deployment-report.md`.
 - Docs sync report: `docs-sync-report.md` (DR-002 note: no further docs impact from the base).
 - Handoff summary: `handoff-summary.md` → User Verification, State Before Finalization (DR-002).
