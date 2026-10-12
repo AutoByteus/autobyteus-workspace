@@ -25,6 +25,7 @@
       :root-model-unavailable="modelUnavailable('/')"
       :members="view.members"
       :locked-models-for="lockedModelsFor"
+      :delegated="delegatedRows"
       :dirty="draftStore.dirty"
       :can-save="draftStore.canSave"
       :saving="draftStore.saving || draftStore.reconciling"
@@ -50,6 +51,17 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
+import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
+import {
+  collaborationTaskExecutionLists,
+  collaboratorAgentSourceAt,
+} from '~/services/collaborators/agentSourceSelectors'
+import {
+  collaborationDelegatedLaunchRows,
+  teamDelegatedLaunchRows,
+  type DelegatedLaunchRow,
+} from '~/utils/runSettings/delegatedLaunchRows'
 import { useLocalization } from '~/composables/useLocalization'
 import { useRunStopAction, type RunStopSubject } from '~/composables/runSettings/useRunStopAction'
 import type { ChatModelOption } from '~/composables/chat/useChatModelCatalog'
@@ -176,6 +188,34 @@ const view = computed<{ key: string; kind: 'agent' | 'team' | 'org'; name: strin
     root: tree.root,
     members: tree.nodes,
   }
+})
+
+/**
+ * REQ-007: collaborators and open delegated copies of the run, read-only. Team and Org runs read
+ * the saved tree; a standalone Agent run reads its collaboration view. Closed copies are left out.
+ */
+const delegatedRows = computed<readonly DelegatedLaunchRow[]>(() => {
+  const current = draft.value
+  if (!current) return []
+  if (current.kind === 'team') {
+    const closed = useAgentTeamContextsStore().getTeamContextById(current.teamRunId)?.view.getClosedTaskExecutions() ?? []
+    return teamDelegatedLaunchRows(current.executionTree, closed)
+  }
+  const view = current.kind === 'agent' ? useAgentRunCollaborationStore().contextFor(current.runId)?.view ?? null : null
+  if (current.kind === 'agent' && !view) return []
+  const org = current.kind === 'agent_org' ? current.executionTree.rootOrg : null
+  const collaborators = org?.collaborators ?? view!.execution_tree.collaborators
+  const configured = (org?.members ?? []).flatMap((member) => 'agentRunId' in member ? [member] : member.members)
+  return collaborationDelegatedLaunchRows({
+    collaborators,
+    taskExecutions: collaborationTaskExecutionLists({
+      taskExecutions: org?.taskExecutions ?? view!.execution_tree.taskExecutions, members: org?.members ?? [], collaborators,
+    }),
+    launchAt: (address) => configured.find((agent) => agent.address === address)?.launchConfiguration
+      ?? collaboratorAgentSourceAt(collaborators, address)?.launchConfiguration ?? null,
+    closed: org ? history.agentOrgHistory.find((run) => run.rootRunId === current.orgRunId)?.closedTaskExecutions ?? []
+      : view!.closed_task_executions,
+  })
 })
 
 const runtimeOf = (address: string): string => {

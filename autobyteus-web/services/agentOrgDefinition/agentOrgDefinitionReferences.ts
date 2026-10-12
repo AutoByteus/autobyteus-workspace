@@ -5,7 +5,8 @@ import type { AgentOrgMember } from '~/stores/agentOrgDefinitionStore'
 import type { AgentDefinition } from '~/stores/agentDefinitionStore'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 
-type AgentSummary = Pick<AgentDefinition, 'id' | 'name' | 'description'>
+/** `defaultLaunchConfig` seeds a fresh Org launch's agent rows (REQ-009). */
+type AgentSummary = Pick<AgentDefinition, 'id' | 'name' | 'description'> & Partial<Pick<AgentDefinition, 'defaultLaunchConfig'>>
 type TeamSummary = AgentTeamDefinition
 type Ownership = { ownershipScope?: string | null; ownerOrgId?: string | null; ownerTeamId?: string | null }
 export type AgentOrgReferenceCatalogLookup = {

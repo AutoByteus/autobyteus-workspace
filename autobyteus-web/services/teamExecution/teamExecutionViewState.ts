@@ -43,6 +43,8 @@ export interface TeamExecutionViewState {
   getRootTeamRunId(): string;
   getTeamDefinitionName(): string;
   getExecutionTree(): TeamRunExecutionTreeDto;
+  /** Task executions whose Task is DONE or CANCELLED (closed copies are stopped and left out of listings). */
+  getClosedTaskExecutions(): readonly TaskExecutionReference[];
   getConfigurationView(): Readonly<TeamRunConfigurationView>;
   getChangeSequence(): number;
   needsStreamRecovery(): boolean;
@@ -465,6 +467,7 @@ export const createTeamExecutionViewState = (
     getRootTeamRunId: () => rootTeamRunId,
     getTeamDefinitionName: () => publication.value.tree.root_team.team_definition_name,
     getExecutionTree: () => publication.value.tree,
+    getClosedTaskExecutions: () => publication.value.closed,
     getConfigurationView: () => input.configuration,
     getChangeSequence: () => publication.value.changeSequence,
     needsStreamRecovery: () => streamRecoveryRequired.value,

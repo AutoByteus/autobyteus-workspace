@@ -46,10 +46,30 @@ export const chatNavStartOrder = (input: Readonly<{
   input.assistantDefaults,
 ]
 
-const usable = (candidate: StartModelCandidate | null | undefined): candidate is StartModelCandidate & {
-  runtimeKind: string
-  llmModelIdentifier: string
-} => Boolean(candidate?.runtimeKind?.trim() && candidate.llmModelIdentifier?.trim())
+/** Why a start candidate cannot be used: it names no runtime or model, its runtime is off, or its model is not offered. */
+export type StartCandidateUnusableReason = 'incomplete' | 'runtime_unavailable' | 'model_unavailable'
+
+export type StartCandidateVerdict =
+  | Readonly<{ usable: true; choice: StartModelChoice }>
+  | Readonly<{ usable: false; reason: StartCandidateUnusableReason }>
+
+/**
+ * The start-default usability rule (REQ-021): a candidate names both a runtime and a model, its
+ * runtime is enabled and the model is in that runtime's catalog. Loads only that runtime's catalog.
+ * The caller has awaited `catalog.ensureAvailability()`.
+ */
+export const usableStartCandidate = async (
+  candidate: StartModelCandidate,
+  catalog: StartModelCatalog,
+): Promise<StartCandidateVerdict> => {
+  const runtimeKind = candidate.runtimeKind ?? ''
+  const llmModelIdentifier = candidate.llmModelIdentifier ?? ''
+  if (!runtimeKind.trim() || !llmModelIdentifier.trim()) return { usable: false, reason: 'incomplete' }
+  if (!catalog.isRuntimeEnabled(runtimeKind)) return { usable: false, reason: 'runtime_unavailable' }
+  await catalog.ensureCatalog(runtimeKind)
+  if (!catalog.models(runtimeKind).includes(llmModelIdentifier)) return { usable: false, reason: 'model_unavailable' }
+  return { usable: true, choice: { runtimeKind, llmModelIdentifier, llmConfig: candidate.llmConfig ?? null } }
+}
 
 export const resolveStartModel = async (
   candidates: readonly (StartModelCandidate | null | undefined)[],
@@ -58,15 +78,9 @@ export const resolveStartModel = async (
 ): Promise<StartModelChoice | null> => {
   await catalog.ensureAvailability()
   for (const candidate of candidates) {
-    if (!usable(candidate) || !catalog.isRuntimeEnabled(candidate.runtimeKind)) continue
-    await catalog.ensureCatalog(candidate.runtimeKind)
-    if (catalog.models(candidate.runtimeKind).includes(candidate.llmModelIdentifier)) {
-      return {
-        runtimeKind: candidate.runtimeKind,
-        llmModelIdentifier: candidate.llmModelIdentifier,
-        llmConfig: candidate.llmConfig ?? null,
-      }
-    }
+    if (!candidate) continue
+    const verdict = await usableStartCandidate(candidate, catalog)
+    if (verdict.usable) return verdict.choice
   }
   await catalog.ensureCatalog(defaultRuntimeKind)
   const first = catalog.models(defaultRuntimeKind)[0]

@@ -4390,7 +4390,7 @@ export type GetAgentOrgReferencedAgentQueryVariables = Exact<{
 }>;
 
 
-export type GetAgentOrgReferencedAgentQuery = { __typename?: 'Query', agentDefinition?: { __typename?: 'AgentDefinition', id: string, name: string, description: string, ownershipScope: AgentDefinitionOwnershipScope, ownerOrgId?: string | null, ownerTeamId?: string | null } | null };
+export type GetAgentOrgReferencedAgentQuery = { __typename?: 'Query', agentDefinition?: { __typename?: 'AgentDefinition', id: string, name: string, description: string, ownershipScope: AgentDefinitionOwnershipScope, ownerOrgId?: string | null, ownerTeamId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } | null };
 
 export type GetAgentOrgReferencedTeamQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -8908,6 +8908,11 @@ export const GetAgentOrgReferencedAgentDocument = gql`
     ownershipScope
     ownerOrgId
     ownerTeamId
+    defaultLaunchConfig {
+      llmModelIdentifier
+      runtimeKind
+      llmConfig
+    }
   }
 }
     `;

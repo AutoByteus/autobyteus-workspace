@@ -42,6 +42,14 @@
               <span class="truncate text-gray-600">{{ summary }}</span>
             </template>
           </span>
+          <span
+            v-if="launchNote"
+            class="mt-0.5 flex min-w-0 items-start gap-1 text-xs text-amber-700"
+            data-test="run-member-launch-note"
+          >
+            <Icon icon="heroicons:exclamation-triangle" class="mt-px h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+            <span class="min-w-0">{{ launchNote }}</span>
+          </span>
         </span>
       </button>
       <button
@@ -105,11 +113,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
+import { useLocalization } from '~/composables/useLocalization'
 import { initialsFor } from '~/components/chat/chatComposerMenus'
 import { setModelOptionLabels } from '~/utils/runSettings/modelOptions'
 import type { ChatModelOption } from '~/composables/chat/useChatModelCatalog'
 import type { RunMemberSettingChange, RunMemberSettingReset, RunSettingFlags } from '~/types/runSettings/RunSettings'
 import { countCustomizedMembers, isRunMemberCustomized, type RunMemberNode } from '~/utils/runSettings/runMemberTree'
+import type { MemberLaunchNote } from '~/utils/runSettings/memberLaunchDefaults'
 import RunSettingsCard from './RunSettingsCard.vue'
 import { useRunSettingsPresentation } from './useRunSettingsPresentation'
 
@@ -133,6 +143,21 @@ const emit = defineEmits<{
 }>()
 
 const presentation = useRunSettingsPresentation()
+const { t } = useLocalization()
+const UNUSABLE_REASON_KEY: Readonly<Record<MemberLaunchNote['reason'], string>> = {
+  incomplete: 'runSettings.members.defaultUnusable.incomplete',
+  runtime_unavailable: 'runSettings.members.defaultUnusable.runtime_unavailable',
+  model_unavailable: 'runSettings.members.defaultUnusable.model_unavailable',
+}
+/** A fresh start whose own default could not be used: what it named and why, and that it follows its parent. */
+const launchNote = computed(() => {
+  const note = props.node.launchNote
+  if (!note) return null
+  return t('runSettings.members.defaultUnusable', {
+    model: [note.runtimeKind ? presentation.runtimeShortLabel(note.runtimeKind) : null, note.llmModelIdentifier].filter(Boolean).join(' · ') || '—',
+    reason: t(UNUSABLE_REASON_KEY[note.reason]),
+  })
+})
 const expanded = computed(() => props.expandedKeys.has(props.node.key))
 const customized = computed(() => isRunMemberCustomized(props.node))
 const childCustomizedCount = computed(() => countCustomizedMembers(props.node.children))

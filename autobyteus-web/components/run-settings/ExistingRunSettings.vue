@@ -62,6 +62,8 @@
           read-only
           @change="(key, change) => emit('change-member', key, change)"
         />
+
+        <RunDelegatedLaunchList v-if="delegated.length" :rows="delegated" />
       </div>
     </div>
 
@@ -101,6 +103,8 @@ import { useLocalization } from '~/composables/useLocalization'
 import type { ChatModelOption } from '~/composables/chat/useChatModelCatalog'
 import type { RunMemberSettingChange, RunSettingFlags, RunSettingsValues } from '~/types/runSettings/RunSettings'
 import type { RunMemberNode } from '~/utils/runSettings/runMemberTree'
+import type { DelegatedLaunchRow } from '~/utils/runSettings/delegatedLaunchRows'
+import RunDelegatedLaunchList from './RunDelegatedLaunchList.vue'
 import RunMembersSection from './RunMembersSection.vue'
 import RunSettingsCard from './RunSettingsCard.vue'
 import RunSubjectHeader from './RunSubjectHeader.vue'
@@ -123,13 +127,15 @@ const props = withDefaults(defineProps<{
   rootModelUnavailable?: boolean
   members?: readonly RunMemberNode[]
   lockedModelsFor?: ((key: string) => readonly ChatModelOption[] | null) | null
+  /** Collaborators and open delegated copies, read-only (REQ-007). */
+  delegated?: readonly DelegatedLaunchRow[]
   dirty: boolean
   canSave: boolean
   saving: boolean
   saved: boolean
   /** A failed save, surfaced as is. */
   saveError?: string | null
-}>(), { rootLockedModels: null, rootModelUnavailable: false, members: () => [], lockedModelsFor: null, saveError: null })
+}>(), { rootLockedModels: null, rootModelUnavailable: false, members: () => [], lockedModelsFor: null, delegated: () => [], saveError: null })
 
 const emit = defineEmits<{
   (event: 'stop'): void

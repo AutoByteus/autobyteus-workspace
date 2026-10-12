@@ -1,17 +1,24 @@
-import type {
-  AgentLaunchConfigurationDto,
-  CollaboratorEntryDto as TeamCollaboratorEntryDto,
-  TaskExecutionDto as TeamTaskExecutionDto,
-  TeamRunExecutionTreeDto,
+import {
+  teamMemberLaunchConfiguration,
+  type AgentLaunchConfigurationDto,
+  type CollaboratorEntryDto as TeamCollaboratorEntryDto,
+  type TaskExecutionDto as TeamTaskExecutionDto,
+  type TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts'
-import type { CollaborationTaskExecutionDto, CollaboratorEntryDto } from '@autobyteus/collaboration-stream-contracts'
+import {
+  collaborationMemberLaunchConfiguration,
+  type CollaborationTaskExecutionDto,
+  type CollaboratorEntryDto,
+} from '@autobyteus/collaboration-stream-contracts'
 import { collectConfiguredAgents } from '~/services/teamExecution/teamExecutionTreeSelectors'
 
 /**
  * Where the definition and launch settings of an execution come from. A configured member is
  * its own source; a task execution at a collaborator address takes its source from the
  * collaborator entry (the collaborator Agent itself, or a member of the collaborator Team); a
- * task copy started from the catalog carries its own `source` (REQ-011), which its members share.
+ * task copy started from the catalog carries its own `source` (REQ-011). A Team member's launch
+ * is its own recorded launch, else its Team's, read only through the contract packages'
+ * effective-member functions (DS-005).
  * Configured placements always win: collaborator and catalog addresses never collide with them.
  */
 
@@ -43,7 +50,7 @@ export const teamCollaboratorAgentSourceAt = (
   }
   const member = entry.members.find((candidate) => candidate.address === address)
   return member
-    ? Object.freeze({ address, agent_definition_id: member.agent_definition_id, launch_configuration: entry.default_launch_configuration })
+    ? Object.freeze({ address, agent_definition_id: member.agent_definition_id, launch_configuration: teamMemberLaunchConfiguration(entry, member) })
     : null
 }
 
@@ -58,7 +65,7 @@ export const teamCatalogAgentSourceAt = (tasks: readonly TeamTaskExecutionDto[],
     }
     const member = task.source?.members.find((candidate) => candidate.address === address)
     if (task.source && member) {
-      return Object.freeze({ address, agent_definition_id: member.agent_definition_id, launch_configuration: task.source.default_launch_configuration })
+      return Object.freeze({ address, agent_definition_id: member.agent_definition_id, launch_configuration: teamMemberLaunchConfiguration(task.source, member) })
     }
     const nested = teamCatalogAgentSourceAt(task.task_executions, address)
     if (nested) return nested
@@ -111,7 +118,7 @@ export const collaboratorAgentSourceAt = (
   }
   const member = entry.members.find((candidate) => candidate.address === address)
   return member
-    ? Object.freeze({ address, agentDefinitionId: member.agentDefinitionId, launchConfiguration: entry.defaultLaunchConfiguration })
+    ? Object.freeze({ address, agentDefinitionId: member.agentDefinitionId, launchConfiguration: collaborationMemberLaunchConfiguration(entry, member) })
     : null
 }
 
@@ -140,7 +147,7 @@ const catalogSourceAt = (
       if (task.address === address) return Object.freeze({ address, coordinatorAddress: task.source.coordinatorAddress })
       const member = task.source.members.find((candidate) => candidate.address === address)
       if (member) {
-        return Object.freeze({ address, agentDefinitionId: member.agentDefinitionId, launchConfiguration: task.source.defaultLaunchConfiguration })
+        return Object.freeze({ address, agentDefinitionId: member.agentDefinitionId, launchConfiguration: collaborationMemberLaunchConfiguration(task.source, member) })
       }
     }
     const nested = catalogSourceAt([
