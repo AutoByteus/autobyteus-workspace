@@ -197,7 +197,7 @@ What the release workflows build, validate and need.
 - Repository artifact hygiene is mandatory:
   - `scripts/check_repository_artifact_hygiene.py` rejects tracked raw `.xcresult` bundles, generated ticket artifact drops, checkout-risk path lengths, and names Windows cannot check out (`< > : " | ? * \`, trailing dot or space, reserved device names).
   - `.github/workflows/release-desktop.yml` runs this guard in `prepare-release` before platform build jobs fan out, so checkout-hostile evidence cannot break the Windows release job again.
-- Licensing consistency is mandatory: `python3 scripts/check_licensing.py` verifies the `LICENSE` texts, the `package.json` license fields and the `LICENSING.md` component list, and rejects stray Apache-2.0 claims in AGPL components; the desktop, server Docker, Android and iOS release workflows run it before building.
+- Licensing consistency is mandatory: `python3 scripts/check_licensing.py` verifies the `LICENSE` texts, the `package.json` license fields and the `LICENSING.md` component list, and rejects stray permissive-license claims in AGPL components (see `LICENSING.md`); the desktop, server Docker, Android and iOS release workflows run it before building.
 - Desktop macOS terminal runtime validation is mandatory:
   - `.github/workflows/release-desktop.yml` validates staged and final packaged `node-pty` helpers for both Darwin ARM64 and Intel x64, and validates Linux x64/ARM64 AppImage architecture, Prisma engines, updater metadata, and packaged server startup.
   - Matching-architecture runners also execute a real `node-pty` spawn probe so a non-executable packaged `spawn-helper` cannot silently ship.
