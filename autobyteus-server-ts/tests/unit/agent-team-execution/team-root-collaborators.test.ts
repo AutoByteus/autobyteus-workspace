@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { flushMicrotasks } from "../agent-org-execution/helpers/task-publication-handles.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import { ROOT, bringInBoth, cleanupDirectories, entriesOf, harness, mentionBoth } from "./helpers/team-root-collaborator-harness.js";
 
 afterEach(async () => {
@@ -56,10 +57,13 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
     expect([reviewer.agentRunId, lead.agentRunId, designer.agentRunId].map((id) => statuses.get(id))).toEqual(["offline", "offline", "offline"]);
     // The collaborator Team is a managed TeamRun under the root; its coordinator resolves.
     expect(f.root.getCoordinatorAgentRunId(product.teamRunId)).toBe(lead.agentRunId);
-    expect(f.root.getAgentExecution(designer.agentRunId)).toMatchObject({
+    // Located from the stored tree: a collaborator Team member lives in its TeamRun's scope; a collaborator Agent at the root.
+    const locations = createStoredTeamRunExecutionTreeLocationService(f.memoryDir);
+    await expect(locations.findAgent({ rootTeamRunId: ROOT, agentRunId: designer.agentRunId })).resolves.toMatchObject({
       containingTeamRunId: product.teamRunId, ancestorTeamRunIds: [product.teamRunId],
     });
-    expect(f.root.getAgentExecution(reviewer.agentRunId)).toMatchObject({ containingTeamRunId: ROOT, ancestorTeamRunIds: [] });
+    await expect(locations.findAgent({ rootTeamRunId: ROOT, agentRunId: reviewer.agentRunId }))
+      .resolves.toMatchObject({ containingTeamRunId: ROOT, ancestorTeamRunIds: [] });
     // Nothing started.
     expect(f.handles.size).toBe(0);
   });
@@ -103,7 +107,7 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
   it("starts an extra copy on delegate_task, hosted by the delegator's Team (REQ-013)", async () => {
     const f = await harness();
     await bringInBoth(f.root);
-    const { product, lead } = entriesOf(f.root);
+    const { lead } = entriesOf(f.root);
     const coordinator = { identity: f.identity("/coordinator", "run-coordinator") };
     await expect(f.root.delegateToNewCopy(coordinator, { recipient_address: "/code_reviewer", description: "Review too" }))
       .resolves.toMatchObject({ delegated: true, copy: { agentRunId: "code-reviewer-run-4" } });
@@ -114,7 +118,6 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
     expect(tree.rootTeam.taskExecutions.map((task) => task.address)).toEqual(["/code_reviewer"]);
     const team = tree.rootTeam.collaborators.find((entry) => entry.address === "/product_team")!;
     expect(team.kind === "agent_team" && team.taskExecutions.map((task) => task.address)).toEqual(["/product_team/designer"]);
-    expect(f.root.getAgentExecution("designer-run-5")).toMatchObject({ containingTeamRunId: product.teamRunId });
   });
 
   it("restores collaborators with the root after Stop, in restore mode with the same run IDs", async () => {

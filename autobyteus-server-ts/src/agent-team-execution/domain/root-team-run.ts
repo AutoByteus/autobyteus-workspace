@@ -22,7 +22,6 @@ import type { TeamMemberExecutionCommand } from "./team-member-execution-command
 import type { TeamRunConfig } from "./team-run-config.js";
 import type { TeamRunEvent } from "./team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree.js";
-import type { AgentLaunchConfiguration } from "./team-run-config.js";
 import type { TeamRun } from "./team-run.js";
 import { TeamExecutionIndex } from "../services/team-execution-index.js";
 import type { FlatTeamCollaboratorHost } from "../local/flat-team-execution-factory.js";
@@ -236,30 +235,6 @@ export class RootTeamRun {
 
   commitAgentPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void> {
     return this.platformBindings.commit(change);
-  }
-
-  getAgentExecution(agentRunId: string): Readonly<{
-    identity: CollaborationMemberExecutionIdentity;
-    containingTeamRunId: string;
-    ancestorTeamRunIds: readonly string[];
-    launchConfiguration: AgentLaunchConfiguration | null;
-  }> | null {
-    const execution = this.index.getAgent(agentRunId.trim());
-    if (!execution) return null;
-    return Object.freeze({
-      identity: createCollaborationMemberExecutionIdentity({
-        root: createTeamRootExecutionIdentity(this.teamRunId),
-        memberAddress: execution.address,
-        agentRunId: execution.agentRunId,
-      }),
-      containingTeamRunId: execution.containingTeamRunId,
-      ancestorTeamRunIds: this.index
-        .getTeamRunPhysicalScope(execution.containingTeamRunId)
-        .ancestorTeamRunIds,
-      launchConfiguration: "launchConfiguration" in execution.source
-        ? execution.source.launchConfiguration ?? null
-        : null,
-    });
   }
 
   getCoordinatorAgentRunId(teamRunId: string = this.teamRunId): string {

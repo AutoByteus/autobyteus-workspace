@@ -96,7 +96,7 @@ export const harness = async (options: { runnable?: boolean } = {}) => {
     sender: buildDeliveryEndpointForParticipant({ kind: "agent", identity: sender, displayName: sender.memberAddress.split("/").at(-1)! }),
     recipientAddress, content,
   });
-  return { root, handles, reopen, identity, message, dependencies, teamMemoryDir };
+  return { root, handles, reopen, identity, message, dependencies, memoryDir, teamMemoryDir };
 };
 
 /** `@` of both catalog definitions by the coordinator: resolves their addresses, adds nothing. */
