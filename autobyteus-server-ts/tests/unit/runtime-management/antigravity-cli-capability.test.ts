@@ -121,7 +121,7 @@ describe("bounded AGY CLI discovery", () => {
     const { RuntimeKind } = await import("../../../src/runtime-management/runtime-kind-enum.js");
     const availability = await getRuntimeAvailabilityService().getRuntimeAvailability(RuntimeKind.ANTIGRAVITY_CLI);
     expect(availability).toMatchObject({ enabled: false,
-      reason: "Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again." });
+      reason: "Not signed in on this node. Run `agy` to sign in." });
     expect(availability.reason).not.toMatch(/secret|private|credential-path|token=abc|agy-fake|view available models/);
   });
 

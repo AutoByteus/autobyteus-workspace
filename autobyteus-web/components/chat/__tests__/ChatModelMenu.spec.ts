@@ -4,7 +4,7 @@ import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import ChatModelMenu from '../ChatModelMenu.vue'
 
 const { SIGN_IN_REASON } = vi.hoisted(() => ({
-  SIGN_IN_REASON: "Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again.",
+  SIGN_IN_REASON: "Not signed in on this node. Run `agy` to sign in.",
 }))
 const model = (llmModelIdentifier: string) => ({
   runtimeKind: 'autobyteus', llmModelIdentifier, label: llmModelIdentifier, secondary: null, recommended: false,

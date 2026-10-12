@@ -20,7 +20,7 @@ export type AgyDiscoveryDiagnostic = Readonly<{ code: AgyDiscoveryDiagnosticCode
 const DIAGNOSTICS: Readonly<Record<AgyDiscoveryDiagnosticCode, AgyDiscoveryDiagnostic>> = Object.freeze({
   AGY_CLI_UNAVAILABLE: { code: "AGY_CLI_UNAVAILABLE", message: "Antigravity CLI is not installed or not on this node's PATH. Install it, or set ANTIGRAVITY_CLI_COMMAND, then try again." },
   AGY_CLI_UNSUPPORTED: { code: "AGY_CLI_UNSUPPORTED", message: "Antigravity CLI is too old for AutoByteus (required options are missing). Run `agy update`, then try again." },
-  AGY_SIGN_IN_REQUIRED: { code: "AGY_SIGN_IN_REQUIRED", message: "Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again." },
+  AGY_SIGN_IN_REQUIRED: { code: "AGY_SIGN_IN_REQUIRED", message: "Not signed in on this node. Run `agy` to sign in." },
   AGY_MODEL_DISCOVERY_TIMEOUT: { code: "AGY_MODEL_DISCOVERY_TIMEOUT", message: "Antigravity model discovery timed out; check the CLI and retry." },
   AGY_MODEL_DISCOVERY_FAILED: { code: "AGY_MODEL_DISCOVERY_FAILED", message: "Antigravity model discovery failed; check authentication or network and retry." },
   AGY_MODEL_CATALOG_INVALID: { code: "AGY_MODEL_CATALOG_INVALID", message: "Antigravity CLI returned an invalid or empty model catalog; check authentication and network and retry." },

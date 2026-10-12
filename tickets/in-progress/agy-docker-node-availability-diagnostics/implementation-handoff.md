@@ -15,18 +15,19 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (user-requested wording change)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-docker-node-availability-diagnostics/tickets/in-progress/agy-docker-node-availability-diagnostics/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (baseline `IR-001`)
 - Related solution revision IDs: `SR-003`
-- Related architecture-review, code-review, API/E2E and delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Related API/E2E revision IDs: `API-REV-001` (AC-006 run leg Blocked on provider quota; decision pending with the user via Solution Designer)
+- Related architecture-review, code-review and delivery revision IDs: `N/A`
+- Triggering finding IDs: `N/A`. IR-002 was triggered by the user's direct request, while testing, to make the sign-in reason shorter. The user chose the wording "Not signed in on this node. Run `agy` to sign in."
 - Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-docker-node-availability-diagnostics`, branch `codex/agy-docker-node-availability-diagnostics` (base `origin/personal` @ `2756d7b29`). The commit hash is in the handoff message.
 
 What changed:
 
 1. **Server classifier** (`antigravity-cli-capability.ts`).
-   - Adds `AGY_SIGN_IN_REQUIRED` with the fixed DEC-005 text.
+   - Adds `AGY_SIGN_IN_REQUIRED` with the fixed text "Not signed in on this node. Run `agy` to sign in." The user chose this in IR-002; it replaces the DEC-005 sign-in text.
    - Adds the module-private `AGY_SIGN_IN_PATTERN`. In `runCommand`'s `close` handler, a non-zero exit whose bounded stdout+stderr matches the pattern is classified as `AGY_SIGN_IN_REQUIRED`; any other non-zero exit is still `AGY_MODEL_DISCOVERY_FAILED`.
    - Rewords `AGY_CLI_UNAVAILABLE` and `AGY_CLI_UNSUPPORTED` to the DEC-005 texts.
    - Timeout, oversize and ENOENT branches are unchanged and still settle first.
@@ -118,7 +119,7 @@ What changed:
 
 - RSK-001: upstream may reword the message, which falls back to the generic discovery-failed text. That text is still truthful.
 - RSK-002: every menu open spawns `agy` (~2 s) while it is signed out. The spawn doesn't block the menu (accepted in the design).
-- The reason is clamped to two lines. At desktop width the sign-in text is cut after "Run `agy` in this node's terminal and…"; the full text is in the row tooltip (as REQ-003 specifies).
+- The reason is clamped to two lines. Since IR-002 the sign-in text fits in full (2 lines at desktop width, no ellipsis). Longer reasons, such as the not-found text, are still clamped, with the full text in the tooltip.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -187,7 +188,7 @@ All are implementation-scoped.
   - No page errors.
 - Issues found and corrected: in round r1, "Unavailable" was vertically centered against the two-line block, so it sat beside the reason line. Unavailable rows now use `items-start`, with `mt-0.5` on the label (and a matching top offset on the current-runtime dot). In r2 the label lines up with the runtime name.
 - Evidence:
-  - `.../implementation-evidence/render-r1/` (before the fix) and `.../render-r2/` (final): screenshots plus `results.json`;
+  - `.../implementation-evidence/render-r1/` (before the alignment fix), `.../render-r2/` (after it) and `.../render-r3/` (IR-002 wording): screenshots plus `results.json`;
   - folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-docker-node-availability-diagnostics/tickets/in-progress/agy-docker-node-availability-diagnostics/implementation-evidence/`.
 - Not rendered:
   - the zh-CN locale (covered by the dictionary entry and guards);

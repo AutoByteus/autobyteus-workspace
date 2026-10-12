@@ -259,7 +259,7 @@ row shows the neutral label "Unavailable" on the right and the server's reason
 under the runtime name (small gray text, at most two lines; the row tooltip has
 the full text). Without a reason only the label shows. The menu never claims a
 runtime is "not installed"; the reason text names the cause, for example
-"Antigravity CLI is not signed in. Run `agy` in this node's terminal…".
+"Not signed in on this node. Run `agy` to sign in.".
 
 `useChatModelCatalog.ensureAvailability` loads availability once and, on each
 later menu open, re-checks only the runtimes currently shown as unavailable

@@ -42,7 +42,7 @@ describe('RunModelSelectionService', () => {
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new AgyDiscoveryError('AGY_SIGN_IN_REQUIRED'));
     await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable',
       catalogDiagnostic: { code: 'AGY_SIGN_IN_REQUIRED',
-        message: "Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again." } });
+        message: "Not signed in on this node. Run `agy` to sign in." } });
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new Error('secret /private/token'));
     await expect(service.validate({ context: agy, selection })).resolves.toMatchObject({ kind: 'model_unavailable',
       catalogDiagnostic: { code: 'AGY_MODEL_DISCOVERY_FAILED' } });

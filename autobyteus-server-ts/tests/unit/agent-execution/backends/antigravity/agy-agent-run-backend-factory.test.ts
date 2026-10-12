@@ -176,7 +176,7 @@ describe("AGY backend capability admission and preserved bindings", () => {
   it("fails a run start on a signed-out CLI with the sign-in recovery text", async () => {
     vi.mocked(listAntigravityModels).mockRejectedValue(new AgyDiscoveryError("AGY_SIGN_IN_REQUIRED"));
     await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }))).rejects.toThrow(
-      "Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again.");
+      "Not signed in on this node. Run `agy` to sign in.");
     expect(start).not.toHaveBeenCalled();
   });
 

@@ -323,14 +323,13 @@ keyring-backed login durability. Follow the official
 [Antigravity installation and authentication guide](https://antigravity.google/docs/cli/install/)
 for browser sign-in or Gemini API-key configuration.
 
-If the chat model menu lists Antigravity CLI as **Unavailable** with "Antigravity
-CLI is not signed in. Run `agy` in this node's terminal and complete sign-in,
-then try again.", the CLI is installed but that node has no Antigravity sign-in.
-Open that node's Terminal (root), run `agy` and finish sign-in, then reopen the
-model menu: it re-checks unavailable runtimes each time it opens, so no app
-reload is needed. Each node's `/root` volume keeps its own sign-in, so sign in
-separately on every node; the sign-in survives image updates as long as that
-volume is kept.
+If the chat model menu lists Antigravity CLI as **Unavailable** with "Not
+signed in on this node. Run `agy` to sign in.", the CLI is installed but that
+node has no Antigravity sign-in. Open that node's Terminal (root), run `agy`
+and finish sign-in, then reopen the model menu: it re-checks unavailable
+runtimes each time it opens, so no app reload is needed. Each node's `/root`
+volume keeps its own sign-in, so sign in separately on every node; the sign-in
+survives image updates as long as that volume is kept.
 
 Grok uses `/root/.grok` by default (including `config.toml`); this image does not
 set a runtime `GROK_HOME`. Start `grok` for browser sign-in, or supply your own
