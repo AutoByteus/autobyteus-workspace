@@ -7,6 +7,7 @@
 | DR-001 | API/E2E Pass (API-REV-001), direct route | N/A | Docs synced; waiting for the user's verification and release decision | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `autobyteus-server-ts/docs/modules/agent_execution.md` |
 | DR-002 | User: "finalize and release a new beta" | DR-001 waiting for verification | Finalized into `personal`; beta `v1.5.2-beta.3` released completely | `release-deployment-report.md`, `delivery-evidence/` |
 | DR-003 | User confirmed AC-004 in the deployed beta | DR-002 complete, AC-004 still with the user | AC-004 passed; no open acceptance items | `release-deployment-report.md`, `delivery-revision-record.md` |
+| DR-004 | User asked for a stable release | DR-003 complete, shipped only in beta | Stable `v1.5.2` released completely | `stable-v1.5.2-release-notes.md`, `release-deployment-report.md`, `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -73,3 +74,29 @@
 - Remaining blockers, rollback concerns, or untested scope:
   - RK-01 was accepted upstream.
   - The baseline failure of the fake-CLI interrupt-resume E2E is a separate item.
+
+### DR-004 — Stable release v1.5.2
+
+- Delivery round and trigger: on 2026-10-12, after AC-004 passed, the user asked: "first release a stable version". This revisits DR-003.
+- Prior authoritative result: DR-003. The fix had shipped only in beta `v1.5.2-beta.3`.
+- Current authoritative result: stable `v1.5.2` is released completely. Following `RELEASE.md`, I worked in a temporary worktree on `finalize/stable-v1.5.2`, created from `origin/personal` @ `7be4b7cf9`.
+  - Curated notes: `stable-v1.5.2-release-notes.md`, commit `51bb3746d`. They cover every change since `v1.5.1`: compaction-prompt-cache-reuse, remove-autobyteus-remote-provider, token-meter-accuracy and this fix. One superseded note was dropped.
+  - `check_licensing.py` and `check_repository_artifact_hygiene.py` both passed.
+  - `bash scripts/desktop-release.sh release 1.5.2 --release-notes tickets/done/claude-normal-reply-auth-error-misclassification/stable-v1.5.2-release-notes.md --branch finalize/stable-v1.5.2 --no-push` created release commit `449d639de` and the annotated tag `v1.5.2`.
+  - Just before pushing, `origin/personal` was fetched again and was unchanged. I pushed `personal` (`7be4b7cf9` to `449d639de`) and the tag `v1.5.2`.
+- Workflows: all 4 succeeded.
+  - Desktop: 38246664771
+  - Android: 38246664785
+  - iOS/TestFlight: 38246664888
+  - Server Docker: 38246664846
+- Published artifacts:
+  - GitHub release https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.2: `isPrerelease: false`, it is GitHub "Latest" (`releases/latest` returns `v1.5.2`), it has all 17 assets, and its body is the curated notes.
+  - Docker `autobyteus/autobyteus-server:1.5.2` is published for amd64 and arm64. `:latest` and `:beta` both point to the same digest, `sha256:9de2f0b8…01ef`.
+- Deviation from `RELEASE.md`: the guide expects curated notes from one ticket's `release-notes.md`. This roll-up stable needed combined notes, so I stored them in this ticket folder. A guide fix is proposed in the follow-up report (problem 6) and needs the user's agreement.
+- Cleanup: the temporary worktree and the local `finalize/stable-v1.5.2` branch are removed after this record is pushed.
+- Terminal return to `/solution_designer`: `Sent` as a follow-up after this record is pushed.
+- Next recipient/action: send the follow-up report to `/project_task_manager` so it can create the follow-up Tasks.
+- Remaining blockers, rollback concerns, or untested scope:
+  - None for the release.
+  - Rollback: per `RELEASE.md`, revert on `personal` and cut the next version.
+  - Out-of-scope problems are listed in `/Users/normy/.autobyteus/reports/claude-normal-reply-auth-error-misclassification-follow-up-problems.md`.
