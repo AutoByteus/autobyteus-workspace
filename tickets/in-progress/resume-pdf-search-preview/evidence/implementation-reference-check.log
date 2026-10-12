@@ -1,0 +1,56 @@
+Pre-removal static check 2026-10-12 / e4ddf9dbf
+autobyteus-server-ts/docs/modules/file_explorer.md:30:Search refreshes its file-name index from snapshot traversal (`getAllFilePaths`) and backend search strategies such as `FuzzysortSearchStrategy` and `RipgrepSearchStrategy`; search must not depend on an always-on watcher. GraphQL request abort/close is propagated into `WorkspaceSearchSnapshotController`, which cancels a caller's wait on refresh/search work and aborts an unshared refresh when the final waiter leaves. Closing the workspace/file explorer also aborts stale search snapshot refresh work so watcher/session cleanup does not wait for unrelated full-tree traversal.
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:177:  toShallowJson(depth = 1): string | null {
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:220:  async getAllFilePaths(): Promise<string[]> {
+autobyteus-server-ts/tests/integration/file-explorer/file-explorer.integration.test.js:26:        const paths = await explorer.getAllFilePaths();
+autobyteus-server-ts/tests/integration/file-explorer/file-explorer.integration.test.ts:31:    const paths = await explorer.getAllFilePaths();
+autobyteus-server-ts/tests/unit/api/graphql/converters/workspace-converter.test.js:12:                toShallowJson: vi.fn().mockResolvedValue({}),
+autobyteus-server-ts/tests/unit/api/graphql/converters/workspace-converter.test.js:26:                toShallowJson: vi.fn().mockResolvedValue({}),
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js:60:        const shallowJson = explorer.toShallowJson(1);
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js:67:        const shallowJson2 = explorer.toShallowJson(2);
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts:84:    const shallowJson = explorer.toShallowJson(1) as string;
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts:96:    const shallowJson2 = explorer.toShallowJson(2) as string;
+autobyteus-web/docs/file_explorer.md:922:- Search index refresh uses snapshot traversal (`getAllFilePaths`), observes request abort signals, and does not keep watcher state alive.
+\nProduction explorer importers:
+autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts:3:import type { WorkspaceFileExplorer } from "../file-explorer.js";
+autobyteus-server-ts/src/file-explorer/watcher/watchdog-handler.ts:2:import type { WorkspaceFileExplorer } from "../file-explorer.js";
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session-manager.ts:2:import type { WatcherLease } from "../../file-explorer/file-explorer.js";
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session.ts:2:import type { WatcherLease } from "../../file-explorer/file-explorer.js";
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:2:import type { WatcherLease, WorkspaceFileExplorer } from "../../file-explorer/file-explorer.js";
+autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:4:} from '../file-explorer/file-explorer.js';
+\nEntrypoints/reflection/config/scripts:
+\nPost-removal tracked check:
+\nRemaining live tree/projection owners:
+autobyteus-server-ts/src/file-explorer/file-name-indexer.ts:12:  getTree(): TreeNode | null;
+autobyteus-server-ts/src/file-explorer/file-name-indexer.ts:24:  async refreshSnapshotIndex(signal?: AbortSignal): Promise<void> {
+autobyteus-server-ts/src/file-explorer/file-name-indexer.ts:45:    const root = this.fileExplorer.getTree();
+autobyteus-server-ts/src/file-explorer/search-snapshot/workspace-search-snapshot-controller.ts:13:  buildWorkspaceDirectoryTree(
+autobyteus-server-ts/src/file-explorer/search-snapshot/workspace-search-snapshot-controller.ts:17:  getTree(): TreeNode | null;
+autobyteus-server-ts/src/file-explorer/search-snapshot/workspace-search-snapshot-controller.ts:112:      await this.context.buildWorkspaceDirectoryTree(null, { signal });
+autobyteus-server-ts/src/file-explorer/search-snapshot/workspace-search-snapshot-controller.ts:114:      await this.fileNameIndexer?.refreshSnapshotIndex(signal);
+autobyteus-server-ts/src/api/graphql/types/file-explorer.ts:99:      return JSON.stringify(folderNode.toShallowDict(1));
+\nPublic exports:
+export { startServer, type ServerOptions } from "./app.js";
+export { startConfiguredServer } from "./server-runtime.js";
+export {
+  buildStudioServer,
+  type StudioServer,
+} from "./compositions/build-studio-server.js";
+export {
+  startStandaloneApplicationHost,
+  type StandaloneApplicationHostHandle,
+} from "./standalone-application-host/start-standalone-application-host.js";
+export type {
+  StandaloneApplicationHostConfig,
+  StandaloneApplicationHostConfigInput,
+} from "./standalone-application-host/config/standalone-application-host-config.js";
+export {
+  validateStandaloneApplicationPackage,
+} from "./application-platform/launch-configuration/application-standalone-package-validator.js";
+\nNo deprecated method entrypoint/config hits:
+\nSource guardrails:
+explorer non-empty lines=406
+7	34	autobyteus-server-ts/src/file-explorer/file-explorer.ts
+
+Deferred unrelated generated-test reference (not executed by default TS-only runner):
+autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.js:6:import { FileExplorer } from "../../../src/file-explorer/file-explorer.js";

@@ -1,0 +1,36 @@
+Implementation integrity/cleanup receipt 2026-10-12
+7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5  /home/autobyteus/workspace/autobyteus-investor-applications/job-applications/bit-capital-ai-engineer-2026/Yu_Zheng_Resume_2026_Application.pdf
+Expected: 7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5
+  PID COMMAND
+   61 node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data
+Owned test DB files removed:
+autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal
+No owned stack/listening ports or live requests created. Build/install/test commands have exited.
+Search fixture paths from tests (absence check):
+removed /tmp/autobyteus-file-explorer-0KcDzT
+removed /tmp/autobyteus-file-explorer-0wrQNv
+removed /tmp/autobyteus-file-explorer-7miINE
+removed /tmp/autobyteus-file-explorer-8nePY6
+removed /tmp/autobyteus-file-explorer-VnTUXX
+removed /tmp/autobyteus-file-explorer-eON9a6
+removed /tmp/autobyteus-file-explorer-v5qB47
+removed /tmp/autobyteus-rename-boundary-0jMGJj
+removed /tmp/autobyteus-rename-leaf-nSzUzm
+removed /tmp/autobyteus-search-MutXW8
+removed /tmp/autobyteus-search-UxrEvp
+removed /tmp/autobyteus-search-YneNvB
+removed /tmp/autobyteus-search-locators-AjO7VU
+removed /tmp/autobyteus-search-locators-DDqVym
+removed /tmp/autobyteus-search-locators-JcMklw
+removed /tmp/autobyteus-search-locators-kAYkhT
+removed /tmp/autobyteus-search-locators-rlgBcX
+removed /tmp/autobyteus-server-ts-BSfKyK
+removed /tmp/autobyteus-server-ts-CyICqf
+removed /tmp/autobyteus-server-ts-GwtfCm
+removed /tmp/autobyteus-server-ts-bi5fLQ
+removed /tmp/autobyteus-server-ts-index-GepTw5
+removed /tmp/autobyteus-server-ts-index-l2ma00
+removed /tmp/autobyteus-server-ts-vg2ckP
+removed /tmp/autobyteus-server-ts-yCq2Ns
+Removed /tmp/resume-pdf-search-preview-tools (owned Corepack shim/cache/home); node_modules/current build outputs and task worktree retained for downstream checks.

@@ -1,0 +1,55 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus-server-ts@0.1.1 pretypecheck /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts(1,23): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts(55,44): error TS7006: Parameter 'tx' implicitly has an 'any' type.
+src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts(66,31): error TS2347: Untyped function calls may not accept type arguments.
+src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts(67,26): error TS7006: Parameter 'row' implicitly has an 'any' type.
+src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.ts(1,15): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.ts(159,45): error TS7006: Parameter 'transaction' implicitly has an 'any' type.
+src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.ts(281,30): error TS7006: Parameter 'row' implicitly has an 'any' type.
+src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.ts(287,30): error TS7006: Parameter 'row' implicitly has an 'any' type.
+src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts(1,15): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts(101,38): error TS7006: Parameter 'transaction' implicitly has an 'any' type.
+src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts(1,15): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts(97,38): error TS7006: Parameter 'transaction' implicitly has an 'any' type.
+src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts(1,23): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts(223,8): error TS7006: Parameter 'transaction' implicitly has an 'any' type.
+src/app-data-migrations/repositories/app-data-migration-record-repository.ts(1,15): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/config/prisma-client-factory.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/secret-management/persistence/secret-encryption-metadata-repository.ts(2,3): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/secret-management/persistence/secret-encryption-metadata-repository.ts(3,8): error TS2305: Module '"@prisma/client"' has no exported member 'SecretEncryptionMetadata'.
+src/secret-management/persistence/secret-entry-repository.ts(2,3): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/secret-management/persistence/secret-entry-repository.ts(3,8): error TS2305: Module '"@prisma/client"' has no exported member 'SecretEntry'.
+src/startup/token-usage-current-schema-readiness.ts(1,15): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/startup/token-usage-current-schema-readiness.ts(42,42): error TS7031: Binding element 'name' implicitly has an 'any' type.
+src/startup/token-usage-current-schema-readiness.ts(52,24): error TS7031: Binding element 'name' implicitly has an 'any' type.
+src/token-usage/repositories/sql/token-usage-analytics-repository.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/token-usage/repositories/sql/token-usage-analytics-repository.ts(1,23): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/token-usage/repositories/sql/token-usage-analytics-repository.ts(73,44): error TS7006: Parameter 'transaction' implicitly has an 'any' type.
+src/token-usage/repositories/sql/token-usage-run-record-codec.ts(2,3): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/token-usage/repositories/sql/token-usage-run-record-codec.ts(3,8): error TS2305: Module '"@prisma/client"' has no exported member 'TokenUsageRunRecord'.
+src/token-usage/repositories/sql/token-usage-run-repository.ts(2,3): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/token-usage/repositories/sql/token-usage-run-repository.ts(3,3): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/token-usage/repositories/sql/token-usage-run-repository.ts(23,44): error TS7006: Parameter 'transaction' implicitly has an 'any' type.
+ ELIFECYCLE  Command failed with exit code 2.
