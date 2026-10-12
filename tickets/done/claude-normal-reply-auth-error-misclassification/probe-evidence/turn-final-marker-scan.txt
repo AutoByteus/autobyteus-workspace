@@ -1,0 +1,18 @@
+2026-06-02 06:05 ? ['not logged in'] /agent_teams/team_software-engineering-team_9d74beaa/solution_designer_86e71da9f1210eb6
+2026-06-02 10:43 codex_app_server ['not logged in'] /imports/docker-node-1/agents/1c4809b6-7ee5-4f8d-ab6b-c1eab141b600
+2026-06-06 11:47 ? ['not logged in'] /agent_teams/team_software-engineering-team_0718258f/solution_designer_555495837c11d602
+2026-06-28 11:12 ? ['authentication_failed', 'not logged in', 'please run /login'] g_team_458d56da9c67428cae0dced36413acee/solution_designer_03a2ed0542c14aa8bd9eb7cf6b84b394
+2026-06-28 11:14 ? ['not logged in', 'please run /login'] g_team_458d56da9c67428cae0dced36413acee/solution_designer_03a2ed0542c14aa8bd9eb7cf6b84b394
+2026-06-28 11:17 ? ['not logged in', 'please run /login'] g_team_458d56da9c67428cae0dced36413acee/solution_designer_03a2ed0542c14aa8bd9eb7cf6b84b394
+2026-06-28 11:59 ? ['not logged in', 'please run /login'] g_team_458d56da9c67428cae0dced36413acee/solution_designer_03a2ed0542c14aa8bd9eb7cf6b84b394
+2026-07-15 05:55 codex_app_server ['not logged in'] /agents/codex_607a888cb8f644adbad30e7ab78c2f17
+2026-07-15 05:59 codex_app_server ['not logged in'] /agents/codex_607a888cb8f644adbad30e7ab78c2f17
+2026-09-02 04:51 ? ['not logged in'] g_team_9ad10f02dc874099aef34d346267a2f8/delivery_engineer_3cf42ae750ed40988e270ffc41f4719a
+2026-09-29 05:28 ? ['not logged in'] g_team_31509d2fc44945489224e8a9467c7fae/solution_designer_04e58b48c15d49168e909e3b97ee2446
+2026-10-12 06:56 ? ['not logged in'] g_team_aed89dd548d149ef92a53e618f6116bf/solution_designer_96cf1882eb36491ebc09087673a5f06e
+2026-10-12 07:50 ? ['not logged in'] g_team_aed89dd548d149ef92a53e618f6116bf/solution_designer_96cf1882eb36491ebc09087673a5f06e
+2026-10-12 09:00 ? ['not logged in'] _aed89dd548d149ef92a53e618f6116bf/implementation_engineer_c67738af77194c39a1163af020a914c2
+2026-10-12 10:21 ? ['not logged in'] ng_team_aed89dd548d149ef92a53e618f6116bf/api_e2e_engineer_17d46776a1cc40f39a7f117f63fcba6e
+2026-10-12 10:25 claude_agent_sdk ['authentication_failed', 'not logged in', 'please run /login'] /agents/project_task_manager_7c8dce0c4a8b44f88e776a83809dee03
+2026-10-12 11:04 claude_agent_sdk ['authentication_failed'] /agents/project_task_manager_7c8dce0c4a8b44f88e776a83809dee03
+total 17

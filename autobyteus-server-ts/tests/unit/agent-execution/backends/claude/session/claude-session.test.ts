@@ -33,6 +33,11 @@ import {
   withClaudeSessionId,
 } from "../../../../../fixtures/claude-compaction/claude-compaction-frames.js";
 import {
+  CLAUDE_NORMAL_REPLY_MENTIONING_LOGIN_FRAMES,
+  CLAUDE_NOT_LOGGED_IN_FRAMES,
+  claudeResultFrame,
+} from "../../../../../fixtures/claude-result-frames/claude-auth-marker-result-frames.js";
+import {
   createFakeClaudeSdkClient,
   flushClaudeSession,
   type FakeClaudeStreamingSession,
@@ -349,6 +354,47 @@ describe("ClaudeSession streaming lifecycle", () => {
     expect(session.getStatusSnapshotSource().currentStatus).toBe("ERROR");
     expect(sessionMessageCache.getCachedMessages(RESERVED_SESSION_ID).some((message) => message.role === "assistant")).toBe(false);
     expect(session.processState).toBe("OPEN");
+  });
+
+  it("completes a successful turn whose reply mentions login markers as a normal reply (real SDK frames, AC-001)", async () => {
+    const { session, sdkClient, sessionMessageCache, start, methods } = createSession();
+    const reply = String(claudeResultFrame(CLAUDE_NORMAL_REPLY_MENTIONING_LOGIN_FRAMES).result);
+
+    await start("what does an unauthenticated runtime say?");
+    emitCliTurn(
+      sdkClient.current,
+      withClaudeSessionId(CLAUDE_NORMAL_REPLY_MENTIONING_LOGIN_FRAMES, RESERVED_SESSION_ID),
+      sdkClient.current.sent[0]!.uuid,
+    );
+    await flushClaudeSession();
+
+    expect(methods()).not.toContain(ClaudeSessionEventName.ERROR);
+    expect(methods().filter((method) => method === ClaudeSessionEventName.TURN_COMPLETED)).toHaveLength(1);
+    expect(session.getStatusSnapshotSource().currentStatus).toBe("IDLE");
+    expect(session.hasCompletedTurn).toBe(true);
+    expect(sessionMessageCache.getCachedMessages(RESERVED_SESSION_ID)).toEqual([
+      expect.objectContaining({ role: "user", content: "what does an unauthenticated runtime say?" }),
+      expect.objectContaining({ role: "assistant", content: reply }),
+    ]);
+  });
+
+  it("reports the real not-logged-in SDK frames as an authentication failure (AC-002)", async () => {
+    const { session, sdkClient, start, events, methods } = createSession();
+
+    await start("hello unauthenticated claude");
+    emitCliTurn(
+      sdkClient.current,
+      withClaudeSessionId(CLAUDE_NOT_LOGGED_IN_FRAMES, RESERVED_SESSION_ID),
+      sdkClient.current.sent[0]!.uuid,
+    );
+    await flushClaudeSession();
+
+    expect(methods()).not.toContain(ClaudeSessionEventName.TURN_COMPLETED);
+    const errorEvent = events.find((event) => event.method === ClaudeSessionEventName.ERROR);
+    expect(errorEvent?.params).toMatchObject({ error_scope: "turn", error_effect: "terminal" });
+    expect(String(errorEvent?.params?.message)).toContain("CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login");
+    expect(session.hasCompletedTurn).toBe(false);
+    expect(session.getStatusSnapshotSource().currentStatus).toBe("ERROR");
   });
 
   it("reports SDK errors[] without completing the failed turn and accepts the next user turn", async () => {
