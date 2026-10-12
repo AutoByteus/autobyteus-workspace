@@ -1,0 +1,29 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-remote-provider/autobyteus-ts[39m
+
+ [32m✓[39m tests/unit/multimedia/video/video-client-factory.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+[90mstderr[2m | tests/unit/multimedia/utils/api-utils.test.ts[2m > [22m[2mloadImageFromUrl[2m > [22m[2mthrows for missing file path
+[22m[39mFailed to load image from URL/path '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-utils-QVNY28/missing.png': ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-utils-QVNY28/missing.png'
+
+ [32m✓[39m tests/unit/multimedia/image/api/openai-image-client.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/utils/api-utils.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 51[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/audio/audio-client-factory.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/image/image-client-factory.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/audio/api/gemini-audio-client.test.ts [2m([22m[2m59 tests[22m[2m)[22m[32m 224[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/image/api/gemini-image-client.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/gemini-runtime-resolver-gate.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/video/video-model.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/image/image-model.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/audio/api/openai-audio-client.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/utils/response-types.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/providers.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/utils/multimedia-config.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/audio/audio-model.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/multimedia/video/api/gemini-video-client.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 1063[2mms[22m[39m
+     [33m[2m✓[22m[39m continues polling object-shaped PROCESSING states until ACTIVE before download [33m 1003[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m16 passed[39m[22m[90m (16)[39m
+[2m      Tests [22m [1m[32m138 passed[39m[22m[90m (138)[39m
+[2m   Start at [22m 07:48:46
+[2m   Duration [22m 1.40s[2m (transform 1.20s, setup 183ms, import 3.29s, tests 1.43s, environment 1ms)[22m
+

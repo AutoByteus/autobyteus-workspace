@@ -34,6 +34,7 @@ describe("Brief package team prompt authority", () => {
         getAgentTeamsDir: () => path.join(packageRoot, ".test-only", "agent-teams"),
         getAgentOrgsDir: () => path.join(packageRoot, ".test-only", "agent-orgs"),
         getAdditionalAgentPackageRoots: () => [],
+        getRegisteredAgentPackageRoots: () => [],
       } as never,
       bundleService: validated.bundleService,
     });

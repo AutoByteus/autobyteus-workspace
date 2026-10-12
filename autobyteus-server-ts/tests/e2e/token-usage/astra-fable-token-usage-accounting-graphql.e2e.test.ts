@@ -121,6 +121,7 @@ describe("Astra and Fable 5.1 token usage accounting and GraphQL convergence", (
         runtime_kind: input.runtimeKind,
         ingestion_kind: input.ingestionKind,
         usage_scope: "per_call",
+        reports_model_call: true,
         input_token_semantic: "gross_includes_cache",
         model_provider: input.provider,
         model_identifier: input.modelId,

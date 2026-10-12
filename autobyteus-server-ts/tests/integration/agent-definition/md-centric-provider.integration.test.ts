@@ -10,6 +10,7 @@ import { FileAgentDefinitionProvider } from "../../../src/agent-definition/provi
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { ApplicationBundleService } from "../../../src/application-bundles/services/application-bundle-service.js";
 import { buildCanonicalApplicationOwnedAgentId } from "../../../src/application-bundles/utils/application-bundle-identity.js";
+import { createDiskDefinitionServices } from "../../helpers/agent-package-definitions-test-support.js";
 
 function uniqueId(prefix: string): string {
   return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
@@ -235,7 +236,7 @@ describe("md-centric provider integration", () => {
     });
   });
 
-  it("does not silently skip malformed application-owned agents during catalog reads", async () => {
+  it("skips a malformed application-package agent in the list with a log line, while its exact read still fails", async () => {
     const packageId = uniqueId("pkg");
     const localApplicationId = "brief-studio";
     const localAgentId = "researcher";
@@ -276,8 +277,24 @@ describe("md-centric provider integration", () => {
       ),
     } as unknown as ApplicationBundleService;
 
-    const provider = new FileAgentDefinitionProvider({ applicationBundleService });
-    await expect(provider.getAll()).rejects.toBeInstanceOf(AgentMdParseError);
+    const services = createDiskDefinitionServices({
+      getAgentsDir: () => appConfigProvider.config.getAgentsDir(),
+      getAgentTeamsDir: () => appConfigProvider.config.getAgentTeamsDir(),
+      getAgentOrgsDir: () => appConfigProvider.config.getAgentOrgsDir(),
+    }, applicationBundleService);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      // SR-009 / N-7: application-package agents are not agent package definitions; the list reads
+      // them on demand one by one, so the malformed one is logged and skipped, never failing the list.
+      expect((await services.agents.getAllAgentDefinitions()).map((definition) => definition.id)).not.toContain(definitionId);
+      expect(warn.mock.calls.some((call) => String(call[0]).startsWith(`APPLICATION_PACKAGE_AGENT_SKIPPED:${definitionId}`))).toBe(true);
+      expect((await services.agents.listLoadIssues()).map((entry) => entry.definitionId)).not.toContain(definitionId);
+      await expect(new FileAgentDefinitionProvider({ applicationBundleService }).getById(definitionId))
+        .rejects.toBeInstanceOf(AgentMdParseError);
+    } finally {
+      warn.mockRestore();
+      services.close();
+    }
   });
 
   it("updates application-owned agent defaultLaunchConfig in place", async () => {

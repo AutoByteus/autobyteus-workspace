@@ -6,16 +6,20 @@ import { AgentOrgDefinitionService } from "../agent-org-definition/services/agen
 import { createBundleBackedDefinitionServices } from "../application-platform/definitions/create-bundle-backed-definition-services.js";
 import { DefinitionSourceRegistry } from "../collaboration-definition-admission/providers/definition-source-registry.js";
 import { DefinitionAdmissionService } from "../collaboration-definition-admission/services/definition-admission-service.js";
+import { FileAgentOrgDefinitionProvider } from "../agent-org-definition/providers/file-agent-org-definition-provider.js";
+import type { AgentPackageDefinitions } from "../agent-package-definitions/services/agent-package-definitions.js";
 
 export type HostDefinitionServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
   agentOrgDefinitionService: AgentOrgDefinitionService;
   definitionAdmissionService: DefinitionAdmissionService;
+  /** The process agent package definitions (the studio server wires the folder watcher and change feed to its reloader). */
+  agentPackageDefinitions: AgentPackageDefinitions;
   close(): void;
 }>;
 
-/** Owns fail-closed process binding for the executable host definition catalog. */
+/** Owns fail-closed process binding for the executable host definition services. */
 export const createHostDefinitionServices = (input: {
   appConfig: AppConfig;
   bundleService: ApplicationBundleService;
@@ -37,9 +41,10 @@ export const createHostDefinitionServices = (input: {
   }
 
   const agentOrgDefinitionService = new AgentOrgDefinitionService(
-    undefined,
+    new FileAgentOrgDefinitionProvider(input.appConfig),
     definitions.agentDefinitionService,
     definitions.agentTeamDefinitionService,
+    definitions.packageDefinitions,
   );
   try {
     AgentOrgDefinitionService.bindProcessInstance(agentOrgDefinitionService);
@@ -50,7 +55,6 @@ export const createHostDefinitionServices = (input: {
   }
   const definitionAdmissionService = new DefinitionAdmissionService({
     registry: new DefinitionSourceRegistry({
-      appConfig: input.appConfig,
       listImplementationOwnedTeamSources: () => input.bundleService.listApplicationOwnedTeamSources(),
     }),
     agents: definitions.agentDefinitionService,
@@ -68,12 +72,15 @@ export const createHostDefinitionServices = (input: {
 
   let closed = false;
   return Object.freeze({
-    ...definitions,
+    agentDefinitionService: definitions.agentDefinitionService,
+    agentTeamDefinitionService: definitions.agentTeamDefinitionService,
     agentOrgDefinitionService,
     definitionAdmissionService,
+    agentPackageDefinitions: definitions.packageDefinitions,
     close: () => {
       if (closed) return;
       closed = true;
+      definitions.packageDefinitions.reloader.close();
       DefinitionAdmissionService.releaseProcessInstance(definitionAdmissionService);
       AgentOrgDefinitionService.releaseProcessInstance(agentOrgDefinitionService);
       AgentTeamDefinitionService.releaseProcessInstance(

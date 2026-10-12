@@ -21,7 +21,7 @@ vi.mock('~/composables/useLocalization', () => ({
 
 const descriptor = (id: string, catalogMode: 'STATIC' | 'DISCOVERED') => ({
   id,
-  name: id === 'OPENAI' ? 'OpenAI' : id === 'AUTOBYTEUS' ? 'AutoByteus' : id,
+  name: id === 'OPENAI' ? 'OpenAI' : id === 'LMSTUDIO' ? 'LM Studio' : id,
   providerType: id,
   isCustom: false,
   baseUrl: null,
@@ -53,7 +53,7 @@ const freshnessSnapshot = (
   sources: Array<{ modelKind: 'LLM' | 'AUDIO' | 'IMAGE'; state: 'READY' | 'PARTIAL' | 'STALE_ERROR' | 'ERROR'; modelCount: number }>,
 ) => ({
   runtimeKind: 'autobyteus',
-  ownerProvider: descriptor('AUTOBYTEUS', 'DISCOVERED'),
+  ownerProvider: descriptor('LMSTUDIO', 'DISCOVERED'),
   sources: sources.map(source => ({
     ...source,
     successfulUnitCount: source.state === 'READY' || source.state === 'PARTIAL' ? 1 : 0,
@@ -67,13 +67,13 @@ const freshnessSnapshot = (
       : null,
   })),
   llmModels: sources.some(source => source.modelKind === 'LLM' && source.modelCount > 0)
-    ? snapshot('AUTOBYTEUS', 'DISCOVERED', 'READY').llmModels
+    ? snapshot('LMSTUDIO', 'DISCOVERED', 'READY').llmModels
     : [],
   audioModels: sources.some(source => source.modelKind === 'AUDIO' && source.modelCount > 0)
-    ? [{ ...snapshot('AUTOBYTEUS', 'DISCOVERED', 'READY').llmModels[0], modelIdentifier: 'audio-model' }]
+    ? [{ ...snapshot('LMSTUDIO', 'DISCOVERED', 'READY').llmModels[0], modelIdentifier: 'audio-model' }]
     : [],
   imageModels: sources.some(source => source.modelKind === 'IMAGE' && source.modelCount > 0)
-    ? [{ ...snapshot('AUTOBYTEUS', 'DISCOVERED', 'READY').llmModels[0], modelIdentifier: 'image-model' }]
+    ? [{ ...snapshot('LMSTUDIO', 'DISCOVERED', 'READY').llmModels[0], modelIdentifier: 'image-model' }]
     : [],
   videoModels: [],
 })
@@ -169,21 +169,21 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
   it('ensures only a selected cold dynamic provider and reuses a warm snapshot', async () => {
     const settings = [
       setting('OPENAI', true, 'STATIC'),
-      setting('AUTOBYTEUS', false, 'DISCOVERED'),
+      setting('LMSTUDIO', false, 'DISCOVERED'),
       setting('OLLAMA', false, 'DISCOVERED'),
     ]
     const { wrapper, store } = mountRuntime({
       settings,
       snapshots: [
         snapshot('OPENAI', 'STATIC'),
-        snapshot('AUTOBYTEUS', 'DISCOVERED', 'IDLE'),
+        snapshot('LMSTUDIO', 'DISCOVERED', 'IDLE'),
         snapshot('OLLAMA', 'DISCOVERED', 'READY'),
       ],
     })
     const runtime = wrapper.vm as never as { selectProvider: (id: string) => Promise<void> }
 
-    await runtime.selectProvider('AUTOBYTEUS')
-    expect(store.ensureProviderModelCatalog).toHaveBeenCalledWith('autobyteus', 'AUTOBYTEUS')
+    await runtime.selectProvider('LMSTUDIO')
+    expect(store.ensureProviderModelCatalog).toHaveBeenCalledWith('autobyteus', 'LMSTUDIO')
     vi.mocked(store.ensureProviderModelCatalog).mockClear()
     await runtime.selectProvider('OLLAMA')
     expect(store.ensureProviderModelCatalog).not.toHaveBeenCalled()
@@ -191,8 +191,8 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
 
   it('reloads only the selected dynamic provider', async () => {
     const { wrapper, store } = mountRuntime({
-      settings: [setting('AUTOBYTEUS', true, 'DISCOVERED')],
-      snapshots: [snapshot('AUTOBYTEUS', 'DISCOVERED', 'READY')],
+      settings: [setting('LMSTUDIO', true, 'DISCOVERED')],
+      snapshots: [snapshot('LMSTUDIO', 'DISCOVERED', 'READY')],
     })
     const runtime = wrapper.vm as never as {
       initialize: () => Promise<void>
@@ -202,28 +202,27 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
 
     await runtime.initialize()
     expect(runtime.canReloadSelectedProvider).toBe(true)
-    await runtime.reloadSelectedProvider('AUTOBYTEUS')
-    expect(store.reloadProvider).toHaveBeenCalledWith('autobyteus', 'AUTOBYTEUS')
+    await runtime.reloadSelectedProvider('LMSTUDIO')
+    expect(store.reloadProvider).toHaveBeenCalledWith('autobyteus', 'LMSTUDIO')
   })
 
-  it('reports AutoByteus credential success before starting a non-awaited exact ensure', async () => {
+  it('reports a discovered provider credential save without starting model actions', async () => {
     const { wrapper, store } = mountRuntime({
-      settings: [setting('AUTOBYTEUS', false, 'DISCOVERED')],
-      snapshots: [snapshot('AUTOBYTEUS', 'DISCOVERED', 'READY')],
+      settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
+      snapshots: [snapshot('LMSTUDIO', 'DISCOVERED', 'READY')],
     })
-    const pendingEnsure = new Promise(() => undefined)
-    store.ensureProviderModelCatalog = vi.fn().mockReturnValue(pendingEnsure)
-    store.setLLMProviderApiKey = vi.fn().mockResolvedValue(setting('AUTOBYTEUS', true, 'DISCOVERED'))
+    store.setLLMProviderApiKey = vi.fn().mockResolvedValue(setting('LMSTUDIO', true, 'DISCOVERED'))
     const runtime = wrapper.vm as never as {
       saveProviderApiKey: (providerId: string, apiKey: string) => Promise<boolean>
       saving: boolean
       notification: { type: string; message: string } | null
     }
 
-    await expect(runtime.saveProviderApiKey('AUTOBYTEUS', 'synthetic-key')).resolves.toBe(true)
+    await expect(runtime.saveProviderApiKey('LMSTUDIO', 'synthetic-key')).resolves.toBe(true)
     expect(runtime.saving).toBe(false)
-    expect(runtime.notification).toEqual({ type: 'success', message: 'AutoByteus saved' })
-    expect(store.ensureProviderModelCatalog).toHaveBeenCalledWith('autobyteus', 'AUTOBYTEUS')
+    expect(runtime.notification).toEqual({ type: 'success', message: 'LM Studio saved' })
+    expect(store.ensureProviderModelCatalog).not.toHaveBeenCalled()
+    expect(store.reloadProvider).not.toHaveBeenCalled()
   })
 
   it('keeps ordinary static credential saves free of model actions', async () => {
@@ -263,7 +262,7 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
 
   it('classifies current LLM rows plus cold media failures as partial, not stale', async () => {
     const { wrapper } = mountRuntime({
-      settings: [setting('AUTOBYTEUS', false, 'DISCOVERED')],
+      settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
       snapshots: [freshnessSnapshot([
         { modelKind: 'LLM', state: 'READY', modelCount: 1 },
         { modelKind: 'AUDIO', state: 'ERROR', modelCount: 0 },
@@ -285,7 +284,7 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
 
   it('classifies a successful-empty plus peer-failure aggregate as a zero-row partial result', async () => {
     const { wrapper } = mountRuntime({
-      settings: [setting('AUTOBYTEUS', false, 'DISCOVERED')],
+      settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
       snapshots: [freshnessSnapshot([
         { modelKind: 'LLM', state: 'PARTIAL', modelCount: 0 },
       ]) as never],
@@ -307,7 +306,7 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
 
   it('classifies mixed current and stale rows as partial, while all-stale rows remain stale', async () => {
     const mixed = mountRuntime({
-      settings: [setting('AUTOBYTEUS', false, 'DISCOVERED')],
+      settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
       snapshots: [freshnessSnapshot([
         { modelKind: 'LLM', state: 'READY', modelCount: 1 },
         { modelKind: 'AUDIO', state: 'STALE_ERROR', modelCount: 1 },
@@ -322,7 +321,7 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
     expect(mixed.hasStaleModelResult).toBe(false)
 
     const allStale = mountRuntime({
-      settings: [setting('AUTOBYTEUS', false, 'DISCOVERED')],
+      settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
       snapshots: [freshnessSnapshot([
         { modelKind: 'LLM', state: 'STALE_ERROR', modelCount: 1 },
         { modelKind: 'AUDIO', state: 'STALE_ERROR', modelCount: 1 },

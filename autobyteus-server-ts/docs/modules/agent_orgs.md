@@ -91,11 +91,23 @@ its owner and physical directory. Missing indexed owners return no definition
 rather than borrowing a same-named shared Team. The Agent provider supplies the
 same Org-root context when reading a Team-local Agent.
 
-The Team cache delegates Org-owned exact IDs directly to persistence without
-inserting them into the public catalog snapshot. Exact readability and shared
+For agent packages, the [agent package definitions](./agent_package_definitions.md) hold
+each Org as one **definition folder**: the Org, its Org-owned Agents, and its
+Org-owned Teams with their Team-local Agents. Org-owned exact IDs are answered
+from that folder's definitions, which keep their last working version when a
+later edit is invalid. They
+are never added to the public Team or Agent lists. Exact readability and shared
 catalog visibility are separate facts: valid self-contained packages need no
 extraction, publication, copying or migration. Reads leave authored files intact.
 Existing source writability and mutation boundaries are unchanged.
+
+`AgentOrgDefinition.loadIssues` lists every load issue in the definition folder
+(the Org first, then nested definitions in path order) with `kind`, `definitionId`, `name`, `code`,
+`reason`, `definitionPath`, `packageRoot` and `usingLastGood`. The web shows them
+on the owning Org card. An Org ID present in more than one registered agent
+package is unusable (`DEFINITION_IDENTITY_DUPLICATED`) and is unavailable to
+every reader. `definitionProblems(kind: AGENT_ORG)` lists Orgs that
+cannot be used.
 
 Frontend catalog getters likewise describe only the current public inventory.
 Org detail/editor, owned Team detail and enclosing Org launch use the selected

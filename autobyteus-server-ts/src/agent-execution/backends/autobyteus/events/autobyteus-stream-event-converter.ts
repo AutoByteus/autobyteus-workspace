@@ -176,6 +176,8 @@ export class AutoByteusStreamEventConverter {
       : eventType === AgentRunEventType.TOKEN_USAGE_UPDATED
         ? {
             ...payload,
+            // Each native LlmPhase usage event is exactly one provider model call (D-4).
+            reports_model_call: true,
             observed_at: event.timestamp instanceof Date
               ? event.timestamp.toISOString()
               : new Date().toISOString(),

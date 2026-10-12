@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-57003-d398",
+    "pid": 27476,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-remote-provider/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:57004",
+    "graphqlUrl": "http://127.0.0.1:57004/graphql",
+    "controlEndpoint": "http://127.0.0.1:57003",
+    "controlPort": 57003,
+    "serverPort": 57004,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EcYI8e",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EcYI8e/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-57003-d398.log"
+  }
+}

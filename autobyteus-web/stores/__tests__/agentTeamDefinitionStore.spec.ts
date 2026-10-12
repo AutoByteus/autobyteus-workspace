@@ -6,7 +6,7 @@ import { GetAgentTeamDefinitions } from '~/graphql/queries/agentTeamDefinitionQu
 import { loadAgentOrgDefinitionReferences } from '~/services/agentOrgDefinition/agentOrgDefinitionReferences';
 import { GetAgentOrgReferencedAgent, GetAgentOrgReferencedTeam } from '~/graphql/queries/agentOrgDefinitionQueries';
 import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalDefinitionId';
-import { RefreshAgentTeamDefinitionCatalog } from '~/graphql/mutations/agentTeamDefinitionMutations';
+import { ReloadAgentPackageDefinitions } from '~/graphql/mutations/agentPackageDefinitionMutations';
 
 const mockQuery = vi.fn();
 const mockMutate = vi.fn();
@@ -102,7 +102,7 @@ describe('agentTeamDefinitionStore', () => {
   it('refreshes the backend team catalog before network reloading team definitions', async () => {
     mockMutate.mockResolvedValue({
       data: {
-        refreshAgentTeamDefinitionCatalog: true,
+        reloadAgentPackageDefinitions: true,
       },
       errors: [],
     });
@@ -131,7 +131,7 @@ describe('agentTeamDefinitionStore', () => {
     await store.refreshAndReloadAllAgentTeamDefinitions();
 
     expect(mockMutate).toHaveBeenCalledWith({
-      mutation: RefreshAgentTeamDefinitionCatalog,
+      mutation: ReloadAgentPackageDefinitions,
     });
     expect(mockQuery).toHaveBeenCalledTimes(2);
     expect(mockQuery).toHaveBeenNthCalledWith(1, {

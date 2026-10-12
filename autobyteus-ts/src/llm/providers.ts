@@ -7,7 +7,6 @@ export enum LLMProvider {
   OLLAMA = "OLLAMA",
   DEEPSEEK = "DEEPSEEK",
   GROK = "GROK",
-  AUTOBYTEUS = "AUTOBYTEUS",
   KIMI = "KIMI",
   QWEN = "QWEN",
   LMSTUDIO = "LMSTUDIO",

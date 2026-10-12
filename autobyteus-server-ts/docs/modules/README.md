@@ -30,6 +30,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Application Storage | [application_storage.md](./application_storage.md) |
 | Applications | [applications.md](./applications.md) |
 | Codex Integration | [codex_integration.md](./codex_integration.md) |
+| Agent Package Definitions (live agent/team/org definitions from agent packages, package folder watching) | [agent_package_definitions.md](./agent_package_definitions.md) |
 | File Explorer | [file_explorer.md](./file_explorer.md) |
 | File Search | [file_search.md](./file_search.md) |
 | Grok Build Runtime | [grok_build_runtime.md](./grok_build_runtime.md) |

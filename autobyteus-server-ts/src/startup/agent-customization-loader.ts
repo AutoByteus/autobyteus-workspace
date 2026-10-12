@@ -1,29 +1,22 @@
 import {
   AgentUserInputMessageProcessorDefinition,
   LLMResponseProcessorDefinition,
-  ToolInvocationPreprocessorDefinition,
   type BaseAgentUserInputMessageProcessor,
   type BaseLLMResponseProcessor,
-  type BaseToolInvocationPreprocessor,
   defaultInputProcessorRegistry,
   defaultLlmResponseProcessorRegistry,
-  defaultToolInvocationPreprocessorRegistry,
 } from "autobyteus-ts";
 import { UserInputContextBuildingProcessor } from "../agent-customization/processors/prompt/user-input-context-building-processor.js";
 import { WorkspacePathSanitizationProcessor } from "../agent-customization/processors/security-processor/workspace-path-sanitization-processor.js";
-import { MediaInputPathNormalizationPreprocessor } from "../agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.js";
 import { MediaUrlTransformerProcessor } from "../agent-customization/processors/response-customization/media-url-transformer-processor.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
-  warn: (...args: unknown[]) => console.warn(...args),
 };
 
 type InputProcessorClass = typeof BaseAgentUserInputMessageProcessor &
   (new () => BaseAgentUserInputMessageProcessor);
 type LlmResponseProcessorClass = typeof BaseLLMResponseProcessor & (new () => BaseLLMResponseProcessor);
-type ToolInvocationPreprocessorClass = typeof BaseToolInvocationPreprocessor &
-  (new () => BaseToolInvocationPreprocessor);
 
 function registerInputProcessor(processorClass: InputProcessorClass): void {
   const name = processorClass.getName();
@@ -47,17 +40,6 @@ function registerLlmResponseProcessor(processorClass: LlmResponseProcessorClass)
   logger.info(`Registered LLM response processor '${name}'.`);
 }
 
-function registerToolInvocationPreprocessor(processorClass: ToolInvocationPreprocessorClass): void {
-  const name = processorClass.getName();
-  if (defaultToolInvocationPreprocessorRegistry.contains(name)) {
-    return;
-  }
-  defaultToolInvocationPreprocessorRegistry.registerPreprocessor(
-    new ToolInvocationPreprocessorDefinition(name, processorClass),
-  );
-  logger.info(`Registered tool invocation preprocessor '${name}'.`);
-}
-
 export function loadAgentCustomizations(): void {
   logger.info("Registering agent customization processors...");
 
@@ -65,8 +47,6 @@ export function loadAgentCustomizations(): void {
   registerInputProcessor(UserInputContextBuildingProcessor);
 
   registerLlmResponseProcessor(MediaUrlTransformerProcessor);
-
-  registerToolInvocationPreprocessor(MediaInputPathNormalizationPreprocessor);
 
   logger.info("Agent customization processor registration complete.");
 }

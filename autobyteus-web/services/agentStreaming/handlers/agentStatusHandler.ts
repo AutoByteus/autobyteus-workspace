@@ -17,6 +17,7 @@ import type {
 import { findOrCreateAIMessage, findSegmentById } from './segmentHandler';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
+import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
 import { isCenterFeedCompactionPhase, projectCompactionStatusToActivity } from './compactionActivityProjection';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import { applyLiveAgentStatusEvent } from '~/services/runStatus/agentRuntimeStatusState';
@@ -99,6 +100,12 @@ export function handleCompactionStatus(
     previousStatus,
   });
   context.state.compactionStatus = projection.status;
+  // D-13: a newly completed compaction (failed or stopped never marks) awaits the next reading.
+  const status = projection.status;
+  if (status.phase === 'completed' && !(previousStatus?.phase === 'completed'
+    && previousStatus.compactionOperationId === status.compactionOperationId)) {
+    useTokenUsageMeterStore().markCompactionCompleted(context.state.runId);
+  }
 
   const conversationChanged = Boolean(payload.provider) && shouldCloseCurrentAIMessageForCenterCompaction(
     projection.status,

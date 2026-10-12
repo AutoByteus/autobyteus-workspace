@@ -161,6 +161,11 @@ export class LlmCallCompaction {
     return new LlmCallCompaction(executor, memoryManager, reporter, tokenBudget, input.runtimeSettingsResolver);
   }
 
+  /** The prompt size at which automatic compaction triggers; `null` without a request capacity. */
+  get triggerThresholdTokens(): number | null {
+    return this.tokenBudget?.triggerThresholdTokens ?? null;
+  }
+
   /** Evaluates the compaction threshold from the response's observed prompt tokens. */
   evaluateAfterResponse(input: {
     usage: LlmTokenUsageObservation | null;

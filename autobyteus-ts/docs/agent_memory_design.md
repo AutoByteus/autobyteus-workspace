@@ -97,7 +97,7 @@ LLM, the tools or the notifier, and there is no compaction-model setting.
 - Every attempt is exactly one provider call (`single_attempt` transport) on its own
   provider conversation `compaction_<operationId>_<attempt>`, never the agent's id.
   The port releases it afterwards through `BaseLLM.releaseConversation` (default
-  no-op; `AutobyteusLLM` ends that remote session), on its own 10 s-bounded
+  no-op; a provider that keeps server-side sessions ends that session), on its own 10 s-bounded
   controller, whatever the attempt outcome (including abort). The agent's LLM is
   never cleaned up by compaction.
 - Each attempt's usage is reported to the agent run as a token-usage event

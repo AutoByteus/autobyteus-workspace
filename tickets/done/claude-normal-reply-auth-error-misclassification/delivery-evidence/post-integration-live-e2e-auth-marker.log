@@ -1,0 +1,152 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-normal-reply-auth-error-misclassification/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-normal-reply-auth-error-misclassification/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts[2m > [22m[2mClaude auth-marker reply classification (live E2E)[2m > [22m[2mcompletes a normal turn whose reply mentions not logged in / please run /login / authentication_failed (AC-001) [path-claude]
+[22m[39mAgent websocket attached for run claude-live-auth-marker-reply-40169c8a-dc36-45a7-aaed-26e61defb2e9
+Created agent session a726db0f-800a-465c-9cb2-ab5722026d54 for run claude-live-auth-marker-reply-40169c8a-dc36-45a7-aaed-26e61defb2e9
+Agent WebSocket connected: session=a726db0f-800a-465c-9cb2-ab5722026d54, run=claude-live-auth-marker-reply-40169c8a-dc36-45a7-aaed-26e61defb2e9
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts[2m > [22m[2mClaude auth-marker reply classification (live E2E)[2m > [22m[2mcompletes a normal turn whose reply mentions not logged in / please run /login / authentication_failed (AC-001) [path-claude]
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-normal-reply-auth-error-misclassification/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-normal-reply-auth-error-misclassification/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts[2m > [22m[2mClaude auth-marker reply classification (live E2E)[2m > [22m[2mcompletes a normal turn whose reply mentions not logged in / please run /login / authentication_failed (AC-001) [path-claude]
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts[2m > [22m[2mClaude auth-marker reply classification (live E2E)[2m > [22m[2mcompletes a normal turn whose reply mentions not logged in / please run /login / authentication_failed (AC-001) [path-claude]
+[22m[39mClosed agent session a726db0f-800a-465c-9cb2-ab5722026d54
+Agent WebSocket disconnected: a726db0f-800a-465c-9cb2-ab5722026d54
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts[2m > [22m[2mClaude auth-marker reply classification (live E2E)[2m > [22m[2mcompletes a normal turn whose reply mentions not logged in / please run /login / authentication_failed (AC-001) [sdk-bundled-claude]
+[22m[39mAgent websocket attached for run claude-live-auth-marker-reply-9eb228db-5412-401c-a88a-55a571596121
+Created agent session 856d6106-cfd3-4b72-b7de-1b6c13f96830 for run claude-live-auth-marker-reply-9eb228db-5412-401c-a88a-55a571596121
+Agent WebSocket connected: session=856d6106-cfd3-4b72-b7de-1b6c13f96830, run=claude-live-auth-marker-reply-9eb228db-5412-401c-a88a-55a571596121
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts[2m > [22m[2mClaude auth-marker reply classification (live E2E)[2m > [22m[2mcompletes a normal turn whose reply mentions not logged in / please run /login / authentication_failed (AC-001) [sdk-bundled-claude]
+[22m[39mClosed agent session 856d6106-cfd3-4b72-b7de-1b6c13f96830
+Agent WebSocket disconnected: 856d6106-cfd3-4b72-b7de-1b6c13f96830
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts[2m > [22m[2mClaude auth-marker reply classification (live E2E)[2m > [22m[2mreports a turn on a CLI without credentials as CLAUDE_RUNTIME_AUTHENTICATION_FAILED (AC-002) [path-claude]
+[22m[39mAgent websocket attached for run claude-live-not-logged-in-78a688eb-1d37-4369-9404-e9f0efd159ac
+Created agent session 8521f9ef-5d95-4fbe-8e05-a1bc7ff0d009 for run claude-live-not-logged-in-78a688eb-1d37-4369-9404-e9f0efd159ac
+Agent WebSocket connected: session=8521f9ef-5d95-4fbe-8e05-a1bc7ff0d009, run=claude-live-not-logged-in-78a688eb-1d37-4369-9404-e9f0efd159ac
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts[2m > [22m[2mClaude auth-marker reply classification (live E2E)[2m > [22m[2mreports a turn on a CLI without credentials as CLAUDE_RUNTIME_AUTHENTICATION_FAILED (AC-002) [path-claude]
+[22m[39mClosed agent session 8521f9ef-5d95-4fbe-8e05-a1bc7ff0d009
+Agent WebSocket disconnected: 8521f9ef-5d95-4fbe-8e05-a1bc7ff0d009
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts[2m > [22m[2mClaude auth-marker reply classification (live E2E)[2m > [22m[2mreports a turn on a CLI without credentials as CLAUDE_RUNTIME_AUTHENTICATION_FAILED (AC-002) [sdk-bundled-claude]
+[22m[39mAgent websocket attached for run claude-live-not-logged-in-0093bb9b-7897-404f-b57b-78fc98beeb79
+Created agent session b41aa863-1a63-4bbc-a38e-aaaafc2dfa8f for run claude-live-not-logged-in-0093bb9b-7897-404f-b57b-78fc98beeb79
+Agent WebSocket connected: session=b41aa863-1a63-4bbc-a38e-aaaafc2dfa8f, run=claude-live-not-logged-in-0093bb9b-7897-404f-b57b-78fc98beeb79
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts[2m > [22m[2mClaude auth-marker reply classification (live E2E)[2m > [22m[2mreports a turn on a CLI without credentials as CLAUDE_RUNTIME_AUTHENTICATION_FAILED (AC-002) [sdk-bundled-claude]
+[22m[39mClosed agent session b41aa863-1a63-4bbc-a38e-aaaafc2dfa8f
+Agent WebSocket disconnected: b41aa863-1a63-4bbc-a38e-aaaafc2dfa8f
+
+ [32m✓[39m tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 13440[2mms[22m[39m
+     [33m[2m✓[22m[39m completes a normal turn whose reply mentions not logged in / please run /login / authentication_failed (AC-001) [path-claude] [33m 4397[2mms[22m[39m
+     [33m[2m✓[22m[39m completes a normal turn whose reply mentions not logged in / please run /login / authentication_failed (AC-001) [sdk-bundled-claude] [33m 5408[2mms[22m[39m
+     [33m[2m✓[22m[39m reports a turn on a CLI without credentials as CLAUDE_RUNTIME_AUTHENTICATION_FAILED (AC-002) [path-claude] [33m 1763[2mms[22m[39m
+     [33m[2m✓[22m[39m reports a turn on a CLI without credentials as CLAUDE_RUNTIME_AUTHENTICATION_FAILED (AC-002) [sdk-bundled-claude] [33m 1870[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m4 passed[39m[22m[90m (4)[39m
+[2m   Start at [22m 13:04:04
+[2m   Duration [22m 19.12s[2m (transform 3.20s, setup 31ms, import 4.94s, tests 13.44s, environment 0ms)[22m
+

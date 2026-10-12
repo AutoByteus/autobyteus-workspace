@@ -11,10 +11,6 @@ import {
 } from '../../../src/llm/openai-compatible-endpoint-model.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
 import { LLMRuntime } from '../../../src/llm/runtimes.js';
-import {
-  buildHostScopedMultimediaModelIdentifier,
-  parseHostScopedMultimediaModelIdentifier,
-} from '../../../src/multimedia/model-identifier.js';
 
 afterEach(() => LLMFactory.resetForTests());
 
@@ -42,17 +38,7 @@ describe('canonical producer-owned dynamic model identifiers', () => {
       modelName: 'vendor:family:model', runtime: LLMRuntime.OLLAMA, host: 'localhost:11434',
     });
     expect(parseHostScopedLlmModelIdentifier('model:openai_compatible@provider_gateway')).toBeNull();
-  });
-
-  it('round-trips multimedia identifiers by splitting the last at-sign', () => {
-    const identifier = buildHostScopedMultimediaModelIdentifier(
-      'vendor@family@model',
-      'https://gateway.example.invalid:8443',
-    );
-    expect(identifier).toBe('vendor@family@model@gateway.example.invalid:8443');
-    expect(parseHostScopedMultimediaModelIdentifier(identifier)).toEqual({
-      modelName: 'vendor@family@model', host: 'gateway.example.invalid:8443',
-    });
+    expect(parseHostScopedLlmModelIdentifier('gpt-4o:autobyteus@gateway.example.invalid:8000')).toBeNull();
   });
 });
 

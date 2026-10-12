@@ -18,8 +18,8 @@ describe("AgentOrgRunService history ordering", () => {
     const service = new AgentOrgRunService({
       manager: { create: managerCreate },
       admission: { requireAvailable: async () => ({ definition }) },
-      agentDefinitions: { getFreshAgentDefinitionById: async () => ({ id: "agent-1" }) },
-      teamDefinitions: { getFreshDefinitionById: async () => null },
+      agentDefinitions: { getAgentDefinitionById: async () => ({ id: "agent-1" }) },
+      teamDefinitions: { getDefinitionById: async () => null },
       agentIdentities: { allocateForAgentDefinition: async () => "agent-run-1" },
       teamIdentities: { allocateForTeamDefinitionName: () => "team-run-1" },
       workspaces: { ensureWorkspaceByRootPath: async () => ({ getBasePath: () => "/tmp/workspace" }) },

@@ -5,9 +5,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { FileAgentDefinitionProvider } from "../../../src/agent-definition/providers/file-agent-definition-provider.js";
 import { FileAgentTeamDefinitionProvider } from "../../../src/agent-team-definition/providers/file-agent-team-definition-provider.js";
-import { FileAgentOrgDefinitionProvider } from "../../../src/agent-org-definition/providers/file-agent-org-definition-provider.js";
-import { DefinitionSourceRegistry } from "../../../src/collaboration-definition-admission/providers/definition-source-registry.js";
-import { DefinitionAdmissionService } from "../../../src/collaboration-definition-admission/services/definition-admission-service.js";
+import { createDiskDefinitionServices } from "../../helpers/agent-package-definitions-test-support.js";
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import type { AppConfig } from "../../../src/config/app-config.js";
 import type { ApplicationBundleService } from "../../../src/application-bundles/services/application-bundle-service.js";
@@ -301,7 +299,6 @@ describe("FileApplicationBundleProvider", () => {
     } as AppConfig;
     const agents = new FileAgentDefinitionProvider({ appConfig: config, applicationBundleService: appSources });
     const teams = new FileAgentTeamDefinitionProvider({ appConfig: config, applicationBundleService: appSources });
-    const orgs = new FileAgentOrgDefinitionProvider(config);
     const agentId = agentSources[0]!.definitionId, teamId = teamSources[0]!.definitionId;
     const localId = buildTeamLocalAgentDefinitionId(teamId, "sample-agent");
     const expectedAvatar = mode === "supplied" ? image : null;
@@ -313,12 +310,12 @@ describe("FileApplicationBundleProvider", () => {
         { memberName: "team", ref: teamId, refType: "agent_team", refScope: "application_owned" },
       ], handoffs: [], defaultLaunchConfig: null,
     }));
-    const admission = new DefinitionAdmissionService({
-      registry: new DefinitionSourceRegistry({ appConfig: config, implementationPackageRoots: [], listImplementationOwnedTeamSources: async () => teamSources }),
-      agents: { getFreshAgentDefinitionById: id => agents.getById(id) },
-      teams: { getFreshDefinitionById: id => teams.getById(id) },
-      orgs: { getDefinitionById: id => orgs.getById(id) },
+    const services = createDiskDefinitionServices(config, {
+      ...appSources,
+      listApplicationOwnedAgentSources: async () => agentSources,
+      listApplicationOwnedTeamSources: async () => teamSources,
     });
+    const admission = services.admission;
     for (let reload = 0; reload < 2; reload++) {
       expect(await agents.getById(agentId)).toMatchObject({ id: agentId, avatarUrl: expectedAvatar, ownershipScope: "application_owned" });
       expect(await agents.getById(localId)).toMatchObject({ id: localId, avatarUrl: expectedAvatar, ownershipScope: "team_local", ownerTeamId: teamId });
@@ -334,6 +331,7 @@ describe("FileApplicationBundleProvider", () => {
     expect((await bundleProvider.getCatalogSnapshot()).diagnostics.length).toBeGreaterThan(0);
     await expect(teams.getById(teamId)).rejects.toThrow(/avatarUrl/);
     await expect(admission.requireAvailable("agent_team", teamId)).rejects.toThrow(/avatarUrl/);
+    services.close();
   });
 
   it("treats an empty managed built-in application root as a valid steady state", async () => {

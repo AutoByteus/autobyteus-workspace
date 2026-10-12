@@ -44,6 +44,15 @@
             >
               {{ updateStatusLabel(pkg) }}
             </div>
+            <div
+              v-if="pkg.autoRefresh"
+              class="mt-1 text-xs"
+              :class="autoRefreshClass(pkg.autoRefresh.state)"
+              :title="pkg.autoRefresh.message ?? undefined"
+              :data-testid="`agent-package-auto-refresh-${packageActionKey(pkg.packageId)}`"
+            >
+              {{ autoRefreshLabel(pkg.autoRefresh.state) }}<template v-if="pkg.autoRefresh.message"> — {{ pkg.autoRefresh.message }}</template>
+            </div>
           </div>
           <div class="ml-4 flex shrink-0 flex-wrap items-center justify-end gap-2">
             <span
@@ -129,6 +138,7 @@ import { computed, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import type {
   AgentPackage,
+  AgentPackageAutoRefreshState,
   AgentPackageImportSourceKind,
   AgentPackageSourceKind,
   AgentPackageUpdateStatus,
@@ -137,6 +147,7 @@ import { useAgentPackagesStore } from '~/stores/agentPackagesStore'
 import { useSkillNamesStore } from '~/stores/skillNamesStore'
 
 const store = useAgentPackagesStore()
+const { $t } = useNuxtApp()
 // Import, update and reload validate skill names; a duplicate opens the conflict pop-up (D-19).
 const skillNames = useSkillNamesStore()
 const { agentPackages, loading, checkingUpdates, error } = storeToRefs(store)
@@ -167,9 +178,26 @@ const sourceKindLabel = (sourceKind: AgentPackageSourceKind): string => {
 
 const updateStatusLabel = (pkg: AgentPackage): string => {
   if (pkg.sourceKind === 'LOCAL_PATH') {
-    return 'Local folder — reload after external changes.'
+    return 'Local folder — Reload refreshes it now.'
   }
   return pkg.updateInfo.message
+}
+
+/** Whether the server is watching the package folder for definition changes. */
+const autoRefreshLabel = (state: AgentPackageAutoRefreshState): string => {
+  switch (state) {
+    case 'WATCHING':
+      return $t('agentPackageDefinitions.package.watching')
+    case 'FOLDER_MISSING':
+      return $t('agentPackageDefinitions.package.rootMissing')
+    default:
+      return $t('agentPackageDefinitions.package.unavailable')
+  }
+}
+
+const autoRefreshClass = (state: AgentPackageAutoRefreshState): string => {
+  if (state === 'WATCHING') return 'text-gray-500'
+  return state === 'FOLDER_MISSING' ? 'text-red-700' : 'text-amber-700'
 }
 
 const updateStatusClass = (status: AgentPackageUpdateStatus): string => {

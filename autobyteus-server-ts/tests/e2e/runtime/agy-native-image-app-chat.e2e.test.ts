@@ -204,7 +204,7 @@ suite("real AutoByteus AGY standalone native image chat", () => {
       skillNames: ["software-engineering-workflow-skill"] });
     // Shared package definitions have no ownerPackageId. Resolve the selected
     // source instead, so the actual run cannot silently use a shadow copy.
-    const selected = await AgentDefinitionService.getInstance().getFreshAgentDefinitionById("codex");
+    const selected = await AgentDefinitionService.getInstance().getAgentDefinitionById("codex");
     expect(selected?.sourceInfo?.agentDirPath).toBe(path.join(packageRoot, "agents", "codex"));
     const selectedSkill = path.join(selected!.sourceInfo!.agentDirPath, "skills",
       "software-engineering-workflow-skill", "SKILL.md");

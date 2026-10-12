@@ -1,0 +1,22 @@
+{
+  "status": "REHEARSAL — not an authoritative validation round. The code under test is superseded by the in-flight SR-009 rename (CRR-006). Rerun the same journey on the IR-004 build when it is routed to API/E2E.",
+  "build": "existing autobyteus-web/electron-dist (built 2026-10-11 19:07; contains IR-003 strings such as '/ws/definition-catalog', 'catalogIssues' and 'Some members couldn't be loaded'; none of the SR-009 names). Started with `pnpm --silent isolated-app start --from-worktree` (no build); the implementer's uncommitted rename was not touched.",
+  "instance": "iso-62126-fb22 (control 62126, backend 62127)",
+  "method": "Human-like only: every page change by clicking the sidebar, Workspaces tree, buttons and badges (__abDemo click at element centre); every message typed with key events and sent with the Send button; model chosen through the picker. Every package change except one (the file written while the server was down) made by agents with real Codex (GPT-6.1-Sol low): the APAR Package Breaker test agent (run_bash/write_file) and the user's Project Task Manager → Agent Package Creator. Whole journey recorded.",
+  "testPackage": "api-e2e-evidence/round3-rehearsal/apar-ux-test-package (APAR Package Breaker agent; APAR UX Crew team with team-local lead/helper; APAR UX Studio org with org-owned writer agent and squad team with local lead)",
+  "video": "api-e2e-evidence/round3-rehearsal/round3-human-journey.mp4 (1560.7 s, 15607 frames)",
+  "steps": {
+    "H1 import 3 packages via Settings (typed paths, Import clicks)": "Pass — all Auto-refreshing",
+    "H2/H3 Run Package Breaker from its card; choose Codex model in picker": "Pass",
+    "H4/H5 agent breaks team-local helper; Teams page; click badge": "Pass — 'Using last working version (1) — APAR Crew Helper', file, reason",
+    "H6 agent restores; Teams page open": "Pass — badge cleared 1.1 s after the agent's write (028.47 → 029.58)",
+    "H7 agent breaks org-owned writer config and squad team.md; Orgs page; click badge; agent restores": "Pass — Org card (2) 1.2 s after write (058.65 → 059.88) listing APAR Studio Writer and APAR Studio Squad with file/reason; cleared 1.06 s after restore",
+    "H8 PTM (Codex) → Agent Package Creator creates APAR UX Poet, APAR UX Temp, APAR UX Duo; Agents page open": "Pass — both cards 1.3 s after the creator's write; Teams page lists Duo; typed '@APAR' menu lists Poet, Temp and the Duo; PTM list_available_agents lists all three; Team copy coordinator replied MARK_UX_V1",
+    "H9 creator edits Poet to V2, Duo to lead/analyst with handoff, deletes Temp; Agents page open": "Pass — Temp card gone 1.3 s after delete; '@APAR' menu without Temp, Duo 'coordinator lead'; PTM: Temp not listed, delegation refused (delegated:false, existing message); Duo copy (Lead) replied MARK_UX_V2",
+    "H10 real second client: Nodes > Phone Setup > Enable Phone Access > LAN URL > trust > Create QR; pairing link opened in a separate test-owned Chrome; 'Pair this phone'; Choose work > Agents": "Pass — paired over LAN with a remote-access credential; phone's Agents list showed 'APAR Phone Seen' (created by the breaker agent) 1.23 s after the write, no refresh (QR-006 + multi-client)",
+    "H11 Settings > Server Settings > Advanced > Server Status & Logs > Restart server; file written while down": "Pass — phone reconnected and showed the agent 4 s after the backend was up; desktop Agents page showed it after reconnect; both page markers kept",
+    "H12 breaker agent mv package folder away and back; Settings > Agent Packages": "Pass — 'Folder not found — Its definitions keep their last loaded version until the folder returns.'; back to 'Auto-refreshing' with 37 agents",
+    "driver slips (not product)": "Run click lookup (fixed), '@APAR UX' with a space opens no menu (typed '@APAR' as a human would), one message clicked Send while the agent was busy (resent)"
+  },
+  "cleanup": "isolated instance stopped (not forced), data root removed, both ports released; test-owned Chrome (/tmp/apar-r3/chrome-profile) terminated; /tmp/apar-r3 removed"
+}

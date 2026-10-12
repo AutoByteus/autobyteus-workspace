@@ -1,0 +1,130 @@
+{
+  "dcf001": {
+    "invalid": {
+      "code": 4401,
+      "reason": "REMOTE_ACCESS_AUTH_INVALID"
+    },
+    "sibling": {
+      "code": 4401,
+      "reason": "REMOTE_ACCESS_AUTH_INVALID"
+    },
+    "revoked": {
+      "code": 4403,
+      "reason": "REMOTE_ACCESS_DEVICE_REVOKED"
+    },
+    "pairedFrames": [
+      {
+        "type": "connected"
+      },
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org",
+          "agent_package"
+        ]
+      }
+    ]
+  },
+  "dcf004": {
+    "agents page Reload": [
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org",
+          "agent_package"
+        ]
+      }
+    ],
+    "teams page Reload": [
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org",
+          "agent_package"
+        ]
+      }
+    ],
+    "orgs page Reload": [
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org",
+          "agent_package"
+        ]
+      }
+    ],
+    "package Reload": [
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org",
+          "agent_package"
+        ]
+      }
+    ]
+  },
+  "dcf005": {
+    "githubRequests": [
+      "https://api.github.com/repos/apar-e2e/agents",
+      "https://api.github.com/repos/apar-e2e/agents/branches/main",
+      "https://codeload.github.com/apar-e2e/agents/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "https://api.github.com/repos/apar-e2e/agents",
+      "https://api.github.com/repos/apar-e2e/agents/branches/main",
+      "https://api.github.com/repos/apar-e2e/agents",
+      "https://api.github.com/repos/apar-e2e/agents/branches/main",
+      "https://codeload.github.com/apar-e2e/agents/tar.gz/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "updateFrames": [
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org",
+          "agent_package"
+        ]
+      },
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent_package"
+        ]
+      }
+    ],
+    "autoRefreshAfterUpdate": {
+      "state": "WATCHING",
+      "message": null
+    }
+  },
+  "dcf006": {
+    "diagnostic": {
+      "subject": "AGENT_TEAM",
+      "definitionId": "apar-dup-team",
+      "code": "DEFINITION_IDENTITY_DUPLICATED",
+      "reason": "Definition identity 'agent_team:apar-dup-team' is registered by multiple packages: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-bgPBUP/dup-a-0081e4/agent-teams/apar-dup-team, /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-bgPBUP/dup-b-19cbcf/agent-teams/apar-dup-team.",
+      "definitionPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-bgPBUP/dup-a-0081e4/agent-teams/apar-dup-team",
+      "packageRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-bgPBUP/dup-a-0081e4",
+      "usingLastGood": false,
+      "dependencyChain": []
+    }
+  },
+  "frames": {
+    "total": 38,
+    "invalid": []
+  },
+  "cleanup": {
+    "baseRemoved": true,
+    "serverClosed": true,
+    "errors": []
+  }
+}

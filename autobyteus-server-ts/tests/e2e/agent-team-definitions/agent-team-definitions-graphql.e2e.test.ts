@@ -148,8 +148,8 @@ describe("Agent team definitions GraphQL e2e", () => {
       await fs.rm(filePath, { recursive: true, force: true }).catch(() => undefined);
     }
     cleanupPaths.clear();
-    await agentDefinitionService.refreshCache();
-    await agentTeamDefinitionService.refreshCache();
+    await agentDefinitionService.reloadAgentPackageDefinitions();
+    await agentTeamDefinitionService.reloadAgentPackageDefinitions();
   });
 
   const execGraphql = async <T>(
@@ -710,8 +710,8 @@ describe("Agent team definitions GraphQL e2e", () => {
       ],
     });
 
-    await agentDefinitionService.refreshCache();
-    await agentTeamDefinitionService.refreshCache();
+    await agentDefinitionService.reloadAgentPackageDefinitions();
+    await agentTeamDefinitionService.reloadAgentPackageDefinitions();
 
     const getQuery = `
       query TeamById($id: String!) {
@@ -940,8 +940,8 @@ describe("Agent team definitions GraphQL e2e", () => {
       name: `Department Planner ${unique}`,
     });
 
-    await agentDefinitionService.refreshCache();
-    await agentTeamDefinitionService.refreshCache();
+    await agentDefinitionService.reloadAgentPackageDefinitions();
+    await agentTeamDefinitionService.reloadAgentPackageDefinitions();
 
     const result = await execGraphql<{
       agentTeamDefinitions: Array<{
@@ -1174,8 +1174,8 @@ describe("Agent team definitions GraphQL e2e", () => {
       }
     }
 
-    await agentDefinitionService.refreshCache();
-    await agentTeamDefinitionService.refreshCache();
+    await agentDefinitionService.reloadAgentPackageDefinitions();
+    await agentTeamDefinitionService.reloadAgentPackageDefinitions();
 
     const result = await execGraphql<{
       agentTeamDefinitions: Array<{

@@ -68,6 +68,7 @@ const snapshot = (input: { event: string; series: string; total: number; provide
       runtime_kind: "codex_app_server",
       ingestion_kind: "codex_thread_token_usage",
       usage_scope: "cumulative_snapshot",
+      reports_model_call: true,
       snapshot_series_key: input.series,
       input_token_semantic: "gross_includes_cache",
       ...source,
@@ -83,19 +84,12 @@ const snapshot = (input: { event: string; series: string; total: number; provide
   });
 };
 
-/** One AGY `result` usage as the server records it: converter, then the event pipeline's basis and snapshot steps. */
-const agyResult = async (input: {
-  turn: number;
-  inputTokens: number;
-  outputTokens: number;
-  cacheReadTokens: number;
-  /** The semantic the converter declared before this fix, to build a pre-upgrade checkpoint. */
-  preUpgradeSemantic?: "gross_includes_cache";
-}) => {
+/** One AGY DONE `agent_response` step usage as the server records it: converter, then the event pipeline's basis and snapshot steps. */
+const agyStep = async (input: { step: number; inputTokens: number; outputTokens: number; cacheReadTokens: number }) => {
   const converter = new AgyStreamEventConverter("run-agy", "agy-conversation", "gemini-3.8-flash-high");
-  converter.startTurn(`turn-${input.turn}`);
-  const event = converter.convert({ event: "result", result: {
-    conversation_id: "agy-conversation", status: "SUCCESS", num_turns: input.turn,
+  converter.startTurn(`turn-${input.step}`);
+  const event = converter.convert({ event: "step_update", step_update: {
+    conversation_id: "agy-conversation", step_index: input.step, step_type: "agent_response", state: "DONE",
     usage: {
       input_tokens: input.inputTokens,
       output_tokens: input.outputTokens,
@@ -103,18 +97,34 @@ const agyResult = async (input: {
       cache_read_tokens: input.cacheReadTokens,
     },
   } }).find((item) => item.eventType === AgentRunEventType.TOKEN_USAGE_UPDATED)!;
-  const payload = createTokenUsageUpdatedPayload({
+  return normalize(createTokenUsageUpdatedPayload({
+    runId: "run-agy",
+    payload: { ...event.payload, observed_at: new Date(Date.UTC(2026, 9, 9, 0, 0, input.step)).toISOString() },
+  }));
+};
+
+/** The cumulative AGY `result` snapshot recorded before per-step usage (gemini-native-cache-hit era and earlier). */
+const preUpgradeAgyResult = async (input: { turn: number; inputTokens: number; cacheReadTokens: number }) => normalize(
+  createTokenUsageUpdatedPayload({
     runId: "run-agy",
     payload: {
-      ...event.payload,
-      observed_at: new Date(Date.UTC(2026, 9, 9, 0, 0, input.turn)).toISOString(),
-      ...(input.preUpgradeSemantic ? { input_token_semantic: input.preUpgradeSemantic } : {}),
+      turn_id: `turn-${input.turn}`,
+      idempotency_key: `agy:agy-conversation:${input.turn}`,
+      observed_at: new Date(Date.UTC(2026, 9, 8, 0, 0, input.turn)).toISOString(),
+      runtime_kind: "antigravity_cli", ingestion_kind: "agy_result",
+      usage_scope: "cumulative_snapshot", snapshot_series_key: "agy-conversation",
+      model_identifier: "gemini-3.8-flash-high", model_value: "gemini-3.8-flash-high", model_provider: "GEMINI",
+      provider_name: "Antigravity CLI",
+      reported_input_tokens: input.inputTokens, reported_output_tokens: 1, reported_total_tokens: input.inputTokens + 1,
+      input_token_semantic: "gross_includes_cache",
+      cache_read_input_tokens: input.cacheReadTokens, cache_state: "positive",
+      quality_flags: ["agy_provider_reported_cumulative_usage"],
     },
-  });
-  return new TokenUsageSnapshotDeltaNormalizer().normalizeAccountingDelta(
-    new TokenUsageComponentBasisResolver().resolve(payload),
-  );
-};
+  }),
+);
+
+const normalize = (payload: ReturnType<typeof createTokenUsageUpdatedPayload>) =>
+  new TokenUsageSnapshotDeltaNormalizer().normalizeAccountingDelta(new TokenUsageComponentBasisResolver().resolve(payload));
 
 const fold = (current: ReturnType<typeof foldTokenUsageObservation>["record"], payload: ReturnType<typeof snapshot>) =>
   foldTokenUsageObservation({ current, payload, pricingPolicy: policy });
@@ -132,6 +142,7 @@ const cacheObservation = (input: {
     runtime_kind: input.runtimeKind ?? "autobyteus",
     ingestion_kind: "autobyteus_llm_phase",
     usage_scope: "per_call",
+    reports_model_call: true,
     input_token_semantic: "gross_includes_cache",
     reported_input_tokens: 1,
     reported_output_tokens: 0,
@@ -207,7 +218,7 @@ describe("token usage current run fold", () => {
   });
 
   it("counts AGY cache reads in gross input and its reported input as the cache miss", async () => {
-    const first = fold(null, await agyResult({ turn: 1, inputTokens: 6_110, outputTokens: 1, cacheReadTokens: 307_003 }));
+    const first = fold(null, await agyStep({ step: 1, inputTokens: 6_110, outputTokens: 1, cacheReadTokens: 307_003 }));
     expect(first.record?.tokenTotals).toMatchObject({
       accounting_input_tokens: 313_113n,
       standard_input_tokens: 6_110n,
@@ -215,49 +226,41 @@ describe("token usage current run fold", () => {
       cache_read_input_tokens: 307_003n,
     });
 
-    const second = fold(first.record, await agyResult({ turn: 2, inputTokens: 9_000, outputTokens: 3, cacheReadTokens: 400_000 }));
+    // Per-step usage is per call (D-5): each step adds its own input and cache read.
+    const second = fold(first.record, await agyStep({ step: 3, inputTokens: 9_000, outputTokens: 3, cacheReadTokens: 400_000 }));
     expect(second.kind).toBe("CHANGED");
     expect(second.authoritativePayload).toMatchObject({
-      accounting_input_tokens: 95_887,
-      cache_miss_input_tokens: 2_890,
-      cache_read_input_tokens: 92_997,
+      accounting_input_tokens: 409_000,
+      cache_miss_input_tokens: 9_000,
+      cache_read_input_tokens: 400_000,
     });
     expect(second.record?.tokenTotals).toMatchObject({
-      accounting_input_tokens: 409_000n,
-      standard_input_tokens: 9_000n,
-      cache_miss_input_tokens: 9_000n,
-      cache_read_input_tokens: 400_000n,
+      accounting_input_tokens: 722_113n,
+      standard_input_tokens: 15_110n,
+      cache_miss_input_tokens: 15_110n,
+      cache_read_input_tokens: 707_003n,
     });
     expect(second.record?.qualityFlags).not.toContain("cumulative_snapshot_regressed");
   });
 
-  it("continues an AGY conversation checkpointed before the semantic fix without flagging a regression", async () => {
-    const before = fold(null, await agyResult({
-      turn: 1, inputTokens: 6_110, outputTokens: 1, cacheReadTokens: 307_003, preUpgradeSemantic: "gross_includes_cache",
-    }));
-    expect(before.record?.snapshotSeriesState[0]?.sourceTokens).toMatchObject({
-      accounting_input_tokens: 6_110n,
-      standard_input_tokens: 0n,
-      cache_miss_input_tokens: 0n,
-    });
+  it("continues an AGY run checkpointed with a pre-fix cumulative result series on per-step usage without flagging a regression", async () => {
+    const before = fold(null, await preUpgradeAgyResult({ turn: 1, inputTokens: 6_110, cacheReadTokens: 307_003 }));
+    const seriesBefore = before.record?.snapshotSeriesState;
+    expect(seriesBefore?.[0]?.sourceTokens).toMatchObject({ accounting_input_tokens: 6_110n });
 
-    const after = fold(before.record, await agyResult({ turn: 2, inputTokens: 9_000, outputTokens: 3, cacheReadTokens: 400_000 }));
+    const after = fold(before.record, await agyStep({ step: 4, inputTokens: 9_000, outputTokens: 3, cacheReadTokens: 400_000 }));
 
     expect(after.kind).toBe("CHANGED");
-    expect(after.authoritativePayload.quality_flags).not.toContain("cumulative_snapshot_regressed");
+    expect(after.authoritativePayload.quality_flags ?? []).not.toContain("cumulative_snapshot_regressed");
     expect(after.record?.qualityFlags).not.toContain("cumulative_snapshot_regressed");
-    // Fix-forward: the miss catches up to the conversation's true cumulative miss in this one delta,
-    // while the run's gross keeps lacking the cache reads recorded before the fix (307,003).
+    // Fix-forward: the pre-fix row keeps its stored totals; the step adds its own per-call usage, and the
+    // stored snapshot series is kept but no longer read for AGY.
     expect(after.record?.tokenTotals).toMatchObject({
+      accounting_input_tokens: 415_110n,
       cache_miss_input_tokens: 9_000n,
-      cache_read_input_tokens: 400_000n,
-      accounting_input_tokens: 101_997n,
+      cache_read_input_tokens: 707_003n,
     });
-    expect(after.record?.snapshotSeriesState[0]?.sourceTokens).toMatchObject({
-      accounting_input_tokens: 409_000n,
-      standard_input_tokens: 9_000n,
-      cache_miss_input_tokens: 9_000n,
-    });
+    expect(after.record?.snapshotSeriesState).toEqual(seriesBefore);
   });
 
   it("keeps checkpoint and digest state within hard count and byte limits", () => {
@@ -285,6 +288,7 @@ describe("token usage current run fold", () => {
         runtime_kind: "codex_app_server",
         ingestion_kind: "codex_thread_token_usage",
         usage_scope: "per_call",
+        reports_model_call: true,
         accounting_input_tokens: unsafe,
       },
     });

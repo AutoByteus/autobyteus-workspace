@@ -1,0 +1,1 @@
+{"text": "Next, in /tmp/apar-r3/apar-ux-test-package/agent-orgs/apar-ux-studio do two things: overwrite agents/writer/agent-config.json with the text {\"toolNames\": [ (left unfinished on purpose), and overwrite agent-teams/squad/team.md with the single line: no front matter"}

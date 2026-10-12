@@ -50,8 +50,8 @@ describe("GitHub agent package import integration (live)", () => {
     cleanupPaths.clear();
 
     delete process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS;
-    await AgentDefinitionService.getInstance().refreshCache();
-    await AgentTeamDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
+    await AgentTeamDefinitionService.getInstance().reloadAgentPackageDefinitions();
   });
 
   runLiveIntegration(
@@ -95,10 +95,8 @@ describe("GitHub agent package import integration (live)", () => {
         rootSettingsStore,
         registryStore,
         installer,
-        refreshAgentDefinitions: () =>
-          AgentDefinitionService.getInstance().refreshCache(),
-        refreshAgentTeams: () =>
-          AgentTeamDefinitionService.getInstance().refreshCache(),
+        reloadAgentPackageDefinitions: () =>
+          AgentDefinitionService.getInstance().reloadAgentPackageDefinitions(),
       });
 
       const importedPackages = await service.importAgentPackage({

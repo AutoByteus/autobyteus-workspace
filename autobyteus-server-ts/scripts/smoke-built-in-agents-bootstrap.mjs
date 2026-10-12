@@ -56,13 +56,13 @@ const agentsDir = path.join(tempRoot, "agents");
 const settingsByKey = new Map();
 
 const fakeAgentDefinitionService = {
-  async getFreshAgentDefinitionById(definitionId) {
+  async getAgentDefinitionById(definitionId) {
     return {
       id: definitionId,
       name: definitionId === RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID ? "Retrospective Skill Improver" : "Memory Compactor",
     };
   },
-  async refreshCache() {},
+  async reloadAgentPackageDefinitions() {},
 };
 
 const fakeServerSettingsService = {

@@ -1,4 +1,3 @@
-export * from './clients/index.js';
 export * from './prompt/index.js';
 export * from './tools/index.js';
 export * from './tools/mcp/index.js';

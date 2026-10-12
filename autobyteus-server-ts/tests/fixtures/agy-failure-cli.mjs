@@ -87,6 +87,13 @@ if (arg === "--version") {
       catch (error) { return { path: file, error: error.code }; }
     });
   };
+  // linked_skills: `READ_AGENT_PROMPT` reports the agent prompt the server materialized for this run
+  // (`.agents/agents/<--agent>/agent.md` in the capsule, the file AGY loads), so a test can prove which
+  // definition instructions a run or a delegated copy actually received.
+  const readAgentPrompt = () => {
+    try { return readFileSync(path.join(process.cwd(), ".agents", "agents", argValue("--agent") ?? "", "agent.md"), "utf8"); }
+    catch (error) { return `UNREADABLE:${error.code}`; }
+  };
   const callAgentTool = async (name, args) => {
     const config = JSON.parse(readFileSync(path.join(process.cwd(), ".agents", "mcp_config.json"), "utf8"));
     const server = config.mcpServers?.autobyteus_agent_tools;
@@ -134,6 +141,7 @@ if (arg === "--version") {
       : call ? `CALLED:${JSON.stringify(await callAgentTool(call.name, call.arguments))}`
       : content.includes("READ_SKILLS") ? `SKILLS:${JSON.stringify(readCapsuleSkills())}`
       : content.includes("READ_REFERENCE_FILES") ? `REFERENCES:${JSON.stringify(readReferenceFiles(content))}`
+      : content.includes("READ_AGENT_PROMPT") ? `AGENT_PROMPT:${JSON.stringify(readAgentPrompt())}`
       : delegation ? `DELEGATED:${JSON.stringify(await callAgentTool("delegate_task", JSON.parse(delegation[1])))}`
         : "OK";
     reply(turns * 10, text);
@@ -217,19 +225,29 @@ if (arg === "--version") {
       return;
     }
     if (usageReport) {
-      // Turn N replays the Nth `result` event verbatim from a real AGY 1.2.16 recording (cumulative `usage` per
-      // process; `input_tokens` excludes `cache_read_tokens`, `total_tokens = input + output`), rebound to this
-      // process's conversation. Beyond the recording the turn fails, so a test never reads invented usage.
+      // Turn N replays the Nth turn of a real AGY 1.2.16 recording, rebound to this process's conversation: its
+      // DONE `agent_response` step with that model call's `usage` (`input_tokens` excludes `cache_read_tokens`,
+      // `total_tokens = input + output`), then its `result` verbatim (cumulative `usage` per process, which the
+      // per-step usage sums to). Beyond the recording the turn fails, so a test never reads invented usage.
       const recording = new URL("./agy-compaction/agy-stream-auto-compaction-twice.stdout.jsonl", import.meta.url);
-      const recorded = readFileSync(recording, "utf8").split("\n").filter(Boolean).map((row) => JSON.parse(row))
-        .filter((row) => row.event === "result").map((row) => row.result);
-      const result = recorded[turns - 1];
-      if (!result) {
+      const rows = readFileSync(recording, "utf8").split("\n").filter(Boolean).map((row) => JSON.parse(row));
+      const recordedTurns = [];
+      let stepUsage = [];
+      for (const row of rows) {
+        const step = row.event === "step_update" ? row.step_update : null;
+        if (step?.step_type === "agent_response" && step.state === "DONE" && step.usage) stepUsage.push(step.usage);
+        if (row.event === "result") { recordedTurns.push({ result: row.result, stepUsage }); stepUsage = []; }
+      }
+      const recorded = recordedTurns[turns - 1];
+      if (!recorded) {
         emit({ event: "result", result: { conversation_id, status: "ERROR", error: "no recorded turn", response: "" } });
         return;
       }
-      reply(turns * 10, result.response);
-      emit({ event: "result", result: { ...result, conversation_id } });
+      recorded.stepUsage.forEach((usage, index) => emit({ event: "step_update", step_update: { conversation_id,
+        step_index: turns * 10 + index, step_type: "agent_response", state: "DONE",
+        ...(index === recorded.stepUsage.length - 1 ? { text_delta: recorded.result.response } : {}), usage } }));
+      if (!recorded.stepUsage.length) reply(turns * 10, recorded.result.response);
+      emit({ event: "result", result: { ...recorded.result, conversation_id } });
       return;
     }
     if (autoCompaction) {

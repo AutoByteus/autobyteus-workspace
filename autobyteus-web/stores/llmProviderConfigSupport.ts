@@ -79,7 +79,6 @@ export interface ProviderModelCatalogSnapshot {
 
 export interface DiscoverySettingCatalogTarget {
   ownerProviderId: string
-  modelKinds: ModelKind[]
 }
 
 export interface RuntimeCatalogSnapshot {

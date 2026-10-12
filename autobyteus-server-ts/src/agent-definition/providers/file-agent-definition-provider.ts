@@ -3,12 +3,8 @@ import type { Dirent } from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentDefinition } from "../domain/models.js";
-import type {
-  AgentDefinitionOwnershipScope,
-  AgentDefinitionSourceInfo,
-} from "../domain/models.js";
 import { writeRawFile, writeJsonFile, readJsonFile } from "../../persistence/file/store-utils.js";
-import { parseAgentMd, serializeAgentMd, AgentMdParseError } from "../utils/agent-md-parser.js";
+import { serializeAgentMd, AgentMdParseError } from "../utils/agent-md-parser.js";
 import {
   listTeamLocalAgentDefinitions,
   readTeamLocalAgentFromSourcePaths,
@@ -32,8 +28,8 @@ import {
   buildAgentConfigRecord,
   defaultAgentConfig,
   mergeAgentConfigRecord,
-  normalizeAgentConfigRecord,
 } from "./agent-definition-config.js";
+import { buildAgentDefinitionFromFiles, type AgentDefinitionOwnership } from "./agent-definition-node-reader.js";
 import {
   ensureWritableAgentSourcePaths,
   findAgentSourcePaths,
@@ -106,54 +102,17 @@ export class FileAgentDefinitionProvider {
     mdPath: string,
     configPath: string,
     resolvedAgentDefinitionId: string,
-    ownership: {
-      ownershipScope: AgentDefinitionOwnershipScope;
-      ownerTeamId?: string | null;
-      ownerTeamName?: string | null;
-      ownerOrgId?: string | null;
-      ownerOrgName?: string | null;
-      ownerApplicationId?: string | null;
-      ownerApplicationName?: string | null;
-      ownerPackageId?: string | null;
-      ownerLocalApplicationId?: string | null;
-      sourceInfo?: AgentDefinitionSourceInfo | null;
-    },
+    ownership: AgentDefinitionOwnership,
   ): Promise<AgentDefinition | null> {
     try {
       const mdContent = await fs.readFile(mdPath, "utf-8");
-      const parsed = parseAgentMd(mdContent, mdPath);
       const config = await readJsonFile<AgentConfigRecord>(configPath, defaultAgentConfig());
-      const normalizedConfig = normalizeAgentConfigRecord(config);
-
-      return new AgentDefinition({
-        id: resolvedAgentDefinitionId,
-        name: parsed.name,
-        description: parsed.description,
-        instructions: parsed.instructions,
-        category: parsed.category,
-        role: parsed.role,
-        avatarUrl: normalizedConfig.avatarUrl ?? null,
-        toolNames: normalizedConfig.toolNames ?? [],
-        skillNames: normalizedConfig.skillNames ?? [],
-        skillScope: normalizedConfig.skillScope,
-        inputProcessorNames: normalizedConfig.inputProcessorNames ?? [],
-        llmResponseProcessorNames: normalizedConfig.llmResponseProcessorNames ?? [],
-        toolExecutionResultProcessorNames: normalizedConfig.toolExecutionResultProcessorNames ?? [],
-        toolInvocationPreprocessorNames: normalizedConfig.toolInvocationPreprocessorNames ?? [],
-        lifecycleProcessorNames: normalizedConfig.lifecycleProcessorNames ?? [],
-        ownershipScope: ownership.ownershipScope,
-        ownerTeamId: ownership.ownerTeamId ?? null,
-        ownerTeamName: ownership.ownerTeamName ?? null,
-        ownerOrgId: ownership.ownerOrgId ?? null,
-        ownerOrgName: ownership.ownerOrgName ?? null,
-        ownerApplicationId: ownership.ownerApplicationId ?? null,
-        ownerApplicationName: ownership.ownerApplicationName ?? null,
-        ownerPackageId: ownership.ownerPackageId ?? null,
-        ownerLocalApplicationId: ownership.ownerLocalApplicationId ?? null,
-        defaultLaunchConfig: normalizedConfig.defaultLaunchConfig,
-        sourceInfo: ownership.sourceInfo ?? {
-          agentDirPath: path.dirname(mdPath),
-        },
+      return buildAgentDefinitionFromFiles({
+        mdContent,
+        mdPath,
+        config,
+        definitionId: resolvedAgentDefinitionId,
+        ownership,
       });
     } catch (error) {
       if (error instanceof AgentMdParseError) {
@@ -257,6 +216,10 @@ export class FileAgentDefinitionProvider {
     return created;
   }
 
+  /**
+   * Exact disk read used for write results, application-owned definitions and startup data
+   * migrations. Runtime readers of registered agent packages go through the agent package definitions.
+   */
   async getById(id: string): Promise<AgentDefinition | null> {
     if (id.startsWith("_")) {
       return null;
@@ -294,68 +257,47 @@ export class FileAgentDefinitionProvider {
     return null;
   }
 
-  async getAll(): Promise<AgentDefinition[]> {
-    const definitions: AgentDefinition[] = [];
-    const seenIds = new Set<string>();
-
-    for (const rootPath of this.getReadAgentRoots()) {
-      let entries: Dirent[] = [];
+  /**
+   * Application-package agents, read on demand (they are not agent package definitions). Each
+   * agent is isolated: one that cannot be read is logged and skipped, never failing the list.
+   */
+  async listApplicationOwnedAgents(): Promise<AgentDefinition[]> {
+    const output: AgentDefinition[] = [];
+    for (const source of await this.listApplicationSources("agent")) {
       try {
-        entries = await fs.readdir(rootPath, { withFileTypes: true });
-      } catch {
-        continue;
-      }
-
-      for (const entry of entries) {
-        if (!entry.isDirectory()) {
-          continue;
-        }
-        const agentId = entry.name;
-        if (agentId.startsWith("_") || seenIds.has(agentId)) {
-          continue;
-        }
-        try {
-          const definition = await this.readSharedAgentFromRoot(rootPath, agentId);
-          if (definition) {
-            definitions.push(definition);
-            seenIds.add(agentId);
-          }
-        } catch (error) {
-          if (error instanceof AgentMdParseError) {
-            logger.warn(`Skipping agent '${agentId}' due to parse error: ${error.message}`);
-            continue;
-          }
-          throw error;
-        }
+        const definition = await this.readApplicationOwnedAgent(buildApplicationOwnedAgentSourcePaths(source), source.definitionId);
+        if (definition) output.push(definition);
+      } catch (error) {
+        logger.warn(`APPLICATION_PACKAGE_AGENT_SKIPPED:${source.definitionId}: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
-
-    const applicationOwnedSources = await this.applicationBundleService.listApplicationOwnedAgentSources();
-    for (const source of applicationOwnedSources) {
-      if (seenIds.has(source.definitionId)) {
-        continue;
-      }
-      const definition = await this.readApplicationOwnedAgent(
-        buildApplicationOwnedAgentSourcePaths(source),
-        source.definitionId,
-      );
-      if (definition) {
-        definitions.push(definition);
-        seenIds.add(source.definitionId);
-      }
-    }
-
-    return definitions;
+    return output;
   }
 
-  async getAllVisible(): Promise<AgentDefinition[]> {
+  /**
+   * Team-local agents of application-package Teams, read on demand. Each agent is isolated (a
+   * malformed one is logged and skipped).
+   */
+  async listApplicationOwnedTeamLocalAgents(): Promise<AgentDefinition[]> {
     return listTeamLocalAgentDefinitions({
-      sharedTeamRoots: this.getReadTeamRoots(),
-      applicationOwnedTeamSources: await this.applicationBundleService.listApplicationOwnedTeamSources(),
-      existingDefinitions: await this.getAll(),
+      sharedTeamRoots: [],
+      applicationOwnedTeamSources: await this.listApplicationSources("agent_team"),
+      existingDefinitions: [],
       readAgentFromPaths: this.readAgentFromPaths.bind(this),
       warn: logger.warn,
     });
+  }
+
+  /** The application packages' agent or Team sources; a failing listing reads as none (logged). */
+  private async listApplicationSources(kind: "agent" | "agent_team") {
+    try {
+      return kind === "agent"
+        ? await this.applicationBundleService.listApplicationOwnedAgentSources()
+        : await this.applicationBundleService.listApplicationOwnedTeamSources();
+    } catch (error) {
+      logger.warn(`APPLICATION_PACKAGE_SOURCES_UNAVAILABLE:${kind}`, error);
+      return [];
+    }
   }
 
   async getTemplates(): Promise<AgentDefinition[]> {

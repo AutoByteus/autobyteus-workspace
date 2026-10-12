@@ -1,4 +1,5 @@
 import { CurrentModelSelectionRequiredError } from "autobyteus-ts/llm/index.js";
+import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { buildHostScopedLlmModelIdentifier } from "autobyteus-ts/llm/models.js";
 import { buildOpenAICompatibleEndpointModelIdentifier } from "autobyteus-ts/llm/openai-compatible-endpoint-model.js";
 import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
@@ -68,11 +69,6 @@ describe("ApplicationCurrentModelSelectionPolicy", () => {
       LLMRuntime.LMSTUDIO,
       "http://127.0.0.1:1234",
     ),
-    buildHostScopedLlmModelIdentifier(
-      "dynamic-model",
-      LLMRuntime.AUTOBYTEUS,
-      "https://models.example.test",
-    ),
   ])("delegates canonical dynamic identifier %s to selected-provider availability", async (
     modelIdentifier,
   ) => {
@@ -88,6 +84,26 @@ describe("ApplicationCurrentModelSelectionPolicy", () => {
     })).resolves.toBe(RuntimeKind.AUTOBYTEUS);
     expect(ensureAutoByteusModelAvailable).toHaveBeenCalledExactlyOnceWith(modelIdentifier);
     expect(requireCurrentAutoByteusModelIdentifier).not.toHaveBeenCalled();
+  });
+
+  it("blocks a saved launch selection that names the removed remote AutoByteus provider (AC-004)", async () => {
+    const ensureAutoByteusModelAvailable = vi.fn(async () => undefined);
+    const policy = new ApplicationCurrentModelSelectionPolicy({
+      ensureAutoByteusModelAvailable,
+      requireCurrentAutoByteusModelIdentifier: (modelIdentifier) =>
+        LLMFactory.requireCurrentModelIdentifier(modelIdentifier),
+    });
+    const modelIdentifier = "gpt-4o:autobyteus@remote-llm.example.invalid:8000";
+
+    await expect(policy.requireCurrentSelection({
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+      llmModelIdentifier: modelIdentifier,
+    })).rejects.toMatchObject({
+      name: "CurrentModelSelectionRequiredError",
+      code: "CURRENT_MODEL_SELECTION_REQUIRED",
+      modelIdentifier,
+    });
+    expect(ensureAutoByteusModelAvailable).not.toHaveBeenCalled();
   });
 
   it("maps a selected-provider failure to the application-safe dynamic availability error", async () => {

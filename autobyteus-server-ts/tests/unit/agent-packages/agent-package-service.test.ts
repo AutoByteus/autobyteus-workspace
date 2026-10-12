@@ -28,7 +28,7 @@ const createRootSettingsStore = (defaultRoot: string): AgentPackageRootSettingsS
   new AgentPackageRootSettingsStore(
     {
       getAppDataDir: () => defaultRoot,
-      getAdditionalAgentPackageRoots: () => parseAdditionalRoots(),
+      getRegisteredAgentPackageRoots: () => parseAdditionalRoots(),
       get: (key: string, defaultValue?: string) =>
         process.env[key] ?? defaultValue,
     },
@@ -104,8 +104,7 @@ describe("AgentPackageService", () => {
       registryStore: new AgentPackageRegistryStore({
         getAppDataDir: () => registryRoot,
       }),
-      refreshAgentDefinitions: async () => undefined,
-      refreshAgentTeams: async () => undefined,
+      reloadAgentPackageDefinitions: async () => undefined,
     });
 
     await service.importAgentPackage({
@@ -166,8 +165,7 @@ describe("AgentPackageService", () => {
         getAppDataDir: () => registryRoot,
       }),
       installer: new MockInstaller(),
-      refreshAgentDefinitions: async () => undefined,
-      refreshAgentTeams: async () => undefined,
+      reloadAgentPackageDefinitions: async () => undefined,
     });
 
     await service.importAgentPackage({
@@ -227,10 +225,9 @@ describe("AgentPackageService", () => {
         getAppDataDir: () => registryRoot,
       }),
       installer: new MockInstaller(),
-      refreshAgentDefinitions: async () => {
+      reloadAgentPackageDefinitions: async () => {
         throw new Error("refresh failed");
       },
-      refreshAgentTeams: async () => undefined,
     });
 
     await expect(
@@ -300,12 +297,11 @@ describe("AgentPackageService", () => {
         getAppDataDir: () => registryRoot,
       }),
       installer: new MockInstaller(),
-      refreshAgentDefinitions: async () => {
+      reloadAgentPackageDefinitions: async () => {
         if (shouldFailRefresh) {
           throw new Error("refresh failed");
         }
       },
-      refreshAgentTeams: async () => undefined,
     });
 
     const importedPackages = await service.importAgentPackage({
@@ -354,10 +350,9 @@ describe("AgentPackageService", () => {
       registryStore: new AgentPackageRegistryStore({
         getAppDataDir: () => registryRoot,
       }),
-      refreshAgentDefinitions: async () => {
+      reloadAgentPackageDefinitions: async () => {
         refreshCount += 1;
       },
-      refreshAgentTeams: async () => undefined,
     });
 
     const importedPackages = await service.importAgentPackage({
@@ -432,8 +427,7 @@ describe("AgentPackageService", () => {
       registryStore,
       installer: new MockInstaller(),
       githubClient,
-      refreshAgentDefinitions: async () => undefined,
-      refreshAgentTeams: async () => undefined,
+      reloadAgentPackageDefinitions: async () => undefined,
     });
 
     const packages = await service.checkAgentPackageUpdates();
@@ -521,8 +515,7 @@ describe("AgentPackageService", () => {
       registryStore,
       installer: new MockInstaller(),
       githubClient,
-      refreshAgentDefinitions: async () => undefined,
-      refreshAgentTeams: async () => undefined,
+      reloadAgentPackageDefinitions: async () => undefined,
     });
 
     const packages = await service.updateAgentPackage(record.packageId);
@@ -623,10 +616,9 @@ describe("AgentPackageService", () => {
       registryStore,
       installer: new MockInstaller(),
       githubClient,
-      refreshAgentDefinitions: async () => {
+      reloadAgentPackageDefinitions: async () => {
         throw new Error("refresh failed");
       },
-      refreshAgentTeams: async () => undefined,
     });
 
     await expect(service.updateAgentPackage(record.packageId)).rejects.toThrow(
@@ -692,8 +684,7 @@ describe("AgentPackageService", () => {
       registryStore,
       installer: new MockInstaller(),
       githubClient,
-      refreshAgentDefinitions: async () => undefined,
-      refreshAgentTeams: async () => undefined,
+      reloadAgentPackageDefinitions: async () => undefined,
     });
 
     await expect(service.updateAgentPackage(record.packageId)).rejects.toThrow(
@@ -780,8 +771,7 @@ describe("AgentPackageService", () => {
       registryStore,
       installer: new MockInstaller(),
       githubClient,
-      refreshAgentDefinitions: async () => undefined,
-      refreshAgentTeams: async () => undefined,
+      reloadAgentPackageDefinitions: async () => undefined,
     });
 
     await expect(service.updateAgentPackage(record.packageId)).rejects.toThrow(
@@ -827,8 +817,7 @@ describe("AgentPackageService", () => {
       registryStore: new AgentPackageRegistryStore({
         getAppDataDir: () => registryRoot,
       }),
-      refreshAgentDefinitions: async () => undefined,
-      refreshAgentTeams: async () => undefined,
+      reloadAgentPackageDefinitions: async () => undefined,
     });
 
     const packages = await service.importAgentPackage({

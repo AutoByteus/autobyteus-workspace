@@ -78,7 +78,7 @@ describe("AgentRunService real memory layout integration", () => {
     const autoByteusBackendFactory = new AutoByteusAgentRunBackendFactory({
       agentFactory: factory as any,
       agentDefinitionService: {
-        getFreshAgentDefinitionById: async () =>
+        getAgentDefinitionById: async () =>
           new AgentDefinition({
             id: "def-real-memory-layout",
             name: "RealMemoryLayoutAgent",

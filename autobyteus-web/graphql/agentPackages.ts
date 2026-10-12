@@ -24,6 +24,10 @@ export const AGENT_PACKAGE_FIELDS = gql`
       checkedAt
       lastError
     }
+    autoRefresh {
+      state
+      message
+    }
   }
 `
 

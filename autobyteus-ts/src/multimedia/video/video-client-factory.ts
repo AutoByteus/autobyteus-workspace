@@ -5,7 +5,6 @@ import { VideoModel } from './video-model.js';
 import { BaseVideoClient } from './base-video-client.js';
 import { GeminiVideoClient } from './api/gemini-video-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
-import { MultimediaRuntime } from '../runtimes.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
@@ -113,8 +112,7 @@ export class VideoClientFactory extends Singleton {
 
   static requiresGeminiRuntimeResolver(modelIdentifier: string): boolean {
     const model = VideoClientFactory.requireModel(modelIdentifier);
-    return model.runtime === MultimediaRuntime.API
-      && model.provider === MultimediaProvider.GEMINI;
+    return model.provider === MultimediaProvider.GEMINI;
   }
 
   static createVideoClient(

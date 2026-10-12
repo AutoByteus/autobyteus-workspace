@@ -1,0 +1,28 @@
+APAR_LINUX_PROBE {
+  "node": "v22.22.3",
+  "platform": "linux",
+  "kernel": "6.12.54-linuxkit",
+  "renameAwayRestore": {
+    "missingMs": 26,
+    "watchingMs": 25,
+    "eventAfterRestoreMs": 26
+  },
+  "renameSwap": {
+    "stateRightAfterSwap": "ROOT_MISSING",
+    "watchingMs": 0,
+    "eventAfterSwapMs": 26,
+    "backupEventsReported": 0
+  },
+  "watchCount": {
+    "roots": 2,
+    "inotifyWatches": 603,
+    "readyMs": 123,
+    "definitionTreeDirs": 461,
+    "statuses": [
+      "WATCHING",
+      "WATCHING"
+    ],
+    "closeMs": 5,
+    "inotifyWatchesAfterClose": 0
+  }
+}

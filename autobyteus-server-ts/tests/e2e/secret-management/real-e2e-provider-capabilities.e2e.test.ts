@@ -5,7 +5,6 @@ import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { LLMUserMessage } from 'autobyteus-ts/llm/user-message.js';
 import {
-  classifyAutoByteusDiscoveryUnavailable,
   LiveE2eHarness,
   type LiveE2ePreflight,
 } from '../../../../test-support/live-e2e/live-e2e-harness.js';
@@ -253,91 +252,6 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
         } finally {
           session?.close();
           await fs.rm(tempDirectory, { recursive: true, force: true });
-        }
-        return;
-      }
-
-      if (scenario.operation.startsWith('autobyteus-')) {
-        const kind = scenario.operation.endsWith('llm')
-          ? 'llm'
-          : scenario.operation.endsWith('audio') ? 'audio' : 'image';
-        let discovered: number;
-        try {
-          discovered = await execution.discoverAutoByteus(kind);
-        } catch (error) {
-          const instructionCode = classifyAutoByteusDiscoveryUnavailable(error, kind);
-          if (!instructionCode) throw error;
-          const result = {
-            scenarioId,
-            status: 'SKIPPED_CAPABILITY_UNAVAILABLE',
-            capability: `${kind}-model-discovery`,
-            instructionCode,
-          };
-          assertEvidenceClean(result);
-          process.stdout.write(`${JSON.stringify(result)}\n`);
-          skip();
-          return;
-        }
-        assertEvidenceClean(discovered);
-        if (discovered === 0) {
-          const result = {
-            scenarioId,
-            status: 'SKIPPED_CAPABILITY_UNAVAILABLE',
-            capability: `${kind}-model-discovery`,
-            instructionCode: 'AUTOBYTEUS_DISCOVERY_EMPTY',
-          };
-          assertEvidenceClean(result);
-          process.stdout.write(`${JSON.stringify(result)}\n`);
-          skip();
-          return;
-        }
-        const models = await execution.listAutoByteusModels(kind);
-        assertEvidenceClean(models);
-        const model = scenario.model
-          ? models.find((candidate) => {
-              const identifier = 'model_identifier' in candidate
-                ? candidate.model_identifier
-                : candidate.modelIdentifier;
-              return identifier === scenario.model || candidate.name === scenario.model;
-            })
-          : models[0];
-        if (!model) throw new Error(`LIVE_E2E_CAPABILITY_UNAVAILABLE:${scenarioId}`);
-        const identifier = 'model_identifier' in model ? model.model_identifier : model.modelIdentifier;
-
-        if (kind === 'llm') {
-          const llm = await safeExternalOperation(scenarioId, () => execution.createLlm(identifier));
-          try {
-            const result = await safeExternalOperation(scenarioId, () => llm.sendUserMessage(
-              new LLMUserMessage({ content: 'Reply with the single word pong.' }),
-              { logicalConversationId: 'secure-secret-real-autobyteus-llm' },
-            ));
-            assertEvidenceClean(result);
-            expect(result.content.trim().length).toBeGreaterThan(0);
-          } finally {
-            await llm.cleanup();
-          }
-        } else if (kind === 'audio') {
-          const client = await safeExternalOperation(scenarioId, () => execution.createAudioClient(identifier));
-          try {
-            const result = await safeExternalOperation(scenarioId, () => client.generateSpeech(
-              'Hello from the secure AutoByteus gateway test.',
-            ));
-            assertEvidenceClean(result);
-            expect(result.audio_urls.length).toBeGreaterThan(0);
-          } finally {
-            await client.cleanup();
-          }
-        } else {
-          const client = await safeExternalOperation(scenarioId, () => execution.createImageClient(identifier));
-          try {
-            const result = await safeExternalOperation(scenarioId, () => client.generateImage(
-              'A simple blue circle centered on a white background.',
-            ));
-            assertEvidenceClean(result);
-            expect(result.image_urls.length).toBeGreaterThan(0);
-          } finally {
-            await client.cleanup();
-          }
         }
         return;
       }

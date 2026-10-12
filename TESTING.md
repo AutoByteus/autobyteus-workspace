@@ -96,10 +96,33 @@ not paid inference. Agent-run testing is not the user's verification.
   `pnpm test:e2e:real:preflight` reports what is configured; missing capabilities are
   reported, never counted as passed. See
   [Secret Management](autobyteus-server-ts/docs/modules/secret_management.md).
+- **Local model servers share limited compute.** LM Studio and Ollama run on this machine. Run at
+  most one agent run or suite that uses a local model at a time, never in parallel, and prefer a
+  small, fast model (for example `qwen/qwen3.6-35b-a3b`, the gated LM Studio suite's default via
+  `LMSTUDIO_TARGET_TEXT_MODEL`). Unload any model your run loaded just-in-time when you finish.
 - **Runtimes without a model.** `autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs`
   (`ANTIGRAVITY_CLI_COMMAND=<absolute path>`, `RUN_AGY_FAILURE_E2E=1`) is a scripted AGY CLI:
   a message containing `CALL_TOOL:{…}` makes that agent call the real tool. Use it to drive
   real delegation, Tasks and streams without provider calls.
+- **Test-only runtime CLI settings.** Never edit the user's CLI config (`~/.codex`,
+  `~/.claude`, `~/.grok`). Give the test its own config instead:
+  - **A throwaway home.** For example `CODEX_HOME=<temp>` containing a `config.toml` with
+    only the settings the test needs, plus a symlink to the user's `auth.json` for the login.
+    Every CLI started under it uses that config, and its sessions are written there; an
+    exported home applies to every CLI started from that shell.
+  - **A per-run override.** Where the test launches the CLI itself, pass the setting on the
+    command line, e.g. `codex app-server -c <key>=<value>`.
+  - **Isolated desktop instances.** The embedded server receives only a system-baseline
+    environment. Of the CLI homes, only `CODEX_HOME` passes through, so start (and
+    `restart`) the instance with it set. Other runtime variables reach only in-process
+    server suites.
+- **Forcing compaction early.** Each runtime decides when to compact; lower its own
+  threshold instead of filling a real context window:
+  - Codex: `model_auto_compact_token_limit` in a temporary `CODEX_HOME`.
+  - Native AutoByteus: the server settings `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE` and
+    `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO`.
+  - Claude: `CLAUDE_CODE_AUTO_COMPACT_WINDOW` (in-process suites only), or a manual
+    `/compact`.
 - **Data.** Every run uses its own data root, database, ports and processes. Create data
   through public APIs or the UI, never by editing another run's files.
 - **Build outputs** such as SDK `dist/` and `autobyteus-web/electron-dist/` are untracked.
