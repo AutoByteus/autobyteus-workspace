@@ -12,6 +12,10 @@ from dataclasses import dataclass
 DEFAULT_MAX_PATH_LENGTH = 200
 MAX_SAMPLES_PER_GROUP = 12
 GITHUB_ARTIFACT_DIR_RE = re.compile(r"^github-run-\d+-artifacts$")
+# Windows checkout rejects these characters, control characters, a trailing dot or
+# space, and reserved device names (with or without an extension) in any component.
+WINDOWS_INVALID_CHARS_RE = re.compile(r'[<>:"|?*\\\x00-\x1f]')
+WINDOWS_RESERVED_NAME_RE = re.compile(r"^(con|prn|aux|nul|com[1-9]|lpt[1-9])(\..*)?$", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -49,9 +53,21 @@ def is_generated_ticket_zip(path: str) -> bool:
     return any(GITHUB_ARTIFACT_DIR_RE.match(part) for part in parts)
 
 
+def is_windows_invalid_path(path: str) -> bool:
+    for part in path.split("/"):
+        if WINDOWS_INVALID_CHARS_RE.search(part):
+            return True
+        if part.endswith((".", " ")):
+            return True
+        if WINDOWS_RESERVED_NAME_RE.match(part):
+            return True
+    return False
+
+
 def collect_violations(paths: list[str], max_path_length: int) -> list[ViolationGroup]:
     xcresult_paths = [path for path in paths if has_xcresult_component(path)]
     generated_ticket_zips = [path for path in paths if is_generated_ticket_zip(path)]
+    windows_invalid_paths = [path for path in paths if is_windows_invalid_path(path)]
     long_paths = [path for path in paths if len(path) > max_path_length]
 
     groups: list[ViolationGroup] = []
@@ -75,6 +91,18 @@ def collect_violations(paths: list[str], max_path_length: int) -> list[Violation
                     "`git rm <path>.zip`, and keep durable summaries/logs or external artifact links."
                 ),
                 paths=generated_ticket_zips,
+            )
+        )
+    if windows_invalid_paths:
+        groups.append(
+            ViolationGroup(
+                title="Tracked paths that Windows cannot check out",
+                action=(
+                    "Rename these paths with `git mv` before release: no < > : \" | ? * \\ or "
+                    "control characters, no trailing dot or space, and no reserved device names "
+                    "such as CON, NUL, COM1 or LPT1. GitHub-hosted Windows checkout fails on them."
+                ),
+                paths=sorted(windows_invalid_paths),
             )
         )
     if long_paths:
