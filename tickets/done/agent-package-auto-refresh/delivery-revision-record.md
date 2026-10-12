@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-005 test-code review pass from `code_reviewer` | N/A | Integrated, checked, docs synced; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/` |
 | DR-002 | Solution Designer HOLD after CRR-006 (Fail, Design Impact, naming) | DR-001 waiting for verification | On hold; DR-001 superseded and not eligible for verification | `delivery-revision-record.md`, `handoff-summary.md`, `release-deployment-report.md` (status only) |
+| DR-003 | CRR-008 test-code review pass on the SR-009 renamed package (after API-REV-003) | DR-002 on hold | Re-integrated (72 base commits), checked, docs re-verified; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/dr-003/` |
 
 ## Revision Entries
 
@@ -50,3 +51,29 @@
 - Terminal return to `/solution_designer`: `Not yet eligible`
 - Next recipient/action: Wait for the reworked package from code review (test review) after implementation → source review → API/E2E.
 - Remaining blockers: CRR-006 rename (upstream-owned).
+
+### DR-003 — Delivery of the SR-009 renamed package
+
+- Delivery round and trigger: Round 3. CRR-008 Pass (test-code review round 2, no findings), after CRR-007 implementation review Pass (round 6) and API-REV-003 Pass (96%). Branch at `705e699b1`.
+- Triggering upstream report, verification, or evidence: `code-review-report.md` (CRR-007/008), `api-e2e-test-review-report.md`, `api-e2e-execution-coverage-report.md` (API-REV-003).
+- Prior authoritative result: DR-002, on hold. It superseded DR-001.
+- Current authoritative result: Integrated and checked. Docs are re-verified with the SR-009 names. Waiting for explicit user verification.
+- Docs sync report: `docs-sync-report.md`, rewritten for DR-003.
+  - IR-004's renamed docs were verified against the code, and the stale-name search is clean.
+  - Delivery added the N-7 web note in `93ee56a5e`.
+  - `TESTING.md` is unchanged by policy: the command is in the test file header.
+- Handoff summary: `handoff-summary.md`, rewritten for DR-003.
+- Release/publication/deployment report: `release-deployment-report.md`, rewritten for DR-003.
+- Integration and post-integration verification:
+  - Checkpoint `6193ecd84`.
+  - Merge of `origin/personal` @ `37e972199` (72 commits; v1.5.2-beta.3; `RELEASE.md`) as `6bf957f72`, with no conflicts. Prisma client regenerated for the base schema change.
+  - Server typecheck: clean. Server unit: 673 files pass. Renamed E2E: 10/10.
+  - Web: 605/606 files. The one failure is a voice-input load timeout that passes alone.
+  - Sibling E2E: only the 7 known base failures.
+  - Hygiene and licensing checks pass.
+- User verification/finalization state: Waiting for verification, the release decision, and the decision on keeping the 25 MB rehearsal video. Nothing is pushed or merged.
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Terminal return message/reference: —
+- Why this delivery revision was recorded: the reworked package returned after the CRR-006 hold.
+- Next recipient/action: the user verifies and decides. Then the RELEASE.md finalization flow: archive, commit, push the ticket branch, `finalize/` branch `--no-ff` merge into `personal`, fetch-and-check, push, release if requested, and cleanup.
+- Remaining blockers, rollback concerns, or untested scope: No blockers. Residual risks are in `handoff-summary.md`.

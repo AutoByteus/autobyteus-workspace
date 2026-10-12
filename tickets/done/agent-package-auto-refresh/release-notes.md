@@ -21,6 +21,7 @@ Status: prepared before user verification. Whether this ships in a release, and 
 
 ## Notes
 - Skills are not watched. Skill edits are read by new runs as before.
+- Agents and teams that come inside an **application** package are not watched and show no badge. They are read when needed, and a broken one is skipped instead of breaking the list.
 - GitHub packages still update only when you click **Update**. Nothing is downloaded in the background.
 - Running agents keep the definition they started with. New and restored runs use the current one.
 - No data migration or reset is needed.
