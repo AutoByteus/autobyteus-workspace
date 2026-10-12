@@ -585,6 +585,8 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
         }
 
         const agentDefinitionId = await createAgentDefinition(spec.id);
+        // usageStatisticsInPeriod selects runs by creation time, so the window opens before the run is created.
+        const usageWindowStart = new Date(Date.now() - 1_000);
         const runId = await createAgentRun({
           agentDefinitionId,
           llmModelIdentifier,
@@ -596,7 +598,6 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
         const { app, socket, messages } = await openAgentSocket(runId);
         const expectedToken = `TOK_${randomUUID().replace(/-/g, "_")}`;
         const runStartIndex = messages.length;
-        const usageWindowStart = new Date(Date.now() - 1_000);
 
         try {
           sendE2eSendMessageCommand(socket, {
