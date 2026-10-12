@@ -7,6 +7,7 @@
 - Bootstrap base reference: `origin/personal` @ `beb6b3b49`.
 - Integrated base reference used for docs sync: `origin/personal` @ `3514fe48e`, merged into the ticket branch as `c421f5b86`. The reviewed state was checkpointed first as `a33d8ad66`.
 - Post-integration verification reference: `release-deployment-report.md` → Integration Refresh. Logs are in `delivery-evidence/dr-001/`.
+- DR-002 re-integration: `origin/personal` @ `449d639de` was merged as `7f750e1e5`. The merged base touched `TESTING.md` and the web `settings.md` (Token Meter) in other sections, so both docs edits stand unchanged. The base's own docs changes (token usage, Claude errors) do not touch launch configuration, so no further docs change was needed.
 
 ## Why Docs Were Updated
 

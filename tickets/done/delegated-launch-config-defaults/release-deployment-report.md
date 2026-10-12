@@ -4,7 +4,7 @@
 
 - Ticket `delegated-launch-config-defaults`: `task_size=Large`, `architectural_risk=High`, reviewed route.
 - Scope: finalize into `personal`. Any release (none, beta or stable) is the user's decision at verification, per `RELEASE.md`.
-- Current state: **waiting for user verification (AC-015)**. No push, merge, tag or release yet.
+- Decision: the user asked for finalization and a new beta on 2026-10-12. The beta is `v1.5.3-beta.1`, the next beta after stable `v1.5.2`.
 
 ## Project Release Guide
 
@@ -17,10 +17,10 @@
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/in-progress/delegated-launch-config-defaults/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/done/delegated-launch-config-defaults/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Current delivery revision ID: `DR-002`
 
 ## Initial Delivery Integration Refresh
 
@@ -34,13 +34,30 @@
 - Post-integration executable checks rerun: `Yes`. See Verification Checks.
 - Post-integration verification result: `Passed`
 - Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes` (as of 2026-10-12)
+- Handoff state current with latest tracked remote base: `Yes` (DR-001)
+
+### DR-002 Re-integration
+
+- Trigger: the round-3 upstream update (API-REV-003, CRR-005) arrived, and `origin/personal` advanced to `449d639de`.
+- Delivery-owned edits protected before re-integration: `Completed`.
+  - `39925ea16`: round-3 checkpoint, explicit paths.
+  - `02de957e0`: docs.
+  - `44441f4ab`: `docs(testing)`.
+  - `74f5b8efd`: the DR-001 records.
+- Integration method: `Merge` (`7f750e1e5`). There were no conflicts.
+  - Files changed on both sides: `TESTING.md`, the web `settings.md`, `generated/graphql.ts` (both query changes kept) and `autobyteus-web/package.json`.
+  - Rebuilding the three contract packages left no `dist/` diff.
+- Post-integration checks: all 16 passed (`delivery-evidence/dr-002/`). See Verification Checks.
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (pending)
-- Initial verification / acceptance reference: —
-- Renewed verification required after later re-integration: to be decided at finalization
+- Initial explicit user completion/verification received: `Yes`. The user's instruction is the acceptance.
+- Initial verification / acceptance reference: the user, 2026-10-12: "now finalize and release a new beta."
+  - The AC-015 result with the user's own definitions was not separately reported.
+  - AC-015's setup was proven by ISO-001 with real runtimes.
+- Renewed verification required after later re-integration: `No`.
+  - The instruction came after the DR-002 re-integration had started; the user had seen the DR-002 status.
+  - The re-integration changed no product behavior of this ticket. All checks passed.
 
 ## Docs Sync Result
 
@@ -53,7 +70,8 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/delegated-launch-config-defaults`: `No` (after verification)
+- Ticket moved to `tickets/done/delegated-launch-config-defaults`: `Yes`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/done/delegated-launch-config-defaults` (in the repository: `tickets/done/delegated-launch-config-defaults/`)
 
 ## Version / Tag / Release Commit
 
@@ -78,7 +96,7 @@
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `tickets/in-progress/delegated-launch-config-defaults/release-notes.md`
+- Release notes artifact created before verification: `tickets/done/delegated-launch-config-defaults/release-notes.md`
 - Release notes status: `Updated`
 
 ## Environment Or Persisted-Data Transition Notes
@@ -89,7 +107,19 @@
 
 ## Verification Checks
 
-Run on the merged state `c421f5b86` with the delivery docs edits present (docs only). Logs are in `delivery-evidence/dr-001/`.
+DR-002, on the merged state `7f750e1e5`. Logs and probe screenshots are in `delivery-evidence/dr-002/`. All 16 checks passed:
+
+- `autobyteus-ts` build;
+- server prebuild, typecheck and build;
+- server unit: 673 files, 5291 passed, 7 skipped;
+- contracts: team 13/13, collaboration 24/24, presentation 17/17;
+- ticket server E2E (scripted AGY, clean env): 3/3;
+- real-UI browser probe `pnpm -C autobyteus-web test:e2e:delegated-launch-defaults --output-dir <fresh>`: DLP-001..007, 7 Pass, 0 Fail;
+- web `test:nuxt`: 605 files, 4216 passed, 3 skipped;
+- the three web guards;
+- licensing and path hygiene.
+
+DR-001, on the merged state `c421f5b86` with the delivery docs edits present (docs only). Logs are in `delivery-evidence/dr-001/`.
 
 | Check | Command | Result |
 | --- | --- | --- |

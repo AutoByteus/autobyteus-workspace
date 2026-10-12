@@ -2,10 +2,38 @@
 
 ## User Verification
 
-- Status: **waiting for your verification** (AC-015).
-- Nothing has been pushed or merged yet.
+- 2026-10-12: the user replied "now finalize and release a new beta."
+- Decisions:
+  1. **Accepted for finalization.** The user did not report the AC-015 result separately. This instruction is recorded as acceptance. AC-015's setup was proven with real Claude and Codex runtimes in the packaged app (ISO-001), but not with the user's own Software Engineering Team definitions and Sol 6.1.
+  2. **Release:** a new beta, `v1.5.3-beta.1` (the next beta after stable `v1.5.2`). See `release-deployment-report.md`.
+  3. **`RELEASE.md` correction:** not answered. It is not changed in this ticket and stays a proposal.
+  4. **Follow-up candidates:** not answered. They go to the Solution Designer as separate-ticket candidates.
 
-## State For User Verification
+## State Before Finalization (DR-002)
+
+- After the DR-001 handoff, a round-3 API/E2E update arrived: API-REV-003 Pass (96%) and CRR-005 Pass. Only the browser probe changed; it now drives every case through the real UI (DLP-001..007).
+- `origin/personal` had advanced to `449d639de`. It brought:
+  - stable `v1.5.2`;
+  - `token-meter-accuracy`, with a Prisma migration;
+  - `claude-normal-reply-auth-error-misclassification`.
+- Commits:
+  - `39925ea16`: checkpoint of round 3.
+  - `02de957e0`: the docs.
+  - `44441f4ab`: `docs(testing)`.
+  - `74f5b8efd`: the DR-001 records.
+  - `7f750e1e5`: merge of `449d639de`. It merged without conflicts, and the rebuilt contract `dist/` matched what was committed.
+- Checks on `7f750e1e5` all passed (`delivery-evidence/dr-002/`):
+  - `autobyteus-ts` build;
+  - server prebuild, typecheck and build;
+  - server unit: 673 files, 5291 passed, 7 skipped;
+  - ticket server E2E: 3/3;
+  - contracts: team 13/13, collaboration 24/24, presentation 17/17;
+  - real-UI browser probe: DLP-001..007, 7/7;
+  - web `test:nuxt`: 605 files, 4216 passed, 3 skipped;
+  - web guards: 3/3;
+  - licensing and path hygiene.
+
+## State For User Verification (DR-001)
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults`, branch `codex/delegated-launch-config-defaults` (local only, not pushed).
   - `55092536a`: server and the two contract packages, including their tracked `dist/`.
@@ -42,8 +70,8 @@
 | --- | --- |
 | Architecture review | ARCH-REV-002 Pass |
 | Code review | CRR-001 Fail (CR-001, dead code); CRR-002 Pass, 9.3/10 |
-| API/E2E | API-REV-002 Pass, 95%. AC-001..AC-014 proven directly. The AC-015 setup was also run with real Claude, Codex and native runtimes in a packaged isolated app (ISO-001) |
-| Test-code review | CRR-003 Fail (TR-001); CRR-004 Pass |
+| API/E2E | API-REV-003 Pass, 96% (round 3: all browser-probe cases on the real UI). API-REV-002 Pass, 95%. AC-001..AC-014 proven directly. The AC-015 setup was also run with real Claude, Codex and native runtimes in a packaged isolated app (ISO-001) |
+| Test-code review | CRR-003 Fail (TR-001); CRR-004 Pass; CRR-005 Pass (round-3 probe) |
 | Delivery checks after the merge (`c421f5b86`) | • `autobyteus-ts` build, server prebuild, typecheck and build: pass.<br>• Server unit: 671 files, 5265 passed, 7 skipped. The count fell from 5277 because the base removed the remote-provider tests.<br>• Ticket server E2E (scripted AGY, clean env): 3/3.<br>• Contracts: 11/11 and 24/24.<br>• Web `test:nuxt`: 605 files, 4199 passed, 3 skipped.<br>• Web guards: 3/3.<br>• Licensing and path hygiene: pass.<br>• Logs: `delivery-evidence/dr-001/` |
 
 ## How To Verify (AC-015)
