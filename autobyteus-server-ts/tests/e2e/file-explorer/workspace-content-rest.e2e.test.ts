@@ -36,17 +36,23 @@ describe("workspace content REST boundary e2e", () => {
 
   afterEach(async () => {
     await app.close();
-    for (const workspace of workspaceManager.getAllWorkspaces()) {
-      if (!initialIds.has(workspace.workspaceId)) {
-        const removal = await workspaceManager.removeRegisteredWorkspace(workspace.workspaceId);
-        expect(removal).toMatchObject({
-          success: true,
-          workspaceId: workspace.workspaceId,
-          workspaceRootPath: workspace.getBasePath(),
-        });
+    try {
+      for (const workspace of workspaceManager.getAllWorkspaces()) {
+        if (!initialIds.has(workspace.workspaceId)) {
+          // This route-only harness does not bootstrap the process run supervisor.
+          // Teardown closes only owned fixtures, not the product removal use case.
+          await workspace.close();
+          const ownedManager = workspaceManager as unknown as {
+            activeWorkspaces: Map<string, unknown>;
+            workspaceRegistryStore: { deleteEntry: (id: string) => Promise<unknown> };
+          };
+          ownedManager.activeWorkspaces.delete(workspace.workspaceId);
+          await ownedManager.workspaceRegistryStore.deleteEntry(workspace.workspaceId);
+        }
       }
+    } finally {
+      fs.rmSync(tempRoot, { recursive: true, force: true });
     }
-    fs.rmSync(tempRoot, { recursive: true, force: true });
   });
 
   it("serves encoded image paths through a real FileSystemWorkspace", async () => {
