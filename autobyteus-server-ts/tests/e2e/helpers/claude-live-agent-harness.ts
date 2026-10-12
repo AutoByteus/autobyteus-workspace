@@ -103,9 +103,11 @@ export const createClaudeLiveAgentHarness = async (input: {
     new ClaudeSdkClient(),
     { cleanupMaterializedWorkspaceSkills: async () => undefined } as never,
   );
+  // The harness holds the returned session itself, so it needs no ownership callback.
+  const ownSession = (): void => undefined;
   const session = input.restoreSessionId
-    ? await sessionManager.restoreRunSession(runContext, input.restoreSessionId)
-    : await sessionManager.createRunSession(runContext);
+    ? await sessionManager.restoreRunSession(runContext, input.restoreSessionId, ownSession)
+    : await sessionManager.createRunSession(runContext, ownSession);
   const agentRun = new AgentRun({
     providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
     context: runContext,

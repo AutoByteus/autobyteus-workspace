@@ -196,7 +196,8 @@ const createClaudeAgentRun = async (input: {
     input.sdkClient,
     { cleanupMaterializedWorkspaceSkills: async () => undefined } as never,
   );
-  const session = await sessionManager.createRunSession(runContext);
+  // The test holds the returned session itself, so it needs no ownership callback.
+  const session = await sessionManager.createRunSession(runContext, () => undefined);
   const backend = new ClaudeAgentRunBackend(runContext, session);
   return {
     agentRun: new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
