@@ -34,15 +34,15 @@ Other runtimes and the meter:
 - **Meter** shows the threshold marker and label, and marks a genuine over-window reading.
 - **Pre-fix Claude readings** are cleared by one Prisma migration.
 
-- Implementation cycle: `Rework` (IR-005 corrects the D-13 clear rule per SR-012/SR-013; IR-004 D-12 and D-13; IR-003 D-11, withdrawn; IR-002 Local Fix for CR-F-001; IR-001 initial baseline)
+- Implementation cycle: `Rework` (IR-006 makes the D-13 mark a boolean cleared only by a live model-call event, per SR-014; IR-005 count rule, superseded; IR-004 D-12 and D-13; IR-003 D-11, withdrawn; IR-002 Local Fix for CR-F-001; IR-001 initial baseline)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/implementation-revision-record.md`
-- Current implementation revision ID: `IR-005`
-- Related solution revision IDs: `SR-013` (cumulative SR-001–SR-013)
-- Related architecture-review revision IDs: `ARCH-REV-008` (cumulative ARCH-REV-001–008)
-- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-004`, `CRR-005`, `CRR-006`
+- Current implementation revision ID: `IR-006`
+- Related solution revision IDs: `SR-014` (cumulative SR-001–SR-014)
+- Related architecture-review revision IDs: `ARCH-REV-009` (cumulative ARCH-REV-001–009)
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-004`, `CRR-005`, `CRR-006`, `CRR-007`
 - Related API/E2E revision IDs: `API-REV-002` (Fail: F-API-002-01 / DESK-004d)
 - Related delivery revision IDs: `DR-002`
-- Triggering finding IDs: `CR-F-001` (IR-002); DR-002 (IR-003, superseded); D-11 withdrawal and REQ-012 (IR-004); F-API-002-01 / DESK-004d via CRR-006 (IR-005)
+- Triggering finding IDs: `CR-F-001` (IR-002); DR-002 (IR-003, superseded); D-11 withdrawal and REQ-012 (IR-004); F-API-002-01 / DESK-004d via CRR-006 (IR-005); CRR-007 CR-F-002 (IR-006)
 
 ## Routing Classification (Mandatory)
 
@@ -72,7 +72,7 @@ Other runtimes and the meter:
 | BEH-008 | Only genuine overflow above 100 %, marked | Claude counting artefact removed at the source; Prisma migration clears pre-fix Claude readings; aggregate's Claude read-time derivation removed; panel over-window mark with clamped amber bar | P3 failed compaction shows 94.6 % with the threshold at 67,000; P7 Codex 100.3 % is marked |
 
 | BEH-005 (D-12, AC-011) | A native compaction summary call counts as a model call with its tokens and cost; it carries no reading, so the previous prompt, percent, window and threshold stay until the agent's next call (D-4 unchanged). IR-003's D-11 reset is reverted | `autobyteus-stream-event-converter.ts` keeps `reports_model_call: true` only; no reset field anywhere (`git grep context_reading_reset` outside tickets is empty) | Upstream compaction test adapted: 2 calls, totals and cost as upstream, reading kept (911,000 / 91.1 %, window, threshold), revision +1, the next call replaces the reading; converter test: compaction usage is a model call |
-| REQ-012 (D-13, AC-012) | After a completed compaction on native or Claude SDK, the meter keeps the previous reading muted with "Compacted — updates on the next model call" until the run's next reading. No note for Codex or AGY, after failed or stopped compactions, or after a reload | `stores/tokenUsageCompactionMarks.ts` (marks hold the exact-run model-call count `usageReportCount`: `runSummaries[runId]` or the Team-member summary; IR-005), wired into `tokenUsageMeterStore` (`markCompactionCompleted`, `isAwaitingPostCompactionReading`); `agentStatusHandler.ts` `handleCompactionStatus` marks only on a newly completed operation; `TokenUsageMeterPanel.vue` muted percent, bar and tokens plus the note for `autobyteus`/`claude_agent_sdk`, keyed by the card's run (the host for a standalone roll-up); `shell.tokenUsage.compactedAwaitingReading` (en, zh-CN) | Handler: completed marks, failed/stopped never, a repeated completion of the same operation doesn't re-mark, a new operation does. Store: a save without a call (revision +1, same count; the Claude remainder after a manual `/compact`) keeps the mark; the next counted call clears; roll-up calls don't clear; Team-member lookup, including a `reports_model_call: false` remainder; mark before any exact summary. Panel: note and muted styles for native and Claude, kept through a remainder save and a roll-up change, cleared by the host's next counted call; none for Codex or AGY |
+| REQ-012 (D-13, AC-012) | After a completed compaction on native or Claude SDK, the meter keeps the previous reading muted with "Compacted — updates on the next model call" until the run's next live model call. No note for Codex or AGY, after failed or stopped compactions, or after a reload | `stores/tokenUsageCompactionMarks.ts` holds a per-run boolean mark with no baseline (IR-006, SR-014). `tokenUsageMeterStore` exposes `markCompactionCompleted` / `isAwaitingPostCompactionReading` and clears through `clearOnLiveModelCall` after the `seenUsageKeys` dedupe in both live entry points, `applyTokenUsageUpdated` and `applyTeamTokenUsage`, only when the event's own `reports_model_call` is true. `agentStatusHandler.ts` `handleCompactionStatus` marks on a newly completed operation. `TokenUsageMeterPanel.vue` mutes percent, bar and tokens and shows the note for `autobyteus`/`claude_agent_sdk`, keyed by the card's run (the host for a standalone roll-up). `shell.tokenUsage.compactedAwaitingReading` (en, zh-CN) | Handler: completed marks; failed and stopped never; a repeated completion of the same operation doesn't re-mark; a new operation does. Store: a mark made with no exact summary loaded (reopened standalone) survives a remainder event (`false`) and fetched summaries, and the next live `true` event clears it on the agent path and on the team path (idempotent with a replay and with both entry points); a child's live call doesn't clear the host mark. Panel: the note survives a remainder event, a fetched summary and a child's call, and the host's next live call clears it; none for Codex or AGY |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`. Pricing catalog values and `TokenCostCalculator` are untouched (REQ-011). Docs edits are limited to the fold/adapter/frontend-contract sections of `token_usage.md`.
 
@@ -99,7 +99,8 @@ Other runtimes and the meter:
 ## Known Risks
 
 - D-12: during and after a native compaction the meter shows the pre-compaction reading until the agent's next call (by design; AC-011). D-13 marks it as pre-compaction on native and Claude SDK while the session is live.
-- D-13 RR-7 (accepted, narrowed by SR-012): a Claude call whose context read timed out still counts as a call and clears the note while the value is pre-compaction. A turn-end remainder without a call no longer clears it.
+- D-13 RR-7 (accepted): a counted Claude call whose context read timed out still clears the note while the value is pre-compaction. Events without a model call never clear it.
+- D-13 live-event rule: a live model-call event that carries no `run_summary_after_event` (persistence unavailable) is ignored before the dedupe point, so it does not clear the note. The value it would have carried never reached the meter.
 - D-13 is a live-session hint. After an app reload before the next call, no note is shown and the stored pre-compaction value stays.
 - While the note is shown, the over-window mark is hidden: it would describe the stale pre-compaction value.
 
@@ -161,6 +162,16 @@ Other runtimes and the meter:
 - Untracked build output (`autobyteus-application-backend-sdk/dist/`, `autobyteus-application-sdk-contracts/dist/`) was intentionally not committed (TESTING.md).
 
 ## Local Implementation Checks Run
+
+IR-006 (D-13 boolean mark, SR-014):
+
+- `NUXT_TEST=true vitest run stores/__tests__/tokenUsageMeterStore.spec.ts components/workspace/usage services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts` → 68 pass.
+- Mutations:
+  - clearing on any live event regardless of `reports_model_call` fails 4 D-13 cases;
+  - removing the team entry point's clear fails the Team case.
+- Full Nuxt suite: 601 files, 4,190 pass / 5 skipped.
+- `tokenUsageMeterStore.ts` stays at 499 effective lines. Two one-line helpers (`rate`, `mergeUniqueStrings`) were condensed. Follow-up R-3 (extracting the live-partial aggregate) remains the structural fix for this file.
+- Panel markup is unchanged since IR-004, so the IR-004 rendered check still applies. No server change.
 
 IR-005 (D-13 clear rule, SR-012/SR-013):
 

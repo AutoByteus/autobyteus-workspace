@@ -11,6 +11,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-003 | Delivery blocker DR-002 → Solution Designer SR-008 (D-11) → Architecture Reviewer ARCH-REV-004 Pass | DR-002 native-compaction reading conflict | `Design Impact` (implemented design delta) | SR-008, ARCH-REV-004, DR-002, CRR-001/002 | Native compaction usage resets the context reading; upstream test adapted; returned for code review; **Pass** in CRR-004 (round 3, no findings), forwarded by Code Reviewer to API/E2E for affected-scope validation |
 | IR-004 | Solution Designer SR-010 (D-12) and SR-011 (D-13) → Architecture Reviewer ARCH-REV-005/006 Pass | User withdrawal of D-11; user request REQ-012 / AC-012 | `Design Impact` (implemented design delta) | SR-010, SR-011, ARCH-REV-005, ARCH-REV-006 | D-11 reverted (D-12), compacted note added (D-13), standalone roll-up refetch moved to revision; returned for code review; **Pass** in CRR-005 (round 4, no open findings), forwarded by Code Reviewer to API/E2E |
 | IR-005 | API/E2E API-REV-002 Fail (F-API-002-01 / DESK-004d) → Code Reviewer CRR-006 → Solution Designer SR-012/SR-013 → Architecture Reviewer ARCH-REV-008 Pass | F-API-002-01 | `Design Impact` (implemented design correction) | SR-012, SR-013, ARCH-REV-008, CRR-006, API-REV-002 | D-13 marks hold the exact-run model-call count; a save without a call keeps the note; returned for code review |
+| IR-006 | Code Reviewer CRR-007 (CR-F-002) → Solution Designer SR-014 → Architecture Reviewer ARCH-REV-009 Pass | CR-F-002 | `Design Impact` (implemented design correction) | SR-014, ARCH-REV-009, CRR-007 | Boolean mark with no baseline, cleared only by the run's next live model-call event on the agent and team paths; returned for code review |
 
 ## Revision Entries
 
@@ -160,4 +161,36 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: targeted specs 68 pass; the revision-based mutation fails 4; full Nuxt suite 4,190 pass / 5 skipped.
 - Next recipient or routing: Code Reviewer, per `get_handoff_rules`. Route: code review → API/E2E rerun (DESK-004d, AC-012) → user checks → delivery.
 - Remaining limitations or risks: RR-7 (narrowed): a counted Claude call whose context read timed out clears the note while the value is still pre-compaction. Accepted.
+
+### IR-006 — The "Compacted" mark is a boolean cleared only by a live model call (SR-014)
+
+- Triggering role, report path, and round: Code Reviewer CRR-007, finding CR-F-002 (`code-review-report.md`). The Solution Designer answered with SR-014, and the Architecture Reviewer passed it as ARCH-REV-009 (round 9).
+- Triggering finding IDs: CR-F-002.
+- Classification: `Design Impact` (the clear rule), implemented here as a design correction.
+- Prior authoritative result: IR-005. The mark held the exact-run `usageReportCount` baseline. When no exact summary was loaded at completion (for example a reopened standalone run), the baseline was null, and a later remainder event or fetched summary changed the compared count and cleared the note wrongly.
+- Current authoritative result:
+  - A per-run boolean mark is set on `completed`.
+  - It is cleared only by a live token-usage event for that same run whose own `reports_model_call` is true. The clear runs after the `seenUsageKeys` dedupe, regardless of whether the summary upsert is accepted, in both `applyTokenUsageUpdated` and `applyTeamTokenUsage`.
+  - Fetched or hydrated summaries and events without a call never clear it.
+  - It is keyed by the event's run id, so a child's calls don't clear the host mark.
+  - Runtime scope and the live-session limit are unchanged.
+- Related solution revision IDs: SR-014.
+- Related architecture-review revision IDs: ARCH-REV-009.
+- Related code-review revision IDs: CRR-007.
+- Related API/E2E revision IDs: API-REV-002.
+- Related delivery revision IDs: N/A.
+- Why this revision is recorded: it implements the SR-014 mark rule.
+- Approved behavior or requirement IDs affected: REQ-012, AC-012 (including the reopened standalone case and DESK-004d).
+- Implementation delta: commit `c0f1b9a80`.
+  - `autobyteus-web/stores/tokenUsageCompactionMarks.ts` was rewritten (boolean marks, idempotent `clearOnLiveModelCall`).
+  - `stores/tokenUsageMeterStore.ts`: wiring plus one clear call in each entry point; two helpers condensed to stay at 499 effective lines.
+  - `TokenUsageMeterPanel.vue`: comment only.
+  - Store spec: the D-13 cases were replaced, including the requested replacement of "keeps a mark made before any exact summary until the first one arrives".
+  - Panel spec: the D-13 case now uses live events.
+- Local validation and result: targeted specs 68 pass; two mutations fail as expected; full Nuxt suite 4,190 pass / 5 skipped.
+- Next recipient or routing: Code Reviewer, per `get_handoff_rules`. Route: code review → API/E2E rerun (DESK-004d, AC-012 including the reopened standalone case) → user checks → delivery.
+- Remaining limitations or risks:
+  - RR-7: a counted call whose context read timed out still clears the note.
+  - A live call event without a summary (persistence unavailable) does not clear it.
+  - `tokenUsageMeterStore.ts` is at the size limit; R-3 is the structural follow-up.
 
