@@ -18,11 +18,11 @@
 - Coverage Investigation: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-coverage-investigation.md`
 - API/E2E Test-Case Ledger: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Execution Round: 2
-- Trigger: CRR-003 test-code review `Fail` (TR-001, Local Fix, API/E2E-owned)
-- Prior Round Reviewed: 1 (API-REV-001, `Pass`)
-- Latest Authoritative Round: 2 (targeted rework of MOB-001; all other round-1 evidence carries forward unchanged)
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Execution Round: 3
+- Trigger: user request to cover every case through the real UI (round 2 was CRR-003 TR-001, Local Fix)
+- Prior Round Reviewed: 2 (API-REV-002, `Pass`)
+- Latest Authoritative Round: 3 (browser probe extended and rerun; all other evidence carries forward)
 
 ## Routing Classification
 
@@ -60,7 +60,7 @@
 | DLC-001..008 | Pass | 6 | `api-e2e-evidence/server-e2e/` | 3 consecutive passing runs |
 | REG-001 | Pass | 7 | `api-e2e-evidence/server-e2e/*.log` | — |
 | REG-002 | Pass (baseline) | 13 | `api-e2e-evidence/server-integration.log` | Only the TESTING.md known exception fails |
-| DLP-001..004 | Pass | 14 | `api-e2e-evidence/browser-probe-run-2/`, `browser-probe-run-3/` | 2 consecutive passing runs |
+| DLP-001..007 | Pass | 22 | `api-e2e-evidence/browser-probe-run-8/`, `browser-probe-run-9/` | Round 3: 2 consecutive full passing runs (runs 2–3 were the round-1 four-case version; run 7 interrupted by a host restart) |
 | MOB-001 | Pass | 19 | console (mutation verified, round 2) | Reworked for CRR-003 TR-001 |
 | ISO-001 | Pass | 17 | `api-e2e-evidence/isolated-instance/` (screenshots, `iso-journey.mp4`) | — |
 
@@ -86,8 +86,11 @@
 | REG-001 | AC-014, BEH-006 | Existing delegation journeys (configured placements, ad-hoc, existing copy) | Server E2E | Durable (existing) | Pass | logs |
 | DLP-001 | AC-011, AC-013, DEC-009, AR-003 | New chat Team seeding, pins, member edit, reset → Run → server | Browser probe (real backend, scripted runtimes) | Durable | Pass | row states; created team run member configs equal what was shown |
 | DLP-002 | AC-012 | Org launch page seeding → Run → server | Browser probe | Durable | Pass | writer ALT, placed Pair ALT, Pair engineer Grok, Pair unoffered (note) on team value |
-| DLP-003 | AC-010, AC-005 UI | Settings section for a standalone Agent run; delegating conversation | Browser probe | Durable | Pass | rows for copy/collaborators/extra copy with sources, notes; no controls; root card still editable |
-| DLP-004 | AC-010 | Settings for Team and Org runs | Browser probe | Durable | Pass | same row assertions |
+| DLP-003 | AC-001, AC-003, AC-004, AC-005, AC-007, AC-010; DS-004 (b); AR-002 | Manager chat started from the UI; composer → tool → conversation; copy member conversation; Settings | Browser probe (every action through the UI) | Durable | Pass | five exact Squad notes and the Pair bring-in note shown in the conversation; Writer and extra copy carry none; from the copy lead: teammate delegation without note, helper note once then none, Grok engineer's reply rendered (no AGY launch); Settings rows for all four reasons, team default, collaborators, extra copy (as configured), teammate copy |
+| DLP-004 | AC-004, AC-005, AC-010 | Team run (New chat) and Org run (Org launch page) driven from the composer; Settings | Browser probe | Durable | Pass | Squad notes and Pair bring-in note in the conversation (Org); Settings rows in both roots |
+| DLP-005 | AC-006, REQ-004 | Root model retired mid-run (probe-owned `agy models` file) | Browser probe | Durable | Pass | conversation shows `<name> cannot be delegated to: The model 'dlc-retiring-model' is not available on antigravity_cli.` (agent and Team) and `COLLABORATOR_ADD_FAILED` with the same reason; tree unchanged; reviewer copy (own default) delegated; Settings lists only it |
+| DLP-006 | AC-009, QR-002 | Pre-change saved Agent and Team runs after a backend restart | Browser probe | Durable | Pass | Settings: copy, collaborator and member rows "Source not recorded" with the Team value (Squad engineer on the root model, not Grok); the copy engineer then starts on AGY with the root model |
+| DLP-007 | AC-008, DEC-008 | Agents editor edit; stop from Settings; reopen from the composer | Browser probe | Durable | Pass | Settings before and after reopen: copy A engineer Grok, copy B engineer ALT (agent default); copy A engineer's first start after reopen is on Grok (`list_dir` tool card and recorded listing; no AGY launch) |
 | MOB-001 | AC-011 (mobile), DS-006 | Mobile setup controller seeding, held-then-released seed applied (control), stale seed dropped | Web component | Durable | Pass | M0 (seeding call removed) fails all 3; removing both stale-seed guards (controller selection check + store draft-ID check) fails the switch case; either guard alone still drops it |
 | ISO-001 | AC-015 shape, AC-001, AC-005, AC-010, AC-011, AR-001 | Packaged desktop app, real runtimes, real catalogs | Isolated desktop instance (worktree build) | Desktop / Live | Pass | token ledger per run (runtime/model), recorded tree, tool Result `launch_notes`, Settings rows, "+" prefill; `isolated-instance/iso-0*.png`, `iso-journey.mp4` |
 
@@ -104,24 +107,24 @@
 | 6 | `env -i PATH HOME TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts --no-watch` (×3) | clean env | DLC-001..008 | Pass | `server-e2e/run-4.log`, `delegated-launch-config-defaults*.log` |
 | 7 | same gate: `delegated-team-lazy-member-activation`, `ad-hoc-task-delegation`, `delegated-copy-member-contact-host`, `task-existing-copy-assignment` | clean env | REG-001 | Pass | `server-e2e/*.log` |
 | 8 | `pnpm -C autobyteus-server-ts test:integration:prepare && test:integration` | worktree | REG-002 | Pass (baseline exception only) | `server-integration.log` |
-| 9 | `pnpm -C autobyteus-server-ts build`; `pnpm -C autobyteus-web test:e2e:delegated-launch-defaults --output-dir <fresh>` (×2) | worktree | DLP-001..004 | Pass | `browser-probe-run-2/`, `browser-probe-run-3/` |
+| 9 | `pnpm -C autobyteus-server-ts build`; `pnpm -C autobyteus-web test:e2e:delegated-launch-defaults --output-dir <fresh>` (round 1 ×2; round 3 full ×2) | worktree | DLP-001..004 (round 1); DLP-001..007 (round 3) | Pass | `browser-probe-run-2/`, `-3/` (round 1); `-8/`, `-9/` (round 3) |
 
 ## Validation Confidence Scorecard
 
 | Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 85% | 96% | +11 | AC-010..AC-013 rendered and read back (DLP); AC-015 shape on real runtimes in the packaged app (ISO-001); mobile seeding wiring (MOB-001) | AC-015 with the user's own SE team definitions and Sol 6.1 is user verification by definition |
-| Changed-boundary execution directness | 90% | 96% | +6 | Web → server launch contract read back; Settings with real DTOs; real tool card | — |
-| Cross-boundary integration realism and mock gap | 85% | 95% | +10 | Real Claude delegator, real Codex coordinator, real native member, real catalogs (ISO-001) | Fallback reasons other than "model not offered" are proven with scripted runtimes only |
-| Environment, configuration, identity, and fixture fidelity | 90% | 95% | +5 | Packaged worktree build, isolated data, imported credentials, real CLIs | — |
-| Failure, edge-case, lifecycle, and recovery evidence | 95% | 95% | 0 | Unchanged plus stale mobile seed | UNK-001 out of scope |
-| User-surface, browser, and desktop-shell confidence | 60% | 93% | +33 | Browser probe (4 cases ×2 runs) and the desktop app journey | Mobile shell not rendered (pairing); its change is draft-only and covered by MOB-001 |
-| Durable regression coverage quality and relevance | 90% | 95% | +5 | Durable E2E (3 runs), durable probe (2 runs), mobile spec (mutation-verified) | Probe and E2E are gated/manual like their siblings |
+| Requirement and acceptance-criteria proof | 85% | 97% | +12 | AC-001..AC-014 proven through the real UI (DLP-001..007) in addition to the server E2E; AC-015 shape on real runtimes (ISO-001) | AC-015 with the user's own definitions is user verification |
+| Changed-boundary execution directness | 90% | 97% | +7 | Every user-visible result read where the user sees it: conversation, sidebar, member conversation, Settings, launch forms | — |
+| Cross-boundary integration realism and mock gap | 85% | 95% | +10 | Real Claude/Codex/native in the packaged app (ISO-001); scripted runtimes elsewhere | Fallback reasons other than "model not offered" proven with scripted runtimes only |
+| Environment, configuration, identity, and fixture fidelity | 90% | 95% | +5 | Packaged worktree build; probe-owned stack with a backend restart as after an upgrade | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | 96% | +1 | AC-006, AC-008, AC-009 now also through the UI (retired model, stop/reopen, pre-change run after restart) | UNK-001 out of scope |
+| User-surface, browser, and desktop-shell confidence | 60% | 95% | +35 | Probe 7 cases ×2 full runs; desktop app journey | Mobile shell not rendered (pairing); its change is draft-only and covered by MOB-001 |
+| Durable regression coverage quality and relevance | 90% | 96% | +6 | Durable E2E, durable UI probe (7 cases), mobile spec (mutation-verified) | Probe and E2E are gated/manual like their siblings |
 
 - Overall post-repository confidence: 85%
-- Overall final confidence: 95%
-- Calculation method: simple average (96+96+95+95+95+93+95)/7 = 95.0%
-- Confidence change produced by broader validation: +10 points, mainly user surface and real-runtime integration
+- Overall final confidence: 96%
+- Calculation method: simple average (97+97+95+95+96+95+96)/7 = 95.9% ≈ 96%
+- Confidence change produced by broader validation: +11 points
 - Every critical acceptance criterion directly proven: `Yes` (AC-015 user verification remains with delivery by definition)
 - Any final applicable category below `90%`: `No`
 - Default final confidence target of `95%` met: `Yes`
@@ -146,7 +149,7 @@
 | ISO: delegating conversation | Delegation result carries the note | Activity → `delegate_task` → Result shows `launch_notes: ["auditor: its agent default codex_app_server / iso-no-such-model could not be used (…); it runs on claude_agent_sdk / haiku (inherited from the run)."]` | `iso-03-delegate-task-result-launch-notes.png` | Pass |
 | ISO: Settings | Read-only rows with runtime, model, source, note | Copy row Claude haiku "Inherited from the run"; lead Codex "Agent default"; engineer native "Agent default"; reviewer inherited; auditor inherited + note | `iso-04-settings-delegated-rows.png` | Pass |
 | ISO: "+" from copy members (AR-001) | Prefill with the member's own runtime/model | lead → "GPT-5.6-Luna · Codex"; engineer → "deepseek-v4-flash · AutoByteus" | `iso-05-plus-from-engineer-prefill.png` | Pass |
-| DLP-001..004 | See matrix | All pass, two runs | `browser-probe-run-2/`, `browser-probe-run-3/` | Pass |
+| DLP-001..007 | See matrix | All pass, two full runs | `browser-probe-run-8/`, `browser-probe-run-9/` | Pass |
 
 ## Desktop Application Validation
 
@@ -176,7 +179,7 @@
 | Path / Test | Change | Requirement / Boundary | Execution Result |
 | --- | --- | --- | --- |
 | `autobyteus-server-ts/tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts` | Added | DLC-001..008 (AC-001..AC-009, AC-015 shape); gated `RUN_AGY_FAILURE_E2E` | 3/3 cases, 3 consecutive runs, ~20 s |
-| `autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs` | Added | DLP-001..004 (AC-005 UI, AC-010..AC-013) | 4/4, 2 consecutive runs |
+| `autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs` | Added (extended in round 3) | DLP-001..007 (AC-001, AC-003..AC-013 through the UI) | 7/7, 2 consecutive full runs (~3.6 min each) |
 | `autobyteus-web/package.json` (`test:e2e:delegated-launch-defaults`) | Updated | Probe script entry | — |
 | `autobyteus-web/components/mobile/__tests__/MobileRunSetupMemberSeeding.spec.ts` | Added (updated in round 2 for TR-001) | MOB-001 (AC-011 mobile, DS-006) | 3/3; mutation-verified (M0–M3) |
 
@@ -188,7 +191,7 @@
 | Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
 | `api-e2e-evidence/server-e2e/delegated-launch-config-defaults.json` | E2E receipt (records, results, cleanup) | Retained | — |
-| `api-e2e-evidence/browser-probe-run-{1,2,3}/` | Probe evidence JSON, screenshots, logs | Retained | run 1 is the failing assumption run |
+| `api-e2e-evidence/browser-probe-run-{1..9}/` | Probe evidence JSON, screenshots, logs | Retained | runs 1, 4, 5 were test-assumption iterations; run 7 interrupted by a host restart; 8–9 are authoritative |
 | `api-e2e-evidence/isolated-instance/` | Desktop journey screenshots, `iso-journey.mp4` (5.8 min), start/restart/stop receipts, definitions | Retained | MP4 is large (~7 MB); delivery decides whether to commit it |
 | `api-e2e-evidence/*.log` | Repository suite logs | Retained | — |
 
@@ -205,7 +208,7 @@
 
 | Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
 | --- | --- | --- | --- |
-| AGY CLI | Scripted `agy-failure-cli.mjs` (TESTING.md) | No inference; deterministic tool calls | Proves transport, not paid inference |
+| AGY CLI | Scripted `agy-failure-cli.mjs` (TESTING.md); in the probe through a probe-owned wrapper that answers `agy models` from a file (to retire a model mid-run) | No inference; deterministic tool calls; the user types the tool instruction a model would issue | Proves transport and UI, not paid inference (real runtimes: ISO-001) |
 | Grok Build CLI | Recorded-fixture fake | Second runtime without credentials | Same |
 | Codex | Missing command path | Deterministic "runtime unavailable" | Real Codex covered by ISO-001 |
 | (ISO-001) none | Real Claude, Codex and native runtimes with imported credentials | — | About $0.01 of provider usage (token ledger estimate) |
@@ -215,7 +218,7 @@
 
 | Result | Case IDs | Summary / Reason |
 | --- | --- | --- |
-| Pass | REPO-001..003, DLC-001..008, REG-001, REG-002 (baseline exception only), DLP-001..004, MOB-001, ISO-001 | All acceptance criteria AC-001..AC-014 proven directly; AC-015 shape proven on real runtimes |
+| Pass | REPO-001..003, DLC-001..008, REG-001, REG-002 (baseline exception only), DLP-001..007, MOB-001, ISO-001 | All acceptance criteria AC-001..AC-014 proven directly, and through the real UI; AC-015 shape proven on real runtimes |
 | Not Tested | AC-015 with the user's own definitions; UNK-001 | User verification (delivery); out of scope |
 
 Non-blocking observations (not failures; for Solution Designer / delivery as follow-up candidates):
@@ -243,11 +246,11 @@ N/A — no failure.
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Final validation confidence: 95%
+- Final validation confidence: 96%
 - Default `95%` confidence target met: `Yes`
 - Any final applicable confidence category below `90%`: `No`
 - Broader validation decision: `Required` — executed (browser probe; isolated desktop instance with real runtimes)
 - Critical acceptance criteria lacking direct proof: None (AC-015 user verification stays with delivery)
 - Preliminary classification and recommended owner: N/A
 - Next recipient from `get_handoff_rules`: see the handoff message
-- Notes: round 2 (API-REV-002) fixed CRR-003 TR-001 in the mobile spec only; final confidence unchanged at 95%. Durable coverage added — `autobyteus-server-ts/tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts`, `autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs` (+ `test:e2e:delegated-launch-defaults` in `autobyteus-web/package.json`), `autobyteus-web/components/mobile/__tests__/MobileRunSetupMemberSeeding.spec.ts`. Targeted proportional test-code review of the mobile spec requested (Large / High route). Not committed.
+- Notes: round 3 (API-REV-003) extended the browser probe so every case runs through the real UI (DLP-005..007 added; DLP-003/004 UI-driven); round 2 (API-REV-002) fixed CRR-003 TR-001 in the mobile spec. Durable coverage added — `autobyteus-server-ts/tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts`, `autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs` (+ `test:e2e:delegated-launch-defaults` in `autobyteus-web/package.json`), `autobyteus-web/components/mobile/__tests__/MobileRunSetupMemberSeeding.spec.ts`. Targeted proportional test-code review of the mobile spec (round 2) and the extended probe (round 3) requested (Large / High route). Not committed.

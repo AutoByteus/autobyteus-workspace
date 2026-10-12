@@ -16,12 +16,12 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002` (round 2: CRR-003 TR-001 local fix of MOB-001)
+- Current API/E2E Revision ID: `API-REV-003` (round 3: UI coverage extension of the browser probe at the user's request; round 2 was the CRR-003 TR-001 fix)
 - API/E2E Test-Case Ledger: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-test-case-ledger.md`
-- Current Investigation Round: 2
+- Current Investigation Round: 3
 - Trigger: round 1 CRR-002 `Pass`; round 2 CRR-003 test-code review TR-001 (Local Fix)
 - Prior Investigation Reviewed: round 1
-- Latest Authoritative Investigation: this document, round 2 (only MOB-001 changed)
+- Latest Authoritative Investigation: this document, round 3 (browser probe extended to DLP-001..007; MOB-001 as in round 2)
 
 ## Routing Classification
 
@@ -151,8 +151,11 @@ Design spines DS-001..DS-007; reviewed residual risks: UNK-001 (auth not detecte
 | DLC-008 | Old-shape saved tree restores; sources absent; members run on the Team value | AC-009, QR-002 | same | Persisted transition through the real reader and restore |
 | DLP-001 | New chat Team: seeded rows + note; root change keeps pinned rows; member change; reset; Run → server readback | AC-011, AC-013 | `autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs` (+ `test:e2e:delegated-launch-defaults`) | Run → server contract not proven; render-check was ad hoc |
 | DLP-002 | Org launch: placed team + agents seeded; Run → readback | AC-012 | same | Same |
-| DLP-003 | Settings of a standalone Agent run with a Team copy, an agent copy and a collaborator; tool card shows `launch_notes` | AC-010, AC-005 UI | same | Section never rendered with real DTOs |
-| DLP-004 | Settings of a Team run and an Org run with a copy | AC-010 | same | Team/Org Settings read different trees |
+| DLP-003 | Manager chat from the UI: copy (five notes), bring-ins, extra copy from its composer; teammate, helper and Grok engineer from the copy lead's conversation; Settings rows | AC-001, AC-003..AC-005, AC-007, AC-010 | same | Section never rendered with real DTOs; round 3 drives every action through the UI |
+| DLP-004 | Team run (New chat) and Org run (Org launch) driven from the composer; Settings rows | AC-004, AC-005, AC-010 | same | Team/Org Settings read different trees |
+| DLP-005 | Root model retired mid-run; failures in the conversation; nothing added; own default works | AC-006, REQ-004 | same | Round 3: the user asked for every case through the real UI |
+| DLP-006 | Pre-change saved runs after a backend restart; Settings "Source not recorded"; member on the Team value | AC-009, QR-002 | same | Round 3: the label had never been rendered with real data |
+| DLP-007 | Definition edited in the Agents editor; stop/reopen from Settings; old copy keeps its runtime | AC-008, DEC-008 | same | Round 3 |
 | MOB-001 | Mobile setup controller seeds the selected draft; a held seed applies once released (control); a seed resolving after a Team switch is dropped | AC-011 (mobile), DS-006 | `autobyteus-web/components/mobile/__tests__/MobileRunSetupMemberSeeding.spec.ts` | Added during execution: the controller wiring had no test and the mobile shell needs pairing |
 
 ## Durable Coverage To Update

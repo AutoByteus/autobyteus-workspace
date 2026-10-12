@@ -7,7 +7,7 @@
 - Execution coverage report: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-execution-coverage-report.md`
 - API/E2E revision record: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-revision-record.md`
 - Ledger scope and reason it is required: API-REV-001; repository suites, a multi-case server E2E and a browser probe, each multi-minute.
-- Last updated: 2026-10-12 (API-REV-002, CRR-003 TR-001)
+- Last updated: 2026-10-12 (API-REV-003, UI coverage extension at the user's request)
 
 ## Planned Cases
 
@@ -28,8 +28,11 @@
 | REG-002 | Server integration suite | AC-014 | Repository | `test:integration` | 7 | — |
 | DLP-001 | New chat Team seeding + Run readback | AC-011, AC-013 | Browser probe | `test:e2e:delegated-launch-defaults` | 8 | — |
 | DLP-002 | Org launch seeding + Run readback | AC-012 | Browser probe | same | 8 | — |
-| DLP-003 | Settings: Agent run with copies/collaborator; tool card note | AC-010, AC-005 | Browser probe | same | 8 | — |
-| DLP-004 | Settings: Team run and Org run with a copy | AC-010 | Browser probe | same | 8 | — |
+| DLP-003 | Manager chat from the UI: copy (5 notes), Pair/Writer bring-ins, extra copy from its composer; teammate, helper, Grok engineer from the copy lead's conversation; Settings rows | AC-001, AC-003..AC-005, AC-007, AC-010 | Browser probe (UI-driven, round 3) | same | 8 | — |
+| DLP-004 | Team run (New chat) and Org run (Org launch) driven from the composer; Settings rows | AC-004, AC-005, AC-010 | Browser probe (UI-driven, round 3) | same | 8 | — |
+| DLP-005 | Root model retired mid-run: failures shown in the conversation, nothing added, own default works | AC-006, REQ-004 | Browser probe (round 3) | same | 8 | probe-owned `agy models` file |
+| DLP-006 | Pre-change saved runs (Agent + Team) after a backend restart: Settings "Source not recorded"; member starts on the Team value | AC-009, QR-002 | Browser probe (round 3) | same | 8 | — |
+| DLP-007 | Definition edited in the Agents editor after copy A; copy B; stop/reopen from Settings; copy A engineer on Grok | AC-008, DEC-008 | Browser probe (round 3) | same | 8 | runs last |
 | MOB-001 | Mobile Team start seeding through the setup controller; stale seed dropped | AC-011 (mobile), DS-006 | Web component | `MobileRunSetupMemberSeeding.spec.ts` | 8 | mobile needs pairing; no browser surface |
 | ISO-001 | Isolated desktop instance (worktree build), real runtimes: Claude delegator, Codex coordinator default, native AutoByteus member default, unusable Codex default; tool card note, member context, Settings, New-chat seeding | AC-015 shape, AC-001, AC-005, AC-010, AC-011, AR-001 | Isolated desktop instance | `isolated-app start --build`, browser-automation attach | 9 | real provider calls (user-provided key file imported into the instance DB) |
 
@@ -56,13 +59,16 @@
 | 17 | ISO-001 | 2026-10-12 | Completed | browser-automation attach-only (control port 49330), recorded | AC-011 seeding; delegation on real runtimes; note in tool result; Settings rows; member contexts | New-chat drawer: lead Codex Luna, engineer native deepseek seeded, auditor note; Claude-haiku manager delegated `/iso_se_team`; recorded lead Codex/agent_default, engineer native/agent_default, reviewer inherited, auditor inherited+model_unavailable; token ledger: manager claude_agent_sdk/claude-haiku-5-5, lead codex_app_server/gpt-5.6-luna, engineer autobyteus/deepseek-v4-flash (~$0.01 total); tool Result shows `launch_notes`; Settings rows match; "+" from lead/engineer prefills their own runtime/model | Pass | `isolated-instance/iso-0*.png`, `iso-journey.mp4` | stopped instance: data root (incl. vault) removed, ports released |
 | 18 | MOB-001 | 2026-10-12 | Checkpoint | CRR-003 TR-001 (Local Fix): the catalog gate kept one resolver; two held loads → the seed never resolved, so the switch case passed regardless | — | Valid finding; gate now collects every held resolver (`releaseAll`); positive control added (held → released, same Team → reviewer seed applied); switch case kept | — | spec diff | rerun + mutations |
 | 19 | MOB-001 | 2026-10-12 | Completed | spec 3 cases; mutations M0 seeding call removed, M1 controller guard removed, M2 store draft-ID check removed, M3 both removed; restored | M0 fails all; M3 fails the switch case | baseline 3/3 pass; M0 3/3 fail; M1 3/3 pass; M2 3/3 pass; M3 switch case fails, others pass; restored (no diff) 3/3; related web suites 16 files / 98 tests pass | Pass | console | the two guards are redundant: either alone drops the stale seed |
+| 20 | DLP-003..007 | 2026-10-12 | Checkpoint | probe extended so every action goes through the UI (user request: cover as many cases as possible through the real UI); runs 4–6 with `--cases` | — | run 4: run-view composer has no `chat-composer` test ID → visible textarea; run 5: DLP-005 pass, others: reader took the Team messages panel (`main.last()`) → read all `main` regions; run 6: DLP-003, 004, 006, 007 pass | — | `browser-probe-run-4..6/` | full runs |
+| 21 | DLP-001..007 | 2026-10-12 | Checkpoint | full run 7 | — | interrupted by a host restart during DLP-001 (browser closed); orphan probe process stopped; temp root already removed | — | `browser-probe-run-7-interrupted-by-host-restart/` | rerun twice |
+| 22 | DLP-001..007 | 2026-10-12 | Completed | full runs 8 and 9 (fresh stack each) | 7/7 | 7/7 and 7/7; no browser errors; cleanup receipts complete (first backend `already-exited` = DLP-006's intended stop) | Pass | `browser-probe-run-8/`, `browser-probe-run-9/` | — |
 
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: 19
-- Last completed case and result: MOB-001 (rework), Pass
+- Last durably recorded event: 22
+- Last completed case and result: DLP-001..007 full runs 8–9, Pass
 - Cases still running, interrupted, or not started: none
 - Next case or recovery action: none
-- Interruption, context-compression, or rerun note: host power-off during the first chain (web suite and E2E run 3 interrupted); both rerun cleanly.
+- Interruption, context-compression, or rerun note: host power-off during the first chain (web suite and E2E run 3 interrupted); a host restart during probe run 7. All rerun cleanly.
 - Reconciled into execution coverage report: `Yes` — `api-e2e-execution-coverage-report.md`, Test-Case Ledger Reconciliation
 - Reconciliation note for any case missing a terminal result: none missing

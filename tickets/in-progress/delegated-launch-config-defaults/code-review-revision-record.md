@@ -10,6 +10,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-002 | `code-review-report.md` | Implementation Review round 2 / IR-002 local fix | Fail (Local Fix) | Pass | CR-001 (resolved) |
 | CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-001 pass | N/A (first test review) | Fail (Local Fix) | TR-001 |
 | CRR-004 | `api-e2e-test-review-report.md` | Targeted proportional test-code review / API-REV-002 | Fail (Local Fix) | Pass | TR-001 (resolved) |
+| CRR-005 | `api-e2e-test-review-report.md` | Targeted proportional test-code review / API-REV-003 (extended browser probe) | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -120,3 +121,35 @@ None.
   - API/E2E observations O-1..O-5 are follow-up candidates.
   - The two stale-seed guards are redundant, so removing only one is not detected by tests.
   - The durable tests are uncommitted.
+
+### CRR-005 — Targeted test-code review of API-REV-003: extended UI probe; Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/in-progress/delegated-launch-config-defaults/api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 3 (targeted)
+- Review scope: `N/A` (test review). The only changed durable file is `autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs` (uncommitted on top of `a33d8ad66`). The mobile spec and server E2E were verified unchanged against `a33d8ad66`, and no product source changed.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-revision-record.md` (API-REV-003); DLP-001..DLP-007
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: delivery is in progress in the worktree (`delivery-revision-record.md` present, not reviewed here)
+- Prior authoritative result: `Pass` (CRR-004)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - Every probe case now enters through the UI, at the user's direction.
+  - The new cases DLP-005..DLP-007 use supported premises: a model retirement, the upgrade path for older records, and a default edited in the Agents editor.
+  - The assertions match the server's note text exactly and prove the runtime.
+  - Reviewer checks: `node --check` OK; run-9 evidence shows 7/7 pass, 0 browser errors and the temp root removed.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None open (TR-001 was resolved in CRR-004).
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A. Classification unchanged: `Large` / `High`.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - The AC-005 conversation check relies on the scripted actor's echo; the real tool card is covered by ISO-001.
+  - Earlier probe notes remain (`pl-9` row detection, the Org run ID read from URL parameters).
+  - The probe changes are uncommitted.
