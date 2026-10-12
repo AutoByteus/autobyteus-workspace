@@ -8,7 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer pass, `design-review-report.md`, round 3 | N/A | `Initial Baseline` | SR-005, ARCH-REV-003 | Implementation complete; local checks green; ready for Code Review |
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 round 1 (Fail — Local Fix) | CR-F-001 | `Local Fix` | SR-005, ARCH-REV-003, CRR-001 | Ledger-era consolidation nulls Claude SDK readings; consolidation test added; returned for targeted delta review; **Pass** in CRR-002 (round 2, targeted delta), forwarded by Code Reviewer to API/E2E |
-| IR-003 | Delivery blocker DR-002 → Solution Designer SR-008 (D-11) → Architecture Reviewer ARCH-REV-004 Pass | DR-002 native-compaction reading conflict | `Design Impact` (implemented design delta) | SR-008, ARCH-REV-004, DR-002, CRR-001/002 | Native compaction usage resets the context reading; upstream test adapted; returned for code review |
+| IR-003 | Delivery blocker DR-002 → Solution Designer SR-008 (D-11) → Architecture Reviewer ARCH-REV-004 Pass | DR-002 native-compaction reading conflict | `Design Impact` (implemented design delta) | SR-008, ARCH-REV-004, DR-002, CRR-001/002 | Native compaction usage resets the context reading; upstream test adapted; returned for code review; **Pass** in CRR-004 (round 3, no findings), forwarded by Code Reviewer to API/E2E for affected-scope validation |
 
 ## Revision Entries
 
