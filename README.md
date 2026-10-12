@@ -282,41 +282,21 @@ managed node:
 autobyteus-docker stop
 ```
 
-If you already cloned this repository and want developer/source-helper behavior, you can use the source helper instead:
+If you already cloned this repository, the source helper can build the monorepo server image from your checkout or use a published image:
 
 ```bash
 cd autobyteus-server-ts/docker
+
+# Build and start from local source (the default)
+./docker-start.sh up --build-local
+
+# Or start from the published release image
 ./docker-start.sh up --pull-remote
 ./docker-start.sh ports
 ```
 
 Full guide:
 - [`autobyteus-server-ts/docker/README.md`](autobyteus-server-ts/docker/README.md)
-
-## All-in-one Docker startup (personal branch)
-
-Use these commands from the repo root:
-
-```bash
-./scripts/personal-docker.sh up
-./scripts/personal-docker.sh ports
-```
-
-Default `up` behavior includes one remote node and fixture seeding.
-If you only want the main all-in-one container:
-
-```bash
-./scripts/personal-docker.sh up -r 0 --no-seed-test-fixtures
-```
-
-Stop stack:
-
-```bash
-./scripts/personal-docker.sh down
-```
-
-Full guide:
-- [`docker/README.md`](docker/README.md)
 
 ## Build examples
 

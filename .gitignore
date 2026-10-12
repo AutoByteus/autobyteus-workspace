@@ -7,6 +7,9 @@ tmp/
 .local/*
 !.local/*.example
 
+# Preserve saved personal Docker state after retiring its source harness.
+docker/.runtime/
+
 # Apple/iOS signing material and App Store Connect API credentials.
 # Keep these under .local/ios-signing/ when needed locally; never commit them.
 *.mobileprovision
