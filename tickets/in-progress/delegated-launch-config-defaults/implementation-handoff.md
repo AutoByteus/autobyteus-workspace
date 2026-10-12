@@ -1,5 +1,7 @@
 # Implementation Handoff
 
+Commits: `55092536a` (server + contracts), `035b208d5` (web), `823237259` (ticket artifacts).
+
 Package: `delegated-launch-config-defaults` · Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults` · Branch `codex/delegated-launch-config-defaults` (base `origin/personal` @ `beb6b3b49`).
 
 ## Upstream Artifact Package
