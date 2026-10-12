@@ -36,7 +36,7 @@ const asObjectRecord = (value: unknown): Record<string, unknown> | null =>
 export class RetrospectiveSkillImproverAgentSettingsResolver {
   constructor(private readonly deps: {
     settingsService?: SkillImprovementSettingsService;
-    agentDefinitionService?: Pick<AgentDefinitionService, "getFreshAgentDefinitionById" | "getAgentDefinitionById">;
+    agentDefinitionService?: Pick<AgentDefinitionService, "getAgentDefinitionById">;
   } = {}) {}
 
   async resolve(input: {
@@ -85,19 +85,14 @@ export class RetrospectiveSkillImproverAgentSettingsResolver {
   }
 
   private async loadDefinition(selectedAgentId: string) {
-    const service = this.agentDefinitionService;
-    const fresh = service.getFreshAgentDefinitionById;
-    if (typeof fresh === "function") {
-      return fresh.call(service, selectedAgentId);
-    }
-    return service.getAgentDefinitionById(selectedAgentId);
+    return this.agentDefinitionService.getAgentDefinitionById(selectedAgentId);
   }
 
   private get settingsService(): SkillImprovementSettingsService {
     return this.deps.settingsService ?? new SkillImprovementSettingsService();
   }
 
-  private get agentDefinitionService(): Pick<AgentDefinitionService, "getFreshAgentDefinitionById" | "getAgentDefinitionById"> {
+  private get agentDefinitionService(): Pick<AgentDefinitionService, "getAgentDefinitionById"> {
     return this.deps.agentDefinitionService ?? AgentDefinitionService.getInstance();
   }
 }

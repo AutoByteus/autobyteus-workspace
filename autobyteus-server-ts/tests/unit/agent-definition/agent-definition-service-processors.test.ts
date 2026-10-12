@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
+import { createInMemoryPackageDefinitions } from "../../helpers/agent-package-definitions-test-support.js";
 
 type FakeOption = { name: string; isMandatory: boolean };
 
@@ -22,17 +23,12 @@ describe("AgentDefinitionService processor filtering", () => {
   let provider: {
     create: ReturnType<typeof vi.fn>;
     getById: ReturnType<typeof vi.fn>;
-    getAll: ReturnType<typeof vi.fn>;
-    getAllVisible: ReturnType<typeof vi.fn>;
+    getTemplates: ReturnType<typeof vi.fn>;
+    listApplicationOwnedTeamLocalAgents: ReturnType<typeof vi.fn>;
     update: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
   };
-  let mappingProvider: {
-    getByAgentDefinitionId: ReturnType<typeof vi.fn>;
-    upsert: ReturnType<typeof vi.fn>;
-    deleteByAgentDefinitionId: ReturnType<typeof vi.fn>;
-  };
-  let promptService: { findAllByNameAndCategory: ReturnType<typeof vi.fn> };
+  let definitions: ReturnType<typeof createInMemoryPackageDefinitions>;
 
   beforeEach(() => {
     provider = {
@@ -41,28 +37,18 @@ describe("AgentDefinitionService processor filtering", () => {
         return definition;
       }),
       getById: vi.fn(async () => null),
-      getAll: vi.fn(async () => []),
-      getAllVisible: vi.fn(async () => []),
+      getTemplates: vi.fn(async () => []),
+      listApplicationOwnedTeamLocalAgents: vi.fn(async () => []),
       update: vi.fn(async (definition: AgentDefinition) => definition),
       delete: vi.fn(async () => true),
     };
-
-    mappingProvider = {
-      getByAgentDefinitionId: vi.fn(async () => null),
-      upsert: vi.fn(async () => null),
-      deleteByAgentDefinitionId: vi.fn(async () => true),
-    };
-
-    promptService = {
-      findAllByNameAndCategory: vi.fn(async () => ["prompt"]),
-    };
+    definitions = createInMemoryPackageDefinitions();
   });
 
   const buildService = () =>
     new AgentDefinitionService({
-      provider,
-      mappingProvider,
-      promptService,
+      fileStore: provider as never,
+      packageDefinitions: definitions.packageDefinitions,
       registries: {
         input: registry,
         llmResponse: registry,
@@ -112,7 +98,7 @@ describe("AgentDefinitionService processor filtering", () => {
       id: "test-id",
       inputProcessorNames: ["MANDATORY_A", "legacy_optional"],
     });
-    provider.getById.mockResolvedValue(existing);
+    definitions.seed("agent", existing);
     provider.update.mockImplementation(async (definition: AgentDefinition) => definition);
 
     const updated = await service.updateAgentDefinition("test-id", {
@@ -122,5 +108,8 @@ describe("AgentDefinitionService processor filtering", () => {
 
     expect(updated.inputProcessorNames).toEqual(["new_optional"]);
     expect(updated.lifecycleProcessorNames).toEqual(["new_lifecycle"]);
+    // The stored definition is never mutated in place, and the owning unit is reconciled.
+    expect(definitions.store.getDefinition("agent", "test-id")?.inputProcessorNames).toEqual(["MANDATORY_A", "legacy_optional"]);
+    expect(definitions.reloader.reloadFoldersNow).toHaveBeenCalledWith("agent", ["test-id"]);
   });
 });

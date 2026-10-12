@@ -138,8 +138,54 @@ resolves that from global Skill Improvement settings plus current target state.
 
 - fetch and reload of the full agent catalog,
 - create/update/delete mutations,
-- ownership-aware getters such as `sharedAgentDefinitions`, `teamLocalAgentDefinitions`, `getTeamLocalAgentDefinitionsByOwnerTeamId(...)`, and `getApplicationOwnedAgentDefinitionsByOwnerApplicationId(...)`, and
-- cache invalidation via `invalidateAgentDefinitions()`.
+- ownership-aware getters such as `sharedAgentDefinitions`, `teamLocalAgentDefinitions`, `getTeamLocalAgentDefinitionsByOwnerTeamId(...)`, and `getApplicationOwnedAgentDefinitionsByOwnerApplicationId(...)`,
+- cache invalidation via `invalidateAgentDefinitions()`, and
+- `reloadIfLoaded()`, the live-refresh entry: a network-only reload that runs only when the list was already loaded, de-duplicates in-flight reloads, and keeps the previous list while reloading and on error.
+
+## Live Agent Package Definition Refresh
+
+`app.vue` retains the node's `/ws/agent-package-definitions` feed
+(`services/agentPackages/agentPackageDefinitionChangeFeed.ts`, on the shared
+`services/nodeChangeFeed/nodeChangeFeed.ts` socket lifecycle) while the app is
+ready. The feed reconnects with backoff and is reopened when the window is bound
+to another node. An `agent_package_definitions_changed` frame names the changed
+lists (`changedLists`), and each loaded store reloads:
+
+| Changed list | Reloads |
+| --- | --- |
+| `agents` | Agents list and Agent definition problems |
+| `agent_teams` | Teams list and Team definition problems |
+| `agent_orgs` | Orgs list and Org definition problems |
+| `agent_packages` | Settings → Agent Packages rows |
+
+Every `connected` frame (first connect and each reconnect) re-reads all loaded
+lists. A definition created, edited or removed in a package folder, by
+another client, or by an agent's tool therefore appears on the Agents page and
+in `@` mentions without a Reload. The server already names dependent lists,
+for example an agent change also reloads Teams and Orgs. See the server's
+[agent package definitions](../../autobyteus-server-ts/docs/modules/agent_package_definitions.md).
+
+### Load Issue Badge And Definition Problems Notice
+
+- `AgentCard.vue` shows `DefinitionLoadIssueBadge.vue` when the agent has a
+  `loadIssue` (passed as a one-item list), meaning a later edit could not be read and the card is
+  showing the last working version. The badge text is "Using last working
+  version", or "Package folder unavailable" when the package folder is missing.
+  Expanding it ("Show what is wrong") lists the definition, the file and the
+  reason.
+- `AgentList.vue` shows `DefinitionProblemsNotice.vue` for `AGENT` when some
+  agent definitions cannot be used at all, for example a new agent whose first
+  version is invalid. The notice is titled "N agent definition(s) could not be
+  loaded" and lists each with its file and reason. Its data comes from
+  `definitionProblemsStore` (`definitionProblems(kind)`).
+- Team-local agents are not listed on this page, so their issues show on the
+  owning Team card (see [Agent Teams](./agent_teams.md#definition-and-package-refresh)).
+- Application-package agents and Teams are not agent package definitions. The
+  server reads them on demand, does not watch them and does not announce their
+  changes, so they get no load issue badge and no live update. A malformed one
+  is logged on the server and left out of the list. Importing an application
+  package that contains a malformed agent is refused by the existing package
+  validation.
 
 ## Package Refresh Behavior
 
@@ -148,10 +194,13 @@ invalidate and reload Agents together with Applications and Agent Teams. This
 keeps embedded application-owned definitions visible, refreshed, or removed in
 the same session immediately after a package mutation.
 
-For definition updates outside the editor, use **Settings → Agent Packages** as
-the source-aware package lifecycle surface. Local path packages remain
-user-owned: edit or pull the folder outside AutoByteus, then press the package
-row's **Reload** action so the backend validates and rescans the package.
+For definition updates outside the editor, edits to definition files in a
+registered agent package are applied automatically while the package row shows
+**Auto-refreshing** (see [Settings](./settings.md#settings-agent-packages-auto-refresh)).
+**Settings → Agent Packages** stays the source-aware package lifecycle surface.
+Local path packages remain user-owned: edit or pull the folder outside
+AutoByteus, and press the package row's **Reload** only when the row is not
+auto-refreshing or to force a full rescan.
 Public GitHub package rows can **Check again** for default-branch drift and
 **Update** the AutoByteus-managed package when an update is available or the
 installed revision is unknown. These actions refresh the local agent catalog

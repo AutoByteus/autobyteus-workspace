@@ -123,8 +123,8 @@ describe("Skill name catalog GraphQL e2e (D-19)", () => {
       else process.env[key] = value;
     }
     fs.rmSync(base, { recursive: true, force: true });
-    await AgentDefinitionService.getInstance().refreshCache();
-    await AgentTeamDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
+    await AgentTeamDefinitionService.getInstance().reloadAgentPackageDefinitions();
   });
 
   const run = (source: string, variableValues?: Record<string, unknown>): Promise<ExecutionResult> =>
@@ -164,7 +164,7 @@ describe("Skill name catalog GraphQL e2e (D-19)", () => {
   const useTestPackageService = (fixture?: { installer: GitHubAgentPackageInstaller; githubClient: GitHubRepositoryClient }): void => {
     AgentPackageService.getInstance({
       rootSettingsStore: new AgentPackageRootSettingsStore(
-        { getAppDataDir: () => dataDir, getAdditionalAgentPackageRoots: parseRoots,
+        { getAppDataDir: () => dataDir, getRegisteredAgentPackageRoots: parseRoots,
           get: (key: string, defaultValue?: string) => process.env[key] ?? defaultValue },
         { updateSetting: (key: string, value: string) => {
           if (value) process.env[key] = value; else delete process.env[key];

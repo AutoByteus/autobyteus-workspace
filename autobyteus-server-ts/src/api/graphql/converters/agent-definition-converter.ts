@@ -5,6 +5,8 @@ import {
   AgentSkillScope as GraphqlAgentSkillScope,
 } from "../types/agent-definition.js";
 import { toGraphqlDefaultLaunchConfig } from "../types/default-launch-config.js";
+import { toGraphqlDefinitionLoadIssue } from "../types/definition-problems.js";
+import type { DefinitionLoadIssue } from "../../../agent-package-definitions/domain/agent-package-definition-types.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -29,6 +31,7 @@ const toGraphqlOwnershipScope = (
 export class AgentDefinitionConverter {
   static async toGraphql(
     domainDefinition: DomainAgentDefinition,
+    loadIssue: DefinitionLoadIssue | null = null,
   ): Promise<GraphqlAgentDefinition> {
     try {
       return {
@@ -59,6 +62,7 @@ export class AgentDefinitionConverter {
         ownerPackageId: domainDefinition.ownerPackageId ?? null,
         ownerLocalApplicationId: domainDefinition.ownerLocalApplicationId ?? null,
         defaultLaunchConfig: toGraphqlDefaultLaunchConfig(domainDefinition.defaultLaunchConfig),
+        loadIssue: toGraphqlDefinitionLoadIssue(loadIssue),
       };
     } catch (error) {
       logger.error(

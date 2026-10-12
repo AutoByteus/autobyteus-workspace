@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useAgentDefinitionStore } from '../agentDefinitionStore';
 import { GetAgentDefinitions } from '~/graphql/queries/agentDefinitionQueries';
-import { RefreshAgentDefinitionCatalog } from '~/graphql/mutations/agentDefinitionMutations';
+import { ReloadAgentPackageDefinitions } from '~/graphql/mutations/agentPackageDefinitionMutations';
 
 const {
   mockApolloClient,
@@ -140,7 +140,7 @@ describe('agentDefinitionStore', () => {
   it('refreshes the backend catalog before network reloading definitions', async () => {
     mockApolloClient.mutate.mockResolvedValue({
       data: {
-        refreshAgentDefinitionCatalog: true,
+        reloadAgentPackageDefinitions: true,
       },
       errors: [],
     });
@@ -172,7 +172,7 @@ describe('agentDefinitionStore', () => {
     await store.refreshAndReloadAllAgentDefinitions();
 
     expect(mockApolloClient.mutate).toHaveBeenCalledWith({
-      mutation: RefreshAgentDefinitionCatalog,
+      mutation: ReloadAgentPackageDefinitions,
     });
     expect(mockApolloClient.query).toHaveBeenCalledWith({
       query: GetAgentDefinitions,

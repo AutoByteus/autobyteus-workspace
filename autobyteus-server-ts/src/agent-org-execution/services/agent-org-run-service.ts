@@ -45,8 +45,8 @@ export type CreateAgentOrgRunCommand = Readonly<{
 export class AgentOrgRunService {
   constructor(private readonly dependencies: Readonly<{
     manager: AgentOrgRunManager;
-    teamDefinitions: Pick<AgentTeamDefinitionService, "getFreshDefinitionById">;
-    agentDefinitions: Pick<AgentDefinitionService, "getFreshAgentDefinitionById">;
+    teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
+    agentDefinitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
     agentIdentities: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
     teamIdentities: Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
     workspaces: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
@@ -87,8 +87,8 @@ export class AgentOrgRunService {
     const teamOverrides = await this.normalizeOverrides(command.teamOverrides ?? [], "teamOverrides");
     const agentOverrides = await this.normalizeOverrides(command.agentOverrides ?? [], "agentOverrides");
     const planner = new AgentOrgRunPlanner({
-      getAgentById: (id) => this.dependencies.agentDefinitions.getFreshAgentDefinitionById(id),
-      getTeamById: (id) => this.dependencies.teamDefinitions.getFreshDefinitionById(id),
+      getAgentById: (id) => this.dependencies.agentDefinitions.getAgentDefinitionById(id),
+      getTeamById: (id) => this.dependencies.teamDefinitions.getDefinitionById(id),
     }, {
       allocateAgent: (id) => this.dependencies.agentIdentities.allocateForAgentDefinition(id),
       allocateTeam: (name) => this.dependencies.teamIdentities.allocateForTeamDefinitionName(name),

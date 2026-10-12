@@ -68,6 +68,7 @@ import {
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "./project-task-execution-resource-composition.js";
+import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } from "./agent-package-definition-feed-composition.js";
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
@@ -80,6 +81,7 @@ type StudioApiHandle = ReturnType<typeof configureStudioApplicationApiServices>;
 
 const closeStudioProcessResources = async (input: {
   hostDefinitionServices: HostDefinitionServices;
+  agentPackageDefinitionFeed: AgentPackageDefinitionFeed | null;
   agentToolsMcpHost: AgentToolsMcpHost | null;
   generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null;
   generalProcessRunSupervisor: GeneralProcessRunSupervisor | null;
@@ -104,7 +106,11 @@ const closeStudioProcessResources = async (input: {
             await stopDefaultAgentRunEventPipeline();
           } finally {
             try {
-              input.hostDefinitionServices.close();
+              try {
+                await input.agentPackageDefinitionFeed?.close();
+              } finally {
+                input.hostDefinitionServices.close();
+              }
             } finally {
               try {
                 await getSecretVaultRuntime().close();
@@ -180,10 +186,22 @@ export const buildStudioServer = async (input: {
     appConfig: input.appConfig,
     bundleService: packages.bundleService,
   });
-  const definitionDiagnostics = (await hostDefinitionServices.definitionAdmissionService.scan())
-    .filter((result) => result.status === "unavailable");
-  for (const diagnostic of definitionDiagnostics) {
-    console.warn(`DEFINITION_ADMISSION_UNAVAILABLE:${diagnostic.subjectKind}:${diagnostic.definitionId ?? "unknown"}:${diagnostic.code}:${diagnostic.definitionPath}`);
+  let agentPackageDefinitionFeed: AgentPackageDefinitionFeed | null = null;
+  try {
+    agentPackageDefinitionFeed = await composeAgentPackageDefinitionFeed({ reloader: hostDefinitionServices.agentPackageDefinitions.reloader });
+  } catch (error) {
+    hostDefinitionServices.close();
+    throw error;
+  }
+  // Startup logs unavailable definitions; it is never blocked by the agent package definitions (BEH-008).
+  try {
+    const definitionProblems = (await hostDefinitionServices.definitionAdmissionService.scan())
+      .filter((result) => result.status === "unavailable");
+    for (const diagnostic of definitionProblems) {
+      console.warn(`DEFINITION_ADMISSION_UNAVAILABLE:${diagnostic.subjectKind}:${diagnostic.definitionId ?? "unknown"}:${diagnostic.code}:${diagnostic.definitionPath}`);
+    }
+  } catch (error) {
+    console.warn("DEFINITION_ADMISSION_STARTUP_SCAN_FAILED", error);
   }
   let agentToolsMcpHost: AgentToolsMcpHost | null = null;
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
@@ -197,6 +215,7 @@ export const buildStudioServer = async (input: {
     processResourcesClosed = true;
     await closeStudioProcessResources({
       hostDefinitionServices,
+      agentPackageDefinitionFeed,
       agentToolsMcpHost,
       generalProcessAuthority,
       generalProcessRunSupervisor,
@@ -321,6 +340,7 @@ export const buildStudioServer = async (input: {
         lifecycleReadiness: currentApplicationRuntime.lifecycle,
         application: currentApplicationRuntime.realtime,
         agentOrgRunService: generalProcessRunSupervisor.agentOrgRunService,
+        agentPackageDefinitionChangeHub: agentPackageDefinitionFeed.hub,
       });
       await registerGraphql(app);
       return Object.freeze({

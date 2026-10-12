@@ -9,6 +9,7 @@ import type { AgentRunBackendFactory } from "../../../src/agent-execution/backen
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
+import { getProcessAgentPackageDefinitions } from "../../../src/agent-package-definitions/services/agent-package-definitions.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import {
   parseAgentMd,
@@ -173,7 +174,7 @@ describe("AgentRunService fresh definition runtime integration", () => {
     });
   };
 
-  it("uses fresh definition instructions for the next run even when the cache is stale", async () => {
+  it("uses the edited definition instructions for the next run once the change is detected; reads and launch agree", async () => {
     const agentDefinitionService = new AgentDefinitionService();
     const unique = `fresh_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
     const initialInstructions = `Initial instructions for ${unique}`;
@@ -211,8 +212,10 @@ describe("AgentRunService fresh definition runtime integration", () => {
       "utf-8",
     );
 
-    const cachedAfterEdit = await agentDefinitionService.getAgentDefinitionById(created.id as string);
-    expect(cachedAfterEdit?.instructions).toBe(initialInstructions);
+    // The package monitor reports the external edit; the next read applies it before answering.
+    getProcessAgentPackageDefinitions().reloader.markFolderChanged("agent", created.id as string);
+    const readAfterEdit = await agentDefinitionService.getAgentDefinitionById(created.id as string);
+    expect(readAfterEdit?.instructions).toBe(updatedInstructions);
 
     let capturedConfig: AgentConfig | null = null;
     const runService = buildRunService(agentDefinitionService, (config) => {
@@ -266,6 +269,7 @@ describe("AgentRunService fresh definition runtime integration", () => {
       ),
       "utf-8",
     );
+    getProcessAgentPackageDefinitions().reloader.markFolderChanged("agent", created.id as string);
 
     let capturedConfig: AgentConfig | null = null;
     const runService = buildRunService(agentDefinitionService, (config) => {

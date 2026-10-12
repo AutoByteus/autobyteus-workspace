@@ -574,7 +574,6 @@ export class LiveE2eScenarioExecution {
       ownershipScope: 'shared',
     });
     const definitionService = {
-      getFreshAgentDefinitionById: async (id: string) => id === definition.id ? definition : null,
       getAgentDefinitionById: async (id: string) => id === definition.id ? definition : null,
     } as unknown as AgentDefinitionService;
     const workspace = new FileSystemWorkspace({
@@ -688,7 +687,6 @@ export class LiveE2eScenarioExecution {
       ownershipScope: 'shared',
     });
     const definitionService = {
-      getFreshAgentDefinitionById: async (id: string) => id === definition.id ? definition : null,
       getAgentDefinitionById: async (id: string) => id === definition.id ? definition : null,
     } as unknown as AgentDefinitionService;
     const workspace = new FileSystemWorkspace({

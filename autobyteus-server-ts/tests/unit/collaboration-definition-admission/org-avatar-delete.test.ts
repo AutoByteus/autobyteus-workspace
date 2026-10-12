@@ -5,14 +5,16 @@ import { afterEach, expect, it } from 'vitest';
 import type { AppConfig } from '../../../src/config/app-config.js';
 import { FileAgentOrgDefinitionProvider } from '../../../src/agent-org-definition/providers/file-agent-org-definition-provider.js';
 import { AgentOrgDefinition, AgentOrgDefinitionUpdate } from '../../../src/agent-org-definition/domain/agent-org-definition.js';
-import { AgentOrgDefinitionService } from '../../../src/agent-org-definition/services/agent-org-definition-service.js';
+import { createDiskDefinitionServices } from '../../helpers/agent-package-definitions-test-support.js';
 const roots: string[] = [];
 afterEach(async () => { await Promise.all(roots.splice(0).map(root => fs.rm(root, { recursive: true, force: true }))); });
 const setup = async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'org-avatar-delete-')); roots.push(root);
   const config = (base: string, extra: string[] = []) => ({ getAgentOrgsDir: () => path.join(base, 'agent-orgs'), getAdditionalAgentPackageRoots: () => extra }) as AppConfig;
   const provider = new FileAgentOrgDefinitionProvider(config(root));
-  const service = new AgentOrgDefinitionService(provider, { getFreshAgentDefinitionById: async () => null }, { getFreshDefinitionById: async () => null });
+  const service = createDiskDefinitionServices({
+    getAgentsDir: () => path.join(root, 'agents'), getAgentTeamsDir: () => path.join(root, 'agent-teams'), getAgentOrgsDir: () => path.join(root, 'agent-orgs'),
+  }).orgs;
   const created = await service.createDefinition(new AgentOrgDefinition({ name: 'Disposable Org', description: 'Preserved description', instructions: 'Preserved instructions', category: 'Keep', avatarUrl: '/asset.png', members: [], handoffs: [] }));
   return { root, config, provider, service, created };
 };

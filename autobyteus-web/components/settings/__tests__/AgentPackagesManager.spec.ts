@@ -144,6 +144,24 @@ describe('AgentPackagesManager', () => {
     expect(wrapper.text()).toContain('Agent package reloaded.')
   })
 
+  it('shows whether each package folder is auto-refreshing, missing or not watched', async () => {
+    const { wrapper } = await mountComponent([
+      { ...defaultPackages[0], autoRefresh: { state: 'WATCHING', message: null } },
+      { ...defaultPackages[1], autoRefresh: { state: 'FOLDER_MISSING', message: 'Its definitions keep their last loaded version until the folder returns.' } },
+    ] as typeof defaultPackages)
+
+    const watching = wrapper.get('[data-testid="agent-package-auto-refresh-built-in_3Adefault"]')
+    expect(watching.classes()).toContain('text-gray-500')
+    const missing = wrapper.get('[data-testid="agent-package-auto-refresh-local_3A_252Fcustom_252Froot"]')
+    expect(missing.classes()).toContain('text-red-700')
+    expect(missing.text()).toContain('Its definitions keep their last loaded version until the folder returns.')
+  })
+
+  it('omits the auto-refresh line when the server does not report watching', async () => {
+    const { wrapper } = await mountComponent()
+    expect(wrapper.find('[data-testid^="agent-package-auto-refresh-"]').exists()).toBe(false)
+  })
+
   it('renders update only for GitHub rows with an available update', async () => {
     const githubPackage = {
       packageId: 'github:autobyteus/autobyteus-agents',

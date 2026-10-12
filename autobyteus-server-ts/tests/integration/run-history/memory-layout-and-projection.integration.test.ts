@@ -124,7 +124,7 @@ describe("memory layout and projection integration", () => {
         lifecycleService,
         standaloneRuns: createStandaloneRunRootsFixture({ memoryDir, lifecycleService, agentRunManager: agentRunManager as never, metadataService }),
         agentDefinitionService: {
-          getFreshAgentDefinitionById: vi.fn().mockResolvedValue({
+          getAgentDefinitionById: vi.fn().mockResolvedValue({
             name: "Projection Agent",
             role: "Tester",
           }),

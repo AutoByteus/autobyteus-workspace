@@ -144,7 +144,7 @@ The built-in-agent bootstrapper owns this lifecycle:
 - every built-in has its `agent.md` and `agent-config.json` rewritten from the template on every startup, and its `skills/` folder mirrored from the template (removed when the template has none); app-data edits to those ids, including edits to the Daily Assistant's prompt, tools, model defaults, skill scope or agent-local skills, do not survive restart;
 - standalone local agents that are not listed in `BUILT_IN_AGENT_DEFINITIONS`, user package roots, and application-owned package definitions are not part of this sync;
 - `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` is initialized to `autobyteus-retrospective-skill-improver` only when the setting is blank; and
-- the agent-definition cache is refreshed after built-in definitions resolve.
+- built-in files are written for every built-in first, then one full reload of the agent package definitions (`reloadAgentPackageDefinitions()`) runs, and only then is each built-in resolved through `getAgentDefinitionById` and its setting default initialized.
 
 Internal infrastructure-agent customization belongs in the bundled source templates or in a separate user/package-managed agent selected by the relevant server setting.
 
@@ -169,7 +169,7 @@ Manager (`autobyteus-project-task-manager`) was retired this way by migration
 
 - Canonical ids encode ownership provenance so callers can resolve application-owned and team-local agents deterministically.
 - Team-local agent ids use the subject-specific nested-safe shape `team-local-agent:<encoded-owner-team-id>:<encoded-local-agent-id>`. The owner team id can itself be a canonical team-local team id, so local agents owned by local subteams resolve under the local subteam's `agents/` folder rather than the root parent team's `agents/` folder.
-- `AgentDefinitionService` and the file provider remain the authoritative read/write boundary; callers should not reimplement ownership-path resolution.
+- `AgentDefinitionService` is the authoritative read/write boundary; callers should not reimplement ownership-path resolution or read files for a "fresher" copy. Shared, team-local and org-owned agents of registered agent packages are served from the [agent package definitions](./agent_package_definitions.md), which apply pending file changes before every read and keep the last working version of a broken definition (`AgentDefinition.loadIssue` explains why). Application-package agents are not agent package definitions: list results and exact-ID reads read them on demand from their application packages, and a malformed one is logged and skipped without failing the list. Writes go through the file provider and the owning definition folder is reloaded immediately. There is no separate cached or fresh read path.
 - Application-owned agents can be edited in place when the owning bundle source is writable.
 - Application-owned agents are not created or deleted through the shared standalone provider path.
 - No generic agent Duplicate/Fork API exists; customization should happen in source packages, direct edits to user-owned standalone agents, or a newly created shared agent.
