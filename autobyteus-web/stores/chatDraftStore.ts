@@ -234,6 +234,8 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
     }
     if (settings && applyCarriedModel(next, settings)) {
       void loadCarriedStart(next, modelChoiceOf(next))
+      // A switcher start carries only the root; its members get their own defaults (SR-005). A "+" copy keeps the run's.
+      if (!options.copied) void seedTeamMembers(next)
       return next
     }
     // Show the likely model at once; the checked choice (availability, catalog) follows.
@@ -290,7 +292,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
   const resolveDefinitionDefaultModel = async (target: ChatDraft, generation: number): Promise<void> => {
     try {
       const definitionDefaults = await definitionDefaultLaunchConfig(target.target)
-      const members = seedTeamMembers(target).catch((error) => console.warn('Failed to seed the Team members\' defaults:', error))
+      const members = seedTeamMembers(target)
       if (isCurrent(target, generation)) {
         refreshAgentIdentity(target)
         const choice = await resolveStartModel(definitionStartOrder({ definitionDefaults, lastChatModel: readChatLastModel() }),
@@ -304,26 +306,31 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
   }
 
   /**
-   * REQ-009 on a fresh Team start: members with a usable own default get it as their pinned row;
+   * REQ-009 on a fresh, carried or switcher Team start (SR-005): members with a usable own default get it as their pinned row;
    * the others follow the composer (a note when their default is unusable). A member the user
    * already edited keeps the edit; a retargeted or discarded draft takes nothing.
    */
   const seedTeamMembers = async (target: ChatDraft): Promise<void> => {
     if (target.target.kind !== 'team') return
     const teamId = target.target.teamDefinitionId
-    const team = useAgentTeamDefinitionStore().agentTeamDefinitions.find((candidate) => candidate.id === teamId)
-    if (!team) return
-    const seed = await seedMemberLaunchDefaults({
-      members: resolveLeafTeamMembers(team, { getTeamDefinitionById: () => null }),
-      getAgentDefault: (id) => normalizeDefaultLaunchConfig(agentDefinitions().getAgentDefinitionById(id)?.defaultLaunchConfig),
-      catalog: startModelCatalog(),
-      modelConfigFor: (choice) => explicitChatModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), choice.llmConfig),
-    })
-    if (!drafts.value.includes(target) || target.target.kind !== 'team' || target.target.teamDefinitionId !== teamId) return
-    const seeded = Object.entries(seed.agentOverrides).filter(([address]) => !target.teamAgentOverrides[address])
-    target.teamAgentOverrides = { ...Object.fromEntries(seeded), ...target.teamAgentOverrides }
-    target.pinnedMemberAddresses = [...target.pinnedMemberAddresses, ...seeded.map(([address]) => address)]
-    target.memberLaunchNotes = { ...seed.notes }
+    try {
+      await ensureTargetDefinitions(target.target)
+      const team = useAgentTeamDefinitionStore().agentTeamDefinitions.find((candidate) => candidate.id === teamId)
+      if (!team) return
+      const seed = await seedMemberLaunchDefaults({
+        members: resolveLeafTeamMembers(team, { getTeamDefinitionById: () => null }),
+        getAgentDefault: (id) => normalizeDefaultLaunchConfig(agentDefinitions().getAgentDefinitionById(id)?.defaultLaunchConfig),
+        catalog: startModelCatalog(),
+        modelConfigFor: (choice) => explicitChatModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), choice.llmConfig),
+      })
+      if (!drafts.value.includes(target) || target.target.kind !== 'team' || target.target.teamDefinitionId !== teamId) return
+      const seeded = Object.entries(seed.agentOverrides).filter(([address]) => !target.teamAgentOverrides[address])
+      target.teamAgentOverrides = { ...Object.fromEntries(seeded), ...target.teamAgentOverrides }
+      target.pinnedMemberAddresses = [...target.pinnedMemberAddresses, ...seeded.map(([address]) => address)]
+      target.memberLaunchNotes = { ...seed.notes }
+    } catch (error) {
+      console.warn('Failed to seed the Team members\' defaults:', error)
+    }
   }
 
   /** The target's definitions (identity; a Team's members and their agent definitions), loaded once. */
@@ -416,7 +423,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
    * The heading switcher between an Agent and a Team (REQ-019): typed text, attachments (same draft
    * id), workspace, approval and model config are kept; member overrides reset; requested skills are
    * cleared because the skill pool follows the target; a mention of a definition the new target
-   * already places is dropped (its text stays).
+   * already places is dropped (its text stays). A Team's members then get their own defaults (SR-005).
    */
   const retarget = (target: ChatTarget) => {
     const current = draft.value
@@ -442,6 +449,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
     current.teamAgentOverrides = {}
     current.pinnedMemberAddresses = []
     current.memberLaunchNotes = {}
+    if (target.kind === 'team') void seedTeamMembers(current)
   }
 
   const rootSettings = (current: ChatDraft): RunSettingsValues => ({

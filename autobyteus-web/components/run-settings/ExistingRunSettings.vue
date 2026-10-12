@@ -63,7 +63,17 @@
           @change="(key, change) => emit('change-member', key, change)"
         />
 
-        <RunDelegatedLaunchList v-if="delegated.length" :rows="delegated" />
+        <!-- REQ-007 (SR-006): collaborators and copies as read-only member rows, collapsed until opened. -->
+        <RunMembersSection
+          v-if="delegated.length"
+          test-id="run-delegated-launches"
+          :title="$t('runSettings.delegated.title')"
+          :description="$t('runSettings.delegated.description')"
+          :nodes="delegated"
+          :locked="DELEGATED_LOCKED"
+          runtime-locked
+          read-only
+        />
       </div>
     </div>
 
@@ -103,8 +113,6 @@ import { useLocalization } from '~/composables/useLocalization'
 import type { ChatModelOption } from '~/composables/chat/useChatModelCatalog'
 import type { RunMemberSettingChange, RunSettingFlags, RunSettingsValues } from '~/types/runSettings/RunSettings'
 import type { RunMemberNode } from '~/utils/runSettings/runMemberTree'
-import type { DelegatedLaunchRow } from '~/utils/runSettings/delegatedLaunchRows'
-import RunDelegatedLaunchList from './RunDelegatedLaunchList.vue'
 import RunMembersSection from './RunMembersSection.vue'
 import RunSettingsCard from './RunSettingsCard.vue'
 import RunSubjectHeader from './RunSubjectHeader.vue'
@@ -128,7 +136,7 @@ const props = withDefaults(defineProps<{
   members?: readonly RunMemberNode[]
   lockedModelsFor?: ((key: string) => readonly ChatModelOption[] | null) | null
   /** Collaborators and open delegated copies, read-only (REQ-007). */
-  delegated?: readonly DelegatedLaunchRow[]
+  delegated?: readonly RunMemberNode[]
   dirty: boolean
   canSave: boolean
   saving: boolean
@@ -147,6 +155,8 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useLocalization()
+/** What collaborators and copies ran with is shown, never edited, whether the run is running or stopped. */
+const DELEGATED_LOCKED: RunSettingFlags = { workspace: true, model: true, thinking: true, approval: true }
 
 const rootLocked = computed<RunSettingFlags>(() => ({ workspace: true, approval: true, model: !props.canEdit, thinking: !props.canEdit }))
 const memberLocked = computed<RunSettingFlags>(() => ({

@@ -166,7 +166,9 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
         return
       }
       if (copied) Object.assign(target, copied)
-      if (copied || modelCarried) await loadCarriedRuntimes(target)
+      // An Org run "+" keeps its members; a switcher start carries only the root, so members are seeded (SR-005).
+      if (copied) await loadCarriedRuntimes(target)
+      else if (modelCarried) await Promise.all([loadCarriedRuntimes(target), seedMembers(target, selected, references)])
       else await Promise.all([applyDefaultModel(target, selected), seedMembers(target, selected, references)])
     } catch (error) {
       console.warn('Failed to prepare the Org launch page:', error)
