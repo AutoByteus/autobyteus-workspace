@@ -1,5 +1,4 @@
 import { MultimediaProvider } from '../providers.js';
-import { MultimediaRuntime } from '../runtimes.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { BaseAudioClient } from './base-audio-client.js';
@@ -16,7 +15,6 @@ export interface AudioModelOptions {
   provider: MultimediaProvider;
   clientClass: AudioClientConstructor;
   parameterSchema?: ParameterSchemaInput;
-  runtime?: MultimediaRuntime;
 }
 
 export class AudioModel {
@@ -24,7 +22,6 @@ export class AudioModel {
   value: string;
   provider: MultimediaProvider;
   clientClass: AudioClientConstructor;
-  runtime: MultimediaRuntime;
   parameterSchema: ParameterSchema;
   defaultConfig: MultimediaConfig;
 
@@ -33,7 +30,6 @@ export class AudioModel {
     this.value = options.value;
     this.provider = options.provider;
     this.clientClass = options.clientClass;
-    this.runtime = options.runtime ?? MultimediaRuntime.API;
 
     if (options.parameterSchema && !(options.parameterSchema instanceof ParameterSchema)) {
       this.parameterSchema = ParameterSchema.fromConfig(options.parameterSchema);
@@ -69,10 +65,7 @@ export class AudioModel {
       configToUse = cloned;
     }
 
-    if (
-      this.runtime === MultimediaRuntime.API
-      && this.provider === MultimediaProvider.GEMINI
-    ) {
+    if (this.provider === MultimediaProvider.GEMINI) {
       if (!geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
       return new this.clientClass(this, configToUse, apiKeyResolver, geminiRuntimeResolver);
     }
@@ -81,6 +74,6 @@ export class AudioModel {
   }
 
   toString(): string {
-    return `AudioModel(identifier='${this.modelIdentifier}', provider='${this.provider}', runtime='${this.runtime}')`;
+    return `AudioModel(identifier='${this.modelIdentifier}', provider='${this.provider}')`;
   }
 }

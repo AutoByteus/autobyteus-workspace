@@ -6,7 +6,6 @@ import { BaseImageClient } from './base-image-client.js';
 import { OpenAIImageClient } from './api/openai-image-client.js';
 import { GeminiImageClient } from './api/gemini-image-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
-import { MultimediaRuntime } from '../runtimes.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
@@ -261,8 +260,7 @@ export class ImageClientFactory extends Singleton {
 
   static requiresGeminiRuntimeResolver(modelIdentifier: string): boolean {
     const model = ImageClientFactory.requireModel(modelIdentifier);
-    return model.runtime === MultimediaRuntime.API
-      && model.provider === MultimediaProvider.GEMINI;
+    return model.provider === MultimediaProvider.GEMINI;
   }
 
   static createImageClient(

@@ -1,5 +1,4 @@
 import { MultimediaProvider } from '../providers.js';
-import { MultimediaRuntime } from '../runtimes.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { BaseImageClient } from './base-image-client.js';
@@ -16,7 +15,6 @@ export interface ImageModelOptions {
   provider: MultimediaProvider;
   clientClass: ImageClientConstructor;
   parameterSchema?: ParameterSchemaInput;
-  runtime?: MultimediaRuntime;
   description?: string | null;
 }
 
@@ -25,7 +23,6 @@ export class ImageModel {
   value: string;
   provider: MultimediaProvider;
   clientClass: ImageClientConstructor;
-  runtime: MultimediaRuntime;
   description?: string | null;
   parameterSchema: ParameterSchema;
   defaultConfig: MultimediaConfig;
@@ -35,7 +32,6 @@ export class ImageModel {
     this.value = options.value;
     this.provider = options.provider;
     this.clientClass = options.clientClass;
-    this.runtime = options.runtime ?? MultimediaRuntime.API;
     this.description = options.description ?? null;
 
     if (options.parameterSchema && !(options.parameterSchema instanceof ParameterSchema)) {
@@ -72,10 +68,7 @@ export class ImageModel {
       configToUse = cloned;
     }
 
-    if (
-      this.runtime === MultimediaRuntime.API
-      && this.provider === MultimediaProvider.GEMINI
-    ) {
+    if (this.provider === MultimediaProvider.GEMINI) {
       if (!geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
       return new this.clientClass(this, configToUse, apiKeyResolver, geminiRuntimeResolver);
     }
@@ -84,6 +77,6 @@ export class ImageModel {
   }
 
   toString(): string {
-    return `ImageModel(identifier='${this.modelIdentifier}', provider='${this.provider}', runtime='${this.runtime}')`;
+    return `ImageModel(identifier='${this.modelIdentifier}', provider='${this.provider}')`;
   }
 }

@@ -6,7 +6,6 @@ import { BaseAudioClient } from './base-audio-client.js';
 import { GeminiAudioClient } from './api/gemini-audio-client.js';
 import { OpenAIAudioClient } from './api/openai-audio-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
-import { MultimediaRuntime } from '../runtimes.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
@@ -185,8 +184,7 @@ export class AudioClientFactory extends Singleton {
 
   static requiresGeminiRuntimeResolver(modelIdentifier: string): boolean {
     const model = AudioClientFactory.requireModel(modelIdentifier);
-    return model.runtime === MultimediaRuntime.API
-      && model.provider === MultimediaProvider.GEMINI;
+    return model.provider === MultimediaProvider.GEMINI;
   }
 
   static createAudioClient(
