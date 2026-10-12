@@ -176,10 +176,8 @@ export class AutoByteusStreamEventConverter {
       : eventType === AgentRunEventType.TOKEN_USAGE_UPDATED
         ? {
             ...payload,
-            // Each native usage event is exactly one provider model call (D-4). A compaction summary
-            // call is not a reading of the agent's context and leaves the previous one stale (D-11).
+            // Each native LlmPhase usage event is exactly one provider model call (D-4).
             reports_model_call: true,
-            context_reading_reset: payload.ingestion_kind === "autobyteus_compaction",
             observed_at: event.timestamp instanceof Date
               ? event.timestamp.toISOString()
               : new Date().toISOString(),

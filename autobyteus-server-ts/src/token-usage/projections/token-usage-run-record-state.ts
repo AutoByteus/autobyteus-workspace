@@ -123,10 +123,9 @@ export const tokenUsageObservationContributes = (payload: TokenUsageUpdatedPaylo
   payload.reports_model_call || TOKEN_USAGE_TOKEN_FIELDS.some((field) => (payload[field] ?? 0) > 0);
 
 /**
- * Applies one admitted observation (D-4, D-9, D-11): totals iff it contributes; one model call iff
+ * Applies one admitted observation (D-4, D-9): totals iff it contributes; one model call iff
  * `reports_model_call`; latest runtime/model iff it is the latest model call; the latest context
- * reading iff it carries one, or made unknown (prompt and percent null; window and threshold kept)
- * iff it resets the reading. Every save advances `revision`, the live freshness key.
+ * reading iff it carries one. Every save advances `revision`, the live freshness key.
  */
 export const applyTokenUsageContribution = (input: {
   record: TokenUsageRunRecord;
@@ -137,10 +136,7 @@ export const applyTokenUsageContribution = (input: {
   const isLatest = compareAdmissionMarkers(marker, record.latestObservation) >= 0;
   const contributes = tokenUsageObservationContributes(payload);
   const latestCall = isLatest && payload.reports_model_call;
-  const latestReset = isLatest && payload.context_reading_reset;
-  const latestReading = isLatest && !payload.context_reading_reset && payload.latest_prompt_tokens !== null;
-  const keptOrReported = <T>(reported: T | null, kept: T | null): T | null =>
-    latestReading || (latestReset && reported !== null) ? reported : kept;
+  const latestReading = isLatest && payload.latest_prompt_tokens !== null;
   const identitySummary: TokenUsageIdentitySummary = {
     runtimeKinds: mergeDistinctValueWith(record.identitySummary.runtimeKinds, payload.runtime_kind),
     modelProviders: mergeDistinctValueWith(record.identitySummary.modelProviders, payload.model_provider),
@@ -195,18 +191,15 @@ export const applyTokenUsageContribution = (input: {
     latestModelIdentifier: latestCall ? payload.model_identifier : record.latestModelIdentifier,
     latestModelValue: latestCall ? payload.model_value : record.latestModelValue,
     identitySummary,
-    latestPromptTokens: latestReset ? null : latestReading
+    latestPromptTokens: latestReading
       ? nullableBigInt(payload.latest_prompt_tokens, "latest_prompt_tokens")
       : record.latestPromptTokens,
-    effectiveContextWindowTokens: keptOrReported(
-      nullableBigInt(payload.effective_context_window_tokens, "effective_context_window_tokens"),
-      record.effectiveContextWindowTokens,
-    ),
-    contextWindowUsagePercent: latestReset ? null : latestReading
-      ? payload.context_window_usage_percent : record.contextWindowUsagePercent,
-    contextCompactionThresholdTokens: keptOrReported(
-      nullableBigInt(payload.context_compaction_threshold_tokens, "context_compaction_threshold_tokens"),
-      record.contextCompactionThresholdTokens,
-    ),
+    effectiveContextWindowTokens: latestReading
+      ? nullableBigInt(payload.effective_context_window_tokens, "effective_context_window_tokens")
+      : record.effectiveContextWindowTokens,
+    contextWindowUsagePercent: latestReading ? payload.context_window_usage_percent : record.contextWindowUsagePercent,
+    contextCompactionThresholdTokens: latestReading
+      ? nullableBigInt(payload.context_compaction_threshold_tokens, "context_compaction_threshold_tokens")
+      : record.contextCompactionThresholdTokens,
   };
 };

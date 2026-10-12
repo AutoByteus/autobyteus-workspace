@@ -231,7 +231,6 @@ export const legacyRowToCurrentPayload = (
     usage_scope: oneOf(row.usage_scope, ["per_call", "per_turn", "cumulative_snapshot"] as const, "per_call"),
     // Every released ledger row was one counted report; the consolidation validates that count.
     reports_model_call: true,
-    context_reading_reset: false,
     snapshot_series_key: row.snapshot_series_key,
     previous_snapshot_event_id: row.previous_snapshot_event_id,
     input_token_semantic: inputTokenSemantic,

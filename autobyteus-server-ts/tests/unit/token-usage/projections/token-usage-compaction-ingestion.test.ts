@@ -51,25 +51,24 @@ const usage = (input: number, cacheRead: number, cacheWrite1h: number, output: n
 });
 
 describe("token usage of compaction summary attempts", () => {
-  it("adds autobyteus_compaction calls to the run totals and cost, priced with cache components", () => {
-    const agentCall = createTokenUsageUpdatedPayload({ runId: "run-compaction-meter", payload: {
-      usage: usage(1_000, 900_000, 10_000, 2_000),
-      turn_id: "turn_0007", llm_call_id: "turn_0007:llm:1", call_sequence: 1,
-      runtime_kind: "autobyteus", ingestion_kind: "autobyteus_llm_phase",
-      // As the native converter marks them (D-4, D-11).
-      reports_model_call: true, context_reading_reset: false,
-      idempotency_key: "agent:turn_0007:llm:1", observed_at: "2026-10-09T10:00:00.000Z",
-      latest_prompt_tokens: 911_000, effective_context_window_tokens: 1_000_000, context_window_usage_percent: 91.1,
-    } });
-    const compactionCall = createTokenUsageUpdatedPayload({ runId: "run-compaction-meter", payload: {
-      usage: usage(50, 911_000, 2_000, 8_000),
-      turn_id: "turn_0007", llm_call_id: "turn_0007:compaction:op_12:1",
-      runtime_kind: "autobyteus", ingestion_kind: "autobyteus_compaction",
-      reports_model_call: true, context_reading_reset: true,
-      idempotency_key: "agent:turn_0007:compaction:op_12:1", observed_at: "2026-10-09T10:00:05.000Z",
-      latest_prompt_tokens: null, effective_context_window_tokens: 1_000_000, context_window_usage_percent: null,
-    } });
+  // Built as the native converter builds them: every native usage event is one model call (D-4).
+  const agentCall = createTokenUsageUpdatedPayload({ runId: "run-compaction-meter", payload: {
+    usage: usage(1_000, 900_000, 10_000, 2_000),
+    turn_id: "turn_0007", llm_call_id: "turn_0007:llm:1", call_sequence: 1,
+    runtime_kind: "autobyteus", ingestion_kind: "autobyteus_llm_phase", reports_model_call: true,
+    idempotency_key: "agent:turn_0007:llm:1", observed_at: "2026-10-09T10:00:00.000Z",
+    latest_prompt_tokens: 911_000, effective_context_window_tokens: 1_000_000, context_window_usage_percent: 91.1,
+    context_compaction_threshold_tokens: 800_000,
+  } });
+  const compactionCall = createTokenUsageUpdatedPayload({ runId: "run-compaction-meter", payload: {
+    usage: usage(50, 911_000, 2_000, 8_000),
+    turn_id: "turn_0007", llm_call_id: "turn_0007:compaction:op_12:1",
+    runtime_kind: "autobyteus", ingestion_kind: "autobyteus_compaction", reports_model_call: true,
+    idempotency_key: "agent:turn_0007:compaction:op_12:1", observed_at: "2026-10-09T10:00:05.000Z",
+    latest_prompt_tokens: null, effective_context_window_tokens: 1_000_000, context_window_usage_percent: null,
+  } });
 
+  it("adds autobyteus_compaction calls to the run totals and cost, priced with cache components", () => {
     const first = foldTokenUsageObservation({ current: null, payload: agentCall, pricingPolicy: opus55 });
     const second = foldTokenUsageObservation({ current: first.record, payload: compactionCall, pricingPolicy: opus55 });
 
@@ -79,67 +78,46 @@ describe("token usage of compaction summary attempts", () => {
     expect(second.authoritativePayload.estimated_api_cache_read_input_cost).toBeCloseTo(911_000 * 0.2 / 1_000_000);
     expect(second.authoritativePayload.estimated_api_cache_creation_1h_input_cost).toBeCloseTo(2_000 * 8 / 1_000_000);
     expect(second.record.usageReportCount).toBe(2n);
+    expect(second.record.revision).toBe(first.record!.revision + 1n);
     expect(second.record.tokenTotals.cache_read_input_tokens).toBe(1_811_000n);
     expect(second.record.tokenTotals.cache_creation_1h_input_tokens).toBe(12_000n);
     expect(second.record.costTotals.estimated_api_total_cost).toBeCloseTo(
       (first.authoritativePayload.estimated_api_total_cost ?? 0) + (second.authoritativePayload.estimated_api_total_cost ?? 0),
     );
-    // The newest observation owns the latest-prompt reading: after a compaction call it is unknown
-    // (the context just shrank) until the agent's next request reports it again.
-    expect(second.record.latestPromptTokens).toBeNull();
-    expect(second.record.contextWindowUsagePercent).toBeNull();
-    expect(second.record.effectiveContextWindowTokens).toBe(1_000_000n);
-    expect(second.record.revision).toBe(first.record!.revision + 1n);
+  });
 
-    // The agent's next call reports the shrunk context again.
+  it("keeps the agent's latest context reading through a compaction call until its next call (D-12)", () => {
+    const first = foldTokenUsageObservation({ current: null, payload: agentCall, pricingPolicy: opus55 });
+    const second = foldTokenUsageObservation({ current: first.record, payload: compactionCall, pricingPolicy: opus55 });
+    // The compaction call carries no reading of the agent's context, so the previous one stays.
+    expect(second.record).toMatchObject({
+      latestPromptTokens: 911_000n,
+      contextWindowUsagePercent: 91.1,
+      effectiveContextWindowTokens: 1_000_000n,
+      contextCompactionThresholdTokens: 800_000n,
+    });
+
+    // The agent's next call reports the compacted context, which replaces it.
     const nextCall = createTokenUsageUpdatedPayload({ runId: "run-compaction-meter", payload: {
       usage: usage(1_000, 40_000, 1_000, 500),
       turn_id: "turn_0008", llm_call_id: "turn_0008:llm:1", call_sequence: 1,
-      runtime_kind: "autobyteus", ingestion_kind: "autobyteus_llm_phase",
-      reports_model_call: true, context_reading_reset: false,
+      runtime_kind: "autobyteus", ingestion_kind: "autobyteus_llm_phase", reports_model_call: true,
       idempotency_key: "agent:turn_0008:llm:1", observed_at: "2026-10-09T10:01:00.000Z",
       latest_prompt_tokens: 42_000, effective_context_window_tokens: 1_000_000, context_window_usage_percent: 4.2,
+      context_compaction_threshold_tokens: 800_000,
     } });
     const third = foldTokenUsageObservation({ current: second.record, payload: nextCall, pricingPolicy: opus55 });
     expect(third.record).toMatchObject({ latestPromptTokens: 42_000n, contextWindowUsagePercent: 4.2, usageReportCount: 3n });
   });
 
-  it("keeps the window and threshold through a reset, and only a reset hides a reading (D-11)", () => {
-    const withThreshold = createTokenUsageUpdatedPayload({ runId: "run-compaction-reset", payload: {
-      usage: usage(1_000, 100_000, 0, 200), runtime_kind: "autobyteus", ingestion_kind: "autobyteus_llm_phase",
-      reports_model_call: true, idempotency_key: "agent:reset:1", observed_at: "2026-10-09T11:00:00.000Z",
-      latest_prompt_tokens: 101_000, effective_context_window_tokens: 1_000_000, context_window_usage_percent: 10.1,
-      context_compaction_threshold_tokens: 800_000,
-    } });
-    const reset = createTokenUsageUpdatedPayload({ runId: "run-compaction-reset", payload: {
-      usage: usage(50, 101_000, 0, 900), runtime_kind: "autobyteus", ingestion_kind: "autobyteus_compaction",
-      reports_model_call: true, context_reading_reset: true, idempotency_key: "agent:reset:compaction:1",
-      observed_at: "2026-10-09T11:00:05.000Z",
-      latest_prompt_tokens: null, effective_context_window_tokens: null, context_window_usage_percent: null,
-    } });
-    const first = foldTokenUsageObservation({ current: null, payload: withThreshold, pricingPolicy: opus55 });
-    const second = foldTokenUsageObservation({ current: first.record, payload: reset, pricingPolicy: opus55 });
-    expect(second.record).toMatchObject({
-      latestPromptTokens: null, contextWindowUsagePercent: null,
-      effectiveContextWindowTokens: 1_000_000n, contextCompactionThresholdTokens: 800_000n, usageReportCount: 2n,
-    });
-    // Without the reset fact a readingless observation keeps the reading (D-4 unchanged).
-    const readingless = foldTokenUsageObservation({ current: first.record, pricingPolicy: opus55,
-      payload: { ...reset, context_reading_reset: false, usage_event_id: "readingless", idempotency_key: "agent:readingless" } });
-    expect(readingless.record).toMatchObject({ latestPromptTokens: 101_000n, contextWindowUsagePercent: 10.1 });
-  });
-
-  it("marks only native compaction usage as a context-reading reset in the converter (D-11)", () => {
+  it("marks native compaction usage as a model call with no other reading fact in the converter", () => {
     const converter = new AutoByteusStreamEventConverter("run-1");
-    const convert = (ingestionKind: string) => converter.convert({
+    const payload = converter.convert({
       event_type: StreamEventType.TOKEN_USAGE_UPDATED,
       timestamp: new Date("2026-10-09T10:00:00.000Z"),
-      data: { ingestion_kind: ingestionKind, latest_prompt_tokens: null },
+      data: { ingestion_kind: "autobyteus_compaction", latest_prompt_tokens: null },
     } as any)?.payload;
-    expect(convert("autobyteus_compaction")).toMatchObject({ reports_model_call: true, context_reading_reset: true });
-    expect(convert("autobyteus_llm_phase")).toMatchObject({ reports_model_call: true, context_reading_reset: false });
-    const parsed = createTokenUsageUpdatedPayload({ runId: "run-1", payload: convert("autobyteus_compaction")! });
-    expect(parsed.context_reading_reset).toBe(true);
-    expect(createTokenUsageUpdatedPayload({ runId: "run-1", payload: {} }).context_reading_reset).toBe(false);
+    expect(payload).toMatchObject({ reports_model_call: true, ingestion_kind: "autobyteus_compaction" });
+    expect(createTokenUsageUpdatedPayload({ runId: "run-1", payload: payload! }).reports_model_call).toBe(true);
   });
 });
