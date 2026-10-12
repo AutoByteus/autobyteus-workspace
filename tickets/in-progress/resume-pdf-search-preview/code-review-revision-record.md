@@ -8,6 +8,7 @@ Current canonical `code-review-report.md` (or separate future `api-e2e-test-revi
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | code-review-report.md | Implementation Review / IR-001 initial High-risk handoff | N/A | Fail — Design Impact | CR-F-001 open |
 | CRR-002 | code-review-report.md | Implementation Review / IR-002 correction after SR-004 / ARCH-REV-003 | Fail — Design Impact | Pass | CR-F-001 resolved |
+| CRR-003 | api-e2e-test-review-report.md | Successful API/E2E test-code review / API-REV-001 Pass | N/A — first test-review result; source CRR-002 Pass retained | Pass | None; CR-F-001 stays resolved |
 
 ## Revision Entries
 
@@ -56,3 +57,24 @@ None — initial code-review result.
 - Role-conflict disposition: SR-004 asks implementation for focused E2E execution, but authoritative implementation skill reserves that work for API/E2E Engineer. Conflict explicitly recorded, not waived; equivalent adapter judged statically for source gate. Required current clean test-owned path-boundary execution forwarded as first API/E2E item.
 - Recommended recipient: primary API/E2E Engineer under fresh source-Pass handoff rule; after successful handoff, skill-required short informational Pass to Implementation Engineer. No direct delivery or duplicate forwarding.
 - Remaining risks: diagnostic E2E, joined GraphQL/REST200/application/pdf/exact valid multipage bytes, lazy PDF canvas/pages/no errors, client tree/text and HTTP safety checks remain unverified. Host build/runtime pin/safe8001 rollout/rollback/timing approval/explicit user verification/original integrity/final cleanup remain Delivery-owned. Reviewer started no processes/fixtures/DB/ports this round; only review artifacts/evidence changed. Upstream dirty informational receipt/local untracked prerequisites untouched/unstaged.
+
+### CRR-003 — Successful API/E2E durable-test changes reviewed proportionately
+
+- Date/reviewer: 2026-10-12 / code_reviewer.
+- Canonical report: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-test-review-report.md`; source `code-review-report.md` remains CRR-002 Pass, **unchanged**.
+- Entry point / round / scope: Successful API/E2E Test-Code Review / 1 / N/A — proportional test review, no full source audit/size limits/scorecard/confidence rescoring.
+- Trigger: api_e2e_engineer `api-e2e-execution-coverage-report.md`, API-REV-001 round1 Pass95%; investigation/ledger/API history inspected with cumulative upstream package. Durable baseline-fix4c3734952c4e1219687b71df20ff4f4d00572958, coverage0ab2dedfc, report2e9d65dac / intakeHEADbdf89a0a1; production identical reviewed7f321575.
+- Relevant SR-001–004 (Approved R1/SR-001), ARCH-REV-001–003 (current003), IR-001/002, API-REV-001; DR N/A — not performed.
+- Prior result: N/A — first separate test-review result; prior source result CRR-002 Pass retained. Current **test-review Pass**; Small / High unchanged.
+- Delta/basis: nine durable test/support paths reviewed, none removed/disabled/skipped. Exact locator/nonmutation/store reuse/ordinary-query assertions, real socket PDF/text/denials, shared synthetic two-page PDF and discoverable own-stack browser probe/host. Baseline route-only cleanup fix retains five assertions and is separately labelled. No compatibility or production change.
+- Supported scenario/material-premise changes: None. Approved SCN-001–003 establish search/open/shared identity and confinement; test fixture/endpoint does not establish its own scenario. Component host/public APIs and real Files interactions exercise those paths; read-only diagnostics do not create hidden initial state.
+
+#### Prior Finding Resolution
+
+None for this first successful-test review. Prior source CR-F-001 remains resolved under CRR-002; no source finding reopened.
+
+- New/remaining test-review findings: None.
+- Score/classification changes: N/A — no test-review source scorecard or execution-confidence assignment. API-owned95% accepted as context; source95/100 unchanged.
+- Execution evidence inspected, not rerun: final22backendfiles/108tests +9webfiles/58tests, no skips; current diagnostic first2tests Pass; browser/API two finalrun03cases Pass, zero actual/warmup errors, exact878PDF bytes, real two ink-bearing canvases/no alert and client/tree/text identity. Two screenshots personally inspected; build hashes/cleanup agree. Prior failed attempts retained, no error waiver; binary fixture/raw-log whitespace not globally clean, text-scoped check Pass.
+- Recommended recipient: Delivery Engineer under fresh successful-test-review Pass handoff rule; attach separate report/history and complete passed package/all nine durable paths/evidence. No duplicate notification.
+- Remaining gates: AC-004 actual host/build/frontend/runtime pin, safe8001 rollout/rollback/timing approval, explicit user close/re-search/open verification, integrity/final cleanup; no public release requested. Browser proves web-equivalent Files path, not native shell/deployed user outcome. Original read-only SHA unchanged per API evidence. Reviewer only authored two review artifacts; no test/process/data/runtime mutation. Upstream dirty informational receipt and untracked SDK/devkit/Brief Studio outputs left untouched/unstaged.
