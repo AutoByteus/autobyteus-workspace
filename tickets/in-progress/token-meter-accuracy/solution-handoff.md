@@ -62,6 +62,13 @@ R-001 partial-message frames vs text projection; R-002 double counting between p
 
 - ARCH-F-003: the strict shared contract schemas (team-stream run summary DTO, presentation run summary DTO, presentation live `token` event) are mapped with their tests. A contracts-first step rebuilds their `dist` before the server and web steps, and a web mapper test is added.
 
+## SR-008 Changes (DR-002)
+
+- Upstream `compaction-prompt-cache-reuse` reports each native compaction summary call as `autobyteus_compaction` with a null reading. Our D-4 rule would keep the stale pre-compaction reading.
+- D-11 adds an explicit, server-internal `context_reading_reset` fact. The native converter sets it to true for `autobyteus_compaction`. The fold then makes the latest prompt and percent unknown (window and threshold kept), and the call still counts as a model call with tokens and cost.
+- Adapt the upstream test as the converter does; add AC-011 (user check of a native compaction).
+- Integration base: the delivery merge `168900db7` (DR-002 record `15bdb2d62`) in this worktree.
+
 ## Next Expected Action
 
 Independent architecture review round 3 of the package above.
@@ -76,3 +83,52 @@ Independent architecture review round 3 of the package above.
 - resolve the single conflict in `autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts` in favor of this branch (per-step `base_excludes_cache` usage; the result emits no usage);
 - adapt the upstream converter test that asserts result-usage semantics to per-step usage;
 - keep the upstream fold test and the Gemini 3.1 Pro catalog prices.
+
+## Review Outcome (SR-008)
+
+- ARCH-REV-004 (SR-008, D-11): **Pass**, no new findings. RR-6 recorded: BEH-005/AC-011 rest on the user's delegation and have been reported to the user; a rejection would return as a requirement change. AC-011 user check outstanding. Package forwarded by the reviewer to `/software_engineering_team/implementation_engineer` (delivery confirmed). Informational; no further Solution Designer handoff.
+
+## Status: BLOCKED — paused (SR-009, 2026-10-12)
+
+- Result: `Blocked` — User/External Prerequisite. The user withdrew the D-11 reset (the reading must stay unchanged during compaction) and asked to wait until the team removing the AutoByteus (native) runtime finishes.
+- Holds: implementation (acknowledged), API/E2E (sent), delivery (holding the unpushed integration 168900db7 / 15bdb2d62).
+- On resume: re-base, drop native-only scope (BEH-005 native, AC-011, D-11, native threshold), revert 5b48c2b47 if still present, re-check the merge, then SR-010 and route per the rules.
+
+## Status: RESUMED (SR-010, 2026-10-12)
+
+- The SR-009 pause was a user mistake: the other team's removal concerns the remote provider, not the native runtime.
+- D-11 is withdrawn; D-12 applies. A native compaction call counts as a model call with tokens and cost, and carries no reading. The previous reading stays (D-4) until the next real reading.
+- Work: revert IR-003 (5b48c2b47); adapt the upstream compaction test to "reading kept"; update docs. AC-011 is rewritten (user check of a native compaction).
+- Integration base: the delivery merge 168900db7 (unpushed) in this worktree.
+
+## Review Outcome (SR-010)
+
+- ARCH-REV-005 (SR-010, D-12; D-11 withdrawn): **Pass**, no new findings. RR-6 is narrowed to the after-final-answer detail (reported to the user). AC-011 user check outstanding. Reviewer note: adapt the upstream compaction test to "reading kept" rather than reverting it. Package forwarded to `/software_engineering_team/implementation_engineer` (delivery confirmed). Informational.
+- Pending user question (not in SR-010 scope): optional "Compacted — updates on the next model call" note on the meter after a native compaction until the next reading. If the user accepts, it becomes a new revision (SR-011).
+
+## SR-011 Changes (D-13)
+
+- REQ-012 / AC-012 (user-approved 2026-10-12): after a completed compaction on native or Claude SDK, the meter keeps the previous value greyed, with "Compacted — updates on the next model call", until the next real reading. Frontend-only: the meter store keeps exact-run revision marks set by `handleCompactionStatus` on `completed`; the panel shows the note for `autobyteus`/`claude_agent_sdk`. It is a live-session hint; no server, storage or contract change.
+
+## Review Outcome (SR-011)
+
+- ARCH-REV-006 (SR-011, D-13; D-12 unchanged): **Pass**, no new findings. Package forwarded to `/software_engineering_team/implementation_engineer` (delivery confirmed). Informational.
+- RR-7 (non-blocking) disposition: accepted. A Claude observation without a reading after compaction (context read timed out, which is flagged `claude_sdk_context_usage_unavailable`, or a turn ending with only the remainder) clears the note early. The displayed value is then still the last real reading, just without the hint. Rare, and no false number is shown, so no extra machinery.
+
+## SR-012 Changes (CRR-006, F-API-002-01)
+
+- D-13 mark now stores the exact-run `usageReportCount` and clears only when a model call is reported after the compaction. Saves without a call (Claude manual `/compact` turn-end remainder) keep the note. D-9 freshness still uses `revision`. RR-7 is replaced by a narrower residual (a Claude call whose context read timed out).
+- Rerun: DESK-004d and the AC-012 cases.
+
+## Review Outcome (SR-012/SR-013)
+
+- ARCH-REV-008: **Pass**. ARCH-F-004 resolved. Package forwarded to `/software_engineering_team/implementation_engineer` (delivery confirmed). Informational.
+- Still open with the user (not in scope until answered): compaction label wording and "about N tokens until auto-compact".
+
+## SR-014 Changes (CRR-007, CR-F-002)
+
+- The D-13 mark is now a per-run boolean, cleared only by a live token-usage event for that run with `reports_model_call: true` (`applyTokenUsageUpdated` and `applyTeamTokenUsage`). No baseline, so a reopened standalone run (roll-up-only hydration) keeps the note through the `/compact` remainder. New required spec: mark with no exact summary → remainder → note kept → next call clears it.
+
+## Review Outcome (SR-014)
+
+- ARCH-REV-009: **Pass**, no new findings. Both live entry points cover every live path (incl. collaboration and Org via `agentStreamMessageProjector`). Package forwarded to `/software_engineering_team/implementation_engineer` (delivery confirmed). Informational.

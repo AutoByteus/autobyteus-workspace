@@ -50,3 +50,16 @@
 - Why this delivery revision was recorded: the re-integration changes effective behavior relative to an approved upstream design, so delivery may not choose.
 - Next recipient/action: `/software_engineering_team/solution_designer` decides (a) keep this branch's rule and adapt the upstream test, or (b) clear the reading on native compaction. Delivery then resumes finalization and the beta release, and gets a renewed user check if (b) changes what the meter shows.
 - Remaining blockers, rollback concerns, or untested scope: the blocker above. The live suites were not rerun on the re-integrated state.
+- Solution Designer decision (2026-10-11): option (b), recorded as SR-008 / D-11.
+  - A native compaction call sets an explicit `context_reading_reset` fact, which resets the latest reading to unknown. The call still counts as a model call, with its tokens and cost.
+  - The package goes to architecture re-review and then the normal route.
+  - New AC-011: the user checks a native compaction in the desktop app before release.
+- Delivery holds finalization and the beta release until the package returns. The local integration (`168900db7`, `15bdb2d62`) stays unpushed as the base. The next delivery round will be DR-003.
+- Update (2026-10-12, SR-009): the user withdrew D-11; the context reading stays unchanged during compaction.
+  - The ticket is paused until the team removing the AutoByteus (native) runtime finishes, because that removal takes away the native compaction path behind this blocker.
+  - On resumption, Solution Designer will re-base the package on the then-current `origin/personal`, re-scope it without the native-only items, and send it back through the normal route.
+  - Delivery keeps holding finalization and the beta. `168900db7` and `15bdb2d62` stay local and unpushed.
+- Update (SR-010 / D-12): the SR-009 pause is lifted. The other team is removing the remote provider, not the native runtime.
+  - D-11 is withdrawn. A native compaction call counts as a model call with its tokens and cost, and the latest reading is kept until the next real reading (option (a) of DR-002).
+  - IR-003 is reverted, and the upstream compaction test is adapted to "reading kept".
+  - The package goes to architecture re-review and then the normal route back to delivery. Delivery keeps holding finalization and the beta; `168900db7` and `15bdb2d62` stay local and unpushed as the base. The next delivery round is DR-003.

@@ -1,5 +1,63 @@
 # API/E2E Test Review Report — token-meter-accuracy
 
+## Round 2 (CRR-009, latest authoritative)
+
+- Trigger: `/software_engineering_team/api_e2e_engineer`, API/E2E **Pass**.
+  - API-REV-002 failed on F-API-002-01. IR-005 and IR-006 followed, and API-REV-003 (round 3) passed at 94%.
+  - Validated build: `3c1d99922` (code `c0f1b9a80`). Artifacts commit: `21974ba2a`.
+- Implementation context: CRR-008 Pass (IR-006). Classification preserved: Large / High.
+- Testing guideline: `TESTING.md`. Discrepancy for delivery docs sync: on HEAD, TESTING.md lists none of these live gates:
+  - `RUN_NATIVE_COMPACTION_METER_E2E` (new);
+  - `RUN_RUNTIME_TOKEN_USAGE_E2E`;
+  - the `RUN_CODEX_E2E` Codex compaction suite.
+- Supported product scenario basis confirmed: `Yes`. AC-011 (native compaction keeps the reading and counts the summary call) and the event order D-13 relies on.
+
+### Changed Durable Test Scope (since API-REV-001)
+
+| Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
+| --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/runtime/autobyteus-compaction-token-reading-live.e2e.test.ts` | Added (`88f03cb27`; opt-in, `RUN_NATIVE_COMPACTION_METER_E2E=1`) | AC-011, D-12; D-13 event order | Real native compaction through the Studio server on a real model. It covers: the summary call counted with its tokens, the reading kept, the summary-call save before `completed`, the next call smaller, and the persisted summary equal to the live stream | Uses the shared `NativeRuntimeLiveHarness`. Settings it changes are restored in `afterAll`. The run command uses `env -i`, so only the chosen key reaches the test-owned vault. LM Studio alternative needs no credentials |
+| `autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts` | Updated (`be39baf40`) | Statistics GraphQL in the live runtime suite | Determinism fix: the statistics window now opens before `createAgentRun`, because `usageStatisticsInPeriod` selects by run creation time | A one-line move with a precise rationale (1 of 3 Codex runs fell outside the old window) |
+
+Durable test changes from IR-003 to IR-006 (`token-usage-compaction-ingestion.test.ts`, the web store, panel and handler specs) were reviewed with the implementation source in CRR-004, CRR-005, CRR-007 and CRR-008.
+
+### Proportional Test-Code Checks
+
+| Check | Result | Evidence / Notes |
+| --- | --- | --- |
+| Scenario grouping and names make intent clear | Pass | One case with a descriptive name; the header states the gate, cost and setup |
+| Assertions prove approved requirements instead of incidental implementation details | Pass | AC-011 facts: call +1, totals + the summary tokens, reading and window unchanged, the next reading smaller. The order assertion (summary-call save before `completed`) is still essential under SR-014: the summary call reports a model call, so if it arrived after `completed` it would clear the note |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | Shared native live harness; small local frame helpers |
+| Test isolation and determinism are appropriate for the exercised boundary | Pass | Owned settings are restored; the temp HOME is cleaned; a bounded turn loop (at most 3 short turns) reaches compaction; the trigger is derived from the observed prompt. `be39baf40` removes a real ordering flake |
+| Large files remain coherent and navigable | Pass | 131 lines; one surface |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass with note | The assertions are current. The header bullet and two comments still describe the superseded round-4 rule ("a newer revision clears the note"; "changes the revision the note records"). Since SR-014, only the run's next live model call clears the note. See the note below |
+| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | LIVE-006 log; DESK-004/005 desktop evidence matches |
+| Test callers and fixtures exercise an independently established supported scenario | Pass | A native run that compacts on the agent's own model (upstream REQ-007; AC-011) |
+| Each test enters through its scenario's real trigger and follows the real actor's steps | Pass | Real Studio server, public GraphQL and agent WebSocket, a real model. Compaction is triggered by real settings and real turns; there is no synthetic state |
+
+### Findings
+
+None actionable.
+
+Non-blocking note: in `autobyteus-compaction-token-reading-live.e2e.test.ts`, update the header bullet ("… the agent's next call (a newer revision) clears the note") and the comments before the `between` and `next` assertions to the SR-014 rule: "the agent's next live model call clears the note". The assertions themselves can stay. This is a wording-only fix and can be made during delivery or in the follow-up ticket.
+
+### Observation forwarded (pre-existing, outside this change)
+
+API/E2E found that the standalone roll-up call count does not refresh live while a delegated copy makes calls. It updates only at the host's next save.
+
+- I confirmed this is pre-existing: before this ticket the refetch watched the host's exact call count, which a child's calls also never change.
+- D-9 only re-keyed it to the host revision.
+- This is a separate ticket candidate, not a regression.
+
+### Latest Authoritative Result (round 2)
+
+- Result: `Pass`
+- Changed durable test paths reviewed: the 2 paths above.
+- Unresolved finding IDs: None.
+- Recommended Recipient: `/software_engineering_team/delivery_engineer`
+
+## Round 1 (CRR-003)
+
 ## Review Meta
 
 - Review Round: 1

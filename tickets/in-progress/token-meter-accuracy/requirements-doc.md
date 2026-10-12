@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-012`
 - Package identifier: `token-meter-accuracy`
 - Request / ticket: Project Task `project_task_cb40258d-0311-4675-bdd4-8ff49253b576`
 - Requirements owner: Solution Designer (`/software_engineering_team/solution_designer`)
@@ -31,7 +31,7 @@
 | BEH-002 | System | SCN-002 | Claude SDK usage recorded only at turn end | Usage recorded per model call as it happens, from the SDK's per-call usage; at turn end, reconciled with the SDK's cumulative totals so lifetime totals equal the SDK's | Turn-end reconciliation with SDK cumulative totals (covers SDK compaction calls); duplicate/regression/resume protections | P1–P3, traces |
 | BEH-003 | System | SCN-002, SCN-004 | AGY usage only at turn end, cumulative; input misread as cache-inclusive; no latest prompt | Per-call usage from AGY's per-step reports as they happen; input + cache read = gross; latest prompt = latest call's input + cache read | AGY compaction display | P8, P8b, DB |
 | BEH-004 | System | SCN-004 | Codex latest prompt = `last.inputTokens`; after compaction shows 0 | Context in use = Codex's own `last.totalTokens`, over `modelContextWindow` | Per-call live updates; cumulative-total accounting | P5–P7 |
-| BEH-005 | System | SCN-004 | Native: per call, correct | Unchanged | All native accounting and percentages | code, DB |
+| BEH-005 | System | SCN-004 | Native: per call, correct. Since upstream compaction-prompt-cache-reuse (REQ-007, user-approved 2026-10-09), compaction summary calls are reported as usage | Unchanged, plus (SR-010, user 2026-10-12): during and after a native compaction the "Latest prompt" reading stays unchanged and is replaced only by the next real reading (the agent's next call), never by unknown or by a local estimate | All native accounting and percentages; compaction calls counted as model calls with tokens and cost in totals (upstream REQ-007) | code, DB, DR-002, user 2026-10-12 |
 | BEH-006 | System | SCN-004 | Grok: per call; no latest prompt | Latest prompt = latest call's input + cache read + cache write; window shown only if reported | Per-call accounting | code |
 | BEH-007 | System | SCN-002 | Usage attribution to standalone/team/delegated/Org runs works once usage arrives | Unchanged; now visible after the first model call | Attribution, roll-ups, team totals | DB |
 | BEH-008 | System | SCN-001 | Over-100 % values arise from counting (Claude SDK); genuine overflow also exists (Codex 100.3 % of its 95 % window; Claude SDK 95 % after failed compaction) | Counting artefacts impossible; a genuine runtime-reported overflow is shown truthfully and marked as over the runtime's window | — | P3, P7 |
@@ -94,6 +94,7 @@ BEH-005, BEH-007 and the preserved column of BEH-002/BEH-004. Cross-cutting inva
 | REQ-009 | The meter never shows a counting artefact above 100 %. When a runtime itself reports context in use above its window, the meter shows the true number and marks it as over the runtime's window. | BEH-008 | Must | Truthful display | P3, P7 |
 | REQ-010 | When the runtime reports a compaction threshold (Claude SDK; native AutoByteus), the meter shows it with the context bar (see DEC-004). | BEH-001, BEH-005 | Should | Explains compaction | P2, code |
 | REQ-011 | Shared-code ownership with the caching tasks: this task does not change pricing catalog values or the cost calculator, and keeps its documentation edits to the runtime-usage and context sections. | — | Must | Coordination | Task |
+| REQ-012 | After a compaction completes on a runtime whose new context size is only known from its next model call (native AutoByteus, Claude Agent SDK), the meter keeps showing the previous "Latest prompt" value visibly marked as pre-compaction (greyed), with the note "Compacted — updates on the next model call", until the next real reading arrives. No estimated value is shown. Runtimes that report the post-compaction size themselves (Codex) or report no reading (Antigravity) show no note. | BEH-001, BEH-005 | Should | Avoid the "high % but compacted" confusion after a final-answer compaction | User 2026-10-12: "add it please" / "do it in this ticket" (SR-011) |
 
 ## Acceptance Criteria
 
@@ -108,7 +109,9 @@ BEH-005, BEH-007 and the preserved column of BEH-002/BEH-004. Cross-cutting inva
 | AC-007 | REQ-007 | BEH-006 | Grok call | Latest prompt populated | — | Unit |
 | AC-008 | REQ-010 | BEH-001 / SCN-003 | Claude SDK or native run with compaction enabled | Threshold shown with the bar (Opus 5.5: 967,000 of 1,000,000) | Runtimes without a reported threshold show none | Component test + desktop |
 | AC-009 | — | BEH-005, BEH-007 | Existing native/Codex/team totals | Unchanged | — | Existing tests |
-| AC-010 | all | all | Desktop app, real runs | User verifies A and B fixed on Claude SDK and spot-checks other runtimes | — | User verification |
+| AC-010 | all | all | Desktop app, real runs | User verifies A and B fixed on Claude SDK and spot-checks other runtimes | — | User verification (verified 2026-10-11) |
+| AC-011 | REQ-002, REQ-009 | BEH-005 | Native run that compacts (SR-010) | After the compaction summary call the meter counts it as a model call and adds its tokens and cost. "Latest prompt" keeps its previous value while the compaction activity shows, then changes to the new, smaller reading when the agent's next call reports it | A compaction after the agent's final answer keeps the previous value until the next message's first call | Unit (fold: reading kept; 2 calls; totals and cost) + user check of a native compaction in the desktop app |
+| AC-012 | REQ-012 | BEH-005, BEH-001 / SCN-003 | Native or Claude SDK run; compaction completes while the meter is open, either automatic or a manual `/compact` | The "Latest prompt" value stays, greyed, with "Compacted — updates on the next model call"; when the run's next model call is reported, the note disappears (saves without a model call, e.g. Claude's turn-end summariser tokens, do not clear it) and the new, smaller value shows normally | Failed or stopped compaction: no note. Codex: no note (its post-compaction reading shows directly). After an app reload before the next call: no note (live-session hint only) | Store/panel unit tests + user check in the desktop app |
 
 ## Relevant Scenarios And Journeys
 

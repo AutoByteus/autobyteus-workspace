@@ -7,14 +7,14 @@
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/solution-revision-record.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `probes/` (P1–P8 scripts and raw outputs, evidence only), `solution-handoff.md`, user screenshots `user-16-running-member-zero.png` and `user-17-latest-prompt-97.png`
-- Relevant Solution Revision IDs: SR-001, SR-002, SR-003, SR-004, SR-005
+- Relevant Solution Revision IDs: SR-001–SR-005, SR-006 (evidence only), SR-007 (behavior-neutral, follow-up task), SR-008 (D-11, withdrawn), SR-009 (pause, lifted), SR-010 (D-12), SR-011 (D-13, REQ-012/AC-012), SR-012 (D-13 clearing rule corrected after CRR-006), SR-013 (ARCH-F-004 wording), SR-014 (D-13 event-sourced boolean mark after CRR-007 CR-F-002)
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3
-- Trigger: Solution Designer revised package SR-005 (shared contract schemas mapped), resolving ARCH-REV-002 / ARCH-F-003. Earlier: SR-004 (D-9, D-10) resolved ARCH-REV-001.
-- Prior Review Round Reviewed: 2 (ARCH-REV-002, Fail — ARCH-F-003)
-- Latest Authoritative Round: 3
-- Current-State Evidence Basis: worktree `codex/token-meter-accuracy` @ `927796780`. Read: `token-usage-run-fold.ts`, `token-usage-run-record-state.ts`, `token-usage-run-accumulator.ts`, `claude-sdk-model-usage-reconciler.ts`, `claude-session.ts`, `claude-session-process.ts`, `claude-session-token-usage.ts`, `claude-sdk-result-usage-parser.ts`, `claude-sdk-streaming-session.ts`, `claude-sdk-client.ts` (query options, tool lists), `domain/claude-sdk-usage.ts`, `agy-stream-event-converter.ts`, `autobyteus-ts/src/agent/loop/llm-phase.ts`, `token-usage-current-schema-readiness.ts`, `startup/migrations.ts`, `prisma/migrations/*`, `token-usage-run-persistence-transformer.ts`, `token-usage-run-store.ts`, `autobyteus-web/stores/tokenUsageMeterStore.ts`, `docs/modules/token_usage.md` § Claude Agent SDK, `DESIGN.md`. Probe outputs P2, P3, P4 and P8 were re-read directly. Round 2 added `agent-run-event-dispatch-queue.ts` (per-run serialization), `token-usage/repositories/` (no record deletion), `autobyteus-team-stream-contracts/src/{token-usage-run-summary-dto,team-agent-message-dtos,team-stream-server-message}.ts`, `autobyteus-agent-presentation-contracts/src/{token-usage-presentation-dto,agent-presentation-message-dtos}.ts`, `autobyteus-web/services/agentStreaming/tokenUsageRunSummaryMapper.ts`, and `agent-collaboration-stream-handler.ts`.
+- Current Architecture Review Revision ID: `ARCH-REV-009`
+- Current Review Round: 9
+- Trigger: Solution Designer SR-014, after code review CRR-007 CR-F-002. A reopened Claude SDK standalone run hydrates only its roll-up, so the SR-012 count mark had a null exact-run baseline and the `/compact` remainder's first exact summary cleared it. The mark is now a per-run boolean, cleared only by a live `reports_model_call: true` event. Earlier: SR-013 passed in ARCH-REV-008.
+- Prior Review Round Reviewed: 8 (ARCH-REV-008, Pass)
+- Latest Authoritative Round: 9
+- Current-State Evidence Basis: worktree `codex/token-meter-accuracy` @ `927796780`. Read: `token-usage-run-fold.ts`, `token-usage-run-record-state.ts`, `token-usage-run-accumulator.ts`, `claude-sdk-model-usage-reconciler.ts`, `claude-session.ts`, `claude-session-process.ts`, `claude-session-token-usage.ts`, `claude-sdk-result-usage-parser.ts`, `claude-sdk-streaming-session.ts`, `claude-sdk-client.ts` (query options, tool lists), `domain/claude-sdk-usage.ts`, `agy-stream-event-converter.ts`, `autobyteus-ts/src/agent/loop/llm-phase.ts`, `token-usage-current-schema-readiness.ts`, `startup/migrations.ts`, `prisma/migrations/*`, `token-usage-run-persistence-transformer.ts`, `token-usage-run-store.ts`, `autobyteus-web/stores/tokenUsageMeterStore.ts`, `docs/modules/token_usage.md` § Claude Agent SDK, `DESIGN.md`. Probe outputs P2, P3, P4 and P8 were re-read directly. Round 2 added `agent-run-event-dispatch-queue.ts` (per-run serialization), `token-usage/repositories/` (no record deletion), `autobyteus-team-stream-contracts/src/{token-usage-run-summary-dto,team-agent-message-dtos,team-stream-server-message}.ts`, `autobyteus-agent-presentation-contracts/src/{token-usage-presentation-dto,agent-presentation-message-dtos}.ts`, `autobyteus-web/services/agentStreaming/tokenUsageRunSummaryMapper.ts`, and `agent-collaboration-stream-handler.ts`. Round 4 (merged worktree @ 15bdb2d62): `autobyteus-ts/src/agent/loop/llm-phase-summary-port.ts` (l.55, 165-177: each summary attempt reports `autobyteus_compaction` with null prompt/percent and the agent's effective window, before the compaction is applied); upstream `tests/unit/token-usage/projections/token-usage-compaction-ingestion.test.ts`; current `token-usage-run-record-state.ts` reading rule (l.136-203); `autobyteus-stream-event-converter.ts` (sets `reports_model_call`); live projectors (`team-agent-event-websocket-projector.ts:66`, `agent-presentation-message-projector.ts:31`, `collaboration-agent-presentation-adapter.ts:249`, which copy field by field); standalone `agent-run-event-message-mapper.ts:110` (forwards the payload, no strict parse).
 
 ## Routing Classification Review
 
@@ -46,6 +46,72 @@
 | BEH-008 | System | Pass | Pass | Pass | Confirmed | — |
 
 The "Needs Correction" rows are target-path (design) corrections. The approved basis itself is confirmed.
+
+### Round 9 delta — D-13 event-sourced boolean mark (SR-014)
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Approved basis | Pass | REQ-012 / AC-012 unchanged. CR-F-002's scenario (reopen a Claude SDK standalone run, then `/compact` first) is a Supported Normal Scenario, and the requirements basis already covers it. |
+| Rule correctness | Pass | The mark needs no baseline. It is set on `completed` and cleared only by a live event for that run with `reports_model_call: true`. Native: compaction-call usage arrives before `completed` (`pending-compaction-executor.ts:73-96`), so it cannot clear the new mark; the agent's next call clears it. Claude auto: the next main-loop call clears it. Claude manual `/compact`: the remainder (false) does not. Resume: the series-restart result (false) does not. Codex reading-only updates are excluded by both runtime scope and the flag. |
+| Live entry-point completeness | Pass | `applyTokenUsageUpdated` is reached from `tokenUsageHandler.handleTokenUsageUpdated` via `agentStreamMessageProjector` (standalone `AgentStreamingService`, collaboration `agentRunCollaborationContext`, Org `agentOrgExecutionContext`, and team member dispatch). `applyTeamTokenUsage` is reached via `TeamStreamingService.ts:394` (`teamExecutionViewState.ts:448-450` emits both `record_team_token_usage` and `dispatch_agent`). There is no other live token-usage entry point (`grep`). |
+| Keying | Pass | The mark is keyed by the run id from `handleCompactionStatus` (`context.state.runId`) and cleared by the event's own run id. A child's calls carry the child's run id, so they don't clear the host mark. |
+| Fetched data | Pass | Hydrated or fetched summaries never touch marks, which removes the baseline dependency that caused CR-F-002. |
+| Simplicity | Pass | It is simpler than the superseded count and revision baselines. The rejected alternatives (an extra host fetch that races the remainder; prompt comparison) were weaker for stated reasons. |
+| Consistency | Pass | D-13 Owner/Trigger/Panel, file row l.372 and test row l.373 all state the boolean, event-cleared rule. No baseline wording remains in D-13. |
+| Implementation note (non-blocking) | — | Clear the mark from the event's `reports_model_call` regardless of whether the summary upsert is accepted. In `applyTokenUsageUpdated`, dedupe by `seenUsageKeys` first (a team event is applied by `applyTeamTokenUsage` and then deduped on the dispatch path; both entry points clearing is idempotent). |
+
+### Round 7 delta — D-13 clearing rule corrected (SR-012) — mark representation superseded by round 9
+
+Reviewer note: ARCH-REV-006 accepted the "any newer revision clears" rule and listed the remainder-only Claude turn as rare (RR-7). The supported manual `/compact` scenario (DESK-004d) makes that path normal. The review missed this; the correction below addresses it.
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Approved basis | Pass | REQ-012 intent unchanged. The AC-012 wording now names manual `/compact` and states that saves without a call do not clear the note. |
+| Corrected rule, native | Pass | Each compaction attempt's usage is a counted call that arrives before `completed` (`pending-compaction-executor.ts:73-96`), so the mark records the count after it. The next counted call is the agent's request with a reading. |
+| Corrected rule, Claude auto-compaction | Pass | `compact_boundary` → next main-loop call (counted, with reading via D-10) clears. The turn-end remainder (`reports_model_call: false`) does not. |
+| Corrected rule, Claude manual `/compact` | Pass | `compact_boundary` → remainder save only (no call) → the note persists until the next message's first main-loop call. This matches DESK-004d evidence (`api-e2e-evidence/round2/desktop/DESK-004d-*`). |
+| Field semantics | Pass | `usage_report_count` means model calls after D-4, which is exactly the question asked. D-9 ordering still uses `revision`, so there is no overlap of meaning. |
+| Residual | Pass | Narrowed to a Claude call whose context read timed out (counted, no reading). The note clears while the value is pre-compaction, but no false number is shown. |
+| Cross-section consistency | Pass (round 8) | ARCH-F-004 resolved by SR-013: D-13 opening (l.65), panel bullet (l.69), meter file row (l.372) and test row (l.373) all state the exact-run `usageReportCount` mark that clears only when the count advances. The remaining `revision` mentions (D-9, DS-004, Codex example) are the freshness key only. |
+
+### Round 6 delta — D-13 "Compacted" note (SR-011) — clearing rule superseded by round 7
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Approved basis | Pass | REQ-012 / AC-012 are explicitly user-approved (2026-10-12, "add it please" / "do it in this ticket"), including the text, runtime scope, failed/stopped exclusions and the live-session-only limit. |
+| Ownership / boundary | Pass | `tokenUsageMeterStore` owns summaries and freshness, so it also owns the marks. `handleCompactionStatus` (the existing single compaction handler, used by standalone, team, collaboration and Org streams via `agentStreamMessageProjector.ts:173`) only triggers. The panel renders. No server, storage or contract change. |
+| Trigger ordering, native | Pass | `pending-compaction-executor.ts:73-96`: the summarizer runs (each attempt reports `autobyteus_compaction` usage via `LlmPhaseSummaryPort.reportUsage`), then `commitAcceptedCompaction`, then `finish(phase 'completed')`. Both events go through the same notifier stream and the server's per-run `AgentRunEventDispatchQueue`, so the store already holds the compaction-call revision when the mark is taken. The next observation is the agent's next call with a reading. |
+| Trigger ordering, Claude SDK | Pass | `claude-compaction-operation-tracker.ts`: `completed` comes from the `compact_boundary` frame, which precedes the next call's `message_start`/`message_delta` (P3). With D-10, that call's observation (with its reading) is the next revision. The turn-end remainder follows it. |
+| Runtime scope | Pass | Codex is excluded: its reading arrives with or before completion (P6), so a mark would sit wrongly on a fresh value. Antigravity has no reading. The standalone roll-up uses the host's exact-run revision, not the roll-up sum that children advance. |
+| Rejected alternatives | Pass | Estimate (REQ-001), server ingestion of compaction status (new contract/column for a hint), timestamps (none exist; wrong under Codex ordering). These are proportionate rejections. |
+| Persisted data | Pass | `Not Affected` (live store state only). |
+| File placement | Pass | Store / handler / panel / localization; an optional small owned marks file if the store's size guardrail requires it. |
+
+### Round 5 delta — D-12 replaces D-11 (SR-010)
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Approved basis | Pass | BEH-005 and AC-011 are rewritten to the user's explicit statement (2026-10-12): the reading stays unchanged during and after native compaction until the next real reading, never unknown and never a local estimate. The after-final-answer detail (keep the value until the next message's first call) is resolved under the truth delegation and REQ-001, and reported to the user. Not reopened by this review. |
+| Mechanism | Pass | No new field, no fold change. A native `autobyteus_compaction` call carries a null prompt and percent (`llm-phase-summary-port.ts:165-177`), so the existing D-4 rule (`latestReading = isLatest && latest_prompt_tokens !== null`) keeps prompt, percent, window and threshold. It still counts as a model call with tokens and cost (upstream REQ-007), and the save bumps `revision` (D-9), so the live meter shows +1 call with an unchanged reading. |
+| REQ-001 / REQ-009 | Pass | No locally derived value. The next agent call supplies the runtime's real post-compaction reading. |
+| Removal completeness | Pass | The revert scope matches all six files of IR-003 (5b48c2b47): converter mapping, payload field and builder default, the reset rule in `token-usage-run-record-state.ts`, the explicit `false` in `legacy-token-usage-row.ts`, the D-11 paragraphs in `token_usage.md` (l.167, l.427), and the IR-003 additions to the compaction test. `git grep context_reading_reset` finds references only in those files. |
+| Test | Pass | The upstream `token-usage-compaction-ingestion.test.ts` (from the merge) asserts a null reading. It must be adapted rather than plainly reverted: build the payload as the converter does (`reports_model_call: true`) and assert reading kept (911,000 / 91.1 %), window kept, 2 calls, totals and cost. Note: a plain `git revert` restores the upstream null-reading assertion, which would then fail. |
+| Persisted data | Pass | `Not Affected`. |
+| Classification | Pass | Large / High retained; re-review is the correct route. |
+
+### Round 4 delta — D-11 (SR-008) — superseded by round 5
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Approved basis | Pass | BEH-005 clarified and AC-011 added. This adopts the merged upstream behavior (upstream REQ-007 tokens/cost; the upstream test intends the reading to become unknown), narrowly, under the user's recorded truth delegation, and is reported to the user (SR-008). Not reopened by this review. |
+| Supported scenario / reachability | Pass | Native run with automatic compaction enabled → `LlmPhase` → `LlmPhaseSummaryPort` attempt → `notifyAgentTokenUsageUpdated(autobyteus_compaction, prompt null)` → native converter → fold. Normal production path, Supported Normal Scenario (SCN-003). |
+| Ownership | Pass | The adapter owns field meaning (sets `context_reading_reset` from `ingestion_kind`). The fold owns the reading rule (`applyTokenUsageContribution`). Branching on `ingestion_kind` inside the fold is explicitly rejected. |
+| Contract tightness | Pass | One boolean, a single meaning, default `false` in the payload builder, server-internal. No change to the strict live contracts: team, collaboration and presentation projectors copy explicitly, and the standalone path forwards without a strict parse. |
+| Fold rule coherence with D-4 / D-9 | Pass | Reset only when latest. Prompt and percent become null; window and threshold are kept (taken from the payload when non-null). The call still counts (`reports_model_call: true`) with tokens and cost. The save bumps `revision`, so the live meter receives it. The meter's existing unknown state hides the card. |
+| Proportionality | Pass | Alternatives rejected for stated reasons: a stale reading is false; plumbing compaction-applied status events would be disproportionate. The accepted edge (a failed attempt also resets to unknown until the next call) is truthful ("unknown is never false") and needs no extra machinery. |
+| Persisted data | Pass | `Not Affected`. The field is transient; no column or migration. |
+| Tests | Pass | Adapt the upstream fold test to the converter-built payload (`reports_model_call`, `context_reading_reset` true), keeping its assertions. Add a converter assertion (compaction sets it, an agent call does not). AC-011 user check. |
+| Classification | Pass | Large / High retained; this re-review is the correct route for a post-pass design change. |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -254,7 +320,37 @@ The "Needs Correction" rows are target-path (design) corrections. The approved b
 
 ## Findings
 
-No open findings. ARCH-F-001, ARCH-F-002 and ARCH-F-003 are resolved; their history follows.
+### ARCH-F-004 — D-13 file mapping and test row still prescribe the superseded revision-based clear rule
+
+- Round 8 status: **Resolved** by SR-013. Verified at design-spec l.65, l.69, l.372 and l.373.
+
+- Type: `Design Impact`
+- Severity: Low (blocking: the authoritative test row would encode the defect that CRR-006 found)
+- Protects: REQ-012 / AC-012 (Claude manual `/compact` branch)
+- Scope status: `Within Approved Scope`
+- Changes approved behavior: No
+- Evidence (`design-spec.md`):
+  - l.65 (D-13 opening): "uses … the per-run summary `revision` (D-9)".
+  - l.372 (meter file row): "`markCompactionCompleted` / `isAwaitingPostCompactionReading` (exact-run revision marks)".
+  - l.373 (test row): "cleared by a newer exact-run revision; … roll-up uses the host exact-run revision".
+  - l.69 (panel bullet): "the host's exact-run summary drives the mark, not the roll-up `revision`".
+
+  These contradict the corrected D-13 Owner/Trigger bullets (marks `{ modelCallsAtCompaction }` on the exact-run `usageReportCount`; clear only when it advances).
+- Required update: make these four places consistent with SR-012.
+  - Opening: the mark uses the exact-run `usageReportCount`.
+  - File row: exact-run model-call-count marks.
+  - Test row:
+    - `completed` marks;
+    - a save without a call (Claude remainder) does **not** clear;
+    - the next counted call clears;
+    - failed and stopped never mark;
+    - no note for Codex or Antigravity;
+    - the standalone roll-up uses the host's exact-run count.
+  - Panel bullet: the host's exact-run count drives the mark, not the roll-up count, which children also advance.
+- Why proportionate: a wording correction only; it prevents implementation, code review and API/E2E from following the superseded rule.
+- Recommended recipient: `/software_engineering_team/solution_designer`
+
+No open findings. ARCH-F-001–ARCH-F-004 are resolved; history is kept above and below.
 
 ### ARCH-F-001 — Live summaries for non-call observations are dropped by the web store's `usageReportCount` freshness guard
 
@@ -309,7 +405,7 @@ No open findings. ARCH-F-001, ARCH-F-002 and ARCH-F-003 are resolved; their hist
 
 ## Classification
 
-N/A — Pass. Earlier findings were `Design Impact` and are all resolved.
+N/A — Pass. All earlier `Design Impact` findings are resolved.
 
 ## Recommended Recipient
 
@@ -322,9 +418,11 @@ N/A — Pass. Earlier findings were `Design Impact` and are all resolved.
 - RR-3: historical Claude `usage_report_count` values count turns; new increments count calls. This is display-only. Mention it in the `token_usage.md` rewrite.
 - RR-4: per-call identity is the API response `message.model`, while turn-end identity is `modelUsage`'s canonical model. They match for current main models (AF-09). A dated response id would split identity summaries and leave per-call cost `price_missing`. The design already acknowledges this as a tradeoff.
 - RR-5: ASM-001 (SDK/CLI field stability at the pinned versions) remains open by design. The fixture tests cover it.
+- RR-6 (updated round 5): the core BEH-005/AC-011 behavior is now the user's explicit statement. Only the after-final-answer detail (value kept until the next call) rests on the truth delegation; it is being reported to the user and would return as a requirement change if rejected. AC-011's user check remains outstanding.
+- RR-7 (replaced in round 7): only a Claude main-loop call whose context read timed out (`claude_sdk_context_usage_unavailable`) clears the note while the pre-compaction value is still shown. The remainder-only (manual `/compact`) path no longer clears it.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (MP-01, MP-02 and MP-04 were Reachable and drove findings that are now resolved; MP-03 unsupported and non-blocking)
-- Notes: The design is ready for implementation. The behavior basis is confirmed, the persisted-data decisions are proportionate, and no in-scope machinery depends on an unsupported premise. Implementation should honor D-9 (revision freshness), D-10 (awaited per-call emission) and the step-2 contract-package build order, and should validate RR-2 on a restored AGY run.
+- Review Decision: `Pass` (round 9; D-13 event-sourced boolean mark verified across all live entry points)
+- Material-Premise Gate: `Pass` (MP-01, MP-02 and MP-04 were Reachable and drove findings that are now resolved; MP-03 unsupported and non-blocking; the D-12/D-13 premises are the supported normal native and Claude SDK compaction paths)
+- Notes: The design is ready for implementation. The behavior basis is confirmed, the persisted-data decisions are proportionate, and no in-scope machinery depends on an unsupported premise. Implementation should honor D-9 (revision freshness), D-10 (awaited per-call emission) and the step-2 contract-package build order, and should validate RR-2 on a restored AGY run. Round 5: D-11 is withdrawn by the user; D-12 (reading kept through compaction under the unchanged D-4 rule, plus a revert of IR-003 and an adaptation of the upstream test) is the simplest design consistent with the user's stated behavior and REQ-001. No new findings. Round 6: D-13 is a well-owned, frontend-only live hint whose clear-on-newer-revision rule is sound for the event order verified on native and Claude SDK. No new findings.

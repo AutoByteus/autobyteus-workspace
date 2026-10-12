@@ -10,6 +10,13 @@
 | SR-004 | Design | ARCH-REV-001 (Fail — Design Impact) | ARCH-F-001, ARCH-F-002; RR-1–RR-5 | design Ready (SR-003) | design Ready (round 2) | REQ-004, REQ-006, REQ-008; AC-003, AC-004, AC-006 | D-9 freshness key, D-10 awaited emission; requirements unchanged |
 | SR-005 | Design | ARCH-REV-002 (Fail — Design Impact) | ARCH-F-003 | design Ready (SR-004) | design Ready (round 3) | REQ-008, REQ-010; AC-003, AC-008 | Strict shared contract schemas mapped; requirements unchanged |
 | SR-006 | Evidence | PTM coordination note: gemini-native-cache-hit merged | AF-16 | design Ready, ARCH-REV-003 Pass | unchanged | BEH-003 | Integration note for delivery; no requirement or design change |
+| SR-008 | Mixed | DR-002 delivery blocker: conflict with upstream compaction-prompt-cache-reuse | DR-002 | integrated, AC-010 verified | design Ready (D-11), re-review required | BEH-005; AC-011 (new) | Native compaction resets the reading to unknown via an explicit `context_reading_reset` fact |
+| SR-009 | Requirements | User 2026-10-12: keep reading during compaction; then wait for AutoByteus-runtime removal | — | design Ready (D-11), IR-003/CRR-004 done | Blocked (User/External Prerequisite) | BEH-005; AC-011; D-11 | D-11 withdrawn by user intent; package paused until the native-runtime removal team finishes |
+| SR-010 | Mixed | User 2026-10-12: pause was a mistake (the removal concerns the remote provider, not the native runtime) | — | Blocked (SR-009) | requirements Approved (BEH-005/AC-011 per user intent); design Ready (D-12), re-review required | BEH-005; AC-011; D-11→D-12 | Pause lifted; native compaction keeps the reading until the next real reading |
+| SR-011 | Mixed | User 2026-10-12: add the "Compacted — updates on the next model call" note, in this ticket | — | design Ready (D-12), ARCH-REV-005 Pass | requirements Approved (REQ-012, AC-012 added); design Ready (D-13), re-review required | REQ-012; AC-012; D-13 | Frontend-only note from live compaction status + exact-run revision |
+| SR-012 | Design | CRR-006 failure-origin (API-REV-002 F-API-002-01, DESK-004d) | F-API-002-01 | design Ready (D-13), IR-004 implemented | design Ready (D-13 corrected), re-review required | REQ-012; AC-012 | Note clears on a new model call (usageReportCount), not on any save; RR-7 premise corrected |
+| SR-013 | Design | ARCH-REV-007 (Fail — consistency only) | ARCH-F-004 | design Ready (SR-012) | design Ready (wording aligned) | REQ-012; AC-012 | Four stale revision-based mark statements in design-spec aligned with SR-012 |
+| SR-014 | Design | CRR-007 (Fail — Design Impact) | CR-F-002 | design Ready (SR-013), IR-005 implemented | design Ready (event-sourced mark), re-review required | REQ-012; AC-012 | Note clears only on a live `reports_model_call: true` event for the run; no baseline |
 | SR-007 | Evidence | Code reviewer refactoring proposal (R-1–R-4), user-requested | — | integrated (DR-001), awaiting AC-010 | unchanged | none (behavior-neutral) | User chose follow-up: Project Task project_task_7257984e-19b4-452a-a65b-99316d879bc1 (TODO) |
 
 ## Revision Entries
@@ -136,3 +143,93 @@
 - User decision (2026-10-11): "create a follow up ticket for this". Created Project Task `project_task_7257984e-19b4-452a-a65b-99316d879bc1` (TODO, starts after AC-010 and finalization; proposal and code review report attached). The SDK cost-source idea is excluded and needs its own user decision.
 - Approval impact: none for this package; scope unchanged.
 - Next action: this package continues with user verification (AC-010) via delivery.
+
+### SR-008 — Native compaction resets the context reading (DR-002)
+
+- Phase and classification: Mixed (requirements clarification + design), `Design Impact`
+- Trigger: delivery DR-002 (`release-deployment-report.md` § Finalization Re-Integration; `delivery-revision-record.md`). Re-integration with `origin/personal` @ beb6b3b49 (merge 168900db7) fails the upstream test `token-usage-compaction-ingestion.test.ts` (cec24ca48, compaction-prompt-cache-reuse).
+- Finding IDs: DR-002
+- Evidence: `autobyteus-ts/src/agent/loop/llm-phase-summary-port.ts:165-177` reports each summary attempt as `autobyteus_compaction` with a null prompt and percent, before the compaction is applied, using the agent's own model. Upstream REQ-007 (user-approved) requires compaction tokens and cost in the totals. Clearing the reading was upstream's design and test intent, not a requirement. Meter: `TokenUsageMeterPanel.vue` hides the context card when the prompt is null (existing unknown state).
+- Decision (truth rule delegated by the user): adopt (b). After a successful compaction a stale pre-compaction reading is false, may persist through an idle period, and reproduces the "high % without compaction" confusion this ticket fixes. Unknown is truthful.
+- Prior status: requirements Approved; design Ready (ARCH-REV-003 Pass); AC-010 verified by the user 2026-10-11
+- Current status: requirements Approved with the BEH-005 clarification and new AC-011; design Ready with D-11; architecture re-review required
+- Intended behavior changed: `Yes`, narrowly (native, after a compaction call only). This adopts behavior already established by the merged upstream design and is within the user's delegation ("decisions should be reflecting the truth"). It is reported to the user, and AC-011 asks for a user check of a native compaction.
+- Canonical sections changed: requirements BEH-005, AC-010 status, AC-011; design-spec status, D-11, Final File Responsibility Mapping (+3 rows)
+- Post-design classification: unchanged (Large / High). The delta itself is small (one field, one fold rule, converter mapping, test adaptation).
+- Applied handoff-rule outcome: revised architecture package, Large/High → `/software_engineering_team/architecture_reviewer`
+- Next action: architecture re-review → implementation → code review → affected-scope validation → delivery resumes finalization and the beta release
+
+### SR-009 — D-11 withdrawn; paused for native-runtime removal
+
+- Phase and classification: Requirements, `Requirement Gap` → `Blocked` (User/External Prerequisite)
+- Trigger (user, 2026-10-12): "during compaction, the context rate stay here. just do not change, after finishing compaction it shows the latest … if show unknown, they get confused." Then: "there is a team working on removal of autobyteus runtime now. lets wait until that team to finish."
+- Intended behavior: the D-11 reset is withdrawn. During compaction the reading stays unchanged and changes only when a new reading arrives (original D-4 rule). Compaction calls still count as model calls, with tokens and cost. The open native detail (old value kept after a final-answer compaction until the next call, versus a local estimate) is moot if the native runtime is removed.
+- State at pause: D-11 implemented (IR-003, 5b48c2b47; handoff 1d93c9002) and code-reviewed (CRR-004, ab1265c7f). HOLD sent and acknowledged by `/software_engineering_team/implementation_engineer`; HOLD sent to `/software_engineering_team/api_e2e_engineer` (affected-scope validation). Delivery holds finalization on the unpushed integration (168900db7, 15bdb2d62). The user verified AC-010 on 2026-10-11.
+- Blocker: completion of the AutoByteus (native) runtime removal by another team. It removes or changes BEH-005, AC-011, the native converter, `llm-phase.ts` usage emission, the native threshold (REQ-010 native part), the `autobyteus_compaction` ingestion and the upstream compaction test.
+- Next action when unblocked: re-base on the then-current origin/personal, then re-scope:
+  - drop the native-only items (BEH-005 native parts, AC-011, D-11; REQ-010 native threshold);
+  - revert 5b48c2b47 if it is still present;
+  - re-check the merge;
+  - revise SR-010 and route per the handoff rules.
+- Approval impact: the pending native question is not asked further. The remaining requirements are unchanged.
+
+### SR-010 — Pause lifted; native compaction keeps the reading (D-12)
+
+- Phase and classification: Mixed (requirements + design), `Requirement Gap` resolved
+- Trigger (user, 2026-10-12): "i made a mistake. its not removing autobyteus runtime. its about the remote provider." SR-009's blocker does not exist, and the native runtime stays.
+- Intended behavior (user, 2026-10-12): "during compaction, the context rate stay here. just do not change, after finishing compaction it shows the latest … first show context rate then compaction activity … then the context rate become smaller, this is natural transition."
+- Open detail resolved (option 1 of the question put to the user; under the truth delegation and REQ-001): after a compaction following the final answer, the previous value stays until the agent's next call reports the real new size. No local estimate. Reported to the user.
+- Prior status: Blocked (SR-009); D-11 implemented (IR-003, 5b48c2b47) and reviewed (CRR-004), with holds active
+- Current status: requirements Approved (BEH-005 and AC-011 rewritten to the user's stated behavior); design Ready with D-12 (D-11 withdrawn)
+- Canonical sections changed: requirements BEH-005, AC-011, revision ID; design-spec status, D-11 withdrawn, D-12, file mapping (3 rows)
+- Design delta: revert IR-003, adapt the upstream compaction test to "reading kept", update docs. No new mechanism.
+- Post-design classification: unchanged (Large / High)
+- Applied handoff-rule outcome: revised architecture package, Large/High → `/software_engineering_team/architecture_reviewer`. Holders notified that the pause is lifted.
+- Next action: architecture re-review → implementation (revert) → code review → affected-scope validation → delivery finalization and beta (after the AC-011 user check)
+
+### SR-011 — "Compacted — updates on the next model call" note (D-13)
+
+- Phase and classification: Mixed (requirements + design), `Refinement` (user-requested addition)
+- Trigger (user, 2026-10-12): "add it please i think you made great sense" and "do it in this ticket. because i feel it belongs to this ticket", answering the proposal of a truthful note after a compaction until the next real reading.
+- Approval: explicit user approval of the behavior (REQ-012 / AC-012, text "Compacted — updates on the next model call").
+- Evidence: `autobyteus-web/types/agent/AgentRunState.ts` (`compactionStatus`, no timestamp); `services/agentStreaming/handlers/agentStatusHandler.ts:92-115` (`handleCompactionStatus`); `types/activity/compactionPhase.ts` (`completed`/`failed`/`stopped`); `types/tokenUsageMeter.ts:130-132` (`revision`, `latestRuntimeKind`); probe P6 (Codex reading arrives with or before completion).
+- Design: D-13, frontend-only, using exact-run revision marks. No server, storage or contract change.
+- Prior status: requirements Approved (SR-010); design Ready (D-12), ARCH-REV-005 Pass; implementation of the D-12 revert in progress
+- Current status: requirements Approved (+REQ-012, AC-012); design Ready (D-12 + D-13); re-review required
+- Post-design classification: unchanged (Large / High)
+- Applied handoff-rule outcome: revised architecture package, Large/High → `/software_engineering_team/architecture_reviewer`. The implementation engineer is informed that D-13 will follow D-12.
+- Next action: architecture re-review → implementation (D-12 revert + D-13) → code review → validation → AC-011/AC-012 user check → delivery and beta
+
+### SR-012 — D-13 clearing rule corrected (CRR-006)
+
+- Phase and classification: Design, `Design Impact`
+- Trigger: code reviewer failure-origin review CRR-006 for API-REV-002 F-API-002-01 (DESK-004d). After a manual Claude `/compact`, the note never appears: the turn-end `claude_sdk_result` remainder (summariser tokens, no reading, no call) is saved about 8 ms after COMPACTION_STATUS "compacted", and D-13's "any newer revision clears" rule removed the mark.
+- Root cause (design): D-13's trigger premise ("the first observation after a completed compaction is the next agent call") and RR-7's "rare" premise do not hold for the supported manual `/compact` scenario (P3: summariser usage appears only in `modelUsage`).
+- Correction: the mark stores the exact-run `usageReportCount` and clears only when it advances (a model call since the compaction). D-9 freshness is unchanged. The residual narrows to a Claude call whose context read timed out.
+- Prior status: design Ready (SR-011, ARCH-REV-006 Pass); IR-004 implemented; API/E2E Fail on DESK-004d only
+- Current status: requirements Approved (AC-012 wording clarified: manual `/compact`; saves without a call do not clear); design Ready (D-13 corrected)
+- Intended behavior changed: `No` (the approved REQ-012 behavior is unchanged; the design now realizes it)
+- Post-design classification: unchanged (Large / High)
+- Applied handoff-rule outcome: revised architecture package, Large/High → `/software_engineering_team/architecture_reviewer`
+- Next action: re-review → implementation (mark field change) → code review → API/E2E rerun of DESK-004d and the AC-012 cases → user checks → delivery
+
+### SR-013 — ARCH-F-004 wording alignment
+
+- Phase and classification: Design, `Design Impact` (consistency only)
+- Trigger: ARCH-REV-007 ARCH-F-004 (Low, blocking). The SR-012 rule was confirmed sound, but four statements in design-spec.md still described the superseded revision-based mark.
+- Changes: D-13 opening (model-call count; `revision` stays freshness only); panel bullet (host's exact-run model-call count, not the roll-up count); meter file row (marks hold `usageReportCount`, cleared only when it advances); test row (`completed` marks; a save without a call does not clear; the next counted call clears; failed and stopped never mark; no note for Codex or Antigravity; roll-up uses the host's exact-run count).
+- Intended behavior changed: `No`
+- Post-design classification: unchanged (Large / High)
+- Applied handoff-rule outcome: → `/software_engineering_team/architecture_reviewer`
+
+### SR-014 — Event-sourced compaction mark (CRR-007, CR-F-002)
+
+- Phase and classification: Design, `Design Impact`
+- Trigger: code review CRR-007 (round 6) CR-F-002. Supported Normal Scenario: the user reopens an existing Claude SDK standalone run and runs `/compact` first. Standalone hydration fetches only the roll-up (`useTokenUsageWorkspaceScope.hydrateIdentity` l.107-133), so `markCompactionCompleted` records a `null` baseline and the remainder's first exact summary clears the note. The same happens for a resume-opened process.
+- Verified: live entry points are `applyTokenUsageUpdated` (`tokenUsageHandler.ts:9`) and `applyTeamTokenUsage` (`TeamStreamingService.ts:394`); `tokenUsageCompactionMarks.ts` baseline logic.
+- Decision: option (a). Per-run boolean mark, cleared only by a live event for that run with `reports_model_call: true`, in both entry points. Fetched summaries and non-call events never clear. Rejected: (b) extra host fetch, which costs a query per open and races the remainder; (c) prompt-value comparison, which is weaker.
+- Intended behavior changed: `No` (REQ-012 / AC-012 unchanged)
+- Canonical sections changed: design-spec status, D-13 opening/Owner/Panel/Trigger residual, meter file row, test row
+- Post-design classification: unchanged (Large / High)
+- Applied handoff-rule outcome: → `/software_engineering_team/architecture_reviewer`
+- Next action: re-review → implementation (marks file + two clear points + spec change) → code review → API/E2E rerun (DESK-004d, reopened-standalone `/compact`, AC-012) → user checks → delivery
