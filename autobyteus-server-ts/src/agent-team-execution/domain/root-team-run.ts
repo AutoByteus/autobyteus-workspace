@@ -257,7 +257,7 @@ export class RootTeamRun {
         .getTeamRunPhysicalScope(execution.containingTeamRunId)
         .ancestorTeamRunIds,
       launchConfiguration: "launchConfiguration" in execution.source
-        ? execution.source.launchConfiguration
+        ? execution.source.launchConfiguration ?? null
         : null,
     });
   }

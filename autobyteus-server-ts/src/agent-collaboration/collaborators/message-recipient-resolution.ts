@@ -48,8 +48,12 @@ export type CatalogBringInPort = Readonly<{
   bringIn(address: AgentTeamAddress): Promise<CollaboratorAdmissionResult | null>;
 }>;
 
+/**
+ * `launchNotes` are present only when this resolution brought the recipient in (a catalog bring-in or a
+ * new Task helper) and a configured launch layer was skipped (REQ-008); delivery appends them.
+ */
 export type MessageRecipientResult =
-  | Readonly<{ resolved: true; placement: CollaborationMessagePlacement }>
+  | Readonly<{ resolved: true; placement: CollaborationMessagePlacement; launchNotes?: readonly string[] }>
   | Readonly<{ resolved: false; code: "COLLABORATOR_ADD_FAILED"; message: string }>;
 
 /**
@@ -73,7 +77,7 @@ export const resolveMessageRecipient = async (input: Readonly<{
     /** Opaque owning Task of the copy containing the agent; `null` when the agent is not Task-owned. */
     taskOwnerOf(agentRunId: string): Readonly<{ taskId: string }> | null;
     helper(taskId: string, address: AgentTeamAddress): CollaborationMessagePlacement | null;
-    bringIn(address: AgentTeamAddress): Promise<CollaborationMessagePlacement | null>;
+    bringIn(address: AgentTeamAddress): Promise<Readonly<{ placement: CollaborationMessagePlacement; launchNotes?: readonly string[] }> | null>;
   }>;
   notFoundMessage(address: AgentTeamAddress): string;
 }>): Promise<MessageRecipientResult> => {
@@ -96,7 +100,7 @@ export const resolveMessageRecipient = async (input: Readonly<{
   }
   if (owner) {
     const helper = await input.taskScope!.bringIn(input.address);
-    if (helper) return { resolved: true, placement: helper };
+    if (helper) return { resolved: true, placement: helper.placement, ...withNotes(helper.launchNotes) };
     throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", input.notFoundMessage(input.address));
   }
   const admission = await input.catalog.bringIn(input.address);
@@ -108,6 +112,8 @@ export const resolveMessageRecipient = async (input: Readonly<{
     });
   }
   const placement = input.port().getMessagePlacement(input.address);
-  if (placement) return Object.freeze({ resolved: true, placement });
+  if (placement) return Object.freeze({ resolved: true, placement, ...withNotes(admission?.launchNotes) });
   throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", input.notFoundMessage(input.address));
 };
+
+const withNotes = (launchNotes: readonly string[] | undefined) => launchNotes?.length ? { launchNotes } : {};

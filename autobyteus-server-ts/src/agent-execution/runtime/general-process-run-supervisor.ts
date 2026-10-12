@@ -67,6 +67,7 @@ import {
   releaseProcessStandaloneRunCommandPort,
 } from "../services/standalone-run-ports.js";
 import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
+import { getRuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import {
@@ -164,7 +165,7 @@ export class GeneralProcessRunSupervisor {
     const collaboratorAdmission = createCollaboratorAdmission(createCollaboratorDefinitionCatalog({
       agents: input.agentDefinitionService,
       teams: input.agentTeamDefinitionService,
-    }), input.modelSelectionValidator);
+    }), input.modelSelectionValidator, getRuntimeAvailabilityService());
     let collaboratorAdmissionBound = false;
     // The one process owner of live run file changes: it records FILE_CHANGE events and serves reads.
     const runFileChangeService = new RunFileChangeService({ workspaceManager });

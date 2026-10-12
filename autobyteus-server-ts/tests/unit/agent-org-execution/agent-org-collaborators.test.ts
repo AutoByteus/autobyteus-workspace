@@ -68,7 +68,7 @@ describe("`@` and collaborators of an AgentOrg run", () => {
     expect(f.handles.get(product.members[0]!.agentRunId)!.handle.reserveInput).toHaveBeenCalledTimes(1);
     // `@` resolves to the in-run address and adds nothing.
     await expect(f.owner.resolveCollaboratorMentions({ focusedAgentRunId: "director", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] }))
-      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer", presence: "in_run" }] });
+      .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer", presence: "in_run" }] });
     expect(f.owner.getExecutionTreeSnapshot().rootOrg.collaborators).toHaveLength(2);
   });
 

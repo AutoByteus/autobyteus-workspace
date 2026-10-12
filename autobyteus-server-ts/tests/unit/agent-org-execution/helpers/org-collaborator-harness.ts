@@ -56,7 +56,7 @@ export const admission = (runnable = true) => {
     listTeamDefinitions: async () => teams,
     getAgentDefinition: async (id) => agents.find((agent) => agent.id === id) ?? null,
     getTeamDefinition: async (id) => teams.find((team) => team.id === id) ?? null,
-  }, validator(runnable));
+  }, validator(runnable), { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
 };
 
 export const buildOrg = async (options: { runnable?: boolean } = {}) => {

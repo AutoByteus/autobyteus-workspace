@@ -25,6 +25,7 @@ import { buildMemberInputPresentationEvent } from "../../agent-collaboration/exe
 import { projectAgentPresentationMessage } from "../../agent-collaboration/execution/events/agent-presentation-message-projector.js";
 import type { CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
+import { appendLaunchNotes } from "../../agent-collaboration/collaborators/launch-configuration-notes.js";
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import { buildDirectAgentRunInterAgentEvent } from "../../agent-communication/services/global-agent-run-message-runtime-builders.js";
 import type { StandaloneHostAgentHandle } from "../domain/standalone-host-agent-handle.js";
@@ -103,18 +104,18 @@ export class StandaloneRootMessageDelivery {
     return this.options.collaborators.listAvailable(sender.agentRunId);
   }
 
-  /** `send_message_to(address)`; a first message to a catalog address brings it in. */
+  /** `send_message_to(address)`; a first message to a catalog address brings it in (with its launch notes). */
   async deliverToAddress(sender: CollaborationMemberExecutionIdentity, input: MemberLogicalMessageInput): Promise<AgentOperationResult> {
     this.options.authorizeIdentity(sender);
     const resolution = await this.options.recipients.resolveMessageRecipient(sender, input.recipientAddress);
     if (!resolution.resolved) return { accepted: false, code: resolution.code, message: resolution.message };
-    return this.deliverTo(resolution.placement.receiver.agentRunId, {
+    return appendLaunchNotes(await this.deliverTo(resolution.placement.receiver.agentRunId, {
       senderIdentity: sender,
       senderDisplayName: getAgentTeamAddressBasename(sender.memberAddress) ?? sender.agentRunId,
       content: input.content,
       messageType: input.messageType,
       referenceFiles: input.referenceFiles,
-    });
+    }), resolution.launchNotes);
   }
 
   /** `send_message_to(run ID)`: existing executions only; never brings anything in. */

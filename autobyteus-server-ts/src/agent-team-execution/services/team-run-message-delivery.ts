@@ -9,6 +9,7 @@ import {
 import { resolveMessageRecipient } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import { resolveDelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
+import { appendLaunchNotes } from "../../agent-collaboration/collaborators/launch-configuration-notes.js";
 import type { TeamCommunicationService } from "../../services/team-communication/team-communication-service.js";
 import {
   buildDeliveryEndpointForParticipant,
@@ -48,7 +49,7 @@ export class TeamRunMessageDelivery {
     withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult>;
   }>) {}
 
-  /** `send_message_to(address)`: sender instance, run-wide, then a catalog bring-in. */
+  /** `send_message_to(address)`: sender instance, run-wide, then a catalog bring-in (with its launch notes). */
   async deliverToAddress(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
     if (intent.rootTeamRunId !== this.options.rootTeamRunId) {
       return { accepted: false, code: "COLLABORATION_ROOT_MISMATCH", message: "Message root does not match the selected RootTeamRun." };
@@ -65,11 +66,11 @@ export class TeamRunMessageDelivery {
     });
     if (!resolution.resolved) return { accepted: false, code: resolution.code, message: resolution.message };
     const target = resolution.placement.receiver;
-    return this.options.withLiveLease(target.agentRunId, () => this.options.communication.deliver({
+    return appendLaunchNotes(await this.options.withLiveLease(target.agentRunId, () => this.options.communication.deliver({
       intent,
       receiverIdentity: this.identityFor(target.address, target.agentRunId),
       receiverDisplayName: getAgentTeamAddressBasename(target.address) ?? target.agentRunId,
-    }));
+    })), resolution.launchNotes);
   }
 
   /** `send_message_to(run ID)`: existing executions only; never brings anything in. */

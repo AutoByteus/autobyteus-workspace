@@ -24,7 +24,7 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
     const f = await harness();
     const events: TeamRunEvent[] = [];
     f.root.subscribeToEvents(({ event }) => events.push(event));
-    await expect(mentionBoth(f.root)).resolves.toEqual({ admitted: true, collaborators: [
+    await expect(mentionBoth(f.root)).resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [
       { name: "Code Reviewer", kind: "agent", address: "/code_reviewer", presence: "not_in_run" },
       { name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" },
     ] });
@@ -42,8 +42,8 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
     const events: TeamRunEvent[] = [];
     f.root.subscribeToEvents(({ event }) => events.push(event));
     const [reviewerResult, productResult] = await bringInBoth(f.root);
-    expect(reviewerResult).toEqual({ admitted: true, collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer", presence: "not_in_run" }] });
-    expect(productResult).toEqual({ admitted: true, collaborators: [{ name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" }] });
+    expect(reviewerResult).toEqual({ admitted: true, launchNotes: [], collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer", presence: "not_in_run" }] });
+    expect(productResult).toEqual({ admitted: true, launchNotes: [], collaborators: [{ name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" }] });
     // `@` now resolves to the in-run collaborator addresses and adds nothing more.
     await expect(mentionBoth(f.root)).resolves.toMatchObject({ admitted: true });
     expect(f.root.getExecutionTreeSnapshot().rootTeam.collaborators).toHaveLength(2);

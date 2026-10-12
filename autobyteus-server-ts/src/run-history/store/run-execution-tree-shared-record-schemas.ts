@@ -18,6 +18,7 @@ import type {
 } from "../domain/run-execution-tree-shared-records.js";
 import { isCollaboratorTeamEntry } from "../domain/run-execution-tree-shared-records.js";
 import { parseTaskAgentExecutionSource, parseTaskTeamExecutionSource } from "./task-execution-source-schema.js";
+import { parseOptionalLaunchFields } from "./launch-configuration-source-schema.js";
 
 /**
  * Execution-tree files are read tolerantly and written exactly (REQ-018): each parser
@@ -316,6 +317,7 @@ const parseCollaboratorTeamMember = (
     agentDefinitionId: requiredString(member.agentDefinitionId, `${label}.agentDefinitionId`),
     agentRunId: requiredString(member.agentRunId, `${label}.agentRunId`),
     platformAgentRunId: nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`),
+    ...parseOptionalLaunchFields(member, { launch: "launchConfiguration", source: "launchSource" }, label),
   };
 };
 
@@ -333,6 +335,7 @@ export const parseCollaboratorEntry = (value: unknown, label: string): Collabora
       agentRunId: requiredString(entry.agentRunId, `${label}.agentRunId`),
       platformAgentRunId: nullableString(entry.platformAgentRunId, `${label}.platformAgentRunId`),
       launchConfiguration: parseLaunchConfiguration(entry.launchConfiguration, `${label}.launchConfiguration`),
+      ...parseOptionalLaunchFields(entry, { source: "launchSource" }, label),
       addedAt: isoTimestamp(entry.addedAt, `${label}.addedAt`),
       addedViaAgentRunId: requiredString(entry.addedViaAgentRunId, `${label}.addedViaAgentRunId`),
     };
@@ -364,6 +367,7 @@ export const parseCollaboratorEntry = (value: unknown, label: string): Collabora
     members,
     handoffs,
     defaultLaunchConfiguration: parseLaunchConfiguration(entry.defaultLaunchConfiguration, `${label}.defaultLaunchConfiguration`),
+    ...parseOptionalLaunchFields(entry, { source: "defaultLaunchSource" }, label),
     taskExecutions: parseTaskExecutions(entry.taskExecutions, `${label}.taskExecutions`),
     addedAt: isoTimestamp(entry.addedAt, `${label}.addedAt`),
     addedViaAgentRunId: requiredString(entry.addedViaAgentRunId, `${label}.addedViaAgentRunId`),

@@ -1,5 +1,5 @@
 import type { TeamRunAgentTeamNode } from "../../agent-team-execution/domain/team-run-config.js";
-import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import { effectiveMemberLaunchConfiguration, type CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { CollaboratorEntryPlan } from "./collaborator-entry-builder.js";
 
 /** The run-identity allocators admission reuses (each root already holds them for delegation). */
@@ -42,7 +42,7 @@ export class CollaboratorIdentityAllocator {
         platformAgentRunId: null,
         role: null,
         description: null,
-        ...plan.defaultLaunchConfiguration,
+        ...effectiveMemberLaunchConfiguration(plan, member),
       }))),
     }) });
     const runIdByAddress = new Map(teamNode.children.map((child) =>

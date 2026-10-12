@@ -72,7 +72,7 @@ describe("MessageRecipientResolution (DS-002)", () => {
         ? messagePlacement("agent_team", address, { agentRunId: "product-lead", address: "/product_team/lead" })
         : null,
     });
-    const bringIn = vi.fn(async () => { added = true; return { admitted: true as const, collaborators: [] }; });
+    const bringIn = vi.fn(async () => { added = true; return { admitted: true as const, launchNotes: [], collaborators: [] }; });
     const result = await resolveMessageRecipient({
       port: indexed, senderAgentRunId: "pm", address: a("/product_team"), catalog: { bringIn }, notFoundMessage: () => "nf",
     });
@@ -138,5 +138,68 @@ describe("catalog delegation placement (DS-003)", () => {
       port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), resolveInRun: notFound,
       catalogSource: async () => { throw new CollaboratorAddError("Product Team", "no model"); },
     })).rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND", message: "Product Team cannot be delegated to: no model" });
+  });
+});
+
+describe("launch notes come only from a fresh admission (REQ-008, AR-002)", () => {
+  const launch = { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: false, workspaceRootPath: null };
+  const skipped = { origin: "inherited" as const, fallbacks: [{
+    layer: "agent_default" as const, runtimeKind: "codex_app_server", llmModelIdentifier: "sol-6.1", reason: "runtime_unavailable" as const, detail: "no codex",
+  }] };
+  // The copy's snapshot records that the designer fell back when the copy started.
+  const snapshot: TaskTeamExecutionSource = {
+    kind: "agent_team", teamDefinitionId: "product", coordinatorAddress: a("/product_team/lead"),
+    members: [{ address: a("/product_team/lead"), agentDefinitionId: "lead" }, { address: a("/product_team/designer"), agentDefinitionId: "designer", launchSource: skipped }],
+    handoffs: [], defaultLaunchConfiguration: launch,
+  };
+  const delegationPort = {
+    teamInstancesOf: (sender: string) => sender === "copy-lead" ? [{ teamRunId: "copy", address: a("/product_team") }] : [],
+    instanceCatalogSource: (teamRunId: string) => teamRunId === "copy" ? snapshot : null,
+  };
+  const notFound = () => { throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", "not in run"); };
+
+  it("a catalog copy's placement carries its admission's notes; empty notes add no key", async () => {
+    expect(await resolveDelegationPlacement({
+      port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), resolveInRun: notFound,
+      catalogSource: async () => ({ name: "Product Team", source: snapshot, launchNotes: ["designer: fell back"] }),
+    })).toEqual({ kind: "agent_team", address: "/product_team", coordinatorAddress: "/product_team/lead", source: snapshot, launchNotes: ["designer: fell back"] });
+    const quiet = await resolveDelegationPlacement({
+      port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), resolveInRun: notFound,
+      catalogSource: async () => ({ name: "Product Team", source: snapshot, launchNotes: [] }),
+    });
+    expect("launchNotes" in quiet).toBe(false);
+  });
+
+  it("a teammate re-projected from a copy's snapshot carries no notes, even when its recorded source has a fallback", async () => {
+    const catalogSource = vi.fn();
+    const placement = await resolveDelegationPlacement({
+      port: delegationPort, senderAgentRunId: "copy-lead", address: a("/product_team/designer"), resolveInRun: notFound, catalogSource,
+    });
+    expect(placement).toEqual({ kind: "agent", address: "/product_team/designer", source: { kind: "agent", agentDefinitionId: "designer", launchConfiguration: launch } });
+    expect(catalogSource).not.toHaveBeenCalled();
+  });
+
+  it("a send that brought the recipient in carries the notes; a Task helper's bring-in too; an existing recipient none", async () => {
+    let added = false;
+    const indexed = () => port({
+      getMessagePlacement: (address) => added && address === "/writer"
+        ? messagePlacement("agent", address, { agentRunId: "writer-run", address }) : null,
+    });
+    await expect(resolveMessageRecipient({
+      port: indexed, senderAgentRunId: "pm", address: a("/writer"), notFoundMessage: () => "nf",
+      catalog: { bringIn: async () => { added = true; return { admitted: true as const, launchNotes: ["writer: fell back"], collaborators: [] }; } },
+    })).resolves.toMatchObject({ resolved: true, launchNotes: ["writer: fell back"] });
+    const existing = await resolveMessageRecipient({
+      port: indexed, senderAgentRunId: "pm", address: a("/writer"), notFoundMessage: () => "nf", catalog: { bringIn: vi.fn() },
+    });
+    expect("launchNotes" in existing).toBe(false);
+    const helperPlacement = messagePlacement("agent", "/helper", { agentRunId: "helper-run", address: "/helper" });
+    await expect(resolveMessageRecipient({
+      port: () => port(), senderAgentRunId: "worker", address: a("/helper"), notFoundMessage: () => "nf", catalog: { bringIn: vi.fn() },
+      taskScope: {
+        taskOwnerOf: () => ({ taskId: "t1" }), helper: () => null,
+        bringIn: async () => ({ placement: helperPlacement, launchNotes: ["helper: fell back"] }),
+      },
+    })).resolves.toEqual({ resolved: true, placement: helperPlacement, launchNotes: ["helper: fell back"] });
   });
 });

@@ -16,6 +16,7 @@ import {
   delegatedCopyOf,
   type AssignToExistingCopyInput,
   type SpawnTaskInput,
+  type TaskCopyPlacementLaunchNotes,
   type TaskDelegationContext,
   type TaskDelegationOutcome,
 } from "./task-delegation-command.js";
@@ -45,19 +46,22 @@ export type TaskExecutionAgentStatus = "offline" | "initializing" | "idle" | "ru
  */
 export type DeliverTaskWork = (ingressAgentRunId: string, content: string, referenceFiles: readonly string[]) => Promise<AgentOperationResult>;
 
+/** A Task's helper and, only when this call started it (or joined the attempt starting it), its launch notes. */
+export type TaskHelperResult = Readonly<{ target: TaskExecutionTarget; launchNotes?: readonly string[] }>;
+
 /**
  * Root-neutral resource lifecycle for delegated children (task executions) of
  * one root. It owns delegation admission, the serialized activation / wake /
  * shutdown FIFO, idle-shutdown scheduling and live leases. It owns no subject
  * tree, index or store; the subject adapter owns those.
  */
-export class RootTaskExecutionLifecycle<TPlacement> {
+export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaunchNotes> {
   private readonly queue = new RootTaskExecutionCommandQueue();
   private readonly schedule: TaskExecutionIdleShutdownSchedule;
   private readonly leases = new Map<string, number>();
   private accepting = true;
   private readonly resourceScope: RootTaskExecutionResourceScope<TPlacement>;
-  private readonly helperAttempts = new Map<string, Promise<TaskExecutionTarget>>();
+  private readonly helperAttempts = new Map<string, Promise<TaskHelperResult>>();
 
   constructor(
     private readonly adapter: RootTaskExecutionAdapter<TPlacement>,
@@ -216,13 +220,17 @@ export class RootTaskExecutionLifecycle<TPlacement> {
   /** Closed (Task DONE or CANCELLED) task executions of the root's current tree, for its package snapshot. */
   closedTaskExecutions(): readonly TaskExecutionReference[] { return this.resourceScope.closedTaskExecutions(); }
 
-  /** One seedless brought-in copy per Task/address among the Task's open helpers; rejects when it could not be started. */
-  async ensureTaskHelper(context: TaskDelegationContext, address: string, placement: TPlacement): Promise<TaskExecutionTarget> {
+  /**
+   * One seedless brought-in copy per Task/address among the Task's open helpers; rejects when it could not be
+   * started. Launch notes come only from this call's own dispatch (or the pending attempt it joined); an
+   * existing helper has none.
+   */
+  async ensureTaskHelper(context: TaskDelegationContext, address: string, placement: TPlacement): Promise<TaskHelperResult> {
     const owner = this.resourceScope.ownerOf(context.identity.agentRunId);
     if (!owner) throw new TaskDelegationError("TASK_AGENT_RESOURCES_UNAVAILABLE", "Helper bring-in requires a Task-owned sender.");
     if (!owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CANCELLED).");
     const existing = this.adapter.taskExecutionAt(address, this.resourceScope.port().openTaskExecutions(owner.taskId, "broughtIn"));
-    if (existing) return existing;
+    if (existing) return Object.freeze({ target: existing });
     const key = `${owner.taskId}:${address}`;
     const pending = this.helperAttempts.get(key);
     if (pending) return pending;
@@ -231,7 +239,10 @@ export class RootTaskExecutionLifecycle<TPlacement> {
       assertAdmitting: () => this.assertAdmitting(context.identity),
     }).then((outcome) => {
       if (!outcome.delegated) throw new Error(outcome.message);
-      return Object.freeze({ root: this.adapter.root, ...copyTargetOf(outcome.copy) });
+      return Object.freeze({
+        target: Object.freeze({ root: this.adapter.root, ...copyTargetOf(outcome.copy) }),
+        ...(outcome.launchNotes ? { launchNotes: outcome.launchNotes } : {}),
+      });
     });
     this.helperAttempts.set(key, attempt);
     try { return await attempt; } finally { if (this.helperAttempts.get(key) === attempt) this.helperAttempts.delete(key); }

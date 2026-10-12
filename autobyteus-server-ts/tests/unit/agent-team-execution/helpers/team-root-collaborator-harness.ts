@@ -50,7 +50,7 @@ export const admission = (runnable = true) => createCollaboratorAdmission({
   validateMany: async (inputs: readonly unknown[]) => inputs.map(() => runnable
     ? { kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } }
     : { kind: "model_unavailable" as const }),
-} as unknown as RunModelSelectionValidator);
+} as unknown as RunModelSelectionValidator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
 
 export const harness = async (options: { runnable?: boolean } = {}) => {
   vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);

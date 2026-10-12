@@ -56,7 +56,7 @@ describe("approved AgentTeam collaboration LLM contract", () => {
       sendTool: "6e8681d650e6100f5ac27866ab6294617f94797656d7933e02883bf176432ef6",
       sendRecipient: "b9c340525eb1af6c31faaa12c1cb8ccb18d7110cec8577bef85df196dfd0b801",
       sendExactRun: "62e7add6181c1521f41ddaad05b9a87a0d3320f673bf6fc4bd851d4d9f9dc1c4",
-      delegateTool: "01b2c0c09a3df8c166f0fd1472bda80f23b58b2390a6ab2f5f0e84ec7d2ea5d4",
+      delegateTool: "af4480693d3e0daffc9a4f3faf8482b30005426d31d55a3da39cf3e71e67fc5a",
       delegateRecipient: "1b715bcac89ebc4a77e7fda6b63397b940358cd0a17f91317b26419909e43af5",
       delegateDescription: "a2165576362e49586aef4ccef6338288d5ba865fd50363d1fd65494b173ca49a",
       delegateReferences: "43d07f7e31b5b6f03e0327fa89f427fb70dc5da6a91ec098a3430cd56ccb2533",
