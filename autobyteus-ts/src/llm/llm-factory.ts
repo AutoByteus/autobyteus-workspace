@@ -154,17 +154,6 @@ export class LLMFactory {
     LLMFactory.replaceSourceModels(sourceId, []);
   }
 
-  static retainSourceModels(
-    sourceId: string,
-    predicate: (model: LLMModel) => boolean,
-  ): number {
-    const source = sourceId.trim();
-    const retained = Array.from(LLMFactory.modelIdsBySource.get(source) ?? [])
-      .map((identifier) => LLMFactory.modelsByIdentifier.get(identifier))
-      .filter((model): model is LLMModel => model !== undefined && predicate(model));
-    return LLMFactory.replaceSourceModels(source, retained);
-  }
-
   static sourceModelCount(sourceId: string): number {
     return LLMFactory.modelIdsBySource.get(sourceId.trim())?.size ?? 0;
   }
@@ -198,25 +187,6 @@ export class LLMFactory {
     }
 
     return config;
-  }
-
-  static async syncRuntimeModels(runtime: LLMRuntime, models: LLMModel[]): Promise<number> {
-    await LLMFactory.ensureInitialized();
-    if (models.some((model) => model.runtime !== runtime)) {
-      throw new Error('LLM_RUNTIME_MODEL_SYNC_INVALID');
-    }
-    for (const current of Array.from(LLMFactory.modelsByIdentifier.values())) {
-      if (current.runtime !== runtime) continue;
-      LLMFactory.modelsByIdentifier.delete(current.modelIdentifier);
-      const providerModels = LLMFactory.modelsByProvider.get(current.provider);
-      if (!providerModels) continue;
-      LLMFactory.modelsByProvider.set(
-        current.provider,
-        providerModels.filter((model) => model !== current),
-      );
-    }
-    for (const model of models) LLMFactory.registerModel(model);
-    return models.length;
   }
 
   static async requiresGeminiRuntimeResolver(modelIdentifier: string): Promise<boolean> {

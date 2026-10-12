@@ -203,11 +203,11 @@ describe('ProviderModelBrowser', () => {
       hasSuccessfulPayload: false,
       hasUnavailableSource: true,
       canReloadSelectedProvider: true,
-      modelErrorMessage: 'AUTOBYTEUS_LLM_DISCOVERY_FAILED',
+      modelErrorMessage: 'OLLAMA_MODEL_DISCOVERY_UNAVAILABLE',
     })
     expect(unavailable.get('[role="alert"]').text()).toContain('Models unavailable')
     expect(unavailable.text()).toContain('Try again.')
-    expect(unavailable.text()).not.toContain('AUTOBYTEUS_LLM_DISCOVERY_FAILED')
+    expect(unavailable.text()).not.toContain('OLLAMA_MODEL_DISCOVERY_UNAVAILABLE')
     const retry = unavailable.findAll('button').find(button => button.text().includes('Retry'))
     expect(retry).toBeTruthy()
     await retry!.trigger('click')

@@ -209,8 +209,8 @@ describe('ServerSettingsManager', () => {
   it('removes custom server settings from advanced table', async () => {
     const { wrapper, store } = await mountComponent([
       {
-        key: 'AUTOBYTEUS_LLM_SERVER_URL',
-        value: 'https://legacy-host',
+        key: 'AUTOBYTEUS_LLM_SERVER_HOSTS',
+        value: 'https://leftover-remote-llm-host',
         description: 'Custom user-defined setting',
         isEditable: true,
         isDeletable: true,
@@ -229,11 +229,11 @@ describe('ServerSettingsManager', () => {
     await wrapper.vm.$nextTick()
     await flushPromises()
 
-    const removeButton = wrapper.get('[data-testid="server-setting-remove-AUTOBYTEUS_LLM_SERVER_URL"]')
+    const removeButton = wrapper.get('[data-testid="server-setting-remove-AUTOBYTEUS_LLM_SERVER_HOSTS"]')
     await removeButton.trigger('click')
     await flushPromises()
 
-    expect(store.deleteServerSetting).toHaveBeenCalledWith('AUTOBYTEUS_LLM_SERVER_URL')
+    expect(store.deleteServerSetting).toHaveBeenCalledWith('AUTOBYTEUS_LLM_SERVER_HOSTS')
     expect(wrapper.find('[data-testid="server-setting-remove-AUTOBYTEUS_SERVER_HOST"]').exists()).toBe(false)
   })
 

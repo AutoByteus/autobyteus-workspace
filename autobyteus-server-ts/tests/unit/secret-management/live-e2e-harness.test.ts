@@ -15,7 +15,6 @@ import type { AgentRunBackendInputDispatch } from '../../../src/agent-execution/
 import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
 import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-factory.js';
 import {
-  classifyAutoByteusDiscoveryUnavailable,
   databaseTargetsMatch,
   runLiveE2eAgentFlow,
   withoutAmbientTestDatabaseUrls,
@@ -346,21 +345,6 @@ describe('one-database live E2E runtime and evidence boundary', () => {
       requiredSecretId: null,
       model: 'qwen/qwen3.6-35b-a3b',
     });
-  });
-
-  it('classifies only the exact value-free AutoByteus discovery-unavailable boundary', () => {
-    expect(classifyAutoByteusDiscoveryUnavailable(
-      new Error('AUTOBYTEUS_LLM_DISCOVERY_FAILED'),
-      'llm',
-    )).toBe('AUTOBYTEUS_LLM_DISCOVERY_FAILED');
-    expect(classifyAutoByteusDiscoveryUnavailable(
-      new Error('AUTOBYTEUS_AUDIO_DISCOVERY_FAILED'),
-      'image',
-    )).toBeNull();
-    expect(classifyAutoByteusDiscoveryUnavailable(
-      new Error('unexpected-provider-failure'),
-      'llm',
-    )).toBeNull();
   });
 
   it('executes every declared agent operation and returns only value-free summaries', async () => {

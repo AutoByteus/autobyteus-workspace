@@ -71,14 +71,13 @@ export interface ModelInfo {
 
 export type HostScopedLlmModelIdentifier = {
   modelName: string;
-  runtime: LLMRuntime.OLLAMA | LLMRuntime.LMSTUDIO | LLMRuntime.AUTOBYTEUS;
+  runtime: LLMRuntime.OLLAMA | LLMRuntime.LMSTUDIO;
   host: string;
 };
 
 const HOST_SCOPED_LLM_RUNTIMES = [
   LLMRuntime.OLLAMA,
   LLMRuntime.LMSTUDIO,
-  LLMRuntime.AUTOBYTEUS,
 ] as const;
 
 export const buildHostScopedLlmModelIdentifier = (

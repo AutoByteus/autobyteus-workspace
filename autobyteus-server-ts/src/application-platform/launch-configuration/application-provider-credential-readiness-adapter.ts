@@ -1,7 +1,6 @@
 import { spawn } from "node:child_process";
 import { resolve as resolvePath } from "node:path";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
-import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
 import type { LlmProviderService } from "../../llm-management/llm-providers/services/llm-provider-service.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
@@ -165,11 +164,6 @@ implements ApplicationProviderCredentialReadinessPort {
       case LLMRuntime.API:
       case LLMRuntime.OPENAI_COMPATIBLE:
         return this.providerAuthority(model.provider_id, model.runtime);
-      case LLMRuntime.AUTOBYTEUS:
-        return Object.freeze({
-          kind: "provider",
-          providerId: LLMProvider.AUTOBYTEUS,
-        });
       case LLMRuntime.OLLAMA:
       case LLMRuntime.LMSTUDIO:
         return Object.freeze({ kind: "no_credential", runtime: model.runtime });

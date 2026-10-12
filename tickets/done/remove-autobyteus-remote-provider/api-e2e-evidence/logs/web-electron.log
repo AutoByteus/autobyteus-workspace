@@ -1,0 +1,57 @@
+
+> autobyteus@1.5.1 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-remote-provider/autobyteus-web
+> vitest --config ./electron/vitest.config.ts
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-remote-provider/autobyteus-web/electron
+
+ ✓ browser/__tests__/browser-session-profile.spec.ts (2 tests) 4ms
+ ✓ server/services/__tests__/HealthChecker.spec.ts (9 tests) 84ms
+ ✓ __tests__/logger.spec.ts (4 tests) 114ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (4 tests) 68ms
+ ✓ browser/__tests__/browser-tab-manager.spec.ts (14 tests) 78ms
+ ✓ local-file-protocol/__tests__/local-file-response.spec.ts (12 tests) 117ms
+ ✓ server/__tests__/serverOutputLogging.spec.ts (4 tests) 158ms
+ ✓ __tests__/preload.spec.ts (5 tests) 170ms
+ ✓ browser/__tests__/browser-screenshot-artifact-writer.spec.ts (2 tests) 57ms
+ ✓ __tests__/localFileValidation.spec.ts (1 test) 7ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 5ms
+ ✓ launch-profile/__tests__/e2eLaunchPreflight.spec.ts (1 test) 22ms
+ ✓ updater/__tests__/appUpdater.spec.ts (24 tests) 50ms
+ ✓ launch-profile/__tests__/electronLaunchProfile.spec.ts (3 tests) 14ms
+ ✓ server/services/__tests__/AppDataService.spec.ts (13 tests) 8ms
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 16ms
+ ✓ launch-profile/__tests__/e2eDataRootSafety.spec.ts (3 tests) 11ms
+ ✓ server/__tests__/ServerStatusManager.spec.ts (4 tests) 5ms
+ ✓ server/__tests__/StartupDelayLifecycle.spec.ts (14 tests) 836ms
+ ✓ local-file-protocol/__tests__/local-file-protocol.spec.ts (6 tests) 9ms
+ ✓ browser/__tests__/browser-view-factory.spec.ts (3 tests) 28ms
+ ✓ server/__tests__/platformServerEnvironment.spec.ts (2 tests) 12ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (10 tests) 4ms
+ ✓ browser/__tests__/browser-shell-controller.spec.ts (8 tests) 7ms
+ ✓ __tests__/nodeRegistryStore.spec.ts (4 tests) 36ms
+ ✓ browser/__tests__/browser-tab-page-operations.spec.ts (2 tests) 4ms
+ ✓ shell/__tests__/workspace-shell-window-registry.spec.ts (3 tests) 4ms
+ ✓ browser/__tests__/browser-runtime.spec.ts (1 test) 3ms
+ ✓ __tests__/rendererConsoleDiagnostics.spec.ts (3 tests) 6ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 6ms
+ ✓ extensions/__tests__/extensionCatalog.spec.ts (2 tests) 4ms
+ ✓ shell/__tests__/workspace-shell-window.spec.ts (2 tests) 2ms
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 2ms
+ ✓ __tests__/appDataPaths.spec.ts (1 test) 1ms
+ ↓ extensions/__tests__/managedExtensionService.realRelease.spec.ts (1 test | 1 skipped)
+ ✓ extensions/__tests__/voiceInputRuntimeService.spec.ts (3 tests) 8ms
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-remote-provider/autobyteus-web"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-remote-provider/autobyteus-web"
+Run `unset npm_config_prefix` to unset it.
+ ✓ extensions/__tests__/managedExtensionService.spec.ts (3 tests) 3211ms
+   ✓ ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker  2614ms
+   ✓ ManagedExtensionService > preserves enabled state and language mode across reinstall  398ms
+
+ Test Files  36 passed | 1 skipped (37)
+      Tests  191 passed | 1 skipped (192)
+   Start at  06:02:36
+   Duration  3.77s (transform 1.14s, setup 0ms, collect 3.52s, tests 5.17s, environment 5ms, prepare 4.03s)
+
+EXIT=0

@@ -61,18 +61,8 @@ const CAPABILITY_STORE_BY_SETTING_KEY: Readonly<Record<string, () => { refresh()
   ENABLE_APPLICATIONS: useApplicationsCapabilityStore,
 }
 const DISCOVERY_SETTING_CATALOG_TARGETS: Readonly<Record<string, DiscoverySettingCatalogTarget>> = {
-  AUTOBYTEUS_LLM_SERVER_HOSTS: {
-    ownerProviderId: 'AUTOBYTEUS',
-    modelKinds: ['LLM', 'AUDIO', 'IMAGE'],
-  },
-  OLLAMA_HOSTS: {
-    ownerProviderId: 'OLLAMA',
-    modelKinds: ['LLM'],
-  },
-  LMSTUDIO_HOSTS: {
-    ownerProviderId: 'LMSTUDIO',
-    modelKinds: ['LLM'],
-  },
+  OLLAMA_HOSTS: { ownerProviderId: 'OLLAMA' },
+  LMSTUDIO_HOSTS: { ownerProviderId: 'LMSTUDIO' },
 }
 
 const convergeModelCatalogAfterSettingCommit = (key: string): void => {
