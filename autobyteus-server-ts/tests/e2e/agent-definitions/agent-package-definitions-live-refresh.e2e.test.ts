@@ -478,6 +478,47 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     evidence.dcf005 = { githubRequests, updateFrames: changed(other, mark), autoRefreshAfterUpdate: after.value?.autoRefresh };
   }, 60_000);
 
+  it("DCF-E2E-010 (SR-009/DSN-005): the renamed contract is a clean cut; the retired route and GraphQL names are gone", async () => {
+    // The new route greets every connection (covered above); the retired route is not served at all.
+    const retired = await new Promise<{ status: number | null; opened: boolean }>((resolve) => {
+      const socket = new WebSocket(`ws://${url.host}/ws/definition-catalog`);
+      sockets.push(socket);
+      socket.once("open", () => { socket.close(); resolve({ status: 101, opened: true }); });
+      socket.once("unexpected-response", (_request: unknown, response: { statusCode?: number }) =>
+        resolve({ status: response.statusCode ?? null, opened: false }));
+      socket.once("error", () => resolve({ status: null, opened: false }));
+    });
+    expect(retired.opened, "the retired /ws/definition-catalog route must not accept connections").toBe(false);
+    // Every retired GraphQL name is rejected by the schema (no aliases).
+    const rawGraphql = async (query: string) => {
+      const response = await fetch(new URL("/graphql", url), { method: "POST",
+        headers: { "content-type": "application/json" }, body: JSON.stringify({ query }) });
+      return await response.json() as { data?: unknown; errors?: Array<{ message: string }> };
+    };
+    const retiredQueries = [
+      "{ agentDefinitions { id catalogIssue { code } } }",
+      "{ agentTeamDefinitions { id catalogIssues { code } } }",
+      "{ agentOrgDefinitions { id catalogIssues { code } } }",
+      "{ definitionDiagnostics(subject: AGENT) { definitionId } }",
+      "mutation { refreshAgentDefinitionCatalog }",
+      "mutation { refreshAgentTeamDefinitionCatalog }",
+      "mutation { refreshAgentOrgDefinitionCatalog }",
+    ];
+    const rejected: Record<string, string> = {};
+    for (const query of retiredQueries) {
+      const body = await rawGraphql(query);
+      expect(body.errors?.length, `${query} must be rejected`).toBeGreaterThan(0);
+      rejected[query] = body.errors![0]!.message;
+    }
+    // And the new names answer, including the FOLDER_MISSING/WATCHING enum.
+    const current = await rawGraphql(`{ agentDefinitions { id loadIssue { code } } agentTeamDefinitions { id loadIssues { kind } }
+      agentOrgDefinitions { id loadIssues { kind } } definitionProblems(kind: AGENT) { kind definitionId } agentPackages { autoRefresh { state } } }`);
+    expect(current.errors).toBeUndefined();
+    const states = await rawGraphql(`{ __type(name: "AgentPackageAutoRefreshState") { enumValues { name } } }`);
+    expect((states.data as any).__type.enumValues.map((value: any) => value.name).sort()).toEqual(["FOLDER_MISSING", "UNAVAILABLE", "WATCHING"]);
+    evidence.dcf010 = { retiredRoute: retired, rejected };
+  }, 30_000);
+
   // Shared by DCF-E2E-006 and DCF-E2E-007: two imported packages that both define the same Team ID.
   const duplicate = { name: "APAR Duplicated Team", id: "apar-dup-team", roots: [] as string[] };
 
