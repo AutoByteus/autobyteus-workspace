@@ -1,6 +1,7 @@
 # Docker Usage Investigation — User Decision Brief
 
-Package: fix-legacy-docker-workspace-builds; SR-003; 2026-10-12.
+Package: fix-legacy-docker-workspace-builds; evidence rounds SR-003/004, updated at SR-005/006; 2026-10-12.
+Current scope status: User approved retiring both legacy recipes/personal-test wiring. R2/D2 are authoritative; earlier sections describe the historical investigation/approval hold, not a current blocker.
 User clarification: “First, check whether what they are, what are they used for. I remember we have a personal Docker Compose personal and the remote and what they are and what are they used for.” No implementation handoff has occurred; no product files changed.
 
 ## What Each Path Does
@@ -51,3 +52,6 @@ Not for current desktop remote-node operation or multiple Docker nodes: the publ
 Consolidate supported server packaging on Dockerfile.monorepo. Keep its pipeline, current public launcher, server docker-compose.yml, docker-start.sh and build.sh (both local source build and published-image use). Recommend retiring the legacy personal developer stack and its two recipes together, with reference cleanup, rather than investing in the held repair proposal. Preserve root pnpm dev/isolated desktop workflows for frontend development; monorepo does not itself provide the old separate Nuxt dev web server. No claim that nobody else uses the old harness; known local/user evidence supports asking for deliberate retirement approval.
 
 Proposed retirement scope for user approval: docker/Dockerfile.remote-server, docker/Dockerfile.allinone, docker/compose.personal-test.yml, scripts/personal-docker.sh, their owned startup/supervisor files if reference-free, and affected docs/source-check references. Do not delete generic fixture seeding or historical evidence unless separately proven unreferenced/in-scope. Do not stop/delete current containers/images/volumes/user data. Removal design/validation must explicitly preserve monorepo source-build and release pathways. No deletion has occurred.
+
+## Approved Outcome (SR-005/006)
+User explicitly chose removal on 2026-10-12. Current requirements R2 and design D2 retire the dedicated source closure and preserve monorepo releases/local-source helpers/remote-node launcher, licenses and all existing data. Prior repair and approval-hold text above is historical evidence. No implementation or repository finalization is claimed by this brief.

@@ -3,13 +3,14 @@
 Package: fix-legacy-docker-workspace-builds
 
 ## Revision Index
-| Revision | Phase | Trigger / findings | Prior status | Current status | Affected IDs | Result |
-| --- | --- | --- | --- | --- | --- | --- |
-| SR-001 | Requirements | Delegated task; historical BAS-001 / UD-002 | N/A | R1 Approved | BEH-001..004, REQ-001..004, AC-001..006, SCN-001..004, DEC-001..003 | Coherent initial repair baseline; approved within direction, user informed |
-
-| SR-002 | Design | R1 approval, E/A evidence | R1 Approved / no design | D1 Ready before interruption | REQ-001..004, AC-001..006 | Held repair design, Medium/Low; never handed off |
-| SR-003 | Evidence | User usage/relevance question | R1 Approved / D1 Ready | Scope hold / D1 Blocked | DEC-001,004; SCN-001,002 | Usage evidence, direct user choice required |
-| SR-004 | Evidence | User asks error attribution and monorepo sufficiency | Scope hold | Scope hold | DEC-004 | Monorepo covers local source builds as well as pipeline; recommend legacy retirement |
+| Revision | Phase | Trigger / findings | Prior status | Current result | IDs / routing |
+| --- | --- | --- | --- | --- | --- |
+| SR-001 | Requirements | Delegated repair task; BAS-001/UD-002 | N/A | R1 Approved within direction, user informed | Original repair IDs; superseded at SR-005 |
+| SR-002 | Design | R1 approval; E/A evidence | No design | D1 Ready before interruption, Medium/Low | Never handed off; superseded |
+| SR-003 | Evidence | User usage/relevance question | R1 Approved/D1 Ready | Scope hold, D1 Blocked | DEC-004 Needs user |
+| SR-004 | Evidence | User asks error/monorepo sufficiency | Scope hold | Scope hold, retirement recommended | U-004..006; no deletion approval yet |
+| SR-005 | Requirements | Explicit user removal approval | Scope hold | R2 Approved, D1 Superseded | REQ-005..008, AC-007..011, DEC-004..006 |
+| SR-006 | Design | R2 + R/AR evidence | D1 Superseded | D2 Ready, Medium/High | /software_engineering_team/architecture_reviewer; solution-handoff.md |
 
 ## SR-001 — Repair the two documented legacy Docker build/start flows
 - Phase/classification: Requirements / Initial Baseline.
@@ -58,3 +59,29 @@ Package: fix-legacy-docker-workspace-builds
 - Approval basis: no new approval; do not infer consent to deletion from uncertainty or evaluation request.
 - Design/review/routing: D1 not forwarded; proposed consolidation requires replacement requirements/design after direct user confirmation. No rule handoff while user approval conversation remains open.
 - Next action: Explain precise error, distinguish source build from old harness, recommend monorepo-only server packaging and ask explicit permission to retire the legacy stack safely.
+
+## SR-005 — Approved Retirement Replaces Repair Direction
+- Phase/classification: Requirements / Requirement Gap resolved by explicit user scope change.
+- Trigger: User 2026-10-12 “I also think so let's remove both because I think the current like a mono mono rapport was already enough right for all the purposes.” This accepts preceding proposed retirement of both recipes/personal-test setup while keeping monorepo release/local-source/remote-node uses.
+- Prior status: R1 scope hold, D1 Blocked; no downstream handoff. Current: R2 Approved, D1 Superseded pending replacement design.
+- Old IDs superseded: BEH-001..004, SCN-001..004, UC-001..003, REQ-001..004, AC-001..006. New stable IDs: BEH-005..008, SCN-005..008, UC-004..006, REQ-005..008, AC-007..011, DEC-004..006. No old ID repurposed.
+- Canonical changes: requirements-doc.md R2 clean replacement; investigation R-001..004 exact retirement/retained path inventory; usage supplement factual evidence retained. Prior canonical R1/D1 and hold history durably git-pinned at a98df0fd3aa8baa3b9e407a4d051e35de2fa2f78, not duplicated into another active spec.
+- Intended behavior changed: Yes — remove unused developer harness, do not repair/keep it. Existing monorepo functionality/data unchanged. User approval exact quote above; no Product/normative supplement. Scope notice 2026-10-12 beginning “The removal scope is approved…”
+- Design/review: D1 invalidated; replacement D2 required before forward implementation. Post-design classification pending.
+- Routing: no handoff yet.
+- Remaining gaps: moving-base references must be rechecked at integration; no intent ambiguity.
+- Next action: complete architecture investigation/removal design and classify/rule-route the approved R2 package.
+
+## SR-006 — Completed Clean-Cut Retirement Design D2
+- Phase/classification: Design / Design Impact after approved scope change SR-005.
+- Trigger: R2 user-approved retirement; R-001..004/AR-001..004 owner/input/reference evidence.
+- Prior/current: R2 Approved with superseded D1; current R2 Approved/D2 Ready.
+- IDs affected: BEH-005..008, SCN-005..008, UC-004..006, REQ-005..008, AC-007..011; DEC-007 within-direction ignore-preservation detail. Intended behavior unchanged from approved R2.
+- Canonical changes: design-spec.md clean D2 replacement; investigation AR evidence; requirements saved-state exclusion detail; usage supplement updated to distinguish historical hold from current approval.
+- Approval: exact SR-005 user message; no renewed intended behavior, no normative Product/supplement.
+- Replacement/removal: complete sole-owned legacy source closure; no R1 package-copy/graph/smoke implementation. Retained monorepo pipeline/source/helper/launcher/runtime inputs independent.
+- Classification: Medium/High. Bounded path scope, but intentionally removes previously documented deployment/command support contracts. Independent route follows configured rules.
+- Review artifacts: N/A — no review performed yet, not a pass.
+- Applied handoff: 2026-10-12 get_handoff_rules selected the single Architecture Design Complete / High-risk rule to exact /software_engineering_team/architecture_reviewer; solution-handoff.md contains full result/routing context. Dispatch awaits tool confirmation; no duplicate direct implementation route.
+- Remaining risks: moving-base consumer changes; saved user state left protected, no resource cleanup; current source-check execution remains specialist-owned.
+- Next action: persist full context, consult handoff rules and route exact applicable recipient.

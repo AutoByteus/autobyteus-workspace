@@ -1,110 +1,96 @@
-# Requirements Document
+# Requirements Document — Retire Legacy Personal Docker Stack
 
 ## Document Status
-- Status: Ready for Approval — scope recheck requested by user
-- Package identifier: fix-legacy-docker-workspace-builds
-- Request: Project Task b2b611bb-9a5d-49da-b1dc-fc1c8f80d42a; delegated by /project_task_manager on 2026-10-12
-- Requirements owner: Solution Designer
-- Date: 2026-10-12
-- Current requirements baseline: R1 repair proposal held at SR-003; prior R1 / SR-001 approval retained historically, no removal approved
-- Approved by: Solution Designer within the direction (user informed).
-- Approval reference: 2026-10-12 conversation notice beginning “I’ve approved the repair requirements within the requested scope”; exact basis R1 / SR-001, REQ-001..004, AC-001..006, DEC-001..003; no behavior-defining supplements.
-- Behavior-defining supplements: N/A — not applicable
-- Authorities read: solution-designer/SKILL.md; references/requirements-engineering.md; requirements-doc-template.md; investigation-notes-template.md; solution-revision-record-template.md; task worktree AGENTS.md, DESIGN.md, TESTING.md; autobyteus-server-ts/AGENTS.md (2026-10-12). DESIGN.md is byte-identical to the shared checkout; the refreshed base's shorter TESTING.md is authoritative for this task.
+- Package identifier: fix-legacy-docker-workspace-builds (stable identity retained despite changed outcome)
+- Request: Project Task b2b611bb-9a5d-49da-b1dc-fc1c8f80d42a; delegator /project_task_manager, run project_task_manager_a5f6d9d306e54970bafdad895bdf731d
+- Status: Approved
+- Current requirements baseline: R2 / SR-005
+- Owner/date: Solution Designer / 2026-10-12
+- Approved by: User
+- Exact approval reference: user message 2026-10-12, “I also think so let's remove both because I think the current like a mono mono rapport was already enough right for all the purposes.” This accepts the immediately preceding recommendation to retire both old Dockerfiles and their personal-test Compose setup while retaining monorepo releases/local builds/remote nodes.
+- Scope notice reference: Solution Designer 2026-10-12, “The removal scope is approved: retire both legacy images and their personal-test wiring…”
+- Behavior-defining supplement: None. usage-investigation.md is factual context, not a separate product specification.
+- Prior R1 repair requirements/D1 proposal: Superseded; durably preserved at git commit a98df0fd3aa8baa3b9e407a4d051e35de2fa2f78 and indexed in solution-revision-record.md. Prior approval does not authorize repair implementation after this change.
+- Authorities read: solution-designer/SKILL.md; references/requirements-engineering.md; requirements/investigation/solution-revision templates; task-worktree AGENTS.md, DESIGN.md, TESTING.md; autobyteus-server-ts/AGENTS.md (2026-10-12, current conversation).
 
 ## Problem And Desired Outcome
-Both named Dockerfiles omit workspace dependencies required by the current server and web packages. A developer building the documented personal Docker stack is blocked during installation. Restore actual build and normal startup of both images from refreshed origin/personal; preserve license artifacts and documented deployment roles; reduce recurrence with a cheap dependency-aware check and a repeatable real-image build/start check. Final delivery is into personal after explicit user verification, not a new public release.
+Two old source-built Docker recipes fail pnpm workspace resolution (BAS-001/UD-002). Investigation showed that they belong to a separate developer personal-test harness, not the released/public-launcher server pathway the user uses. The user explicitly chose removal over repair. Retire that harness cleanly, keeping the monorepo server image and its current release, local-source-build and multiple-remote-node workflows intact. Completion requires reviewed/validated delivery merged and pushed to origin/personal; no public release requested.
 
 ## Stakeholders, Actors, And Outcomes
-Developer/operator: build and start the two documented images without missing workspace packages or runtime links. Maintainer: discover dependency-packaging drift early without adding expensive always-on release work. Recipient: receives the existing AGPL files and OCI label.
+User/operator: retain current monorepo-backed nodes and data unchanged. Developer: retain monorepo local source builds and ordinary local frontend development. Maintainer/open-source reader: one unambiguous supported main-product server Docker recipe; no dangling old-stack commands or source-check failures. Historical reviewers: retain original ticket evidence truthfully.
 
 ## Relevant Scenarios And Journeys
-| ID | Actor / kind | Goal / trigger / starting condition | Product-level sequence and outcome | Alternate / error | Validity / independent evidence | REQ / AC |
+| ID | Actor / kind | Goal / trigger / starting condition | Supported product-level sequence / outcome | Alternate/failure | Validity / independent evidence | Related IDs |
 | --- | --- | --- | --- | --- | --- | --- |
-| SCN-001 | Developer / Operational | Build a lightweight backend node from the current checkout; root-context docker build of remote-server | Build image → start its ordinary entrypoint with owned fresh data → backend health/GraphQL respond and bundled mobile entry page is served | Failed build/start is nonzero and retains diagnostics; no silently substituted image | Supported Normal Scenario; docker/compose.personal-test.yml remote-server, docker/README.md, attached BAS-001 | REQ-001,002,003 / AC-001,003,004 |
-| SCN-002 | Developer / Operational | Build main server+web+browser stack; root-context docker build of allinone and documented Compose settings | Build image → start ordinary base-image/supervisor lifecycle → backend and web reachable; existing browser services remain available | Missing backend or web is failure, not a partial pass | Supported Normal Scenario; docker/README.md, README.md personal Docker section, Compose main-allinone | REQ-001,002,003 / AC-002,003,004 |
-| SCN-003 | Maintainer / Operational | Verify Docker wiring after adding/changing a required workspace package | Invoke inexpensive check → sees omissions in input/build/runtime wiring; invoke documented real-image check when Docker available → build/start failures produce nonzero status | Check requires no provider keys; unavailable Docker is explicit failure/blocked, not a pass | Supported Normal Scenario; user's explicit cheap-check request; existing scripts/tests/test_docker_build_context_sources.py | REQ-004 / AC-005 |
-| SCN-004 | Operator / Operational | Restart the repaired image using the same supported data mount | Start with owned data → stop/restart same image/data → still ready and state retained under ordinary readers | No volume reset or migration invented to make a check pass | Supported Normal Scenario; existing entrypoints and personal-docker down/up volume semantics | REQ-002 / AC-006 |
+| SCN-005 | User/maintainer / Operational | Approved retirement of unused personal harness on current personal source | Apply source retirement → consult current Docker docs → use monorepo public launcher or local-source helper, not removed recipes | Old test-stack entry commands no longer supported; no alias/fallback silently preserves them | Supported Normal Scenario, explicit user removal approval plus U-001..006 | REQ-005,008 / AC-007,010 |
+| SCN-006 | Operator/developer / Operational | Build/publish/use a monorepo backend node, from local source or published image | Existing source helper builds monorepo; existing release pipeline publishes monorepo; public launcher can create multiple remotely accessed backend nodes | Ordinary build/registry errors retain existing behavior; no newly changed runtime/platform promise | Supported Normal Scenario, server Docker docs/build.sh/Compose/release workflow and seven current launcher nodes | REQ-006 / AC-008,011 |
+| SCN-007 | Existing node owner / Operational | Repository cleanup while existing containers/volumes/workspaces may exist | Source-only deletion → existing launcher nodes/state remain untouched → normal management commands remain available | No automated container/volume/image/state deletion or migration is authorized | Supported Normal Scenario, current local nodes and user's always-monorepo direction | REQ-007 / AC-009 |
+| SCN-008 | Maintainer / Operational | Run focused checks after retiring a packaging path | Current Docker-source checks target monorepo and current references; retired-only tests removed; new focused guards detect reintroduction/dangling supported references | Historical ticket/evidence mentions do not count as active references | Supported Normal Scenario, existing scripts/tests and repository TESTING.md | REQ-008 / AC-010,011 |
 
 ## Relevant Current And Desired Behavior
-| ID | Kind / scenarios | Evidence-backed current | Desired | Preserved | Evidence |
+| ID | Kind / scenarios | Evidence-backed current | Desired | Intentionally preserved | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| BEH-001 | Operational / SCN-001,002 | Both builds fail pnpm workspace package lookup; runtime lists also omit the same packages | Both build and start with complete dependency payloads | Distinct remote-server versus allinone roles and existing startup interfaces | investigation-notes.md E-001..004 |
-| BEH-002 | Contract / SCN-001,002 | Dockerfiles already declare root LICENSE, LICENSING.md, NOTICE and AGPL OCI license label | Repaired built images contain identical files and existing label | Licensing content, label and package license boundaries unchanged | E-002,003 |
-| BEH-003 | Operational / SCN-003 | Existing script checks COPY source existence and hardcodes only team-stream wiring; no legacy image CI builds | Dependency-aware cheap check and repeatable actual build/start check | Existing monorepo release surface unchanged; do not claim static proof equals successful startup | E-004,005 |
-| BEH-004 | Operational / SCN-004 | Entry scripts keep existing data/.env; script removal is not authorized | Repaired image restarts without resetting data | Same data roots/configuration and existing volumes, browser profile conventions | E-003,006 |
+| BEH-005 | Operational / SCN-005 | Old personal wrapper/Compose exposes broken allinone + optional lightweight remote recipes | Retire both and their dedicated owned wiring, docs and unused test assumptions | Historical evidence remains; no deprecated command compatibility layer | U-001..004, R-001 |
+| BEH-006 | Operational/Contract / SCN-006 | Monorepo recipe serves pipeline and local-source helper; public launcher handles multiple backend nodes; existing licensing artifacts/label present | Same supported paths, recipe, runtime payload and licenses | Monorepo build/run commands, Node/browser/CLI/mobile packaging, release platforms/tags and source helper | A-003, U-005/006, R-002 |
+| BEH-007 | Operational / SCN-007 | Seven local launcher nodes use :beta; all current management/state is separately owned | Source cleanup does not operate on live resources or data | All current/past containers, images, volumes, saved runtime state and host-backed data left alone | U-002, R-003 |
+| BEH-008 | Operational / SCN-008 | Copy-source test expects all three recipes and only team contract invariants; docs reference old wrapper | Current source tests/docs consistently describe retained pathways only | Meaningful monorepo source/contract/license checks remain; no global testing-policy rewrite | E-004, R-004 |
 
 ## Scope Guardrail (Mandatory)
 ### In-Scope Use Cases
 | ID | Use case | Scenarios |
 | --- | --- | --- |
-| UC-001 | Build and run the remote backend image | SCN-001,004 |
-| UC-002 | Build and run the personal allinone image | SCN-002,004 |
-| UC-003 | Detect workspace-packaging regression and repeat image smoke checks | SCN-003 |
+| UC-004 | Retire unused personal developer Docker harness | SCN-005 |
+| UC-005 | Preserve monorepo pipeline, source builds and remote-node use | SCN-006,007 |
+| UC-006 | Keep current docs and packaging checks consistent after retirement | SCN-008 |
 ### Out Of Scope
-Removing either image or personal-docker.sh (user decision only); changing LLM-provider removal or runtime functionality; altering monorepo released-image architecture, provider CLI installs, public release/tag/publish flows; desktop/mobile application redesign; unrelated seeding/node-registration repairs; changing the Chrome/VNC security model or credentials.
+Monorepo Dockerfile/runtime/application code redesign; removing server Docker Compose/source helpers/public launcher; deleting existing Docker resources or saved data; migration/import of old personal-stack data; changing provider removal, external messaging/gateway packaging, frontend behavior, CLI installation policy, release workflow behavior, bases/platforms/tags or security model. No updates to completed historical tickets/evidence to erase references.
 ### Non-Goals
-Automatic support for every conceivable new workspace layout/build command; adding a dependency-packaging framework; guaranteeing startup performance, full browser/model journeys or all target architectures. No paid model calls or user data needed.
+Reproducing/repairing removed image builds; preserving the old Nuxt-in-Docker developer harness, automatic fixtures or ephemeral lightweight test-node variant; new dependency-packaging framework, full graph-check expansion, legacy-image smoke script or new CI job. Normal local frontend/isolated-desktop development remains unchanged, not reimplemented in monorepo.
 ### Preserved Behavior Boundary
-BEH-001,002,004; REQ-002,003; AC-003,004,006. Keep both image names/build paths and existing script/Compose interfaces.
+BEH-006,007 / REQ-006,007 / AC-008,009,011. “Monorepo sufficient for current workflow” does not mean it contains the old port-3000 Nuxt development server; that retired-only capability was explained before user approval.
 ### Review Authority
-Blocking corrections cite an approved REQ/AC/BEH. New product policies, security model changes, migrations or compatibility promises are Requirement Gaps requiring user approval; adjacent concerns are non-blocking separate-ticket candidates. Reviewer suggestions do not amend this basis.
+Blocking findings cite approved REQ/AC/BEH. New behavior, compatibility promises, data-migration duties, security policy or unrelated Docker consolidation is a Requirement Gap needing renewed user approval. Recommendations outside this boundary are non-blocking follow-ups; reviewers cannot amend the basis.
 
 ## Requirements
-| ID | Requirement | BEH | Criticality | Rationale / source |
-| --- | --- | --- | --- | --- |
-| REQ-001 | Both named image builds from repository-root context succeed on the task's refreshed personal basis; required workspace dependencies are available at installation, compilation and runtime. | BEH-001 | Must | User request, BAS-001 |
-| REQ-002 | Under existing supported startup configuration, remote-server serves backend/GraphQL and bundled mobile assets; allinone serves backend, development web and existing browser-service endpoints. Preserve entrypoints, ports, environment controls, data locations and restart continuity. | BEH-001,004 | Must | User request and documented deployment roles |
-| REQ-003 | Each final image retains /app/LICENSE, /app/LICENSING.md and /app/NOTICE byte-identical to source, plus org.opencontainers.image.licenses=AGPL-3.0-only. | BEH-002 | Must | User explicitly requests existing licensing contract; not a legal-policy redesign |
-| REQ-004 | Provide an inexpensive check that discovers newly required workspace dependency packaging omissions from current manifests, plus a documented repeatable local image build/start check that returns nonzero on failure and cleans only its owned test resources. | BEH-003 | Must within cheap scope | Existing Python checks make this proportionate; real image check is opt-in, no recurring CI cost imposed |
+| ID | Requirement | Behavior | Criticality / rationale |
+| --- | --- | --- | --- |
+| REQ-005 | Remove both legacy Dockerfiles and the dedicated personal-test harness that builds/starts them, including now-unused owned startup/configuration and fixture helpers after reference verification. Do not retain alternative recipe/command wrappers. | BEH-005 | Must; user's explicit removal choice |
+| REQ-006 | Preserve the monorepo server recipe and its release pipeline, local source-build/helper/Compose and public-launcher multiple remote-node operation, including existing runtime license files/OCI label and application code/dependencies. | BEH-006 | Must; user states monorepo is the required/current path |
+| REQ-007 | Perform source cleanup only. Do not start/stop/delete/upgrade existing containers, images, volumes, launcher profiles, saved ignored runtime configuration or user files; no data migration or reset. | BEH-007 | Must; removal is code/support retirement, not resource destruction |
+| REQ-008 | Remove dangling active documentation and test expectations for retired paths; retain focused checks for supported monorepo wiring and cheap regression checks for retirement/preserved entrypaths. Historical tickets and evidence remain truthful and unchanged. | BEH-008 | Must; clean support boundary and retained validation |
 
 ## Acceptance Criteria
-| ID | Requirements / behavior / scenario | Trigger / observable expected outcome | Important failure outcome | Verification intent |
-| --- | --- | --- | --- | --- |
-| AC-001 | REQ-001 / BEH-001 / SCN-001 | Clean root-context build of tracked remote-server Dockerfile exits 0; ordinary entrypoint on disposable data answers /rest/health and real GraphQL query; mobile entry page/assets served from /mobile/ | Workspace lookup, module resolution or startup failures fail check | Actual Docker build/run, retained logs and HTTP assertions |
-| AC-002 | REQ-001,002 / BEH-001 / SCN-002 | Clean root-context build of tracked allinone Dockerfile exits 0; ordinary supervisor lifecycle with documented Compose-equivalent environment yields healthy backend, web HTTP page, noVNC HTTP and existing Chrome debug endpoint | Server-only readiness is not image startup success; retain web/supervisor failures | Actual Docker build/run, service status and HTTP assertions |
-| AC-003 | REQ-003 / BEH-002 / SCN-001,002 | Both built images expose exact OCI license label and source-matching hashes for all three /app files | Label declaration-only inspection is insufficient | docker inspect and in-image byte/hash checks |
-| AC-004 | REQ-001,002 / BEH-001,002 / SCN-001,002 | Current contracts resolve from built package dependencies in each final image; launch controls/image roles and existing licensing payload remain intact | Missing package/runtime symlink target fails | Package import/link assertions plus real startup; monorepo wiring checks remain green |
-| AC-005 | REQ-004 / BEH-003 / SCN-003 | Dependency-aware no-Docker check passes repaired source, detects original omissions and a fixture adding a new required workspace package, and identifies missing builder source/build/runtime stage. Real-image check has documented command, nonzero failure behavior and ownership cleanup | A check that hardcodes only the two newly missing packages does not qualify; static success is not build certification | Tests of checker, including fixture/mutation checks; execute script on actual images |
-| AC-006 | REQ-002 / BEH-004 / SCN-004 | Stop/restart owned containers with same data storage; health/web recover and a public-API-created disposable setting/state remains | No reset/migration/default-data overwrite used to pass | Lifecycle smoke and public API readback; no user data |
+| ID | REQ / behavior / scenario | Observable success | Alternate/failure / verification intent |
+| --- | --- | --- | --- |
+| AC-007 | REQ-005 / BEH-005 / SCN-005 | Both Dockerfiles, old personal Compose/wrapper and reference-proven dedicated startup/supervisor/fixture assets absent from tracked current source | No compatibility aliases, alternate shipped recipes or orphan owned files; diff and reference audit |
+| AC-008 | REQ-006 / BEH-006 / SCN-006 | Release default/zh builds, server source helper/build scripts and Compose still name existing monorepo recipe; public launcher/multiple-node pathways unchanged; recipe and runtime dependencies byte-unchanged versus base | Static path/link checks plus focused source/helper/launcher regressions. If shared build/runtime code must change, escalate and actually build/run affected image before pass |
+| AC-009 | REQ-007 / BEH-007 / SCN-007 | No operational cleanup code/commands for existing Docker resources or user data; only explicit tracked source removals; no ignored state deletion | Review/diff/resource action ledger; owned validation cleanup only; never infer data permission from code removal |
+| AC-010 | REQ-008 / BEH-008 / SCN-008 | Focused Python packaging/source/reference tests pass; current support docs have no obsolete commands/links; no stale “all server images” assertion about deleted recipes | Historical tickets/evidence, explicit absence guards and purposeful saved-state ignore exclusions are permitted mentions. Broken monorepo link/recipe or reinstated legacy asset is detected by guard/mutation |
+| AC-011 | REQ-006,008 / BEH-006,008 / SCN-006,008 | Monorepo license directives/root files unchanged; licensing checker and artifact hygiene remain green; source checks still cover workspace contracts required by retained recipe | Not legal advice or new license policy. No declaration-only check falsely claimed as freshly built-image validation |
 
-## UI, Interaction, And Experience Requirements
-Applicable: No new UX design. Product artifacts, normative visual references and Product approval: N/A — not applicable. Existing web page reachability is startup proof, not a new design request.
+## UI / Product Design
+N/A — no new UI/UX work or Product artifact; removal ends an unused developer frontend-in-Docker harness, not application/frontend functionality.
 
-## Quality And Non-Functional Requirements
-QR-001 Reliability/operability: REQ-001,002,004 / AC-001,002,004..006. No missing graph payload; cheap checks run without Docker or provider credentials; real Docker checks use fresh test-owned resources and nonzero failure signaling.
-QR-002 Compliance payload: REQ-003 / AC-003. Verify concrete files and label, not legal interpretation.
+## Quality / External Contracts
+QR-003 Operability/reliability: REQ-005,006,008 / AC-007,008,010; current build/support entrypoints remain consistent and tests need no provider keys. QR-004 Data safety: REQ-007 / AC-009; exact source-only retirement. QR-005 License payload continuity: REQ-006 / AC-011; existing monorepo license files/label. Existing Node/pnpm/VNC/platform contracts stay as-is; no new external library/standard decision.
 
 ## Data Continuity And Acceptable Loss
-Persisted/external data affected by intended change: No schema or semantics change. Preserve existing volumes and configuration paths; no migration. Disposable smoke data may be created and removed only by its owning check; loss of user data or other stacks' data is never permitted.
+Persisted data/schema/semantics affected: No. Existing containers/volumes/browser profiles/workspaces and even any ignored personal docker/.runtime files must be preserved untouched. Only source/versioned support assets are retired. Users are not promised migration of old test-stack state; none is required by the approved direction. Disposable test-owned fixture directories may be cleaned by their owner.
 
-## External Contracts And Dependencies
-Existing Node 22 bases; allinone autobyteus/chrome-vnc:zh default; repository pnpm workspace manifests/lockfile; existing Prisma and Nuxt compilation. Availability/download issues are external limits to record, not excuses to fake passes. Licensing contents/labels are already authoritative in source. No provider key needed.
-
-## Supplemental Artifacts
-investigation-notes.md links the attached prior API/E2E BAS-001 report, validation-only Dockerfile and container log, and historical AGPL UD-002 report. Evidence only; no behavior-defining supplement to approve. Independent architecture review: N/A pending completed classification.
-
-## Assumptions And Decisions
-| ID | Question / evidence | Reasoning and recommendation | Owner / state |
-| --- | --- | --- | --- |
-| DEC-001 | Keep or remove the images? Both remain documented in Docker README and Compose; remote-server is a backend node, not the removed AutoByteus LLM provider. | Keep and repair both. There is no evidence of obsolescence warranting a scope/deletion decision. | User / Reopened at SR-003; Needs user DEC-004 |
-| DEC-002 | Fully automatic inclusion or bounded correction with dependency-derived checking? Monorepo itself has explicit package lists, not dynamic packaging. | Prefer proven existing ownership and a dependency-aware guard over a new assembly framework. New required packages must be caught before users build; automatic arbitrary new builds/layouts remain a non-goal. | Solution Designer / Decided within direction |
-| DEC-003 | CI versus script? Existing inexpensive Python test harness; release workflow publishes a different image; recurring Docker builds add compute and scope. | Extend cheap script coverage and add a repeatable opt-in image build/start smoke command; no release/CI resource-policy change. | Solution Designer / Decided within direction |
-| ASM-001 | Docker/base registry reachable | Docker Desktop server 29.0.1 responds; actual base-image pull/build readiness to be proven by downstream owners. | Implementation/API-E2E / Open execution risk, not intent ambiguity |
+## Decisions / Assumptions
+| ID | Question / reasoning | Owner / status |
+| --- | --- | --- |
+| DEC-004 | Keep/repair or retire old harness? Monorepo already handles current release/local-source/remote-node uses; user says they always use monorepo and explicitly chooses removal. | User / Decided: retire, approval quote above |
+| DEC-005 | Dedicated seed helper: only nonhistorical caller is personal-docker.sh; no independent docs/test/other owner references found. Remove as part of dead harness-owned assets, not preserve a misleading fixture tool. | Solution Designer / Decided within approved cleanup direction; recheck references on refreshed base |
+| DEC-006 | New graph framework/legacy Docker smoke/CI? Removed builds no longer need proof; existing focused source/helper/launcher checks plus retirement/preservation guards suffice for source-only deletion. Do not add superseded R1 machinery. | Solution Designer / Decided within direction |
+| DEC-007 | Saved legacy .runtime files remain user-owned after source removal; preserve their Git/Docker exclusion without retaining any executable legacy path. | Solution Designer / Decided within REQ-007 preservation direction |
+| ASM-002 | New references may appear on moving personal | Downstream owners re-audit/integrate before finalization; material new consumer returns for recovery |
 
 ## Traceability / Architecture Phase Input
-UC-001 → REQ-001..003 → AC-001,003,004,006 → SCN-001,004.
-UC-002 → REQ-001..003 → AC-002..004,006 → SCN-002,004.
-UC-003 → REQ-004 → AC-005 → SCN-003.
-Architecture must verify the complete workspace install/build/runtime link path, contract dependency ordering, inherited allinone supervisor lifecycle and .dockerignore's exclusion of dist. Packaging/check implementation details intentionally deferred to architecture; no application runtime changes required.
+UC-004 → REQ-005 → AC-007 → SCN-005.
+UC-005 → REQ-006,007 → AC-008,009,011 → SCN-006,007.
+UC-006 → REQ-008 → AC-010,011 → SCN-008.
+Architecture maps the now-approved deletion closure, exact retained production paths, reference/doc/test amendments and data non-effect. R1 IDs BEH-001..004, SCN-001..004, UC-001..003, REQ-001..004, AC-001..006 are superseded, not reused or still-active repair obligations.
 
-## Readiness Check
-Current/desired/preserved behavior evidence-backed and explicit: Yes. Scope/non-goals: Yes. Testable linked REQ/ACs: Yes. Scenario validity: Yes. Decisions reasoned/visible: Yes. UI/Product supplements: N/A. Current material Needs user decision: DEC-004 (retain/repair versus retire); R1 approval remains historical. Proposed retirement is described in usage-investigation.md but not approved. Forward/design readiness: No — user scope decision pending; do not implement the held R1 repair option or any removal.
-
-## SR-003 — User Requested Usage / Relevance Check
-The user interrupted before implementation handoff and requested that we first identify these images and whether they are used. Current-machine Docker inventory shows only seven public-launcher monorepo :beta nodes, not the personal developer stack. See usage-investigation.md for current paths, historical purposes and evidence limitations. DEC-001's preservation choice is reopened for user scope direction; no product deletion or requirement change is approved.
-
-DEC-004 (Needs user; owner User): retain/repair the personal-docker.sh developer harness, or retire it and its two Dockerfiles/Compose/wrapper/docs references? Reasoning: it is not used by current local nodes or publishing; the released monorepo+launcher retain backend remote-node support. Recommend retirement if the user no longer needs its web-in-Docker test workflow; otherwise repair. All R1 REQ/AC content above remains the repair option, not authority for deletion. Content/forward readiness: on hold pending this scope decision.
-
-## SR-004 — Updated Decision Recommendation
-DEC-004 remains Needs user. Latest user evaluation suggests monorepo is sufficient; evidence now confirms that monorepo supports BOTH pipeline publication and local source builds (existing server docker-start.sh/build.sh). Recommend retaining that entire current pathway and retiring the old personal developer harness, not repairing its unused variants. See usage-investigation.md SR-004 for exact proposed scope and preserved paths. Approval prompt must clearly cover deletion/reference cleanup; user uncertainty/preferences are not fabricated as explicit removal authorization.
+## Supplements / Readiness
+Canonical investigation-notes.md and usage-investigation.md contain historic/factual support and current removal inventory. Prior R1/D1 is git-pinned; no competing current spec. No behavior supplement or Product approval applicable. Current/desired/preserved behavior, scope, scenarios, data policy, decisions and measurable ACs: ready. User approval applies to exact R2 retirement direction above; implementation details are within it. Remaining Needs user decisions: None. Approved basis ready for replacement architecture: Yes. Final user verification/merge remains Delivery-owned.

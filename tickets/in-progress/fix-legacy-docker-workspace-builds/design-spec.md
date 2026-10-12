@@ -1,171 +1,134 @@
-# Design Spec — Legacy Docker Workspace Build Repair
+# Design Spec — Retire Legacy Personal Docker Stack
 
 ## Solution And Approval Basis
-- Package: fix-legacy-docker-workspace-builds
-- Current solution revision: SR-002; design baseline D1
-- Design status: Blocked — user requested scope/relevance check before implementation handoff; D1 retained repair-option proposal only
-- Approved requirements: R1 / SR-001; Solution Designer within the task direction, user informed in 2026-10-12 conversation notice beginning “I’ve approved the repair requirements within the requested scope”. REQ-001..004, AC-001..006 unchanged.
-- Behavior-defining supplements: N/A — not applicable
-- Canonical investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/tickets/in-progress/fix-legacy-docker-workspace-builds/investigation-notes.md
-- Authorities read: solution-designer/SKILL.md; references/architecture-design.md; references/design-principles.md; templates/design-spec-template.md; /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/{AGENTS.md,DESIGN.md,TESTING.md}; autobyteus-server-ts/AGENTS.md; official pnpm 10.x filtering/recursive docs (2026-10-12). design-examples.md: N/A — no novel architecture needs an example reference.
-- Principle conflicts/discrepancies: None. Refreshed task base is origin/personal @ 2756d7b298ca5b203ebd2310d172b37a5d381b5c; do not use the older shared personal checkout as the source authority.
+- Package: fix-legacy-docker-workspace-builds; design baseline D2; current solution revision SR-006.
+- Design status: Ready — Architecture Design Complete.
+- Requirements: R2 / SR-005, REQ-005..008 and AC-007..011. User approved 2026-10-12: “I also think so let's remove both because I think the current like a mono mono rapport was already enough right for all the purposes.” Accepted recommendation retires both old recipes/personal-test wiring, preserves monorepo release/source-helper/remote-node uses and existing data.
+- Previous R1/D1 repair plan: Superseded. History git-pinned at a98df0fd3aa8baa3b9e407a4d051e35de2fa2f78; do not implement its package-copy fixes, graph checker or new legacy smoke script.
+- Canonical investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/tickets/in-progress/fix-legacy-docker-workspace-builds/investigation-notes.md.
+- Authorities read: solution-designer/SKILL.md; references/{requirements-engineering.md,architecture-design.md,design-principles.md}; templates/{requirements-doc-template.md,investigation-notes-template.md,solution-revision-record-template.md,design-spec-template.md}; task-root AGENTS.md, DESIGN.md, TESTING.md; autobyteus-server-ts/AGENTS.md (2026-10-12, current conversation). RELEASE.md relevant finalization/no-release sections consulted; Delivery must read full current release authority before finalizing.
+- Applicable project design file: /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/DESIGN.md. Closer docker/scripts design authorities: none. Principle conflict: None. design-examples.md: N/A — bounded retirement, no novel structure.
+- Worktree/branch: /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds / codex/fix-legacy-docker-workspace-builds; resolved base origin/personal @ 2756d7b298ca5b203ebd2310d172b37a5d381b5c; target origin/personal.
 
-## Current-State Read
-E-001..006 and A-001..006 in investigation-notes.md cover the complete build-to-start path. Both legacy builders and runtime copy lists omit the agent-presentation/collaboration contract packages. Existing server/web package manifests already establish the required dependencies; this is missing materialization, not missing product capability. The released monorepo recipe has explicit copies/builds and demonstrates the correct package graph. It is not automatically resilient to future package additions.
-
-Install success is only one boundary. Contract dist must be rebuilt because Docker excludes dist, package symlink targets must survive runtime staging, and allinone must start its Nuxt process through existing supervisor/codegen, not just boot the backend. Current license runtime directives already satisfy the intended static contract; retain and prove them in actual images.
-
-## Architecture Investigation Evidence
-| Evidence | Source | Decision supported | Remaining uncertainty |
-| --- | --- | --- | --- |
-| E-002/004/006, A-001 | Legacy/monorepo Dockerfiles, .dockerignore, manifests, validation-only copy | Add both missing packages at manifest/source/runtime boundaries; build dependency outputs from source | Real repaired image execution required |
-| A-002 | Server prepare:shared/prebuild and core postinstall | Keep backend SDK as a build root and full sources before install; leave lifecycle hooks intact | No hook rewrite planned |
-| A-003/005 | Per-package workspace dependency paths, runtime copy lists, startup wrappers and Compose | Preserve each image's current layout, base and process lifecycle | Inherited base services must be run, not assumed |
-| A-004 | [pnpm 10 filtering](https://pnpm.io/10.x/filtering), [recursive execution](https://pnpm.io/10.x/cli/recursive) | Dependency-only filters plus recursive sorted build remove contract-order enumeration | Verify pinned pnpm behavior in Docker execution |
-| E-004/005, A-006 | Existing Python test harness, health/mobile/settings HTTP contracts | Extend cheap graph-aware guard; add owned-resource real-image smoke | Static guard does not emulate Docker/pnpm fully |
+## Current-State Read / Architecture Investigation Evidence
+The old root docker/ area is one dedicated developer harness: personal-docker.sh → compose.personal-test.yml → allinone/remote-server recipes → owned shell/supervisor startup; personal wrapper additionally owns the dedicated seed-personal-test-fixtures.py caller. Both recipes omit required contracts and fail pnpm install (BAS-001/UD-002). The user chose retirement, not repair.
+Retained server Docker workflow is independent: docker-start.sh → build.sh → Dockerfile.monorepo, or published image pull; release workflow and build-multi-arch.sh also use monorepo; public launcher supports any number of backend nodes from that image. Seven current local launcher nodes demonstrate local use but are NOT new-source build evidence. Legacy allinone uniquely offered Nuxt development web on 3000; the user was informed and approved retiring that harness. Normal local frontend/desktop workflows remain.
+Evidence in investigation: U-001..006 (roles/error/source-build sufficiency), R-001..004 (exact removal/reference/ignore/test closure), AR-001..004 (postapproval ownership, retained input independence, ignore continuity and classification). No unresolved material design fact; moving-base new consumers must be rechecked before finalization.
 
 ## Intended Change
-Repair the existing two-stage recipes, preserving Docker image identities and deployment contracts. Make dependency builds graph-driven and source/runtime copy drift detectable from manifests. Add opt-in real-image smoke in the existing scripts/tests area; document both check commands in docker/README.md. No new public release workflow or production packaging subsystem.
+Remove the legacy harness's tracked implementation/config/docs; update live docs and current source checks; protect any pre-existing saved legacy state via root .gitignore. Do not change production monorepo code, recipe, pipeline, source helpers, public launcher, package manifests, licenses or current resources. No replacement compatibility commands or two-path support.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
-| Behavior | Approved intent / AC | Trigger / current evidence | Target path / preserved outcome / spine |
+| Behavior | REQ / AC / scenario | Approved trigger / factual current path | Target path / preserved outcome / spine |
 | --- | --- | --- | --- |
-| BEH-001 | REQ-001,002 / AC-001,002,004 | Root-context build/run; E-001..004/A-001..003 | Complete builder inputs → pnpm links → topological dependency builds → server/mobile build → runtime sibling package copies → normal backend and allinone web readiness. DS-001/002 |
-| BEH-002 | REQ-003 / AC-003 | Recipient receives built image; E-002 | Existing final-stage root license copies/OCI label retained, inspected by smoke; contract package licenses retained by full copies. DS-001/002/003 |
-| BEH-003 | REQ-004 / AC-005 | Maintainer invokes checks; E-004/005 | Current manifest graph → existing Python source test → actionable missing-phase failure; opt-in real build/run smoke independently proves lifecycle. DS-003 |
-| BEH-004 | REQ-002 / AC-006 | Existing owned data-mounted container restart; E-003/A-005/006 | Current entrypoints/readers/data volumes unchanged; API-written test state survives stop/start and readiness recovers. DS-001/002/003 |
+| BEH-005 | REQ-005 / AC-007 / SCN-005 | User-authorized removal of personal wrapper→Compose→two recipes and dedicated assets; R-001 | Explicit tracked deletions + reference cleanup; current readers use retained monorepo docs/paths; DS-007 |
+| BEH-006 | REQ-006 / AC-008,011 / SCN-006 | Current pipeline/source helpers/public launcher, U-005/006/AR-001 | Same monorepo construction and runtime/library/license ownership; DS-005/006 |
+| BEH-007 | REQ-007 / AC-009 / SCN-007 | Existing container/volume/profile/workspace and ignored state owners; U-002/R-003 | No operational code/resource changes; ignored legacy state still protected; DS-007 |
+| BEH-008 | REQ-008 / AC-010,011 / SCN-008 | README and test supported-image list name old recipes; R-004/AR-003 | Current docs/test list describe only retained main server recipe; absence/entrypath/ignore guards; DS-007 |
 
-## Relevant Supplemental Task Artifacts
-Historical input only: attached API/E2E report BAS-001; current-base tickets/done/remove-autobyteus-remote-provider/api-e2e-evidence/docker/{Dockerfile.remote-server.validation,container.log}; tickets/done/agpl-dual-licensing-slice-2/{implementation-handoff.md,api-e2e-execution-coverage-report.md} UD-002. Absolute paths and ownership/status are indexed in investigation and solution-handoff.md. No Product/UI/UX supplement. Independent architecture review: N/A — classification/rules will determine applicability, not a fabricated review pass.
+## Relevant Supplements
+usage-investigation.md: Solution Designer-owned factual role/error/usage decision brief, not a normative supplement; latest approved decision is R2. Historical API/E2E report BAS-001 and AGPL UD-002 reports plus retained validation-only Dockerfile/log support original defect attribution; do not edit/reclassify them as current product paths. Absolute inventory in solution-handoff.md and investigation-notes.md. Product artifacts: N/A. Independent architecture review artifacts: N/A — not applicable yet; no review occurred, downstream route determined after classification.
 
 ## Task Design Health Assessment (Mandatory)
-- Change posture: Bug Fix plus bounded regression tooling.
-- Current design issue: Yes — recipe payload lists violate existing dependency invariants; not an application boundary problem.
-- Root cause: Local Implementation Defect; Missing Invariant in the team-stream-only static check.
-- Structural triggers: duplicated package-name build coordination across recipes is reduced using pnpm's existing graph owner. No new subsystem, mixed-level API access, shared DTO looseness, persisted transition or compatibility trigger. Explicit runtime layouts still fit their differing image roles.
-- Refactor needed now: No production architectural refactor. Replace narrow hardcoded team-only test policy with dependency-aware checking inside the same testing owner.
-- Evidence/response: A-001..005; add payloads, use dependency build closure, extend existing test. Don't copy the whole repository or build unrelated applications to conceal missing inputs.
-- Intentional deferral: COPY lists remain explicit; graph guard detects necessary edits but does not manufacture arbitrary new package layouts/build semantics. Monorepo production staging and provider CLI policy stay out of scope.
+- Posture: Cleanup / approved operational support-contract removal, prompted by baseline bug investigation.
+- Design issue: Yes — obsolete supported packaging paths keep broken duplicate recipes and misleading documentation/testing policy.
+- Root cause classification: Legacy Or Compatibility Pressure; obsolete ownership now explicitly retired, not papered over with a fallback.
+- Refactor needed now: Yes, bounded clean-cut retirement of the owned harness/reference policy; no runtime architectural refactor.
+- Structural triggers: legacy cleanup and dead assets; evidence R-001/AR-001 verifies sole ownership/callers. Test policy shrinking removes expectations for deleted subjects. No shared DTO/API, concurrency, persistence, mixed-authority boundary or new subsystem issue.
+- Response: delete the whole dedicated source closure, not just two Dockerfiles. Preserve monorepo path; avoid stub scripts/aliases, stale docs and orphan seeding/startup files.
+- Residual risk: other users may have old test-stack state or new consumers may appear on moving personal. Preserve data/ignore policy; the support loss is user-approved. Return material discovered new consumer to Solution Designer rather than silently broaden scope.
 
 ## Terminology
-Build closure includes workspace dependencies/dev/optional (and applicable workspace peers) of server and web plus backend SDK build-hook root. Runtime closure is server production dependencies (plus their production closures); allinone additionally needs web development dependencies because its supported lifecycle runs codegen/Nuxt dev.
+“Retired personal harness” means only repository-root docker/ tracked stack plus its dedicated personal/seed scripts. “Retained server Docker” means autobyteus-server-ts/docker/, public launcher and release-server-docker workflow. Package-local docker/README.md links must resolve by containing package; not every literal docker/ path is the retired root.
 
-## Legacy Removal Policy / Removal Plan (Mandatory)
-| Item | Why unnecessary / replacement | Scope |
+## Legacy Removal Policy / Removal-Decommission Plan (Mandatory)
+| Remove | Evidence / replacement owner | Notes |
 | --- | --- | --- |
-| Legacy recipes' single named team-stream build RUN | Dependency-closure build handles all contract dependencies and topological order | In this change |
-| Static assertion policy that treats only team-stream package as sufficient | Manifest-derived closure/phase checks cover existing and newly required packages | In this change |
-No dead production code found in touched recipe/script paths: both Dockerfiles are reached through documented Compose. Do not delete them as “legacy” or confuse server-node remote access with removed LLM provider. No wrapper, alternate package-fallback download, dual-build path or compatibility shim retained. The historical validation Dockerfile remains evidence, not an alternate product recipe.
+| docker/Dockerfile.allinone; docker/Dockerfile.remote-server | Explicit user removal approval; monorepo serves required server roles | Not repairing missing package lists |
+| docker/compose.personal-test.yml; scripts/personal-docker.sh | Sole callers/definition of retired recipes; current server Compose/launcher remains | No command alias/deprecation shim |
+| docker/allinone-start-server.sh; docker/allinone-start-web.sh; docker/remote-server-entrypoint.sh; docker/supervisor-allinone.conf | Dead after approved recipe deletion; references only within retired recipe/supervisor closure | Existing monorepo entrypoint/bootstrap/supervisor untouched |
+| scripts/seed-personal-test-fixtures.py | Dead dedicated helper: only active caller personal-docker.sh; no independent active docs/tests/users found | Recheck at integration; do not remove unrelated fixtures/seed capabilities |
+| docker/README.md | Only current caller root README retired section; directs old commands | Retained server guide becomes sole main-product Docker guide |
+| docker/.gitignore | Dedicated nested ignore source unnecessary after source retirement | Move effective docker/.runtime/ protection into root .gitignore BEFORE removal; no state deletion |
+| Root README old personal-stack section; server Docker guide mentions of two old recipes; static check legacy-image branches/constants | Live support/test expectations invalid after approved retirement | Current monorepo/source/helper/license docs and coverage retained |
+No dead code identified elsewhere in scope. Historical tickets/test-results are evidence, not active code; do not rewrite/remove them. No compatibility wrappers/dual-build fallbacks retained. Existing .dockerignore docker/.runtime data-safety exclusion remains purposeful, not a supported legacy command.
 
 ## Persisted Data / State Transition Decision
-Not Affected. No application source, serialization, database schema, config-reader semantics or data-root changes. Existing data and browser volumes stay under the same owners; no migration or startup admission redesign. Smoke owns disposable data only. AC-006 verifies ordinary reuse without resetting volumes. Migration plan/convention investigation: N/A — no transformation is designed.
+Not Affected. No schema, application reader/writer, container volume, namespace, credential, model, storage layout or semantic change. Source deletion is not container/image/volume destruction. Pre-existing ignored personal state must remain untouched and untracked; root ignore relocation preserves the previous exclusion without preserving an executable workflow. No migration, old-state import, automatic reset or startup gate. Migration authority/plan: N/A — no transformation.
 
 ## Data-Flow Spine Inventory / Primary Execution Spines
-| Spine | Scope / behaviors | Start → end | Owner / purpose |
+| Spine | Scope / related behavior | Start → end | Governing owner / why |
 | --- | --- | --- | --- |
-| DS-001 | Primary end-to-end UC-001 / BEH-001,002,004 | Developer root build → remote builder → runtime staging → ordinary remote entrypoint → backend/mobile readiness | remote-server Dockerfile owns image construction; existing entrypoint/server own startup |
-| DS-002 | Primary end-to-end UC-002 / BEH-001,002,004 | Developer/Compose build → allinone builder → runtime staging → inherited base/supervisor → backend GraphQL → codegen/Nuxt + browser-service readiness | allinone recipe owns materialization; existing base/supervisor/wrappers own process sequencing |
-| DS-003 | Primary end-to-end UC-003 / BEH-003 | Maintainer check → manifests/recipe inspection → static failure or clean source → real image build → normal run/restart assertions → diagnostic/cleanup receipt | scripts/tests owns only verification, not application startup policy |
-| DS-004 | Bounded local DS-003 | Start owned container → bounded HTTP readiness retry → assertions/restart → retain logs → exact resource cleanup | Smoke runner; makes readiness/failure/ownership explicit |
+| DS-005 | Primary end-to-end retained local-source UC-005 / BEH-006 | Developer source helper → build.sh → monorepo root-context builder → runtime staging/entrypoint → backend/mobile/browser/CLI environment | Existing server Docker owners; preserved construction/runtime boundary |
+| DS-006 | Primary end-to-end published UC-005 / BEH-006 | Release tag/manual dispatch → release metadata → monorepo build/push → published image → public launcher node creation → desktop remote backend use | Existing release workflow/public launcher; retained support role |
+| DS-007 | Primary end-to-end cleanup UC-004/006 / BEH-005,007,008 | Approved source retirement → explicit owned tracked edits → current docs/reference/source tests → retained build entrypaths and protected external state | Source owner/verification; avoids broken command references and resource side effects |
 
 ## Spine Narratives / Actors / Ownership Map
-DS-001 materializes every required package before pnpm install, builds workspace dependencies before consumers, and carries the same /app sibling paths to runtime so Node can follow pnpm links. The ordinary entrypoint starts the real backend on test-owned data; mobile bytes come from the server's existing mobile-web path.
-DS-002 follows the same builder graph, retains full web sources/dependencies in runtime, and lets the existing inherited supervisor start the backend and then GraphQL-driven web codegen/Nuxt dev. Base browser services remain governed by Chrome/VNC base lifecycle.
-DS-003 uses source-level graph checking for cheap feedback, then an opt-in script builds exactly the tracked recipes and runs their ordinary lifecycle. License and package assertions accompany HTTP/start/restart checks; cleanup never changes other stacks. DS-004 is only finite readiness/restart/cleanup within that runner, not a new production scheduler.
-Main-line nodes: developer/Compose (requested configuration); Dockerfile (image inputs/order/layout); pnpm (workspace linking/topological builds); existing startup wrappers/base supervisor (process lifecycle); application server/web (HTTP readiness). Test runner owns resources/evidence, not server business invariants.
+DS-005/006 remain byte-identical through production recipe/scripts/application source. The local helper compiles the current checkout with monorepo; pipeline publishes the same recipe for default/zh platforms; launcher creates nodes from a published ref and owns their current data/workspace lifecycle. No retired root-harness asset appears on these retained spines.
+DS-007 replaces the old support surface with actual source absence and documentation/test consistency. Tracked files are removed explicitly; root ignore inherits saved-state protection. The test owner checks known retirement paths and preserved recipe/helper/workflow links, without invoking user resource operations. Current docs route developers to local monorepo source build or public launcher; regular frontend development still uses existing pnpm dev/isolated app commands.
+Actors: User owns removal direction; Solution Designer owns approved boundary/design; Implementation owns explicit source edits; API/E2E owns executable preservation checks; Delivery owns docs/user verification/integration/merge. Runtime owners are unchanged. No newly created state owner or packaging service.
 
-## Thin Facades / Return-Event Spines
-N/A — no new facade or production event path. Script exits/JSON reports are verification outcomes; application APIs remain unchanged.
+## Thin Facades / Return-Event / Bounded Local Spines
+N/A — no new runtime facade, event propagation, loop or scheduler. Existing wrappers are retained unchanged or deleted cleanly, not reshaped. Reference-audit/test command return values are verification results, not a new product spine.
 
-## Off-Spine Concerns Around The Spine
-| Concern | Serves / spine | Responsibility / risk if confused |
+## Off-Spine Concerns
+| Concern | Serves / spine | Responsibility / misplacement risk |
 | --- | --- | --- |
-| License staging | Runtime image owner / DS-001,002 | Preserve files/label; declaration-only test is not built-image proof |
-| Root .dockerignore | Build context owner / DS-001,002 | Excludes host outputs; requires real dependency builds, never use host dist as proof |
-| Source guard | Maintainer / DS-003 | Detect missing staging/build wiring; must not become a production packager or claim startup certification |
-| Evidence/cleanup | Smoke / DS-003,004 | Logs, immutable image IDs, exact resource inventory and cleanup; never global prune |
+| Saved-state ignore rules | User files / DS-007 | Preserve untracked protection without keeping executable old workflow; not a cleanup trigger |
+| Historical reports | Maintainers / DS-007 | Explain BAS-001/removal approval; must not advertise legacy files as current support |
+| License payload and gate | Retained recipe / DS-005,006 | Existing LICENSE/LICENSING.md/NOTICE/OCI label, unchanged; no legal-policy work |
+| Focused source/helper tests | Preserved ownership / DS-007 | Honest proof of deletion/reference/entrypath continuity; not certification of a newly built Docker image |
 
 ## Ownership Boundaries / Encapsulation / Dependency Rules
-Existing Docker CLI/Compose build boundary → recipe → pnpm/package lifecycle; existing ordinary entrypoint → server HTTP boundary; base supervisor → established allinone wrappers. No application source rewrite, bypass to internal APIs, manually manufactured production state or replacement entrypoint to make validation pass.
-Allowed: test reads manifests and Dockerfile instructions; test invokes Docker, runs package imports inside final image, and uses HTTP/GraphQL to seed/read disposable state. Forbidden: imports from web to core, whole-repo staging, custom dependency installer, skipped lifecycle hooks, host node_modules/dist injection, user-profile reads/writes, global Docker cleanup.
-New shared representation is limited to test-local package-name → relative directory/manifest map and build/runtime closures; one meaning each, no competing manifest registry. Reuse logical_instructions/copy_tokens parser already in the context test; extend for relevant stage/order information rather than cloning it elsewhere.
+Delete only root harness and sole-owned helpers. Preserve autobyteus-server-ts/docker/* (except targeted guide wording), scripts/public/docker/*, .github/workflows/release-server-docker.yml, root manifests/lockfile, package source/contracts/licenses and ordinary frontend/desktop paths. Relative package docker/ links are not root legacy refs; don't perform blind global replacements.
+Use exact tracked-file deletes, never `rm -rf docker` or broad cleanup. No `docker rm/rmi/volume rm/system prune`, launcher destroy/upgrade/stop or user-data mutation as part of retirement. Validation can own isolated fixtures/mocks; no testing against running user nodes. Moving-base discovered substantive shared consumer is recovery, not permission to erase it.
 
-## Interface Boundary Mapping / Check
-| Interface | Single subject / explicit identity | Notes |
-| --- | --- | --- |
-| Existing root-context Docker build -f each named recipe | One image; exact file path | Preserved Node/base tags and build args |
-| Python source test command | Repository recipe/manifest wiring | No Docker/provider credentials; source failures nonzero |
-| Proposed legacy_docker_images_smoke.py --output-dir <fresh-path> [--platform linux/amd64|linux/arm64] | These two legacy images; unique owned names and recorded immutable image IDs | Default checks both; fresh output only; optional per-image convenience must not certify both |
-Existing interface responsibility/identity remains clear and natural. No generic multi-owner API introduced.
+## Interface Mapping / Checks
+Retired entrypoints: personal-docker.sh and root Compose/Dockerfiles, intentionally unavailable after approval. Retained entrypoints: server docker-start.sh --build-local/--pull-remote; build.sh/build-multi-arch.sh; server Compose; public autobyteus-docker launcher; release workflow. Each retains its explicit image/node subject and current identity semantics. No new API or ambiguous selector. Domain naming/folder depth remains natural; no facade or module extraction is justified.
 
-## Existing Capability Reuse / Subsystem Allocation
-Extend existing docker/ recipes and scripts/tests verification capability. No shared production builder/framework needed; pnpm already owns graph builds. docker/README.md owns maintainer entry commands. Flat script placement is clearer than a new module tree for a bounded verification script.
-
-## Draft → Reusable Structures → Final File Responsibility Mapping
+## Existing Capability Reuse / File Responsibility / Folder Mapping
 | Path / change | Owner / concrete responsibility | Must not contain |
 | --- | --- | --- |
-| docker/Dockerfile.remote-server — Modify | Existing remote image; add missing manifest/source/runtime package copies and dependency build closure | New server functionality, web dev runtime, provider removal policy |
-| docker/Dockerfile.allinone — Modify | Existing main image; same graph correction, preserve web runtime/base lifecycle | New security/entrypoint/base policy |
-| scripts/tests/test_docker_build_context_sources.py — Modify | Existing source check; derive build/runtime requirements from workspace graph and verify phases/order | Hardcoded “only these two packages”, whole Docker emulator or production assembly |
-| scripts/tests/legacy_docker_images_smoke.py — Add | Opt-in stdlib Python real build/run/license/import/restart/check/cleanup runner | Registry publish, global prune, model calls, existing volume writes |
-| scripts/tests/test_legacy_docker_images_smoke.py — Add if runner logic needs unit coverage | Fake-Docker/error/cleanup protocol assertions, no application mocks as final proof | Claim actual image readiness from doubles |
-| docker/README.md — Modify | Document cheap source check and real-image check, prerequisites and limits | Claim automatic COPY graph staging or public release guarantees |
-Root package.json optional script alias is not necessary. .github/release-server-docker.yml, monorepo Dockerfile, root TESTING.md, application sources and package dependency manifests: unchanged. No new folders/modules beyond existing script area.
+| Nine tracked root docker/ files — Remove | Retired harness closure (including moved nested ignore) | Untracked/ignored user-state deletion |
+| scripts/personal-docker.sh and seed-personal-test-fixtures.py — Remove | Sole-owned retired startup/fixture orchestration | Public launcher/source helper changes |
+| .gitignore — Modify | Add exact docker/.runtime/ exclusion to preserve existing saved legacy state after nested ignore disappears | Broad ignoring, hiding unrelated work, resource cleanup |
+| README.md — Modify | Remove old personal startup section; clearly retain published and monorepo source-build instructions/guide | Claim monorepo runs the retired separate Nuxt dev server |
+| autobyteus-server-ts/docker/README.md — Modify | Remove legacy-image names from current license/release prose; retain monorepo and unrelated gateway statement as appropriate | Unrelated gateway deletion/policy change |
+| scripts/tests/test_docker_build_context_sources.py — Modify | Supported monorepo COPY/build/runtime invariants + retirement/retained-entrypath/ignore guards | Broad graph packaging framework, legacy image build smoke, empty deleted-subject tests |
+Existing logical_instructions/direct_copy_sources/copy_tokens helpers remain their current owned structures. Reduce only obsolete image mappings/install assertion. Keep team-stream dependency materialization check for monorepo and inexpensive checks for the two other already-present required contracts if helpful; no new requirements for arbitrary graphs. No new folders/runtime modules/scripts needed. Flat existing verification file is clearer than a new subsystem.
 
-## Concrete Implementation Shape
-### Builder/runtime delta
-For each missing package, add the manifest+tsconfigs COPY beside existing contracts, full source directory COPY before install, and full directory runtime COPY from builder preserving /app/<directory>. Both images must copy the same missing package outputs; remote already carries only mobile web, allinone carries full web.
-Replace `RUN pnpm -C autobyteus-team-stream-contracts build` in these two files with:
+## Concrete Source/Test Shape
+- `SUPPORTED_DOCKERFILES = (PRIMARY_DOCKERFILE,)`; remove ALLINONE/REMOTE constants and runtime mappings, legacy allinone filtered-install assertion. Rename “all server images” test so it describes retained monorepo.
+- Add small absence guard for the explicit approved retired asset list (those literals are intentional test expectations, not active supported paths).
+- Assert current server Compose/build helpers/release steps still reference an existing monorepo Dockerfile and root context; existing docs link to retained guide and no obsolete startup instructions. Use bounded explicit current files, not a whole-repository generic scanner that flags historical tickets or package-relative Docker links.
+- Guard root `.gitignore` docker/.runtime/ and existing .dockerignore exclusion. If exercising `git check-ignore`, use a test-owned path and verify project rule origin rather than accidentally succeeding through global ignore configuration. Never create/inspect/remove real saved state.
+- Mutation/fixture proof should catch a reintroduced retired asset, a broken retained entrypath and loss of saved-state protection, with exact diagnostics. Use temporary fixtures/in-memory inputs/monkeypatched roots, not permanent edits to shared files or other runs.
+- Update root source-helper documentation to show existing `cd autobyteus-server-ts/docker; ./docker-start.sh up --build-local` alongside preserved published-image usage. This is existing supported behavior, not a new command.
 
-```dockerfile
-RUN pnpm -r --workspace-concurrency=1 \
-  --filter 'autobyteus-server-ts^...' \
-  --filter 'autobyteus^...' \
-  run build
-```
-
-This selects dependencies only (not the server itself or web's ordinary build), includes web workspace dev dependencies, and builds dependency-first using pnpm's existing owner. Retain the explicit Prisma generate, server build (and its prebuild hooks), and web build:mobile-web. Keep existing pnpm install flags/filter roots; allinone's server/web ... selectors already admit new contracts, and backend SDK remains available for prepare:shared. Do not switch to --prod installs: codegen/build/runtime dev paths need their existing tools.
-
-### Cheap dependency-aware source check
-Extend existing logical-instruction parsing to track builder versus runtime stage and the first install/build boundaries. Enumerate actual workspace manifests from current pnpm-workspace.yaml patterns; use a bounded parser of the repository's simple packages-list shape or the existing pnpm workspace enumeration, with clear failure if unsupported syntax is introduced, never silently drop packages. Walk workspace:* edges recursively for build/install roots (server, web, backend SDK). Runtime roots are server production closure and allinone web+dev closure.
-For every required package, check manifest availability by install, complete source availability by compilation, required built entrypoints (dist exports/main/types) through explicit or dependency-filter builds and existing prebuild shared commands, and runtime destination coverage for package.json, compiled outputs and required package node_modules. Existing whole-directory copies qualify; monorepo's split node_modules/dist/manifest copies also qualify. Check root node_modules staging. Recognize the proposed dependency-build RUN before server/mobile build; reject parallel/no-sort flags that undermine ordering. Keep monorepo's unchanged explicit builds admissible, including its existing prepare:shared hook for core/SDK outputs. This is focused wiring validation, not a generic shell/Docker parser.
-Tests must catch original missing packages, an additional required-package fixture not in any hardcoded list, missing runtime copy, missing dependency build and invalid order/staging. Source existence check remains. Document limits: if a new package needs a novel packaging shape or build-hook syntax, extend the checker explicitly and validate real Docker.
-
-### Real-image smoke command
-Stdlib Python and Docker, no model calls/keys, repository-root context regardless caller directory. Build both tracked Dockerfiles with unique temporary tags; optional --platform selects an explicit supported local/emulated target and is recorded. Do not claim unexecuted architecture targets. Record build logs and resulting image ID/digest metadata; inspect/run by ID, clean only the owned tag (not shared image IDs/base layers).
-Use unique named data volumes and exact named containers, optional owned browser profile volume for allinone, and dynamic loopback bindings for backend/web/noVNC/debug ports. Apply the documented allinone Compose environment and existing cap_add/security_opt only to owned allinone container; remote uses ordinary entrypoint. No entrypoint overrides for the actual readiness run. Avoid inherited provider/app environment; explicitly point model host settings at test-local unavailable addresses if needed, never invoke inference.
-Assert /rest/health JSON status=ok and non-error GraphQL response for both; assert /mobile/ HTML and a real bundled referenced asset for remote; allinone web HTML, noVNC HTTP, Chrome debug JSON and process status (as available through inherited supervisor). Import required workspace contracts/core via the server package context in each final image; importing from an arbitrary /app context is not correct pnpm consumer validation.
-Hash /app/{LICENSE,LICENSING.md,NOTICE} against source, inspect OCI label. Write a unique nonsecret setting through updateServerSetting, stop/start owned container on same data volume, recheck readiness and getServerSettings readback; allinone web readiness must recover too. Use bounded configurable readiness waits, retaining first-attempt logs/errors. Finally collect logs/status/HTTP/assertion results and exact cleanup inventory; remove only owned containers/volumes/tags even on failures. Cleanup failure makes result nonzero. No docker system prune, no installed app or user data.
-
-## Applied Patterns / Shared Structure Tightness
-Only existing pnpm dependency graph/topological build and existing Python unittest/logical-instruction parser. No DTO, runtime registry, migration, service layer or framework. Shared package index/closure in the test has explicit name/path/manifest fields; duplicates/unknown dependency targets fail, rather than inventing fallback resolution.
-
-## Backward-Compatibility Rejection Log
-N/A for product schemas. Reject registry fallback for missing workspace packages, temporary validation Dockerfile as shipped solution, skipping contracts/build scripts and loading host dist. Clean-cut correction is the two tracked recipes. Retaining both documented image roles is approved support, not dual-path compatibility.
-
-## Derived Layering
-N/A — existing image construction/startup/test ownership is sufficient.
+## Reusable Structure / Applied Patterns / Compatibility Rejection
+Reuse current unittest/recipe instruction parser; no new shared schema, packager, migration, state machine or API. No DTO-tightness change. Reject legacy script aliases/stubs, pointing old Compose at monorepo under old service identities, and keeping seed/startup files with no consumer. Preserving data exclusion is not a backward-compatibility runtime mechanism. Derived layering: N/A.
 
 ## Change / Refactor Sequence
-1. Patch both recipes' three staging boundaries and graph build RUN; no runtime source changes.
-2. Replace the hardcoded team-only source policy with graph-aware phase/runtime checks; retain monorepo supported-source assertions; add fixture/mutation regression proof.
-3. Add/test opt-in smoke and document commands; implementation self-checks use source checks and actual image smoke as feasible.
-4. API/E2E independently exercises repaired tracked images, lifecycle, package/license and allinone service readiness; preserve failures and external limits.
-5. Delivery syncs docs, presents explicit user verification, refreshes/integrates moving personal, finalizes/pushes per current RELEASE.md, and records receipt. Default no release unless user asks. No shared checkout finalization.
+1. Move exact saved legacy state ignore protection to root .gitignore; explicitly delete the approved tracked closure (no filesystem sweep).
+2. Edit root/server docs and source check supported-image policy; add bounded retirement/entrypath/ignore guards. Don't implement any superseded R1 additions.
+3. Implementation self-checks and independent API/E2E run focused current checks, reference audit and mutation/fixture proof; verify retained production recipe/scripts/runtime dependencies unchanged vs base.
+4. Delivery syncs docs, obtains explicit user verification for finalization, refreshes/integrates origin/personal and re-audits any new consumer, merges/pushes via isolated finalize branch per RELEASE.md. Default no release/tag unless user requests. Preserve current live resources and historic evidence.
 
-## Key Tradeoffs / Risks
-Explicit COPY lists keep packaging narrow and familiar. Build order becomes graph-owned; copy drift becomes cheap-detectable but not automatically repaired. This is more proportionate than staging the whole repository or building a new deploy assembler. Existing package hook duplicate builds/Prisma generation remain deliberately untouched; optimization is not needed for correctness.
-Static checks are bounded and may need explicit maintenance for novel syntax; real Docker is the proof of actual behavior. Base registry/downloads and inherited Chrome/VNC architecture availability remain environmental prerequisites. Allinone runtime compiles dev web on startup, so use realistic readiness waits and retain errors. A new application/security/base-lifecycle requirement must return for design/requirements recovery rather than silently expand scope.
+## Verification Intent / Key Tradeoffs / Risks
+Primary proof is exact source removal plus unchanged retained production inputs and executable source/helper/reference guards. Suggested focused commands (owners read TESTING.md first):
+- `python3 -m unittest scripts/tests/test_docker_build_context_sources.py -v`
+- `python3 -m unittest discover -s scripts/tests -p 'test_*docker*.py' -v` (fake-Docker/source checks, not real image proof; inspect each file's prerequisites)
+- `python3 scripts/check_licensing.py`; `python3 scripts/check_repository_artifact_hygiene.py`
+- `git diff <resolved-base> -- autobyteus-server-ts/docker/Dockerfile.monorepo autobyteus-server-ts/docker/build.sh autobyteus-server-ts/docker/build-multi-arch.sh autobyteus-server-ts/docker/docker-start.sh autobyteus-server-ts/docker/docker-compose.yml .github/workflows/release-server-docker.yml scripts/public/docker` must be empty; inspect unchanged monorepo direct COPY sources and application/manifests inputs.
+- Focused current-doc/reference search excludes historical tickets/test-results and intentional absence guards/data-exclusion rules; include relative-link resolution, not simple substring deletion.
+No build/start proof is required for user-approved removed recipes. A fresh monorepo rebuild is not automatically necessary for this source-only deletion because recipe, production source inputs, build helpers and pipeline are unchanged and share no removed dependency. Running existing images is not changed-source proof. If retained construction/runtime inputs change or audit finds dependency on removed assets, return Design Impact and perform actual current monorepo build/start as the revised scope requires; do not claim prior image validation as a new pass.
+Support consolidation deliberately loses old Nuxt-in-Docker/ephemeral-test-node/fixture convenience. User was informed and approved; no replacement framework is warranted. Other users' saved state may remain; no automated migration or wipe. Moving personal may add a new consumer; recheck before merge. Known unrelated gateway/build defects remain out of scope, truthfully reported if encountered.
 
 ## Guidance For Implementation
-Own only implementation artifacts/checks; preserve approved R1 and canonical D1. Read applicable skill/AGENTS/DESIGN/TESTING gates. Work in the isolated task branch/worktree, do not edit historical evidence or the shared personal checkout. Stage paths explicitly, keep new script compatible with available Python 3.9. Focus actual Docker lifecycle proof; no full desktop build or paid provider proof is relevant. Return material requirement/design gaps rather than broadening the direct route.
+Read R2/D2 rather than R1 git history as current authority. Use existing isolated worktree; stage only exact files; do not write shared personal. Keep source deletions bounded and data guard purposeful. Owner-specific reports/revisions and downstream executable/delivery evidence remain their specialists' responsibilities. No frontend design, desktop packaging or paid provider calls needed for source-only retirement.
 
 ## Task Size And Architectural Risk (Completed Last)
-- task_size: Medium — two deployment recipes plus existing source check, bounded smoke runner/tests and Docker usage documentation, all within current ownership.
-- architectural_risk: Low — deterministic package-payload/staging correction and existing pnpm graph use; no material new/changed deployment contract: same bases, roles, port/env/data paths, identities, entrypoint/supervisor, application APIs, persistence and security model. E/A evidence establishes the intended path; unknowns are ordinary execution/download risks, not unresolved architectural decisions.
-- Payload inventory: missing package manifests/tsconfigs/sources/dist/node_modules/license payloads, generated mobile assets; notes volume does not inflate risk.
-- Structural delta: only recipe staging/build instructions and non-production test tooling; no runtime owner/API/type/schema/concurrency changes. Existing structural paths consume the corrected payload under current contracts.
-- Escalation trigger: need to change bases, runtime identity/security flags beyond existing Compose, startup process ownership, application code/data/schema, public release workflow or introduce a dynamic packager/new contract → Design Impact or Requirement Gap, reclassify before dependent implementation. New intended behavior requires renewed approval.
-
-## SR-003 Forward-Work Hold
-User requested first investigating what the images are used for and whether they are needed. usage-investigation.md distinguishes the developer test stack from current monorepo launcher nodes. D1 has not been forwarded. Retain it as the repair proposal, but do not implement until the user settles DEC-004. Retirement would require renewed intended-behavior approval and a replacement design; no deletion authorized.
+- task_size: Medium — 11 source/config/helper/doc deletions plus bounded root-ignore, two guide and existing source-test updates within one deployment capability. Artifact volume is not implementation size.
+- architectural_risk: High — explicitly removes formerly documented deployment/command/image support contracts. User-authorized and runtime-independent does not make that operational contract loss Low. No material app/API/schema/concurrency/security model change; preserve monorepo spine and saved state; independent review determined by rules.
+- Payload versus structural evidence: Removed README/config/helper assets are bounded; structural delta is retiring two deployment recipes and their executable command/Compose/startup boundary. No new runtime owner/dependency graph/frame or persistence surface.
+- Escalation: retained pipeline/helper/launcher/runtime input changes, new active consumer, resource deletion/migration, proposed compatibility alias or broader gateway/frontend retirement → recover requirement/design and reclassify before dependent work. No silent risk downgrade or scope expansion.
