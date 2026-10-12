@@ -543,9 +543,20 @@ describe('TokenUsageMeterPanel', () => {
       expect(primary().get('[data-test="context-bar-fill"]').classes()).toContain('bg-slate-300');
       expect(primary().get('[data-test="context-tokens"]').classes()).toContain('text-slate-400');
 
-      // The host's next call advances its exact revision: the note goes and the value shows normally.
+      // A save without a model call (a turn-end remainder after a manual /compact) and a child's calls
+      // in the roll-up keep the note (SR-012).
       meterStore.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ latestRuntimeKind: runtime,
-        latestPromptTokens: 42_000, effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 4.2, revision: 16 }) });
+        latestPromptTokens: 911_000, effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 91.1,
+        usageReportCount: 12, revision: 16 }) });
+      upsertStandaloneRunSummary(meterStore, buildSummary({ latestRuntimeKind: runtime, latestPromptTokens: 911_000,
+        effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 91.1, usageReportCount: 35, revision: 45 }));
+      await nextTick();
+      expect(primary().find('[data-test="context-compacted-note"]').exists()).toBe(true);
+
+      // The host's next counted call: the note goes and the value shows normally.
+      meterStore.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ latestRuntimeKind: runtime,
+        latestPromptTokens: 42_000, effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 4.2,
+        usageReportCount: 13, revision: 17 }) });
       await nextTick();
       expect(primary().find('[data-test="context-compacted-note"]').exists()).toBe(false);
       expect(primary().get('[data-test="context-bar-fill"]').classes()).toContain('bg-blue-500');

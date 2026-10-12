@@ -263,7 +263,7 @@ const meterStore = useTokenUsageMeterStore();
 /**
  * D-13: after a completed compaction on a runtime whose new size arrives only with its next call,
  * the previous reading stays, muted, with a note. The card's run (the host for a standalone
- * roll-up) owns the mark through its exact-run revision.
+ * roll-up) owns the mark through its exact-run model-call count.
  */
 const awaitingPostCompactionReading = computed(() => {
   const summary = primarySummary.value;

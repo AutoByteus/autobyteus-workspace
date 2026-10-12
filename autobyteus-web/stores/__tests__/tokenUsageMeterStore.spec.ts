@@ -513,32 +513,37 @@ describe('tokenUsageMeterStore', () => {
     expect(JSON.stringify(store.getRunSummary('run-1'))).not.toContain('haiku');
   });
 
-  it('awaits the next reading after a completed compaction until a newer exact revision arrives (D-13)', () => {
+  it('awaits the next reading after a completed compaction until the next counted model call (D-13)', () => {
     const store = useTokenUsageMeterStore();
-    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ revision: 7, latestPromptTokens: 911_000 }) });
+    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 12, revision: 7, latestPromptTokens: 911_000 }) });
     expect(store.isAwaitingPostCompactionReading('run-1')).toBe(false);
     store.markCompactionCompleted('run-1');
     expect(store.isAwaitingPostCompactionReading('run-1')).toBe(true);
-    // The standalone roll-up advances with children; only the run's exact revision clears the mark.
-    store.upsertRecordBackedStandaloneRunSummary({ runId: 'run-1', summary: buildSummary({ revision: 20 }) });
+    // A save without a call (the Claude turn-end remainder after a manual /compact) keeps the mark (SR-012).
+    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 12, revision: 8, latestPromptTokens: 911_000 }) });
     expect(store.isAwaitingPostCompactionReading('run-1')).toBe(true);
-    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ revision: 8, latestPromptTokens: 42_000 }) });
+    // The standalone roll-up advances with children's calls; only the run's exact count clears the mark.
+    store.upsertRecordBackedStandaloneRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 30, revision: 20 }) });
+    expect(store.isAwaitingPostCompactionReading('run-1')).toBe(true);
+    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 13, revision: 9, latestPromptTokens: 42_000 }) });
     expect(store.isAwaitingPostCompactionReading('run-1')).toBe(false);
     expect(store.isAwaitingPostCompactionReading('other-run')).toBe(false);
   });
 
-  it('marks a Team member through its member summary and clears on its next live summary (D-13)', () => {
+  it('marks a Team member through its member summary and clears on its next counted call (D-13)', () => {
     const store = useTokenUsageMeterStore();
-    store.applyTeamTokenUsage('team-run-1', 'member-run-1', buildTeamPayload('member-run-1', {
-      usage_event_id: 'before-compaction',
-      run_summary_after_event: buildSummaryDto({ run_id: 'member-run-1', root_team_run_id: 'team-run-1', revision: 4 }),
-    }));
+    const member = (eventId: string, usage_report_count: number, revision: number, reportsModelCall = true) =>
+      store.applyTeamTokenUsage('team-run-1', 'member-run-1', buildTeamPayload('member-run-1', {
+        usage_event_id: eventId,
+        reports_model_call: reportsModelCall,
+        run_summary_after_event: buildSummaryDto({ run_id: 'member-run-1', root_team_run_id: 'team-run-1', usage_report_count, revision }),
+      }));
+    member('before-compaction', 4, 4);
     store.markCompactionCompleted('member-run-1');
     expect(store.isAwaitingPostCompactionReading('member-run-1')).toBe(true);
-    store.applyTeamTokenUsage('team-run-1', 'member-run-1', buildTeamPayload('member-run-1', {
-      usage_event_id: 'next-call',
-      run_summary_after_event: buildSummaryDto({ run_id: 'member-run-1', root_team_run_id: 'team-run-1', revision: 5 }),
-    }));
+    member('turn-end-remainder', 4, 5, false);
+    expect(store.isAwaitingPostCompactionReading('member-run-1')).toBe(true);
+    member('next-call', 5, 6);
     expect(store.isAwaitingPostCompactionReading('member-run-1')).toBe(false);
   });
 
@@ -546,7 +551,7 @@ describe('tokenUsageMeterStore', () => {
     const store = useTokenUsageMeterStore();
     store.markCompactionCompleted('run-1');
     expect(store.isAwaitingPostCompactionReading('run-1')).toBe(true);
-    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ revision: 1 }) });
+    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 1, revision: 1 }) });
     expect(store.isAwaitingPostCompactionReading('run-1')).toBe(false);
   });
 
