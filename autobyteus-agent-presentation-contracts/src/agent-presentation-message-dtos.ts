@@ -55,6 +55,7 @@ const token = {
   missing_price_dimensions: z.array(nonEmptyStringSchema), pricing_policy_key: nullableNonEmptyStringSchema,
   selected_pricing_tier_id: nullableNonEmptyStringSchema, latest_prompt_tokens: nullableFiniteNumberSchema,
   effective_context_window_tokens: nullableFiniteNumberSchema, context_window_usage_percent: nullableFiniteNumberSchema,
+  context_compaction_threshold_tokens: nullableFiniteNumberSchema, reports_model_call: z.boolean(),
   run_summary_after_event: agentTokenUsageRunSummarySchema.nullable(), quality_flags: z.array(nonEmptyStringSchema),
 };
 

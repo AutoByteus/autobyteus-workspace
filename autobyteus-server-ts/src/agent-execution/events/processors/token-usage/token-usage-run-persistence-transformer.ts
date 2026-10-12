@@ -46,7 +46,7 @@ export class TokenUsageRunPersistenceTransformer implements AgentRunEventTransfo
           ...event,
           payload: addTokenUsageQualityFlag(
             event.payload.ingestion_kind === "claude_sdk_result"
-              ? { ...event.payload, claude_sdk_model_usage: [], claude_sdk_main_loop_usage: null, raw_event_json: null, raw_usage_json: null }
+              ? { ...event.payload, claude_sdk_model_usage: [], raw_event_json: null, raw_usage_json: null }
               : event.payload,
             publicSummaryUnavailable
               ? "token_usage_public_summary_unavailable"

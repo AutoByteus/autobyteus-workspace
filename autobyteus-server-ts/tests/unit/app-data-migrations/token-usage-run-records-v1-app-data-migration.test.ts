@@ -26,6 +26,7 @@ const schemaMigrations = [
   "20260819090000_add_token_usage_run_records",
   // Normal startup expands the current target before app-data conversion.
   "20260923130000_add_claude_sdk_usage_state",
+  "20261009120000_token_meter_context_readings",
 ] as const;
 
 const readMigration = (migrationId: string): Promise<string> => fs.readFile(
@@ -255,6 +256,71 @@ describe("TokenUsageRunRecordsV1AppDataMigration released unknown-input semantic
         summary: { scannedCount: 0, migratedCount: 0, failedCount: 0 },
       });
       await expect(prisma.tokenUsageRunRecord.count()).resolves.toBe(2);
+    } finally {
+      await prisma.$disconnect();
+      await fs.rm(directory, { recursive: true, force: true });
+    }
+  });
+
+  it("consolidates released Claude SDK ledger readings as unavailable and keeps other runtimes' readings (DEC-005)", async () => {
+    const directory = await fs.mkdtemp(path.join(os.tmpdir(), "token-usage-run-records-claude-readings-"));
+    const databasePath = path.join(directory, "upgrade.sqlite");
+    const database = new DatabaseSync(databasePath);
+    try {
+      for (const migrationId of schemaMigrations) database.exec(await readMigration(migrationId));
+      const insert = database.prepare(`INSERT INTO "token_usage_ledger_events" (
+        "usage_event_id", "idempotency_key", "observed_at", "run_id", "runtime_kind",
+        "model_provider", "model_identifier", "model_value", "ingestion_kind", "usage_scope",
+        "input_token_semantic", "reported_input_tokens", "reported_output_tokens", "reported_total_tokens",
+        "accounting_input_tokens", "accounting_output_tokens", "accounting_total_tokens",
+        "standard_input_tokens", "cache_miss_input_tokens", "cache_read_input_tokens",
+        "cache_creation_input_tokens", "cache_creation_5m_input_tokens", "cache_creation_1h_input_tokens",
+        "cache_state", "reasoning_output_tokens", "billable_input_tokens", "billable_output_tokens",
+        "pricing_status", "missing_price_dimensions_json", "estimated_api_total_cost", "api_cost_status",
+        "latest_prompt_tokens", "effective_context_window_tokens", "context_window_usage_percent"
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 'positive', 0, ?, ?, 'missing', '[]', NULL, 'price_missing', ?, ?, ?)`);
+      // A released Claude SDK turn: its reading was the multi-call result.usage sum (402.5 %).
+      insert.run("claude-turn-1", "idem-claude-turn-1", "2026-06-26T10:00:00.000Z", "claude-ledger-run",
+        "claude_agent_sdk", "ANTHROPIC", "claude-opus-5-5", "claude-opus-5-5", "claude_sdk_result", "per_turn",
+        "base_excludes_cache", 34, 443, 477, 25_027, 443, 25_470, 34, 34, 13_656, 11_303, 25_027, 443,
+        4_025_193, 1_000_000, 402.5193);
+      insert.run("codex-call-1", "idem-codex-call-1", "2026-06-26T10:01:00.000Z", "codex-ledger-run",
+        "codex_app_server", "OPENAI", "gpt-released", "gpt-released", "codex_thread_token_usage", "per_call",
+        "gross_includes_cache", 92_936, 6, 92_942, 92_936, 6, 92_942, 41_992, 41_992, 50_944, 0, 92_936, 6,
+        92_942, 258_400, 35.97);
+    } finally {
+      database.close();
+    }
+    const prisma = new PrismaClient({ datasourceUrl: `file:${databasePath}` });
+    try {
+      const result = await new TokenUsageRunRecordsV1AppDataMigration(
+        new LegacyTokenUsageConsolidationRepository(prisma),
+      ).execute();
+      expect(result).toMatchObject({ status: "SUCCEEDED", summary: { scannedCount: 2, migratedCount: 2, failedCount: 0 } });
+      const repository = new SqlTokenUsageRunRepository(prisma);
+      const claude = await repository.getByRunId("claude-ledger-run");
+      expect(claude).toMatchObject({
+        latestPromptTokens: null,
+        effectiveContextWindowTokens: null,
+        contextWindowUsagePercent: null,
+        usageReportCount: 1n,
+        latestRuntimeKind: "claude_agent_sdk",
+      });
+      expect(claude!.tokenTotals).toMatchObject({
+        accounting_input_tokens: 25_027n,
+        accounting_output_tokens: 443n,
+        accounting_total_tokens: 25_470n,
+        cache_read_input_tokens: 13_656n,
+        cache_creation_input_tokens: 11_303n,
+      });
+      const codex = await repository.getByRunId("codex-ledger-run");
+      expect(codex).toMatchObject({
+        latestPromptTokens: 92_942n,
+        effectiveContextWindowTokens: 258_400n,
+        contextWindowUsagePercent: 35.97,
+        usageReportCount: 1n,
+      });
+      expect(codex!.tokenTotals.accounting_total_tokens).toBe(92_942n);
     } finally {
       await prisma.$disconnect();
       await fs.rm(directory, { recursive: true, force: true });

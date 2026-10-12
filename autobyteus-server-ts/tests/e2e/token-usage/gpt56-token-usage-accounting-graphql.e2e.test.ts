@@ -103,6 +103,7 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
         runtime_kind: "autobyteus",
         ingestion_kind: "autobyteus_llm_phase",
         usage_scope: "per_call",
+        reports_model_call: true,
         input_token_semantic: "gross_includes_cache",
         model_provider: "OPENAI",
         model_identifier: input.modelId,

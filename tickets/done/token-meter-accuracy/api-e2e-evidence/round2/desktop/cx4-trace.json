@@ -1,0 +1,62 @@
+[
+ {
+  "t": 841,
+  "type": "TURN_STARTED",
+  "phase": null,
+  "op": null,
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 843,
+  "type": "COMPACTION_STATUS",
+  "phase": "compacting",
+  "op": "01a12e67-2ade-73c2-a0eb-949d7b4b018f",
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 4888,
+  "type": "TOKEN_USAGE_UPDATED",
+  "phase": null,
+  "op": null,
+  "ingestion": "codex_thread_token_usage",
+  "rev": 4,
+  "count": 3,
+  "prompt": 16980
+ },
+ {
+  "t": 4888,
+  "type": "COMPACTION_STATUS",
+  "phase": "compacted",
+  "op": "01a12e67-2ade-73c2-a0eb-949d7b4b018f",
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 5935,
+  "type": "TOKEN_USAGE_UPDATED",
+  "phase": null,
+  "op": null,
+  "ingestion": "codex_thread_token_usage",
+  "rev": 5,
+  "count": 4,
+  "prompt": 25789
+ },
+ {
+  "t": 5935,
+  "type": "TURN_COMPLETED",
+  "phase": null,
+  "op": null,
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ }
+]

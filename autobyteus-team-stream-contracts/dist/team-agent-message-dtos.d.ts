@@ -306,6 +306,8 @@ export declare const teamAgentPayloadSchemas: {
         latest_prompt_tokens: z.ZodNullable<z.ZodNumber>;
         effective_context_window_tokens: z.ZodNullable<z.ZodNumber>;
         context_window_usage_percent: z.ZodNullable<z.ZodNumber>;
+        context_compaction_threshold_tokens: z.ZodNullable<z.ZodNumber>;
+        reports_model_call: z.ZodBoolean;
         quality_flags: z.ZodArray<z.ZodString>;
         run_summary_after_event: z.ZodNullable<z.ZodObject<{
             run_id: z.ZodString;
@@ -435,12 +437,14 @@ export declare const teamAgentPayloadSchemas: {
             latest_prompt_tokens: z.ZodNullable<z.ZodNumber>;
             effective_context_window_tokens: z.ZodNullable<z.ZodNumber>;
             context_window_usage_percent: z.ZodNullable<z.ZodNumber>;
+            context_compaction_threshold_tokens: z.ZodNullable<z.ZodNumber>;
             latest_model_provider: z.ZodNullable<z.ZodString>;
             latest_model_identifier: z.ZodNullable<z.ZodString>;
             latest_selected_raw_model_id: z.ZodOptional<z.ZodNullable<z.ZodString>>;
             has_cache_write_rate_assumption: z.ZodOptional<z.ZodBoolean>;
             latest_runtime_kind: z.ZodNullable<z.ZodString>;
             usage_report_count: z.ZodNumber;
+            revision: z.ZodNumber;
             updated_at: z.ZodNullable<z.ZodString>;
         }, z.core.$strict>>;
         change_sequence: z.ZodNumber;

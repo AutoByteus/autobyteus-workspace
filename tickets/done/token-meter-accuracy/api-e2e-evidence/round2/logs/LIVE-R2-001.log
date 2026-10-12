@@ -1,0 +1,178 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [path-claude]
+Agent websocket attached for run claude-live-usage-785856df-89d1-4129-b34f-6521d74898ab
+Created agent session c511bca1-c46d-4650-8f99-febec02de0ea for run claude-live-usage-785856df-89d1-4129-b34f-6521d74898ab
+Agent WebSocket connected: session=c511bca1-c46d-4650-8f99-febec02de0ea, run=claude-live-usage-785856df-89d1-4129-b34f-6521d74898ab
+
+stdout | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [path-claude]
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [path-claude]
+prisma:info Starting a sqlite pool with 21 connections.
+
+stderr | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [path-claude]
+Claude process for run 'claude-live-usage-785856df-89d1-4129-b34f-6521d74898ab' exited: Error: Claude Code process terminated by signal SIGKILL
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11802)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts:199:16)
+    at ChildProcess.onExit (/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts:180:33)
+    at ChildProcess.emit (node:events:531:35)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:293:12)
+
+stdout | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [path-claude]
+Closed agent session c511bca1-c46d-4650-8f99-febec02de0ea
+Agent WebSocket disconnected: c511bca1-c46d-4650-8f99-febec02de0ea
+
+stdout | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [path-claude]
+Agent websocket attached for run claude-live-usage-785856df-89d1-4129-b34f-6521d74898ab
+Created agent session 6676a130-90d3-40b1-ba2b-50e12a8a465b for run claude-live-usage-785856df-89d1-4129-b34f-6521d74898ab
+Agent WebSocket connected: session=6676a130-90d3-40b1-ba2b-50e12a8a465b, run=claude-live-usage-785856df-89d1-4129-b34f-6521d74898ab
+
+stdout | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [path-claude]
+[RSK-007 path-claude] per-turn usage: [{"turnId":"09b19511","restartExpected":false,"raw":{"cumulative":17432,"seriesRestart":false},"accounting":[16245,1187],"flags":[]},{"turnId":"b12d817e","restartExpected":false,"raw":{"cumulative":33715,"seriesRestart":false},"accounting":[16283,0],"flags":[]},{"turnId":"d9f20812","restartExpected":true,"raw":{"cumulative":16665,"seriesRestart":true},"accounting":[16665,null],"flags":["claude_sdk_series_restart_rebaselined"]},{"turnId":"30ea6a6a","restartExpected":false,"raw":{"cumulative":33371,"seriesRestart":false},"accounting":[16706,0],"flags":[]},{"turnId":"f76a7e2a","restartExpected":true,"raw":{"cumulative":50162,"seriesRestart":true},"accounting":[16791,null],"flags":["claude_sdk_series_restart_rebaselined"]},{"turnId":"aaf4e732","restartExpected":false,"raw":{"cumulative":66993,"seriesRestart":false},"accounting":[16831,0],"flags":[]}]
+
+stdout | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [path-claude]
+Closed agent session 6676a130-90d3-40b1-ba2b-50e12a8a465b
+Agent WebSocket disconnected: 6676a130-90d3-40b1-ba2b-50e12a8a465b
+
+stdout | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [sdk-bundled-claude]
+Agent websocket attached for run claude-live-usage-a426372b-df43-4cac-8e67-c38cf4d841ca
+Created agent session 51c8f58a-9f1e-4c80-879a-214e22272260 for run claude-live-usage-a426372b-df43-4cac-8e67-c38cf4d841ca
+Agent WebSocket connected: session=51c8f58a-9f1e-4c80-879a-214e22272260, run=claude-live-usage-a426372b-df43-4cac-8e67-c38cf4d841ca
+
+stderr | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [sdk-bundled-claude]
+Claude process for run 'claude-live-usage-a426372b-df43-4cac-8e67-c38cf4d841ca' exited: Error: Claude Code process terminated by signal SIGKILL
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11802)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts:199:16)
+    at ChildProcess.onExit (/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts:180:33)
+    at ChildProcess.emit (node:events:531:35)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:293:12)
+
+stdout | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [sdk-bundled-claude]
+Closed agent session 51c8f58a-9f1e-4c80-879a-214e22272260
+Agent WebSocket disconnected: 51c8f58a-9f1e-4c80-879a-214e22272260
+
+stdout | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [sdk-bundled-claude]
+Agent websocket attached for run claude-live-usage-a426372b-df43-4cac-8e67-c38cf4d841ca
+Created agent session 02714cc7-683a-4446-ada5-49907fd53602 for run claude-live-usage-a426372b-df43-4cac-8e67-c38cf4d841ca
+Agent WebSocket connected: session=02714cc7-683a-4446-ada5-49907fd53602, run=claude-live-usage-a426372b-df43-4cac-8e67-c38cf4d841ca
+
+stdout | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [sdk-bundled-claude]
+[RSK-007 sdk-bundled-claude] per-turn usage: [{"turnId":"98b2dba0","restartExpected":false,"raw":{"cumulative":14153,"seriesRestart":false},"accounting":[13247,906],"flags":[]},{"turnId":"eaac89c3","restartExpected":false,"raw":{"cumulative":27473,"seriesRestart":false},"accounting":[13320,0],"flags":[]},{"turnId":"28e029bf","restartExpected":true,"raw":{"cumulative":13690,"seriesRestart":true},"accounting":[13690,null],"flags":["claude_sdk_series_restart_rebaselined"]},{"turnId":"0c6ccaf9","restartExpected":false,"raw":{"cumulative":27457,"seriesRestart":false},"accounting":[13767,0],"flags":[]},{"turnId":"4e958873","restartExpected":true,"raw":{"cumulative":41301,"seriesRestart":true},"accounting":[13844,null],"flags":["claude_sdk_series_restart_rebaselined"]},{"turnId":"bc3a3b02","restartExpected":false,"raw":{"cumulative":55220,"seriesRestart":false},"accounting":[13919,0],"flags":[]}]
+
+stdout | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts > Claude streaming session lifecycle (live E2E) > counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [sdk-bundled-claude]
+Closed agent session 02714cc7-683a-4446-ada5-49907fd53602
+Agent WebSocket disconnected: 02714cc7-683a-4446-ada5-49907fd53602
+
+ ✓ tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts (16 tests | 14 skipped) 40002ms
+     ✓ counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [path-claude]  21786ms
+     ✓ counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [sdk-bundled-claude]  18215ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 14 skipped (16)
+   Start at  06:21:42
+   Duration  45.35s (transform 3.23s, setup 25ms, import 4.80s, tests 40.00s, environment 0ms)
+

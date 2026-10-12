@@ -13,10 +13,12 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 // AGY token usage through the real server (REQ-002, AC-002, server side of AC-003). The fake AGY CLI
-// (tests/fixtures/agy-failure-cli.mjs, case usage_report) replays, one per user turn, the 11 `result` events of
-// a verbatim AGY 1.2.16 recording: cumulative usage per process, `input_tokens` without the cache reads,
-// `total_tokens = input + output`. The Token Meter must count gross input = input + cache read and the
-// cache miss = input, on the WebSocket deltas and on the persisted run record read through GraphQL.
+// (tests/fixtures/agy-failure-cli.mjs, case usage_report) replays, one per user turn, the 11 turns of a verbatim
+// AGY 1.2.16 recording: the DONE `agent_response` step with that call's usage (`input_tokens` without the cache
+// reads, `total_tokens = input + output`), then the turn's cumulative `result`. Usage is taken per step (one model
+// call each; token-meter-accuracy D-5) and the result's cumulative usage is not mapped. The Token Meter must count
+// gross input = input + cache read and the cache miss = input, on the WebSocket deltas and on the persisted run
+// record read through GraphQL.
 // Run: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs
 const fakeCommand = process.env["ANTIGRAVITY_CLI_COMMAND"] ?? "";
 const enabled = process.env["RUN_AGY_FAILURE_E2E"] === "1" &&
@@ -31,8 +33,8 @@ type Summary = {
 };
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// The recording has 11 turns with two automatic AGY compactions (turns 5 and 9). Cumulative usage of
-// turns 1-3 (input excludes cache reads), asserted frame by frame:
+// The recording has 11 turns, one model call each, with two automatic AGY compactions (turns 5 and 9). Cumulative
+// usage of turns 1-3 (input excludes cache reads); each turn's call is the difference, asserted frame by frame:
 //   turn 1: input  91,684  cache read       0
 //   turn 2: input 173,199  cache read  90,059
 //   turn 3: input 256,802  cache read 257,920  (more cache reads than uncached input)
@@ -132,6 +134,7 @@ suite("AGY token usage counts cache reads in gross input through the real server
       if (!expected) continue;
       expect(frame, `turn ${index + 1} usage frame`).toMatchObject({
         runtime_kind: "antigravity_cli",
+        usage_scope: "per_call",
         input_token_semantic: "base_excludes_cache",
         accounting_input_tokens: expected.gross,
         standard_input_tokens: expected.miss,
