@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer pass notice (ARCH-REV-002), round 1 | N/A | `Initial Baseline` | SR-004, ARCH-REV-002 | Implemented; local checks pass; ready for Code Review |
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 (round 1, `Fail`) | CR-001 | `Local Fix` | SR-004, ARCH-REV-002, CRR-001 | Dead `RootTeamRun.getAgentExecution` removed; checks pass; back to delta source review |
+| IR-003 | Solution Designer, `handoff-sr-005-switcher-seeding.md` (SR-005 + SR-006, reopened) | N/A (reopened bug + user request) | `Initial Baseline` of the reopened round (direct route) | SR-005, SR-006 | Switcher/carried starts seed members; Settings collaborators/copies use the collapsible read-only member rows; checks pass |
 
 ## Revision Entries
 
@@ -55,3 +56,28 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: server typecheck 0 errors; `vitest run tests/unit/agent-team-execution tests/unit/agent-collaboration` 65 files / 532 tests pass; `team-root-collaborators.test.ts` with the re-expressed assertions 7/7; full `test:unit` (see handoff).
 - Next recipient or routing: `/software_engineering_team/code_reviewer` (targeted delta review).
 - Remaining limitations or risks: unchanged from IR-001 plus the CRR-001 non-blocking residual risks (copies without a recorded source show "As configured in this run" with no Team-row model; `chatDraftStore.ts` 492 / `teamExecutionViewState.ts` 497 lines near the limit; Settings reads the editor's loaded tree).
+
+### IR-003 — Reopened: switcher starts seed members (SR-005); Settings uses the collapsible member rows (SR-006)
+
+- Triggering role, report path, and round: `/software_engineering_team/solution_designer`, `handoff-sr-005-switcher-seeding.md` (Architecture Design Complete, SR-005, then SR-006 with the "same look as Members" addendum); reopened round after release `v1.5.3-beta.1`.
+- Triggering finding IDs: N/A (user-reported defect, Task context screenshots 37–39; user request, screenshots 40–42).
+- Classification: `Initial Baseline` of the reopened round (direct route, `Medium` / `Low`).
+- Prior authoritative result: round 1 as released (IR-002 + API/E2E + delivery); New-chat heading switcher and carried starts did not seed members; Settings listed collaborators/copies in a flat, always-expanded `RunDelegatedLaunchList`.
+- Current authoritative result: see `implementation-handoff.md` → "Reopened Round (IR-003)".
+- Related solution revision IDs: SR-005, SR-006
+- Related architecture-review revision IDs: N/A (direct route)
+- Related code-review revision IDs: N/A (direct route)
+- Related API/E2E revision IDs: N/A (new round)
+- Related delivery revision IDs: N/A (new round)
+- Why recorded: reopened implementation round.
+- Approved behavior or requirement IDs affected: REQ-009/AC-011 (BEH-005), REQ-007/AC-010 refined by SR-006 (BEH-008).
+- Implementation delta (web only):
+  - `stores/chatDraftStore.ts`: `retarget` and carried `startForDefinition` seed Team members; `seedTeamMembers` loads definitions and handles its own errors (used by fresh, carried and switcher starts).
+  - `stores/agentOrgLaunchDraftStore.ts`: carried Org start seeds placed teams and agents.
+  - `utils/runSettings/runMemberTree.ts`: `launchNotes` (tagged notes), optional `badge`/`sourceKey`, exported `memberNode`, `countRunMemberNotes`.
+  - `utils/runSettings/delegatedLaunchRows.ts`: projects read-only `RunMemberNode` trees (keys `<address>@<run ID>`; Team note once; launch/coordinator lookups for copies without a recorded source).
+  - `components/run-settings/RunMemberRow.vue`, `RunMembersSection.vue`, `ExistingRunSettings.vue`, `components/workspace/config/ExistingRunConfigEditor.vue`; removed `RunDelegatedLaunchList.vue` + spec; localization key `runSettings.members.noteCount`.
+  - Tests: `chatDraftStore.spec.ts` (5 SR-005 cases), `agentOrgLaunchDraftStore.spec.ts` (carried Org), `delegatedLaunchRows.spec.ts` (rewritten for nodes), new `RunDelegatedLaunchSection.spec.ts`; node fixtures gained `launchNotes`. Probe: new DLP-008; Settings reader expands rows; collapsed checks (running/stopped); Team-note-once assertion; precise read-only check.
+- Local validation and result: web full suite 4243 pass; guards pass; bug tests and DLP-008 fail on the old stores and pass now; full DLP probe (see handoff).
+- Next recipient or routing: per `get_handoff_rules` (direct API/E2E).
+- Remaining limitations or risks: user verification pending; 390 px nested-card clipping (existing layout); `chatDraftStore.ts` at the 500-line limit.
