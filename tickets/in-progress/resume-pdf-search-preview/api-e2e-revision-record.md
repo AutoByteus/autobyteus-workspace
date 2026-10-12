@@ -20,3 +20,5 @@ None — no prior completed API round. Baseline iteration failures: ineffective 
 - Route: Code Review, separate proportional successful durable-test review **Required**, not failure-origin review/direct Delivery.
 - Cleanup: own browser/groups/ports/host/root/fixtures/DB/config/Corepack homes/cache and initial own ignored registry removed; receipts retained. Original read-only hash unchanged7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5. Upstream dirty history/build outputs untouched/unstaged.
 - AC-004 **Delivery-owned/unexecuted**: actual host/runtime/frontend pin, safe authorized8001 rollout/rollback/timing, explicit user close/re-search/open, integrity/final cleanup. No deployed/full-ticket/user-verification Pass; /app baseline untouched; no public release. Native-shell/Windows/symlink redesign outside changed validation scope.
+
+- Final reporting clarification: full-branch whitespace check has PDF xref/raw-log formatting observations, not a claimed clean result; scoped text source/tests/docs check Pass. Validated PDF bytes/raw failure evidence unchanged. Fresh passed High-risk handoff selects /software_engineering_team/code_reviewer.

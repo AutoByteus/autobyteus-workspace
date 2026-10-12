@@ -53,7 +53,7 @@ OWN=/tmp/resume-pdf-api.RwYhMo, created and removed here. Node22.23.3; root pnpm
 | pnpm -C autobyteus-web test:nuxt stores/__tests__/fileExplorerStore.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts composables/__tests__/useWorkspaceFileExplorer.spec.ts components/fileExplorer/__tests__ --run |9/58Pass,no skips; named composable path absent/no count claimed; api-web-focused-rerun.log; initial collection failure retained |
 | pnpm -C autobyteus-server-ts prebuild; pnpm -C autobyteus-server-ts build |Pass Prisma/current TypeScript policy/sanitized built bootstrap; api-prebuild.log/api-build.log |
 | pnpm -C autobyteus-web test:e2e:search-pdf-preview --output-dir ../tickets/in-progress/resume-pdf-search-preview/evidence/api-browser-run03 --ledger-file /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-test-case-ledger.md |API-002/API-003Pass plus cleanup; api-browser-run03.log/evidence.json |
-| node --check autobyteus-web/tests/e2e/search-pdf-preview-probe.mjs; git diff --check |Pass |
+| node --check autobyteus-web/tests/e2e/search-pdf-preview-probe.mjs; git diff --check 7cd2a2db5..HEAD -- . (exclude raw evidence and PDF fixture with pathspecs) |Pass for source/test/document text scope |
 Temporary Vitest config retained runner settings and standard setups, prepended AppConfigProvider.initialize({appDataDir:process.env.TEST_API_DATA_DIR}). Initial AUTOBYTEUS_DATA_DIR env knob is NOT read by AppConfig; corrected rerun uses actual option. Standard worktree test DB absent before first run/owned here. Temporary setup/config/DB removed.
 
 ## Broader Validation Decision And Execution
@@ -143,3 +143,7 @@ Current source SHA2568e43f4b98bcf7d8aa02b535fa22ee503beafa399e5dd47b1c647f2a16e7
 Broader validation Required/completed; clean scope target met; no unresolved validation-owned material risk.
 **NOT Delivery Completed:** AC-004 host Docker/runtime/frontend/image pin, safe8001 rollout/rollback/timing approval if disruptive, explicit user close-failed-tab/re-search/open verification, integrity and final cleanup remain Delivery-owned/unexecuted. No public release requested.
 Next: Code Reviewer separate proportional **successful API/E2E test-code review Required**, not source re-review or direct Delivery. Actual recipient is selected by fresh get_handoff_rules at handoff.
+
+## Final Evidence Formatting Check
+The earlier unstaged git diff --check passed. The full committed baseline-to-HEAD check later reports intentional PDF xref trailing spaces (20-byte entries) and raw process-log whitespace/ANSI/blank EOF; it is **not** claimed fully clean. Fixture bytes and original execution/error logs are retained unchanged. Text source/tests/docs check passes with exact pathspec exclusion: git diff --check 7cd2a2db5..HEAD -- . ':!tickets/in-progress/resume-pdf-search-preview/evidence/**' ':!test-support/file-explorer/resume-preview.pdf'. No runtime/test/fixture-byte delta or waiver of behavior assertions.
+Fresh get_handoff_rules selects passed High-risk cumulative package → /software_engineering_team/code_reviewer for separate proportional successful test-code review only. No delivery or failure rule matches.
