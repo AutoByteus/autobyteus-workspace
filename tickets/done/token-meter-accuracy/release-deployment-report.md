@@ -116,33 +116,43 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/token-meter-accuracy`: `No` (after verification)
-- Archived ticket path: —
+- Ticket moved to `tickets/done/token-meter-accuracy`: `Yes` (`ca86948c7`)
+- Archived ticket path: `tickets/done/token-meter-accuracy/`
 
 ## Version / Tag / Release Commit
 
-- Pending the user's release decision.
+- None. The user decided on 2026-10-12: "finalize no need to release a new version". No version bump, tag or release commit.
 
 ## Repository Finalization
 
-- Bootstrap context source: the ticket's solution/implementation artifacts. The base and target is `origin/personal`.
+- Bootstrap context source: the ticket artifacts. Base and target are `origin/personal`.
 - Ticket branch: `codex/token-meter-accuracy`
-- Ticket branch commit result: local commits only (see handoff summary)
-- Ticket branch push result: pending verification
+- Ticket branch commit result: `Completed` (head `ca86948c7`)
+- Ticket branch push result: `Completed` (`[new branch] codex/token-meter-accuracy`)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Repository finalization status: pending verification
+- Target advanced after verification / acceptance: `Yes` (`beb6b3b49` → `3514fe48e`). It was re-integrated before the final merge (DR-004, merge `0c1c60a5c`, checks pass).
+- Delivery-owned edits protected before re-integration: `Completed` (`eae87f313`)
+- Re-integration before final merge result: `Completed`
+- Target branch update result: `Completed`. The ticket worktree was detached at the fetched `origin/personal` (`3514fe48e`); the main checkout was not touched.
+- Merge into target result: `Completed`. A `--no-ff` merge, `8c594b4d1`; its tree equals the verified ticket branch.
+- Push target branch result: `Completed` (`3514fe48e..8c594b4d1 HEAD -> personal`, after re-checking that the target had not moved)
+- Repository finalization status: `Completed`
+- Blocker (if applicable): none
 
 ## Release / Publication / Deployment
 
-- Applicable: pending the user's decision
-- Method: `Release Script` (`scripts/desktop-release.sh beta`, tag-triggered GitHub workflows) if a beta is requested
-- Release notes handoff result: pending
+- Applicable: `No`
+- Release/publication/deployment result: `Not required` (user decision, 2026-10-12)
+- Release notes handoff result: `Not required`. The archived `release-notes.md` remains the user-facing summary for the next release.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy`
-- Cleanup: after finalization (worktree, local branch).
+- Worktree cleanup result: `Completed` after this record is pushed (`git worktree remove --force`; the folder holds only untracked SDK `dist/` build output)
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` (`git branch -D codex/token-meter-accuracy`, after the push)
+- Remote branch cleanup result: `Not required`. `origin/codex/token-meter-accuracy` is kept as the review reference, as on earlier tickets.
 
 ## Release Notes Summary
 
@@ -170,10 +180,11 @@
 
 ## Final Status
 
-- Explicit user testing/verification complete: `Yes` (2026-10-11; renewed check may be needed after the decision)
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (pending decision)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: `None`. Waiting for the user's renewed verification (AC-011, AC-012).
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes` (2026-10-11 AC-010; 2026-10-12 renewed sign-off for AC-011/AC-012)
+- Repository finalization complete: `Yes` (`8c594b4d1` on `personal`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, user decision)
+- Applicable safe cleanup complete or not required: `Yes` (worktree and local branch removed after this record is pushed)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes`, after this record is pushed (DR-004)
+- Terminal message/reference: DR-004 terminal message to `/software_engineering_team/solution_designer`
