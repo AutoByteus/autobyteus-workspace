@@ -1,0 +1,47 @@
+CASE sequential private availability double; public policy unchanged
+RUN autobyteus-server-0 ['8001:8000', '5908:5900', '6080:6080', '9228:9223']
+RUN autobyteus-server-1 ['8002:8000', '5909:5900', '6081:6080', '9229:9223']
+RUN autobyteus-server-2 ['8003:8000', '5910:5900', '6082:6080', '9230:9223']
+RECEIPT {"kind": "availability", "port": 8001, "available": true}
+RECEIPT {"kind": "availability", "port": 5908, "available": true}
+RECEIPT {"kind": "availability", "port": 6080, "available": true}
+RECEIPT {"kind": "availability", "port": 9228, "available": true}
+RECEIPT {"kind": "availability", "port": 8002, "available": true}
+RECEIPT {"kind": "availability", "port": 5909, "available": true}
+RECEIPT {"kind": "availability", "port": 6081, "available": true}
+RECEIPT {"kind": "availability", "port": 9229, "available": true}
+RECEIPT {"kind": "availability", "port": 8003, "available": true}
+RECEIPT {"kind": "availability", "port": 5910, "available": true}
+RECEIPT {"kind": "availability", "port": 6082, "available": true}
+RECEIPT {"kind": "availability", "port": 9230, "available": true}
+Owner-created fixture cleaned on context exit.
+CASE retry private availability double; public policy unchanged
+RUN autobyteus-server-0 ['8001:8000', '5908:5900', '6080:6080', '9228:9223']
+RUN autobyteus-server-0 ['51587:8000', '51588:5900', '51589:6080', '51590:9223']
+RECEIPT {"kind": "availability", "port": 8001, "available": true}
+RECEIPT {"kind": "availability", "port": 5908, "available": true}
+RECEIPT {"kind": "availability", "port": 6080, "available": true}
+RECEIPT {"kind": "availability", "port": 9228, "available": true}
+RECEIPT {"kind": "random-delegated"}
+RECEIPT {"kind": "availability", "port": 51587, "available": true}
+RECEIPT {"kind": "random-delegated"}
+RECEIPT {"kind": "availability", "port": 51588, "available": true}
+RECEIPT {"kind": "random-delegated"}
+RECEIPT {"kind": "availability", "port": 51589, "available": true}
+RECEIPT {"kind": "random-delegated"}
+RECEIPT {"kind": "availability", "port": 51590, "available": true}
+Owner-created fixture cleaned on context exit.
+CASE busy private availability double; public policy unchanged
+RUN autobyteus-server-0 ['51591:8000', '5908:5900', '6080:6080', '9228:9223']
+RECEIPT {"kind": "availability", "port": 8001, "available": false}
+RECEIPT {"kind": "random-delegated"}
+RECEIPT {"kind": "availability", "port": 51591, "available": true}
+RECEIPT {"kind": "availability", "port": 5908, "available": true}
+RECEIPT {"kind": "availability", "port": 6080, "available": true}
+RECEIPT {"kind": "availability", "port": 9228, "available": true}
+Owner-created fixture cleaned on context exit.
+PASS default fixture has no availability shim; controller scope limited to deterministic cases.
+PASS mutated availability query rejected without executing socket program: Port availability probe drift exit 93
+PASS affected-fixture receipt assertion rejects drift: True is not false : Port availability probe drift
+PASS permissive-fixture mutation detected: True is not false : Busy preferred-port outcome was concealed
+All fixtures cleaned. No host listener operation, launcher source rewrite or provider call.
