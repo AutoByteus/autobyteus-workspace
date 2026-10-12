@@ -180,6 +180,12 @@ for example an agent change also reloads Teams and Orgs. See the server's
   `definitionProblemsStore` (`definitionProblems(kind)`).
 - Team-local agents are not listed on this page, so their issues show on the
   owning Team card (see [Agent Teams](./agent_teams.md#definition-and-package-refresh)).
+- Application-package agents and Teams are not agent package definitions. The
+  server reads them on demand, does not watch them and does not announce their
+  changes, so they get no load issue badge and no live update. A malformed one
+  is logged on the server and left out of the list. Importing an application
+  package that contains a malformed agent is refused by the existing package
+  validation.
 
 ## Package Refresh Behavior
 
