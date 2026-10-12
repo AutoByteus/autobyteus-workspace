@@ -35,6 +35,17 @@
 | LIVE-R2 | Claude/Codex live token paths on the merged base | AC-001, AC-003, AC-004, AC-006 | Live E2E | existing suites | 3 | — |
 | DESK-004 | Note / no-note / D-9 roll-up in the packaged app | AC-011, AC-012, REQ-012, D-9 | Isolated desktop (temp CODEX_HOME) | `isolated-app start --build` | 4 | — |
 
+## Round 3 Planned Cases (API-REV-003)
+
+| Case ID | Case / Journey | Requirement / AC IDs | Boundary / Execution Surface | Planned Command Or Entry Point | Planned Order | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| R3-GATE | Full web suite | AC-012 unit | Repository | `NUXT_TEST=true vitest run` | 1 | Server unchanged since round 2 |
+| DESK-005a | Claude `/compact` with earlier calls | AC-012, F-API-002-01 | Isolated desktop | trace + UI sampling | 2 | Prior failure recheck |
+| DESK-005b | Reopened Claude run after restart, `/compact` first | AC-012, CR-F-002 | Isolated desktop restart | same | 3 | — |
+| DESK-005c | Child task copy calls do not clear the host's note | AC-012, SR-014 | Isolated desktop | host + delegate | 4 | — |
+| DESK-005d | Native standalone/team, failed, stopped, Codex | AC-011, AC-012 | Isolated desktop | as round 2 | 5 | Re-confirm |
+| DESK-005e | Org member note sets and clears | AC-012 | Isolated desktop | Org driver | 6 | Risk from code reading |
+
 ## Execution Events
 
 | Sequence | Case ID | Timestamp | Event | Command / Entry Point / Material Configuration | Expected Observable Result | Observed Result Or Checkpoint | Result | Evidence / Artifact Path | Next Action / Unresolved Issue |
@@ -67,6 +78,13 @@
 | 25 | AGY | 06:55 | Completed | Live AGY 1.3.3 → quota error; fake-CLI transport suite | Per-step usage | Live: Blocked (quota 22 h); fake-CLI: Pass | Blocked / Pass | `round2/desktop/DESK-004g-*`, `round2/logs/AGY-R2-*` | — |
 | 26 | DESK-004f | 07:00 | Completed | INTERRUPT at compaction `started` | No note | "stopped", value unmuted, no note | Pass | `round2/desktop/DESK-004f-*` | — |
 | 27 | Cleanup | 07:05 | Completed | Stop `iso-52182-47fb`; remove the desktop worktree, temporary `CODEX_HOME`, key file and workspaces | Clean | Clean; foreign instances and the user's LM Studio untouched | Pass | report § Round 2 | — |
+| 28 | R3-GATE | 2026-10-12 07:10 | Completed | `NUXT_TEST=true vitest run` (full web) | Green | 601 files, 4,190 pass / 5 skipped | Pass | `round3/logs/R3-web-full.log` | — |
+| 29 | DESK-005a | 07:25 | Completed | Claude `/compact` with earlier calls | Note through the remainder; cleared by the next call | As expected | Pass | `round3/desktop/DESK-005a-*` | F-API-002-01 resolved |
+| 30 | DESK-005b | 07:30 | Completed | App restart; reopen from history; `/compact` from the composer first | Same | As expected | Pass | `round3/desktop/DESK-005b-*` | — |
+| 31 | DESK-005c | 07:33–07:40 | Completed | Host delegates a slow copy; host `/compact`; copy calls continue | Host note kept through copy calls | Attempt 1: panel switched to the Team tab (artifact). Attempt 2: note kept through 4 copy calls; cleared by the host call | Pass | `round3/desktop/DESK-005c-*` | — |
+| 32 | DESK-005d | 07:45–08:05 | Completed | Native standalone + team; stopped; Codex; failed attempt; external-socket control | Note rules | All pass; failed compaction not reproducible (CLI completes); unattached external-socket miss confirmed as an artifact by a control | Pass | `round3/desktop/DESK-005d-*` | — |
+| 33 | DESK-005e | 08:10 | Completed | Org manager `/compact` | Note set and cleared | As expected | Pass | `round3/desktop/DESK-005e-*` | — |
+| 34 | Cleanup | 08:15 | Completed | Stop `iso-55156-16b8`; remove the worktree and temporary data | Clean | Clean | Pass | report § Round 3 | — |
 
 ## Re-entry And Reconciliation
 

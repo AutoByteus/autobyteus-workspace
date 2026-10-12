@@ -1,0 +1,52 @@
+[
+ {
+  "t": 811,
+  "type": "TURN_STARTED",
+  "phase": null,
+  "op": null,
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 814,
+  "type": "COMPACTION_STATUS",
+  "phase": "compacting",
+  "op": "c276581b-3783-47dd-acbb-bda0746b9485",
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 7024,
+  "type": "COMPACTION_STATUS",
+  "phase": "compacted",
+  "op": "c276581b-3783-47dd-acbb-bda0746b9485",
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 7034,
+  "type": "TOKEN_USAGE_UPDATED",
+  "phase": null,
+  "op": null,
+  "ingestion": "claude_sdk_result",
+  "rev": 18,
+  "count": 6,
+  "prompt": null
+ },
+ {
+  "t": 7034,
+  "type": "TURN_COMPLETED",
+  "phase": null,
+  "op": null,
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ }
+]

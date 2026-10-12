@@ -306,3 +306,32 @@ None at this point.
 - Result: `Fail` (90%), with the failure F-API-002-01: the AC-012 note never appears after a completed Claude SDK manual `/compact`.
 - Classification: `Design Impact`. The D-13 clear rule and the RR-7 "rare" premise do not hold.
 - Everything else passes. Details are in `api-e2e-execution-coverage-report.md` § Round 2.
+
+## Round 3 — IR-006 (SR-014: per-run "Compacted" mark cleared only by the run's next live model call)
+
+- Trigger: code reviewer CRR-008 Pass (round 7), HEAD `3205b12f6` (artifacts `3c1d99922`). Code commit `c0f1b9a80` (frontend only). The server, core and contracts are unchanged since round 2 (`git diff 352ba13ee HEAD` is empty for them).
+- Prior failure to recheck first: F-API-002-01 (DESK-004d).
+- Changed boundary:
+  - `tokenUsageCompactionMarks.ts`: a per-run boolean.
+  - Clear calls in `applyTokenUsageUpdated` and `applyTeamTokenUsage`.
+  - Panel markup unchanged.
+- Risk read from the code: the clear happens only in those two live entry points. Org members reach the store through `agentStreamMessageProjector` → `handleTokenUsageUpdated` → `applyTokenUsageUpdated`; confirm live that an Org member's note clears.
+- Planned cases (isolated desktop build of `3c1d99922`, temporary `CODEX_HOME`, DeepSeek key imported into the instance vault):
+  - **DESK-005a (recheck F-API-002-01):** Claude manual `/compact` in a session with earlier calls. Note after "compacted", kept through the remainder, cleared by the next message's first call.
+  - **DESK-005b (CR-F-002):** an existing Claude standalone run reopened after an app restart, with only the roll-up loaded; `/compact` as the first action. Same expectation.
+  - **DESK-005c (child's calls):** a Claude standalone host with a delegated task copy still running. The host's note survives the copy's calls; the host's own next call clears it.
+  - **DESK-005d (re-confirm):**
+    - native standalone and team member note, set and cleared;
+    - failed `/compact`: no note;
+    - stopped native compaction: no note;
+    - Codex compaction: no note.
+  - **DESK-005e (extra):** an Org member's note sets and clears.
+- **R3-GATE:** full web suite.
+
+### Round 3 Outcome
+
+- Executed as planned.
+- Result: `Pass` (94%). F-API-002-01 is resolved.
+- Two test artifacts were investigated and controlled: the panel switching tab on delegation, and an unattached UI after a restart.
+- One pre-existing observation: the standalone roll-up does not refresh live on a copy's calls.
+- Details are in `api-e2e-execution-coverage-report.md` § Round 3.

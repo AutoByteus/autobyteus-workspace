@@ -1,0 +1,72 @@
+[
+ {
+  "t": 831,
+  "type": "TURN_STARTED",
+  "phase": null,
+  "op": null,
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 1954,
+  "type": "TOKEN_USAGE_UPDATED",
+  "phase": null,
+  "op": null,
+  "ingestion": "autobyteus_llm_phase",
+  "rev": 3,
+  "count": 3,
+  "prompt": 21641
+ },
+ {
+  "t": 1955,
+  "type": "COMPACTION_STATUS",
+  "phase": "requested",
+  "op": "compaction_operation_mv4tmvfr_1",
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 1956,
+  "type": "COMPACTION_STATUS",
+  "phase": "started",
+  "op": "compaction_operation_mv4tmvfr_1",
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 6792,
+  "type": "TOKEN_USAGE_UPDATED",
+  "phase": null,
+  "op": null,
+  "ingestion": "autobyteus_compaction",
+  "rev": 4,
+  "count": 4,
+  "prompt": null
+ },
+ {
+  "t": 6792,
+  "type": "COMPACTION_STATUS",
+  "phase": "completed",
+  "op": "compaction_operation_mv4tmvfr_1",
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 6794,
+  "type": "TURN_COMPLETED",
+  "phase": null,
+  "op": null,
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ }
+]

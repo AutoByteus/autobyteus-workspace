@@ -257,7 +257,8 @@
 ## Preliminary Classification
 
 - Round 1: N/A — Pass.
-- Round 2 (latest): `Design Impact` for F-API-002-01 (see § Round 2). Owner `/software_engineering_team/solution_designer`, via code-review failure-origin review.
+- Round 2: `Design Impact` for F-API-002-01 (see § Round 2). Resolved by IR-005/IR-006.
+- Round 3 (latest): N/A — Pass.
 
 ## Round 2 — API-REV-002 (IR-004: D-12 revert, D-13 "Compacted" note, D-9 roll-up refetch fix)
 
@@ -369,7 +370,84 @@ No durable test was added for F-API-002-01. A UI-level check belongs with the co
 - **LM Studio:** nothing loaded by me; the model loaded now is the one you downloaded.
 - **Untouched:** other people's isolated instances.
 
+## Round 3 — API-REV-003 (IR-006 / SR-014: per-run "Compacted" mark cleared only by the run's next live model call)
+
+- Trigger: code reviewer CRR-008 Pass (round 7), HEAD `3205b12f6` (`3c1d99922` artifacts). The code change is `c0f1b9a80` (frontend only).
+- Server, core and contracts are unchanged since round 2, so the round-2 server and live evidence carries forward.
+- Validated build: isolated desktop of `3c1d99922` (`iso-55156-16b8`), Claude Haiku 5.5 / Codex `gpt-5.6-luna` / DeepSeek `deepseek-v4-flash`. Temporary `CODEX_HOME` with a lowered limit; DeepSeek key imported into the instance vault.
+- The meter DOM was sampled every 120–150 ms; the run's WebSocket was traced.
+
+### Prior Failure Resolution
+
+| Prior Failure | Previous Classification | Resolution | Evidence (`round3/desktop/`) |
+| --- | --- | --- | --- |
+| F-API-002-01 (DESK-004d): no note after a completed Claude manual `/compact` | Design Impact | **Resolved.** At "compacted" (4,029 ms) the meter greys 33,322 with the note; the remainder-only result (revision 5, still 2 calls) leaves it; the next message's first call (18,273, 3 calls) clears it | `DESK-005a-*` |
+
+### Round 3 Case Results
+
+| Case | AC | Result | Observed | Evidence (`round3/desktop/`) |
+| --- | --- | --- | --- | --- |
+| R3-GATE | AC-012 unit | Pass | Full web suite: 601 files, 4,190 pass / 5 skipped | `../round3/logs/R3-web-full.log` |
+| DESK-005a | AC-012, F-API-002-01 | Pass | See above | `DESK-005a-*` |
+| DESK-005b (CR-F-002) | AC-012 | Pass | Run reopened from history after an app restart (Offline, only the fetched roll-up loaded); `/compact` from the composer as the first action. Initializing → Running; at "compacted" 33,318 greyed with the note, Idle; the next message's first call cleared it (18,273, 3 calls) | `DESK-005b-*` |
+| DESK-005c (child calls) | AC-012, SR-014 | Pass | Host compaction completed ~17.7 s, note at 18.6 s. The copy's live model calls at 20.97, 26.5, 32.0, 37.2 s and its remainder: note kept. The host's own next call at 66.4 s cleared it (18,256) | `DESK-005c-*` |
+| DESK-005d native standalone | AC-011, AC-012 | Pass | "Compacting memory…" at 21,641 (3 calls). Summary call counted (4); 21,641 greyed with the note, held across idle. Next message: 6,104 (5 calls), note gone | `DESK-005d-native-standalone-*`, `DESK-005d-native-compacted-note.png` |
+| DESK-005d native team member | AC-011, AC-012 | Pass | 22,827 → greyed with the note at 4 calls → next message 6,997 (5 calls). Summary-call save precedes "completed" | `DESK-005d-native-team-*` |
+| DESK-005d stopped | AC-012 alt | Pass | INTERRUPT at "started"; "stopped" 12 ms later; 22,348 unmuted, no note | `DESK-005d-native-stopped-*` |
+| DESK-005d Codex | AC-012 alt | Pass | Reading-only update 17,261 at 3 calls shown directly; no note; next call 25,916 | `DESK-005d-codex-*` |
+| DESK-005d failed | AC-012 alt | Not reproduced | The Claude CLI completed every `/compact`, even on tiny histories (repeat completions kept the note, correctly). The marking rule ("completed" only) is unchanged since IR-004; a real failed compaction was shown live in round 2 (`round2/desktop/DESK-004d-claude-compact-failed-trace.json`) | `DESK-005d-claude-double-compact-ui.json` |
+| DESK-005e Org member | AC-012 | Pass | Org manager after `/compact`: 30,298 greyed with the note; the next message's first call (20,092, 4 calls) cleared it. The Org clear path works | `DESK-005e-org-member-ui.json` |
+
+### Test Artifacts Investigated (Not Product Defects)
+
+1. **Panel switched to the Team tab.** In the first child-call attempt, the app switched the right panel to its new "Team" tab when the delegated copy appeared, so the sampler lost the meter (`DESK-005c-attempt1-*`). Reran with a sampler that reopens the Token tab.
+2. **External socket on a run the UI wasn't attached to.** A `/compact` sent from an external socket to a run reopened by URL after a restart showed no note, because the UI was not attached to the run that the other client restored (`DESK-005d-artifact-unattached-*`).
+   - Control with the UI attached: an external-socket `/compact` shows the note (`DESK-005d-control-external-socket-*`).
+   - The realistic path (composer send on a reopened run) passes (DESK-005b).
+
+### Observation (Outside This Change)
+
+- **Standalone roll-up call count with a running copy.** The standalone host panel's roll-up call count did not refresh live while a delegated copy made calls (15 → 20 only at the host's next save). The roll-up refetch follows the host's exact revision (D-9); before this ticket it followed the host's call count, which also ignored copies.
+- The copy's own panel is live (round 1, REQ-008).
+- A candidate for a separate ticket if the host roll-up should follow copies live.
+
+### Round 3 Confidence
+
+| Category | Score | Notes |
+| --- | --- | --- |
+| Requirement and AC proof | 95% | AC-011/AC-012 proven live for native standalone and team member, Claude standalone (live and reopened after restart), Org member, child isolation, stopped and Codex. The failed path rests on round-2 live evidence plus the unchanged marking rule |
+| Changed-boundary directness | 95% | The changed store/clear path is exercised through every live entry: standalone, team and Org |
+| Integration realism | 95% | Packaged app, real runtimes, app restart |
+| Environment fidelity | 95% | Real app restart and history reopen |
+| Failure, edge and lifecycle | 90% | Failed compaction not reproducible this round (CLI behavior); stopped proven |
+| User surface and desktop | 95% | DOM samples and screenshot |
+| Durable regression | 95% | Web suite 4,190; durable live suites from rounds 1–2 |
+
+- Overall: 94% (simple average 94.3%). No category is below 90%. Every critical AC is directly proven.
+- The one gap: a failed compaction was not reproduced this round. It rests on round-2 live proof plus the unchanged rule.
+- Result: `Pass`.
+
+### Round 3 Cleanup
+
+- **Isolated instance** `iso-55156-16b8`: stopped; auto data root (including the imported DeepSeek key) deleted; ports released.
+- **Removed:** the desktop worktree, the temporary `CODEX_HOME`, the key file and all temporary agent workspaces.
+- **Untouched:** other people's instances and your LM Studio.
+
 ## Latest Authoritative Result
+
+- Result: `Pass` (round 3, API-REV-003)
+- Final validation confidence: 94%. No category is below 90%; every critical AC is directly proven.
+- Default `95%` confidence target met: `No` (94%, short by the failed-compaction path not reproduced live this round). Per the gate:
+  - The gap: a failed compaction could not be induced because the Claude CLI now completes even tiny compactions.
+  - Closing it: the marking rule is unchanged since IR-004, a real failed compaction was shown live without a note in round 2, and the status-handler spec covers it.
+  - No reachable surface could close it further this round.
+- Broader validation decision: `Required` — executed (isolated desktop of `3c1d99922` with real Claude, Codex and DeepSeek native runs, an app restart and history reopen).
+- Critical acceptance criteria lacking direct proof: none.
+- Prior failure F-API-002-01: resolved.
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (proportional test-code review of the durable tests changed since API-REV-001: `88f03cb27`, `be39baf40`; no durable change in round 3).
+
+## Round 2 Latest Authoritative Result (API-REV-002, superseded)
+
 
 - Result: `Fail` (round 2, API-REV-002)
 - Final validation confidence: 90%

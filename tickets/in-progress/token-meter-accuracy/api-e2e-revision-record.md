@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md`, CRR-002 (round 2 Pass) | SR-001–SR-006, ARCH-REV-003, IR-001, IR-002, CRR-001, CRR-002 | N/A | Pass / 95% |
 | API-REV-002 | Code reviewer, CRR-005 (round 4 Pass, IR-004) | SR-009–SR-011, ARCH-REV-005/006, IR-004, CRR-005, DR-002 | Pass / 95% | Fail / 90% (F-API-002-01) |
+| API-REV-003 | Code reviewer, CRR-008 (round 7 Pass, IR-006) | SR-012–SR-014, ARCH-REV-009, IR-005, IR-006, CRR-006–CRR-008 | Fail / 90% | Pass / 94% |
 
 ## Revision Entries
 
@@ -74,3 +75,37 @@ None. Round 1 passed.
   - Live AGY is blocked by the account quota (~22 h).
   - The Claude auto-compaction note path cannot be executed in the isolated app.
   - The 3 TeamRun V1 base-drift E2E cases (reported in round 1).
+
+### API-REV-003 — IR-006: the "Compacted" note holds until the run's own next live model call
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` round 7 (CRR-008), HEAD `3205b12f6`. Code `c0f1b9a80`, frontend only.
+- Triggering finding or case IDs: F-API-002-01 (recheck), CR-F-002. Cases R3-GATE, DESK-005a–e.
+- Related revision IDs: SR-012–SR-014, ARCH-REV-009, IR-005, IR-006, CRR-006–CRR-008.
+- Why recorded: rerun after the failure-origin route resolved F-API-002-01.
+- Coverage decisions or durable test paths changed: none this round. The live UI journeys stay as temporary probes with evidence, because the durable live suites already cover the server order; the note is a web-only display hint.
+- Commands, environment, fixture, or broader-validation delta:
+  - Isolated desktop of `3c1d99922`, including an app restart and reopening a run from history.
+  - A child-call scenario with a delegated copy.
+  - An Org member.
+  - The UI composer used for `/compact`.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| F-API-002-01 (DESK-004d) | Design Impact | Resolved: the note shows after "compacted", survives the remainder, and clears on the next message's first call | `round3/desktop/DESK-005a-*` |
+
+- Canonical artifacts and sections updated:
+  - `api-e2e-execution-coverage-report.md` § Round 3, Latest Authoritative Result
+  - `api-e2e-coverage-investigation.md` § Round 3
+  - `api-e2e-test-case-ledger.md` events 28+
+  - `api-e2e-evidence/round3/`
+- Prior result and confidence: Fail, 90%
+- Current result and confidence: Pass, 94%
+- New or remaining failure IDs: none
+- Recommended owner: test-code review per handoff rules
+- Remaining risks, blocked evidence, or untested scope:
+  - Failed compaction not reproducible live this round; round-2 evidence stands.
+  - Claude auto-compaction note path not executable in the app.
+  - Live AGY quota (round 2).
+  - The standalone roll-up does not refresh live on a copy's calls. That is pre-existing; a separate-ticket candidate.

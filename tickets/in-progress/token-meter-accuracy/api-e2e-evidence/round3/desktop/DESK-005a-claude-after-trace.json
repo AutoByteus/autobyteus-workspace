@@ -1,0 +1,42 @@
+[
+ {
+  "t": 816,
+  "type": "TURN_STARTED",
+  "phase": null,
+  "op": null,
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ },
+ {
+  "t": 1915,
+  "type": "TOKEN_USAGE_UPDATED",
+  "phase": null,
+  "op": null,
+  "ingestion": "claude_sdk_call",
+  "rev": 6,
+  "count": 3,
+  "prompt": 18273
+ },
+ {
+  "t": 1923,
+  "type": "TOKEN_USAGE_UPDATED",
+  "phase": null,
+  "op": null,
+  "ingestion": "claude_sdk_result",
+  "rev": 7,
+  "count": 3,
+  "prompt": null
+ },
+ {
+  "t": 1923,
+  "type": "TURN_COMPLETED",
+  "phase": null,
+  "op": null,
+  "ingestion": null,
+  "rev": null,
+  "count": null,
+  "prompt": null
+ }
+]
