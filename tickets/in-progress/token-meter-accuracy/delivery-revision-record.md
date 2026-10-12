@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-003 Pass (code reviewer) | N/A | Integrated, docs synced, waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md` |
 | DR-002 | User verification + "finalize and release a new beta" (2026-10-11) | DR-001 waiting for verification | Blocked: re-integration found a native-compaction reading conflict (Design Impact) | `release-deployment-report.md`, `handoff-summary.md`, `docs-sync-report.md` |
+| DR-003 | CRR-009 Pass after the SR-008–SR-014 rework | DR-002 Blocked | Current with base, docs synced, checks pass; waiting for renewed user verification (AC-011, AC-012) | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md` |
 
 ## Revision Entries
 
@@ -63,3 +64,24 @@
   - D-11 is withdrawn. A native compaction call counts as a model call with its tokens and cost, and the latest reading is kept until the next real reading (option (a) of DR-002).
   - IR-003 is reverted, and the upstream compaction test is adapted to "reading kept".
   - The package goes to architecture re-review and then the normal route back to delivery. Delivery keeps holding finalization and the beta; `168900db7` and `15bdb2d62` stay local and unpushed as the base. The next delivery round is DR-003.
+
+### DR-003 — Resumed delivery after the D-12 / D-13 rework
+
+- Delivery round and trigger: round 3, after CRR-009 Pass (test-code review of API-REV-003).
+- Triggering upstream report, verification, or evidence: `api-e2e-test-review-report.md` § Round 2, `api-e2e-execution-coverage-report.md` (API-REV-003 Pass, 94%), `solution-revision-record.md` SR-008–SR-014.
+- Prior authoritative result: DR-002 Blocked (native-compaction reading conflict).
+- Current authoritative result:
+  - The DR-002 blocker is resolved by D-12: a native compaction call keeps the reading.
+  - The branch is current with `origin/personal` @ `beb6b3b49`; docs are synced (`0ba052b0f`); the integrated checks pass.
+  - Waiting for renewed user verification of AC-011 and AC-012.
+- Docs sync report: `docs-sync-report.md` § DR-003.
+- Handoff summary: `handoff-summary.md` (renewed verification requested).
+- Release/publication/deployment report: `release-deployment-report.md` § Resumed Delivery (DR-003).
+- Integration and post-integration verification: no new base commits; checkpoint `23cf64003`; checks as recorded in the report.
+- User verification/finalization state: AC-010 verified on 2026-10-11, and the user asked for a beta. AC-011 and AC-012 are pending.
+- Terminal return to `/solution_designer`: `Not yet eligible`.
+- Why this delivery revision was recorded: delivery resumed with a changed user-facing package.
+- Next recipient/action: the user (AC-011, AC-012). Then finalize, release the next beta after 1.5.1, clean up, and return to `/software_engineering_team/solution_designer`.
+- Remaining blockers, rollback concerns, or untested scope:
+  - No blockers.
+  - Residual risks as listed in API-REV-003 and in `handoff-summary.md` § Follow-Ups.

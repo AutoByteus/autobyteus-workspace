@@ -3,9 +3,8 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `token-meter-accuracy`. Classification: `task_size=Large`, `architectural_risk=High`, reviewed route.
-- Current state: **DR-002, Blocked**.
-  - The user verified on 2026-10-11 and asked to finalize and release a new beta.
-  - The finalization re-integration with `origin/personal` @ `beb6b3b49` exposed a Token Meter behavior conflict with the upstream compaction-prompt-cache-reuse change. It is routed to Solution Designer.
+- Current state: **DR-003, waiting for renewed user verification (AC-011, AC-012)**.
+  - The DR-002 blocker was resolved by the Solution Designer (SR-008–SR-014 → D-12, D-13). The package returned through ARCH-REV-009, CRR-008, API-REV-003 and CRR-009, all passing.
   - Nothing is pushed, merged into the target, released or cleaned up.
 - Release: the user asked for a new beta. `v1.4.99-beta.10` is already taken upstream; the workspace is now at 1.5.1, so the release will be the next beta after 1.5.1, from `scripts/desktop-release.sh beta`.
 
@@ -14,7 +13,7 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
+- Current delivery revision ID: `DR-003`
 - Notes: —
 
 ## Initial Delivery Integration Refresh
@@ -78,11 +77,25 @@
     - (b) Adopt upstream's intent: a native compaction observation clears the reading. This needs a fold rule or an explicit reset signal, plus implementation and review.
 - The release is held until this is resolved.
 
+## Resumed Delivery (DR-003)
+
+- Trigger: CRR-009 Pass (code reviewer), with HEAD at `21974ba2a`.
+- Target refreshed: `origin/personal` is still `beb6b3b49`, so no new base commits. The branch already contains it (merge `168900db7`).
+- Delivery-owned edits protected: checkpoint `23cf64003` (SR-008–SR-014, ARCH-REV-004–009, CRR-009 and the DR-002 decision notes).
+- Docs sync: `0ba052b0f` (see `docs-sync-report.md` § DR-003).
+- Checks on `0ba052b0f`:
+  - Server `pnpm run typecheck`: clean.
+  - `npx vitest run tests/unit/token-usage tests/unit/agent-execution/backends tests/unit/app-data-migrations tests/unit/startup tests/unit/agent-team-execution/team-agent-token-usage-event-transport.test.ts tests/integration/token-usage tests/e2e/token-usage tests/e2e/runtime/autobyteus-compaction-token-reading-live.e2e.test.ts`: 174 files; 1567 passed, 7 skipped.
+  - Gated AGY fake-CLI transport: 1/1.
+  - Web `components/workspace/usage`, `tokenUsageMeterStore.spec.ts`, `agentStatusHandler.spec.ts`: 68/68.
+  - `autobyteus-ts` `tests/unit/agent/loop tests/unit/memory/compaction`: 145/145.
+- Result: `Passed`. The DR-002 blocker is resolved: the upstream compaction test is adapted to "reading kept" (D-12) and passes.
+
 ## User Verification
 
 - Initial explicit user completion/verification received: `Yes`
 - Initial verification / acceptance reference: the user on 2026-10-11: "i have verified. lets finalize and release a new beta" (`handoff-summary.md` § User Verification)
-- Renewed verification required after later re-integration: `Pending`. It depends on the Solution Designer's decision: if the native-compaction reading behavior changes, the user should re-check it.
+- Renewed verification required after later re-integration: `Yes`. The package added D-12/D-13 and the new AC-011 and AC-012 after the 2026-10-11 verification.
 - Renewed verification received: `No`
 - Renewed verification / acceptance reference: —
 
@@ -152,6 +165,6 @@
 - Repository finalization complete: `No`
 - Applicable release/deployment/rollout complete or not required: `No` (pending decision)
 - Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: the native-compaction reading conflict (DR-002, Design Impact, routed to Solution Designer).
+- Unresolved blocker: `None`. Waiting for the user's renewed verification (AC-011, AC-012).
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to `/solution_designer`: `No`

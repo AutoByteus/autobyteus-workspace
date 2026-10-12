@@ -57,6 +57,17 @@
 | Claude SDK latest prompt/window from the turn-end result; read-time percentage repair | Per-call `getContextUsage()` reading; one-time clearing migration | `token_usage.md` § Claude Agent SDK; `agent_execution.md`; web docs |
 | "Usage reports = model calls or model turns" | Model calls only | web docs; `token_usage.md` |
 
+## DR-003 Docs Sync (after the D-12 / D-13 rework)
+
+- Integrated base: `origin/personal` @ `beb6b3b49` (unchanged since DR-002). Head `0ba052b0f`.
+
+| Doc Path | Result | What Changed |
+| --- | --- | --- |
+| `autobyteus-server-ts/docs/modules/token_usage.md` | Updated by implementation (IR-004) and reviewed | A native compaction summary call (`autobyteus_compaction`) counts as a model call with tokens and cost and carries no reading, so the reading stays until the agent's next call (D-12) |
+| `autobyteus-web/docs/agent_execution_architecture.md`, `autobyteus-web/docs/settings.md` | Updated by delivery (`0ba052b0f`) | The D-13 note: when it appears (native and Claude Agent SDK only), the greyed value, the mark ownership (`tokenUsageCompactionMarks.ts`, `agentStatusHandler`), clearing only on the run's next live model call (SR-014), and no note on Codex |
+| `autobyteus-server-ts/tests/e2e/runtime/autobyteus-compaction-token-reading-live.e2e.test.ts` header | Updated by delivery (`0ba052b0f`) | The header and two comments now state the SR-014 clear rule instead of the superseded "newer revision" rule. Assertions are unchanged. Under TESTING.md policy this header is the suite's documentation |
+| `TESTING.md` | No change | Under the upstream policy (`361804e45`), suite gates and commands live in test file headers. `RUN_NATIVE_COMPACTION_METER_E2E`, `RUN_RUNTIME_TOKEN_USAGE_E2E` and the `RUN_CODEX_E2E` suite `codex-compaction-token-reading.e2e.test.ts` each carry their gate and command in their header |
+
 ## Delivery Continuation
 
 - Result: `Pass`

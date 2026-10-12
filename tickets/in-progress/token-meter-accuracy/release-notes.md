@@ -16,6 +16,7 @@
 - **Auto-compaction marker.** When a runtime reports its auto-compaction threshold (the Claude Agent SDK, and the native runtime with automatic compaction), the context bar shows a marker and "Auto-compacts at …".
 - **Over-window state.** When a runtime's own reading exceeds its window, the meter shows the true percentage and marks it "Over the runtime's window".
 - **Usage reports.** The count now means model calls.
+- **After a compaction.** On the native runtime and the Claude Agent SDK, the new context size arrives with the next model call. Until then the meter keeps the previous value, greyed, with "Compacted — updates on the next model call". A native compaction's own summary call is counted, with its tokens and cost.
 
 ## Upgrade notes
 
