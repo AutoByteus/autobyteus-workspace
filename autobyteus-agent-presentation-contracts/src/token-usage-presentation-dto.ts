@@ -52,12 +52,14 @@ export const agentTokenUsageRunSummarySchema = z.object({
   latest_prompt_tokens: nonNegativeInteger.nullable(),
   effective_context_window_tokens: nonNegativeInteger.nullable(),
   context_window_usage_percent: finiteNumberSchema.nullable(),
+  context_compaction_threshold_tokens: nonNegativeInteger.nullable(),
   latest_model_provider: nullableNonEmptyStringSchema,
   latest_model_identifier: nullableNonEmptyStringSchema,
   latest_selected_raw_model_id: nullableNonEmptyStringSchema.optional(),
   has_cache_write_rate_assumption: z.boolean().optional(),
   latest_runtime_kind: nullableNonEmptyStringSchema,
   usage_report_count: nonNegativeInteger,
+  revision: nonNegativeInteger,
   updated_at: nullableNonEmptyStringSchema,
 }).strict();
 

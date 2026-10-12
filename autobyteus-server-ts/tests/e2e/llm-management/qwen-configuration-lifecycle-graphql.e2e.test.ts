@@ -72,7 +72,6 @@ type CatalogProvider = {
 const serverEnvironment = {
   OLLAMA_HOSTS: ' ',
   LMSTUDIO_HOSTS: ' ',
-  AUTOBYTEUS_LLM_SERVER_HOSTS: ' ',
 };
 
 const statusQuery = `

@@ -9,7 +9,6 @@ export const LLM_PROVIDER_DISPLAY_NAMES: Record<LLMProvider, string> = {
   [LLMProvider.OLLAMA]: 'Ollama',
   [LLMProvider.DEEPSEEK]: 'DeepSeek',
   [LLMProvider.GROK]: 'Grok',
-  [LLMProvider.AUTOBYTEUS]: 'AutoByteus',
   [LLMProvider.KIMI]: 'Kimi',
   [LLMProvider.QWEN]: 'Qwen',
   [LLMProvider.LMSTUDIO]: 'LM Studio',

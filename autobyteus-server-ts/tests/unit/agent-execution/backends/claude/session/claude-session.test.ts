@@ -33,10 +33,36 @@ import {
   withClaudeSessionId,
 } from "../../../../../fixtures/claude-compaction/claude-compaction-frames.js";
 import {
+  CLAUDE_NORMAL_REPLY_MENTIONING_LOGIN_FRAMES,
+  CLAUDE_NOT_LOGGED_IN_FRAMES,
+  claudeResultFrame,
+} from "../../../../../fixtures/claude-result-frames/claude-auth-marker-result-frames.js";
+import {
   createFakeClaudeSdkClient,
   flushClaudeSession,
   type FakeClaudeStreamingSession,
 } from "../../../../../helpers/fake-claude-streaming-sdk.js";
+import {
+  P2_OPUS_PARTIAL,
+  P4_HAIKU_MIDTURN,
+  callFrames,
+  messageDeltaFrame,
+  messageStartFrame,
+  resultFrame,
+} from "../../../../../fixtures/claude-sdk-usage/claude-sdk-probe-frames.js";
+import { createTokenUsageUpdatedPayload } from "../../../../../../src/agent-execution/domain/agent-run-token-usage.js";
+import { foldTokenUsageObservation } from "../../../../../../src/token-usage/projections/token-usage-run-fold.js";
+import type { TokenUsageRunRecord } from "../../../../../../src/token-usage/domain/token-usage-run-record.js";
+import { emptyTrustedDimensions, type ResolvedTokenPricingPolicy } from "../../../../../../src/token-usage/pricing/token-pricing-policy.js";
+
+const CLAUDE_TEST_PRICE: ResolvedTokenPricingPolicy = {
+  pricing_policy_key: null, price_config_id: null, model_provider: null, model_identifier: null, model_value: null,
+  canonical_name: null, currency: null, input_price_per_million: null, output_price_per_million: null,
+  cached_input_read_price_per_million: null, cached_input_write_price_per_million: null,
+  cached_input_write_5m_price_per_million: null, cached_input_write_1h_price_per_million: null,
+  input_price_tiers: [], pricing_status: "missing", trusted_dimensions: emptyTrustedDimensions(),
+  missing_reason: "test", source: null, effective_from: null, effective_to: null, version: null,
+};
 
 const RESERVED_SESSION_ID = "11111111-1111-4111-8111-111111111111";
 const RESTORED_SESSION_ID = "22222222-2222-4222-8222-222222222222";
@@ -328,6 +354,47 @@ describe("ClaudeSession streaming lifecycle", () => {
     expect(session.getStatusSnapshotSource().currentStatus).toBe("ERROR");
     expect(sessionMessageCache.getCachedMessages(RESERVED_SESSION_ID).some((message) => message.role === "assistant")).toBe(false);
     expect(session.processState).toBe("OPEN");
+  });
+
+  it("completes a successful turn whose reply mentions login markers as a normal reply (real SDK frames, AC-001)", async () => {
+    const { session, sdkClient, sessionMessageCache, start, methods } = createSession();
+    const reply = String(claudeResultFrame(CLAUDE_NORMAL_REPLY_MENTIONING_LOGIN_FRAMES).result);
+
+    await start("what does an unauthenticated runtime say?");
+    emitCliTurn(
+      sdkClient.current,
+      withClaudeSessionId(CLAUDE_NORMAL_REPLY_MENTIONING_LOGIN_FRAMES, RESERVED_SESSION_ID),
+      sdkClient.current.sent[0]!.uuid,
+    );
+    await flushClaudeSession();
+
+    expect(methods()).not.toContain(ClaudeSessionEventName.ERROR);
+    expect(methods().filter((method) => method === ClaudeSessionEventName.TURN_COMPLETED)).toHaveLength(1);
+    expect(session.getStatusSnapshotSource().currentStatus).toBe("IDLE");
+    expect(session.hasCompletedTurn).toBe(true);
+    expect(sessionMessageCache.getCachedMessages(RESERVED_SESSION_ID)).toEqual([
+      expect.objectContaining({ role: "user", content: "what does an unauthenticated runtime say?" }),
+      expect.objectContaining({ role: "assistant", content: reply }),
+    ]);
+  });
+
+  it("reports the real not-logged-in SDK frames as an authentication failure (AC-002)", async () => {
+    const { session, sdkClient, start, events, methods } = createSession();
+
+    await start("hello unauthenticated claude");
+    emitCliTurn(
+      sdkClient.current,
+      withClaudeSessionId(CLAUDE_NOT_LOGGED_IN_FRAMES, RESERVED_SESSION_ID),
+      sdkClient.current.sent[0]!.uuid,
+    );
+    await flushClaudeSession();
+
+    expect(methods()).not.toContain(ClaudeSessionEventName.TURN_COMPLETED);
+    const errorEvent = events.find((event) => event.method === ClaudeSessionEventName.ERROR);
+    expect(errorEvent?.params).toMatchObject({ error_scope: "turn", error_effect: "terminal" });
+    expect(String(errorEvent?.params?.message)).toContain("CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login");
+    expect(session.hasCompletedTurn).toBe(false);
+    expect(session.getStatusSnapshotSource().currentStatus).toBe("ERROR");
   });
 
   it("reports SDK errors[] without completing the failed turn and accepts the next user turn", async () => {
@@ -1030,6 +1097,102 @@ describe("ClaudeSession token usage", () => {
   });
 });
 
+describe("ClaudeSession per-call usage (D-1, D-2, D-10)", () => {
+  const P4_SESSION_ID = RESERVED_SESSION_ID;
+  const assistantFrame = (id: string) => ({ type: "assistant", session_id: P4_SESSION_ID, parent_tool_use_id: null,
+    message: { id, role: "assistant", model: "claude-haiku-4-5", content: [{ type: "text", text: "." }] } });
+  const playTurn = (fake: FakeClaudeStreamingSession, turnIndex: number, uuid: string) => {
+    const turn = P4_HAIKU_MIDTURN.turns[turnIndex]!;
+    fake.contextUsageAnswers.push(...turn.calls.map((call) => call.context));
+    const frames = turn.calls.flatMap((call) => {
+      const [startFrame, delta, end] = callFrames(call, P4_HAIKU_MIDTURN.model, P4_SESSION_ID);
+      return [startFrame, delta, assistantFrame(call.id), end];
+    });
+    // `result` follows the last `message_delta` immediately, as in P4 (≈6 ms apart).
+    emitCliTurn(fake, [...frames, resultFrame(P4_HAIKU_MIDTURN, turn, P4_SESSION_ID)], uuid);
+  };
+  const settle = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    await flushClaudeSession(24);
+  };
+
+  it("emits one model-call observation per main-loop call with the SDK's context reading", async () => {
+    const { sdkClient, start, events } = createSession();
+    const turnId = acceptedTurnId(await start("three bash calls"));
+    playTurn(sdkClient.current, 0, sdkClient.current.sent[0]!.uuid);
+    await settle();
+
+    const calls = events.filter((event) => event.method === ClaudeSessionEventName.TOKEN_USAGE_UPDATED &&
+      event.params?.ingestion_kind === "claude_sdk_call");
+    expect(calls.map((event) => event.params?.latest_prompt_tokens)).toEqual([6546, 6784, 6936, 7088]);
+    expect(calls[0]?.params).toMatchObject({
+      turn_id: turnId,
+      idempotency_key: `claude_sdk_call:${RESERVED_SESSION_ID}:msg_011CfrRC2SE2g6FRNQshRr3b`,
+      reports_model_call: true,
+      model_identifier: "claude-haiku-4-5",
+      claude_sdk_session_id: RESERVED_SESSION_ID,
+      input_token_semantic: "base_excludes_cache",
+      reported_input_tokens: 10, cache_read_input_tokens: 4944, cache_creation_input_tokens: 1592,
+      cache_creation_5m_input_tokens: 0, cache_creation_1h_input_tokens: 1592,
+      reported_output_tokens: 190, reasoning_output_tokens: 111,
+      effective_context_window_tokens: 200_000, context_compaction_threshold_tokens: 167_000,
+    });
+    expect(sdkClient.current.readContextUsage).toHaveBeenCalledTimes(4);
+  });
+
+  it("emits every call before the turn's result even when the context read is slow (P4, D-10)", async () => {
+    const { sdkClient, start, events } = createSession();
+    await start("three bash calls");
+    const fake = sdkClient.current;
+    fake.resolvedRawModelId = P4_HAIKU_MIDTURN.rawModelId;
+    fake.contextUsageDelayMs = 10;
+    playTurn(fake, 0, fake.sent[0]!.uuid);
+    await settle();
+
+    const usage = events.filter((event) => event.method === ClaudeSessionEventName.TOKEN_USAGE_UPDATED);
+    expect(usage.map((event) => event.params?.ingestion_kind)).toEqual([
+      "claude_sdk_call", "claude_sdk_call", "claude_sdk_call", "claude_sdk_call", "claude_sdk_result",
+    ]);
+    let record: TokenUsageRunRecord | null = null;
+    for (const [index, event] of usage.entries()) {
+      const payload = createTokenUsageUpdatedPayload({ runId: "run-1",
+        payload: { ...event.params, observed_at: new Date(Date.UTC(2026, 9, 9, 12, 0, index)).toISOString() } });
+      record = foldTokenUsageObservation({ current: record, payload, pricingPolicy: CLAUDE_TEST_PRICE }).record;
+    }
+    const selected = P4_HAIKU_MIDTURN.turns[0]!.selected;
+    expect(record!.tokenTotals.standard_input_tokens).toBe(BigInt(selected.inputTokens));
+    expect(record!.tokenTotals.cache_read_input_tokens).toBe(BigInt(selected.cacheReadInputTokens));
+    expect(record!.tokenTotals.cache_creation_input_tokens).toBe(BigInt(selected.cacheCreationInputTokens));
+    expect(record!.tokenTotals.billable_output_tokens).toBe(BigInt(selected.outputTokens));
+    expect(record!.usageReportCount).toBe(4n);
+    expect(record!.qualityFlags).not.toContain("claude_sdk_live_exceeds_cumulative");
+  });
+
+  it("emits a call without a reading when the SDK context read is unavailable", async () => {
+    const { sdkClient, start, events } = createSession();
+    await start("one call");
+    const fake = sdkClient.current;
+    const call = P4_HAIKU_MIDTURN.turns[1]!.calls[0]!;
+    emitCliTurn(fake, [...callFrames(call, "claude-haiku-4-5", P4_SESSION_ID)], fake.sent[0]!.uuid);
+    await settle();
+    const [observed] = events.filter((event) => event.params?.ingestion_kind === "claude_sdk_call");
+    expect(observed?.params).toMatchObject({ latest_prompt_tokens: null, effective_context_window_tokens: null,
+      context_compaction_threshold_tokens: null, quality_flags: ["claude_sdk_context_usage_unavailable"] });
+  });
+
+  it("ignores subagent stream events", async () => {
+    const { sdkClient, start, events } = createSession();
+    await start("subagent");
+    const fake = sdkClient.current;
+    const call = P4_HAIKU_MIDTURN.turns[1]!.calls[0]!;
+    emitCliTurn(fake, [messageStartFrame(call, "claude-haiku-4-5", P4_SESSION_ID, "toolu_parent"),
+      messageDeltaFrame(call, P4_SESSION_ID, "toolu_parent")], fake.sent[0]!.uuid);
+    await settle();
+    expect(events.some((event) => event.params?.ingestion_kind === "claude_sdk_call")).toBe(false);
+    expect(fake.readContextUsage).not.toHaveBeenCalled();
+  });
+});
+
 describe("ClaudeSession tool approvals", () => {
   const runPermissionRequests = async (
     options: ClaudeSdkStreamingSessionOptions,
@@ -1200,97 +1363,29 @@ describe("ClaudeSession text projection", () => {
     ]);
   });
 
-  it("coalesces partial stream_event text deltas by message and content block", async () => {
-    const chunks = [
-      {
-        type: "stream_event",
-        session_id: RESERVED_SESSION_ID,
-        uuid: "partial-wrapper-start",
-        event: {
-          type: "message_start",
-          message: {
-            id: "msg-partial",
-            role: "assistant",
-            content: [],
-          },
-        },
-      },
-      {
-        type: "stream_event",
-        session_id: RESERVED_SESSION_ID,
-        uuid: "partial-wrapper-block-start",
-        event: {
-          type: "content_block_start",
-          index: 0,
-          content_block: {
-            type: "text",
-            text: "",
-          },
-        },
-      },
-      {
-        type: "stream_event",
-        session_id: RESERVED_SESSION_ID,
-        uuid: "partial-wrapper-delta-1",
-        event: {
-          type: "content_block_delta",
-          index: 0,
-          delta: {
-            type: "text_delta",
-            text: "Hel",
-          },
-        },
-      },
-      {
-        type: "stream_event",
-        session_id: RESERVED_SESSION_ID,
-        uuid: "partial-wrapper-delta-2",
-        event: {
-          type: "content_block_delta",
-          index: 0,
-          delta: {
-            type: "text_delta",
-            text: "lo",
-          },
-        },
-      },
-      {
-        type: "stream_event",
-        session_id: RESERVED_SESSION_ID,
-        uuid: "partial-wrapper-block-stop",
-        event: {
-          type: "content_block_stop",
-          index: 0,
-        },
-      },
-      {
-        type: "stream_event",
-        session_id: RESERVED_SESSION_ID,
-        uuid: "partial-wrapper-message-stop",
-        event: {
-          type: "message_stop",
-        },
-      },
-      {
-        type: "result",
-        session_id: RESERVED_SESSION_ID,
-        uuid: "partial-result-wrapper",
-        result: "Hello",
-      },
-    ];
-    const { sdkClient, start, events } = createSession();
-    const activeTurnId = acceptedTurnId(await start("stream please"));
-    emitCliTurn(sdkClient.current, chunks, sdkClient.current.sent[0]!.uuid);
-    await flushClaudeSession();
-
-    const expectedTextId = `${activeTurnId}:claude-text:msg-partial:0`;
-    const textDeltas = events.filter((event) => event.method === ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA);
-    const textCompletions = events.filter((event) => event.method === ClaudeSessionEventName.ITEM_OUTPUT_TEXT_COMPLETED);
-    expect(textDeltas.map((event) => event.params?.id)).toEqual([expectedTextId, expectedTextId]);
-    expect(textDeltas.map((event) => event.params?.delta)).toEqual(["Hel", "lo"]);
-    expect(textCompletions).toHaveLength(1);
-    expect(textCompletions[0]?.params).toMatchObject({ id: expectedTextId, text: "Hello" });
-    expect(events.some((event) => event.params?.id === activeTurnId)).toBe(false);
+  it("projects identical text with and without partial-message stream events (R-001)", async () => {
+    const [turn] = P2_OPUS_PARTIAL.turns;
+    const assistantFrame = (id: string, text: string) => ({ type: "assistant", session_id: RESERVED_SESSION_ID,
+      parent_tool_use_id: null, message: { id, role: "assistant", model: "claude-opus-5-5", content: [{ type: "text", text }] } });
+    const transcript = async (withStreamEvents: boolean) => {
+      const { sdkClient, start, events } = createSession();
+      await start("stream please");
+      const frames = turn!.calls.flatMap((call, index) => {
+        const assistant = assistantFrame(call.id, `step ${index + 1}`);
+        if (!withStreamEvents) return [assistant];
+        const [startFrame, delta, end] = callFrames(call, "claude-opus-5-5", RESERVED_SESSION_ID);
+        return [startFrame, delta, assistant, end];
+      });
+      emitCliTurn(sdkClient.current, [...frames, { type: "result", session_id: RESERVED_SESSION_ID, uuid: "r-001" }],
+        sdkClient.current.sent[0]!.uuid);
+      await flushClaudeSession(24);
+      return events
+        .filter((event) => event.method !== ClaudeSessionEventName.TOKEN_USAGE_UPDATED)
+        .map((event) => [event.method, event.params?.delta ?? event.params?.text ?? null]);
+    };
+    const plain = await transcript(false);
+    expect(plain.filter(([method]) => method === ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA).length).toBeGreaterThan(0);
+    expect(await transcript(true)).toEqual(plain);
   });
 });
 

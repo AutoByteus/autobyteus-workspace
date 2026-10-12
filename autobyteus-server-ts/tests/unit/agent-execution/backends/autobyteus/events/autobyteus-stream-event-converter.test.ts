@@ -46,6 +46,21 @@ describe("AutoByteusStreamEventConverter", () => {
     });
   });
 
+  it("marks each native usage event as one model call and keeps its compaction threshold (D-4, REQ-010)", () => {
+    const converter = new AutoByteusStreamEventConverter("run-1");
+    const event = converter.convert({
+      event_type: StreamEventType.TOKEN_USAGE_UPDATED,
+      timestamp: new Date("2026-10-09T10:00:00.000Z"),
+      data: { latest_prompt_tokens: 1_000, effective_context_window_tokens: 617_024,
+        context_compaction_threshold_tokens: 123_148 },
+    } as any);
+    expect(event).toMatchObject({
+      eventType: AgentRunEventType.TOKEN_USAGE_UPDATED,
+      payload: { reports_model_call: true, latest_prompt_tokens: 1_000, context_compaction_threshold_tokens: 123_148,
+        observed_at: "2026-10-09T10:00:00.000Z" },
+    });
+  });
+
   it("preserves effect-aware errors without owning lifecycle state", () => {
     const converter = new AutoByteusStreamEventConverter("run-1");
     converter.convert({

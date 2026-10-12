@@ -9,6 +9,8 @@ import { AgentRunViewProjectionService } from "../../../src/run-history/services
 import type { RunProjection } from "../../../src/run-history/projection/run-projection-types.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import type { TokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
+import { ClaudeSessionEventName } from "../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
 import {
   resolveClaudeCliExecutableCandidates,
   type ClaudeCliExecutableCandidate,
@@ -278,11 +280,27 @@ describeLiveClaudeRuntime("Claude compaction rotation (live E2E)", () => {
       const { harness, recorder, runId, workspaceRoot, memoryDir, store } = await startRun(candidate, {
         CLAUDE_CODE_AUTO_COMPACT_WINDOW: "60000",
       });
+      // Token usage (token-meter-accuracy AC-004, SCN-003): the reconciled observations the event
+      // pipeline publishes, and the SDK's own cumulative modelUsage from each raw turn-end result.
+      const usage: TokenUsageUpdatedPayload[] = [];
+      const unsubscribeUsage = harness.agentRun.subscribeToEvents((event) => {
+        if (event.eventType === "TOKEN_USAGE_UPDATED") usage.push(event.payload as unknown as TokenUsageUpdatedPayload);
+      });
+      const rawResults: Array<Record<string, unknown>> = [];
+      harness.session.subscribeRuntimeEvents((event) => {
+        const params = event.params as Record<string, unknown>;
+        if (event.method === ClaudeSessionEventName.TOKEN_USAGE_UPDATED && params.ingestion_kind === "claude_sdk_result") {
+          rawResults.push(params);
+        }
+      });
 
-      await sendAndAwaitTurn(harness, `Here is a data dump. Do not analyze it. Reply with exactly: OK DUMP1\n${filler(2200)}`);
-      await sendAndAwaitTurn(harness, `More data. Reply with exactly: OK DUMP2\n${filler(2200)}`);
-      await sendAndAwaitTurn(harness, "Reply with exactly: OK AFTER");
+      const turnStarts = [
+        await sendAndAwaitTurn(harness, `Here is a data dump. Do not analyze it. Reply with exactly: OK DUMP1\n${filler(2200)}`),
+        await sendAndAwaitTurn(harness, `More data. Reply with exactly: OK DUMP2\n${filler(2200)}`),
+        await sendAndAwaitTurn(harness, "Reply with exactly: OK AFTER"),
+      ];
       await recorder.waitForIdle(runId);
+      unsubscribeUsage();
 
       // Every operation is exactly one start and one terminal event sharing provider_event_id.
       const operations = new Map<string, Array<Record<string, unknown>>>();
@@ -321,6 +339,51 @@ describeLiveClaudeRuntime("Claude compaction rotation (live E2E)", () => {
         expect(boundary.post_tokens).toEqual(expect.any(Number));
         expect(boundary.duration_ms).toEqual(expect.any(Number));
       }
+
+      // Usage per turn: every main-loop call counted live with the SDK reading; the result last,
+      // reconciliation only; the turn that compacted admits the summariser as its remainder.
+      const turnIds = turnStarts.map((startIndex) => String(harness.messages.slice(startIndex)
+        .find(isType("TURN_COMPLETED"))?.payload?.turn_id));
+      const perTurn = turnIds.map((turnId, index) => {
+        const payloads = usage.filter((payload) => payload.turn_id === turnId);
+        const calls = payloads.filter((payload) => payload.ingestion_kind === "claude_sdk_call");
+        const results = payloads.filter((payload) => payload.ingestion_kind === "claude_sdk_result");
+        const compacted = compactionPayloads(harness, turnStarts[index], turnStarts[index + 1])
+          .some((payload) => payload.status === "compacted");
+        return { turnId, calls, results, compacted, last: payloads.at(-1) };
+      });
+      console.info(`Claude auto compaction usage: ${JSON.stringify(perTurn.map((turn) => ({
+        compacted: turn.compacted,
+        calls: turn.calls.map((call) => ({ total: call.accounting_total_tokens, reading: call.latest_prompt_tokens,
+          threshold: call.context_compaction_threshold_tokens })),
+        remainder: turn.results.map((result) => ({ total: result.accounting_total_tokens, flags: result.quality_flags })),
+      })))}`);
+      for (const turn of perTurn) {
+        expect(turn.calls.length, `calls of ${turn.turnId}`).toBeGreaterThanOrEqual(1);
+        expect(turn.calls.every((call) => call.reports_model_call && call.latest_prompt_tokens !== null)).toBe(true);
+        expect(turn.results, `one result for ${turn.turnId}`).toHaveLength(1);
+        expect(turn.last?.ingestion_kind).toBe("claude_sdk_result");
+        expect(turn.results[0]!.reports_model_call).toBe(false);
+        expect(turn.results[0]!.quality_flags).not.toContain("claude_sdk_live_exceeds_cumulative");
+      }
+      const compactedTurns = perTurn.filter((turn) => turn.compacted);
+      expect(compactedTurns.length).toBeGreaterThan(0);
+      for (const turn of compactedTurns) {
+        expect(turn.results[0]!.accounting_total_tokens ?? 0, `summariser remainder of ${turn.turnId}`).toBeGreaterThan(0);
+      }
+      // Lifetime totals equal the SDK's cumulative modelUsage for the agent's model (one process).
+      const lastRaw = rawResults.at(-1)!;
+      const selectedRow = (lastRaw.claude_sdk_model_usage as Array<Record<string, unknown>>)
+        .find((row) => row.rawModelId === lastRaw.selected_resolved_raw_model_id)!;
+      const cumulative = ["inputTokens", "outputTokens", "cacheReadInputTokens", "cacheCreationInputTokens"]
+        .reduce((total, field) => total + Number(selectedRow[field] ?? 0), 0);
+      expect(usage.reduce((total, payload) => total + (payload.accounting_total_tokens ?? 0), 0)).toBe(cumulative);
+      // After a completed compaction the SDK's reading drops.
+      const lastCompacted = perTurn.findLastIndex((turn) => turn.compacted);
+      const before = Math.max(0, ...perTurn.slice(0, lastCompacted).flatMap((turn) =>
+        turn.calls.map((call) => call.latest_prompt_tokens ?? 0)));
+      const after = perTurn.at(-1)!.calls.at(-1)!.latest_prompt_tokens!;
+      if (before > 0) expect(after).toBeLessThan(before);
 
       const history = await reopenHistory(memoryDir, runId, workspaceRoot);
       expect(conversationText(history)).toContain("OK AFTER");

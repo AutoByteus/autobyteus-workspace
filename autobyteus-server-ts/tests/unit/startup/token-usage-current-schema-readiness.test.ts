@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { PrismaClient } from '@prisma/client';
 import { assertTokenUsageCurrentSchema } from '../../../src/startup/token-usage-current-schema-readiness.js';
 
-const fakePrisma = (omitSdkColumn: boolean): PrismaClient => ({
+const fakePrisma = (omitted: readonly string[]): PrismaClient => ({
   $queryRawUnsafe: async (sql: string) => {
     if (sql.includes('table_info')) {
       const table = /table_info\("([^"]+)"\)/.exec(sql)?.[1];
@@ -24,10 +24,10 @@ const fakePrisma = (omitSdkColumn: boolean): PrismaClient => ({
           'api_cost_status', 'pricing_summary_json', 'quality_flags_json', 'latest_runtime_kind',
           'latest_model_provider', 'latest_provider_name', 'latest_model_identifier', 'latest_model_value',
           'identity_summary_json', 'latest_prompt_tokens', 'effective_context_window_tokens',
-          'context_window_usage_percent', 'snapshot_series_state_json', 'recent_idempotency_digests_json',
-          ...omitSdkColumn ? [] : ['claude_sdk_usage_state_json'],
+          'context_window_usage_percent', 'context_compaction_threshold_tokens', 'snapshot_series_state_json',
+          'recent_idempotency_digests_json', 'claude_sdk_usage_state_json',
         ];
-        return names.map((name) => ({ name }));
+        return names.filter((name) => !omitted.includes(name)).map((name) => ({ name }));
       }
       if (table === 'token_usage_analytics_coverage') return [{ name: 'id' }, { name: 'coverage_start' }];
       // This fixture checks the run-column gate before analytics details.
@@ -41,7 +41,12 @@ const fakePrisma = (omitSdkColumn: boolean): PrismaClient => ({
 
 describe('token usage current-schema readiness', () => {
   it('fails closed when the nullable Claude SDK checkpoint column is absent', async () => {
-    await expect(assertTokenUsageCurrentSchema(fakePrisma(true)))
+    await expect(assertTokenUsageCurrentSchema(fakePrisma(['claude_sdk_usage_state_json'])))
       .rejects.toThrow('TOKEN_USAGE_CURRENT_SCHEMA_COLUMNS_MISSING:token_usage_run_records:claude_sdk_usage_state_json');
+  });
+
+  it('fails closed when the nullable compaction-threshold column is absent', async () => {
+    await expect(assertTokenUsageCurrentSchema(fakePrisma(['context_compaction_threshold_tokens'])))
+      .rejects.toThrow('TOKEN_USAGE_CURRENT_SCHEMA_COLUMNS_MISSING:token_usage_run_records:context_compaction_threshold_tokens');
   });
 });

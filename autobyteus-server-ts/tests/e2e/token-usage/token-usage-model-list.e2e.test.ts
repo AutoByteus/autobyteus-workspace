@@ -31,7 +31,6 @@ describe('token usage related model-list GraphQL coverage', () => {
     const previousDiscoveryEnv = {
       OLLAMA_HOSTS: process.env.OLLAMA_HOSTS,
       LMSTUDIO_HOSTS: process.env.LMSTUDIO_HOSTS,
-      AUTOBYTEUS_LLM_SERVER_HOSTS: process.env.AUTOBYTEUS_LLM_SERVER_HOSTS,
       ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
       KIMI_API_KEY: process.env.KIMI_API_KEY,
       MISTRAL_API_KEY: process.env.MISTRAL_API_KEY,
@@ -40,7 +39,6 @@ describe('token usage related model-list GraphQL coverage', () => {
     };
     process.env.OLLAMA_HOSTS = ' ';
     process.env.LMSTUDIO_HOSTS = ' ';
-    process.env.AUTOBYTEUS_LLM_SERVER_HOSTS = ' ';
     delete process.env.ANTHROPIC_API_KEY;
     delete process.env.KIMI_API_KEY;
     delete process.env.MISTRAL_API_KEY;
@@ -107,7 +105,6 @@ describe('token usage related model-list GraphQL coverage', () => {
     const previousEnv = {
       OLLAMA_HOSTS: process.env.OLLAMA_HOSTS,
       LMSTUDIO_HOSTS: process.env.LMSTUDIO_HOSTS,
-      AUTOBYTEUS_LLM_SERVER_HOSTS: process.env.AUTOBYTEUS_LLM_SERVER_HOSTS,
       ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
       KIMI_API_KEY: process.env.KIMI_API_KEY,
       MISTRAL_API_KEY: process.env.MISTRAL_API_KEY,
@@ -116,7 +113,6 @@ describe('token usage related model-list GraphQL coverage', () => {
     };
     process.env.OLLAMA_HOSTS = ' ';
     process.env.LMSTUDIO_HOSTS = ' ';
-    process.env.AUTOBYTEUS_LLM_SERVER_HOSTS = ' ';
     delete process.env.ANTHROPIC_API_KEY;
     delete process.env.KIMI_API_KEY;
     delete process.env.MISTRAL_API_KEY;

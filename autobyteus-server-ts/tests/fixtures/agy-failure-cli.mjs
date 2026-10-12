@@ -225,19 +225,29 @@ if (arg === "--version") {
       return;
     }
     if (usageReport) {
-      // Turn N replays the Nth `result` event verbatim from a real AGY 1.2.16 recording (cumulative `usage` per
-      // process; `input_tokens` excludes `cache_read_tokens`, `total_tokens = input + output`), rebound to this
-      // process's conversation. Beyond the recording the turn fails, so a test never reads invented usage.
+      // Turn N replays the Nth turn of a real AGY 1.2.16 recording, rebound to this process's conversation: its
+      // DONE `agent_response` step with that model call's `usage` (`input_tokens` excludes `cache_read_tokens`,
+      // `total_tokens = input + output`), then its `result` verbatim (cumulative `usage` per process, which the
+      // per-step usage sums to). Beyond the recording the turn fails, so a test never reads invented usage.
       const recording = new URL("./agy-compaction/agy-stream-auto-compaction-twice.stdout.jsonl", import.meta.url);
-      const recorded = readFileSync(recording, "utf8").split("\n").filter(Boolean).map((row) => JSON.parse(row))
-        .filter((row) => row.event === "result").map((row) => row.result);
-      const result = recorded[turns - 1];
-      if (!result) {
+      const rows = readFileSync(recording, "utf8").split("\n").filter(Boolean).map((row) => JSON.parse(row));
+      const recordedTurns = [];
+      let stepUsage = [];
+      for (const row of rows) {
+        const step = row.event === "step_update" ? row.step_update : null;
+        if (step?.step_type === "agent_response" && step.state === "DONE" && step.usage) stepUsage.push(step.usage);
+        if (row.event === "result") { recordedTurns.push({ result: row.result, stepUsage }); stepUsage = []; }
+      }
+      const recorded = recordedTurns[turns - 1];
+      if (!recorded) {
         emit({ event: "result", result: { conversation_id, status: "ERROR", error: "no recorded turn", response: "" } });
         return;
       }
-      reply(turns * 10, result.response);
-      emit({ event: "result", result: { ...result, conversation_id } });
+      recorded.stepUsage.forEach((usage, index) => emit({ event: "step_update", step_update: { conversation_id,
+        step_index: turns * 10 + index, step_type: "agent_response", state: "DONE",
+        ...(index === recorded.stepUsage.length - 1 ? { text_delta: recorded.result.response } : {}), usage } }));
+      if (!recorded.stepUsage.length) reply(turns * 10, recorded.result.response);
+      emit({ event: "result", result: { ...recorded.result, conversation_id } });
       return;
     }
     if (autoCompaction) {

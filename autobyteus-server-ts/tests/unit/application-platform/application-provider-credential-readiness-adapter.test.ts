@@ -1,5 +1,4 @@
 import { resolve as resolvePath } from "node:path";
-import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
 import { describe, expect, it, vi } from "vitest";
 import {
@@ -46,7 +45,6 @@ describe("ApplicationProviderCredentialReadinessAdapter", () => {
   it.each([
     [LLMRuntime.API, "creator-provider", "creator-provider"],
     [LLMRuntime.OPENAI_COMPATIBLE, "custom:provider|one", "custom:provider|one"],
-    [LLMRuntime.AUTOBYTEUS, "creator-provider", LLMProvider.AUTOBYTEUS],
   ])("maps %s models to the exact credential-owning provider", async (
     runtime,
     modelProviderId,

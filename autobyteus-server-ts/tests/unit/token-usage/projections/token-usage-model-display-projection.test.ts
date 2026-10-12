@@ -84,6 +84,19 @@ describe("token usage model display projection", () => {
     }), context())).toBe("Unknown Provider:Unknown Model");
   });
 
+  it("keeps displaying history recorded with the removed remote AutoByteus provider from its snapshot (REQ-008)", () => {
+    const remoteRow = {
+      model_provider: "AUTOBYTEUS",
+      model_identifier: "gpt-4o:autobyteus@remote-llm.example.invalid:8000",
+      model_value: "gpt-4o",
+    };
+    expect(resolveTokenUsageModelDisplayName(event({ ...remoteRow, provider_name: "AutoByteus" }), context()))
+      .toBe("AutoByteus:gpt-4o");
+    // Accepted at design review: a row the backfill could never fill has no current display name.
+    expect(resolveTokenUsageModelDisplayName(event({ ...remoteRow, provider_name: null }), context()))
+      .toBe("Unknown Provider (AUTOBYTEUS):gpt-4o");
+  });
+
   it("keeps task raw/display entries aligned and falls back on cross-runtime collisions", () => {
     const entries = buildTokenUsageModelDisplayEntries([
       event({ model_identifier: "raw-A", model_value: "same" }),

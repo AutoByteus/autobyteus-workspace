@@ -78,8 +78,12 @@ export const resolveClaudeTurnTerminalError = (
   if (!payload) {
     return null;
   }
-  const errorText = resolveResultErrorText(payload);
+  // Only SDK fields decide failure: on a successful result, `result` is the agent's own reply.
   const errorCode = asString(payload.error) ?? asString(payload.code);
+  if (payload.is_error !== true && !errorCode) {
+    return null;
+  }
+  const errorText = resolveResultErrorText(payload);
   const searchable = [errorCode, errorText]
     .filter((value): value is string => Boolean(value))
     .join("\n")
@@ -87,13 +91,6 @@ export const resolveClaudeTurnTerminalError = (
   const isAuthenticationFailure = AUTHENTICATION_FAILURE_MARKERS.some((marker) =>
     searchable.includes(marker),
   );
-  const isErrorResult =
-    payload.is_error === true ||
-    Boolean(errorCode) ||
-    isAuthenticationFailure;
-  if (!isErrorResult) {
-    return null;
-  }
   return {
     code: isAuthenticationFailure
       ? "CLAUDE_RUNTIME_AUTHENTICATION_FAILED"

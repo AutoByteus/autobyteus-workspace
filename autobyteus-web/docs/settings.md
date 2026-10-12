@@ -48,7 +48,7 @@ server's centralized encrypted vault:
 API Keys starts the credential read and local catalog snapshot independently,
 but it awaits only the credential read before rendering provider navigation and
 the selected credential editor. Static providers show curated rows immediately
-and never show Reload. `AUTOBYTEUS`, `OLLAMA`, `LMSTUDIO`, and saved custom
+and never show Reload. `OLLAMA`, `LMSTUDIO`, and saved custom
 providers are `DISCOVERED`: selecting a cold source starts only that provider's
 `ensureProviderModelCatalog` operation. A later read reuses its in-process
 snapshot; only provider-local Reload forces `reloadProviderModelCatalog`. There
@@ -76,11 +76,16 @@ operation fails, the UI keeps the committed configured state rather than
 relabeling the save as failed. The removed `qwen3.8-max-preview` value must not
 reappear after save, catalog read, or recovery.
 
-An ordinary AutoByteus credential save returns after the vault commit. The
-server invalidates and starts only the AutoByteus LLM/audio/image sources in the
-background, and the mounted client separately starts or joins the matching
-non-forcing ensure after it has published credential success. Neither side
-turns the credential command into an awaited global refresh.
+A built-in provider credential save returns after the vault commit and starts
+no model-catalog operation on either side.
+
+The remote AutoByteus LLM provider has been removed: Settings shows no
+`AutoByteus` provider row and no "AutoByteus LLM Hosts" endpoint card. A saved
+model selection that names one of its former models stays visible as
+unavailable until the user picks another model. A leftover
+`AUTOBYTEUS_LLM_SERVER_HOSTS` value appears under Server Settings as an ordinary
+custom setting that can be deleted. The native AutoByteus runtime and the
+"AutoByteus VNC Hosts" card are unaffected.
 
 Custom OpenAI-compatible provider drafts still accept an API key for the probe
 and create transaction, but only non-secret provider metadata is persisted in
@@ -89,9 +94,7 @@ readable ID from the normalized name (for example `provider_alibaba_cloud`) and
 atomically rejects invalid names or canonical-name/ID collisions; the browser
 does not submit an ID. The credential is stored separately, and deleting the
 custom provider through the provider-entity lifecycle removes both its
-credential and metadata. AutoByteus gateway models retain their downstream
-display provider while credential configuration remains owned by the
-`AUTOBYTEUS` gateway provider.
+credential and metadata.
 
 An upgrade from legacy UUID providers deliberately resets provider records,
 Base URLs, and credentials after migrating only exact allowlisted selector
@@ -1553,9 +1556,11 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - `Gross input` is cumulative input sent to provider context and may include discounted cache-hit tokens. It is distinct from `latestPromptTokens`, which is the latest model-call prompt/context size used for the latest prompt progress bar.
     - `Input breakdown` renders server-owned uncached/full-price input, cache hits/discounted input, cache writes, input cache rate, and component costs only when meaningful; zero/unknown rows remain hidden instead of fabricated.
     - `Calculation details` is the explicit unit-price disclosure. It shows component rows with tokens, server-provided unit price, cost, and the formula `tokens ÷ 1,000,000 × unit price`; mixed, missing, partial-missing, and local/no-bill unit-price states render as labels such as `varies by call`, `unpriced`, `partially missing`, or `Local / no API bill` instead of a frontend price table or blended rate.
-    - `Usage reports` in pricing details is `usageReportCount`, usually model calls or model turns. It is not user messages, chat rows, or a raw primary `events` label.
+    - After a completed compaction on the native runtime or the Claude Agent SDK (whose new context size arrives only with the next model call), the `Latest prompt` value and bar stay at the previous reading, greyed, with the note `Compacted — updates on the next model call`. The mark is live-session state in `tokenUsageCompactionMarks.ts` (owned by `tokenUsageMeterStore`), set by `agentStatusHandler` on a newly completed `COMPACTION_STATUS` (failed or stopped compactions never mark). Only that run's next live token-usage event with `reports_model_call` clears it; fetched or hydrated summaries and reading-only events (Codex post-compaction size, Claude turn-end remainder) do not. Codex shows no note because it reports its post-compaction size directly. A native compaction summary call counts as a model call with tokens and cost but carries no reading, so it never changes the displayed reading.
+    - `Usage reports` in pricing details is `usageReportCount`, the number of model calls (reading-only updates such as a Codex post-compaction size and Claude SDK turn-end reconciliation do not count). It is not user messages, chat rows, or a raw primary `events` label.
     - Reasoning output appears only inside the Output card and only when the server summary reports positive reasoning output tokens. The copy states that thinking tokens are included in output tokens and estimated output cost; calculation details show the reasoning unit price as the output price / included in output cost so users do not double-count thinking.
-    - The `Latest prompt` block renders when latest-prompt tokens are present. Known context capacity shows percentage/progress; unknown capacity shows the prompt-token count with explicit `contextLimitUnavailable` copy and never fabricates a denominator or percentage.
+    - The `Latest prompt` block renders when latest-prompt tokens are present. It is the runtime's own count of tokens in context for its latest model call, measured against the window that runtime uses (server-owned `latestPromptTokens`, `effectiveContextWindowTokens`, `contextWindowUsagePercent`); it drops after a compaction. Known context capacity shows percentage/progress; unknown capacity (AGY, Grok) shows the prompt-token count with explicit `contextLimitUnavailable` copy and never fabricates a denominator or percentage.
+    - When the runtime reports its auto-compaction threshold (`contextCompactionThresholdTokens`: Claude Agent SDK, and the native runtime when automatic compaction is enabled), the bar shows a marker at threshold ÷ window and an `Auto-compacts at <tokens>` label. A runtime's own reading can exceed its window (Codex just before it compacts, the Claude SDK after a failed compaction): the percentage shows the true value, the bar stays clamped at 100 % in amber, and `Over the runtime's window` is shown. See `autobyteus-server-ts/docs/modules/token_usage.md` for each runtime's source.
     - Browser-facing proof should validate clean agent/team headers with no token chip and validate the Token tab against server/GraphQL-backed summaries, including focused member primary selection, the scoped horizontally scrollable grouped Team table at constrained widths, absence of a standalone Cost column, the `Total` grouped metric column remaining reachable and row-associated, normal estimated rows omitting repeated status copy, subordinate final-row team total, price-missing, partial-price, local/no-bill, mixed-currency, cache-positive, unit-price calculation details, reasoning-token included-in-output copy, model/runtime, usage-report, and latest-prompt display where present.
     - Live store coverage must preserve the complete strict cumulative snapshot from server events, including Codex-style cache/reasoning tokens/cost, component unit prices, latest runtime/ingestion/model metadata, and latest prompt/context-window fields used by the Token Meter. Post-persist event snapshots and hydrated GraphQL summaries converge to the same display shape and generation rules. The durable Team transport regression must construct its snapshot through the production observation/fold/record/aggregate/public-summary builders and parse the final strict stream message, proving both complete field preservation and absence of aggregate-only diagnostics.
     - Current durable regression coverage includes GraphQL E2E for cached gross input, provider-specific semantics, local/no-bill, custom missing price, mixed currency, runtime field names, unit-price hydration across run/team/member/statistics summaries, and built-process restart reads of existing current records. Frontend store/component tests cover null/partial live events before reopen hydration, exact Team/member identity, higher-only individual generations, stable single-flight Team refresh, focused team member primary selection, grouped Team table headers/rows, paired token+cost metric cells, absence of a standalone Cost column, scoped table-scroll hooks, clean header rendering, Token Meter hierarchy, calculation details, cache-aware rows, price-status labels, localization catalog coverage, and latest prompt fields. Latest visual evidence for the cache-aware Token Meter is under `tickets/token-input-prompt-discrepancy-analysis/implementation-evidence/`.

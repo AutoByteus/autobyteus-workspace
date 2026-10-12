@@ -3,8 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
-import { AutobyteusLLM } from '../../../../src/llm/api/autobyteus-llm.js';
-import { BaseLLM } from '../../../../src/llm/base.js';
+import { BaseLLM, type LLMInvocationOptions } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
@@ -53,6 +52,35 @@ class ScriptedLLM extends BaseLLM {
   }
   protected async _sendMessagesToLLM(): Promise<CompleteResponse> { return new CompleteResponse({ content: '' }); }
   protected async *_streamMessagesToLLM(): AsyncGenerator<ChunkResponse, void, unknown> { yield* this.chunks; }
+}
+
+/** A provider that keeps one server-side session per logical conversation and releases it on request. */
+class SessionScriptedLLM extends BaseLLM {
+  readonly client = {
+    streamMessage: vi.fn(async function* (_request: { conversationId: string }, _options: { signal: AbortSignal | null }) {
+      yield new ChunkResponse({ content: '<compaction_summary>s</compaction_summary>', is_complete: true });
+    }),
+    cleanup: vi.fn(async (_id: string, _options: { signal?: AbortSignal }) => ({})),
+  };
+  private readonly conversations = new Set<string>();
+  constructor() {
+    super(new LLMModel({ name: 'session', value: 'session', canonicalName: 'session', provider: LLMProvider.OPENAI }), new LLMConfig());
+  }
+  protected async _sendMessagesToLLM(): Promise<CompleteResponse> { return new CompleteResponse({ content: '' }); }
+  protected async *_streamMessagesToLLM(_messages: unknown, kwargs: Record<string, unknown> = {},
+    options: LLMInvocationOptions = {}): AsyncGenerator<ChunkResponse, void, unknown> {
+    const conversationId = String(kwargs.logicalConversationId);
+    this.conversations.add(conversationId);
+    yield* this.client.streamMessage({ conversationId }, { signal: options.signal ?? null });
+  }
+  async releaseConversation(conversationId: string, options: { signal?: AbortSignal } = {}): Promise<void> {
+    this.conversations.delete(conversationId);
+    await this.client.cleanup(conversationId, options);
+  }
+  async cleanup(options: { signal?: AbortSignal } = {}): Promise<void> {
+    for (const conversationId of Array.from(this.conversations)) await this.releaseConversation(conversationId, options);
+    await super.cleanup(options);
+  }
 }
 
 describe('LlmPhaseSummaryPort', () => {
@@ -176,21 +204,13 @@ describe('LlmPhaseSummaryPort', () => {
   });
 
   describe('isolated compaction conversations on a remote-session provider (AC-009)', () => {
-    const autobyteus = () => {
-      const llm = new AutobyteusLLM(new LLMModel({ name: 'rpa', value: 'rpa', canonicalName: 'rpa',
-        provider: LLMProvider.AUTOBYTEUS, hostUrl: 'https://rpa.example.test' }), new LLMConfig(), providerApiKeyResolver('synthetic-key'));
-      const client = {
-        streamMessage: vi.fn(async function* (_request: { conversationId: string }, _options: { signal: AbortSignal | null }) {
-          yield { content: '<compaction_summary>s</compaction_summary>', is_complete: true, token_usage: { prompt_tokens: 3, completion_tokens: 2, total_tokens: 5 } };
-        }),
-        cleanup: vi.fn(async (_id: string, _options: { signal?: AbortSignal }) => ({})),
-      };
-      (llm as any).clientPromise = Promise.resolve(client);
-      return { llm, client };
+    const sessionProvider = () => {
+      const llm = new SessionScriptedLLM();
+      return { llm, client: llm.client };
     };
 
     it('uses a compaction conversation id per attempt, releases exactly it, and never touches the agent session', async () => {
-      const { llm, client } = autobyteus();
+      const { llm, client } = sessionProvider();
       const llmCleanup = vi.spyOn(llm, 'cleanup');
       for await (const _ of llm.streamMessages([new Message(MessageRole.USER, { content: 'agent turn' })], { logicalConversationId: AGENT_ID })) { /* agent call */ }
       const port = new LlmPhaseSummaryPort({ agentId: AGENT_ID, llm, tools: [], requestCapacity: capacity(), notifier: null });
@@ -206,7 +226,7 @@ describe('LlmPhaseSummaryPort', () => {
     });
 
     it('still releases the compaction conversation with its own live signal when the attempt is aborted', async () => {
-      const { llm, client } = autobyteus();
+      const { llm, client } = sessionProvider();
       const controller = new AbortController();
       client.streamMessage.mockImplementation(async function* () {
         controller.abort();
@@ -223,7 +243,7 @@ describe('LlmPhaseSummaryPort', () => {
 
     it('bounds a hanging release and keeps the attempt result', async () => {
       vi.useFakeTimers();
-      const { llm, client } = autobyteus();
+      const { llm, client } = sessionProvider();
       client.cleanup.mockImplementation(() => new Promise(() => {}));
       const port = new LlmPhaseSummaryPort({ agentId: AGENT_ID, llm, tools: [], requestCapacity: capacity(), notifier: null });
       const pending = port.requestCachedSummary([new Message(MessageRole.USER, { content: 'x' })], 'summarize', identity(), new AbortController().signal);

@@ -8,15 +8,15 @@ import { resolveClaudeStreamChunkSessionId } from "../claude-runtime-message-nor
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 import { logRawClaudeSessionChunkDetails } from "../events/claude-session-event-debug.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
-import { claudeSessionReasoningOptions, type ClaudeSessionConfig } from "./claude-session-config.js";
+import type { ClaudeSessionConfig } from "./claude-session-config.js";
 import type { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
-import { resolveClaudeSessionToolingOptions } from "./claude-session-tooling-options.js";
+import { resolveClaudeSessionQueryOptions } from "./claude-session-query-options.js";
 import { buildClaudeTurnTerminalErrorEvent } from "./claude-session-output-events.js";
 import { ClaudeCompactionOperationTracker, resolveClaudeCompactionCloseReason } from "./claude-compaction-operation-tracker.js";
 import { formatClaudeRuntimeError, type ClaudeProcessDiagnostics } from "./claude-process-diagnostics.js";
 import { ClaudeTextSegmentProjector } from "./claude-text-segment-projector.js";
-import { buildClaudeSessionMcpServerConfig } from "./claude-session-mcp-server-config.js";
 import { emitClaudeTokenUsageEvent } from "./claude-session-token-usage.js";
+import { ClaudeCallUsageTracker } from "./claude-call-usage-tracker.js";
 import { bindClaudeSelectedModel } from "./claude-selected-model-binding.js";
 import { processOrderedClaudeContentBlocks } from "./claude-session-content-block-processor.js";
 import { ClaudeAgentToolsMcpSessionState } from "../agent-tools-mcp/claude-agent-tools-mcp-session-state.js";
@@ -52,6 +52,7 @@ export type ClaudeSessionInputResult =
   | Readonly<{ accepted: false; code: string; message: string }>;
 
 type ClaudeOpenProcessState = {
+  session: ClaudeSdkStreamingSession;
   queryKind: ClaudeSdkQueryKind;
   selectedBinding: Promise<ClaudeSdkSelectedBinding>;
   capabilitiesChecked: boolean;
@@ -89,6 +90,7 @@ export class ClaudeSession {
   }));
   private readonly turnTracker: ClaudeTurnTracker;
   private readonly compactionTracker = new ClaudeCompactionOperationTracker();
+  private readonly callUsageTracker: ClaudeCallUsageTracker;
   private readonly process: ClaudeSessionProcess;
   private readonly interruptTasks = new Map<string, Promise<void>>();
   private textProjector: ClaudeTextSegmentProjector | null = null;
@@ -111,6 +113,13 @@ export class ClaudeSession {
       runId: this.runId,
       listener: this.createTrackerListener(),
       registry: this.taskRegistry,
+    });
+    this.callUsageTracker = new ClaudeCallUsageTracker({
+      runId: this.runId,
+      getSessionId: () => this.sessionId,
+      getActiveTurnId: () => this.turnTracker.activeTurnId,
+      readContextUsage: async () => this.openProcess?.session.readContextUsage() ?? null,
+      emitEvent: (event) => this.emitRuntimeEvent(event),
     });
     this.process = new ClaudeSessionProcess({
       lifecycle: this.providerSessionLifecycle,
@@ -339,43 +348,13 @@ export class ClaudeSession {
     binding: ClaudeSdkSessionBinding,
     diagnostics: ClaudeProcessDiagnostics,
   ) {
-    return this.dependencies.sdkClient.beginStreamingSession({ resolveOptions: async () => {
-    const toolingInput = {
-      runtimeToolExposure: this.runContext.runtimeContext.runtimeToolExposure,
-      hasMaterializedSkills: this.runContext.runtimeContext.materializedConfiguredSkills.length > 0,
-      memberExecutionContext: this.runContext.config.memberExecutionContext,
-    };
-    const configuredToolingOptions = resolveClaudeSessionToolingOptions(toolingInput);
-    const agentToolsMcpDescriptor = (
-      configuredToolingOptions.agentToolsMcpToolingRequested ||
-      this.runContext.runtimeContext.runtimeToolExposure.requestedToolNames.length > 0
-    )
-      ? this.agentToolsMcpSessionState.ensureDescriptor(this.runContext)
-      : null;
-    const toolingOptions = resolveClaudeSessionToolingOptions({
-      ...toolingInput,
-      agentToolsMcpEnabledToolNames: agentToolsMcpDescriptor?.enabledTools ?? [],
-    });
-    const mcpServers = await buildClaudeSessionMcpServerConfig({ agentToolsMcpDescriptor });
-    return {
-      systemPrompt: this.runContext.runtimeContext.carpenterSystemPrompt,
-      sessionBinding: binding,
-      model: this.model,
-      workingDirectory: this.workingDirectory,
-      mcpServers,
-      allowedTools: toolingOptions.allowedTools,
-      permissionMode: this.permissionMode,
-      ...claudeSessionReasoningOptions(this.sessionConfig),
-      stderr: (data: string) => diagnostics.append(data),
-      canUseTool: (toolName, input, toolOptions) =>
-        this.dependencies.toolingCoordinator.handleToolPermissionCheck(
-          this.runContext,
-          toolName,
-          input,
-          toolOptions,
-        ),
-    };
-    } });
+    return this.dependencies.sdkClient.beginStreamingSession({ resolveOptions: () => resolveClaudeSessionQueryOptions({
+      runContext: this.runContext,
+      binding,
+      diagnostics,
+      agentToolsMcpSessionState: this.agentToolsMcpSessionState,
+      toolingCoordinator: this.dependencies.toolingCoordinator,
+    }) });
   }
 
   private handleProcessOpened(opened: ClaudeSessionProcessOpened): void {
@@ -383,7 +362,9 @@ export class ClaudeSession {
       memoryDir: this.runContext.config.memoryDir, content: this.runContext.runtimeContext.carpenterSystemPrompt,
       suppliedAt: Date.now() / 1000, emitEvent: event => this.emitRuntimeEvent(event) });
     this.selectedBinding = bindClaudeSelectedModel.initial(this.model);
+    this.callUsageTracker.reset();
     this.openProcess = {
+      session: opened.session,
       queryKind: opened.binding.kind,
       selectedBinding: bindClaudeSelectedModel.resolve(opened.session, this.model)
         .catch(() => bindClaudeSelectedModel.initial(this.model)),
@@ -414,6 +395,12 @@ export class ClaudeSession {
         );
       }
     }
+    if (isFrameOfType(frame, "stream_event")) {
+      // Partial-message frames carry per-call usage only; they never reach turn projection. The
+      // call observation is emitted before this returns, so the turn's `result` cannot overtake it (D-10).
+      await this.callUsageTracker.observe(frame);
+      return;
+    }
     if (openProcess && isFrameOfType(frame, "result")) {
       this.selectedBinding = await openProcess.selectedBinding;
     }
@@ -422,6 +409,7 @@ export class ClaudeSession {
 
   private handleProcessExit(error: Error): void {
     this.openProcess = null;
+    this.callUsageTracker.reset();
     this.dependencies.toolingCoordinator.clearPendingToolApprovals(this.runId, EXIT_APPROVAL_REASON);
     logger.warn(`Claude process for run '${this.runId}' exited: ${formatClaudeRuntimeError(error)}`);
     this.turnTracker.processExited({ code: "CLAUDE_PROCESS_EXITED", message: error.message });

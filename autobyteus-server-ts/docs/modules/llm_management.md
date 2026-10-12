@@ -14,7 +14,6 @@ native Qwen Base URL/API-key setup command and its value-free status projection.
 - `src/llm-management/services/model-catalog-service.ts`
 - `src/llm-management/services/dynamic-model-source-lifecycle.ts`
 - `src/llm-management/services/model-availability-service.ts`
-- `src/llm-management/services/autobyteus-remote-model-discovery-service.ts`
 - `src/llm-management/llm-providers/`
 
 ## Main Owners
@@ -505,7 +504,7 @@ re-enabling legacy identity.
 3. `CustomLlmProviderStore.deleteProvider(...)` removes metadata from
    `custom-llm-providers.json`.
 4. The server removes the exact custom source lifecycle and registry rows, so
-   the provider disappears without invoking unrelated AutoByteus discovery.
+   the provider disappears without invoking unrelated provider discovery.
    The client fences any older provider request and removes the exact credential
    and snapshot entries locally.
 
@@ -523,8 +522,8 @@ of `IDLE`, `LOADING`, `READY`, `PARTIAL`, `REFRESHING`, `STALE_ERROR`, or
 attempt for the current fingerprint. Forced Reload starts a new generation.
 Only the current generation may atomically replace that source's rows.
 
-Successful preparation commits the complete source slice. Partial AutoByteus
-host results commit deterministically ordered successful rows with `PARTIAL`.
+Successful preparation commits the complete source slice. Partial multi-host
+Ollama or LM Studio results commit the successful hosts' rows with `PARTIAL`.
 A failed first attempt is `ERROR`; a failed refresh with rows from a successful
 prior fingerprint is `STALE_ERROR` and retains only those last-known-good rows.
 No source failure wipes another provider or model kind.
@@ -538,18 +537,14 @@ No source failure wipes another provider or model kind.
   A static provider simply returns its current snapshot without network work.
 - `reloadProviderModelCatalog(providerId, runtimeKind?)` forces only the target
   `DISCOVERED` provider. Calling it for a static provider is rejected.
-- `AUTOBYTEUS` owns three source keys (LLM/audio/image). Its provider operation
-  prepares them concurrently; remote hosts are attempted concurrently with a
-  30-second per-host deadline and deterministic aggregation.
 - `OLLAMA` and `LMSTUDIO` each own one LLM source. Every custom provider owns
-  one exact OpenAI-compatible LLM source.
-- A committed `AUTOBYTEUS_LLM_SERVER_HOSTS`, `OLLAMA_HOSTS`, or
-  `LMSTUDIO_HOSTS` change invalidates and clears only the mapped source rows,
-  then starts a detached non-forcing ensure. A full normalized endpoint,
-  including scheme/path/query, is the fingerprint authority.
-- A committed AutoByteus credential change invalidates only the AutoByteus
-  sources, retains current rows while their exact replacement refreshes, and
-  starts the source operations without delaying credential-command success.
+  one exact OpenAI-compatible LLM source. Audio, image, and video models are
+  static built-in registrations; no provider discovers media models.
+- A committed `OLLAMA_HOSTS` or `LMSTUDIO_HOSTS` change invalidates and clears
+  only the mapped source rows, then starts a detached non-forcing ensure. A full
+  normalized endpoint, including scheme/path/query, is the fingerprint
+  authority.
+- Saving a built-in provider credential starts no model-catalog work.
 - Custom create seeds its warm source from the successful create probe; after
   restart, the first ensure performs discovery. Delete removes the exact source
   immediately.
@@ -563,5 +558,12 @@ registered model. If a persisted dynamic identifier is missing after restart,
 it parses the exact source, verifies a unique full configured endpoint, ensures
 only that provider, and rechecks the registry. Zero or ambiguous endpoint
 matches remain unavailable rather than falling back by authority or triggering
-an all-provider refresh. Video models are static and have no dynamic ensure or
-reload path.
+an all-provider refresh. Audio, image, and video models are static: they are
+available only when registered and have no dynamic ensure or reload path.
+
+The remote AutoByteus LLM provider (formerly `AUTOBYTEUS_LLM_SERVER_HOSTS`) has
+been removed. A saved selection that names one of its models (for example
+`<model>:autobyteus@<host>` or `<name>@<host>`) is not parsed as a dynamic
+identifier, so it resolves to the ordinary unavailable-model outcome. A leftover
+`AUTOBYTEUS_LLM_SERVER_HOSTS` value in the server `.env` is listed as an ordinary
+custom setting that the user can delete.

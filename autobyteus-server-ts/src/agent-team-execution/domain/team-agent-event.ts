@@ -78,6 +78,8 @@ export type TeamTokenUsageDetails = Readonly<{
   latestPromptTokens: number | null;
   effectiveContextWindowTokens: number | null;
   contextWindowUsagePercent: number | null;
+  contextCompactionThresholdTokens: number | null;
+  reportsModelCall: boolean;
   runSummaryAfterEvent: TokenUsageRunSummaryPayload | null;
   qualityFlags: readonly string[];
 }>;

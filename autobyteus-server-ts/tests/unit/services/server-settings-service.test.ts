@@ -301,6 +301,21 @@ describe("ServerSettingsService", () => {
     expect(mockConfig.setDurably).not.toHaveBeenCalled();
   });
 
+  it("lists a leftover remote AutoByteus host value as an ordinary deletable custom setting", () => {
+    const leftoverKey = "AUTOBYTEUS_LLM_SERVER_HOSTS";
+    mockConfig.getConfigData.mockReturnValue({ [leftoverKey]: "https://remote-llm.example.invalid:8000" });
+    mockConfig.delete.mockImplementation(() => undefined);
+    const service = new ServerSettingsService();
+    expect(service.getAvailableSettings().find((item) => item.key === leftoverKey)).toMatchObject({
+      value: "https://remote-llm.example.invalid:8000",
+      description: "Custom user-defined setting",
+      isEditable: true,
+      isDeletable: true,
+    });
+    expect(service.deleteSetting(leftoverKey)[0]).toBe(true);
+    expect(mockConfig.delete).toHaveBeenCalledWith(leftoverKey);
+  });
+
   it("rejects invalid predefined Codex sandbox values before persistence", () => {
     const service = new ServerSettingsService();
     const [ok, message] = service.updateSetting("CODEX_APP_SERVER_SANDBOX", "full-access");

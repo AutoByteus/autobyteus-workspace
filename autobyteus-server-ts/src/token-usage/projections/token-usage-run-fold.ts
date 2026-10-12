@@ -24,7 +24,7 @@ import {
   applyTokenUsageContribution,
   createEmptyRunRecord,
 } from "./token-usage-run-record-state.js";
-import { reconcileClaudeSdkResult } from "./claude-sdk-model-usage-reconciler.js";
+import { reconcileClaudeSdkResult, recordClaudeSdkCall } from "./claude-sdk-model-usage-reconciler.js";
 
 export type TokenUsageRunFoldResult = Readonly<{
   kind: "SUPPRESSED" | "CHANGED";
@@ -35,7 +35,7 @@ export type TokenUsageRunFoldResult = Readonly<{
 export const zeroTokenUsageContribution = (payload: TokenUsageUpdatedPayload): TokenUsageUpdatedPayload => ({
   ...payload,
   ...(payload.ingestion_kind === "claude_sdk_result"
-    ? { claude_sdk_model_usage: [], claude_sdk_main_loop_usage: null, raw_event_json: null, raw_usage_json: null }
+    ? { claude_sdk_model_usage: [], raw_event_json: null, raw_usage_json: null }
     : {}),
   ...Object.fromEntries(cumulativeSnapshotTokenFields.map((field) => [field, null])),
   meter_delta_input_tokens: 0,
@@ -118,7 +118,6 @@ export const foldTokenUsageObservation = (input: {
   const nextOrdinal = (record?.revision ?? 0n) + 1n;
   const marker = markerFor(payload, nextOrdinal);
   let authoritative = payload;
-  let shouldCountReport = true;
 
   if (payload.runtime_kind === "claude_agent_sdk" && payload.ingestion_kind === "claude_sdk_result") {
     record ??= createEmptyRunRecord(payload, marker);
@@ -131,6 +130,16 @@ export const foldTokenUsageObservation = (input: {
       authoritative = withFlag(authoritative, "claude_sdk_selected_configured_price_missing");
       authoritative = { ...authoritative, missing_price_dimensions: ["claude_sdk_selected_configured_price"] };
     }
+  } else if (payload.runtime_kind === "claude_agent_sdk" && payload.ingestion_kind === "claude_sdk_call") {
+    record ??= createEmptyRunRecord(payload, marker);
+    const live = recordClaudeSdkCall({ record, payload });
+    record = live.record;
+    authoritative = normalizeAuthoritativeContribution(
+      live.flags.reduce(withFlag, payload),
+      input.pricingPolicy!,
+      componentResolver,
+      costCalculator,
+    );
   } else if (payload.usage_scope === "cumulative_snapshot") {
     const seriesKey = payload.snapshot_series_key?.trim();
     const rawSource = readCumulativeSnapshotSourceTokens(payload.raw_event_json);
@@ -154,8 +163,11 @@ export const foldTokenUsageObservation = (input: {
               : item),
           };
         } else if (!advancement.advanced) {
-          shouldCountReport = false;
-          authoritative = zeroTokenUsageContribution(payload);
+          // A non-advancing update is saved only for its context reading (Codex compaction, D-6).
+          if (payload.latest_prompt_tokens === null) {
+            return { kind: "SUPPRESSED", record, authoritativePayload: zeroTokenUsageContribution(payload) };
+          }
+          authoritative = { ...zeroTokenUsageContribution(payload), reports_model_call: false };
         } else {
           authoritative = normalizeAuthoritativeContribution(
             payloadWithSnapshotTokens(payload, advancement.delta),
@@ -203,28 +215,17 @@ export const foldTokenUsageObservation = (input: {
     authoritative = normalizeAuthoritativeContribution(payload, input.pricingPolicy!, componentResolver, costCalculator);
   }
 
-  if (!shouldCountReport) {
-    return { kind: "SUPPRESSED", record, authoritativePayload: authoritative };
-  }
   record ??= createEmptyRunRecord(payload, marker);
-  if (shouldCountReport) {
-    record = applyTokenUsageContribution({
-      record,
-      payload: authoritative,
-      marker,
-      incrementReport: true,
-      incrementRevision: true,
-    });
-    record = {
-      ...record,
-      recentIdempotencyDigests: addRecentIdentityDigests(record.recentIdempotencyDigests, {
-        usageEventId: payload.usage_event_id,
-        idempotencyKey: payload.idempotency_key,
-        generation: 1,
-        ordinal: record.revision,
-      }),
-    };
-  }
+  record = applyTokenUsageContribution({ record, payload: authoritative, marker });
+  record = {
+    ...record,
+    recentIdempotencyDigests: addRecentIdentityDigests(record.recentIdempotencyDigests, {
+      usageEventId: payload.usage_event_id,
+      idempotencyKey: payload.idempotency_key,
+      generation: 1,
+      ordinal: record.revision,
+    }),
+  };
   return { kind: "CHANGED", record, authoritativePayload: authoritative };
 };
 

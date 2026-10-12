@@ -9,12 +9,10 @@ import { LMStudioModelProvider } from 'autobyteus-ts/llm/lmstudio-provider.js';
 import { OllamaModelProvider } from 'autobyteus-ts/llm/ollama-provider.js';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import { LLMRuntime } from 'autobyteus-ts/llm/runtimes.js';
-import type { LLMModel } from 'autobyteus-ts/llm/models.js';
 import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
 import type { AudioModel } from 'autobyteus-ts/multimedia/audio/audio-model.js';
 import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-factory.js';
 import type { ImageModel } from 'autobyteus-ts/multimedia/image/image-model.js';
-import { MultimediaRuntime } from 'autobyteus-ts/multimedia/runtimes.js';
 import { VideoClientFactory } from 'autobyteus-ts/multimedia/video/video-client-factory.js';
 import type { VideoModel } from 'autobyteus-ts/multimedia/video/video-model.js';
 import {
@@ -39,12 +37,6 @@ import {
   getCustomLlmProviderStore,
   type CustomLlmProviderStore,
 } from '../llm-providers/stores/custom-llm-provider-store.js';
-import {
-  getAutobyteusRemoteModelDiscoveryService,
-  type AutobyteusRemoteModel,
-  type AutobyteusRemoteModelDiscoveryService,
-  type AutobyteusRemoteModelKind,
-} from './autobyteus-remote-model-discovery-service.js';
 import { getClaudeModelCatalog, type ClaudeModelCatalog } from './claude-model-catalog.js';
 import { getCodexModelCatalog, type CodexModelCatalog } from './codex-model-catalog.js';
 import { AntigravityModelCatalog } from './antigravity-model-catalog.js';
@@ -55,7 +47,6 @@ import {
 } from './dynamic-model-source-lifecycle.js';
 
 const DEFAULT_RUNTIME_KIND = RuntimeKind.AUTOBYTEUS;
-const AUTOBYTEUS_KINDS = ['llm', 'audio', 'image'] as const;
 const sourceKey = (providerId: string, kind: ModelKind): string => `${providerId}:${kind}`;
 const normalizeRuntime = (runtimeKind?: string | null): RuntimeKind =>
   runtimeKindFromString(runtimeKind, DEFAULT_RUNTIME_KIND) ?? DEFAULT_RUNTIME_KIND;
@@ -73,15 +64,12 @@ export type RuntimeModelSelectionCatalog = Readonly<{
 
 export class ModelCatalogService {
   private readonly lifecycle = new DynamicModelSourceLifecycle();
-  private readonly credentialRevisions = new Map<string, number>();
 
   constructor(
     private readonly builtInCatalog: BuiltInLlmProviderCatalog = getBuiltInLlmProviderCatalog(),
     private readonly customProviderStore: CustomLlmProviderStore = getCustomLlmProviderStore(),
     private readonly customSyncService: CustomLlmProviderRuntimeSyncService =
       getCustomLlmProviderRuntimeSyncService(),
-    private readonly remoteDiscoveryService: AutobyteusRemoteModelDiscoveryService =
-      getAutobyteusRemoteModelDiscoveryService(),
     private readonly claudeModelCatalog: ClaudeModelCatalog = getClaudeModelCatalog(),
     private readonly codexModelCatalog: CodexModelCatalog = getCodexModelCatalog(),
     private readonly antigravityModelCatalog = new AntigravityModelCatalog(),
@@ -111,11 +99,7 @@ export class ModelCatalogService {
   ): Promise<LocalProviderModelCatalogSnapshot> {
     const provider = await this.requireProvider(providerId, runtimeKind);
     if (provider.catalogMode === 'STATIC') return this.snapshotFor(provider, normalizeRuntime(runtimeKind));
-    if (provider.id === LLMProvider.AUTOBYTEUS) {
-      await Promise.allSettled(this.startAutobyteusEnsure(false));
-    } else {
-      await this.ensureLlmSource(provider, false);
-    }
+    await this.ensureLlmSource(provider, false);
     return this.snapshotFor(provider, normalizeRuntime(runtimeKind));
   }
 
@@ -125,51 +109,11 @@ export class ModelCatalogService {
   ): Promise<LocalProviderModelCatalogSnapshot> {
     const provider = await this.requireProvider(providerId, runtimeKind);
     if (provider.catalogMode !== 'DISCOVERED') throw new Error('STATIC_PROVIDER_RELOAD_NOT_SUPPORTED');
-    if (provider.id === LLMProvider.AUTOBYTEUS) {
-      await Promise.allSettled(this.startAutobyteusEnsure(true));
-    } else {
-      await this.ensureLlmSource(provider, true);
-    }
+    await this.ensureLlmSource(provider, true);
     return this.snapshotFor(provider, normalizeRuntime(runtimeKind));
   }
 
-  notifyCredentialRevision(providerId: string): void {
-    const revision = (this.credentialRevisions.get(providerId) ?? 0) + 1;
-    this.credentialRevisions.set(providerId, revision);
-    if (providerId !== LLMProvider.AUTOBYTEUS) return;
-    for (const kind of AUTOBYTEUS_KINDS) {
-      const modelKind = kind.toUpperCase() as Exclude<ModelKind, 'VIDEO'>;
-      this.lifecycle.invalidate(
-        sourceKey(providerId, modelKind),
-        this.remoteDiscoveryService.fingerprint(kind, revision),
-        true,
-      );
-    }
-    for (const operation of this.startAutobyteusEnsure(false)) {
-      void operation.catch(() => undefined);
-    }
-  }
-
   notifySettingsChange(settingKey: string): void {
-    if (settingKey === 'AUTOBYTEUS_LLM_SERVER_HOSTS') {
-      for (const kind of AUTOBYTEUS_KINDS) {
-        const modelKind = kind.toUpperCase() as Exclude<ModelKind, 'VIDEO'>;
-        const key = sourceKey(LLMProvider.AUTOBYTEUS, modelKind);
-        this.lifecycle.invalidate(
-          key,
-          this.remoteDiscoveryService.fingerprint(
-            kind,
-            this.credentialRevisions.get(LLMProvider.AUTOBYTEUS) ?? 0,
-          ),
-          false,
-        );
-        this.removeAutobyteusSource(kind, key);
-      }
-      for (const operation of this.startAutobyteusEnsure(false)) {
-        void operation.catch(() => undefined);
-      }
-      return;
-    }
     const provider = settingKey === 'OLLAMA_HOSTS'
       ? this.builtInCatalog.getProvider(LLMProvider.OLLAMA)
       : settingKey === 'LMSTUDIO_HOSTS'
@@ -249,32 +193,6 @@ export class ModelCatalogService {
     await this.lifecycle.waitForIdle();
   }
 
-  private startAutobyteusEnsure(force: boolean): Promise<ModelSourceStatus>[] {
-    return AUTOBYTEUS_KINDS.map((kind) => this.lifecycle.ensure(
-      this.autobyteusSourceSpec(kind),
-      force,
-    ));
-  }
-
-  private autobyteusSourceSpec(
-    kind: AutobyteusRemoteModelKind,
-  ): DynamicSourceSpec<AutobyteusRemoteModel> {
-    const modelKind = kind.toUpperCase() as Exclude<ModelKind, 'VIDEO'>;
-    const key = sourceKey(LLMProvider.AUTOBYTEUS, modelKind);
-    const revision = this.credentialRevisions.get(LLMProvider.AUTOBYTEUS) ?? 0;
-    return {
-      key,
-      modelKind,
-      fingerprint: this.remoteDiscoveryService.fingerprint(kind, revision),
-      currentModelCount: () => this.autobyteusSourceCount(kind, key),
-      prepare: async () => {
-        if (kind === 'llm') await LLMFactory.ensureInitialized();
-        return this.remoteDiscoveryService.prepare(kind);
-      },
-      commit: (models) => this.commitAutobyteusSource(kind, key, models),
-    };
-  }
-
   private async ensureLlmSource(
     provider: LlmProviderDescriptor,
     force: boolean,
@@ -334,11 +252,10 @@ export class ModelCatalogService {
     endpoint: CustomLlmProviderRecord,
   ): DynamicSourceSpec<OpenAICompatibleEndpointModel> {
     const key = sourceKey(endpoint.id, 'LLM');
-    const revision = this.credentialRevisions.get(endpoint.id) ?? 0;
     return {
       key,
       modelKind: 'LLM',
-      fingerprint: `${endpoint.id}|${endpoint.baseUrl}|credential:${revision}`,
+      fingerprint: `${endpoint.id}|${endpoint.baseUrl}`,
       currentModelCount: () => this.llmSourceCount(key),
       prepare: async () => {
         await LLMFactory.ensureInitialized();
@@ -359,26 +276,14 @@ export class ModelCatalogService {
       ? await LLMFactory.listSourceModels(llmKey)
       : (await LLMFactory.listModelsByProvider(provider.providerType))
         .filter((model) => model.runtime === LLMRuntime.API);
-    const audioKey = sourceKey(provider.id, 'AUDIO');
-    const imageKey = sourceKey(provider.id, 'IMAGE');
-    const audioModels = provider.id === LLMProvider.AUTOBYTEUS
-      ? AudioClientFactory.listSourceModels(audioKey)
-      : AudioClientFactory.listModels().filter((model) =>
-        model.runtime === MultimediaRuntime.API && String(model.provider) === provider.id);
-    const imageModels = provider.id === LLMProvider.AUTOBYTEUS
-      ? ImageClientFactory.listSourceModels(imageKey)
-      : ImageClientFactory.listModels().filter((model) =>
-        model.runtime === MultimediaRuntime.API && String(model.provider) === provider.id);
+    const audioModels = AudioClientFactory.listModels()
+      .filter((model) => String(model.provider) === provider.id);
+    const imageModels = ImageClientFactory.listModels()
+      .filter((model) => String(model.provider) === provider.id);
     const videoModels = VideoClientFactory.listModels()
       .filter((model) => String(model.provider) === provider.id);
     const sourceStatuses = dynamic
-      ? provider.id === LLMProvider.AUTOBYTEUS
-        ? [
-            this.lifecycle.status(llmKey, 'LLM', llmModels.length),
-            this.lifecycle.status(audioKey, 'AUDIO', audioModels.length),
-            this.lifecycle.status(imageKey, 'IMAGE', imageModels.length),
-          ]
-        : [this.lifecycle.status(llmKey, 'LLM', llmModels.length)]
+      ? [this.lifecycle.status(llmKey, 'LLM', llmModels.length)]
       : [];
     return {
       runtimeKind: runtime,
@@ -402,8 +307,8 @@ export class ModelCatalogService {
       runtimeKind: runtime,
       ownerProvider: {
         id: providerId,
-        name: llmModels[0]?.provider_name ?? providerId,
-        providerType: llmModels[0]?.provider_type ?? LLMProvider.AUTOBYTEUS,
+        name: llmModels[0]!.provider_name,
+        providerType: llmModels[0]!.provider_type,
         isCustom: false,
         baseUrl: null,
         catalogMode: 'STATIC',
@@ -444,43 +349,6 @@ export class ModelCatalogService {
 
   private llmSourceCount(key: string): number {
     return LLMFactory.sourceModelCount(key);
-  }
-
-  private autobyteusSourceCount(kind: AutobyteusRemoteModelKind, key: string): number {
-    if (kind === 'llm') return this.llmSourceCount(key);
-    if (kind === 'audio') return AudioClientFactory.listSourceModels(key).length;
-    return ImageClientFactory.listSourceModels(key).length;
-  }
-
-  private commitAutobyteusSource(
-    kind: AutobyteusRemoteModelKind,
-    key: string,
-    models: readonly AutobyteusRemoteModel[],
-  ): void {
-    if (kind === 'llm') {
-      LLMFactory.replaceSourceModels(key, models as readonly LLMModel[]);
-      return;
-    }
-    if (kind === 'audio') {
-      AudioClientFactory.replaceSourceModels(key, models as readonly AudioModel[]);
-      return;
-    }
-    ImageClientFactory.replaceSourceModels(key, models as readonly ImageModel[]);
-  }
-
-  private removeAutobyteusSource(
-    kind: AutobyteusRemoteModelKind,
-    key: string,
-  ): void {
-    if (kind === 'llm') {
-      if (LLMFactory.sourceModelCount(key) > 0) LLMFactory.removeSourceModels(key);
-      return;
-    }
-    if (kind === 'audio') {
-      AudioClientFactory.removeSourceModels(key);
-      return;
-    }
-    ImageClientFactory.removeSourceModels(key);
   }
 }
 

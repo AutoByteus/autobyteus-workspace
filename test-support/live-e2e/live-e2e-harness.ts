@@ -10,7 +10,6 @@ import {
   LLMFactory,
   LLMRuntime,
   MemoryType,
-  MultimediaRuntime,
 } from '../../autobyteus-ts/src/index.js';
 import { COMPACTION_SUMMARY_INSTRUCTION, COMPACTION_SUMMARY_PROMPT } from '../../autobyteus-ts/src/memory/compaction/compaction-summary-prompt.js';
 import { parseCompactionSummary } from '../../autobyteus-ts/src/memory/compaction/compaction-summary-parser.js';
@@ -43,7 +42,6 @@ import {
   resetSecretVaultRuntimeForTests,
 } from '../../autobyteus-server-ts/src/secret-management/secret-vault-runtime.js';
 import type { SecretManagementService } from '../../autobyteus-server-ts/src/secret-management/services/secret-management-service.js';
-import { AutobyteusRemoteModelDiscoveryService } from '../../autobyteus-server-ts/src/llm-management/services/autobyteus-remote-model-discovery-service.js';
 import { createGeminiRuntimeResolver } from '../../autobyteus-server-ts/src/llm-management/services/gemini-runtime-resolver-adapter.js';
 import { getGeminiConfigurationService } from '../../autobyteus-server-ts/src/llm-management/services/gemini-configuration-service.js';
 import { ClaudeSdkClient } from '../../autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.js';
@@ -373,14 +371,6 @@ const waitForLiveCondition = async (
   throw new Error('LIVE_E2E_COMPACTION_FLOW_TIMEOUT');
 };
 
-export const classifyAutoByteusDiscoveryUnavailable = (
-  error: unknown,
-  kind: 'llm' | 'audio' | 'image',
-): string | null => {
-  const expected = `AUTOBYTEUS_${kind.toUpperCase()}_DISCOVERY_FAILED`;
-  return error instanceof Error && error.message === expected ? expected : null;
-};
-
 export const runLiveE2eAgentFlow = async (input: {
   scenarioId: string;
   scenario: LiveE2eScenario;
@@ -523,7 +513,6 @@ export class LiveE2eScenarioExecution {
   private readonly llmResolver: SecretManagementProviderApiKeyResolver;
   private readonly audioResolver: SecretManagementProviderApiKeyResolver;
   private readonly imageResolver: SecretManagementProviderApiKeyResolver;
-  private readonly discovery: AutobyteusRemoteModelDiscoveryService;
 
   constructor(
     readonly scenarioId: string,
@@ -542,10 +531,6 @@ export class LiveE2eScenarioExecution {
     this.imageResolver = new SecretManagementProviderApiKeyResolver(
       { kind: 'media', mediaKind: 'image' },
       () => this.management,
-    );
-    this.discovery = new AutobyteusRemoteModelDiscoveryService(
-      () => this.management,
-      () => [...(this.scenario.hosts ?? [])],
     );
   }
 
@@ -1159,21 +1144,6 @@ export class LiveE2eScenarioExecution {
       throw new Error('LIVE_E2E_LOCAL_MODEL_UNAVAILABLE');
     }
     return matches[0]!.model_identifier;
-  }
-
-  async discoverAutoByteus(kind: 'llm' | 'audio' | 'image'): Promise<number> {
-    if (!this.scenario.hosts?.length) throw new Error('LIVE_E2E_HOSTS_NOT_CONFIGURED');
-    return this.discovery.refresh(kind);
-  }
-
-  async listAutoByteusModels(kind: 'llm' | 'audio' | 'image') {
-    if (kind === 'llm') return LLMFactory.listModelsByRuntime(LLMRuntime.AUTOBYTEUS);
-    if (kind === 'audio') {
-      return AudioClientFactory.listModels()
-        .filter((model) => model.runtime === MultimediaRuntime.AUTOBYTEUS);
-    }
-    return ImageClientFactory.listModels()
-      .filter((model) => model.runtime === MultimediaRuntime.AUTOBYTEUS);
   }
 
   async createLlm(
