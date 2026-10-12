@@ -7,6 +7,7 @@
 | DR-001 | CRR-005 test-code review pass from `code_reviewer` | N/A | Integrated, checked, docs synced; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/` |
 | DR-002 | Solution Designer HOLD after CRR-006 (Fail, Design Impact, naming) | DR-001 waiting for verification | On hold; DR-001 superseded and not eligible for verification | `delivery-revision-record.md`, `handoff-summary.md`, `release-deployment-report.md` (status only) |
 | DR-003 | CRR-008 test-code review pass on the SR-009 renamed package (after API-REV-003) | DR-002 on hold | Re-integrated (72 base commits), checked, docs re-verified; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/dr-003/` |
+| DR-004 | User verification: "finalize, no need to release a new version" | DR-003 waiting for verification | Finalized into `personal` (`b57d85ad9`); no release; local cleanup done; terminal return sent | `handoff-summary.md`, `release-deployment-report.md`, this record |
 
 ## Revision Entries
 
@@ -77,3 +78,25 @@
 - Why this delivery revision was recorded: the reworked package returned after the CRR-006 hold.
 - Next recipient/action: the user verifies and decides. Then the RELEASE.md finalization flow: archive, commit, push the ticket branch, `finalize/` branch `--no-ff` merge into `personal`, fetch-and-check, push, release if requested, and cleanup.
 - Remaining blockers, rollback concerns, or untested scope: No blockers. Residual risks are in `handoff-summary.md`.
+
+### DR-004 — Finalization without release
+
+- Delivery round and trigger: Round 4. The user verified on 2026-10-12: "finalize, no need to release a new version".
+- Triggering upstream report, verification, or evidence: the user's message; `handoff-summary.md` § User Verification.
+- Prior authoritative result: DR-003, waiting for verification.
+- Current authoritative result: **Delivery Completed.**
+  - The ticket was archived (`ffa6bdcb7`).
+  - The ticket branch was re-integrated with `origin/personal` @ `449d639de` (4 metadata-only commits), giving `30d52ebf7`, and pushed.
+  - `--no-ff` merge `b57d85ad9` was pushed to `origin/personal` after the fetch-and-check.
+  - No release, by user decision.
+  - The local worktree and local branches were removed; the remote ticket branch is kept by convention.
+- Docs sync report: `docs-sync-report.md` (DR-003, unchanged).
+- Handoff summary: `handoff-summary.md` (user verification recorded).
+- Release/publication/deployment report: `release-deployment-report.md` (final).
+- Integration and post-integration verification: the DR-003 checks still apply, because the post-verification base delta changed no executable file. The hygiene check passed on `30d52ebf7`.
+- User verification/finalization state: verified; finalized.
+- Terminal return to `/solution_designer`: `Sent` after this record commit is on `personal`.
+- Terminal return message/reference: `send_message_to` → `/software_engineering_team/solution_designer` (Delivery Completed).
+- Why this delivery revision was recorded: finalization after user verification.
+- Next recipient/action: the Solution Designer verifies the package and returns Terminal.
+- Remaining blockers, rollback concerns, or untested scope: none blocking. Rollback is a revert of `b57d85ad9`; there is no data step. Residual risks are in `handoff-summary.md`.

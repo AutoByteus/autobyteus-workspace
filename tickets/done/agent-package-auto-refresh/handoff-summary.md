@@ -12,7 +12,7 @@ Current for delivery round **DR-003**, the SR-009 renamed package. The DR-001 su
 
 ## State For User Verification
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh`. Branch: `codex/agent-package-auto-refresh` (local only, not pushed).
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh`. Branch: `codex/agent-package-auto-refresh`. Pushed and merged into `personal` as `b57d85ad9` (DR-004); the local worktree has since been removed.
   - Product and test history runs through `705e699b1`:
     - IR-001…IR-003;
     - SR-009 rename IR-004, `e89085f3e`;
