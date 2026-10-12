@@ -29,7 +29,7 @@
   - `3cc17135f` — IR-002 (CRR-001 local fixes)
   - `bd4c63796` (+ `214836c83` docs) — IR-003 (SR-008)
   - `a28465175`, `6b3a10822`, `33d290187` — API/E2E test commits (not mine); `8187bac0f` merge of `origin/personal`; `061ea7ab3` delivery docs; ticket checkpoints by other roles
-  - IR-004 commit — see `git log` (the commit after `061ea7ab3` whose subject starts `refactor: rename the definition catalog to agent package definitions`)
+  - `e89085f3e` refactor: rename the definition catalog to agent package definitions (SR-009) — IR-004
 
 What exists now (names per `design-spec.md` § Naming (SR-009)):
 

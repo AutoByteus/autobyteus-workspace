@@ -87,7 +87,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Triggering finding IDs: CR-005…CR-011; mandatory note N-7 (N-1…N-6 still honored); optional R-2 (applied).
 - Classification: `Design Impact` (the revised design is implemented)
 - Prior authoritative result: IR-003 at `214836c83` (delivery docs `061ea7ab3` on top) used the "definition catalog" vocabulary in code, public contracts and docs: `src/definition-catalog/`, `/ws/definition-catalog` with `definitions_changed {subjects}`, GraphQL `catalogIssue(s)` / `DefinitionCatalogIssue` / `DefinitionUnitIssue` / `definitionDiagnostics(subject: DefinitionSubject)`, three `refresh*DefinitionCatalog` mutations, `ROOT_MISSING`, `DEFINITION_SOURCE_MISSING`, service `refreshCache()`. Application-package agents/teams were store list entries refreshed by a readiness reload.
-- Current authoritative result: every identifier, file, route, field and message follows `design-spec.md` § Naming (SR-009). Application-package agents and Teams are no longer in the store; the agent and Team services read them on demand for list results, isolated per definition (N-7). Commit: see `implementation-handoff.md`.
+- Current authoritative result: every identifier, file, route, field and message follows `design-spec.md` § Naming (SR-009). Application-package agents and Teams are no longer in the store; the agent and Team services read them on demand for list results, isolated per definition (N-7). Commit `e89085f3e`.
 - Related solution revision IDs: `SR-009` (design), `SR-005` (approval)
 - Related architecture-review revision IDs: `ARCH-REV-004`
 - Related code-review revision IDs: `CRR-006`
