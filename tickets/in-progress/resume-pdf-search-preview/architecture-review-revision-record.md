@@ -7,6 +7,7 @@ The latest design-review-report.md is authoritative. This record is the concise 
 | Revision ID | Review Round / Trigger | Related Solution Revision IDs | Prior Decision | Current Decision | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | 1 / Initial Architecture Design Complete | SR-001, SR-002 | N/A | Fail — Design Impact | ARCH-F-001 |
+| ARCH-REV-002 | 2 / SR-003 re-review after ARCH-F-001 | SR-001, SR-002, SR-003 | Fail — Design Impact | Pass | ARCH-F-001 resolved |
 
 ## Revision Entries
 
@@ -29,3 +30,26 @@ None.
 - Material classification changes: None; retain Small / High; requirements stay R1. Material-premise gate Pass.
 - Recommended recipient: `/software_engineering_team/solution_designer`, sole matching Fail / Design Impact rule returned by get_handoff_rules on 2026-10-12; no implementation handoff.
 - Remaining risks/uncertainty: changed-build tests/browser render and host runtime rollout/user verification remain downstream; no live app tests or restart occurred. Source authoring commit 27ff56afb; base 2756d7b298ca5b203ebd2310d172b37a5d381b5c.
+
+
+### ARCH-REV-002 — Bounded removal inventory verified; architecture ready
+
+- Date / reviewer: 2026-10-12 / architecture_reviewer.
+- Canonical design review report: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/design-review-report.md
+- Review round and trigger: 2; Solution Designer's SR-003 re-review request, revision commit 7f6d87e96.
+- Triggering role, report path and finding IDs: solution_designer; cumulative solution-handoff.md at the same canonical ticket root; ARCH-REV-001 / ARCH-F-001 from review commit3313b2eaf.
+- Relevant solution revision IDs: SR-001 (Approved R1), SR-002 (initial design), SR-003 (bounded removal-plan correction).
+- Prior authoritative decision: Fail — Design Impact, ARCH-REV-001.
+- Current authoritative decision: Pass.
+- What changed: removal and file-change inventories now explicitly delete the two test-only explorer methods, preserve useful assertions at live tree/projection/search owners, adapt exact direct TS/JS counterparts and correct both stale area docs. E-012 adds one obsolete converter JS mock counterpart, narrowly aligned with current metadata TS tests without a production converter delta or global test sweep. Verification/escalation sequence is concrete. Behavior basis BEH-001–004 confirmed first; unaffected structural evidence retained because requirements/source/security/lifecycle/ownership did not change.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| ARCH-F-001 | Open; blocking removal-plan omission | Resolved at architecture-plan boundary | ARCH-REV-001, SR-003, E-012 | Independently read revised Legacy Removal Policy, Removal / Decommission Plan, file inventory and sequence; tracked grep corroborates only direct test calls/stale docs/mock properties. Live snapshot refresh uses getTree indexing; folder GraphQL uses TreeNode.toShallowDict; converter production/TS tests use metadata. No implementation/tests yet; source review must verify execution of the plan. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: None; Small / High and Approved R1 unchanged; no renewed behavior approval needed. Material-premise gate Pass; no additional scenario/machinery introduced.
+- Recommended recipient: `/software_engineering_team/implementation_engineer` under the primary Pass rule returned by get_handoff_rules on 2026-10-12; after successful handoff, `/software_engineering_team/solution_designer` receives the skill-required informational Pass notification, no action required. Fail/Blocked rule does not match.
+- Remaining risks/uncertainty: changed-build GraphQL/REST/PDF canvas/text/safety evidence, current typecheck/removal verification, host tooling/runtime pin, safe live rollout and explicit user verification remain downstream. Reviewer ran no suites/live requests, started no processes, and made no production/source edits. Worktree retained for implementation.
