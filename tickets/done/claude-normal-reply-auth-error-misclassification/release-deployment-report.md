@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-This is a server-side fix to Claude turn-result classification. It ships through the normal desktop and server release when the user chooses one. The release decision is pending the user's verification.
+This is a server-side fix to Claude turn-result classification. It shipped in beta `v1.5.2-beta.3`, as the user chose: desktop, Android, iOS/TestFlight and the server Docker image.
 
 ## Project Release Guide
 
@@ -73,19 +73,55 @@ This is a server-side fix to Claude turn-result classification. It ships through
 
 - Bootstrap context source: the API/E2E handoff and `RELEASE.md`
 - Ticket branch: `codex/claude-normal-reply-auth-error-misclassification`
-- Finalization target: `origin` / `personal`, a `--no-ff` merge done from a `finalize/<ticket-name>` branch in the ticket worktree
-- Repository finalization status: pending user verification.
+- Ticket branch commit result: `Completed`. Head `0703b80be`.
+- Ticket branch push result: `Completed`. New branch `origin/codex/claude-normal-reply-auth-error-misclassification`.
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: `Yes`. It moved from `3514fe48e` to `a531b7ab0` (token-meter-accuracy). See "Finalization Re-Integration".
+- Delivery-owned edits protected before re-integration: `Completed` (`b98ed8717`)
+- Re-integration before final merge result: `Completed` (`3dbf5ef2f`). Checks passed again.
+- Target branch update result: `Completed`. `finalize/claude-normal-reply-auth-error-misclassification` was created from `origin/personal` @ `a531b7ab0`.
+- Merge into target result: `Completed`. `--no-ff` merge commit `79c1216bc`.
+- Push target branch result: `Completed`. Just before pushing, `origin/personal` was fetched again and was still at `a531b7ab0`. `git push origin HEAD:personal` then moved `personal` from `a531b7ab0` to `37e972199`; that push includes the release commit.
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
-- Applicable: pending the user's decision.
-- Method: `Project Release Guide` (`scripts/desktop-release.sh … --no-push`, then a manual push of the branch and the tag)
-- Release notes handoff result: pending. `release-notes.md` is prepared.
+- Applicable: `Yes`. The user chose a **beta** on 2026-10-12 ("finalize and release a new beta").
+- Method: `Project Release Guide`
+- Method reference / command:
+  - `python3 scripts/check_licensing.py` and `python3 scripts/check_repository_artifact_hygiene.py` both passed on the merged state.
+  - The untracked `autobyteus-application-backend-sdk/dist/` and `autobyteus-application-sdk-contracts/dist/` build outputs were deleted so the worktree was clean.
+  - `bash scripts/desktop-release.sh beta --branch finalize/claude-normal-reply-auth-error-misclassification --no-push` created release commit `37e972199` (`chore(release): bump workspace release version to 1.5.2-beta.3`) and the annotated tag `v1.5.2-beta.3`.
+  - `git push origin HEAD:personal`, then `git push origin v1.5.2-beta.3`.
+- Pipelines triggered and their results (all watched to completion with `gh run watch --exit-status`):
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Desktop Release | 38240440531 | success |
+| Android APK Release | 38240440778 | success |
+| iOS App Store Connect Release | 38240440672 | success |
+| Server Docker Release | 38240440591 | success |
+
+- Published artifacts checked against what the release should produce:
+  - GitHub release https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.2-beta.3: `isPrerelease: true`, with **17 assets**, as expected.
+    - macOS ARM64 and x64: `.dmg`, `.zip` and blockmaps.
+    - Linux x64 and ARM64 AppImages.
+    - Windows `.exe`.
+    - Android APK and its `.sha256`.
+    - `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and `latest-linux-arm64.yml`.
+  - Docker Hub `autobyteus/autobyteus-server:1.5.2-beta.3` exists for amd64 and arm64. `:beta` has the same digest (`sha256:6dcb50dc…80eb`). `:latest` was not moved, as expected for a pre-release.
+  - The TestFlight upload is complete; its workflow succeeded.
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required`. Pre-release tags always use GitHub-generated notes (`RELEASE.md`). The curated `release-notes.md` is kept in the archived ticket for the next stable release.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-normal-reply-auth-error-misclassification`
-- Cleanup: pending finalization.
+- Worktree cleanup result: `Completed`. It is removed after this record is pushed, with `git worktree remove` run from the main checkout. The worktree had no uncommitted tracked or untracked files left.
+- Worktree prune result: `Completed`, with `git worktree prune`.
+- Local ticket branch cleanup result: `Completed`. Local `codex/claude-normal-reply-auth-error-misclassification` and `finalize/claude-normal-reply-auth-error-misclassification` are deleted. Both are contained in `origin/personal`.
+- Remote branch cleanup result: `Not required`. `origin/codex/claude-normal-reply-auth-error-misclassification` is kept as the review reference, as on earlier tickets.
 
 ## Release Notes Summary
 
@@ -103,7 +139,8 @@ None beyond the release. This repository deploys no hosted service. Server users
 
 ## Verification Checks
 
-- AC-004: the user checks this in the running app. The steps are in `handoff-summary.md`.
+- Post-integration: unit tests, typecheck and the live E2E all passed on the merged state (see "Finalization Re-Integration").
+- AC-004: **Passed.** The user checked it in the deployed beta `v1.5.2-beta.3` on 2026-10-12 and reported: "it passes. i dont see this error now". Recorded in `delivery-revision-record.md` DR-003.
 
 ## Rollback Criteria
 
@@ -111,10 +148,10 @@ None beyond the release. This repository deploys no hosted service. Server users
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: waiting for the user's verification and release decision.
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes`. The user approved the release ("finalize and release a new beta") and then confirmed AC-004 in the deployed `v1.5.2-beta.3` ("it passes"; DR-003).
+- Repository finalization complete: `Yes`. `personal` @ `37e972199`.
+- Applicable release/deployment/rollout complete or not required: `Yes`. `v1.5.2-beta.3` is complete: 4 of 4 workflows succeeded and all 17 assets plus the Docker image were checked.
+- Applicable safe cleanup complete or not required: `Yes`. The worktree and local branches are removed after this record is pushed.
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: see `delivery-revision-record.md` DR-002.
