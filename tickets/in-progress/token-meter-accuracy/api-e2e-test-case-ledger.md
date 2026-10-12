@@ -26,6 +26,15 @@
 | DESK-002 | Team member / delegated copy / Org member mid-turn meter | AC-003, REQ-008 | Isolated desktop | same instance | 11 | |
 | DESK-003 | Released 1.4.99-beta.8 profile → worktree build: Claude readings cleared, totals intact, continued run refreshes | DEC-005, BEH-008, AC-009 | Isolated desktop on an owned data root | `isolated-app start --app /Applications/AutoByteus.app --data-root …`, then the worktree build | 12 | |
 
+## Round 2 Planned Cases (API-REV-002)
+
+| Case ID | Case / Journey | Requirement / AC IDs | Boundary / Execution Surface | Planned Command Or Entry Point | Planned Order | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| R2-GATE | Repository gates on the merged base | all, AC-011 unit, AC-012 unit | Repository | see investigation § Round 2 | 1 | — |
+| LIVE-006 | Native LM Studio compaction: call counted, reading kept, frame order | AC-011, D-12, D-13 risk | Studio server + real native runtime + LM Studio | new gated E2E | 2 | — |
+| LIVE-R2 | Claude/Codex live token paths on the merged base | AC-001, AC-003, AC-004, AC-006 | Live E2E | existing suites | 3 | — |
+| DESK-004 | Note / no-note / D-9 roll-up in the packaged app | AC-011, AC-012, REQ-012, D-9 | Isolated desktop (temp CODEX_HOME) | `isolated-app start --build` | 4 | — |
+
 ## Execution Events
 
 | Sequence | Case ID | Timestamp | Event | Command / Entry Point / Material Configuration | Expected Observable Result | Observed Result Or Checkpoint | Result | Evidence / Artifact Path | Next Action / Unresolved Issue |
@@ -48,6 +57,16 @@
 | 15 | LIVE-004 / LIVE-005 | 16:15–16:30 | Completed | Codex compaction suite (temp `CODEX_HOME`); AGY multi-step + cached turn on the isolated build | Reading-only save; AGY gross = input + cache read | Codex 41,095 / 64,507 readings, delta 0, count unchanged, revision +1; AGY 4,426 + 77,693 = 82,119, run 128,325 + 155,377 = 283,702; UI "context limit unavailable" | Pass | `logs/LIVE-004-*.log`, `live/LIVE-005-*`; commit `e7f9da408` | — |
 | 16 | DESK-002b | 16:50 | Completed | Rebuilt instance `iso-54042-ac01`; Org manager and an Org-hosted delegated copy watched in the UI | Mid-turn UI for Org member and copy | Org manager Running 1 → 4 calls with readings, Idle 5; copy 0/unknown → after the first call 1 call, model and runtime → 4 Running → Idle 5 | Pass | `desktop/DESK-002b-*` | — |
 | 17 | R-07 / cleanup | 16:40–17:00 | Completed | Final deterministic gate; stop owned instances; remove owned worktrees, data root and temp workspaces | Only known base failures; clean | 41 pass / 28 skipped / 3 base TeamRun V1 fail; all owned resources removed; foreign instances untouched | Pass | `logs/R07-final-e2e-gate.log` | — |
+| 18 | R2-GATE | 2026-10-12 06:00–06:20 | Completed | E2E token-usage + app-data-migrations; server unit/integration; typecheck; web; contracts on HEAD `352ba13ee` | Green except known base cases | E2E 48/51 (3 TeamRun V1 base); unit 2,252; integration 24/24; web 485/485; contracts pass | Pass | `round2/logs/R2-*.log` | — |
+| 19 | LIVE-006 | 06:15–06:45 | Completed | LM Studio attempt (model removed by the user mid-run: "Model unloaded by user"), then DeepSeek via clean env | Compaction call counted; reading kept; order; smaller next reading | Pass on DeepSeek (timeline in report) | Pass | `round2/logs/LIVE-006-*.log`; `88f03cb27` | — |
+| 20 | LIVE-R2 | 06:20–06:40 | Completed | LIVE-001 usage, LIVE-002, LIVE-004 | Pass | Claude ×2 and Codex pass; one Codex statistics flake traced to the test window and fixed | Pass | `round2/logs/LIVE-R2-*.log`; `be39baf40` | — |
+| 21 | DESK-004a | 06:30 | Completed | Isolated build, native standalone DeepSeek, UI sampling at 120 ms | Note shown, value kept and greyed, cleared by the next call | As expected; the note held across the idle gap | Pass | `round2/desktop/DESK-004a-*` | — |
+| 22 | DESK-004d | 06:35–06:45 | Completed | Claude Haiku 5.5 `/compact`, UI sampling + frame trace | Note after completed `/compact` | Never shown: the remainder-only result (revision +1) arrives 8 ms after "compacted" | **Fail** | `round2/desktop/DESK-004d-*` | F-API-002-01 → failure-origin review |
+| 23 | DESK-004c | 06:45 | Completed | Native team member | Note shown and cleared | As expected | Pass | `round2/desktop/DESK-004c-*` | — |
+| 24 | DESK-004e | 06:50 | Completed | Codex compaction with a temporary `CODEX_HOME` | No note; roll-up refetch shows the post-compaction reading with the same call count | 16,980 at 3 calls, no note | Pass | `round2/desktop/DESK-004e-*` | — |
+| 25 | AGY | 06:55 | Completed | Live AGY 1.3.3 → quota error; fake-CLI transport suite | Per-step usage | Live: Blocked (quota 22 h); fake-CLI: Pass | Blocked / Pass | `round2/desktop/DESK-004g-*`, `round2/logs/AGY-R2-*` | — |
+| 26 | DESK-004f | 07:00 | Completed | INTERRUPT at compaction `started` | No note | "stopped", value unmuted, no note | Pass | `round2/desktop/DESK-004f-*` | — |
+| 27 | Cleanup | 07:05 | Completed | Stop `iso-52182-47fb`; remove the desktop worktree, temporary `CODEX_HOME`, key file and workspaces | Clean | Clean; foreign instances and the user's LM Studio untouched | Pass | report § Round 2 | — |
 
 ## Re-entry And Reconciliation
 

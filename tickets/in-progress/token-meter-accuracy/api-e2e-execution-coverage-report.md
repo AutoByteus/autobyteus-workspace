@@ -256,9 +256,136 @@
 
 ## Preliminary Classification
 
-N/A — Pass.
+- Round 1: N/A — Pass.
+- Round 2 (latest): `Design Impact` for F-API-002-01 (see § Round 2). Owner `/software_engineering_team/solution_designer`, via code-review failure-origin review.
+
+## Round 2 — API-REV-002 (IR-004: D-12 revert, D-13 "Compacted" note, D-9 roll-up refetch fix)
+
+- Trigger: code reviewer CRR-005 Pass (round 4), HEAD `fdf44f205` (`352ba13ee` artifacts). Base: unpushed integration merge `168900db7` (origin/personal @ `beb6b3b49`).
+- Validated HEAD: `352ba13ee`, plus API/E2E test commits `88f03cb27` and `be39baf40`. Product source unchanged by API/E2E.
+- D-11 (IR-003) was withdrawn before validation and was not validated (SR-009/SR-010).
+- Prior failure resolution: N/A (round 1 passed).
+
+### Round 2 Case Results
+
+| Case ID | AC / Behavior | Surface | Result | Evidence (under `api-e2e-evidence/round2/`) |
+| --- | --- | --- | --- | --- |
+| R2-GATE | regression on the merged base | Repository | Pass (except 3 known base TeamRun V1 cases) | `logs/R2-*.log`: E2E 48/51; server unit 2,252 pass / 6 skipped; integration 24/24; web 485/485; contracts 17/17, 10/10; typecheck clean |
+| LIVE-006 (new durable) | AC-011, D-12, D-13 ordering | Studio server + native runtime + DeepSeek (`deepseek-v4-flash`) | Pass | `logs/LIVE-006-native-compaction-deepseek.log` (timeline below) |
+| LIVE-R2 Claude | AC-001/003/004 | Real Claude CLI ×2 | Pass | `logs/LIVE-R2-001.log`, `LIVE-R2-002b.log` |
+| LIVE-R2 Codex | AC-006, BEH-004 | Real Codex | Pass. One intermittent failure was traced to my suite's statistics window and fixed in `be39baf40`; reruns pass | `logs/LIVE-R2-002*.log`, `LIVE-R2-004.log` |
+| AGY (merged base) | AC-005 | Fake-CLI transport through the real server | Pass | `logs/AGY-R2-fake-cli-transport.log` |
+| AGY live | AC-005 | Real AGY 1.3.3 | **Blocked (external)** | `desktop/DESK-004g-agy-live-blocked-quota.err`: "Individual quota reached … Resets in 22h" |
+| DESK-004a | AC-011, AC-012 (native, standalone/roll-up) | Isolated desktop build of `352ba13ee`, DeepSeek key imported into the instance vault | Pass | `desktop/DESK-004a-*` |
+| DESK-004c | AC-012 (native team member) | same | Pass | `desktop/DESK-004c-*` |
+| DESK-004d | AC-012 (Claude SDK) | same, Claude Haiku 5.5, manual `/compact` | **Fail** | `desktop/DESK-004d-*` |
+| DESK-004d-failed | AC-012 alt (failed compaction) | same | Pass (no note) | `desktop/DESK-004d-claude-compact-failed-trace.json` |
+| DESK-004e | AC-012 (Codex no note), D-9 roll-up refetch | same, temporary `CODEX_HOME` (`model_auto_compact_token_limit = 20000`, symlinked auth) | Pass | `desktop/DESK-004e-*`, `cx*-trace.json` |
+| DESK-004f | AC-012 alt (stopped compaction) | same, INTERRUPT at `started` | Pass (no note) | `desktop/DESK-004f-*` |
+
+### Key Observations
+
+**LIVE-006 timeline (native, DeepSeek):**
+1. Agent call: 21,612, 3 calls, revision 3.
+2. COMPACTION_STATUS requested, then started.
+3. `autobyteus_compaction` call: no reading, 23,128 tokens, 4 calls, revision 4, summary reading still 21,612.
+4. COMPACTION_STATUS completed.
+5. Next agent call: 5,996, 5 calls, revision 5.
+
+The summary-call save precedes "completed", and no other save falls between them.
+
+**DESK-004a, native standalone in the app** (UI samples every 120 ms):
+- 3.2 s: "Compacting memory…" at 21,645, 3 calls.
+- 6.8 s: 4 calls; 21,645 greyed; "Compacted — updates on the next model call".
+- The note stays across the idle gap. The compaction ran after the final answer, which is AC-011's alternate path.
+- 19 s: the next message's first call shows 5,874 at 5 calls; the note is gone.
+
+**DESK-004c, native team member:** same sequence. 22,812 greyed with the note at 4 calls; the next message shows 7,331 at 5 calls. On the server, the summary call's save (revision 4) lands 1 ms before "completed".
+
+**DESK-004e, Codex:**
+- Server: compacting, then a reading-only update (16,980, revision 4, still 3 calls), then "compacted".
+- UI: the standalone panel showed 16,980 / 258,400 at 3 model calls, with no note and no muting. The D-9 refetch on revision reached the standalone panel.
+
+**DESK-004f, stopped compaction:** "stopped" arrived 11 ms after "started". No summary call was counted, the value stayed 22,118 unmuted, and no note appeared.
+
+### Failure F-API-002-01 — the AC-012 note never appears after a completed Claude SDK manual `/compact`
+
+- **Scenario.** A supported real-use scenario: a manual compaction on a Claude SDK run (`/compact` sent as a user message, the documented Claude compaction entry; see `claude-agent-compaction-rotation.e2e.test.ts`) while the Token tab is open.
+- **Expected (REQ-012, AC-012).** After the compaction completes, "Latest prompt" keeps its value greyed with "Compacted — updates on the next model call" until the next model call reports a reading.
+- **Observed: frame trace on the isolated build, fresh Claude run with history** (`DESK-004d-claude-compact-completed-trace.json`):
+  1. TURN_STARTED 812 ms.
+  2. COMPACTION_STATUS compacting 819 ms.
+  3. COMPACTION_STATUS compacted 3,707 ms.
+  4. TOKEN_USAGE_UPDATED `claude_sdk_result` 3,715 ms: the summariser remainder, no reading, `reports_model_call` false, revision +1.
+  5. TURN_COMPLETED 3,715 ms.
+- **Observed: UI.** Sampled every 150 ms through a completed `/compact` on another run (`DESK-004d-claude-compact-ui.json`), the meter never showed the note or a muted value: 20,687, 1 model call, unchanged. The mark set at "compacted" is cleared 8 ms later by the turn-end remainder's revision.
+- **Effect.** After every completed manual Claude `/compact`, the pre-compaction value stays shown, unmarked, until the next message. That is the "high % but compacted" confusion REQ-012 was approved to remove.
+- **Why it's systematic, not rare.** A manual Claude `/compact` turn has no main-loop call. The SDK summariser shows up only in `modelUsage`, so the turn always ends with a remainder-only result after `compact_boundary`.
+  - Design D-13 § Trigger assumes "for native and Claude SDK the first observation after a completed compaction is the next agent call carrying a reading". It also assumes "Claude's turn-end remainder arrives after that call's reading".
+  - RR-7 accepts this exact path ("a Claude turn that ends after compaction with no main-loop call (remainder only)") as a *rare* early clear.
+  - The evidence shows it is the normal outcome of every manual Claude compaction.
+- **Not affected:**
+  - Native standalone and team member (pass).
+  - Codex and AGY (no note by design).
+  - A failed or stopped compaction (no note, correct).
+- **Not executed live:** Claude *auto*-compaction in the app, where a post-compaction main-loop call follows within the turn. The isolated app does not pass `CLAUDE_CODE_AUTO_COMPACT_WINDOW`, and Haiku/Opus 5.5 thresholds are 967K tokens.
+- **Preliminary classification:** `Design Impact`. The D-13 clear rule ("any newer exact-run revision clears the mark") and the RR-7 premise do not hold for a supported Claude scenario.
+  - One candidate correction: clear the mark only on a newer revision that carries a reading or a model call, not on a reading-less remainder.
+  - That changes reviewed design behaviour, so the owner should be decided through failure-origin review.
+- **Recommended owner:** `/software_engineering_team/solution_designer`, via code-review failure-origin review.
+
+### Round 2 Durable Coverage Changes
+
+| Path | Change | Purpose | Result |
+| --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/runtime/autobyteus-compaction-token-reading-live.e2e.test.ts` | Added (`88f03cb27`) | `RUN_NATIVE_COMPACTION_METER_E2E`: native compaction call counted, reading kept, order before "completed", smaller next reading (DeepSeek default; LM Studio optional) | Pass |
+| `autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts` | Updated (`be39baf40`) | Statistics window opens before run creation (`usageStatisticsInPeriod` selects by creation time) | Pass |
+
+No durable test was added for F-API-002-01. A UI-level check belongs with the corrected design; the server-side order is captured in the evidence trace.
+
+### Round 2 Confidence
+
+| Category | Score | Notes |
+| --- | --- | --- |
+| Requirement and AC proof | 80% | AC-011 proven live for native. AC-012 proven for native standalone and team, Codex, failed and stopped compactions; **fails for Claude SDK manual `/compact`** |
+| Changed-boundary directness | 95% | Real app, real runtimes, DOM sampled at 120–150 ms with frame traces |
+| Integration realism | 95% | Merged base; real Studio server and packaged app |
+| Environment fidelity | 90% | Live AGY blocked by account quota (fake-CLI transport covers the server path) |
+| Failure, edge and lifecycle | 90% | Stopped and failed compactions shown live; Claude auto-compaction note path not executable in the app |
+| User surface and desktop | 85% | The note is wrong for Claude manual compaction |
+| Durable regression | 95% | New native compaction suite; suite timing fix |
+
+- Overall: 90%.
+- Critical AC failing: AC-012 (Claude SDK manual compaction).
+- Result: `Fail`.
+
+### Round 2 Resources Created And Cleaned
+
+- **Main worktree:** builds only.
+- **Desktop worktree** `token-meter-accuracy-api-e2e-desktop` (detached `352ba13ee`): removed.
+- **Isolated instance** `iso-52182-47fb`: stopped; auto data root (with the imported DeepSeek key) deleted; ports released.
+- **Temporary files:** `CODEX_HOME` and the 0600 key file deleted; temporary agent workspaces removed.
+- **LIVE-006 harness:** cleans up its own server, data, settings and vault.
+- **LM Studio:** nothing loaded by me; the model loaded now is the one you downloaded.
+- **Untouched:** other people's isolated instances.
 
 ## Latest Authoritative Result
+
+- Result: `Fail` (round 2, API-REV-002)
+- Final validation confidence: 90%
+- Default `95%` confidence target met: `No`
+- Any final applicable confidence category below `90%`: `Yes` — requirement/AC proof (80%), user surface (85%)
+- Broader validation decision: `Required` — executed (Studio-server live suites + isolated desktop with real native, Claude and Codex compactions)
+- Critical acceptance criteria lacking direct proof or failing: AC-012 fails for Claude SDK manual `/compact` (F-API-002-01). Claude auto-compaction note path not executable live.
+- Preliminary classification and recommended owner: `Design Impact`. D-13 clear rule and RR-7 premise. Owner `/software_engineering_team/solution_designer`, via code-review failure-origin review.
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (failure-origin review)
+- Notes:
+  - Everything else in IR-004 passes on the merged base: D-12, the native D-13 note (standalone and team member), Codex no-note, the D-9 roll-up refetch, and failed/stopped no-note.
+  - Live AGY is blocked by the account quota for ~22 h (fake-CLI transport passes).
+  - Round-1 result: Pass, 95% (API-REV-001), kept below for history.
+
+## Round 1 Latest Authoritative Result (API-REV-001, superseded)
+
 
 - Result: `Pass`
 - Final validation confidence: 95%

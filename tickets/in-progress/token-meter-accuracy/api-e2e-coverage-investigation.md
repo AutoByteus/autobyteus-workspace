@@ -254,3 +254,55 @@ None at this point.
 - LIVE-003 has durable assertions added to the auto-compaction case (`81703b021`), instead of a temporary probe.
 - LIVE-004 uses a new durable suite, `codex-compaction-token-reading.e2e.test.ts` (`e7f9da408`), because `codex-interrupted-compaction.e2e.test.ts` is stale on base.
 - DESK-002b added a second desktop build so the Org member and the delegated copy could be watched mid-turn in the UI.
+
+## Round 2 — IR-004 (D-12 revert, D-13 "Compacted" note, D-9 roll-up refetch fix)
+
+- Trigger: code reviewer CRR-005 Pass (round 4), HEAD `fdf44f205` (artifacts `352ba13ee`). Base: the unpushed integration merge `168900db7` (origin/personal @ `beb6b3b49`, including upstream compaction-prompt-cache-reuse).
+- Withdrawn and not validated: D-11 (IR-003, `5b48c2b47`), reverted by `2cd590603`.
+- Current basis:
+  - AC-011 (SR-010): a native compaction summary call is a model call with tokens and cost; it carries no reading, so "Latest prompt" keeps its value until the agent's next call.
+  - AC-012 / REQ-012 (SR-011, D-13): after a newly completed compaction on native or Claude SDK, the value is muted with "Compacted — updates on the next model call". The run's next exact-run revision clears it. Failed or stopped compaction: no note. Codex and AGY: no note.
+  - D-9 fix: the standalone roll-up refetches on the host's exact `revision`.
+- Changed boundaries:
+  - **Web only:** status handler → compaction marks → panel; scope composable.
+  - **Server:** a revert to the API-REV-001 fold (D-4).
+  - **Integration:** the merged base brings upstream native compaction (`autobyteus_compaction` usage), so the native compaction path is new to this ticket's validation.
+- Material risk not covered by unit specs: the real order of the native `autobyteus_compaction` usage event vs `COMPACTION_STATUS completed`. If the summary call's save arrives after the completed status, the call's own revision clears the note at once. The same applies to the Claude remainder (accepted RR-7).
+- Also needed: proof on real data that the reading is kept across a real native compaction, and the panel behaviour in the packaged app (standalone, roll-up, team member).
+
+### Round 2 Existing Coverage Decisions
+
+| Path / Test | Decision | Evidence | Action |
+| --- | --- | --- | --- |
+| All API-REV-001 durable E2E paths | Still Valid | The D-12 revert restores the API-REV-001 fold; IR-004 changes no server contract | Rerun on the merged base |
+| `tests/unit/token-usage/projections/token-usage-compaction-ingestion.test.ts` (upstream, adapted by IR-004) | Still Valid | Reading kept, 2 calls, totals and cost | Rerun |
+| `autobyteus-compaction-cache-reuse-live.e2e.test.ts` (upstream) | Out Of Scope (paid provider keys) | Needs ANTHROPIC/VERTEX keys | Not run; LM Studio covers the native path |
+| Web store/panel/status-handler specs (IR-004) | Still Valid | Reviewer reran 68 | Rerun as part of the web gate |
+
+### Round 2 Planned Cases
+
+- **R2-GATE** (repository, merged base):
+  - E2E: `tests/e2e/token-usage` and `tests/e2e/app-data-migrations`.
+  - Server: unit (token-usage, backends, app-data-migrations, startup) and token-usage integration; typecheck.
+  - Web: token-meter, compaction and scope specs; contract packages.
+- **LIVE-006** (new): native AutoByteus run on local LM Studio through the Studio server (free, no secrets), with Settings lowering the compaction trigger.
+  - Asserts the real `autobyteus_compaction` call is counted with its tokens.
+  - The reading is kept across it; the next agent call shows a smaller reading.
+  - Records the frame order of the compaction usage vs `COMPACTION_STATUS`.
+  - Durable if stable.
+- **LIVE-R2** (regression on the merged base): LIVE-001 usage case, LIVE-002 (Claude, Codex, multi-call), LIVE-004 Codex compaction.
+- **DESK-004** (isolated desktop build of HEAD; temporary `CODEX_HOME` with a lowered limit, allowlisted by `serverRuntimeEnv.ts`):
+  - (a) Native standalone compaction: note shown, value kept and muted, cleared by the next call. Includes the roll-up view.
+  - (b) Native team member compaction: note shown.
+  - (c) Claude SDK `/compact`: note shown, cleared by the next call.
+  - (d) Codex compaction: no note; the roll-up refetches and shows the post-compaction reading with an unchanged call count (D-9).
+  - (e) AGY regression spot check on the merged base.
+  - (f) Stopped compaction (best effort): no note.
+- **Not planned:** failed native compaction in the desktop (hard to induce), covered by the status-handler spec; paid-key upstream suites.
+
+### Round 2 Outcome
+
+- Executed as planned, with one adjustment: LIVE-006 ran on DeepSeek instead of LM Studio, because the user removed the LM Studio model mid-run.
+- Result: `Fail` (90%), with the failure F-API-002-01: the AC-012 note never appears after a completed Claude SDK manual `/compact`.
+- Classification: `Design Impact`. The D-13 clear rule and the RR-7 "rare" premise do not hold.
+- Everything else passes. Details are in `api-e2e-execution-coverage-report.md` § Round 2.
