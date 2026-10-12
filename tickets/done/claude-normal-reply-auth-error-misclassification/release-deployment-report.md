@@ -12,9 +12,9 @@ This is a server-side fix to Claude turn-result classification. It ships through
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-normal-reply-auth-error-misclassification/tickets/in-progress/claude-normal-reply-auth-error-misclassification/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-normal-reply-auth-error-misclassification/tickets/done/claude-normal-reply-auth-error-misclassification/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-normal-reply-auth-error-misclassification/tickets/in-progress/claude-normal-reply-auth-error-misclassification/delivery-revision-record.md`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-normal-reply-auth-error-misclassification/tickets/done/claude-normal-reply-auth-error-misclassification/delivery-revision-record.md`
 - Current delivery revision ID: `DR-001`
 - Notes: task size `Small`, architectural risk `Low`, route `Direct API/E2E`. These are unchanged.
 
@@ -35,26 +35,39 @@ This is a server-side fix to Claude turn-result classification. It ships through
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`. This is pending.
-- Initial verification / acceptance reference: pending.
-- Renewed verification required after later re-integration: pending.
+- Initial explicit user completion/verification received: `Yes`, as release approval. On 2026-10-12 the user instructed "finalize and release a new beta". The user did not report an AC-004 check before release. As offered in the verification request, AC-004 is to be checked in the published beta build. If it fails there, the fix goes into the next version.
+- Initial verification / acceptance reference: the user's message "finalize and release a new beta" (2026-10-12).
+- Renewed verification required after later re-integration: `No`. The finalization refresh brought in `origin/personal` @ `a531b7ab0`, which is token-meter-accuracy, already verified and finalized by its own ticket. The only conflict was a test harness both branches had fixed the same way. Behavior of this ticket's fix is unchanged and re-proved live (see "Finalization Re-Integration").
+- Renewed verification received: `Not needed`
+
+## Finalization Re-Integration
+
+- After the user's instruction, `origin/personal` had advanced from `3514fe48e` to `a531b7ab0`. That range is the token-meter-accuracy merge: Claude session query-option refactor, per-call token usage, a Prisma migration, and its own `ownSession` harness fix.
+- Delivery-owned edits protected: `Completed`. Archive commit `b98ed8717` on the ticket branch, made before merging.
+- Integration method: `Merge` of `origin/personal` into the ticket branch, commit `3dbf5ef2f`.
+- Conflict: `autobyteus-server-ts/tests/e2e/helpers/claude-live-agent-harness.ts` only. Both sides added an equivalent no-op `ownSession` callback, so `personal`'s version was taken. `agent_execution.md` auto-merged with this ticket's rule bullet intact.
+- Post-integration checks, all run on the merged state after `pnpm install --frozen-lockfile` and `pnpm -C autobyteus-server-ts prebuild`:
+
+| Check | Command | Result | Evidence |
+| --- | --- | --- | --- |
+| Unit, agent-execution and runtime-management | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution tests/unit/runtime-management --no-watch` | Pass: 142 files (4 skipped), 1482 passed, 6 skipped | `delivery-evidence/post-integration-unit-agent-execution-runtime-management.log` |
+| Typecheck | `pnpm -C autobyteus-server-ts typecheck` | Pass, exit 0 | `delivery-evidence/post-integration-typecheck.log` |
+| Live E2E, real CLI and SDK | `env -u AUTOBYTEUS_SERVER_DATA_DIR RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts --no-watch` | Pass: 4 of 4 (AC-001 and AC-002 on the PATH CLI and the SDK-bundled CLI) | `delivery-evidence/post-integration-live-e2e-auth-marker.log` |
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-normal-reply-auth-error-misclassification/tickets/in-progress/claude-normal-reply-auth-error-misclassification/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-normal-reply-auth-error-misclassification/tickets/done/claude-normal-reply-auth-error-misclassification/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-server-ts/docs/modules/agent_execution.md`
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`. It moves after user verification.
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `tickets/done/claude-normal-reply-auth-error-misclassification`
 
 ## Version / Tag / Release Commit
 
-- Pending the user's release decision. Candidates per `RELEASE.md`:
-  - Beta `v1.5.2-beta.3`, from `scripts/release_versions.py next-beta`
-  - Stable `v1.5.2`, the next patch after the highest stable tag `v1.5.1`
-  - No release
+- User decision: **Beta**. Version `v1.5.2-beta.3`, from `scripts/release_versions.py next-beta`. It is cut with `scripts/desktop-release.sh beta --branch finalize/claude-normal-reply-auth-error-misclassification --no-push`, and the release commit and tag outcome are recorded in `delivery-revision-record.md` DR-002.
 
 ## Repository Finalization
 
@@ -76,7 +89,7 @@ This is a server-side fix to Claude turn-result classification. It ships through
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-normal-reply-auth-error-misclassification/tickets/in-progress/claude-normal-reply-auth-error-misclassification/release-notes.md`
+- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-normal-reply-auth-error-misclassification/tickets/done/claude-normal-reply-auth-error-misclassification/release-notes.md`
 - Release notes status: `Updated`
 
 ## Deployment Steps
