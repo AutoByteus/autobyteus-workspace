@@ -1,0 +1,69 @@
+CRR-001 independent focused checks at 6f9d5d08827ab9bf1be15730a87ccdf12f1e5586
+Clean temporary HOME/TMPDIR; fixed PATH; no inherited app/provider variables; no real Docker.
+
+$ /usr/bin/python3 --version
+Python 3.9.6
+Exit: 0
+
+$ /usr/bin/python3 -m unittest scripts.tests.test_docker_build_context_sources scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_new_containers_prefer_sequential_friendly_ports scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_controlled_busy_preferred_port_uses_real_random_fallback scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_port_probe_double_delegates_python_and_rejects_probe_drift -v
+test_current_guides_keep_supported_paths_and_no_retired_instructions (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_direct_copy_sources_exist_in_repository_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_entrypath_guard_rejects_broken_build_fixture (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_ignore_guard_rejects_saved_state_protection_loss_fixtures (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retained_entrypaths_use_monorepo_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retired_assets_are_absent (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retirement_guard_rejects_reintroduced_asset_fixture (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_saved_state_exclusions_remain_effective (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_workspace_contracts_are_built_and_materialized_in_monorepo (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_new_containers_prefer_sequential_friendly_ports (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_controlled_busy_preferred_port_uses_real_random_fallback (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_port_probe_double_delegates_python_and_rejects_probe_drift (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 6.178s
+
+OK
+Exit: 0
+
+$ /opt/homebrew/bin/python3.11 --version
+Python 3.11.14
+Exit: 0
+
+$ /opt/homebrew/bin/python3.11 -m unittest scripts.tests.test_docker_build_context_sources scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_new_containers_prefer_sequential_friendly_ports scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_controlled_busy_preferred_port_uses_real_random_fallback scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_port_probe_double_delegates_python_and_rejects_probe_drift -v
+test_current_guides_keep_supported_paths_and_no_retired_instructions (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_current_guides_keep_supported_paths_and_no_retired_instructions) ... ok
+test_direct_copy_sources_exist_in_repository_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_direct_copy_sources_exist_in_repository_root_context) ... ok
+test_entrypath_guard_rejects_broken_build_fixture (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_entrypath_guard_rejects_broken_build_fixture) ... ok
+test_ignore_guard_rejects_saved_state_protection_loss_fixtures (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_ignore_guard_rejects_saved_state_protection_loss_fixtures) ... ok
+test_retained_entrypaths_use_monorepo_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_retained_entrypaths_use_monorepo_root_context) ... ok
+test_retired_assets_are_absent (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_retired_assets_are_absent) ... ok
+test_retirement_guard_rejects_reintroduced_asset_fixture (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_retirement_guard_rejects_reintroduced_asset_fixture) ... ok
+test_saved_state_exclusions_remain_effective (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_saved_state_exclusions_remain_effective) ... ok
+test_workspace_contracts_are_built_and_materialized_in_monorepo (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_workspace_contracts_are_built_and_materialized_in_monorepo) ... ok
+test_new_containers_prefer_sequential_friendly_ports (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_new_containers_prefer_sequential_friendly_ports) ... ok
+test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt) ... ok
+test_controlled_busy_preferred_port_uses_real_random_fallback (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_controlled_busy_preferred_port_uses_real_random_fallback) ... ok
+test_port_probe_double_delegates_python_and_rejects_probe_drift (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_port_probe_double_delegates_python_and_rejects_probe_drift) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 4.047s
+
+OK
+Exit: 0
+
+$ /usr/bin/python3 scripts/check_licensing.py
+Licensing is consistent.
+Tracked files scanned: 6508
+Exit: 0
+
+$ /usr/bin/python3 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 60966
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+Exit: 0
+
+$ git diff 2756d7b298ca5b203ebd2310d172b37a5d381b5c HEAD --check
+Exit: 0
+
+Owner-created HOME/TMPDIR and nested fixtures cleaned. No live node/resource/provider operation.
