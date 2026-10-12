@@ -3,21 +3,21 @@
 ## Upstream Artifact Package
 
 - Approved requirements: **R1 / SR-001**, unchanged. Cumulative design **SR-004** (SR-001–003 retained).
-- Current architecture: **ARCH-REV-003 / round3 Pass** on SR-004. ARCH-F-001 remains resolved for its two named removals. This does not supersede current source review **CRR-001 Fail / CR-F-001 open**; only Code Reviewer can close that source finding.
+- Current architecture: **ARCH-REV-003 / round3 Pass** on SR-004. ARCH-F-001 remains resolved for its two named removals. Current independent source review is **CRR-002 / round2 Targeted Delta Review Pass**, with **CR-F-001 resolved** by Code Reviewer. CRR-001 Fail is preserved in review history, not rewritten.
 - Requirements: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/requirements-doc.md`
 - Investigation: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/investigation-notes.md`
 - Design: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/design-spec.md`
 - Solution history: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/solution-revision-record.md`
 - Solution manifest: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/solution-handoff.md` (its authoring-snapshot prior ARCH-REV-002 pointer is superseded for architecture only by current report).
 - Architecture report/history: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/design-review-report.md`, `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/architecture-review-revision-record.md`
-- Triggering code review/report/history: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/code-review-report.md`, `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/code-review-revision-record.md` — CRR-001 / round1 / CR-F-001.
+- Triggering code review/report/history: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/code-review-report.md`, `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/code-review-revision-record.md` — CRR-001 / round1 / CR-F-001 triggered IR-002; current CRR-002 / round2 Pass closes that finding.
 - Baseline evidence retained: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/baseline-isolated-reproduction.log`, `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/runtime-failure-excerpts.log`, `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/installed-module-checksums.txt`; all historical implementation logs and `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/code-review-checks.log`, `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/code-review-reference-check.log`.
 - Original evidentiary screenshot (inspected during IR-001): `/home/autobyteus/data/projects/project_f34a9537-07d7-449a-b78f-16368f1aa619/tasks/project_task_1aefbe1a-dfb5-4ec1-b893-8423b09a12dd/context/ctx_7cbb18ffeeeb__ctx_27db61845e57_image.png`.
 - Product/behavior-defining supplements, API-REV, DR: N/A — not applicable/not yet performed. No specialist report/history was edited by implementation.
 
 ## Current Implementation Summary
 
-**Implementation Complete — corrected source ready for independent re-review**, not source-review Pass, API/E2E, PDF render, deployment or delivery sign-off.
+**Implementation Complete — independent source review Pass (CRR-002)**. API/E2E validation is pending and was handed forward by Code Reviewer; no API/E2E, PDF render, deployment or delivery sign-off.
 
 Public search still awaits the unchanged snapshot owner, maps each internal absolute candidate using `path.relative(workspaceRootPath, candidate)`, validates with existing `getPath` and emits ordered workspace-relative locators. All internal strategy/index/ranking, cancellation, watcher/lease and protected-reader code remains unchanged. IR-001's two named removals, exact test/doc/converter parity remain implemented.
 
@@ -25,16 +25,16 @@ Public search still awaits the unchanged snapshot owner, maps each internal abso
 
 - Cycle: **Rework**; classification: **Local Fix implementing approved SR-004 Design Impact recovery**.
 - Current implementation revision: **IR-002**; history `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/implementation-revision-record.md` (IR-001 retained).
-- Trigger: CRR-001 / CR-F-001, recovered by SR-004 / ARCH-REV-003. Related cumulative SR-001–004, ARCH-REV-001–003, CRR-001; API-REV/DR N/A.
+- Trigger: CRR-001 / CR-F-001, recovered by SR-004 / ARCH-REV-003. Related cumulative SR-001–004, ARCH-REV-001–003, CRR-001/002; API-REV/DR N/A.
 - Current source/test correction commit: `7f321575058d744c8e635b3aff0a6d1f4557e2c4`; prior source baseline `bc820093753dee510294b42879043daec243d4e8`, implementation artifacts `51dcdb626`; incoming review/design HEAD `1921e5096` (design `74a4364f4`, code review `ddf1d7828`).
 - Worktree `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview`, branch `codex/resume-pdf-search-preview`; target base `origin/personal` `2756d7b298ca5b203ebd2310d172b37a5d381b5c`.
 
 ## Routing Classification
 
 - `task_size=Small`, `architectural_risk=High` — **Confirmed**, unchanged from SR-004 and ARCH-REV-003. Bounded same-class deletion/exact callers do not remove public-result semantics/live-delivery risk.
-- Selected route: **Code Review**. Fresh `get_handoff_rules` 2026-10-12: most-specific completed High-risk Local Fix/re-review rule → `/software_engineering_team/code_reviewer` only. Initial complete/High rule has same destination; direct low-risk and upstream-gap rules do not match.
+- Implementation submission route (completed): **Code Review**. Fresh `get_handoff_rules` 2026-10-12: most-specific completed High-risk Local Fix/re-review rule → `/software_engineering_team/code_reviewer` only. Initial complete/High rule has same destination; direct low-risk and upstream-gap rules do not match.
 - Direct-route lightweight self-review: Not Applicable. Local source diff/owner trace/parity/size checked; this is not independent approval.
-- New Design Impact/Requirement Gap/Unclear: None. CR-F-001 source closure remains exclusively reviewer-owned.
+- New Design Impact/Requirement Gap/Unclear: None. Code Reviewer independently resolved CR-F-001 in CRR-002; this informational receipt triggers no duplicate handoff or new implementation round.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -85,7 +85,7 @@ Logs normalize only ANSI escapes/trailing whitespace; failures/results are not d
 
 ### Verification Ownership Conflict / Outstanding Diagnostic E2E Check
 
-SR-004/upstream asks implementation to execute the focused path-boundary E2E. The authoritative implementation-engineer skill assigns **API/E2E execution and API/E2E test authoring** to api_e2e_engineer and requires recording such conflicts. Therefore this round performs only the exact removed-method diagnostic adapter update (no new E2E cases), syntax/owner checks and implementation-scoped unit/integration validation; it **does not execute or claim pass** for `tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts`. Its required clean test-owned execution remains outstanding for the authorized validation owner after required source re-review. This is an ownership-boundary limitation, not a waived assertion or source-review Pass. No duplicate early API/E2E handoff bypasses the High-risk source gate.
+SR-004/upstream asks implementation to execute the focused path-boundary E2E. The authoritative implementation-engineer skill assigns **API/E2E execution and API/E2E test authoring** to api_e2e_engineer and requires recording such conflicts. Therefore this round performs only the exact removed-method diagnostic adapter update (no new E2E cases), syntax/owner checks and implementation-scoped unit/integration validation; it **does not execute or claim pass** for `tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts`. Its required clean test-owned execution remains outstanding for the authorized validation owner after the now-completed CRR-002 source-review Pass. This is an ownership-boundary limitation, not a waived assertion or source-review Pass. No duplicate early API/E2E handoff bypasses the High-risk source gate.
 
 ## Frontend Rendered-Result Check
 
@@ -101,10 +101,17 @@ Upstream-owned informational ARCH-REV-003 receipt dirties solution-revision-reco
 
 ## Downstream Coverage / Execution Still Required
 
-1. **Independent code re-review** with CRR-001/CR-F-001, SR-004/ARCH-REV-003, IR-001/002 context. Architecture approval and this implementation correction do not close source Fail.
+1. **Independent code re-review completed:** CRR-002 Pass on IR-002, CR-F-001 resolved. Reviewer reports its primary cumulative handoff confirmed to `/software_engineering_team/api_e2e_engineer`; no duplicate forwarding by implementation.
 2. Authorized API/E2E owner executes the updated existing path-boundary E2E in clean test-owned env, verifies null/tree diagnostics and retained denial/watchers/lease assertions; investigate any failure before sign-off.
 3. Joined real GraphQL search→protected REST200, `application/pdf`, exact valid synthetic multipage bytes; real lazy/unexpanded nested PDF click→pages/canvases/no load alert/browser errors. Current worktree build/data/ports only; not original personal PDF or installed /app as fixture/proof.
 4. Client search/tree node reuse/identity and representative text read; real HTTP absolute in-root/outside, traversal and sibling escape denials/no outside bytes. Local guards/text/87passes do not substitute for transport/browser proof.
 5. Delivery after gates: docs sync/integration per RELEASE.md, exact host build/frontend/runtime pin or precise Docker-access blocker, timing approval for disruption if needed, safe8001 rollout/rollback, explicit user close-failed-tab/re-search/open verification, résumé integrity and final task-owned cleanup. **No public release requested**.
 
 Caller `/project_task_manager`, run `project_task_manager_2f7a8ea2d421446f8f22e4f616528547`; Project `project_f34a9537-07d7-449a-b78f-16368f1aa619`, Task `project_task_1aefbe1a-dfb5-4ec1-b893-8423b09a12dd`.
+
+## Informational Source-Review Pass Receipt — CRR-002
+
+- Received 2026-10-12 from `/software_engineering_team/code_reviewer`, run `code_reviewer_78c6dcca1979467091bc4bacb9e693ea`; review artifact commit `7cd2a2db5`. Read canonical code-review-report.md and code-review-revision-record.md at the absolute paths above.
+- Pass / round2 / Targeted Delta Review; CR-F-001 resolved, no open source findings; Small / High unchanged. Implementation source and IR-002 remain unchanged; no new implementation revision or checks.
+- Reviewer reports primary cumulative API/E2E handoff tool-confirmed to `/software_engineering_team/api_e2e_engineer`, run `api_e2e_engineer_e872f3b15ea448febd496be93004e82a`. Recorded only; no repeated forwarding, polling or validation work by implementation.
+- Pending diagnostic E2E and real PDF/HTTP/client checks are explicitly assigned, not waived. No render/deployment/user-verification Pass implied; safety/cleanup and Delivery boundaries above remain current.
