@@ -1,8 +1,23 @@
 # Implementation Handoff — delegated-copy-model-change
 
-**Current round: IR-001 (initial baseline; `Large` / `High`).** Worktree
+**Current round: IR-002 (local fix of code review CRR-001: CR-001, CR-002, CR-003; `Large` / `High` unchanged).**
+IR-001 was the initial baseline. Worktree
 `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change`, branch
 `codex/delegated-copy-model-change` (base `origin/personal` @ `a609de982a`). Commits: see "Commits" at the end.
+
+## IR-002 — CRR-001 local fixes
+
+Basis: `code-review-report.md` CRR-001 (`Fail`, `Local Fix`). Requirements and design are unchanged; no new design
+impact (the publication follows the existing live tree-mutation model).
+
+| Finding | Fix | Evidence |
+| --- | --- | --- |
+| CR-001 web copy-member selectors returned started launches | `autobyteus-web/services/collaborators/agentSourceSelectors.ts`: the address selectors stay the *started* source of an address (shared by every instance there; Settings rows apply the rule themselves). What one instance runs with is applied once per casing with the contract rule: `teamAgentSourceAt(tree, address, agentRunId)` (Team) and `collaborationInstanceSource(instances, agentRunId, source)` (Org/Agent) find the instance's record and apply `teamCopyAgentLaunch` / `collaborationCopyAgentLaunch` with the server's follower rule (recorded member: no own launch; copy of a configured Team: launch equals the configured Team default, AR-003; nested Team member: never; collaborator Agent / agent copy: own choice only). Callers pass the run ID: Team context factory, Team run/member hydration, Team view workspace lookup, Org view index (`instances()` incl. configured Team defaults), Agent collaboration index. | `agentSourceSelectors.spec.ts` (snake: agent copy per instance vs another copy and the collaborator, collaborator Team follower / non-follower, catalog Team copy follower / non-follower, configured member unchanged, no run ID → started; member context shows the chosen model; camel: collaborator follower / non-follower / own choice, agent copy at a collaborator address, configured-placement follower by equality and non-follower); `agentOrgClosure.spec.ts` and `agentRunCollaborationClosure.spec.ts` (indexes give copies the chosen model; configured member unchanged) |
+| CR-002 live views not updated; `savedByRoot` client copy | Server: the command publishes after the durable commit (`DelegatedLaunchRootPort.publishSelectionsChanged`, called in `afterDurability` after the collaborator swap, only when committed) the records as now recorded (`recordedDelegatedLaunchSelections`: an equal choice keeps its earlier `selectedAt`). Team: `TeamRunEventSourceType.DELEGATED_LAUNCH_SELECTIONS` → stream `DELEGATED_LAUNCH_SELECTIONS_CHANGED {change_sequence, selections: [{agent_run_id|team_run_id, selection}]}`; Org/Agent: `{kind: "delegated_launch_selections_changed", selections: [{agentRunId|teamRunId, selection}]}` (one shared contract schema). Web: the Team view records the choices in place (`recordDelegatedLaunchSelections`, unknown run → rejected → recovery) and refreshes member contexts' model (`refreshTeamAgentLaunches`); Org and Agent contexts validate the run IDs and reload through their existing checkpoint path (as for `task_execution_started`), so the rebuilt index/contexts read the choice (CR-001). `savedByRoot`, the `saved` getter and `DelegatedRowControl.savedOf` are removed; Settings rows read the run (Team/Org: the reload after Save; Agent: the live collaboration view). | Server: `delegated-launch-selection.test.ts` (recorded read-back), Team and Org root tests (one event after `UPDATED` with the recorded selection; none after `UNCHANGED`), `launch-selection-dto-projection.test.ts` (Team stream message, Org/Agent event parse). Contracts: team 16/16, collaboration 27/27 (new schema tests). Web: `agentSourceSelectors.spec.ts` (live Team view: tree records, follower and collaborator contexts take the model, configured member unchanged, unknown run rejected), Org/Agent closure specs (`checkpoint_required`, unknown run → reopen required), `delegatedLaunchDraftStore.spec.ts` (no client copy) |
+| CR-003 three files over 500 effective lines | No behavior change. `root-task-execution-lifecycle.ts` 521 → 488: stopping marks, leases and the lease drain move to the owned collaborator `execution/task/task-execution-live-holds.ts` (`TaskExecutionLiveHolds`: `lease`, `isLeased`, `isStopping`, `assertNotStopping`, `beginStop` → `{drained, end}`); the queue steps stay. `configured-agent-execution-handle.ts` 516 → 484: the activation fence moves to `AgentActivationFence` in `backends/configured-agent-execution-support.ts` (with the moved `describeActivationFailure` and `completedLocalTermination`). `agent-team-run-manager.ts` 530 → 436: the stopped Save's plan (configured targets + delegated plan, one `validateMany`, interpretation, apply) and the options read move to `services/team-run-delegated-launch-plan.ts` (`planStoppedTeamLaunchSave`, `teamDelegatedLaunchModelOptions`); the manager keeps the gates and the one tree write. Web: `teamExecutionViewState.ts` stays at 486 by moving its pure tree walk (`teamTreeWalk`, `teamTreeRunKeys`) to `teamExecutionTreeSelectors.ts`. | Lifecycle 30, handle 36, `team-run-model-selection-save.test.ts` and the Team/Org/Agent suites unchanged and passing |
+
+Docs: `autobyteus-web/docs/settings.md` (what Settings shows right after Save; live publication),
+`autobyteus-server-ts/docs/modules/agent_communication.md` (the Save publishes the committed choices).
 
 ## Upstream basis
 
@@ -52,9 +67,8 @@
    without a recorded delegator outside the set.
 5. **Outcomes.** Saves use the existing vocabulary (`UPDATED`, `UNCHANGED`, `VALIDATION_FAILED`, `MODEL_UNAVAILABLE`,
    `SCHEMA_UNAVAILABLE`, `PERSISTENCE_*`, `RUN_ACTIVE`, `NOT_FOUND`, `INTERNAL_ERROR`) plus `COPY_RUNNING` (instead of
-   the spec's `SAVED`), so the existing Save bar handling applies. Responses carry no tree: the web re-reads the run.
-   A live Agent root's streamed view gets no event for a choice, so the web keeps saved choices per run
-   (`savedByRoot`) and shows them as recorded.
+   the spec's `SAVED`), so the existing Save bar handling applies. Responses carry no tree: Settings re-reads the run,
+   and a live run publishes the committed choices to its views (IR-002, CR-002).
 6. **Standalone stopped root.** The host's model lives in its run metadata and the copies in the collaboration tree
    (two files). Both are validated in one `validateMany`; the tree is written first, then the metadata; a metadata
    failure after a tree write is reported ("The copies' models were saved, but the agent's own model was not: …").
@@ -68,6 +82,21 @@
     tolerates views without contexts or an index (nothing shown as running).
 
 ## Local checks
+
+**IR-002** (`implementation-evidence/ir-002-checks/`, `ir-002-probe/`):
+- Server: `tsc -p tsconfig.build.json --noEmit` clean. `vitest run tests/unit/{agent-collaboration,agent-team-execution,agent-org-execution,standalone-agent-run-root,services/agent-streaming,run-history,api,agent-execution} tests/architecture`:
+  309 files / 2604 tests passed, 6 skipped; 1 failure — `tests/architecture/application-framework-boundaries.test.ts`
+  ("SR-011 host definition": `app-data-migrations/migrations/run-history-index-v2-migration.ts` lacks
+  `DefinitionPersistenceProvider`). Neither that test nor that file differs from the base `a609de982a`, so it is not from this branch.
+- Server e2e (scripted AGY): `delegated-copy-model-change.e2e.test.ts` DCM-001..004 and `delegated-launch-config-defaults.e2e.test.ts` 5/5 pass.
+- Contracts: team 16/16, collaboration 27/27; `dist` rebuilt and included.
+- Web: `pnpm test:nuxt --run` 615 files / 4291 tests passed, 5 skipped (2 files skipped); guards and localization audit pass;
+  `vue-tsc`: no new errors in touched files (remaining ones are on unchanged lines: `teamExecutionViewState.ts` COLLABORATOR_ADDED
+  `root_team` assignment, `WorkspaceAgentOrgHistoryCollection.vue`, and older spec fixture lines).
+- Browser probe DCP-001 rerun on the rebuilt backend: Pass (the Agent-root Settings row shows the saved model without the
+  removed client copy: the live view reloads on `delegated_launch_selections_changed`).
+
+**IR-001:**
 
 - Server: `tsc -p tsconfig.build.json --noEmit` clean. `vitest run tests/unit tests/integration/{agent-team-execution,run-history,agent-org-execution,standalone-agent-run-root}`:
   700 files / 5508 tests passed, 7 skipped (`implementation-evidence/ir-001-server/`).
@@ -102,7 +131,11 @@
 - Copies recorded before delegators were stored are not stopped with their starter (`notStoppedUnattributed`).
 - A provider rejecting a resumed history on a smaller/other model shows the existing activation error (REQ-008); not
   separately exercised here.
-- Other clients do not see a saved choice until they read the run's tree again (no stream event; see note 5).
+- Another client with Settings of a Team or Org run open sees a choice saved elsewhere after Refresh (its open Settings
+  reads the run's settings once, as for copies started meanwhile); its live views update (IR-002).
+- Code-review residuals kept: the standalone stopped Save writes two files (note 6); `update` holds collaborator fences
+  while waiting for the queue head (no queue step activates a collaborator handle); `root-team-run.ts` (481) and
+  `general-process-run-supervisor.ts` (476) are near the size limit (not touched in IR-002).
 - Real-runtime check (Codex/Claude switch) and the user's verification (AC-010) remain (design step 6).
 
 ## Downstream coverage hints
@@ -119,9 +152,15 @@
 - Supplemental task artifacts: N/A — not applicable
 - Design review report: `tickets/in-progress/delegated-copy-model-change/design-review-report.md` (ARCH-REV-003, `Pass`)
 - Architecture review revision record: `tickets/in-progress/delegated-copy-model-change/architecture-review-revision-record.md`
-- Implementation revision record: `tickets/in-progress/delegated-copy-model-change/implementation-revision-record.md` (IR-001)
+- Implementation revision record: `tickets/in-progress/delegated-copy-model-change/implementation-revision-record.md` (IR-001, IR-002)
+- Code review: `tickets/in-progress/delegated-copy-model-change/code-review-report.md` (CRR-001), `code-review-revision-record.md`
 
 ## Commits
+
+IR-002: `810742c628` server + contracts (src, rebuilt `dist`, tests, server doc); `0fb29b6d8c` web (selectors, views,
+store, tests, Settings doc); the following ticket-artifacts commit (this handoff, revision record, CRR-001 files, evidence).
+
+IR-001:
 
 - `71d51a1608` server + contracts (src, rebuilt `dist`, tests) + server docs.
 - `312653734c` web (Settings rows, store, sidebar stop icon, probe case DCP-001, docs, localization).
