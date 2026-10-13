@@ -1,0 +1,12 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS native macOS guest mounts the same Linux export and reads its independent storage identity
+PASS Mac release backend/native client installed only into fresh private guest test root
+PASS actual Mac release backend serves separate GraphQL endpoint on private VM
+PASS necessary native OAuth copied privately without host files, source edits or shared homes
+PASS actual workspace-selected Mac agent writes through native Codex filesystem tools
+PASS independent Linux Codex agent reads Mac-created unknown bytes and modifies same file
+PASS independent Linux Claude agent reads both unknown previous values and modifies same file
+PASS originating Mac native agent fresh reopen sees both Linux-node modifications
+{"run": "ab-sf-fr026-6af2e9d4", "passes": 11, "fatal": null, "cleanup_ok": true}

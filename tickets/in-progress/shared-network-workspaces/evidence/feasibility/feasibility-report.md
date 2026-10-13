@@ -1,3 +1,11 @@
+# Latest Executed Evidence — SR-010 (Approved Intent SR-009)
+
+Native Mac test VM automatically operated, no user commands/host admin. FR-02611 checks/four real native agent turns across Mac+two Linux Docker nodes pass on same `/Volumes/autobyteus-shared/project`; native cwd/tool output and independent mounted/backing bytes/hash agree. See macos-vm-feasibility-report.md and mac-three-node-agent-proof.json. FR-023–025 actual provisioning failures retained. Not physical LAN/current source/rendered UI/final user command/delivery.
+
+Native Codex private lifecycle FR-02011 passes; bounded Linux readiness FR-0189 passes, earlier failures/caches/capacity retained. See native-private-readiness-report.md. All exact owned Docker resources absent; credential-bearing VM clones deleted, public baseline cache retained. No production or live user changes. Requirements Approved SR-009 unchanged; design/setup/physical-LAN and downstream gates incomplete. Internal probes are not the finished user command.
+
+---
+
 # Current SR-009 Update
 
 Service-host direction is now Linux (Docker eligible), approval-record-sr009.md. [Private runtime skill report](private-runtime-skill-report.md) records three additional rounds: FR-012/013 retained failures, FR-01412 scoped native-SDK capability passes including peer cleanup/resume. No production fix, Mac/LAN/source/UI/setup proof or completion. Approved basis/current evidence SR-009; historical SR-008/component results below remain unchanged.
@@ -80,3 +88,16 @@ The user authorized feasibility experimentation before implementation, not arbit
 - Wholesale upstream Apple source scratch removed; primary URL/hash/consulted lines and SDK authority recorded in fr-001/source-references.json. Probe source is owned experiment code, not product implementation or final API/E2E coverage.
 - FR-007: rebuilt cached owned image with docker build --progress=plain -t autobyteus-shared-feasibility:fr-007 -f tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-007/Dockerfile tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-007; python3 .../fr-007/run-probe.py. Latest result cleanup includes exact absence checks and matching service-image ID before removing its tag. No global image/cache pruning.
 - FR-008–011: analogous fresh-round cached builds and python3 .../fr-00N/run-probe.py; exact argv/config/version/result/console/turn/causal receipts retained. Real native OAuth sources read-only and streamed only to task-owned private homes in FR-008/009; no secret values/host credential scratch retained. FR-010/011 no model/auth use. Eight FR-009 runs terminated; all owned resources removed/absence audited. No native Mac mount this round; source nodes/CLI homes/Keychain not edited.
+
+
+## Current SR-010 Completed Native Mac/Agent/Readiness/Lifecycle Evidence
+
+Approved intended behavior SR-009 unchanged; full current context is ../../feasibility-blocker-handoff.md. FR-015–033 source/config/actual native turns/failure origins/results/cleanup indexed, never collapsed into blanket green. FR-019 actual native macOS26.6.2 automated VM; FR-022 ordinary Mac plus two Linux API mounts; FR-02611 passes/four actual native turns through normal selected-workspace/run APIs, MacCodex write -> LinuxCodex read/modify -> LinuxClaude read/modify -> MacCodex fresh read. Same /Volumes/autobyteus-shared/project, mounts/storageID/backing and exact hashes agree, no copied nonce prompts/attachments/controller agent-file write. One physical Mac, not second-computer LAN/current source/UI/user command.
+
+Native private-runtime candidate: ClaudeFR-01412 passes/six turns, CodexFR-02011 passes/five turns including peer cleanup and replacement-root same-thread resume; production shared-skill bug remains unpatched. Bounded readiness LinuxFR-0189 passes, MacFR-02914 passes: source/UUID/permission/unavailable/race, private heartbeat, one retained exact child slot until real exit. RPC NULL != identity/write auth, deadline/signals != bounded kernel IO or product integration.
+
+Mac/Linux FR-02814 passes: fresh closed-file visibility under5s in repeat,1MiB binary,40 distinct concurrent files, POSIX advisory lock, scoped Git and pause/recovery2.416s. Default Mac Git foreign owner10001 fails128; no user global wildcard/config added. FR-027 immediate stale read and FR-017 warm permission-cache behavior retained, no instant visibility/revocation guarantee.
+
+FR-03316 passes: owned repeat/occupied-target/privilege/declined-consent/native own-target mount, owned Docker recreation preserves exact image/port/six mounted volumes/private markers/public workspace, actual Mac reboot automatically remounts sameUUID/one mount with independent new kern.boottime47.044s. FR-030 wrong privilege assumption, FR-031 control transport timeout and FR-032 leftover target failures retained. Not final guided setup/normal password-dialog/initial local-node apply/offline login/physical LAN proof.
+
+Entire changed owned VM clones retired (disk/keychain), public immutable base/tool scratch retained. Full exact Docker recheck, secret-pattern/syntax/hygiene checks and no-running-session state at SR010 audit files. No live user storage/mount/container changes, source login edits, local model/global prune/production source implementation. Actual independent Linux/private-network resource unresolved; owned default-Git/runtime/admission/service authorization/setup design still must complete. No finished user command, final size/risk, design-complete/implementation-ready/Terminal/DONE. Broader public service and parked collaboration remain excluded.

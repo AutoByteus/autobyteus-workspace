@@ -4,7 +4,7 @@
 
 - Status: **Approved — SR-009 intended-behavior basis (SR-004 plus Linux service clarification); feasibility/design not complete**.
 - Package identifier: `shared-network-workspaces` / `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.
-- Requirements baseline: SR-009; current solution evidence SR-009, 2026-10-13. Retains SR-004 behavior and adds the user's explicit Linux service-host constraint (Docker eligible). FR-014 validates a private native-Claude skill capability, not a product patch; native Mac/real LAN/complete setup and REQ-016 remain incomplete.
+- Requirements baseline: SR-009; current solution evidence SR-010 (native Mac/agent and lifecycle investigation), 2026-10-13. Retains SR-004 behavior and adds the user's explicit Linux service-host constraint (Docker eligible). FR-014/020 demonstrate native private-runtime capabilities; FR-026 proves the core real Mac/two-Linux native-agent journey. Real separate-computer LAN/complete setup/product integration and REQ-016 remain incomplete, not native Mac capability itself.
 - Requirements owner: Solution Designer.
 - Approval record: **Solution Designer within updated user direction**, exact SR-009 basis documented in [approval-record-sr009.md](approval-record-sr009.md). The user expressly chose Linux for the server and accepts Docker deployment; SR-004 approval remains historical at [approval-record-sr004.md](approval-record-sr004.md). No technology, live-operation, completed-design or delivery approval implied.
 - Behavior-defining supplements: None. Investigation and the historical transcript are evidence, not intended-behavior authorities.
@@ -175,7 +175,7 @@ Supported intended behavior is approved by the Solution Designer within updated 
 | Dependency | Required boundary | Evidence | Remaining uncertainty |
 | --- | --- | --- | --- |
 | Selected existing filesystem | Ordinary project operations and stated consistency/failure contract | EV-009–EV-012 | Engine/version/configuration selected after approval; real tests required |
-| OS mount client and permissions | Mount where runtime actually executes | EV-010–EV-012 | Linux service deployment/backing location (DEC-007); installation privilege and identity mapping; native Mac client proof still required, native Mac server hosting excluded |
+| OS mount client and permissions | Mount where runtime actually executes | EV-010–EV-012 | Linux service deployment/backing location (DEC-007); installation privilege and identity mapping; native Mac VM client capability now demonstrated (SR-010); normal-user setup/full-platform support still required, native Mac server hosting excluded |
 | Docker daemon and Desktop bridge | Actual mounted storage visible inside container, agreed path | EV-011 | Docker host/bridge versions; Desktop network/FUSE paths not yet verified |
 | Runtime CLI/tool policy | Native filesystem operations and sandbox compatibility | EV-006 | Available signed-in runtime test identities; no policy relaxation by implication |
 
@@ -245,13 +245,13 @@ Supported intended behavior is approved by the Solution Designer within updated 
 - Product-owned final visual basis: N/A.
 - Material assumptions and decisions visible: Yes.
 - Content ready for approval: **Yes** for intended behavior, scenario basis, preservation, scope and testable acceptance criteria. No remaining Needs-user product-direction decision blocks this basis; technical choices belong to architecture/feasibility. Unknown test resources/privileged access are external prerequisites, not approval of a complete working solution.
-- Remaining gaps: Feasible reference deployment/client/container topology, ordinary Mac mounted-folder proof, separate Linux-machine access and explicit authorization for any privileged/live changes. Identical path is now best-effort, not a requirements approval blocker; basic non-merge filesystem semantics remain the designer recommendation within direction.
+- Remaining gaps: Feasible reference deployment/client/container topology, native Mac/component/agent proof is now recorded in SR-010; independent physical Linux-machine access, complete setup/Git/integration and explicit authorization for privileged/live changes remain. Identical path is now best-effort, not a requirements approval blocker; basic non-merge filesystem semantics remain the designer recommendation within direction.
 
 ### Approved Basis Ready For Design
 
 - Requirements approval recorded: **Yes — Solution Designer within updated direction, user informed**, approval-record-sr009.md; prior approval-record-sr004.md preserved. User direction is separately recorded; not relabeled as user approval of every technical decision.
 - Exact approved requirement/supplement basis: **SR-009** canonical requirements/AC/scenarios retaining SR-004 plus Linux service constraint; no behavior-defining Product or other supplement. Approval record is approval evidence, not a second specification.
-- Ready for architecture investigation: **Yes**, reading gate already passed in this conversation. Complete feasibility/support evidence and authoritative design before design-complete/implementation routing; honor REQ-016. Current architecture completion is blocked on approved Mac native mount testing and separate-machine access, not on another generic product questionnaire.
+- Ready for architecture investigation: **Yes**, reading gate already passed in this conversation. Complete feasibility/support evidence and authoritative design before design-complete/implementation routing; honor REQ-016. Native Mac VM mount/agent tests now pass. Complete architecture still requires independent physical Linux-machine access and remaining owned full setup/security/Git/runtime/admission design, not another generic product questionnaire.
 
 ## Current Feasibility Evidence — SR-008
 
@@ -270,3 +270,14 @@ Setup clarification within the same approved basis: the user is willing to run t
 User explicitly chooses Linux for the filesystem service and accepts a separate Linux Docker container. Requirements approval/readiness remains coherent under the clarified SR-009 basis; Mac/Linux clients, whole projects, one complete guided setup invocation, no separate in-container configuration, safe private-state preservation and real multi-machine proof remain unchanged. No native Mac server-hosting investigation is required.
 
 [Private runtime skill capability report](evidence/feasibility/private-runtime-skill-report.md): FR-012/013 retained failures; FR-014 has12 scoped passes using unmodified native Claude SDK with task-owned private plugins, actual write/read/modify/reopen, peer-close survival and replacement-bundle native resume. Not integrated AutoByteus production code, configured collision/name policy, other-runtime adaptation, native Mac/LAN or final setup evidence. Installed desktop Node-mode helper capability is separately recorded, not a finished command. All owned resources cleaned; no production or live user changes. REQ-016/AC-016 and all downstream delivery gates remain incomplete.
+
+
+## Current Evidence Clarification — SR-010
+
+Intended behavior/approval remains SR-009, unchanged. Executed FR-015–018/020 add native Codex private-root lifecycle and bounded Linux identity/readiness capabilities; retained failures and actual node columns are in evidence/feasibility/native-private-readiness-report.md. They are not production adaptation or a finished user command. User now prefers an automatically operated separate macOS VM for experiments; this is a test resource preference, not an approved product VM feature, permission to mount the host, or physical-LAN acceptance change. FR-019 now boots actual macOS26.6.2 and accepts commands; FR-022 passes9 native-Mac/two-Linux-node component/API checks. FR-023–025 retain native backend/client provisioning failures; FR-026 now passes11 checks and all four actual Mac/Codex -> Linux/Codex -> Linux/Claude -> Mac reread stages. Same path/common underlying storage, actual public workspace-selected native runs, no copied reader values. This is existing-release/API-WS/local virtual-network evidence, not physical LAN/finished command/current source/UI. Credential-bearing VM disks and owned containers removed; public baseline cache retained. REQ-016/AC-016, real Mac user's one-command/OS approval flow, independent physical Linux host, source/design and downstream delivery remain incomplete.
+
+
+SR-010 additional contract evidence: FR-028 passes14 scoped checks for native Mac/Linux visibility, binary/different-file concurrency, cross-client locks, scoped-trust Git transaction and outage/recovery. Default Mac Git rejects foreign ownership and still requires safe integration; passing process-specific trust is not default whole-project support. FR-029 passes14 scoped checks for bounded Mac identity/readiness and local responsiveness, not production all-path admission. FR-027/030 retained failed harness assumptions remain separately recorded. Full safe guided setup/source/default-Git/physical-LAN/delivery obligations and exact Approved SR-009 intended behavior are unchanged.
+
+
+FR-033 adds16 successful owned lifecycle/component checks including a real native Mac reboot/automatic same-storage remount and isolated Docker recreation preserving image/port/volumes/private bytes. Earlier FR-031/032 failed harness/prerequisite rounds are retained. This is feasibility of mechanisms, not the finished supported setup invocation, arbitrary existing-node apply, normal user's consent or offline-login proof. Physical Linux target/access is still a precise external prerequisite; requirements approval and product/delivery gates remain unchanged.

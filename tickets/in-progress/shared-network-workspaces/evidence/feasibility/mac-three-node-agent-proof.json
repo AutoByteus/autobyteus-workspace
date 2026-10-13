@@ -1,0 +1,111 @@
+{
+  "scope": "existing-release/API-WS native Mac VM + two Linux Docker agent core journey, not physical LAN/UI/current source/finished user command",
+  "run": "ab-sf-fr026-6af2e9d4",
+  "service": "ab-sf-fr026-6af2e9d4-storage-server",
+  "actors": [
+    {
+      "node": "ab-sf-fr026-macos",
+      "platform": "darwin",
+      "runtime": "codex_app_server",
+      "runId": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+      "selectedWorkspace": "/Volumes/autobyteus-shared/project"
+    },
+    {
+      "node": "ab-sf-fr026-6af2e9d4-app-a",
+      "platform": "linux",
+      "runtime": "codex_app_server",
+      "runId": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d",
+      "selectedWorkspace": "/Volumes/autobyteus-shared/project"
+    },
+    {
+      "node": "ab-sf-fr026-6af2e9d4-app-b",
+      "platform": "linux",
+      "runtime": "claude_agent_sdk",
+      "runId": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+      "selectedWorkspace": "/Volumes/autobyteus-shared/project"
+    }
+  ],
+  "turns": [
+    {
+      "file": "fr-026/linux-b-read-modify-turn.json",
+      "node": "ab-sf-fr026-6af2e9d4-app-a",
+      "runId": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d",
+      "runtime": "codex_app_server",
+      "successfulTools": 2,
+      "commands": [
+        {
+          "command": "/bin/bash -lc \"pwd && printf '%s\\\\n' '---FILE---' && cat -- mac-linux-agents-aaca0a6d.txt\"",
+          "cwd": "/Volumes/autobyteus-shared/project",
+          "exitCode": 0,
+          "aggregatedOutput": "/Volumes/autobyteus-shared/project\n---FILE---\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\n"
+        },
+        {
+          "command": "/bin/bash -lc \"python3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\nfd = os.open(path, os.O_WRONLY | os.O_APPEND)\ntry:\n    os.write(fd, b'LINUX_B_f8a27d180fe3433490a70b6f22bdca4f\\\\n')\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\nprintf '%s\\\\n' '---FILE-AFTER---'\ncat -- mac-linux-agents-aaca0a6d.txt\"",
+          "cwd": "/Volumes/autobyteus-shared/project",
+          "exitCode": 0,
+          "aggregatedOutput": "---FILE-AFTER---\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\n"
+        }
+      ]
+    },
+    {
+      "file": "fr-026/linux-c-read-modify-turn.json",
+      "node": "ab-sf-fr026-6af2e9d4-app-b",
+      "runId": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+      "runtime": "claude_agent_sdk",
+      "successfulTools": 2,
+      "commands": [
+        {
+          "tool": "Bash",
+          "arguments": {
+            "command": "pwd && ls -la -- mac-linux-agents-aaca0a6d.txt && cat -- mac-linux-agents-aaca0a6d.txt",
+            "description": "Print working directory and read the target file"
+          },
+          "result": "/Volumes/autobyteus-shared/project\n-rw-r--r-- 1 10001 10001 84 Oct 13 09:10 mac-linux-agents-aaca0a6d.txt\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f"
+        },
+        {
+          "tool": "Bash",
+          "arguments": {
+            "command": "printf '%s\\n' 'LINUX_C_28cf2a5267344a1fa5c75be3a23537f9' >> /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt && sync && tail -c 200 /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt | od -c | tail -n 3 && cat /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt",
+            "description": "Append marker line, sync to disk, and verify contents"
+          },
+          "result": "0000140   2   a   5   2   6   7   3   4   4   a   1   f   a   5   c   7\n0000160   5   b   e   3   a   2   3   5   3   7   f   9  \\n\n0000175\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9"
+        }
+      ]
+    },
+    {
+      "file": "fr-026/mac-a-reopen-turn.json",
+      "node": "ab-sf-fr026-macos",
+      "runId": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+      "runtime": "codex_app_server",
+      "successfulTools": 1,
+      "commands": [
+        {
+          "command": "/bin/zsh -lc \"pwd\nprintf '%s' '---FILE---'\ncat -- mac-linux-agents-aaca0a6d.txt\"",
+          "cwd": "/Volumes/autobyteus-shared/project",
+          "exitCode": 0,
+          "aggregatedOutput": "/Volumes/autobyteus-shared/project\n---FILE---MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9\n"
+        }
+      ]
+    },
+    {
+      "file": "fr-026/mac-a-write-turn.json",
+      "node": "ab-sf-fr026-macos",
+      "runId": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+      "runtime": "codex_app_server",
+      "successfulTools": 1,
+      "commands": [
+        {
+          "command": "/bin/zsh -lc \"pwd\npython3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\ndata = b'MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\\\\n'\nfd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)\ntry:\n    os.write(fd, data)\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\"",
+          "cwd": "/Volumes/autobyteus-shared/project",
+          "exitCode": 0,
+          "aggregatedOutput": "/Volumes/autobyteus-shared/project\n"
+        }
+      ]
+    }
+  ],
+  "samePhysicalHost": true,
+  "controllerWritesAgentProjectFiles": false,
+  "noContentAttachments": true,
+  "noModelReadValuesInReaderPrompts": true,
+  "allCoreStagesPass": true
+}

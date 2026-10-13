@@ -1,0 +1,8 @@
+PASS daemon mounts common export into UID10001 zero-capability client, not a privileged in-container mount
+PASS healthy mounted identity verified, RPC liveness alone not treated as storage proof
+PASS wrong expected storage UUID refused despite healthy correct NFS mount
+PASS unexpected export/source refused before network filesystem IO
+PASS ordinary local directory is not accepted as shared mount or written as fallback
+FAIL actual mapped-client permission denial distinguished from wrong storage and outage AssertionError({'status': 'READY', 'fsType': 26985, 'actualStorageId': '3b834a53f1b3433989b175b7a4af0374', 'childExit': 0, 'signal': None, 'seconds': 0.040546166999999966, 'starts': 3, 'alive': 0, 'maxAlive': 1, 'heartbeats': 22})
+PROBE FAILURE AssertionError({'status': 'READY', 'fsType': 26985, 'actualStorageId': '3b834a53f1b3433989b175b7a4af0374', 'childExit': 0, 'signal': None, 'seconds': 0.040546166999999966, 'starts': 3, 'alive': 0, 'maxAlive': 1, 'heartbeats': 22})
+{"run": "ab-sf-fr017-0ae2435f", "passes": 5, "fatal": "AssertionError({'status': 'READY', 'fsType': 26985, 'actualStorageId': '3b834a53f1b3433989b175b7a4af0374', 'childExit': 0, 'signal': None, 'seconds': 0.040546166999999966, 'starts': 3, 'alive': 0, 'maxAlive': 1, 'heartbeats': 22})", "cleanup_ok": true}

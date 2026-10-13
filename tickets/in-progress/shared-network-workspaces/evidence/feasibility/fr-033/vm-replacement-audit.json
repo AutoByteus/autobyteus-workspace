@@ -1,0 +1,9 @@
+{
+  "deleted": "ab-sf-fr031-macos",
+  "deleteRc": 0,
+  "created": "ab-sf-fr033-macos",
+  "cloneRc": 0,
+  "source": "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+  "publicCacheRetained": true,
+  "noUserProviderCredentials": true
+}

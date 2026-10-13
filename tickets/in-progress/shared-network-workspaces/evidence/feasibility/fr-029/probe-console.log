@@ -1,0 +1,15 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS native macOS guest mounts the same Linux export and reads its independent storage identity
+PASS normal unprivileged macOS file write is read through both registered Linux workspace APIs
+PASS Linux application file modification is freshly read through native macOS mount and peer API
+PASS native macOS same-filesystem replacement publishes ordinary project bytes to both Linux nodes
+PASS Mac-created relative symlink and executable mode are usable by Linux ordinary CLI
+PASS Mac exclusive creation rejects file already created by independent Linux client
+PASS native Mac readiness uses expected source and isolated exact-storage UUID child
+PASS native Mac rejects wrong UUID/source and unmounted local directory without substitute access
+PASS native Mac fresh permission denial is distinguished from readiness
+PASS native Mac paused-service diagnoses within bounded TCP deadline without new file children
+PASS native Mac RPC-to-file outage race returns indeterminate; retains exact child ownership until exit and recovers
+{"run": "ab-sf-fr029-8e9b3dda", "passes": 14, "fatal": null, "cleanup_ok": true}

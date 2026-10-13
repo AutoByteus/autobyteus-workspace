@@ -1,0 +1,2749 @@
+{
+  "run": "ab-sf-fr026-6af2e9d4",
+  "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; existing-release Mac backend plus two Linux image backends, real instructed native agents; NOT physical LAN/GUI/current source/user command",
+  "application_image": "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-sf-fr026-macos",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "seconds": 0.028,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 2,
+      "seconds": 0.031,
+      "stdout": "",
+      "stderr": "VM \"ab-sf-fr026-macos\" is not running\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 1.951,
+      "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "ip",
+        "ab-sf-fr026-macos"
+      ],
+      "rc": 0,
+      "seconds": 0.022,
+      "stdout": "192.168.64.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/ipconfig getifaddr en0"
+      ],
+      "rc": 0,
+      "seconds": 4.55,
+      "stdout": "192.168.64.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/sbin/route",
+        "-n",
+        "get",
+        "192.168.64.2"
+      ],
+      "rc": 0,
+      "seconds": 0.006,
+      "stdout": "   route to: 192.168.64.2\ndestination: 192.168.64.2\n  interface: bridge100\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500      1166 \n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/sbin/ifconfig",
+        "bridge100"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stdout": "bridge100: flags=8a63<UP,BROADCAST,SMART,RUNNING,ALLMULTI,SIMPLEX,MULTICAST> mtu 1500\n\toptions=63<RXCSUM,TXCSUM,TSO4,TSO6>\n\tether be:d0:74:32:81:64\n\tinet 192.168.64.1 netmask 0xffffff00 broadcast 192.168.64.255\n\tinet6 fe80::bcd0:74ff:fe32:8164%bridge100 prefixlen 64 scopeid 0x1a \n\tinet6 fd91:5d53:a507:b06c:1096:b061:6f6e:31ac prefixlen 64 autoconf secured \n\tConfiguration:\n\t\tid 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0\n\t\tmaxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200\n\t\troot id 0:0:0:0:0:0 priority 0 ifcost 0 port 0\n\t\tipfilter disabled flags 0x0\n\tmember: vmenet0 flags=20803<LEARNING,DISCOVER,PRIVATE,VIRTIO>\n\t        ifmaxaddr 0 port 25 priority 0 path cost 0\n\tAddress cache:\n\t\t72:76:f4:5e:d8:14 Vlan1 vmenet0 1200 flags=0<>\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect\n\tstatus: active\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "uname -sm; id; sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 7.202,
+      "stdout": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+        "--format",
+        "{\"id\":{{json .Id}},\"repo_digests\":{{json .RepoDigests}},\"created\":{{json .Created}},\"entrypoint\":{{json .Config.Entrypoint}}}"
+      ],
+      "rc": 0,
+      "seconds": 0.096,
+      "stdout": "{\"id\":\"sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a\",\"repo_digests\":[\"autobyteus/autobyteus-server@sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a\"],\"created\":\"2026-10-12T13:24:35.302109183Z\",\"entrypoint\":[\"/usr/local/bin/entrypoint.sh\"]}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "build",
+        "--pull=false",
+        "-t",
+        "autobyteus-shared-feasibility:fr-026",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-026"
+      ],
+      "rc": 0,
+      "seconds": 2.132,
+      "stdout": "",
+      "stderr": "#0 building with \"desktop-linux\" instance using docker driver\n\n#1 [internal] load build definition from Dockerfile\n#1 transferring dockerfile: 522B done\n#1 DONE 0.1s\n\n#2 [internal] load metadata for docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\n#2 DONE 0.0s\n\n#3 [internal] load .dockerignore\n#3 transferring context: 2B done\n#3 DONE 0.0s\n\n#4 [1/2] FROM docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\n#4 resolve docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55 0.0s done\n#4 DONE 0.0s\n\n#5 [2/2] RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nfs-ganesha nfs-ganesha-vfs nfs-common rpcbind python3 git procps iproute2 ca-certificates && rm -rf /var/lib/apt/lists/*\n#5 CACHED\n\n#6 exporting to image\n#6 exporting layers done\n#6 exporting manifest sha256:d7dcce0b9830ce20d4c714ded158dd97dd02f600faff907db4ae8a826cac6070 done\n#6 exporting config sha256:8c4c8dddc37f108fb7e2faf393ef7beb98b57094ec8685bec70ed50cebac20d2 done\n#6 exporting attestation manifest sha256:6db586fb98819fed1f4424750f9d5c02e1e019151b403b7a59c45f69f58325ef 0.0s done\n#6 exporting manifest list sha256:0c47bf49fdc6ff563f74e4e8cf94f2bc08adb627298ae35bb5d0a0db08ca89cf done\n#6 naming to docker.io/library/autobyteus-shared-feasibility:fr-026 done\n#6 unpacking to docker.io/library/autobyteus-shared-feasibility:fr-026\n#6 unpacking to docker.io/library/autobyteus-shared-feasibility:fr-026 1.1s done\n#6 DONE 1.2s\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "autobyteus-shared-feasibility:fr-026"
+      ],
+      "rc": 0,
+      "seconds": 0.037,
+      "stdout": "[\n    {\n        \"Id\": \"sha256:0c47bf49fdc6ff563f74e4e8cf94f2bc08adb627298ae35bb5d0a0db08ca89cf\",\n        \"RepoTags\": [\n            \"autobyteus-shared-feasibility:fr-026\"\n        ],\n        \"RepoDigests\": [\n            \"autobyteus-shared-feasibility@sha256:0c47bf49fdc6ff563f74e4e8cf94f2bc08adb627298ae35bb5d0a0db08ca89cf\"\n        ],\n        \"Comment\": \"buildkit.dockerfile.v0\",\n        \"Created\": \"2026-10-13T04:11:06.431830875Z\",\n        \"Config\": {\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"Cmd\": [\n                \"sleep\",\n                \"infinity\"\n            ],\n            \"Labels\": {\n                \"org.autobyteus.probe\": \"fr-018\",\n                \"org.autobyteus.task\": \"shared-network-workspaces\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            },\n            \"ArgsEscaped\": true\n        },\n        \"Architecture\": \"arm64\",\n        \"Os\": \"linux\",\n        \"Size\": 71450870,\n        \"RootFS\": {\n            \"Type\": \"layers\",\n            \"Layers\": [\n                \"sha256:1e9178dc90058fa454a60803300219ee8c17e515be8718817ed824b96fa1207b\",\n                \"sha256:4b7b4f4b9f12ef90a8ac84b36ab00f9fea058f64c04ff2ac84a499f86f2ff408\"\n            ]\n        },\n        \"Metadata\": {\n            \"LastTagTime\": \"2026-10-13T09:09:08.05167197Z\"\n        },\n        \"Descriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.index.v1+json\",\n            \"digest\": \"sha256:0c47bf49fdc6ff563f74e4e8cf94f2bc08adb627298ae35bb5d0a0db08ca89cf\",\n            \"size\": 855\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "ab-sf-fr026-6af2e9d4-net"
+      ],
+      "rc": 0,
+      "seconds": 0.055,
+      "stdout": "b311683d3d26b0e4ba62f2b3be31785c7b079ac492b801086f6503e9d47f08a4\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-net"
+      ],
+      "rc": 0,
+      "seconds": 0.024,
+      "stdout": "[\n    {\n        \"Name\": \"ab-sf-fr026-6af2e9d4-net\",\n        \"Id\": \"b311683d3d26b0e4ba62f2b3be31785c7b079ac492b801086f6503e9d47f08a4\",\n        \"Created\": \"2026-10-13T09:09:09.366284596Z\",\n        \"Scope\": \"local\",\n        \"Driver\": \"bridge\",\n        \"EnableIPv4\": true,\n        \"EnableIPv6\": false,\n        \"IPAM\": {\n            \"Driver\": \"default\",\n            \"Options\": {},\n            \"Config\": [\n                {\n                    \"Subnet\": \"172.29.0.0/16\",\n                    \"IPRange\": \"\",\n                    \"Gateway\": \"172.29.0.1\"\n                }\n            ]\n        },\n        \"Internal\": false,\n        \"Attachable\": false,\n        \"Ingress\": false,\n        \"ConfigFrom\": {\n            \"Network\": \"\"\n        },\n        \"ConfigOnly\": false,\n        \"Options\": {\n            \"com.docker.network.enable_ipv4\": \"true\",\n            \"com.docker.network.enable_ipv6\": \"false\"\n        },\n        \"Labels\": {\n            \"org.autobyteus.probe\": \"fr-026\"\n        },\n        \"Containers\": {},\n        \"Status\": {\n            \"IPAM\": {\n                \"Subnets\": {\n                    \"172.29.0.0/16\": {\n                        \"IPsInUse\": 3,\n                        \"DynamicIPsAvailable\": 65533\n                    }\n                }\n            }\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "ab-sf-fr026-6af2e9d4-storage"
+      ],
+      "rc": 0,
+      "seconds": 0.024,
+      "stdout": "ab-sf-fr026-6af2e9d4-storage\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr026-6af2e9d4-storage-server",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "-p",
+        "127.0.0.1:54141:2049",
+        "--network",
+        "ab-sf-fr026-6af2e9d4-net",
+        "--cap-add",
+        "DAC_READ_SEARCH",
+        "--mount",
+        "type=volume,src=ab-sf-fr026-6af2e9d4-storage,dst=/export",
+        "--mount",
+        "type=bind,src=/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-026/ganesha.conf,dst=/etc/ganesha/ganesha.conf,readonly",
+        "sha256:0c47bf49fdc6ff563f74e4e8cf94f2bc08adb627298ae35bb5d0a0db08ca89cf"
+      ],
+      "rc": 0,
+      "seconds": 0.497,
+      "stdout": "7eec852b9a0c4adad29f251e7a28e46f0c8e75dc8e050964277c3a9984831371\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr026-6af2e9d4-storage-server",
+        "sh",
+        "-c",
+        "chown 10001:10001 /export; chmod 0770 /export; mkdir -p /run/ganesha /var/lib/nfs/ganesha /run/dbus; rpcbind -w; dbus-daemon --system --fork; ganesha.nfsd -F -L /tmp/ganesha.log -f /etc/ganesha/ganesha.conf >/tmp/ganesha-console.log 2>&1 &"
+      ],
+      "rc": 0,
+      "seconds": 0.112,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-storage-server"
+      ],
+      "rc": 0,
+      "seconds": 0.026,
+      "stdout": "[\n    {\n        \"Id\": \"7eec852b9a0c4adad29f251e7a28e46f0c8e75dc8e050964277c3a9984831371\",\n        \"Created\": \"2026-10-13T09:09:09.479506929Z\",\n        \"Path\": \"sleep\",\n        \"Args\": [\n            \"infinity\"\n        ],\n        \"State\": {\n            \"Status\": \"running\",\n            \"Running\": true,\n            \"Paused\": false,\n            \"Restarting\": false,\n            \"OOMKilled\": false,\n            \"Dead\": false,\n            \"Pid\": 21222,\n            \"ExitCode\": 0,\n            \"Error\": \"\",\n            \"StartedAt\": \"2026-10-13T09:09:09.709766888Z\",\n            \"FinishedAt\": \"0001-01-01T00:00:00Z\"\n        },\n        \"Image\": \"sha256:0c47bf49fdc6ff563f74e4e8cf94f2bc08adb627298ae35bb5d0a0db08ca89cf\",\n        \"ResolvConfPath\": \"/var/lib/docker/containers/7eec852b9a0c4adad29f251e7a28e46f0c8e75dc8e050964277c3a9984831371/resolv.conf\",\n        \"HostnamePath\": \"/var/lib/docker/containers/7eec852b9a0c4adad29f251e7a28e46f0c8e75dc8e050964277c3a9984831371/hostname\",\n        \"HostsPath\": \"/var/lib/docker/containers/7eec852b9a0c4adad29f251e7a28e46f0c8e75dc8e050964277c3a9984831371/hosts\",\n        \"LogPath\": \"/var/lib/docker/containers/7eec852b9a0c4adad29f251e7a28e46f0c8e75dc8e050964277c3a9984831371/7eec852b9a0c4adad29f251e7a28e46f0c8e75dc8e050964277c3a9984831371-json.log\",\n        \"Name\": \"/ab-sf-fr026-6af2e9d4-storage-server\",\n        \"RestartCount\": 0,\n        \"Driver\": \"overlayfs\",\n        \"Platform\": \"linux\",\n        \"MountLabel\": \"\",\n        \"ProcessLabel\": \"\",\n        \"AppArmorProfile\": \"\",\n        \"ExecIDs\": null,\n        \"HostConfig\": {\n            \"Binds\": null,\n            \"ContainerIDFile\": \"\",\n            \"LogConfig\": {\n                \"Type\": \"json-file\",\n                \"Config\": {}\n            },\n            \"NetworkMode\": \"ab-sf-fr026-6af2e9d4-net\",\n            \"PortBindings\": {\n                \"2049/tcp\": [\n                    {\n                        \"HostIp\": \"127.0.0.1\",\n                        \"HostPort\": \"54141\"\n                    }\n                ]\n            },\n            \"RestartPolicy\": {\n                \"Name\": \"no\",\n                \"MaximumRetryCount\": 0\n            },\n            \"AutoRemove\": false,\n            \"VolumeDriver\": \"\",\n            \"VolumesFrom\": null,\n            \"ConsoleSize\": [\n                0,\n                0\n            ],\n            \"CapAdd\": [\n                \"CAP_DAC_READ_SEARCH\"\n            ],\n            \"CapDrop\": null,\n            \"CgroupnsMode\": \"private\",\n            \"Dns\": null,\n            \"DnsOptions\": [],\n            \"DnsSearch\": [],\n            \"ExtraHosts\": null,\n            \"GroupAdd\": null,\n            \"IpcMode\": \"private\",\n            \"Cgroup\": \"\",\n            \"Links\": null,\n            \"OomScoreAdj\": 0,\n            \"PidMode\": \"\",\n            \"Privileged\": false,\n            \"PublishAllPorts\": false,\n            \"ReadonlyRootfs\": false,\n            \"SecurityOpt\": null,\n            \"UTSMode\": \"\",\n            \"UsernsMode\": \"\",\n            \"ShmSize\": 67108864,\n            \"Runtime\": \"runc\",\n            \"Isolation\": \"\",\n            \"CpuShares\": 0,\n            \"Memory\": 0,\n            \"NanoCpus\": 0,\n            \"CgroupParent\": \"\",\n            \"BlkioWeight\": 0,\n            \"BlkioWeightDevice\": [],\n            \"BlkioDeviceReadBps\": [],\n            \"BlkioDeviceWriteBps\": [],\n            \"BlkioDeviceReadIOps\": [],\n            \"BlkioDeviceWriteIOps\": [],\n            \"CpuPeriod\": 0,\n            \"CpuQuota\": 0,\n            \"CpuRealtimePeriod\": 0,\n            \"CpuRealtimeRuntime\": 0,\n            \"CpusetCpus\": \"\",\n            \"CpusetMems\": \"\",\n            \"Devices\": [],\n            \"DeviceCgroupRules\": null,\n            \"DeviceRequests\": null,\n            \"MemoryReservation\": 0,\n            \"MemorySwap\": 0,\n            \"MemorySwappiness\": null,\n            \"OomKillDisable\": null,\n            \"PidsLimit\": null,\n            \"Ulimits\": [],\n            \"CpuCount\": 0,\n            \"CpuPercent\": 0,\n            \"IOMaximumIOps\": 0,\n            \"IOMaximumBandwidth\": 0,\n            \"Mounts\": [\n                {\n                    \"Type\": \"volume\",\n                    \"Source\": \"ab-sf-fr026-6af2e9d4-storage\",\n                    \"Target\": \"/export\"\n                },\n                {\n                    \"Type\": \"bind\",\n                    \"Source\": \"/host_mnt/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-026/ganesha.conf\",\n                    \"Target\": \"/etc/ganesha/ganesha.conf\",\n                    \"ReadOnly\": true\n                }\n            ],\n            \"MaskedPaths\": [\n                \"/proc/acpi\",\n                \"/proc/asound\",\n                \"/proc/interrupts\",\n                \"/proc/kcore\",\n                \"/proc/keys\",\n                \"/proc/latency_stats\",\n                \"/proc/sched_debug\",\n                \"/proc/scsi\",\n                \"/proc/timer_list\",\n                \"/proc/timer_stats\",\n                \"/sys/devices/virtual/powercap\",\n                \"/sys/firmware\"\n            ],\n            \"ReadonlyPaths\": [\n                \"/proc/bus\",\n                \"/proc/fs\",\n                \"/proc/irq\",\n                \"/proc/sys\",\n                \"/proc/sysrq-trigger\"\n            ]\n        },\n        \"GraphDriver\": {\n            \"Data\": null,\n            \"Name\": \"\"\n        },\n        \"Mounts\": [\n            {\n                \"Type\": \"volume\",\n                \"Name\": \"ab-sf-fr026-6af2e9d4-storage\",\n                \"Source\": \"/var/lib/docker/volumes/ab-sf-fr026-6af2e9d4-storage/_data\",\n                \"Destination\": \"/export\",\n                \"Driver\": \"local\",\n                \"Mode\": \"z\",\n                \"RW\": true,\n                \"Propagation\": \"\"\n            },\n            {\n                \"Type\": \"bind\",\n                \"Source\": \"/host_mnt/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-026/ganesha.conf\",\n                \"Destination\": \"/etc/ganesha/ganesha.conf\",\n                \"Mode\": \"\",\n                \"RW\": false,\n                \"Propagation\": \"rprivate\"\n            }\n        ],\n        \"Config\": {\n            \"Hostname\": \"7eec852b9a0c\",\n            \"Domainname\": \"\",\n            \"User\": \"\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": false,\n            \"AttachStderr\": false,\n            \"ExposedPorts\": {\n                \"2049/tcp\": {}\n            },\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"Cmd\": [\n                \"sleep\",\n                \"infinity\"\n            ],\n            \"Image\": \"sha256:0c47bf49fdc6ff563f74e4e8cf94f2bc08adb627298ae35bb5d0a0db08ca89cf\",\n            \"Volumes\": null,\n            \"WorkingDir\": \"\",\n            \"Entrypoint\": null,\n            \"OnBuild\": null,\n            \"Labels\": {\n                \"org.autobyteus.probe\": \"fr-026\",\n                \"org.autobyteus.task\": \"shared-network-workspaces\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            },\n            \"StopTimeout\": 1\n        },\n        \"NetworkSettings\": {\n            \"Bridge\": \"\",\n            \"SandboxID\": \"11302091f6f60cb2984474958f7f22b7bea23739f0bd47c5e0ce2717a83ef79c\",\n            \"SandboxKey\": \"/var/run/docker/netns/11302091f6f6\",\n            \"Ports\": {\n                \"2049/tcp\": [\n                    {\n                        \"HostIp\": \"127.0.0.1\",\n                        \"HostPort\": \"54141\"\n                    }\n                ]\n            },\n            \"HairpinMode\": false,\n            \"LinkLocalIPv6Address\": \"\",\n            \"LinkLocalIPv6PrefixLen\": 0,\n            \"SecondaryIPAddresses\": null,\n            \"SecondaryIPv6Addresses\": null,\n            \"EndpointID\": \"\",\n            \"Gateway\": \"\",\n            \"GlobalIPv6Address\": \"\",\n            \"GlobalIPv6PrefixLen\": 0,\n            \"IPAddress\": \"\",\n            \"IPPrefixLen\": 0,\n            \"IPv6Gateway\": \"\",\n            \"MacAddress\": \"\",\n            \"Networks\": {\n                \"ab-sf-fr026-6af2e9d4-net\": {\n                    \"IPAMConfig\": null,\n                    \"Links\": null,\n                    \"Aliases\": null,\n                    \"MacAddress\": \"d6:26:40:3d:e6:d6\",\n                    \"DriverOpts\": null,\n                    \"GwPriority\": 0,\n                    \"NetworkID\": \"b311683d3d26b0e4ba62f2b3be31785c7b079ac492b801086f6503e9d47f08a4\",\n                    \"EndpointID\": \"1e1712004fd1e09c9948f0df58211bd0d3cafaaa1291c5d1412d6cd5a15f112f\",\n                    \"Gateway\": \"172.29.0.1\",\n                    \"IPAddress\": \"172.29.0.2\",\n                    \"IPPrefixLen\": 16,\n                    \"IPv6Gateway\": \"\",\n                    \"GlobalIPv6Address\": \"\",\n                    \"GlobalIPv6PrefixLen\": 0,\n                    \"DNSNames\": [\n                        \"ab-sf-fr026-6af2e9d4-storage-server\",\n                        \"7eec852b9a0c\"\n                    ]\n                }\n            }\n        },\n        \"ImageManifestDescriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n            \"digest\": \"sha256:d7dcce0b9830ce20d4c714ded158dd97dd02f600faff907db4ae8a826cac6070\",\n            \"size\": 675,\n            \"platform\": {\n                \"architecture\": \"arm64\",\n                \"os\": \"linux\"\n            }\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/ab-sf-fr026-6af2e9d4",
+        "--opt",
+        "o=addr=172.29.0.2,rw,nfsvers=4.1,proto=tcp,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr026-6af2e9d4-nfs-a"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "ab-sf-fr026-6af2e9d4-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "ab-sf-fr026-6af2e9d4-a-data"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "ab-sf-fr026-6af2e9d4-a-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "ab-sf-fr026-6af2e9d4-a-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.03,
+      "stdout": "ab-sf-fr026-6af2e9d4-a-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "ab-sf-fr026-6af2e9d4-a-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.045,
+      "stdout": "ab-sf-fr026-6af2e9d4-a-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "ab-sf-fr026-6af2e9d4-a-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.033,
+      "stdout": "ab-sf-fr026-6af2e9d4-a-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "ab-sf-fr026-6af2e9d4-a-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.04,
+      "stdout": "ab-sf-fr026-6af2e9d4-a-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr026-6af2e9d4-app-a",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "--network",
+        "ab-sf-fr026-6af2e9d4-net",
+        "--cap-add",
+        "SYS_ADMIN",
+        "--security-opt",
+        "seccomp=unconfined",
+        "-p",
+        "127.0.0.1:54146:8000",
+        "-e",
+        "AUTOBYTEUS_WORKSPACE_ROOT=/app",
+        "-e",
+        "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data",
+        "-e",
+        "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+        "-e",
+        "AUTOBYTEUS_SERVER_PORT=8000",
+        "-e",
+        "APP_ENV=production",
+        "-e",
+        "DB_TYPE=sqlite",
+        "-e",
+        "LOG_LEVEL=INFO",
+        "-e",
+        "AUTOBYTEUS_SKIP_SYNC=1",
+        "-e",
+        "AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr026-6af2e9d4-nfs-a,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "--mount",
+        "type=volume,src=ab-sf-fr026-6af2e9d4-a-data,dst=/home/autobyteus/data",
+        "--mount",
+        "type=volume,src=ab-sf-fr026-6af2e9d4-a-root-home,dst=/root",
+        "--mount",
+        "type=volume,src=ab-sf-fr026-6af2e9d4-a-workspace,dst=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr026-6af2e9d4-a-legacy-workspace,dst=/app/autobyteus-server-ts/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr026-6af2e9d4-a-chromium,dst=/home/autobyteus/.config/chromium",
+        "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a"
+      ],
+      "rc": 0,
+      "seconds": 1.381,
+      "stdout": "3b2481505122fea5175c105f6e37e60274ea079dd4ec7ff18c67740d95762218\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/ab-sf-fr026-6af2e9d4",
+        "--opt",
+        "o=addr=172.29.0.2,rw,nfsvers=4.1,proto=tcp,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr026-6af2e9d4-nfs-b"
+      ],
+      "rc": 0,
+      "seconds": 0.057,
+      "stdout": "ab-sf-fr026-6af2e9d4-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "ab-sf-fr026-6af2e9d4-b-data"
+      ],
+      "rc": 0,
+      "seconds": 0.057,
+      "stdout": "ab-sf-fr026-6af2e9d4-b-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "ab-sf-fr026-6af2e9d4-b-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.028,
+      "stdout": "ab-sf-fr026-6af2e9d4-b-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "ab-sf-fr026-6af2e9d4-b-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.031,
+      "stdout": "ab-sf-fr026-6af2e9d4-b-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "ab-sf-fr026-6af2e9d4-b-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "ab-sf-fr026-6af2e9d4-b-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "ab-sf-fr026-6af2e9d4-b-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr026-6af2e9d4-b-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr026-6af2e9d4-app-b",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-026",
+        "--network",
+        "ab-sf-fr026-6af2e9d4-net",
+        "--cap-add",
+        "SYS_ADMIN",
+        "--security-opt",
+        "seccomp=unconfined",
+        "-p",
+        "127.0.0.1:54147:8000",
+        "-e",
+        "AUTOBYTEUS_WORKSPACE_ROOT=/app",
+        "-e",
+        "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data",
+        "-e",
+        "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+        "-e",
+        "AUTOBYTEUS_SERVER_PORT=8000",
+        "-e",
+        "APP_ENV=production",
+        "-e",
+        "DB_TYPE=sqlite",
+        "-e",
+        "LOG_LEVEL=INFO",
+        "-e",
+        "AUTOBYTEUS_SKIP_SYNC=1",
+        "-e",
+        "AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr026-6af2e9d4-nfs-b,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "--mount",
+        "type=volume,src=ab-sf-fr026-6af2e9d4-b-data,dst=/home/autobyteus/data",
+        "--mount",
+        "type=volume,src=ab-sf-fr026-6af2e9d4-b-root-home,dst=/root",
+        "--mount",
+        "type=volume,src=ab-sf-fr026-6af2e9d4-b-workspace,dst=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr026-6af2e9d4-b-legacy-workspace,dst=/app/autobyteus-server-ts/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr026-6af2e9d4-b-chromium,dst=/home/autobyteus/.config/chromium",
+        "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a"
+      ],
+      "rc": 0,
+      "seconds": 1.658,
+      "stdout": "ca7c2bb70ddeae356145075ea6d199d063a1b4eac914b8b8e40d06e374ca804d\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr026-6af2e9d4-app-a",
+        "sh",
+        "-c",
+        "grep \" /Volumes/autobyteus-shared \" /proc/mounts; id; grep CapEff /proc/self/status"
+      ],
+      "rc": 0,
+      "seconds": 0.071,
+      "stdout": ":/ab-sf-fr026-6af2e9d4 /Volumes/autobyteus-shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr026-6af2e9d4-app-a",
+        "node",
+        "-e",
+        "console.log(require('./package.json').version)"
+      ],
+      "rc": 0,
+      "seconds": 0.082,
+      "stdout": "0.1.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr026-6af2e9d4-app-a",
+        "sh",
+        "-c",
+        "for f in /root/.codex/auth.json /root/.claude/.credentials.json; do test ! -f \"$f\" || exit 1; done; echo no-user-cli-credentials"
+      ],
+      "rc": 0,
+      "seconds": 0.055,
+      "stdout": "no-user-cli-credentials\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr026-6af2e9d4-app-b",
+        "sh",
+        "-c",
+        "grep \" /Volumes/autobyteus-shared \" /proc/mounts; id; grep CapEff /proc/self/status"
+      ],
+      "rc": 0,
+      "seconds": 0.059,
+      "stdout": ":/ab-sf-fr026-6af2e9d4 /Volumes/autobyteus-shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr026-6af2e9d4-app-b",
+        "node",
+        "-e",
+        "console.log(require('./package.json').version)"
+      ],
+      "rc": 0,
+      "seconds": 0.09,
+      "stdout": "0.1.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr026-6af2e9d4-app-b",
+        "sh",
+        "-c",
+        "for f in /root/.codex/auth.json /root/.claude/.credentials.json; do test ! -f \"$f\" || exit 1; done; echo no-user-cli-credentials"
+      ],
+      "rc": 0,
+      "seconds": 0.061,
+      "stdout": "no-user-cli-credentials\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr026-6af2e9d4-app-a",
+        "node",
+        "-e",
+        "const f=require('fs');f.mkdirSync(\"/Volumes/autobyteus-shared/project\",{recursive:true})"
+      ],
+      "rc": 0,
+      "seconds": 0.084,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr026-6af2e9d4-app-a",
+        "node",
+        "-e",
+        "const f=require('fs');f.mkdirSync(\"/Volumes/autobyteus-shared/.owned-identity\",{recursive:true});f.writeFileSync(\"/Volumes/autobyteus-shared/.owned-identity/storage.json\",\"{\\\"storageId\\\": \\\"a81aae93ff9244e4a9df82be0f5ef23a\\\"}\")"
+      ],
+      "rc": 0,
+      "seconds": 0.079,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "test ! -e /Volumes/autobyteus-shared; sudo -n /bin/mkdir /Volumes/autobyteus-shared"
+      ],
+      "rc": 0,
+      "seconds": 0.068,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "sudo -n /sbin/mount -t nfs -o vers=4.1,tcp,hard,actimeo=1,retrycnt=0,port=54194 192.168.64.1:/ab-sf-fr026-6af2e9d4 /Volumes/autobyteus-shared"
+      ],
+      "rc": 0,
+      "seconds": 0.105,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/sbin/mount; /bin/cat /Volumes/autobyteus-shared/.owned-identity/storage.json"
+      ],
+      "rc": 0,
+      "seconds": 0.129,
+      "stdout": "/dev/disk2s1s1 on / (apfs, sealed, local, read-only, journaled)\ndevfs on /dev (devfs, local, nobrowse)\n/dev/disk2s6 on /System/Volumes/VM (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk2s2 on /System/Volumes/Preboot (apfs, local, journaled, nobrowse)\n/dev/disk2s4 on /System/Volumes/Update (apfs, local, journaled, nobrowse)\n/dev/disk1s2 on /System/Volumes/xarts (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk1s1 on /System/Volumes/iSCPreboot (apfs, local, journaled, nobrowse)\n/dev/disk1s3 on /System/Volumes/Hardware (apfs, local, journaled, nobrowse)\n/dev/disk2s5 on /System/Volumes/Data (apfs, local, journaled, nobrowse, root data)\n/dev/disk4s1 on /System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\n/dev/disk6s1 on /System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\nmap auto_home on /System/Volumes/Data/home (autofs, automounted, nobrowse)\n192.168.64.1:/ab-sf-fr026-6af2e9d4 on /Volumes/autobyteus-shared (nfs)\n{\"storageId\": \"a81aae93ff9244e4a9df82be0f5ef23a\"}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "test ! -e /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4 && umask 077 && mkdir -p /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/home /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/data /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/cli-home /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/tools; printf OWNED > /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/owned-marker"
+      ],
+      "rc": 0,
+      "seconds": 0.063,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/tools/codex --version; /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/tools/node --version; uname -sm"
+      ],
+      "rc": 0,
+      "seconds": 1.257,
+      "stdout": "codex-cli 0.162.1\nv24.16.0\nDarwin arm64\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        ": > /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/data/.env"
+      ],
+      "rc": 0,
+      "seconds": 0.189,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "cd /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/AutoByteus.app/Contents/Resources/server; nohup /usr/bin/env -i HOME=/Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/home PATH=/Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/tools:/usr/bin:/bin:/usr/sbin:/sbin ELECTRON_RUN_AS_NODE=1 AUTOBYTEUS_WORKSPACE_ROOT=/Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/AutoByteus.app/Contents/Resources/server AUTOBYTEUS_DATA_DIR=/Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/data AUTOBYTEUS_BIND_HOST=0.0.0.0 AUTOBYTEUS_SERVER_PORT=54205 PORT=54205 SERVER_PORT=54205 AUTOBYTEUS_SERVER_HOST=http://192.168.64.2:54205 APP_ENV=production NODE_ENV=production DB_TYPE=sqlite DATABASE_URL=file:/Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/data/test.db AUTOBYTEUS_SKIP_SYNC=1 AUTOBYTEUS_TEMP_WORKSPACE_DIR=/Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/temp CODEX_HOME=/Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/cli-home LOG_LEVEL=INFO /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/AutoByteus.app/Contents/MacOS/AutoByteus dist/app.js --data-dir /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/data --host 192.168.64.2 --port 54205 > /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/backend.log 2>&1 < /dev/null & echo $!"
+      ],
+      "rc": 0,
+      "seconds": 0.112,
+      "stdout": "788\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "chmod 0600 /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/cli-home/auth.json"
+      ],
+      "rc": 0,
+      "seconds": 0.233,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/bin/cat /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.156,
+      "stdout": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr026-6af2e9d4-storage-server",
+        "cat",
+        "/export/project/mac-linux-agents-aaca0a6d.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.08,
+      "stdout": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/bin/cat /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.787,
+      "stdout": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr026-6af2e9d4-storage-server",
+        "cat",
+        "/export/project/mac-linux-agents-aaca0a6d.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.063,
+      "stdout": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/bin/cat /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.686,
+      "stdout": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr026-6af2e9d4-storage-server",
+        "cat",
+        "/export/project/mac-linux-agents-aaca0a6d.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.077,
+      "stdout": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/bin/cat /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.99,
+      "stdout": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr026-6af2e9d4-storage-server",
+        "cat",
+        "/export/project/mac-linux-agents-aaca0a6d.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.068,
+      "stdout": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "tail -100 /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/backend.log"
+      ],
+      "rc": 0,
+      "seconds": 0.05,
+      "stdout": "All migrations have been successfully applied.\nDatabase migrations completed successfully.\nprisma:info Starting a sqlite pool with 5 connections.\nInitialized server settings service with 19 predefined settings\nAgentRunManager initialized.\nAgentRunManager initialized.\nLoading workspace packages to trigger registration...\nSuccessfully loaded workspace packages.\nCreating temp workspace at: /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/temp\nCreated metadata-only FileSystemWorkspace at /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/temp.\nInitialized TempWorkspace at /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/temp with fixed ID 'temp_ws_default'\nTemp workspace created and cached with ID: temp_ws_default\nRegistering agent customization processors...\nInput processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.\nRegistered input processor 'WorkspacePathSanitizationProcessor'.\nInput processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.\nRegistered input processor 'UserInputContextBuildingProcessor'.\nLLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.\nRegistered LLM response processor 'MediaUrlTransformerProcessor'.\nAgent customization processor registration complete.\nSuccessfully registered tool definition: 'read_file'\nSuccessfully registered tool definition: 'write_file'\nSuccessfully registered tool definition: 'edit_file'\nSuccessfully registered tool definition: 'run_bash'\nSuccessfully registered tool definition: 'start_background_process'\nSuccessfully registered tool definition: 'get_background_processes'\nSuccessfully registered tool definition: 'get_process_output'\nSuccessfully registered tool definition: 'stop_background_process'\nSuccessfully registered tool definition: 'search_web'\nSuccessfully registered tool definition: 'read_media_file'\nSuccessfully registered tool definition: 'download_media'\nSuccessfully registered tool definition: 'read_url'\nRegistered required tool unit: Core Tools\nSuccessfully registered tool definition: 'delegate_task'\nSuccessfully registered tool definition: 'list_available_agents'\nSuccessfully registered tool definition: 'generate_image'\nSuccessfully registered tool definition: 'edit_image'\nSuccessfully registered tool definition: 'generate_speech'\nSuccessfully registered tool definition: 'generate_video'\nRegistered required tool unit: Task Delegation Tools\nRegistered required tool unit: Agent Discovery Tools\nRegistered required tool unit: Media Tools\nRegistered required tool unit: Browser Tools\nSuccessfully registered tool definition: 'publish_artifacts'\nRegistered required tool unit: Published Artifact Tools\nSuccessfully registered tool definition: 'list_projects'\nSuccessfully registered tool definition: 'list_project_tasks'\nSuccessfully registered tool definition: 'create_or_update_project'\nSuccessfully registered tool definition: 'create_or_update_task'\nRegistered required tool unit: Project Task Tools\nSuccessfully registered tool definition: 'send_message_to'\nSuccessfully registered tool definition: 'get_handoff_rules'\nRegistered required tool unit: Agent Communication Tools\nOverwriting existing tool definition for name: 'search_web'\nSuccessfully registered tool definition: 'search_web'\nRegistered required tool unit: Search Tools\nServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated\nInitialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.\n{\"level\":30,\"time\":1791882596590,\"pid\":788,\"hostname\":\"Manageds-Virtual-Machine.local\",\"msg\":\"Server listening at http://127.0.0.1:49155\"}\n{\"level\":30,\"time\":1791882596620,\"pid\":788,\"hostname\":\"Manageds-Virtual-Machine.local\",\"msg\":\"Server listening at http://192.168.64.2:54205\"}\n[2026-10-13T09:09:56.621Z] [INFO] [server.runtime] Server listening on 192.168.64.2:54205\nScheduling Studio-only non-critical startup tasks...\nBackground cache pre-loading process has started.\nCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.\nPopulating MCP server config cache for the first time...\nRunning MCP tool registration background task...\nLoading and registering all MCP server configurations from file...\nBackground task 'Memory Sync Worker' completed successfully.\nMCP server config cache populated with 0 items.\nFound 0 total MCP server configs.\nSynchronized cached configurations with the core MCP config service.\nPre-loaded 0 MCP server configs into cache.\nFinished loading and registering all MCP server configurations.\nBackground task 'MCP Tool Registration' completed successfully.\nPre-loaded 35 LLM models into cache.\nPre-loaded 7 image models into cache.\nPre-loaded 3 audio models into cache.\nBackground application cache pre-loading completed.\nBackground task 'Cache Pre-loading' completed successfully.\nGraphQL mutation to create workspace metadata\nCreating new workspace for rootPath: /Volumes/autobyteus-shared/project\nCreated metadata-only FileSystemWorkspace at /Volumes/autobyteus-shared/project.\nCreated and registered workspace ID: agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106\nAgent Definition created successfully with ID: ab-sf-fr026-6af2e9d4-codex-app-server-95601\nCreating new workspace for rootPath: /Volumes/autobyteus-shared/project\nCreated metadata-only FileSystemWorkspace at /Volumes/autobyteus-shared/project.\nReusing registered workspace ID: agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106\nCreating new workspace for rootPath: /Volumes/autobyteus-shared/project\nCreated metadata-only FileSystemWorkspace at /Volumes/autobyteus-shared/project.\nReusing registered workspace ID: agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106\nAgent websocket attached for run ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737\nCreated agent session ea3bf63f-0840-4801-8d26-991dc039bd6c for run ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737\nAgent WebSocket connected: session=ea3bf63f-0840-4801-8d26-991dc039bd6c, run=ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737\nClosed agent session ea3bf63f-0840-4801-8d26-991dc039bd6c\nAgent WebSocket disconnected: ea3bf63f-0840-4801-8d26-991dc039bd6c\nAgent websocket attached for run ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737\nCreated agent session 14d91a53-af2d-4a32-af54-7118660d43a0 for run ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737\nAgent WebSocket connected: session=14d91a53-af2d-4a32-af54-7118660d43a0, run=ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737\nClosed agent session 14d91a53-af2d-4a32-af54-7118660d43a0\nAgent WebSocket disconnected: 14d91a53-af2d-4a32-af54-7118660d43a0\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "kill -TERM 788; sleep 3; kill -0 788 2>/dev/null && kill -KILL 788 || true"
+      ],
+      "rc": 0,
+      "seconds": 3.129,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "test -f /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/owned-marker && /bin/rm -rf /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4"
+      ],
+      "rc": 0,
+      "seconds": 3.875,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "test ! -e /Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4"
+      ],
+      "rc": 0,
+      "seconds": 0.666,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "sudo -n /sbin/umount /Volumes/autobyteus-shared"
+      ],
+      "rc": 0,
+      "seconds": 0.115,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr026-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "sudo -n /bin/rmdir /Volumes/autobyteus-shared"
+      ],
+      "rc": 1,
+      "seconds": 0.052,
+      "stdout": "",
+      "stderr": "rmdir: /Volumes/autobyteus-shared: No such file or directory\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-sf-fr026-macos",
+        "--timeout",
+        "10"
+      ],
+      "rc": 0,
+      "seconds": 0.331,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "logs",
+        "--tail",
+        "160",
+        "ab-sf-fr026-6af2e9d4-app-a"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "2026-10-13 09:09:26,674 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'read_url'\n\n2026-10-13 09:09:26,674 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Core Tools\n\n2026-10-13 09:09:26,688 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'delegate_task'\n\n2026-10-13 09:09:26,689 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'list_available_agents'\n\n2026-10-13 09:09:26,689 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_image'\nSuccessfully registered tool definition: 'edit_image'\nSuccessfully registered tool definition: 'generate_speech'\n\n2026-10-13 09:09:26,689 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_video'\n\n2026-10-13 09:09:26,689 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Task Delegation Tools\nRegistered required tool unit: Agent Discovery Tools\nRegistered required tool unit: Media Tools\n\n2026-10-13 09:09:26,709 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Browser Tools\n\n2026-10-13 09:09:26,709 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'publish_artifacts'\nRegistered required tool unit: Published Artifact Tools\n\n2026-10-13 09:09:26,711 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'send_message_to'\nSuccessfully registered tool definition: 'get_handoff_rules'\nRegistered required tool unit: Agent Communication Tools\nSuccessfully registered tool definition: 'list_projects'\nSuccessfully registered tool definition: 'list_project_tasks'\nSuccessfully registered tool definition: 'create_or_update_project'\nSuccessfully registered tool definition: 'create_or_update_task'\nRegistered required tool unit: Project Task Tools\n\n2026-10-13 09:09:26,720 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\nRegistered required tool unit: Search Tools\n\n2026-10-13 09:09:26,720 DEBG 'autobyteus_server' stderr output:\nOverwriting existing tool definition for name: 'search_web'\n\n2026-10-13 09:09:26,754 DEBG 'autobyteus_server' stdout output:\nServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated\nInitialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.\n\n2026-10-13 09:09:26,754 INFO reaped unknown pid 596 (exit status 0)\n2026-10-13 09:09:26,754 DEBG received SIGCHLD indicating a child quit\n2026-10-13 09:09:26,764 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791882566764,\"pid\":54,\"hostname\":\"3b2481505122\",\"msg\":\"Server listening at http://127.0.0.1:36113\"}\n\n2026-10-13 09:09:26,817 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791882566817,\"pid\":54,\"hostname\":\"3b2481505122\",\"msg\":\"Server listening at http://0.0.0.0:8000\"}\n\n2026-10-13 09:09:26,818 DEBG 'autobyteus_server' stdout output:\n[2026-10-13T09:09:26.817Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000\n\n2026-10-13 09:09:26,819 DEBG 'autobyteus_server' stdout output:\nScheduling Studio-only non-critical startup tasks...\n\n2026-10-13 09:09:26,826 DEBG 'autobyteus_server' stdout output:\nBackground cache pre-loading process has started.\n\n2026-10-13 09:09:26,826 DEBG 'autobyteus_server' stdout output:\nCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.\n\n2026-10-13 09:09:26,826 DEBG 'autobyteus_server' stdout output:\nPopulating MCP server config cache for the first time...\n\n2026-10-13 09:09:26,826 DEBG 'autobyteus_server' stdout output:\nRunning MCP tool registration background task...\n\n2026-10-13 09:09:26,827 DEBG 'autobyteus_server' stdout output:\nLoading and registering all MCP server configurations from file...\n\n2026-10-13 09:09:26,827 DEBG 'autobyteus_server' stdout output:\nBackground task 'Memory Sync Worker' completed successfully.\n\n2026-10-13 09:09:26,829 DEBG 'autobyteus_server' stdout output:\nMCP server config cache populated with 0 items.\nFound 0 total MCP server configs.\n\n2026-10-13 09:09:26,829 DEBG 'autobyteus_server' stdout output:\nSynchronized cached configurations with the core MCP config service.\n\n2026-10-13 09:09:26,831 DEBG 'autobyteus_server' stdout output:\nPre-loaded 0 MCP server configs into cache.\nFinished loading and registering all MCP server configurations.\n\n2026-10-13 09:09:26,831 DEBG 'autobyteus_server' stdout output:\nBackground task 'MCP Tool Registration' completed successfully.\n\n2026-10-13 09:09:26,832 DEBG 'autobyteus_server' stdout output:\nPre-loaded 35 LLM models into cache.\n\n2026-10-13 09:09:26,832 DEBG 'autobyteus_server' stdout output:\nPre-loaded 7 image models into cache.\n\n2026-10-13 09:09:26,832 DEBG 'autobyteus_server' stdout output:\nPre-loaded 3 audio models into cache.\nBackground application cache pre-loading completed.\n\n2026-10-13 09:09:26,832 DEBG 'autobyteus_server' stdout output:\nBackground task 'Cache Pre-loading' completed successfully.\n\n2026-10-13 09:09:29,282 DEBG 'autobyteus_server' stdout output:\nGraphQL mutation to create workspace metadata\n\n2026-10-13 09:09:29,282 DEBG 'autobyteus_server' stdout output:\nCreating new workspace for rootPath: /Volumes/autobyteus-shared/project\nCreated metadata-only FileSystemWorkspace at /Volumes/autobyteus-shared/project.\n\n2026-10-13 09:09:29,284 DEBG 'autobyteus_server' stdout output:\nCreated and registered workspace ID: agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106\n\n2026-10-13 09:09:51,377 DEBG 'chrome' stderr output:\n[47:124:1013/090951.377410:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: QUOTA_EXCEEDED\n\n2026-10-13 09:10:01,257 DEBG 'autobyteus_server' stdout output:\nAgent Definition created successfully with ID: ab-sf-fr026-6af2e9d4-codex-app-server-41fa6\n\n2026-10-13 09:10:01,264 DEBG 'autobyteus_server' stdout output:\nCreating new workspace for rootPath: /Volumes/autobyteus-shared/project\n\n2026-10-13 09:10:01,264 DEBG 'autobyteus_server' stdout output:\nCreated metadata-only FileSystemWorkspace at /Volumes/autobyteus-shared/project.\n\n2026-10-13 09:10:01,264 DEBG 'autobyteus_server' stdout output:\nReusing registered workspace ID: agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106\n\n2026-10-13 09:10:01,279 DEBG 'autobyteus_server' stdout output:\nCreating new workspace for rootPath: /Volumes/autobyteus-shared/project\n\n2026-10-13 09:10:01,279 DEBG 'autobyteus_server' stdout output:\nCreated metadata-only FileSystemWorkspace at /Volumes/autobyteus-shared/project.\nReusing registered workspace ID: agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106\n\n2026-10-13 09:10:16,658 DEBG 'autobyteus_server' stdout output:\nCreated WorkspaceFileExplorer for agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106 (graphql-file-content).\n\n2026-10-13 09:10:17,058 DEBG 'autobyteus_server' stdout output:\nAgent websocket attached for run ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d\n\n2026-10-13 09:10:17,058 DEBG 'autobyteus_server' stdout output:\nCreated agent session 1a0155bc-474a-4501-9a29-1bf11174f317 for run ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d\n\n2026-10-13 09:10:17,059 DEBG 'autobyteus_server' stdout output:\nAgent WebSocket connected: session=1a0155bc-474a-4501-9a29-1bf11174f317, run=ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d\n\n2026-10-13 09:10:24,328 DEBG 'autobyteus_server' stdout output:\nClosed agent session 1a0155bc-474a-4501-9a29-1bf11174f317\nAgent WebSocket disconnected: 1a0155bc-474a-4501-9a29-1bf11174f317\n\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr026-6af2e9d4-app-a",
+        "sh",
+        "-c",
+        "tail -120 /var/log/supervisor/autobyteus_server.log /var/log/supervisor/autobyteus_server.err.log 2>/dev/null"
+      ],
+      "rc": 1,
+      "seconds": 0.064,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "logs",
+        "--tail",
+        "160",
+        "ab-sf-fr026-6af2e9d4-app-b"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "\n2026-10-13 09:09:27,956 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Task Delegation Tools\n\n2026-10-13 09:09:27,956 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Agent Discovery Tools\n\n2026-10-13 09:09:27,956 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Media Tools\n\n2026-10-13 09:09:27,972 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Browser Tools\n\n2026-10-13 09:09:27,972 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'publish_artifacts'\nRegistered required tool unit: Published Artifact Tools\n\n2026-10-13 09:09:27,973 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'send_message_to'\n\n2026-10-13 09:09:27,973 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'get_handoff_rules'\nRegistered required tool unit: Agent Communication Tools\n\n2026-10-13 09:09:27,973 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'list_projects'\nSuccessfully registered tool definition: 'list_project_tasks'\n\n2026-10-13 09:09:27,973 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'create_or_update_project'\nSuccessfully registered tool definition: 'create_or_update_task'\n\n2026-10-13 09:09:27,973 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Project Task Tools\n\n2026-10-13 09:09:27,976 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\nRegistered required tool unit: Search Tools\n\n2026-10-13 09:09:27,976 DEBG 'autobyteus_server' stderr output:\nOverwriting existing tool definition for name: 'search_web'\n\n2026-10-13 09:09:27,993 DEBG 'autobyteus_server' stdout output:\nServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated\nInitialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.\n\n2026-10-13 09:09:28,001 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791882568000,\"pid\":55,\"hostname\":\"ca7c2bb70dde\",\"msg\":\"Server listening at http://127.0.0.1:46231\"}\n\n2026-10-13 09:09:28,037 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791882568037,\"pid\":55,\"hostname\":\"ca7c2bb70dde\",\"msg\":\"Server listening at http://0.0.0.0:8000\"}\n\n2026-10-13 09:09:28,038 DEBG 'autobyteus_server' stdout output:\n[2026-10-13T09:09:28.038Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000\n\n2026-10-13 09:09:28,038 DEBG 'autobyteus_server' stdout output:\nScheduling Studio-only non-critical startup tasks...\n\n2026-10-13 09:09:28,045 DEBG 'autobyteus_server' stdout output:\nBackground cache pre-loading process has started.\n\n2026-10-13 09:09:28,045 DEBG 'autobyteus_server' stdout output:\nCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.\nPopulating MCP server config cache for the first time...\n\n2026-10-13 09:09:28,046 DEBG 'autobyteus_server' stdout output:\nRunning MCP tool registration background task...\n\n2026-10-13 09:09:28,046 DEBG 'autobyteus_server' stdout output:\nLoading and registering all MCP server configurations from file...\n\n2026-10-13 09:09:28,046 DEBG 'autobyteus_server' stdout output:\nBackground task 'Memory Sync Worker' completed successfully.\n\n2026-10-13 09:09:28,046 DEBG 'autobyteus_server' stdout output:\nMCP server config cache populated with 0 items.\n\n2026-10-13 09:09:28,046 DEBG 'autobyteus_server' stdout output:\nFound 0 total MCP server configs.\nSynchronized cached configurations with the core MCP config service.\n\n2026-10-13 09:09:28,046 DEBG 'autobyteus_server' stdout output:\nPre-loaded 0 MCP server configs into cache.\n\n2026-10-13 09:09:28,047 DEBG 'autobyteus_server' stdout output:\nFinished loading and registering all MCP server configurations.\n\n2026-10-13 09:09:28,047 DEBG 'autobyteus_server' stdout output:\nBackground task 'MCP Tool Registration' completed successfully.\n\n2026-10-13 09:09:28,047 DEBG 'autobyteus_server' stdout output:\nPre-loaded 35 LLM models into cache.\n\n2026-10-13 09:09:28,048 DEBG 'autobyteus_server' stdout output:\nPre-loaded 7 image models into cache.\nPre-loaded 3 audio models into cache.\nBackground application cache pre-loading completed.\n\n2026-10-13 09:09:28,048 DEBG 'autobyteus_server' stdout output:\nBackground task 'Cache Pre-loading' completed successfully.\n\n2026-10-13 09:09:29,050 INFO reaped unknown pid 586 (exit status 0)\n2026-10-13 09:09:29,050 DEBG received SIGCHLD indicating a child quit\n2026-10-13 09:09:29,290 DEBG 'autobyteus_server' stdout output:\nGraphQL mutation to create workspace metadata\n\n2026-10-13 09:09:29,291 DEBG 'autobyteus_server' stdout output:\nCreating new workspace for rootPath: /Volumes/autobyteus-shared/project\n\n2026-10-13 09:09:29,291 DEBG 'autobyteus_server' stdout output:\nCreated metadata-only FileSystemWorkspace at /Volumes/autobyteus-shared/project.\n\n2026-10-13 09:09:29,292 DEBG 'autobyteus_server' stdout output:\nCreated and registered workspace ID: agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106\n\n2026-10-13 09:09:51,319 DEBG 'chrome' stderr output:\n[50:115:1013/090951.319371:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT\n\n2026-10-13 09:10:02,717 DEBG 'autobyteus_server' stdout output:\nAgent Definition created successfully with ID: ab-sf-fr026-6af2e9d4-claude-agent-sdk-628d7\n\n2026-10-13 09:10:02,724 DEBG 'autobyteus_server' stdout output:\nCreating new workspace for rootPath: /Volumes/autobyteus-shared/project\nCreated metadata-only FileSystemWorkspace at /Volumes/autobyteus-shared/project.\n\n2026-10-13 09:10:02,724 DEBG 'autobyteus_server' stdout output:\nReusing registered workspace ID: agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106\n\n2026-10-13 09:10:02,746 DEBG 'autobyteus_server' stdout output:\nCreating new workspace for rootPath: /Volumes/autobyteus-shared/project\n\n2026-10-13 09:10:02,747 DEBG 'autobyteus_server' stdout output:\nCreated metadata-only FileSystemWorkspace at /Volumes/autobyteus-shared/project.\nReusing registered workspace ID: agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106\n\n2026-10-13 09:10:16,673 DEBG 'autobyteus_server' stdout output:\nCreated WorkspaceFileExplorer for agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106 (graphql-file-content).\n\n2026-10-13 09:10:25,322 DEBG 'autobyteus_server' stdout output:\nAgent websocket attached for run ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5\n\n2026-10-13 09:10:25,322 DEBG 'autobyteus_server' stdout output:\nCreated agent session 952af349-60e5-4b19-ac8a-3fb557d557bc for run ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5\n\n2026-10-13 09:10:25,324 DEBG 'autobyteus_server' stdout output:\nAgent WebSocket connected: session=952af349-60e5-4b19-ac8a-3fb557d557bc, run=ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5\n\n2026-10-13 09:10:25,351 DEBG 'autobyteus_server' stderr output:\n(node:55) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task, create_or_update_task, mcp__autobyteus_agent_tools__create_or_update_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.\n\n2026-10-13 09:10:25,631 DEBG 'autobyteus_server' stdout output:\n{\"level\":40,\"time\":1791882625630,\"pid\":55,\"hostname\":\"ca7c2bb70dde\",\"reqId\":\"req-1\",\"method\":\"POST\",\"url\":\"/mcp/agent-tools/agtrun_FC6j1zRIhwrhEcsUwpEQqrMZPN3mJWji6C_b22Yr8nU\",\"statusCode\":400,\"elapsedMs\":2.270084023475647,\"msg\":\"http request completed\"}\n\n2026-10-13 09:10:34,751 DEBG 'autobyteus_server' stdout output:\nClosed agent session 952af349-60e5-4b19-ac8a-3fb557d557bc\nAgent WebSocket disconnected: 952af349-60e5-4b19-ac8a-3fb557d557bc\n\n2026-10-13 09:10:42,719 DEBG 'chrome' stderr output:\n[50:115:1013/091042.719696:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT\n\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr026-6af2e9d4-app-b",
+        "sh",
+        "-c",
+        "tail -120 /var/log/supervisor/autobyteus_server.log /var/log/supervisor/autobyteus_server.err.log 2>/dev/null"
+      ],
+      "rc": 1,
+      "seconds": 0.063,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr026-6af2e9d4-storage-server",
+        "cat",
+        "/tmp/ganesha.log"
+      ],
+      "rc": 0,
+      "seconds": 0.072,
+      "stdout": "13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] main :MAIN :EVENT :nfs-ganesha Starting: Ganesha Version 4.3\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] load_rados_config :CONFIG :WARN :Missing RADOS URLs backend library\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_set_param_from_conf :NFS STARTUP :EVENT :Configuration file successfully parsed\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] init_fds_limit :INODE LRU :EVENT :Setting the system-imposed limit on FDs to 1048576.\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] init_server_pkgs :NFS STARTUP :EVENT :Initializing ID Mapper.\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] init_server_pkgs :NFS STARTUP :EVENT :ID Mapper successfully initialized.\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_start_grace :STATE :EVENT :NFS Server Now IN GRACE, duration 30\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_start_grace :STATE :EVENT :grace reload client info completed from backend\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_try_lift_grace :STATE :EVENT :check grace:reclaim complete(0) clid count(0)\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_lift_grace_locked :STATE :EVENT :NFS Server Now NOT IN GRACE\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] lower_my_caps :NFS STARTUP :EVENT :CAP_SYS_RESOURCE was successfully removed for proper quota management in FSAL\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] lower_my_caps :NFS STARTUP :EVENT :currently set capabilities are: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap=ep\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_Init_svc :DISP :CRIT :Cannot acquire credentials for principal nfs\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_Init_admin_thread :NFS CB :EVENT :Admin thread initialized\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_rpc_cb_init_ccache :NFS STARTUP :EVENT :Callback creds directory (/var/run/ganesha) already exists\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] find_keytab_entry :NFS CB :WARN :Configuration file does not specify default realm while getting default realm name\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] gssd_refresh_krb5_machine_credential :NFS CB :CRIT :ERROR: gssd_refresh_krb5_machine_credential: no usable keytab entry found in keytab /etc/krb5.keytab for connection with host localhost\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_rpc_cb_init_ccache :NFS STARTUP :WARN :gssd_refresh_krb5_machine_credential failed (-1765328160:2)\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_Start_threads :THREAD :EVENT :Starting delayed executor.\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_Start_threads :THREAD :EVENT :gsh_dbusthread was started successfully\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_Start_threads :THREAD :EVENT :admin thread was started successfully\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_Start_threads :THREAD :EVENT :reaper thread was started successfully\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_Start_threads :THREAD :EVENT :General fridge was started successfully\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_start :NFS STARTUP :EVENT :             NFS SERVER INITIALIZED\n13/10/2026 09:09:10 : epoch 6acdf536 : 7eec852b9a0c : nfs-ganesha-20[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr026-6af2e9d4-app-b"
+      ],
+      "rc": 0,
+      "seconds": 0.357,
+      "stdout": "ab-sf-fr026-6af2e9d4-app-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr026-6af2e9d4-app-a"
+      ],
+      "rc": 0,
+      "seconds": 0.327,
+      "stdout": "ab-sf-fr026-6af2e9d4-app-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-nfs-b"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "ab-sf-fr026-6af2e9d4-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-nfs-a"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "ab-sf-fr026-6af2e9d4-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr026-6af2e9d4-storage-server"
+      ],
+      "rc": 0,
+      "seconds": 0.298,
+      "stdout": "ab-sf-fr026-6af2e9d4-storage-server\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-b-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.024,
+      "stdout": "ab-sf-fr026-6af2e9d4-b-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-b-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "ab-sf-fr026-6af2e9d4-b-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-b-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.026,
+      "stdout": "ab-sf-fr026-6af2e9d4-b-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-b-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.062,
+      "stdout": "ab-sf-fr026-6af2e9d4-b-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-b-data"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr026-6af2e9d4-b-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-a-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.022,
+      "stdout": "ab-sf-fr026-6af2e9d4-a-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-a-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.022,
+      "stdout": "ab-sf-fr026-6af2e9d4-a-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-a-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.021,
+      "stdout": "ab-sf-fr026-6af2e9d4-a-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-a-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.053,
+      "stdout": "ab-sf-fr026-6af2e9d4-a-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-a-data"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr026-6af2e9d4-a-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-storage"
+      ],
+      "rc": 0,
+      "seconds": 0.048,
+      "stdout": "ab-sf-fr026-6af2e9d4-storage\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "rm",
+        "ab-sf-fr026-6af2e9d4-net"
+      ],
+      "rc": 0,
+      "seconds": 0.25,
+      "stdout": "ab-sf-fr026-6af2e9d4-net\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-storage-server"
+      ],
+      "rc": 1,
+      "seconds": 0.024,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr026-6af2e9d4-storage-server\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-app-a"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr026-6af2e9d4-app-a\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-app-b"
+      ],
+      "rc": 1,
+      "seconds": 0.026,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr026-6af2e9d4-app-b\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-storage"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr026-6af2e9d4-storage: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-nfs-a"
+      ],
+      "rc": 1,
+      "seconds": 0.02,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr026-6af2e9d4-nfs-a: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-a-data"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr026-6af2e9d4-a-data: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-a-root-home"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr026-6af2e9d4-a-root-home: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-a-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr026-6af2e9d4-a-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-a-legacy-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.027,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr026-6af2e9d4-a-legacy-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-a-chromium"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr026-6af2e9d4-a-chromium: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-nfs-b"
+      ],
+      "rc": 1,
+      "seconds": 0.022,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr026-6af2e9d4-nfs-b: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-b-data"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr026-6af2e9d4-b-data: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-b-root-home"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr026-6af2e9d4-b-root-home: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-b-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.022,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr026-6af2e9d4-b-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-b-legacy-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr026-6af2e9d4-b-legacy-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-b-chromium"
+      ],
+      "rc": 1,
+      "seconds": 0.02,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr026-6af2e9d4-b-chromium: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr026-6af2e9d4-net"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: network ab-sf-fr026-6af2e9d4-net not found\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "autobyteus-shared-feasibility:fr-026",
+        "--format",
+        "{{.Id}}"
+      ],
+      "rc": 0,
+      "seconds": 0.034,
+      "stdout": "sha256:0c47bf49fdc6ff563f74e4e8cf94f2bc08adb627298ae35bb5d0a0db08ca89cf\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "rm",
+        "autobyteus-shared-feasibility:fr-026"
+      ],
+      "rc": 0,
+      "seconds": 0.105,
+      "stdout": "Untagged: autobyteus-shared-feasibility:fr-026\nDeleted: sha256:0c47bf49fdc6ff563f74e4e8cf94f2bc08adb627298ae35bb5d0a0db08ca89cf\n",
+      "stderr": ""
+    }
+  ],
+  "api": [
+    {
+      "port": 54146,
+      "query": "{__typename}",
+      "variables": null,
+      "result": {
+        "data": {
+          "__typename": "Query"
+        }
+      },
+      "seconds": 0.01
+    },
+    {
+      "port": 54147,
+      "query": "{__typename}",
+      "variables": null,
+      "result": {
+        "data": {
+          "__typename": "Query"
+        }
+      },
+      "seconds": 0.011
+    },
+    {
+      "port": 54146,
+      "query": "mutation($root:String!){createWorkspace(input:{rootPath:$root}){workspaceId workspaceRootPath kind isTemp}}",
+      "variables": {
+        "root": "/Volumes/autobyteus-shared/project"
+      },
+      "result": {
+        "data": {
+          "createWorkspace": {
+            "workspaceId": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "workspaceRootPath": "/Volumes/autobyteus-shared/project",
+            "kind": "filesystem",
+            "isTemp": false
+          }
+        }
+      },
+      "seconds": 0.008
+    },
+    {
+      "port": 54147,
+      "query": "mutation($root:String!){createWorkspace(input:{rootPath:$root}){workspaceId workspaceRootPath kind isTemp}}",
+      "variables": {
+        "root": "/Volumes/autobyteus-shared/project"
+      },
+      "result": {
+        "data": {
+          "createWorkspace": {
+            "workspaceId": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "workspaceRootPath": "/Volumes/autobyteus-shared/project",
+            "kind": "filesystem",
+            "isTemp": false
+          }
+        }
+      },
+      "seconds": 0.007
+    },
+    {
+      "port": 54205,
+      "query": "{__typename}",
+      "variables": null,
+      "result": {
+        "data": {
+          "__typename": "Query"
+        }
+      },
+      "seconds": 1.031
+    },
+    {
+      "port": 54205,
+      "query": "mutation($root:String!){createWorkspace(input:{rootPath:$root}){workspaceId workspaceRootPath kind isTemp}}",
+      "variables": {
+        "root": "/Volumes/autobyteus-shared/project"
+      },
+      "result": {
+        "data": {
+          "createWorkspace": {
+            "workspaceId": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "workspaceRootPath": "/Volumes/autobyteus-shared/project",
+            "kind": "filesystem",
+            "isTemp": false
+          }
+        }
+      },
+      "seconds": 0.007
+    },
+    {
+      "port": 54205,
+      "query": "query($r:String){providerModelCatalogSnapshots(runtimeKind:$r){llmModels{modelIdentifier}}}",
+      "variables": {
+        "r": "codex_app_server"
+      },
+      "result": {
+        "data": {
+          "providerModelCatalogSnapshots": [
+            {
+              "llmModels": [
+                {
+                  "modelIdentifier": "gpt-5.6-luna"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-sol"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-terra"
+                },
+                {
+                  "modelIdentifier": "gpt-6-astra"
+                },
+                {
+                  "modelIdentifier": "gpt-6-luna"
+                },
+                {
+                  "modelIdentifier": "gpt-6-sol"
+                },
+                {
+                  "modelIdentifier": "gpt-6.1-sol"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "seconds": 1.065
+    },
+    {
+      "port": 54147,
+      "query": "query($r:String){providerModelCatalogSnapshots(runtimeKind:$r){llmModels{modelIdentifier}}}",
+      "variables": {
+        "r": "claude_agent_sdk"
+      },
+      "result": {
+        "data": {
+          "providerModelCatalogSnapshots": [
+            {
+              "llmModels": [
+                {
+                  "modelIdentifier": "fable"
+                },
+                {
+                  "modelIdentifier": "haiku"
+                },
+                {
+                  "modelIdentifier": "opus"
+                },
+                {
+                  "modelIdentifier": "sonnet"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "seconds": 1.315
+    },
+    {
+      "port": 54205,
+      "query": "mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}",
+      "variables": {
+        "i": {
+          "name": "ab-sf-fr026-6af2e9d4-codex_app_server-95601",
+          "role": "assistant",
+          "description": "Owned cross-OS native filesystem feasibility",
+          "instructions": "Use real native terminal/Bash/read/write tools for the requested ordinary project file. Never simulate. Work only in selected workspace, never read home/config/credentials or environment, never call network/delegation or MCP filesystem/sharing tools. Print pwd and actual file contents when requested.",
+          "category": "filesystem-feasibility",
+          "toolNames": [],
+          "skillNames": []
+        }
+      },
+      "result": {
+        "data": {
+          "createAgentDefinition": {
+            "id": "ab-sf-fr026-6af2e9d4-codex-app-server-95601"
+          }
+        }
+      },
+      "seconds": 0.121
+    },
+    {
+      "port": 54205,
+      "query": "mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}",
+      "variables": {
+        "i": {
+          "agentDefinitionId": "ab-sf-fr026-6af2e9d4-codex-app-server-95601",
+          "workspaceRootPath": "/Volumes/autobyteus-shared/project",
+          "workspaceId": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "autoExecuteTools": true,
+          "runtimeKind": "codex_app_server"
+        }
+      },
+      "result": {
+        "data": {
+          "createAgentRun": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737"
+          }
+        }
+      },
+      "seconds": 0.861
+    },
+    {
+      "port": 54205,
+      "query": "query($id:String!){getAgentRunResumeConfig(runId:$id){metadataConfig{workspaceRootPath runtimeKind llmModelIdentifier autoExecuteTools}}}",
+      "variables": {
+        "id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737"
+      },
+      "result": {
+        "data": {
+          "getAgentRunResumeConfig": {
+            "metadataConfig": {
+              "workspaceRootPath": "/Volumes/autobyteus-shared/project",
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "autoExecuteTools": true
+            }
+          }
+        }
+      },
+      "seconds": 0.058
+    },
+    {
+      "port": 54146,
+      "query": "mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}",
+      "variables": {
+        "i": {
+          "name": "ab-sf-fr026-6af2e9d4-codex_app_server-41fa6",
+          "role": "assistant",
+          "description": "Owned cross-OS native filesystem feasibility",
+          "instructions": "Use real native terminal/Bash/read/write tools for the requested ordinary project file. Never simulate. Work only in selected workspace, never read home/config/credentials or environment, never call network/delegation or MCP filesystem/sharing tools. Print pwd and actual file contents when requested.",
+          "category": "filesystem-feasibility",
+          "toolNames": [],
+          "skillNames": []
+        }
+      },
+      "result": {
+        "data": {
+          "createAgentDefinition": {
+            "id": "ab-sf-fr026-6af2e9d4-codex-app-server-41fa6"
+          }
+        }
+      },
+      "seconds": 0.043
+    },
+    {
+      "port": 54146,
+      "query": "mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}",
+      "variables": {
+        "i": {
+          "agentDefinitionId": "ab-sf-fr026-6af2e9d4-codex-app-server-41fa6",
+          "workspaceRootPath": "/Volumes/autobyteus-shared/project",
+          "workspaceId": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "autoExecuteTools": true,
+          "runtimeKind": "codex_app_server"
+        }
+      },
+      "result": {
+        "data": {
+          "createAgentRun": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d"
+          }
+        }
+      },
+      "seconds": 1.421
+    },
+    {
+      "port": 54146,
+      "query": "query($id:String!){getAgentRunResumeConfig(runId:$id){metadataConfig{workspaceRootPath runtimeKind llmModelIdentifier autoExecuteTools}}}",
+      "variables": {
+        "id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d"
+      },
+      "result": {
+        "data": {
+          "getAgentRunResumeConfig": {
+            "metadataConfig": {
+              "workspaceRootPath": "/Volumes/autobyteus-shared/project",
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "autoExecuteTools": true
+            }
+          }
+        }
+      },
+      "seconds": 0.013
+    },
+    {
+      "port": 54147,
+      "query": "mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}",
+      "variables": {
+        "i": {
+          "name": "ab-sf-fr026-6af2e9d4-claude_agent_sdk-628d7",
+          "role": "assistant",
+          "description": "Owned cross-OS native filesystem feasibility",
+          "instructions": "Use real native terminal/Bash/read/write tools for the requested ordinary project file. Never simulate. Work only in selected workspace, never read home/config/credentials or environment, never call network/delegation or MCP filesystem/sharing tools. Print pwd and actual file contents when requested.",
+          "category": "filesystem-feasibility",
+          "toolNames": [],
+          "skillNames": []
+        }
+      },
+      "result": {
+        "data": {
+          "createAgentDefinition": {
+            "id": "ab-sf-fr026-6af2e9d4-claude-agent-sdk-628d7"
+          }
+        }
+      },
+      "seconds": 0.022
+    },
+    {
+      "port": 54147,
+      "query": "mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}",
+      "variables": {
+        "i": {
+          "agentDefinitionId": "ab-sf-fr026-6af2e9d4-claude-agent-sdk-628d7",
+          "workspaceRootPath": "/Volumes/autobyteus-shared/project",
+          "workspaceId": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "llmModelIdentifier": "haiku",
+          "autoExecuteTools": true,
+          "runtimeKind": "claude_agent_sdk"
+        }
+      },
+      "result": {
+        "data": {
+          "createAgentRun": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5"
+          }
+        }
+      },
+      "seconds": 0.039
+    },
+    {
+      "port": 54147,
+      "query": "query($id:String!){getAgentRunResumeConfig(runId:$id){metadataConfig{workspaceRootPath runtimeKind llmModelIdentifier autoExecuteTools}}}",
+      "variables": {
+        "id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5"
+      },
+      "result": {
+        "data": {
+          "getAgentRunResumeConfig": {
+            "metadataConfig": {
+              "workspaceRootPath": "/Volumes/autobyteus-shared/project",
+              "runtimeKind": "claude_agent_sdk",
+              "llmModelIdentifier": "haiku",
+              "autoExecuteTools": true
+            }
+          }
+        }
+      },
+      "seconds": 0.014
+    },
+    {
+      "port": 54146,
+      "query": "query($id:String!,$p:String!){fileContent(workspaceId:$id,filePath:$p)}",
+      "variables": {
+        "id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+        "p": "mac-linux-agents-aaca0a6d.txt"
+      },
+      "result": {
+        "data": {
+          "fileContent": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\n"
+        }
+      },
+      "seconds": 0.016
+    },
+    {
+      "port": 54147,
+      "query": "query($id:String!,$p:String!){fileContent(workspaceId:$id,filePath:$p)}",
+      "variables": {
+        "id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+        "p": "mac-linux-agents-aaca0a6d.txt"
+      },
+      "result": {
+        "data": {
+          "fileContent": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\n"
+        }
+      },
+      "seconds": 0.014
+    },
+    {
+      "port": 54146,
+      "query": "query($id:String!,$p:String!){fileContent(workspaceId:$id,filePath:$p)}",
+      "variables": {
+        "id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+        "p": "mac-linux-agents-aaca0a6d.txt"
+      },
+      "result": {
+        "data": {
+          "fileContent": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\n"
+        }
+      },
+      "seconds": 0.005
+    },
+    {
+      "port": 54147,
+      "query": "query($id:String!,$p:String!){fileContent(workspaceId:$id,filePath:$p)}",
+      "variables": {
+        "id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+        "p": "mac-linux-agents-aaca0a6d.txt"
+      },
+      "result": {
+        "data": {
+          "fileContent": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\n"
+        }
+      },
+      "seconds": 0.004
+    },
+    {
+      "port": 54146,
+      "query": "query($id:String!,$p:String!){fileContent(workspaceId:$id,filePath:$p)}",
+      "variables": {
+        "id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+        "p": "mac-linux-agents-aaca0a6d.txt"
+      },
+      "result": {
+        "data": {
+          "fileContent": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9\n"
+        }
+      },
+      "seconds": 0.008
+    },
+    {
+      "port": 54147,
+      "query": "query($id:String!,$p:String!){fileContent(workspaceId:$id,filePath:$p)}",
+      "variables": {
+        "id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+        "p": "mac-linux-agents-aaca0a6d.txt"
+      },
+      "result": {
+        "data": {
+          "fileContent": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9\n"
+        }
+      },
+      "seconds": 0.004
+    },
+    {
+      "port": 54146,
+      "query": "query($id:String!,$p:String!){fileContent(workspaceId:$id,filePath:$p)}",
+      "variables": {
+        "id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+        "p": "mac-linux-agents-aaca0a6d.txt"
+      },
+      "result": {
+        "data": {
+          "fileContent": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9\n"
+        }
+      },
+      "seconds": 0.008
+    },
+    {
+      "port": 54147,
+      "query": "query($id:String!,$p:String!){fileContent(workspaceId:$id,filePath:$p)}",
+      "variables": {
+        "id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+        "p": "mac-linux-agents-aaca0a6d.txt"
+      },
+      "result": {
+        "data": {
+          "fileContent": "MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9\n"
+        }
+      },
+      "seconds": 0.003
+    },
+    {
+      "port": 54205,
+      "query": "mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}",
+      "variables": {
+        "id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737"
+      },
+      "result": {
+        "data": {
+          "terminateAgentRun": {
+            "success": true,
+            "message": "Agent run terminated successfully."
+          }
+        }
+      },
+      "seconds": 0.062
+    },
+    {
+      "port": 54146,
+      "query": "mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}",
+      "variables": {
+        "id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d"
+      },
+      "result": {
+        "data": {
+          "terminateAgentRun": {
+            "success": true,
+            "message": "Agent run terminated successfully."
+          }
+        }
+      },
+      "seconds": 0.034
+    },
+    {
+      "port": 54147,
+      "query": "mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}",
+      "variables": {
+        "id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5"
+      },
+      "result": {
+        "data": {
+          "terminateAgentRun": {
+            "success": true,
+            "message": "Agent run terminated successfully."
+          }
+        }
+      },
+      "seconds": 0.42
+    }
+  ],
+  "cases": [
+    {
+      "name": "two fresh real application-image nodes serve independent GraphQL endpoints",
+      "status": "PASS",
+      "result": [
+        {
+          "name": "ab-sf-fr026-6af2e9d4-app-a",
+          "seconds": 7.153,
+          "graphql": {
+            "__typename": "Query"
+          }
+        },
+        {
+          "name": "ab-sf-fr026-6af2e9d4-app-b",
+          "seconds": 1.018,
+          "graphql": {
+            "__typename": "Query"
+          }
+        }
+      ],
+      "seconds": 8.171
+    },
+    {
+      "name": "daemon mounts one export into both application nodes; private state and credentials isolated",
+      "status": "PASS",
+      "result": [
+        {
+          "node": "ab-sf-fr026-6af2e9d4-app-a",
+          "mount": ":/ab-sf-fr026-6af2e9d4 /Volumes/autobyteus-shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+          "image_version": "0.1.1",
+          "cli_home": "no-user-cli-credentials\n"
+        },
+        {
+          "node": "ab-sf-fr026-6af2e9d4-app-b",
+          "mount": ":/ab-sf-fr026-6af2e9d4 /Volumes/autobyteus-shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+          "image_version": "0.1.1",
+          "cli_home": "no-user-cli-credentials\n"
+        }
+      ],
+      "seconds": 0.425
+    },
+    {
+      "name": "each application registers the ordinary mounted project through its public workspace API",
+      "status": "PASS",
+      "result": [
+        {
+          "name": "ab-sf-fr026-6af2e9d4-app-a",
+          "port": 54146,
+          "nfs_volume": "ab-sf-fr026-6af2e9d4-nfs-a",
+          "workspace": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106"
+        },
+        {
+          "name": "ab-sf-fr026-6af2e9d4-app-b",
+          "port": 54147,
+          "nfs_volume": "ab-sf-fr026-6af2e9d4-nfs-b",
+          "workspace": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106"
+        }
+      ],
+      "seconds": 0.017
+    },
+    {
+      "name": "native macOS guest mounts the same Linux export and reads its independent storage identity",
+      "status": "PASS",
+      "result": {
+        "node": "ab-sf-fr026-macos",
+        "path": "/Volumes/autobyteus-shared",
+        "source": "192.168.64.1:/ab-sf-fr026-6af2e9d4",
+        "options": "vers=4.1,tcp,hard,actimeo=1,retrycnt=0,port=54194",
+        "mountAndIdentity": "/dev/disk2s1s1 on / (apfs, sealed, local, read-only, journaled)\ndevfs on /dev (devfs, local, nobrowse)\n/dev/disk2s6 on /System/Volumes/VM (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk2s2 on /System/Volumes/Preboot (apfs, local, journaled, nobrowse)\n/dev/disk2s4 on /System/Volumes/Update (apfs, local, journaled, nobrowse)\n/dev/disk1s2 on /System/Volumes/xarts (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk1s1 on /System/Volumes/iSCPreboot (apfs, local, journaled, nobrowse)\n/dev/disk1s3 on /System/Volumes/Hardware (apfs, local, journaled, nobrowse)\n/dev/disk2s5 on /System/Volumes/Data (apfs, local, journaled, nobrowse, root data)\n/dev/disk4s1 on /System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\n/dev/disk6s1 on /System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\nmap auto_home on /System/Volumes/Data/home (autofs, automounted, nobrowse)\n192.168.64.1:/ab-sf-fr026-6af2e9d4 on /Volumes/autobyteus-shared (nfs)\n{\"storageId\": \"a81aae93ff9244e4a9df82be0f5ef23a\"}",
+        "guestAdminOnly": true,
+        "samePhysicalHost": true
+      },
+      "seconds": 0.305
+    },
+    {
+      "name": "Mac release backend/native client installed only into fresh private guest test root",
+      "status": "PASS",
+      "result": {
+        "node": "ab-sf-fr026-macos",
+        "publicPackage": "installed AutoByteus1.5.3-beta.1/server0.1.1, copied, not host launch or current build",
+        "nativeVersions": "codex-cli 0.162.1\nv24.16.0\nDarwin arm64\n",
+        "hostFolderShare": false
+      },
+      "seconds": 19.955
+    },
+    {
+      "name": "actual Mac release backend serves separate GraphQL endpoint on private VM",
+      "status": "PASS",
+      "result": {
+        "__typename": "Query"
+      },
+      "seconds": 7.069
+    },
+    {
+      "name": "necessary native OAuth copied privately without host files, source edits or shared homes",
+      "status": "PASS",
+      "result": {
+        "MacCodexTarget": "/Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/cli-home",
+        "LinuxCodexTarget": "ab-sf-fr026-6af2e9d4-app-a",
+        "LinuxClaudeTarget": "ab-sf-fr026-6af2e9d4-app-b",
+        "readOnlySources": true,
+        "hostSecretFilesCreated": false,
+        "secretValuesLogged": false,
+        "noSharedCLIHome": true
+      },
+      "seconds": 0.671
+    },
+    {
+      "name": "actual workspace-selected Mac agent writes through native Codex filesystem tools",
+      "status": "PASS",
+      "result": {
+        "node": "ab-sf-fr026-macos",
+        "runId": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+        "receipt": "mac-a-write-turn.json",
+        "snapshot": {
+          "clients": [
+            {
+              "node": "ab-sf-fr026-6af2e9d4-app-a",
+              "sha256": "f3b9a8157638fcc581698220ed03aeb3806c3bef64981bfc04ac6cc0a10a4d8a",
+              "path": "/Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+            },
+            {
+              "node": "ab-sf-fr026-6af2e9d4-app-b",
+              "sha256": "f3b9a8157638fcc581698220ed03aeb3806c3bef64981bfc04ac6cc0a10a4d8a",
+              "path": "/Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+            },
+            {
+              "node": "ab-sf-fr026-macos",
+              "sha256": "f3b9a8157638fcc581698220ed03aeb3806c3bef64981bfc04ac6cc0a10a4d8a",
+              "path": "/Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+            }
+          ],
+          "backingNode": "ab-sf-fr026-6af2e9d4-storage-server",
+          "backingSha256": "f3b9a8157638fcc581698220ed03aeb3806c3bef64981bfc04ac6cc0a10a4d8a"
+        }
+      },
+      "seconds": 14.141
+    },
+    {
+      "name": "independent Linux Codex agent reads Mac-created unknown bytes and modifies same file",
+      "status": "PASS",
+      "result": {
+        "node": "ab-sf-fr026-6af2e9d4-app-a",
+        "runId": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d",
+        "receipt": "linux-b-read-modify-turn.json",
+        "writerContentAbsentFromPrompt": true,
+        "snapshot": {
+          "clients": [
+            {
+              "node": "ab-sf-fr026-6af2e9d4-app-a",
+              "sha256": "17c31d2635799df4f9ce5a15a0c9a8345853ccea48406ccd21b0337503b72e2e",
+              "path": "/Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+            },
+            {
+              "node": "ab-sf-fr026-6af2e9d4-app-b",
+              "sha256": "17c31d2635799df4f9ce5a15a0c9a8345853ccea48406ccd21b0337503b72e2e",
+              "path": "/Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+            },
+            {
+              "node": "ab-sf-fr026-macos",
+              "sha256": "17c31d2635799df4f9ce5a15a0c9a8345853ccea48406ccd21b0337503b72e2e",
+              "path": "/Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+            }
+          ],
+          "backingNode": "ab-sf-fr026-6af2e9d4-storage-server",
+          "backingSha256": "17c31d2635799df4f9ce5a15a0c9a8345853ccea48406ccd21b0337503b72e2e"
+        }
+      },
+      "seconds": 8.282
+    },
+    {
+      "name": "independent Linux Claude agent reads both unknown previous values and modifies same file",
+      "status": "PASS",
+      "result": {
+        "node": "ab-sf-fr026-6af2e9d4-app-b",
+        "runId": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+        "receipt": "linux-c-read-modify-turn.json",
+        "previousValuesAbsentFromPrompt": true,
+        "snapshot": {
+          "clients": [
+            {
+              "node": "ab-sf-fr026-6af2e9d4-app-a",
+              "sha256": "ede4d8f7ecce34ad2178d8eb09529780ef2e8c5c401827bcf263269c8d8c9c02",
+              "path": "/Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+            },
+            {
+              "node": "ab-sf-fr026-6af2e9d4-app-b",
+              "sha256": "ede4d8f7ecce34ad2178d8eb09529780ef2e8c5c401827bcf263269c8d8c9c02",
+              "path": "/Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+            },
+            {
+              "node": "ab-sf-fr026-macos",
+              "sha256": "ede4d8f7ecce34ad2178d8eb09529780ef2e8c5c401827bcf263269c8d8c9c02",
+              "path": "/Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+            }
+          ],
+          "backingNode": "ab-sf-fr026-6af2e9d4-storage-server",
+          "backingSha256": "ede4d8f7ecce34ad2178d8eb09529780ef2e8c5c401827bcf263269c8d8c9c02"
+        }
+      },
+      "seconds": 10.338
+    },
+    {
+      "name": "originating Mac native agent fresh reopen sees both Linux-node modifications",
+      "status": "PASS",
+      "result": {
+        "node": "ab-sf-fr026-macos",
+        "runId": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+        "receipt": "mac-a-reopen-turn.json",
+        "newValuesAbsentFromPrompt": true,
+        "snapshot": {
+          "clients": [
+            {
+              "node": "ab-sf-fr026-6af2e9d4-app-a",
+              "sha256": "ede4d8f7ecce34ad2178d8eb09529780ef2e8c5c401827bcf263269c8d8c9c02",
+              "path": "/Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+            },
+            {
+              "node": "ab-sf-fr026-6af2e9d4-app-b",
+              "sha256": "ede4d8f7ecce34ad2178d8eb09529780ef2e8c5c401827bcf263269c8d8c9c02",
+              "path": "/Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+            },
+            {
+              "node": "ab-sf-fr026-macos",
+              "sha256": "ede4d8f7ecce34ad2178d8eb09529780ef2e8c5c401827bcf263269c8d8c9c02",
+              "path": "/Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt"
+            }
+          ],
+          "backingNode": "ab-sf-fr026-6af2e9d4-storage-server",
+          "backingSha256": "ede4d8f7ecce34ad2178d8eb09529780ef2e8c5c401827bcf263269c8d8c9c02"
+        }
+      },
+      "seconds": 12.314
+    }
+  ],
+  "cleanup": [
+    {
+      "exactGuestBackendPidSignalled": 788
+    },
+    {
+      "guestPrivatePackageDataAndCredentialRootAbsent": true,
+      "path": "/Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4"
+    },
+    {
+      "hostPrivateWebsocketDriverAbsent": true
+    },
+    {
+      "guestNativeUnmountRc": 0,
+      "target": "/Volumes/autobyteus-shared"
+    },
+    {
+      "exactVmStopRc": 0
+    },
+    {
+      "exactOwnedVmProcessExited": true
+    },
+    {
+      "container": "ab-sf-fr026-6af2e9d4-app-b",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr026-6af2e9d4-app-a",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr026-6af2e9d4-nfs-b",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr026-6af2e9d4-nfs-a",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr026-6af2e9d4-storage-server",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr026-6af2e9d4-b-chromium",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr026-6af2e9d4-b-legacy-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr026-6af2e9d4-b-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr026-6af2e9d4-b-root-home",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr026-6af2e9d4-b-data",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr026-6af2e9d4-a-chromium",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr026-6af2e9d4-a-legacy-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr026-6af2e9d4-a-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr026-6af2e9d4-a-root-home",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr026-6af2e9d4-a-data",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr026-6af2e9d4-storage",
+      "rc": 0
+    },
+    {
+      "network": "ab-sf-fr026-6af2e9d4-net",
+      "rc": 0
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr026-6af2e9d4-storage-server",
+      "absent": true
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr026-6af2e9d4-app-a",
+      "absent": true
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr026-6af2e9d4-app-b",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-storage",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-nfs-a",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-a-data",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-a-root-home",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-a-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-a-legacy-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-a-chromium",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-nfs-b",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-b-data",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-b-root-home",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-b-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-b-legacy-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-b-chromium",
+      "absent": true
+    },
+    {
+      "absence_kind": "network",
+      "name": "ab-sf-fr026-6af2e9d4-net",
+      "absent": true
+    },
+    {
+      "image_tag": "autobyteus-shared-feasibility:fr-026",
+      "expected_id": "sha256:0c47bf49fdc6ff563f74e4e8cf94f2bc08adb627298ae35bb5d0a0db08ca89cf",
+      "rc": 0
+    }
+  ],
+  "nativeMacVm": {
+    "node": "ab-sf-fr026-macos",
+    "hostUid": 501,
+    "runArgv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "run",
+      "ab-sf-fr026-macos",
+      "--no-graphics",
+      "--no-audio",
+      "--no-clipboard",
+      "--no-usb-accessories"
+    ],
+    "hostProcessPid": 57980,
+    "hostShares": false,
+    "guestProviderCredentials": false,
+    "ip": "192.168.64.2",
+    "gateway": "192.168.64.1",
+    "identity": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n"
+  },
+  "vmHostOnlyRoute": {
+    "ownedGuestIp": "192.168.64.2",
+    "hostInterface": "bridge100",
+    "hostAddress": "192.168.64.1",
+    "noDefaultGatewayRequired": true,
+    "hostRoute": "   route to: 192.168.64.2\ndestination: 192.168.64.2\n  interface: bridge100\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500      1166 \n",
+    "hostInterfaceInfo": "bridge100: flags=8a63<UP,BROADCAST,SMART,RUNNING,ALLMULTI,SIMPLEX,MULTICAST> mtu 1500\n\toptions=63<RXCSUM,TXCSUM,TSO4,TSO6>\n\tether be:d0:74:32:81:64\n\tinet 192.168.64.1 netmask 0xffffff00 broadcast 192.168.64.255\n\tinet6 fe80::bcd0:74ff:fe32:8164%bridge100 prefixlen 64 scopeid 0x1a \n\tinet6 fd91:5d53:a507:b06c:1096:b061:6f6e:31ac prefixlen 64 autoconf secured \n\tConfiguration:\n\t\tid 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0\n\t\tmaxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200\n\t\troot id 0:0:0:0:0:0 priority 0 ifcost 0 port 0\n\t\tipfilter disabled flags 0x0\n\tmember: vmenet0 flags=20803<LEARNING,DISCOVER,PRIVATE,VIRTIO>\n\t        ifmaxaddr 0 port 25 priority 0 path cost 0\n\tAddress cache:\n\t\t72:76:f4:5e:d8:14 Vlan1 vmenet0 1200 flags=0<>\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect\n\tstatus: active\n"
+  },
+  "application_metadata": {
+    "id": "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+    "repo_digests": [
+      "autobyteus/autobyteus-server@sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a"
+    ],
+    "created": "2026-10-12T13:24:35.302109183Z",
+    "entrypoint": [
+      "/usr/local/bin/entrypoint.sh"
+    ]
+  },
+  "service_image": "sha256:0c47bf49fdc6ff563f74e4e8cf94f2bc08adb627298ae35bb5d0a0db08ca89cf",
+  "network": {
+    "Subnet": "172.29.0.0/16",
+    "IPRange": "",
+    "Gateway": "172.29.0.1"
+  },
+  "storage_server_ip": "172.29.0.2",
+  "nodes": [
+    {
+      "name": "ab-sf-fr026-6af2e9d4-app-a",
+      "port": 54146,
+      "nfs_volume": "ab-sf-fr026-6af2e9d4-nfs-a",
+      "workspace": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106"
+    },
+    {
+      "name": "ab-sf-fr026-6af2e9d4-app-b",
+      "port": 54147,
+      "nfs_volume": "ab-sf-fr026-6af2e9d4-nfs-b",
+      "workspace": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106"
+    }
+  ],
+  "testTransport": {
+    "guestOnlyListener": "192.168.64.1:54194",
+    "allowedPeer": "192.168.64.2",
+    "upstream": "127.0.0.1:54141",
+    "scope": "NFS TCP transport relay only, no file-level copying, not production or LAN deployment"
+  },
+  "transfers": [
+    {
+      "label": "read-only installed public Mac application package",
+      "sourceCommandWithoutContent": [
+        "tar",
+        "--exclude=*.env",
+        "--exclude=.env*",
+        "-C",
+        "/Applications",
+        "-cf",
+        "-",
+        "AutoByteus.app"
+      ],
+      "target": "ab-sf-fr026-macos",
+      "sourceExit": 0,
+      "targetExit": 0,
+      "hostIntermediateFile": false,
+      "payloadLogged": false
+    },
+    {
+      "label": "read-only native Darwin Codex executable",
+      "sourceCommandWithoutContent": [
+        "tar",
+        "-C",
+        "/Users/normy/.codex/packages/standalone/current/bin",
+        "-cf",
+        "-",
+        "codex",
+        "codex-code-mode-host"
+      ],
+      "target": "ab-sf-fr026-macos",
+      "sourceExit": 0,
+      "targetExit": 0,
+      "hostIntermediateFile": false,
+      "payloadLogged": false
+    },
+    {
+      "label": "necessary read-only source Codex OAuth to owned private Mac CLI home",
+      "sourceCommandWithoutContent": [
+        "docker",
+        "exec",
+        "autobyteus-server-0",
+        "tar",
+        "-C",
+        "/root/.codex",
+        "-cf",
+        "-",
+        "auth.json"
+      ],
+      "target": "ab-sf-fr026-macos",
+      "sourceExit": 0,
+      "targetExit": 0,
+      "hostIntermediateFile": false,
+      "payloadLogged": false
+    }
+  ],
+  "macBackend": {
+    "node": "ab-sf-fr026-macos",
+    "pid": 788,
+    "dataRoot": "/Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/data",
+    "CODEX_HOME": "/Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/cli-home",
+    "environmentKeys": [
+      "HOME",
+      "PATH",
+      "ELECTRON_RUN_AS_NODE",
+      "AUTOBYTEUS_WORKSPACE_ROOT",
+      "AUTOBYTEUS_DATA_DIR",
+      "AUTOBYTEUS_BIND_HOST",
+      "AUTOBYTEUS_SERVER_PORT",
+      "PORT",
+      "SERVER_PORT",
+      "AUTOBYTEUS_SERVER_HOST",
+      "APP_ENV",
+      "NODE_ENV",
+      "DB_TYPE",
+      "DATABASE_URL",
+      "AUTOBYTEUS_SKIP_SYNC",
+      "AUTOBYTEUS_TEMP_WORKSPACE_DIR",
+      "CODEX_HOME",
+      "LOG_LEVEL"
+    ],
+    "port": 54205,
+    "privateNATOnly": true,
+    "currentSourceBuild": false
+  },
+  "macNode": {
+    "name": "ab-sf-fr026-macos",
+    "host": "192.168.64.2",
+    "port": 54205,
+    "platform": "darwin",
+    "workspace": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106"
+  },
+  "authSafety": {
+    "MacCodexTarget": "/Users/admin/.ab-sf-ab-sf-fr026-6af2e9d4/cli-home",
+    "LinuxCodexTarget": "ab-sf-fr026-6af2e9d4-app-a",
+    "LinuxClaudeTarget": "ab-sf-fr026-6af2e9d4-app-b",
+    "readOnlySources": true,
+    "hostSecretFilesCreated": false,
+    "secretValuesLogged": false,
+    "noSharedCLIHome": true
+  },
+  "models": {
+    "codex_app_server": "gpt-5.6-luna",
+    "claude_agent_sdk": "haiku"
+  },
+  "actors": [
+    {
+      "node": {
+        "name": "ab-sf-fr026-macos",
+        "host": "192.168.64.2",
+        "port": 54205,
+        "platform": "darwin",
+        "workspace": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106"
+      },
+      "runtime": "codex_app_server",
+      "runId": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+      "definition": "ab-sf-fr026-6af2e9d4-codex-app-server-95601",
+      "metadata": {
+        "workspaceRootPath": "/Volumes/autobyteus-shared/project",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "autoExecuteTools": true
+      }
+    },
+    {
+      "node": {
+        "name": "ab-sf-fr026-6af2e9d4-app-a",
+        "port": 54146,
+        "nfs_volume": "ab-sf-fr026-6af2e9d4-nfs-a",
+        "workspace": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106"
+      },
+      "runtime": "codex_app_server",
+      "runId": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d",
+      "definition": "ab-sf-fr026-6af2e9d4-codex-app-server-41fa6",
+      "metadata": {
+        "workspaceRootPath": "/Volumes/autobyteus-shared/project",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "autoExecuteTools": true
+      }
+    },
+    {
+      "node": {
+        "name": "ab-sf-fr026-6af2e9d4-app-b",
+        "port": 54147,
+        "nfs_volume": "ab-sf-fr026-6af2e9d4-nfs-b",
+        "workspace": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106"
+      },
+      "runtime": "claude_agent_sdk",
+      "runId": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+      "definition": "ab-sf-fr026-6af2e9d4-claude-agent-sdk-628d7",
+      "metadata": {
+        "workspaceRootPath": "/Volumes/autobyteus-shared/project",
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "haiku",
+        "autoExecuteTools": true
+      }
+    }
+  ],
+  "uncovered": [
+    "configured-skill production adaptation and Mac skill/concurrent lifecycle",
+    "Git default ownership/trust and Mac/Linux lock/binary/outage cases",
+    "complete public one-command setup/normal user OS-approval/disruption/rerun lifecycle",
+    "separate physical Linux computer/LAN",
+    "rendered workspace-selection UI",
+    "current-source build/independent review/validation/merge/user verification"
+  ],
+  "retainedStoppedCredentialFreeVm": "ab-sf-fr026-macos"
+}

@@ -202,5 +202,310 @@
     "cleanup_all_rc_zero": true,
     "scoped_runner_exit": 0,
     "production_patch": false
+  },
+  {
+    "round": "fr-015",
+    "run": "ab-sf-fr015-68c77fbb",
+    "scope": "task-owned unmodified Codex app-server/private-skill capability, two fresh image nodes; NOT integrated AutoByteus agent/current source/UI/Mac/LAN/setup proof",
+    "pass_count": 9,
+    "failed_cases": [
+      {
+        "name": "active B private native skill survives A cleanup and reads previously unread asset",
+        "status": "FAIL",
+        "error": "AssertionError([{'method': 'turn/completed', 'params': {'threadId': '01a133ec-d597-7a41-a044-cb9eab4d5c3b', 'turn': {'id': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'rootTurnId': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'items': [], 'itemsView': 'notLoaded', 'status': 'failed', 'error': {'message': 'Selected model is at capacity. Please try a different model.', 'codexErrorInfo': 'serverOverloaded', 'additionalDetails': None, 'misalignment': None}, 'startedAt': 1791872591, 'completedAt': 1791872633, 'durationMs': 41799}}}])",
+        "seconds": 41.826
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "AssertionError([{'method': 'turn/completed', 'params': {'threadId': '01a133ec-d597-7a41-a044-cb9eab4d5c3b', 'turn': {'id': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'rootTurnId': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'items': [], 'itemsView': 'notLoaded', 'status': 'failed', 'error': {'message': 'Selected model is at capacity. Please try a different model.', 'codexErrorInfo': 'serverOverloaded', 'additionalDetails': None, 'misalignment': None}, 'startedAt': 1791872591, 'completedAt': 1791872633, 'durationMs': 41799}}}])",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false
+  },
+  {
+    "round": "fr-016",
+    "run": "ab-sf-fr016-91f1f5b4",
+    "scope": "owned Linux NFS bounded readiness capability with unprivileged Node client; no native models/auth/source/API/UI/Mac/LAN/setup proof",
+    "pass_count": 1,
+    "failed_cases": [
+      {
+        "name": "healthy mounted identity verified, RPC liveness alone not treated as storage proof",
+        "status": "FAIL",
+        "error": "AssertionError({'status': 'WRONG_MOUNT_SOURCE', 'observedSource': ':/ab-sf-fr016-91f1f5b4', 'seconds': 0.00019066600000000022, 'starts': 0, 'alive': 0, 'maxAlive': 0, 'heartbeats': 0})",
+        "seconds": 0.004
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "AssertionError({'status': 'WRONG_MOUNT_SOURCE', 'observedSource': ':/ab-sf-fr016-91f1f5b4', 'seconds': 0.00019066600000000022, 'starts': 0, 'alive': 0, 'maxAlive': 0, 'heartbeats': 0})",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false
+  },
+  {
+    "round": "fr-017",
+    "run": "ab-sf-fr017-0ae2435f",
+    "scope": "owned Linux NFS bounded readiness capability with unprivileged Node client; no native models/auth/source/API/UI/Mac/LAN/setup proof",
+    "pass_count": 5,
+    "failed_cases": [
+      {
+        "name": "actual mapped-client permission denial distinguished from wrong storage and outage",
+        "status": "FAIL",
+        "error": "AssertionError({'status': 'READY', 'fsType': 26985, 'actualStorageId': '3b834a53f1b3433989b175b7a4af0374', 'childExit': 0, 'signal': None, 'seconds': 0.040546166999999966, 'starts': 3, 'alive': 0, 'maxAlive': 1, 'heartbeats': 22})",
+        "seconds": 2.113
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "AssertionError({'status': 'READY', 'fsType': 26985, 'actualStorageId': '3b834a53f1b3433989b175b7a4af0374', 'childExit': 0, 'signal': None, 'seconds': 0.040546166999999966, 'starts': 3, 'alive': 0, 'maxAlive': 1, 'heartbeats': 22})",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false
+  },
+  {
+    "round": "fr-018",
+    "run": "ab-sf-fr018-6aec659d",
+    "scope": "owned Linux NFS bounded readiness capability with unprivileged Node client; no native models/auth/source/API/UI/Mac/LAN/setup proof",
+    "pass_count": 9,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "production_patch": false
+  },
+  {
+    "round": "fr-019",
+    "run": "ab-sf-fr019-macos",
+    "scope": "owned native macOS VM automation capability, not shared filesystem/real agent/product setup/physical LAN/current source proof",
+    "pass_count": 4,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "production_patch": false
+  },
+  {
+    "round": "fr-020",
+    "run": "ab-sf-fr020-313c4685",
+    "scope": "task-owned unmodified Codex app-server/private-skill capability, two fresh image nodes; NOT integrated AutoByteus agent/current source/UI/Mac/LAN/setup proof",
+    "pass_count": 11,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "production_patch": false
+  },
+  {
+    "round": "fr-021",
+    "run": "ab-sf-fr021-2417b29c",
+    "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; native mount/component proof only, NOT real agents/physical LAN/user setup/current source",
+    "pass_count": 0,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": "IndexError('list index out of range')",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false
+  },
+  {
+    "round": "fr-022",
+    "run": "ab-sf-fr022-88813f88",
+    "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; native mount/component proof only, NOT real agents/physical LAN/user setup/current source",
+    "pass_count": 9,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "production_patch": false
+  },
+  {
+    "round": "fr-023",
+    "run": "ab-sf-fr023-db476448",
+    "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; existing-release Mac backend plus two Linux image backends, real instructed native agents; NOT physical LAN/GUI/current source/user command",
+    "pass_count": 5,
+    "failed_cases": [
+      {
+        "name": "actual Mac release backend serves separate GraphQL endpoint on private VM",
+        "status": "FAIL",
+        "error": "RuntimeError(\"owned Mac backend unavailable: URLError(ConnectionRefusedError(61, 'Connection refused'))\")",
+        "seconds": 200.611
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "RuntimeError(\"owned Mac backend unavailable: URLError(ConnectionRefusedError(61, 'Connection refused'))\")",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false
+  },
+  {
+    "round": "fr-024",
+    "run": "ab-sf-fr024-3a208da7",
+    "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; existing-release Mac backend plus two Linux image backends, real instructed native agents; NOT physical LAN/GUI/current source/user command",
+    "pass_count": 5,
+    "failed_cases": [
+      {
+        "name": "actual Mac release backend serves separate GraphQL endpoint on private VM",
+        "status": "FAIL",
+        "error": "RuntimeError(\"owned Mac backend unavailable: URLError(ConnectionRefusedError(61, 'Connection refused'))\")",
+        "seconds": 200.526
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "RuntimeError(\"owned Mac backend unavailable: URLError(ConnectionRefusedError(61, 'Connection refused'))\")",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false
+  },
+  {
+    "round": "fr-025",
+    "run": "ab-sf-fr025-1964d0e8",
+    "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; existing-release Mac backend plus two Linux image backends, real instructed native agents; NOT physical LAN/GUI/current source/user command",
+    "pass_count": 7,
+    "failed_cases": [
+      {
+        "name": "actual workspace-selected Mac agent writes through native Codex filesystem tools",
+        "status": "FAIL",
+        "error": "AssertionError('Agent finished without observed successful native tool activity')",
+        "seconds": 9.438
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "AssertionError('Agent finished without observed successful native tool activity')",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false
+  },
+  {
+    "round": "fr-026",
+    "run": "ab-sf-fr026-6af2e9d4",
+    "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; existing-release Mac backend plus two Linux image backends, real instructed native agents; NOT physical LAN/GUI/current source/user command",
+    "pass_count": 11,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "production_patch": false
+  },
+  {
+    "round": "fr-027",
+    "run": "ab-sf-fr027-19d964a7",
+    "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; native mount/component proof only, NOT real agents/physical LAN/user setup/current source",
+    "pass_count": 5,
+    "failed_cases": [
+      {
+        "name": "Linux application file modification is freshly read through native macOS mount and peer API",
+        "status": "FAIL",
+        "error": "AssertionError(('MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\\n', 'MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\\nLINUX_NODE_B_3e9723668a464698843e374dc71335aa\\n', 'MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\\nLINUX_NODE_B_3e9723668a464698843e374dc71335aa\\n'))",
+        "seconds": 0.319
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "AssertionError(('MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\\n', 'MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\\nLINUX_NODE_B_3e9723668a464698843e374dc71335aa\\n', 'MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\\nLINUX_NODE_B_3e9723668a464698843e374dc71335aa\\n'))",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_limitations": null
+  },
+  {
+    "round": "fr-028",
+    "run": "ab-sf-fr028-37de3ffb",
+    "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; native mount/component proof only, NOT real agents/physical LAN/user setup/current source",
+    "pass_count": 14,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "production_patch": false,
+    "cleanup_limitations": null
+  },
+  {
+    "round": "fr-029",
+    "run": "ab-sf-fr029-8e9b3dda",
+    "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; native mount/component proof only, NOT real agents/physical LAN/user setup/current source",
+    "pass_count": 14,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "production_patch": false,
+    "cleanup_limitations": null
+  },
+  {
+    "round": "fr-030",
+    "run": "ab-sf-fr030-e9479bcd",
+    "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; native mount/component proof only, NOT real agents/physical LAN/user setup/current source",
+    "pass_count": 11,
+    "failed_cases": [
+      {
+        "name": "native unprivileged mounting fails truthfully without administrator authorization",
+        "status": "FAIL",
+        "error": "AssertionError()",
+        "seconds": 0.199
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "AssertionError()",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_limitations": "Interrupted extra side mount inFR030 resolved by retiring whole stopped clone beforeFR031; retained target inFR032 resolved by retiring clone beforeFR033"
+  },
+  {
+    "round": "fr-031",
+    "run": "ab-sf-fr031-69d2eda7",
+    "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; native mount/component proof only, NOT real agents/physical LAN/user setup/current source",
+    "pass_count": 15,
+    "failed_cases": [
+      {
+        "name": "native Mac reboot automatically remounts same storage through owned system job and normal file reads",
+        "status": "FAIL",
+        "error": "TimeoutExpired(['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-sf-fr031-macos', '/usr/bin/sudo', '-n', '/sbin/shutdown', '-r', 'now'], 25)",
+        "seconds": 25.411
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "TimeoutExpired(['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-sf-fr031-macos', '/usr/bin/sudo', '-n', '/sbin/shutdown', '-r', 'now'], 25)",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_limitations": null
+  },
+  {
+    "round": "fr-032",
+    "run": "ab-sf-fr032-f4a2e49a",
+    "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; native mount/component proof only, NOT real agents/physical LAN/user setup/current source",
+    "pass_count": 3,
+    "failed_cases": [
+      {
+        "name": "native macOS guest mounts the same Linux export and reads its independent storage identity",
+        "status": "FAIL",
+        "error": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr031-macos', '/usr/bin/sudo'): mkdir: /Volumes/autobyteus-shared: File exists\\n\")",
+        "seconds": 0.094
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr031-macos', '/usr/bin/sudo'): mkdir: /Volumes/autobyteus-shared: File exists\\n\")",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_limitations": "Interrupted extra side mount inFR030 resolved by retiring whole stopped clone beforeFR031; retained target inFR032 resolved by retiring clone beforeFR033"
+  },
+  {
+    "round": "fr-033",
+    "run": "ab-sf-fr033-75927368",
+    "scope": "native macOS VM plus two fresh existing-image Linux application nodes on one physical Mac; native mount/component proof only, NOT real agents/physical LAN/user setup/current source",
+    "pass_count": 16,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "production_patch": false,
+    "cleanup_limitations": null
   }
 ]

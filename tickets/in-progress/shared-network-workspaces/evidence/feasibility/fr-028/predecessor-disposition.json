@@ -1,0 +1,1 @@
+{"round":"FR-027","passes":5,"exit":1,"failure":"Immediate Mac read was stale at ~0.319 seconds; no <=5-second retry measured in that round. FR-028 measures fresh opens on all clients within the approved five-second bound, without cache-option changes.","reuse":"Stopped credential-free owned VM ab-sf-fr027-macos only; no user credentials present."}
