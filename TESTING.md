@@ -170,7 +170,8 @@ not paid inference. Agent-run testing is not the user's verification.
 
 The runnable preflight, root-container and virtual-display recipes are in
 [Isolated instances on Linux](docs/isolated-app-instances.md#linux). Keep
-suite-specific commands/cases in their test headers and package scripts.
+shared setup guidance separate from ticket-specific journeys. Temporary
+ticket-owned automation does not require a new global package command.
 
 ## Browser probes
 
