@@ -11,17 +11,23 @@
 - Supplemental task artifacts: `follow-up-tasks.md` (FT-1…FT-3, user-requested); rendered-check screenshots in `implementation-evidence/`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/design-review-report.md` (ARCH-REV-003 Pass)
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: `code-review-report.md` and `code-review-revision-record.md` (CRR-001, Fail — Local Fix: CR-001…CR-004), resolved in IR-002.
+- Triggering rework report, revision record, or evidence: `code-review-report.md` and `code-review-revision-record.md` (CRR-001, Fail — Local Fix: CR-001…CR-004), resolved in IR-002; CRR-003 failure-origin review of API/E2E APE-001 (Fail — Local Fix: CR-005), resolved in IR-003. API/E2E evidence: `api-e2e-evidence/ape-001-unwatch-probe.mjs`, `api-e2e-evidence/desktop/meas-001-fd-samples.txt`.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Local Fix` (CRR-001)
+- Implementation cycle: `Local Fix` (CRR-003, after CRR-001)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (IR-001 baseline; IR-002 CRR-001 local fixes)
+- Current implementation revision ID: `IR-003` (IR-001 baseline; IR-002 CRR-001 local fixes; IR-003 CRR-003 watch-handle release)
 - Related solution revision IDs: `SR-001`…`SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-001`…`ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001`; API/E2E / delivery: `N/A`
-- Triggering finding IDs: `CR-001`, `CR-002`, `CR-003`, `CR-004` (review note N-1 and residuals R-1, R-4, R-5 still honored)
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`; API/E2E: APE-001 (see `api-e2e-revision-record.md`); delivery: `N/A`
+- Triggering finding IDs: `CR-005` (IR-003); earlier `CR-001`…`CR-004` (IR-002). Review note N-1 and residuals R-1, R-4, R-5 still honored.
+
+## CRR-003 Resolution (IR-003)
+
+| Finding | Fix | Test / evidence |
+| --- | --- | --- |
+| CR-005 (Medium): a skill folder's OS handles stayed open after its last run ended (QR-002, REQ-012, AC-008) | `SkillFolderWatcher` now runs **one chokidar instance per watched skill folder** (`SkillFolderWatchFactory(skillDir, {ignored})`). A folder leaving the watch set has its instance closed, releasing exactly its handles and dropping any pending change for it. Folders still in use keep their instance, so there is no watch gap for them (preferred option; no close-and-recreate window). `unwatch` is no longer used: in chokidar 4 it closes only the exact path's watcher and mutes the nested ones | Unit (fake factory): per-folder watches; a removed folder's watch is closed, a kept one is not; a re-watched folder gets a new watch; close closes all. Unit (real chokidar): with 2 folders × 22 entries, removing one frees ≥ 20 descriptors on macOS; the kept folder keeps reporting; the re-watched folder reports again; an empty set returns to baseline. Fails on the IR-002 watcher (0 descriptors freed; checked). Integration: AC-008 and R-5 assert every folder's watch is closed once its last run ends. API/E2E's probe: `afterWatch 31 → afterSyncEmpty 0 → afterRewatch 31 → afterSecondSyncEmpty 0 → afterClose 0` (`implementation-evidence/cr-005-unwatch-probe-output.json`; IR-002 gave 31 → 31 → … → 0 only at close) |
 
 ## CRR-001 Resolution (IR-002)
 
@@ -65,7 +71,7 @@ What exists now:
   - `providers/seen-skill-versions-store.ts`: `<memoryDir>/seen_skill_versions.json` in the design's shape; atomic write; a missing or invalid file reads as none; in memory for `memoryDir: null`.
   - `services/skill-version-diff.ts`: changed, added and removed files with SKILL.md first; skill removed; same files in a moved folder → none.
   - `services/skill-update-notice-builder.ts`: text per REQ-008 (10 files, then "and N more"; the current SKILL.md path; re-read line; a removal line); the busy-run SYSTEM message; the event.
-  - `monitor/skill-folder-watcher.ts`: chokidar, used folders only, 1000 ms quiet / 3000 ms cap, injectable; reports a deleted folder as that folder.
+  - `monitor/skill-folder-watcher.ts`: one chokidar instance per used skill folder (closed when no run uses the folder, CR-005), 1000 ms quiet / 3000 ms cap, injectable; reports a deleted folder as that folder.
   - `services/run-skill-tracker.ts`: per-run used skills by name, resolved exactly as the runtimes resolve them (`getAgentDefinitionById(config.agentDefinitionId)` → `resolveConfiguredSkillsForAgent`, `ALL_INSTALLED` and application bundles included).
     - Each run is bound to a `RunSkillSource` when tracked: the definition read then, resolved through the current catalog (CR-002).
     - Re-resolution when a folder changes covers a new GitHub source generation (moved) and uninstalled skills (no longer resolves); later definition edits do not affect an active run.
@@ -95,7 +101,7 @@ What exists now:
     - no run metadata or execution-tree schema changed;
     - watch cost is within QR-002 (measured, see R-5).
   - Compaction-recovery inputs are distinguishable at dispatch (`ClaimedInputDispatch.recovery`), so no Design Impact.
-- Selected route: `Code Review` (Large/High; targeted delta for CRR-001), then API/E2E. Exact recipient from `get_handoff_rules`.
+- Selected route: `Code Review` (Large/High; targeted delta for CRR-003 / CR-005), then the API/E2E rerun of APE-001 and a proportional test review. Exact recipient from `get_handoff_rules`.
 - Lightweight implementation self-review completed for the direct route: `Not Applicable`
 - New design impact or escalation trigger: `None`. Two implementation decisions extend the approved mechanism without changing ownership or contracts; they are listed under Known Risks (items 1 and 2) for the reviewer.
 
@@ -161,7 +167,7 @@ What exists now:
   - Codex and Claude read the absolute source `SKILL.md` from the notice and answered the new codeword, as did AutoByteus (`read_file`).
   - No link refresh was needed: the notice always gives the current source path (as designed).
 - **R-4 (busy-check race):** accepted, unchanged.
-- **R-5 (`ALL_INSTALLED` watch count):** measured on macOS with the real watcher: 60 skill folders × 5 files → +300 open handles (about 1 per non-ignored entry), all released on close (back to baseline). There is one chokidar instance for all runs (integration test: 3 `ALL_INSTALLED` runs, 60 folders, 1 watch). Ignored folders are never entered.
+- **R-5 (`ALL_INSTALLED` watch count):** measured on macOS with the real watcher: 60 skill folders × 5 files → +300 open handles (about 1 per non-ignored entry). Since IR-003 there is one chokidar instance per used folder, shared by all runs that use it (integration test: 3 `ALL_INSTALLED` runs, 60 folders, 60 watches, all closed when the runs end). A folder's handles are released as soon as no run uses it, not only on close (CR-005; IR-001/IR-002 measured release only on close). Ignored folders are never entered.
 - **Compaction recovery:** identified at dispatch by `ClaimedInputDispatch.recovery`. The unit test fails if the guard is removed (checked).
 
 ## Task Design Health Assessment Implementation Check
@@ -202,6 +208,12 @@ What exists now:
 - The server resolves `autobyteus-ts` from its built `dist`: run `pnpm -C autobyteus-ts build` (or `pnpm -C autobyteus-server-ts prepare:shared`) before server tests.
 
 ## Local Implementation Checks Run
+
+IR-003 (CR-005):
+
+- Server: typecheck clean; `tests/unit/skill-update-notices` + `tests/integration/skill-update-notices`: 4 files / 33 tests pass (watcher tests 3 consecutive runs green); mutation check: the real-chokidar release test fails on the IR-002 watcher.
+- Scripted AGY E2E (`agy-skill-update-notice-transport`, API/E2E's `agy-skill-update-notice-roots`): 5/5 pass with the real per-folder watcher (Team/Org/delegated copy, copy restore, GitHub generation, busy/stop/idle, AC-003).
+- API/E2E's probe `ape-001-unwatch-probe.mjs` on a build of this commit: handles released on `syncWatchedFolders([])`.
 
 IR-002 (CRR-001 fixes):
 

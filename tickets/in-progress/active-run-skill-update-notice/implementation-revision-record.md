@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-003 Pass | N/A (note N-1 and residuals R-1, R-4, R-5 and compaction-recovery identification honored) | `Initial Baseline` | SR-004, ARCH-REV-003; CRR/API-REV/DR `N/A` | Implementation complete; ready for source review |
 | IR-002 | Code Reviewer / `code-review-report.md` / CRR-001 round 1 (Fail — Local Fix) | CR-001, CR-002, CR-003, CR-004 | `Local Fix` | SR-004, ARCH-REV-003, CRR-001; API-REV/DR `N/A` | All four fixed; ready for targeted source review, then API/E2E |
+| IR-003 | Code Reviewer / `code-review-report.md` / CRR-003 failure-origin review of API/E2E APE-001 (Fail — Local Fix) | CR-005 | `Local Fix` | SR-004, ARCH-REV-003, CRR-001…CRR-003, APE-001; DR `N/A` | Per-folder watches released when unused; ready for targeted source review, then the APE-001 rerun |
 
 ## Revision Entries
 
@@ -93,4 +94,24 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - Scripted AGY E2E: 2/2 pass. Live Codex + Claude E2E (throwaway `CODEX_HOME`; operator's Claude login): 2/2 pass.
 - Next recipient or routing: targeted source review (Large/High) per `get_handoff_rules`, then API/E2E.
 - Remaining limitations or risks: unchanged from IR-001 (application execution scope runs not wired, recorded by the reviewer as a note for the Solution Designer; AC-010 desktop journey; live team-member/delegated-copy restore; ACP/Grok live).
+
+### IR-003 — CRR-003 local fix: release a skill folder's watch handles when no run uses it
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/code-review-report.md` § Round 3 (CRR-003, failure-origin review of API/E2E APE-001).
+- Triggering finding IDs: CR-005 (Medium).
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002 (`d32e55270`); API/E2E test commit `c9e100778` (not mine) on top.
+- Current authoritative result: commit `53074d2ac` on `codex/active-run-skill-update-notice`.
+- Related solution revision IDs: `SR-004`
+- Related architecture-review revision IDs: `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`
+- Related API/E2E revision IDs: APE-001 (see `api-e2e-revision-record.md`)
+- Related delivery revision IDs: `N/A`
+- Approved behavior or requirement IDs affected: REQ-012, QR-002, AC-008, DS-001 (run end → watch set re-synced and released).
+- Root cause: `SkillFolderWatcher.syncWatchedFolders` called `unwatch(removed)` on one shared chokidar instance; chokidar 4's `unwatch(dir)` closes only the watcher registered for that exact path and adds every nested file/folder watcher to its ignore list, so events stopped but OS handles stayed open until the instance closed. IR-001's R-5 measurement covered only `close()`, and the AC-008 test only the logical registry.
+- Implementation delta: one chokidar instance per watched skill folder (`SkillFolderWatchFactory(skillDir, {ignored})`, `chokidar.watch(skillDir, …)`); a folder leaving the watch set has its instance closed (its pending change dropped); kept folders are untouched (no watch gap); `close()` closes every instance and awaits them. The doc comment states the per-folder release. Tests: watcher unit tests rewritten for the per-folder factory plus a real-chokidar release test (descriptor count on macOS, reporting of kept and re-watched folders); integration world fake tracks open/closed per folder; AC-008 and R-5 assert closure.
+- Changed files or areas: `autobyteus-server-ts/src/skill-update-notices/monitor/skill-folder-watcher.ts`, `autobyteus-server-ts/tests/unit/skill-update-notices/skill-folder-watcher.test.ts`, `autobyteus-server-ts/tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts`.
+- Local validation and result: typecheck clean; skill-update-notices unit + integration 33/33 pass; release test fails on the IR-002 watcher (checked); scripted AGY E2E 5/5 (including API/E2E's roots suite); API/E2E's probe: `afterWatch 31 → afterSyncEmpty 0 → afterRewatch 31 → afterSecondSyncEmpty 0 → afterClose 0` (`implementation-evidence/cr-005-unwatch-probe-output.json`).
+- Next recipient or routing: targeted source review per `get_handoff_rules`; then API/E2E rerun of APE-001 (probe plus desktop handle samples) and a proportional test review of `c9e100778` and the new tests.
+- Remaining limitations or risks: unchanged (application execution scope runs not wired, recorded by the reviewer for the Solution Designer). On Linux, inotify keeps one descriptor per process, so the descriptor-count assertion runs on macOS only; the per-folder close is asserted on every platform.
 
