@@ -1,0 +1,29 @@
+{
+  "head": "59a5bd76de232b9bdd05c369d53e3586178d789d",
+  "remoteBase": "f13bdd0eb79aacc63dffa5995b9c86f359001468",
+  "sourceBlob": "82982846da660d3bb9c8b9349589e14cc8b5de17",
+  "appAsarPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+  "appAsarSHA256": "e645e9a959261a1a5cb6d5ad722bb2c12a1d819b7a90a302361bc23697179a78",
+  "isolationMarker": {
+    "isolatedLaunchContract": 1
+  },
+  "instance": {
+    "instanceId": "iso-52535-8486",
+    "pid": 77879,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:52536",
+    "graphqlUrl": "http://127.0.0.1:52536/graphql",
+    "controlEndpoint": "http://127.0.0.1:52535",
+    "controlPort": 52535,
+    "serverPort": 52536,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-J5JTsc",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-J5JTsc/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-52535-8486.log"
+  },
+  "readiness": "isolated-app successful receipt: backend health and main renderer",
+  "sourceDeltaDuringBuild": "Only tracked change autobyteus-web/docs/agent_teams.md; source unchanged",
+  "ownership": "Transferred exclusively to API/E2E for API-REV-002 journeys/data/lifecycle cleanup",
+  "deliveryProbeExecuted": false
+}

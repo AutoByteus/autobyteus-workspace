@@ -49,6 +49,16 @@ Application-owned Teams are inspectable and editable only when the owning
 bundle source is writable; generic deletion does not bypass source ownership.
 Team-local private Agents remain discoverable through their owning Team detail.
 
+### Definition Detail Layout
+
+Every Team detail uses `AgentTeamDetail.vue`, including Teams reached from an
+Org. Its sections appear in reading order: **Description → Members →
+Instructions → Handoffs**. Members retain their definition order, count,
+coordinator badge and View links, so long instructions or handoff rules do not
+precede the roster. The cards keep the existing two-column wide / one-column
+narrow layout. Header actions, instruction disclosure and ownership-scoped
+navigation remain unchanged; this placement does not alter membership or routing.
+
 ## Handoffs
 
 Team-local handoff authoring uses explicit **From**, **To**, and ordered
