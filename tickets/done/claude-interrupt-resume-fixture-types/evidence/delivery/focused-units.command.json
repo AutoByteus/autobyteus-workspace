@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/agent-execution/prompt/carpenter-prompt-composer.test.ts",
+    "tests/unit/agent-execution/agent-run-status-projection-service.test.ts",
+    "tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts",
+    "tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts",
+    "tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts",
+    "tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts",
+    "tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts",
+    "--no-watch"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types",
+  "expectedExit": 0,
+  "environment": "PATH + fresh private HOME/TMPDIR + explicit TEST_DELIVERY_EXECUTION marker, target-only AGY_ERROR_EVIDENCE_DIR",
+  "RUN_CLAUDE_E2E": "absent",
+  "revision": "d9dad8fe1e6b65921a1efd07ebd9899fd009e061"
+}
