@@ -1,0 +1,89 @@
+Get:1 https://deb.nodesource.com/node_22.x nodistro InRelease [12.1 kB]
+Get:2 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble InRelease [17.8 kB]
+Get:3 https://deb.nodesource.com/node_22.x nodistro/main arm64 Packages [12.5 kB]
+Get:4 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble InRelease [24.1 kB]
+Get:5 http://ports.ubuntu.com/ubuntu-ports noble InRelease [256 kB]
+Get:6 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble/main arm64 Packages [52.0 kB]
+Get:7 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble/main arm64 Packages [59.5 kB]
+Get:8 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease [126 kB]
+Get:9 http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease [126 kB]
+Get:10 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease [126 kB]
+Get:11 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages [1776 kB]
+Get:12 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Components [658 kB]
+Get:13 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Packages [19.0 MB]
+Get:14 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Components [5467 kB]
+Get:15 http://ports.ubuntu.com/ubuntu-ports noble/restricted arm64 Packages [113 kB]
+Get:16 http://ports.ubuntu.com/ubuntu-ports noble/multiverse arm64 Packages [274 kB]
+Get:17 http://ports.ubuntu.com/ubuntu-ports noble/multiverse arm64 Components [37.7 kB]
+Get:18 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Packages [1786 kB]
+Get:19 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Components [239 kB]
+Get:20 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Packages [2212 kB]
+Get:21 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Components [536 kB]
+Get:22 http://ports.ubuntu.com/ubuntu-ports noble-updates/restricted arm64 Packages [3251 kB]
+Get:23 http://ports.ubuntu.com/ubuntu-ports noble-updates/restricted arm64 Components [159 B]
+Get:24 http://ports.ubuntu.com/ubuntu-ports noble-updates/multiverse arm64 Packages [104 kB]
+Get:25 http://ports.ubuntu.com/ubuntu-ports noble-updates/multiverse arm64 Components [159 B]
+Get:26 http://ports.ubuntu.com/ubuntu-ports noble-backports/main arm64 Packages [49.0 kB]
+Get:27 http://ports.ubuntu.com/ubuntu-ports noble-backports/main arm64 Components [3712 B]
+Get:28 http://ports.ubuntu.com/ubuntu-ports noble-backports/universe arm64 Packages [36.3 kB]
+Get:29 http://ports.ubuntu.com/ubuntu-ports noble-backports/universe arm64 Components [13.6 kB]
+Get:30 http://ports.ubuntu.com/ubuntu-ports noble-backports/restricted arm64 Components [160 B]
+Get:31 http://ports.ubuntu.com/ubuntu-ports noble-backports/multiverse arm64 Packages [669 B]
+Get:32 http://ports.ubuntu.com/ubuntu-ports noble-backports/multiverse arm64 Components [161 B]
+Get:33 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 Packages [1474 kB]
+Get:34 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 Components [55.6 kB]
+Get:35 http://ports.ubuntu.com/ubuntu-ports noble-security/universe arm64 Packages [1636 kB]
+Get:36 http://ports.ubuntu.com/ubuntu-ports noble-security/universe arm64 Components [98.3 kB]
+Get:37 http://ports.ubuntu.com/ubuntu-ports noble-security/restricted arm64 Packages [3129 kB]
+Get:38 http://ports.ubuntu.com/ubuntu-ports noble-security/restricted arm64 Components [156 B]
+Get:39 http://ports.ubuntu.com/ubuntu-ports noble-security/multiverse arm64 Packages [99.1 kB]
+Get:40 http://ports.ubuntu.com/ubuntu-ports noble-security/multiverse arm64 Components [157 B]
+Fetched 42.9 MB in 6s (6855 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+xauth is already the newest version (1:1.1.2-1build1).
+xauth set to manually installed.
+The following packages were automatically installed and are no longer required:
+  geocode-glib-common gnome-keyring-pkcs11 libabsl20220623t64
+  libebackend-1.2-11t64 libebook-1.2-21t64 libebook-contacts-1.2-4t64
+  libedata-book-1.2-27t64 libedata-cal-2.0-2t64 libedataserverui-1.2-4t64
+  libgeocode-glib-2-0 libgweather-4-0t64 libgweather-4-common libphonenumber8
+  libprotobuf32t64 p11-kit p11-kit-modules
+Use 'apt autoremove' to remove them.
+The following NEW packages will be installed:
+  xvfb
+0 upgraded, 1 newly installed, 0 to remove and 65 not upgraded.
+Need to get 873 kB of archives.
+After this operation, 2327 kB of additional disk space will be used.
+Get:1 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 xvfb arm64 2:21.1.12-1ubuntu1.8 [873 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 873 kB in 1s (833 kB/s)
+Selecting previously unselected package xvfb.
+(Reading database ...
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 98438 files and directories currently installed.)
+Preparing to unpack .../xvfb_2%3a21.1.12-1ubuntu1.8_arm64.deb ...
+Unpacking xvfb (2:21.1.12-1ubuntu1.8) ...
+Setting up xvfb (2:21.1.12-1ubuntu1.8) ...
+Processing triggers for man-db (2.12.0-4build2) ...
