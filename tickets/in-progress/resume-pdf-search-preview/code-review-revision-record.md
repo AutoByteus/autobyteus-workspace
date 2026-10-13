@@ -10,6 +10,7 @@ Current canonical `code-review-report.md` (or separate future `api-e2e-test-revi
 | CRR-002 | code-review-report.md | Implementation Review / IR-002 correction after SR-004 / ARCH-REV-003 | Fail — Design Impact | Pass | CR-F-001 resolved |
 | CRR-003 | api-e2e-test-review-report.md | Successful API/E2E test-code review / API-REV-001 Pass | N/A — first test-review result; source CRR-002 Pass retained | Pass | None; CR-F-001 stays resolved |
 | CRR-004 | api-e2e-test-review-report.md | Successful API/E2E test/guidance review / API-REV-002 actual Electron Pass | Pass (CRR-003 prior scope) | Pass | None; CR-F-001 stays resolved |
+| CRR-005 | api-e2e-test-review-report.md | Successful user-directed coverage-removal/guidance review / API-REV-003 | Pass (CRR-004 prior scope) | Pass | None; CR-F-001 stays resolved |
 
 ## Revision Entries
 
@@ -100,3 +101,24 @@ None — no prior unresolved successful-test-review finding. CR-F-001 stays reso
 - Guidance/cleanup: seven Bash blocks syntax-checked; whole-session non-root setpriv+xvfb-run recipe actually run04; no --no-sandbox/global security/account changes. Canonical stop forcedfalse/rootremoved/bothportsreleased/listempty, owned display100/101/UID processes/temp homes/cache gone; shared99/VNC35/server61 and original SHA unchanged. Packages/untracked native build prerequisites retained explicitly.
 - Recommended recipient: Delivery Engineer under fresh successful-test-review Pass rule; cumulative R1/SR/ARCH/IR/source/test/API-REV-002 and DR-001 context/new durable paths/evidence. No duplicate informational notification.
 - Remaining gates: DR-001/AC-004 actual host/runtime/frontend pins, authorized rollout/rollback/timing, explicit user acceptance/verification, integrity/finalization/final cleanup. Actual agent-run desktop proof does not authorize deployed8001 changes or complete delivery. No public release. Reviewer only edited two review artifacts; upstream delivery docs/artifacts/history and local outputs untouched/unstaged.
+
+### CRR-005 — User-directed permanent Electron PDF suite removal verified
+
+- Date/reviewer:2026-10-13/code_reviewer.
+- Canonical report updated: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-test-review-report.md`; source `code-review-report.md` remains CRR-002 Pass unchanged.
+- Entry point/round/scope: Successful API/E2E Test-Code Review /3/N/A — proportional removal/reference/guidance scope; no source audit, size thresholds, failure-origin attribution or confidence rescoring.
+- Trigger: API/E2E Engineer current execution report/API-REV-003 scoped removal Pass95% after explicit user rejection of the new global test:e2e:search-pdf-electron command/probe. Shared improvement should remain Linux environment/build/isolation setup, not a permanent ticket PDF journey.
+- Related SR-001–004 (ApprovedR1), ARCH-REV-001–003(current003), IR-001/002, API-REV-001–003, DR-001/002(current002 external hold); sourceCRR-002/testCRR-003/004 retained. Integrated inpute7a5c20c7, standalone TESTINGdbe37b66a, exact removal/docscbb37464d, intake artifactsa37636a09.
+- Prior authoritative test result: CRR-004 **Pass** for earlier probe/script/Linux guidance scope. Current **Pass** for user-directed deletion/current guidance; earlier result not rewritten and does not promise removed automation still exists. Small/High unchanged.
+- Delta: named package command and entire306-line Electron PDF probe deleted, no relocation/alias/replacement. Active server-module discovery reference removed; generic Linux recipes invoke ticket-owned Node automation; TESTING separates shared setup from ticket journeys. Existing source/lockfile/PDF/unit/integration/HTTP/browser coverage unchanged.
+- Scenario/material-premise changes: None to approved product behavior/AC-001–003. Independent user tooling instruction authorizes permanent-suite removal; intentionally reduced repeatable desktop PDF coverage is not a new product defect or reason to restore the command.
+
+#### Prior Finding Resolution
+
+None — no prior unresolved successful-test-review finding. CR-F-001 stays resolved under source CRR-002.
+
+- New/remaining findings: None. Score/classification changes: N/A; no source score or execution-confidence reassignment. API95% scoped removal confidence is not fresh application/PDF proof.
+- Evidence: independent exact package-key comparison/probe absence/active-reference/source-diff checks; `evidence/api-electron-removal.diff`, `api-electron-removal-check.json`, `api-electron-removal-lifecycle.log`. Current51Node checksPass/0fail/0skip; seven guide Bash blocks syntax-only after generic placeholder substitution; own HOME/temp removed. No fresh app build/launch,55profiles/166checks/native-PDF rerun or recipe runtime qualification claimed.
+- Historical actual Electron/API-REV-002 and integrated Delivery DR-002 screenshots/bytes/render/restart/build-pin/cleanup observations retained at their tested revisions. Deleted path attachable only through exact removal diff/history, not a current file.
+- Recommended recipient: Delivery Engineer under fresh successful-test-review Pass rule, to drop obsolete active discovery references in owned current artifacts without rewriting actual run history. Not repeated external-blocker routing; existing DR-002 host/acceptance/rollout/finalization hold unchanged until new facts.
+- Remaining gates: AC-004/DR-002 external authorization/pins/timing/rollout/user acceptance/finalization/cleanup, no merge/push/deploy/public release/Task close inferred. Reviewer only updated two review artifacts, no code/test/OS/user-data or live8001 mutation; dirty Delivery reports/log/build outputs retained untouched/unstaged.
