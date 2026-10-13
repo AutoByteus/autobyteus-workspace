@@ -1,0 +1,203 @@
+{
+  "conclusion": "success",
+  "createdAt": "2026-10-13T17:09:40Z",
+  "databaseId": 38436397159,
+  "event": "push",
+  "headSha": "abfd379059a7bc1c392a6a2137d27e32427cda26",
+  "jobs": [
+    {
+      "completedAt": "2026-10-13T17:09:47Z",
+      "conclusion": "success",
+      "databaseId": 115431388606,
+      "name": "Resolve Release Metadata",
+      "startedAt": "2026-10-13T17:09:43Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-13T17:09:44Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-13T17:09:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:09:44Z",
+          "conclusion": "success",
+          "name": "Resolve publish metadata",
+          "number": 2,
+          "startedAt": "2026-10-13T17:09:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:09:44Z",
+          "conclusion": "success",
+          "name": "Summarize publish plan",
+          "number": 3,
+          "startedAt": "2026-10-13T17:09:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:09:44Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 4,
+          "startedAt": "2026-10-13T17:09:44Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38436397159/job/115431388606"
+    },
+    {
+      "completedAt": "2026-10-13T17:49:56Z",
+      "conclusion": "success",
+      "databaseId": 115431437381,
+      "name": "Build And Push Server Image",
+      "startedAt": "2026-10-13T17:09:50Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-13T17:09:54Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-13T17:09:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:11:23Z",
+          "conclusion": "success",
+          "name": "Checkout workspace",
+          "number": 2,
+          "startedAt": "2026-10-13T17:09:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:11:24Z",
+          "conclusion": "success",
+          "name": "Check licensing consistency",
+          "number": 3,
+          "startedAt": "2026-10-13T17:11:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:13:10Z",
+          "conclusion": "success",
+          "name": "Free runner disk space",
+          "number": 4,
+          "startedAt": "2026-10-13T17:11:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:13:16Z",
+          "conclusion": "success",
+          "name": "Set up QEMU",
+          "number": 5,
+          "startedAt": "2026-10-13T17:13:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:13:21Z",
+          "conclusion": "success",
+          "name": "Set up Docker Buildx",
+          "number": 6,
+          "startedAt": "2026-10-13T17:13:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:13:22Z",
+          "conclusion": "success",
+          "name": "Login to Docker Hub",
+          "number": 7,
+          "startedAt": "2026-10-13T17:13:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:48:50Z",
+          "conclusion": "success",
+          "name": "Build and push default multi-arch image",
+          "number": 8,
+          "startedAt": "2026-10-13T17:13:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:48:50Z",
+          "conclusion": "skipped",
+          "name": "Build and push zh multi-arch image",
+          "number": 9,
+          "startedAt": "2026-10-13T17:48:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:48:50Z",
+          "conclusion": "success",
+          "name": "Publish summary",
+          "number": 10,
+          "startedAt": "2026-10-13T17:48:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:48:56Z",
+          "conclusion": "success",
+          "name": "Move beta tag",
+          "number": 11,
+          "startedAt": "2026-10-13T17:48:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:48:59Z",
+          "conclusion": "success",
+          "name": "Post Build and push default multi-arch image",
+          "number": 18,
+          "startedAt": "2026-10-13T17:48:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:48:59Z",
+          "conclusion": "success",
+          "name": "Post Login to Docker Hub",
+          "number": 19,
+          "startedAt": "2026-10-13T17:48:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:49:50Z",
+          "conclusion": "success",
+          "name": "Post Set up Docker Buildx",
+          "number": 20,
+          "startedAt": "2026-10-13T17:48:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:49:53Z",
+          "conclusion": "success",
+          "name": "Post Set up QEMU",
+          "number": 21,
+          "startedAt": "2026-10-13T17:49:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:49:53Z",
+          "conclusion": "success",
+          "name": "Post Checkout workspace",
+          "number": 22,
+          "startedAt": "2026-10-13T17:49:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:49:53Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 23,
+          "startedAt": "2026-10-13T17:49:53Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38436397159/job/115431437381"
+    }
+  ],
+  "status": "completed",
+  "updatedAt": "2026-10-13T17:49:57Z",
+  "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38436397159",
+  "workflowName": "Server Docker Release"
+}

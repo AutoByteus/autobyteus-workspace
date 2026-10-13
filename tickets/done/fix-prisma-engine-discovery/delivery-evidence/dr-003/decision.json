@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-13T17:09:13.948811+00:00",
+  "request": "could you please release a beta version please",
+  "base": "7170fd755d0dd5e806371dd4594eb4a9bf3e2682",
+  "versionPreview": "1.5.3-beta.5",
+  "releaseGuideSha256": "57cee455aca6a7ae335c034a39092cdc7d846cf96fa653ba20bfbffe79f504ed",
+  "latestStableBefore": {
+    "tag": "v1.5.2",
+    "id": 410563836
+  },
+  "verification": "Existing source delivery actual-evidence judgement and integrated197/197+typecheck applies; HEAD exactly verifiedfinalsource, no new material input or redundant test/live replay.",
+  "residual": "Full integration371Pass/2Fail/68Skip exit1, PB-001 unrelated streaming candidate remains; no all-green claim.",
+  "userNodes": "No probe/restart/upgrade/recreation/pin or data changes authorized or performed",
+  "status": "Authorized beta, preflight complete, not yet published"
+}

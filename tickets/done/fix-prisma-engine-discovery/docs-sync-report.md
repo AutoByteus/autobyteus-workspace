@@ -1,5 +1,10 @@
 # Docs Sync Report — fix-prisma-engine-discovery
 
+## Current DR-003 release synchronization
+Explicit later beta request fulfilled as v1.5.3-beta.5; release-deployment-report and delivery-evidence/dr-003 own actual4pipeline/17asset/multiarch/stable-channel proof. Cause brief updated from future-publication to actual authorized publication while preserving historical source-test vs image and no user-node rollout distinction. Only release package version and Delivery-owned docs/evidence changed in this continuation; canonical startup behavior docs still accurate, no design/testing/release-policy expansion. Beta uses generated notes, no curated release-notes required. Full original DR-001/002 sync record follows; earlier unreleased wording is historical, not current publication status. Latest report basec2d0afa5b0 fast-forwarded first;31releaseversion checks/licensing/hygiene pass; tag remainsabfd379059 and excludes later Settings work. Final push/cleanup proof at durable beta-release/release-finalization.json.
+
+## Historical source-stage sync
+
 ## Scope / integrated authority
 R3 Approved/D1 Ready/SR004/ARCH001/IR001/CRR001 sourcePass/CRR002 PB-001 origin/CRR003 testPass/API-REV002 scoped95.7%; Medium/High/Reviewed. Bootstrape22245f, reviewed2bfa687988, checked latestpersonal8a4dfe4279; merged without conflict at129cc8403b before Delivery edits. No checkpoint needed: tracked tree/index clean, existing five generated prerequisite roots preserved.
 
