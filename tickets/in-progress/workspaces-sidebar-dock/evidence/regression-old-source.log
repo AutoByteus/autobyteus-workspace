@@ -1,0 +1,405 @@
+
+> autobyteus@1.5.3-beta.3 test:nuxt /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts layouts/__tests__/default-docking.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web
+
+stderr | layouts/__tests__/default-docking.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/layout/__tests__/responsiveLayoutPolicy.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | layouts/__tests__/default-docking.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/layout/__tests__/responsiveLayoutPolicy.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ utils/layout/__tests__/responsiveLayoutPolicy.spec.ts (30 tests | 11 failed) 21ms
+   ✓ responsiveLayoutPolicy > keeps the canonical split on wide desktop with no generic controls 2ms
+   ✓ responsiveLayoutPolicy > uses a consuming right strip before adapting the left selection surface 0ms
+   ✓ responsiveLayoutPolicy > keeps the right strip in flow with the compact center floor 0ms
+   ✓ responsiveLayoutPolicy > adapts the left surface only after the consuming right strip cannot fit 0ms
+   ✓ responsiveLayoutPolicy > preserves manual left collapse as a user-owned strip 0ms
+   ✓ responsiveLayoutPolicy > uses the compact center floor for a user-sized dock after left collapse 0ms
+   × responsiveLayoutPolicy > bounds an oversized preference to the compact candidate instead of yielding tools 8ms
+     → expected 'strip' to be 'docked' // Object.is equality
+   ✓ responsiveLayoutPolicy > emits symmetric redock activation for fitting wide user strips 0ms
+   ✓ responsiveLayoutPolicy > changes user strip activation to open-drawer while constrained and restores redock on recovery 1ms
+   ✓ responsiveLayoutPolicy > uses consuming left and right strips at the narrow standard-workspace boundary 2ms
+   ✓ responsiveLayoutPolicy > allows only the terminal below-300px state to remove the center floor 0ms
+   ✓ responsiveLayoutPolicy > yields right tools to a consuming strip in short-height windows 0ms
+   ✓ responsiveLayoutPolicy > preserves the user right strip during short-height manual left collapse 0ms
+   ✓ responsiveLayoutPolicy > keeps user preferences unchanged across pure responsive transitions 0ms
+   ✓ responsiveLayoutPolicy > preserves sanitized preferred widths and the automatic center floor 0ms
+   ✓ responsiveLayoutPolicy > uses the explicit user-sized center floor while the dock still fits 0ms
+   ✓ responsiveLayoutPolicy > retains a user-sized intent while yielding responsively after shrink 0ms
+   ✓ responsiveLayoutPolicy > re-evaluates retained user sizing when the viewport recovers 0ms
+   × responsiveLayoutPolicy > reclaims right width when Workspaces redocks at 1000px 1ms
+     → expected 'open-drawer' to be 'redock-panel' // Object.is equality
+   × responsiveLayoutPolicy > reclaims right width when Workspaces redocks at 1280px 0ms
+     → expected 'open-drawer' to be 'redock-panel' // Object.is equality
+   × responsiveLayoutPolicy > reclaims right width when Workspaces redocks at 1440px 0ms
+     → expected 'open-drawer' to be 'redock-panel' // Object.is equality
+   × responsiveLayoutPolicy > uses the actual 260px navigation width at the drag capacity boundary 0ms
+     → expected 'strip' to be 'docked' // Object.is equality
+   × responsiveLayoutPolicy > uses the actual 320px navigation width at the drag capacity boundary 0ms
+     → expected 'strip' to be 'docked' // Object.is equality
+   × responsiveLayoutPolicy > uses the actual 520px navigation width at the drag capacity boundary 0ms
+     → expected 'strip' to be 'docked' // Object.is equality
+   ✓ responsiveLayoutPolicy > preserves automatic allocation and its 480px floor at 1209px 0ms
+   × responsiveLayoutPolicy > preserves automatic allocation and its 480px floor at 1210px 0ms
+     → expected 'strip' to be 'docked' // Object.is equality
+   × responsiveLayoutPolicy > preserves automatic allocation and its 480px floor at 1211px 1ms
+     → expected 'strip' to be 'docked' // Object.is equality
+   × responsiveLayoutPolicy > preserves automatic allocation and its 480px floor at 1259px 0ms
+     → expected 'strip' to be 'docked' // Object.is equality
+   ✓ responsiveLayoutPolicy > preserves automatic allocation and its 480px floor at 1260px 0ms
+   × responsiveLayoutPolicy > retains raw preference through shrink, narrow/short fallbacks and recovery 1ms
+     → expected 1186 to be 910 // Object.is equality
+ ❯ composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts (3 tests | 2 failed) 15ms
+   × responsive shell composition > uses retained raw preference, independent of stale measured effective width (AC-002/003) 10ms
+     → expected 550 to be 1186 // Object.is equality
+   × responsive shell composition > re-evaluates capacity on viewport resize without rewriting preference/intent (AC-004/005) 3ms
+     → expected 1186 to be 400 // Object.is equality
+   ✓ responsive shell composition > allocates the automatic dock even when measured width is below its minimum 2ms
+ ❯ layouts/__tests__/default-docking.spec.ts (4 tests | 4 failed) 158ms
+   × default shell candidate-relative Workspaces docking > redocks after real drag at 1000px with no dialog/backdrop or navigation (AC-001/003) 70ms
+     → Unable to get [data-test="app-left-panel-shell"] within: <div class="isolate flex h-screen h-[100dvh] flex-col">
+  <div class="relative flex flex-1 flex-row overflow-hidden">
+    <div data-test="app-left-drawer-backdrop" class="fixed inset-0 z-40 bg-black/30" style="z-index: 40;" aria-hidden="true"></div>
+    <aside role="dialog" aria-label="shell.workspaceSurfaces.navigationDrawerTitle" tabindex="-1" data-test="app-left-navigation-drawer" class="inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0" style="width: 320px; z-index: 50;" aria-modal="true">
+      <div class="min-h-0 flex-1 overflow-hidden"><button data-test="collapse">Collapse</button></div>
+    </aside>
+    <!---->
+    <main class="relative flex-1 min-w-0 overflow-hidden w-full bg-blue-50">
+      <div data-v-f06c4c3a="" class="flex flex-1 flex-col relative min-h-0 min-w-0 overflow-hidden bg-gray-100">
+        <div data-v-f06c4c3a="" class="flex flex-1 min-h-0 min-w-0 overflow-hidden" data-test="workspace-center-right-flow">
+          <div data-v-f06c4c3a="" data-test="workspace-center-pane" class="relative bg-white p-0 flex flex-col min-h-0 flex-1 min-w-0" style="min-width: 200px;"><button data-test="conversation-control">Conversation</button>
+            <!---->
+          </div>
+          <div data-v-f06c4c3a="" class="drag-handle" data-test="workspace-right-resize-handle"></div>
+          <div data-v-f06c4c3a="" style="width: 746px;" class="bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative" data-test="workspace-right-panel"><button data-v-f06c4c3a="" data-test="tool-control" mode="desktop">Tool</button></div>
+        </div>
+        <!---->
+      </div>
+    </main>
+  </div>
+</div>
+   × default shell candidate-relative Workspaces docking > redocks after real drag at 1280px with no dialog/backdrop or navigation (AC-001/003) 24ms
+     → Unable to get [data-test="app-left-panel-shell"] within: <div class="isolate flex h-screen h-[100dvh] flex-col">
+  <div class="relative flex flex-1 flex-row overflow-hidden">
+    <div data-test="app-left-drawer-backdrop" class="fixed inset-0 z-40 bg-black/30" style="z-index: 40;" aria-hidden="true"></div>
+    <aside role="dialog" aria-label="shell.workspaceSurfaces.navigationDrawerTitle" tabindex="-1" data-test="app-left-navigation-drawer" class="inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0" style="width: 320px; z-index: 50;" aria-modal="true">
+      <div class="min-h-0 flex-1 overflow-hidden"><button data-test="collapse">Collapse</button></div>
+    </aside>
+    <!---->
+    <main class="relative flex-1 min-w-0 overflow-hidden w-full bg-blue-50">
+      <div data-v-f06c4c3a="" class="flex flex-1 flex-col relative min-h-0 min-w-0 overflow-hidden bg-gray-100">
+        <div data-v-f06c4c3a="" class="flex flex-1 min-h-0 min-w-0 overflow-hidden" data-test="workspace-center-right-flow">
+          <div data-v-f06c4c3a="" data-test="workspace-center-pane" class="relative bg-white p-0 flex flex-col min-h-0 flex-1 min-w-0" style="min-width: 200px;"><button data-test="conversation-control">Conversation</button>
+            <!---->
+          </div>
+          <div data-v-f06c4c3a="" class="drag-handle" data-test="workspace-right-resize-handle"></div>
+          <div data-v-f06c4c3a="" style="width: 1026px;" class="bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative" data-test="workspace-right-panel"><button data-v-f06c4c3a="" data-test="tool-control" mode="desktop">Tool</button></div>
+        </div>
+        <!---->
+      </div>
+    </main>
+  </div>
+</div>
+   × default shell candidate-relative Workspaces docking > redocks after real drag at 1440px with no dialog/backdrop or navigation (AC-001/003) 27ms
+     → Unable to get [data-test="app-left-panel-shell"] within: <div class="isolate flex h-screen h-[100dvh] flex-col">
+  <div class="relative flex flex-1 flex-row overflow-hidden">
+    <div data-test="app-left-drawer-backdrop" class="fixed inset-0 z-40 bg-black/30" style="z-index: 40;" aria-hidden="true"></div>
+    <aside role="dialog" aria-label="shell.workspaceSurfaces.navigationDrawerTitle" tabindex="-1" data-test="app-left-navigation-drawer" class="inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0" style="width: 320px; z-index: 50;" aria-modal="true">
+      <div class="min-h-0 flex-1 overflow-hidden"><button data-test="collapse">Collapse</button></div>
+    </aside>
+    <!---->
+    <main class="relative flex-1 min-w-0 overflow-hidden w-full bg-blue-50">
+      <div data-v-f06c4c3a="" class="flex flex-1 flex-col relative min-h-0 min-w-0 overflow-hidden bg-gray-100">
+        <div data-v-f06c4c3a="" class="flex flex-1 min-h-0 min-w-0 overflow-hidden" data-test="workspace-center-right-flow">
+          <div data-v-f06c4c3a="" data-test="workspace-center-pane" class="relative bg-white p-0 flex flex-col min-h-0 flex-1 min-w-0" style="min-width: 200px;"><button data-test="conversation-control">Conversation</button>
+            <!---->
+          </div>
+          <div data-v-f06c4c3a="" class="drag-handle" data-test="workspace-right-resize-handle"></div>
+          <div data-v-f06c4c3a="" style="width: 1186px;" class="bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative" data-test="workspace-right-panel"><button data-v-f06c4c3a="" data-test="tool-control" mode="desktop">Tool</button></div>
+        </div>
+        <!---->
+      </div>
+    </main>
+  </div>
+</div>
+   × default shell candidate-relative Workspaces docking > keeps constrained modality, focus trap/return and cleans it on wide recovery (AC-004/005) 37ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 17 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  layouts/__tests__/default-docking.spec.ts > default shell candidate-relative Workspaces docking > redocks after real drag at 1000px with no dialog/backdrop or navigation (AC-001/003)
+Error: Unable to get [data-test="app-left-panel-shell"] within: <div class="isolate flex h-screen h-[100dvh] flex-col">
+  <div class="relative flex flex-1 flex-row overflow-hidden">
+    <div data-test="app-left-drawer-backdrop" class="fixed inset-0 z-40 bg-black/30" style="z-index: 40;" aria-hidden="true"></div>
+    <aside role="dialog" aria-label="shell.workspaceSurfaces.navigationDrawerTitle" tabindex="-1" data-test="app-left-navigation-drawer" class="inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0" style="width: 320px; z-index: 50;" aria-modal="true">
+      <div class="min-h-0 flex-1 overflow-hidden"><button data-test="collapse">Collapse</button></div>
+    </aside>
+    <!---->
+    <main class="relative flex-1 min-w-0 overflow-hidden w-full bg-blue-50">
+      <div data-v-f06c4c3a="" class="flex flex-1 flex-col relative min-h-0 min-w-0 overflow-hidden bg-gray-100">
+        <div data-v-f06c4c3a="" class="flex flex-1 min-h-0 min-w-0 overflow-hidden" data-test="workspace-center-right-flow">
+          <div data-v-f06c4c3a="" data-test="workspace-center-pane" class="relative bg-white p-0 flex flex-col min-h-0 flex-1 min-w-0" style="min-width: 200px;"><button data-test="conversation-control">Conversation</button>
+            <!---->
+          </div>
+          <div data-v-f06c4c3a="" class="drag-handle" data-test="workspace-right-resize-handle"></div>
+          <div data-v-f06c4c3a="" style="width: 746px;" class="bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative" data-test="workspace-right-panel"><button data-v-f06c4c3a="" data-test="tool-control" mode="desktop">Tool</button></div>
+        </div>
+        <!---->
+      </div>
+    </main>
+  </div>
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ layouts/__tests__/default-docking.spec.ts:78:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/17]⎯
+
+ FAIL  layouts/__tests__/default-docking.spec.ts > default shell candidate-relative Workspaces docking > redocks after real drag at 1280px with no dialog/backdrop or navigation (AC-001/003)
+Error: Unable to get [data-test="app-left-panel-shell"] within: <div class="isolate flex h-screen h-[100dvh] flex-col">
+  <div class="relative flex flex-1 flex-row overflow-hidden">
+    <div data-test="app-left-drawer-backdrop" class="fixed inset-0 z-40 bg-black/30" style="z-index: 40;" aria-hidden="true"></div>
+    <aside role="dialog" aria-label="shell.workspaceSurfaces.navigationDrawerTitle" tabindex="-1" data-test="app-left-navigation-drawer" class="inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0" style="width: 320px; z-index: 50;" aria-modal="true">
+      <div class="min-h-0 flex-1 overflow-hidden"><button data-test="collapse">Collapse</button></div>
+    </aside>
+    <!---->
+    <main class="relative flex-1 min-w-0 overflow-hidden w-full bg-blue-50">
+      <div data-v-f06c4c3a="" class="flex flex-1 flex-col relative min-h-0 min-w-0 overflow-hidden bg-gray-100">
+        <div data-v-f06c4c3a="" class="flex flex-1 min-h-0 min-w-0 overflow-hidden" data-test="workspace-center-right-flow">
+          <div data-v-f06c4c3a="" data-test="workspace-center-pane" class="relative bg-white p-0 flex flex-col min-h-0 flex-1 min-w-0" style="min-width: 200px;"><button data-test="conversation-control">Conversation</button>
+            <!---->
+          </div>
+          <div data-v-f06c4c3a="" class="drag-handle" data-test="workspace-right-resize-handle"></div>
+          <div data-v-f06c4c3a="" style="width: 1026px;" class="bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative" data-test="workspace-right-panel"><button data-v-f06c4c3a="" data-test="tool-control" mode="desktop">Tool</button></div>
+        </div>
+        <!---->
+      </div>
+    </main>
+  </div>
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ layouts/__tests__/default-docking.spec.ts:78:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/17]⎯
+
+ FAIL  layouts/__tests__/default-docking.spec.ts > default shell candidate-relative Workspaces docking > redocks after real drag at 1440px with no dialog/backdrop or navigation (AC-001/003)
+Error: Unable to get [data-test="app-left-panel-shell"] within: <div class="isolate flex h-screen h-[100dvh] flex-col">
+  <div class="relative flex flex-1 flex-row overflow-hidden">
+    <div data-test="app-left-drawer-backdrop" class="fixed inset-0 z-40 bg-black/30" style="z-index: 40;" aria-hidden="true"></div>
+    <aside role="dialog" aria-label="shell.workspaceSurfaces.navigationDrawerTitle" tabindex="-1" data-test="app-left-navigation-drawer" class="inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0" style="width: 320px; z-index: 50;" aria-modal="true">
+      <div class="min-h-0 flex-1 overflow-hidden"><button data-test="collapse">Collapse</button></div>
+    </aside>
+    <!---->
+    <main class="relative flex-1 min-w-0 overflow-hidden w-full bg-blue-50">
+      <div data-v-f06c4c3a="" class="flex flex-1 flex-col relative min-h-0 min-w-0 overflow-hidden bg-gray-100">
+        <div data-v-f06c4c3a="" class="flex flex-1 min-h-0 min-w-0 overflow-hidden" data-test="workspace-center-right-flow">
+          <div data-v-f06c4c3a="" data-test="workspace-center-pane" class="relative bg-white p-0 flex flex-col min-h-0 flex-1 min-w-0" style="min-width: 200px;"><button data-test="conversation-control">Conversation</button>
+            <!---->
+          </div>
+          <div data-v-f06c4c3a="" class="drag-handle" data-test="workspace-right-resize-handle"></div>
+          <div data-v-f06c4c3a="" style="width: 1186px;" class="bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative" data-test="workspace-right-panel"><button data-v-f06c4c3a="" data-test="tool-control" mode="desktop">Tool</button></div>
+        </div>
+        <!---->
+      </div>
+    </main>
+  </div>
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ layouts/__tests__/default-docking.spec.ts:78:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/17]⎯
+
+ FAIL  layouts/__tests__/default-docking.spec.ts > default shell candidate-relative Workspaces docking > keeps constrained modality, focus trap/return and cleans it on wide recovery (AC-004/005)
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ layouts/__tests__/default-docking.spec.ts:119:76
+    117|     await view.get('[data-test="workspace-left-strip-workspaces"]').tr…
+    118|     await viewport(1440)
+    119|     expect(view.find('[data-test="app-left-navigation-drawer"]').exist…
+       |                                                                            ^
+    120|     expect(view.find('[data-test="app-left-drawer-backdrop"]').exists(…
+    121|     expect(useAppLayoutStore().isMobileMenuOpen).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/17]⎯
+
+ FAIL  composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts > responsive shell composition > uses retained raw preference, independent of stale measured effective width (AC-002/003)
+AssertionError: expected 550 to be 1186 // Object.is equality
+
+- Expected
++ Received
+
+- 1186
++ 550
+
+ ❯ composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts:46:51
+     44|     const shell = mountProvider()
+     45|     await nextTick()
+     46|     expect(shell.value.rightPanel.preferredWidth).toBe(1186)
+       |                                                   ^
+     47|     expect(shell.value.leftPanel.stripActivation).toBe('redock-panel')
+     48|     for (let cycle = 0; cycle < 3; cycle++) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/17]⎯
+
+ FAIL  composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts > responsive shell composition > re-evaluates capacity on viewport resize without rewriting preference/intent (AC-004/005)
+AssertionError: expected 1186 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 1186
+
+ ❯ composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts:66:51
+     64|     const shell = mountProvider()
+     65|     await viewport(930)
+     66|     expect(shell.value.rightPanel.preferredWidth).toBe(400)
+       |                                                   ^
+     67|     await viewport(929)
+     68|     expect(shell.value.rightPanel.presentation).toBe('strip')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/17]⎯
+
+ FAIL  utils/layout/__tests__/responsiveLayoutPolicy.spec.ts > responsiveLayoutPolicy > bounds an oversized preference to the compact candidate instead of yielding tools
+AssertionError: expected 'strip' to be 'docked' // Object.is equality
+
+Expected: "docked"
+Received: "strip"
+
+ ❯ utils/layout/__tests__/responsiveLayoutPolicy.spec.ts:124:43
+    122| 
+    123|     expect(state.leftPanel.presentation).toBe('strip')
+    124|     expect(state.rightPanel.presentation).toBe('docked')
+       |                                           ^
+    125|     expect(state.rightPanel.preferredWidth).toBe(rightPanelWidth)
+    126|     expect(state.rightPanel.centerProtectionMode).toBe('user-override')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/17]⎯
+
+ FAIL  utils/layout/__tests__/responsiveLayoutPolicy.spec.ts > responsiveLayoutPolicy > reclaims right width when Workspaces redocks at 1000px
+ FAIL  utils/layout/__tests__/responsiveLayoutPolicy.spec.ts > responsiveLayoutPolicy > reclaims right width when Workspaces redocks at 1280px
+ FAIL  utils/layout/__tests__/responsiveLayoutPolicy.spec.ts > responsiveLayoutPolicy > reclaims right width when Workspaces redocks at 1440px
+AssertionError: expected 'open-drawer' to be 'redock-panel' // Object.is equality
+
+Expected: "redock-panel"
+Received: "open-drawer"
+
+ ❯ utils/layout/__tests__/responsiveLayoutPolicy.spec.ts:294:51
+    292|       const collapsed = resolve({ ...input, leftPanelPreference: 'hidd…
+    293|       expect(collapsed.rightPanel.presentation).toBe('docked')
+    294|       expect(collapsed.leftPanel.stripActivation).toBe('redock-panel')
+       |                                                   ^
+    295|       expect(collapsed.rightPanel.preferredWidth).toBe(input.rightPane…
+    296|       const docked = resolve(input)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/17]⎯
+
+ FAIL  utils/layout/__tests__/responsiveLayoutPolicy.spec.ts > responsiveLayoutPolicy > uses the actual 260px navigation width at the drag capacity boundary
+ FAIL  utils/layout/__tests__/responsiveLayoutPolicy.spec.ts > responsiveLayoutPolicy > uses the actual 320px navigation width at the drag capacity boundary
+ FAIL  utils/layout/__tests__/responsiveLayoutPolicy.spec.ts > responsiveLayoutPolicy > uses the actual 520px navigation width at the drag capacity boundary
+AssertionError: expected 'strip' to be 'docked' // Object.is equality
+
+Expected: "docked"
+Received: "strip"
+
+ ❯ utils/layout/__tests__/responsiveLayoutPolicy.spec.ts:310:49
+    308|       const input = { viewportWidth: minimum + delta, leftPanelPreferr…
+    309|       const collapsed = resolve({ ...input, leftPanelPreference: 'hidd…
+    310|       expect(collapsed.rightPanel.presentation).toBe('docked')
+       |                                                 ^
+    311|       expect(collapsed.leftPanel.stripActivation).toBe(delta < 0 ? 'op…
+    312|       const expanded = resolve(input)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/17]⎯
+
+ FAIL  utils/layout/__tests__/responsiveLayoutPolicy.spec.ts > responsiveLayoutPolicy > preserves automatic allocation and its 480px floor at 1210px
+ FAIL  utils/layout/__tests__/responsiveLayoutPolicy.spec.ts > responsiveLayoutPolicy > preserves automatic allocation and its 480px floor at 1211px
+ FAIL  utils/layout/__tests__/responsiveLayoutPolicy.spec.ts > responsiveLayoutPolicy > preserves automatic allocation and its 480px floor at 1259px
+AssertionError: expected 'strip' to be 'docked' // Object.is equality
+
+Expected: "docked"
+Received: "strip"
+
+ ❯ utils/layout/__tests__/responsiveLayoutPolicy.spec.ts:321:43
+    319|   it.each([1209, 1210, 1211, 1259, 1260])('preserves automatic allocat…
+    320|     const state = resolve({ viewportWidth })
+    321|     expect(state.rightPanel.presentation).toBe(viewportWidth < 1210 ? …
+       |                                           ^
+    322|     if (viewportWidth >= 1210) {
+    323|       expect(state.rightPanel.preferredWidth).toBe(Math.min(450, viewp…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/17]⎯
+
+ FAIL  utils/layout/__tests__/responsiveLayoutPolicy.spec.ts > responsiveLayoutPolicy > retains raw preference through shrink, narrow/short fallbacks and recovery
+AssertionError: expected 1186 to be 910 // Object.is equality
+
+- Expected
++ Received
+
+- 910
++ 1186
+
+ ❯ utils/layout/__tests__/responsiveLayoutPolicy.spec.ts:333:54
+    331|   it('retains raw preference through shrink, narrow/short fallbacks an…
+    332|     const input = { rightPanelPreferredWidth: 1186, rightPanelResizeIn…
+    333|     expect(resolve(input).rightPanel.preferredWidth).toBe(910)
+       |                                                      ^
+    334|     expect(resolve({ ...input, viewportWidth: 930 }).rightPanel.prefer…
+    335|     for (const constraints of [{ viewportWidth: 929 }, { viewportWidth…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/17]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  17 failed | 20 passed (37)
+   Start at  13:35:06
+   Duration  13.11s (transform 7.08s, setup 27.03s, collect 2.41s, tests 195ms, environment 2.78s, prepare 1.19s)
+
+ ELIFECYCLE  Command failed with exit code 1.
