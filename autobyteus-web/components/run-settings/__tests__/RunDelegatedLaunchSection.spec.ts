@@ -119,3 +119,40 @@ describe('RunMemberRow launch note (AC-011)', () => {
     expect(wrapper.get('[data-test="run-member-launch-note"]').text()).toContain('the runtime is not available')
   })
 })
+
+describe('Settings: stop and change a copy (SR-007)', () => {
+  const runningRows = (live: readonly string[]) => teamDelegatedLaunchNodes(tree, [], { schemaFor: () => null, sameWorkspace: () => true }, {
+    editable: true, isAgentLive: (id) => live.includes(id), isStopping: () => false, draftOf: () => null,
+  })
+  const mounted = (delegated: RunMemberNode[]) => mount(ExistingRunSettings, { props: {
+    kind: 'team', name: 'PM', isActive: true, canEdit: false, state: 'read_only',
+    stop: { label: 'Stop', pending: false, error: null }, root, delegated,
+    dirty: false, canSave: false, saving: false, saved: false,
+  } })
+
+  it('a running copy has the run\'s stop icon on its own row (not on its Team members) and its model stays locked', async () => {
+    wrapper = mounted(runningRows(['lead-run']))
+    const team = row(wrapper, '/se@se-copy')
+    expect(team.find('[data-test="run-member-stop"]').exists()).toBe(true)
+    expect(row(wrapper, '/writer@writer-run').find('[data-test="run-member-stop"]').exists()).toBe(false)
+    await team.get('[data-test="run-member-stop"]').trigger('click')
+    expect(wrapper.emitted('stop-delegated')).toEqual([[{ teamRunId: 'se-copy' }]])
+    await team.get('[data-test="run-member-toggle"]').trigger('click')
+    const opened = row(wrapper, '/se@se-copy')
+    expect(opened.find('[data-test="run-member-stop-hint"]').exists()).toBe(true)
+    expect(opened.get('[data-test="run-settings-card-/se@se-copy"] [data-test="run-setting-model"]').find('[data-test="run-setting-locked"]').exists()).toBe(true)
+    expect(row(wrapper, '/se/lead@lead-run').find('[data-test="run-member-stop"]').exists()).toBe(false)
+  })
+
+  it('a stopped copy\'s model is editable like a stopped run\'s member; runtime and approval stay locked', async () => {
+    wrapper = mounted(runningRows([]))
+    await row(wrapper, '/writer@writer-run').get('[data-test="run-member-toggle"]').trigger('click')
+    const card = row(wrapper, '/writer@writer-run').get('[data-test="run-settings-card-/writer@writer-run"]')
+    expect(card.get('[data-test="run-setting-model"]').find('[data-test="run-setting-locked"]').exists()).toBe(false)
+    expect(card.get('[data-test="run-setting-approval"]').find('[data-test="run-setting-locked"]').exists()).toBe(true)
+    expect(row(wrapper, '/writer@writer-run').find('[data-test="run-member-stop"]').exists()).toBe(false)
+    expect(row(wrapper, '/writer@writer-run').find('[data-test="run-member-stop-hint"]').exists()).toBe(false)
+    // No separate Reset for a copy's choice (SR-007).
+    expect(section(wrapper).findAll('[data-test="run-member-reset"]')).toHaveLength(0)
+  })
+})
