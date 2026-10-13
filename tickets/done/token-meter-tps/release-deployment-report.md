@@ -1,5 +1,10 @@
 # Delivery / Release / Deployment — token-meter-tps
 
+**Current result: Delivery Completed — DR-001.** Verification, docs sync,
+repository finalization and safe cleanup completed; release/deployment/rollout
+not required. No unresolved blocker. Actual terminal-send confirmation belongs
+to the external handoff-receipt.json, never inferred here.
+
 ## Authority and scope
 DR-001 initial baseline, prior delivery result **N/A**. **Medium / Low**, direct
 low-risk route unchanged. R1/SR-001 approved; D1/SR-002; IR-001; API-REV-001 Pass.
@@ -55,11 +60,25 @@ Required order: archive and explicit-path commit; push ticket; refresh target;
 create finalization branch at target; `--no-ff` merge ticket; guards; refresh/check
 again; push `HEAD:personal`. Preserve remote ticket for provenance.
 
-At this preparatory report commit: repository finalization and repository cleanup
-**Pending**, so terminal return **Not yet eligible**. Actual commit/push/merge and
-cleanup outcomes must replace this status before completion. Do not infer their
-success from a planned command. Report-only completion publication may follow
-cleanup through an isolated Git index, without modifying the shared checkout.
+**Repository finalization Completed.** Initial ticket commit `90624f77d` was
+pushed. Target advance was detected before finalization, safely integrated and
+reverified below; final ticket commit **`1c15116461a4abb9daafdc33374fbd0831ae8ab8`**
+was pushed to `origin/codex/token-meter-tps`. Created `finalize/token-meter-tps`
+at **`4c77cec80d965e0f96658cb2d2881fa6d6a39d96`**, merged ticket `--no-ff` as
+**`288f3a08fb220539dd782a39dbb523df07839f10`**, and confirmed its tree equals the
+verified ticket tree. Merged hygiene, licensing and whitespace checks pass.
+Immediately before target push fetched again and checked the exact target base;
+`git push origin HEAD:personal` succeeded. `git ls-remote` confirmed both exact
+remote revisions. See `evidence/delivery/repository-finalization.json`,
+`ticket-repush.log`, `target-push.log`, `remote-after-source.txt` and merged guards.
+Ticket archived at `tickets/done/token-meter-tps/` before its first delivery commit.
+
+A supplemental ticket-report-only completion commit records actual cleanup after
+it occurred. It uses a disposable Git index (no shared checkout edits), refreshes
+the target before pushing, and cannot change product source. Its exact commit,
+remote readback and final custody manifest are external `final-repository-receipt.json`
+and `final-custody.json` beside the package. This avoids claiming self-referential
+commit hashes or future cleanup success. No completed feature merge is replayed.
 
 ## Repository guards
 Both release-guide checks passed before commit: artifact hygiene (Windows/path
@@ -86,18 +105,29 @@ and retained the initial diagnostic, then reran cleanly. No code change.
 Upstream `evidence/api-001/cleanup.json`, transport cleanup and canonical desktop
 stop receipts were inspected. Own processes/ports/data/homes/routes removed;
 user workers/CLI configs untouched. Delivery rerun used no provider or browser.
-Two generated application SDK dist directories are untracked, not staged.
-After successful remote preservation, remove those directories and the dedicated
-worktree (including ignored build/dependency outputs); delete only local ticket
-and finalization branches after ancestry checks. Global prune **Not required**
-when targeted removal clears registration. Remote branch cleanup **Not required**.
+Post-finalization repository cleanup **Completed** at 2026-10-13T16:42:17.748857+00:00:
+- Exported **142 Git blobs** (full archived ticket, changed product/tests/docs
+  and guides) and verified every byte against source merge `288f3a08f` before
+  deleting anything. Pre-cleanup manifest retained outside Git.
+- Confirmed the only untracked paths were the two generated application SDK
+  dist folders, that neither contained tracked files, then removed those exact
+  directories. Verified clean status. No generated build output committed.
+- `git worktree remove` removed only the dedicated token-meter-tps worktree,
+  including ignored task dependency/build outputs; directory and registration
+  confirmed absent. No forced worktree removal or unrelated prune.
+- Deleted local `codex/token-meter-tps` and `finalize/token-meter-tps` only after
+  remote preservation and ancestry checks. Remote ticket retained for provenance;
+  remote cleanup and global prune **Not required**. Main local personal checkout
+  intentionally left untouched (not fast-forwarded); origin/personal is the target.
+- Receipt: `evidence/delivery/cleanup-repository.json`. Temporary Delivery log/tool
+  workspace and final publication index are disposed by the final external receipt.
 
 Durable inspection custody destination:
 `/home/autobyteus/workspace/.codex/delivery-records/token-meter-tps/package/`.
-Before deletion export/verify complete archived ticket plus changed sources,
-tests, docs and guides against Git blobs. This is an inspection export, not a
-runnable checkout. Historical upstream absolute worktree paths are provenance;
-use archived relative paths and this custody root after cleanup.
+Full final snapshot is byte-verified against its published commit after the
+completion report push. This is an inspection export, not a runnable checkout.
+Historical upstream absolute worktree paths are provenance; use archived relative
+paths and the custody root after cleanup. `custody-summary.json` locates manifests.
 
 ## Rollback / final gates
 If source regresses, revert the final no-ff feature merge on personal through a
@@ -105,7 +135,9 @@ new reviewed change; publish a new version only if a release is then requested.
 Never move/delete published tags. No migration or deployed state to roll back.
 Finalization/cleanup failure blocks terminal return; completed pushes are not
 undone merely to correct a receipt. Current unresolved product/evidence blockers
-**None**; terminal eligibility still requires actual repository/cleanup receipts.
+**None**. Verification, repository finalization and safe cleanup **Completed**;
+release/deployment/rollout **Not required**. Terminal package eligible after
+report-only publication readback; confirmed send recorded externally.
 
 ## Pre-finalization target advance / re-verification
 After ticket commit/push `90624f77d706b48616b2458884113ccbc2eb6400`, the required
