@@ -4,6 +4,7 @@ Current investigation/report/ledger beside this file are authoritative.
 | Revision | Trigger / related | Findings | Classification | Result |
 |---|---|---|---|---|
 | API-REV-001 | Initial IR-001; REQ-B1/DS-B1 SR-001/002; source/architecture independent review N/A | F-API-001 | Unclear execution origin; focused failure-origin review | Fail, 84.29% |
+| API-REV-002 | CRR-001 confirmed API-owned environment Local Fix; same REQ/DS/IR | F-API-001 resolved by canonical rerun | Local Fix — private capacity/execution/report, no source change | Pass, 95.71%; separate requested test review pending |
 
 ## API-REV-001 — Independent real-boundary coverage baseline
 - Prior completed API result: N/A; no implied pass. Investigation and ledger written before edits/execution.
@@ -18,3 +19,14 @@ Current investigation/report/ledger beside this file are authoritative.
 - Cumulative package: all upstream references plus investigation/report/ledger/new probe/evidence paths in current report. No successful-output Delivery handoff authorized.
 
 - Persisted coverage/evidence baseline commit e3d1bfc7c. Final handoff rule selects only /software_engineering_team/code_reviewer for focused failure-origin review. No successful-output Delivery route applies. User app unchanged, all owned processes/data/ports plus private runtime setup cleaned; intentionally retained current worktree build/dependencies.
+
+## API-REV-002 — Canonical native revalidation after CRR-001
+- Prior authoritative API result API-REV-001 Fail84.29%, F-API-001 Unclear. Trigger Code Reviewer CRR-001 failure-origin result, commit db9b58952: confirmed native worker64MiB shared-memory capacity issue, API-owned Local Fix. No pre-existing unrelated product exemption.
+- Same REQ-B1/DS-B1 SR-001/002 and IR-001; Small/Low direct preserved. No design/implementation/durable-test changes. Current hash receipts equal reviewer binary/source/probe A/B before/after.
+- Prior-failure resolution: F-API-001 **resolved** in canonical API run. Unmodified retained desktop-session invokes unmodified durable probe with same actual worktree binary; only adequate private512MiB tmpfs in isolated mount namespace. Zero failed requests and browser errors; all B-001..006/P-001 and final actual app restart Pass (8 collapsed Teams). No assertion/request suppression or sandbox/security change.
+- Resource evidence: peak199,774,208 /536,870,912 bytes, minimum337,096,704 free; passive external20ms sampler. Parent64MiB mount/namespace unchanged. Tested capacity, not product/global minimum.
+- Targeted repository recheck3 files/9 tests green; unchanged77-test/guard/browser/baseline performance evidence carried, not called rerun. Native full-app cold/warm3 samples each now present; engine/mode limits explicit, no speedup/user-wait cause claimed.
+- Final confidence95.71%, from real material native-boundary/recovery proof rather than diagnostic Pass. Broader Required/executed/completed. Critical technical AC proven; later actual user runtime/version/verification and Delivery receipt still pending.
+- Current artifacts canonical investigation/report/ledger updated in place; new output api-e2e-evidence/api-rev-002 with native logs, DOM/state/API/WS, resource/mount/hash/lifecycle/cleanup receipts. No interrupted/unstarted selected case remains.
+- Cleanup: own uid24019/HOME/display/data/ports/private namespace removed, parent mount untouched; current build/dependencies/worktree retained. No user app/keys/config/data touched, inference, merge/push/release/deploy or Task completion.
+- Review continuity: ordinary successful direct-route policy Not Required; CRR-001 explicitly requests subsequent proportional cumulative durable-test review after API-owned fix. This recovery gate remains pending, separate from failure-origin report. Final returned rules must be evaluated without changing classification; if no Pass rule matches pending required review, return result to requesting Code Reviewer under caller fallback contract. No duplicate Delivery forwarding.

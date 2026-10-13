@@ -133,3 +133,37 @@ Round 1; initialized before execution. AC-001..006; canonical investigation next
 Native startup-after-seed and full-shell restart did not eliminate resource failures. Earlier setup-only hypotheses are not resolutions. No Pass for API round. All native stops confirmed auto data removal, ports released, empty owned registry; browser-current ports closed. User app/data unchanged.
 
 - R-003 post-probe guard recheck exit 0; guards-current.log. Private runtime setup and erroneous output parents removed, no owned process remaining.
+
+## Round 2 initialized before execution — CRR-001 Local Fix
+Prior API-REV-001 Fail remains historical; cause shared-memory setup confirmed by review, not yet canonical rerun resolution. No new case IDs. Planned rerun B-001/D-001 first, then B-002/003/004/005/006 and P-001 in native session; R-001 targeted repository recheck, R-002/R-003 prior green carried unless changed evidence. Fresh private UID/HOME/Xvfb, unmodified test/binary, private 512MiB tmpfs only. All round-2 outcomes currently Not Tested. Native initialized per-case ledger is copied into this canonical ledger on session completion; JSON/ledger checkpoints retained immediately within running session.
+
+- Round2 D-001 / F-API-001 native canonical recheck exit 0; native-shm512/desktop-receipt.json and immediate case-ledger.md authoritative.
+# Desktop cases B-001..006, P-001; initialized before journey
+
+- B-001 Pass: Fresh stored manager: seven collapsed Teams, 42 hydrated child identities. /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-evidence/api-rev-002/native-shm512/journey/evidence.json
+
+- P-001 Pass: Cold frontend-store and warm reselection three-stage readiness. /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-evidence/api-rev-002/native-shm512/journey/evidence.json
+
+- B-002 Pass: Independent disclosure button, exact copy/member, body and Enter/Space coordinator. /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-evidence/api-rev-002/native-shm512/journey/evidence.json
+
+- B-003 Pass: Host reselection preserves manual choices; second same-address host isolated; fresh page restart resets. /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-evidence/api-rev-002/native-shm512/journey/evidence.json
+
+- B-004 Pass: Actual Project Task-root click reveals only requested Team and selects its coordinator. /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-evidence/api-rev-002/native-shm512/journey/evidence.json
+
+- B-006 Pass: Disclosure writes no persistent data or stop/cancel commands; Tasks/conversations unchanged. /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-evidence/api-rev-002/native-shm512/journey/evidence.json
+
+- B-005 Pass: Real live Task checkpoint, added hosted Team, reconnect and closure preserve choices/status/conversation. /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-evidence/api-rev-002/native-shm512/journey/evidence.json
+
+- Round2 R-001 recheck exit 0; repository-recheck.log. R-002/R-003 prior passing source-identical evidence carried.
+
+## Round-2 final reconciliation — API-REV-002
+| Case | Latest execution | Final outcome |
+|---|---|---|
+| B-001 / D-001 prior F-API-001 | Unmodified durable probe and same native binary, corrected OWNED shared memory; full canonical native journey + final actual restart | Pass; prior failure resolved (not exempted) |
+| B-002 / B-003 / B-004 | Native button/body/keyboard, exact conversation/composer/draft, same-address copies/host isolation, reselection/app restart and actual Task-root target-only reveal | Pass |
+| B-005 / B-006 | Native real Task addition/checkpoint/reconnect, live member message/status, DONE closure/host recovery, zero disclosure writes/commands and data continuity | Pass |
+| P-001 | 3 native full-app-restart cold + 3 warm samples; previous comparable browser baseline/changed retained, not claimed rerun | Pass |
+| R-001 | Round2 targeted repository recheck: 3 files / 9 tests, exit0, zero unhandled errors | Pass |
+| R-002 / R-003 | Round1 68 neighboring tests + 3 guards carried on source-identical hashes; no rerun claimed | Pass evidence carried |
+
+Latest unstarted/interrupted cases None in selected scope. Native console/failed requests zero. Final restart has8 collapsed teams / zero members; canonical stop confirms data/ports removed and empty registry. Private UID/HOME/display/mount cleaned and parent64MiB mount unchanged. User verification and finalization remain later Delivery gates, not this ledger's Task completion. Review requested by CRR-001 remains pending.

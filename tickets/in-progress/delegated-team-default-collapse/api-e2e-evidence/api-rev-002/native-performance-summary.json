@@ -1,0 +1,142 @@
+{
+  "cold": {
+    "medianMs": {
+      "host": 74.6,
+      "rowReadyMs": 14.4,
+      "member": 23.2
+    },
+    "allSamples": [
+      {
+        "label": "cold-frontend-store-1",
+        "start": 1034.4000000357628,
+        "host": 68.29999995231628,
+        "rows": 11.399999976158142,
+        "rowsPreloaded": true,
+        "member": 27.099999964237213,
+        "rowReadyMs": 11.399999976158142,
+        "initialRows": 7,
+        "selectedMember": "implementation_engineer_ecbb65b5945a486a82de5a6980ff980d",
+        "visibleRowsAfterMemberSelection": 13,
+        "requests": {
+          "GetAgentRunCollaborationMemberProjection": 90,
+          "GetRunFileChanges": 92,
+          "GetTaskWorkerTasks": 3,
+          "GetRunProjection": 2,
+          "GetAgentRunResumeConfig": 2,
+          "GetAgentRunCollaboration": 1,
+          "GetSkills": 1,
+          "GetSkillImprovementCapability": 1
+        },
+        "roleRevealRequests": 84,
+        "roleRevealArtifactReads": 84
+      },
+      {
+        "label": "cold-frontend-store-2",
+        "start": 1363.5999999642372,
+        "host": 89.10000002384186,
+        "rows": 15,
+        "rowsPreloaded": true,
+        "member": 23.19999998807907,
+        "rowReadyMs": 15,
+        "initialRows": 7,
+        "selectedMember": "implementation_engineer_ecbb65b5945a486a82de5a6980ff980d",
+        "visibleRowsAfterMemberSelection": 13,
+        "requests": {
+          "GetAgentRunCollaborationMemberProjection": 90,
+          "GetRunFileChanges": 92,
+          "GetTaskWorkerTasks": 3,
+          "GetRunProjection": 2,
+          "GetAgentRunResumeConfig": 2,
+          "GetAgentRunCollaboration": 1,
+          "GetSkills": 1,
+          "GetSkillImprovementCapability": 1
+        },
+        "roleRevealRequests": 84,
+        "roleRevealArtifactReads": 84
+      },
+      {
+        "label": "cold-frontend-store-3",
+        "start": 1095.0999999642372,
+        "host": 74.60000002384186,
+        "rows": 14.400000035762787,
+        "rowsPreloaded": true,
+        "member": 14.099999964237213,
+        "rowReadyMs": 14.400000035762787,
+        "initialRows": 7,
+        "selectedMember": "implementation_engineer_ecbb65b5945a486a82de5a6980ff980d",
+        "visibleRowsAfterMemberSelection": 13,
+        "requests": {
+          "GetAgentRunCollaborationMemberProjection": 90,
+          "GetRunFileChanges": 92,
+          "GetTaskWorkerTasks": 3,
+          "GetRunProjection": 2,
+          "GetAgentRunResumeConfig": 2,
+          "GetAgentRunCollaboration": 1,
+          "GetSkillImprovementCapability": 1
+        },
+        "roleRevealRequests": 84,
+        "roleRevealArtifactReads": 84
+      }
+    ]
+  },
+  "warm": {
+    "medianMs": {
+      "host": 7,
+      "rowReadyMs": 7.1,
+      "member": 10.2
+    },
+    "allSamples": [
+      {
+        "label": "warm-reselection-1",
+        "start": 1891.6000000238419,
+        "host": 5,
+        "rows": 5.099999964237213,
+        "rowsPreloaded": true,
+        "member": 10.199999988079071,
+        "rowReadyMs": 5.099999964237213,
+        "initialRows": 7,
+        "selectedMember": "implementation_engineer_ecbb65b5945a486a82de5a6980ff980d",
+        "visibleRowsAfterMemberSelection": 13,
+        "requests": {
+          "GetRunProjection": 2,
+          "GetAgentRunResumeConfig": 2,
+          "GetRunFileChanges": 2
+        }
+      },
+      {
+        "label": "warm-reselection-2",
+        "start": 2446.199999988079,
+        "host": 7,
+        "rows": 7.100000023841858,
+        "rowsPreloaded": true,
+        "member": 13.299999952316284,
+        "rowReadyMs": 7.100000023841858,
+        "initialRows": 7,
+        "selectedMember": "implementation_engineer_ecbb65b5945a486a82de5a6980ff980d",
+        "visibleRowsAfterMemberSelection": 13,
+        "requests": {
+          "GetRunProjection": 2,
+          "GetAgentRunResumeConfig": 2,
+          "GetRunFileChanges": 2
+        }
+      },
+      {
+        "label": "warm-reselection-3",
+        "start": 1917.2999999523163,
+        "host": 9.600000023841858,
+        "rows": 9.700000047683716,
+        "rowsPreloaded": true,
+        "member": 9.899999976158142,
+        "rowReadyMs": 9.700000047683716,
+        "initialRows": 7,
+        "selectedMember": "implementation_engineer_ecbb65b5945a486a82de5a6980ff980d",
+        "visibleRowsAfterMemberSelection": 13,
+        "requests": {
+          "GetRunProjection": 2,
+          "GetAgentRunResumeConfig": 2,
+          "GetRunFileChanges": 2
+        }
+      }
+    ]
+  }
+}
