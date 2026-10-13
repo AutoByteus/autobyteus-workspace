@@ -1,6 +1,52 @@
 # Investigation Notes — Shared Network Workspaces
 
-## Current SR018 — Working-First Scope Recovery And Revised Architecture
+## Current SR019 — IMP-D001 Source Ownership Correction
+
+2026-10-13. Read implementation-handoff.md, implementation-revision-record.md, implementation-evidence/ir-001/source-lease-design-impact.md and source-audit.json at06df5ffc40 before acting. IR-001 is **Design Impact / IMP-D001**, not production implementation. Reviewed full current solution package and ARCH-REV-002 Pass on SR018 (d27df8ff65); that prior Pass remains its actual result, not a pass on the correction. Current requirements/approval remain **Approved SR018**, byte-for-byte unchanged. Scope/ACs do not require retained skill-source generations; no new user question or approval record is needed for this technical correction. New design **Ready SR019 / Architecture Design Complete**, Large/High retained.
+
+### Source investigation: actual lifetimes, not a new desired guarantee
+
+Paths relative to task worktree. Source basis e642fd477d from implementation audit remains unchanged; source hashes rechecked in evidence/feasibility/sr019-artifact-audit.json. Static read only, not a test pass.
+
+| Forward path / exact current source | Factual observation | Implication |
+| --- | --- | --- |
+| autobyteus-web/components/skills/SkillSourcesModal.vue confirmAction; stores/skillSourcesStore.ts githubOperation; server src/api/graphql/types/skills.ts Update/Remove mutations | Confirmed Sources UI action reaches source-ID mutation and SkillSourceService | Source changes are existing supported operations, not hypothetical corruption |
+| autobyteus-server-ts/src/skills/services/skill-source-service.ts updateGitHubSkillSource/afterPublication/removeGitHubSkillSource | Update publishes current generation then cleanup; Remove marks REMOVING, invalidates file workspaces, deletes bytes; operations serialized per repository, not runtime lifetime | Source owner does not receive or wait on runtime holders |
+| autobyteus-server-ts/src/skills/installers/github-skill-repository.ts cleanup | Keeps only supplied current generation or deletes owned source; no runtime refcount | Old bytes can disappear with running consumers; no source lease to reuse |
+| autobyteus-server-ts/src/skills/services/skill-service.ts resolveManagedSkillForMaterialization | Current catalog winner by exact source ID/name, returns Skill or null | Lookup, not acquire/pin/release contract |
+| autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts acquireManaged/releaseMaterializedSkill | Current-source revalidation and path-keyed occurrence holders govern shared local-workspace links; last release removes exact owned link | These receipts protect link cleanup, not linked source bytes |
+| autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-configured-skill-linker.ts | Validates source and SKILL.md, creates private directory link; no byte traversal/copy/lease | Existing sufficient private exposure model, preserve runtime-specific collision/unusable policy |
+| same capsule/agy-run-capsule.ts restoreAgyRunCapsule | Checks manifest/identity, removes dangling private link and warns missing source; no current-catalog generation rebuild on restore | Preserve AGY behavior; previous design's claimed source leases were false |
+| autobyteus-server-ts/docs/modules/skills.md Managed GitHub source lifecycle / Workspace collision policy | Confirmed retirement/deletion, no active-context refresh or old-byte snapshot promise | Preserve source policy; not a baseline bug to fix in this task |
+| autobyteus-server-ts/tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts lines187–213 | Existing Codex/Claude/Grok x scope x cleanup-retained/deleted x close-order matrix expects retired source absent while A still holds a link in normal cleanup case | Inspected only. Reuse public-path regression; no inferred source retention AC |
+
+One first materializer read used a nonexistent src/skills/services path; corrected to actual backends/shared path above. No conclusion rests on the absent path. Revisited root DESIGN and server AGENTS; phase gates (solution-designer/requirements/architecture/design-principles/full templates and root TESTING/migration/startup/terminal) already read in this conversation. No repository principle conflict: preserve actual guarantees, choose smallest owner.
+
+### Decision and evidence limits
+
+Private **directory links** inside per-execution Claude/Codex/Grok profiles; generated manifest/wrappers/profile cleanup are owned by runtime preparation/exact native process lifetime. Existing catalog/source manager owns linked bytes independently. No profile snapshots/copy fallback, source pin/acquire/release API, refcount, retirement queue, altered Update/Remove or runtime-spanning source lock. Current catalog lookup selects sources at preparation; source unavailable/changed follows existing runtime-specific warning/error policy. Old links can dangle after confirmed source Update/Remove, no prompt hot-refresh/current-byte or snapshot guarantee. AGY remains its existing private capsule/linker with warn/skip restore; native core keeps its current catalog path. Peer stop still must not damage another private profile or source.
+
+Alternatives rejected: (1) complete profile-owned snapshot would add copying/retained bytes not needed to fix peer-stop and risks being mistaken for an old-generation guarantee; (2) source-generation lease subsystem would alter current source deletion and requires a new explicit policy/owner, not reuse. Neither is approved by this correction. Existing ordinary local-workspace materialization and Skills UI/GraphQL/source storage are unchanged.
+
+Historical proof nuance independently checked in raw scripts: FR014/private-plugin-experiment.py uses cpSync with dereference; FR020/codex-private-experiment.py copies fixtures. These prove private native inputs and peer-stop/replacement-profile mechanisms, **not private symlink discovery or retained source-byte lifetime**. Current source already uses normal directory links and AGY's private links, supporting the narrow choice; actual Claude/Codex/Grok private-link discovery/canonical path/support-asset reads must be checked by implementation/validation. No new native model/CLI test was run here, no old result expanded. FR011 still establishes the normal shared-link peer-stop defect.
+
+Concrete design changes: selection/profile/source-lifetime section and runtime rows, interface, health assessment, Change Scope, persisted-subject table (no new migration), file/removal/dependency maps and focused validation. Removed false source lease/pinned-generation instructions everywhere in the current design. New profile owner may remove only its exact wrappers/links after process release, never follow links into source or call source cleanup. Narrow tests distinguish peer stop from confirmed source Update/Remove and preserve AGY/local regressions; no outage machinery returns.
+
+### Supplemental inventory / current outcome
+
+| Artifact | Owner / purpose | Applicability / status |
+| --- | --- | --- |
+| implementation-handoff.md; implementation-revision-record.md | Implementation Engineer / IR-001 preparation and Design Impact | Read-only, implementation incomplete; no independent source review or product test |
+| implementation-evidence/ir-001/source-lease-design-impact.md; source-audit.json | Implementation Engineer / IMP-D001 factual forward trace,11 source hashes | BEH002/005, REQ003/010 and configured-skill preservation; no behavior-defining supplement |
+| evidence/feasibility/sr019-artifact-audit.json | Solution Designer / source-hash and document consistency audit | Authoring-only, not executable runtime/NFS proof |
+| requirements-doc.md; approval018/017 | Solution Designer / intended behavior and approval | Unchanged Approved SR018, no new source-retention requirement |
+| design-spec.md; solution-revision-record.md; solution-design-handoff.md | Solution Designer / correction, cumulative history and full current result | SR019 Ready; Architecture Design Complete Large/High, independent re-review via fresh rules |
+| design-review-report.md; architecture-review-revision-record.md | Architecture Reviewer / ARCH-REV-002 Pass on SR018 | Unchanged prior-basis review, no automatic SR019 Pass |
+
+Prior57-round evidence/approvals/source reports/UI references remain indexed below at actual scope. All native Mac/Linux/Docker hosting/client roles, one-command/guide, source/private-state/consent/rollback, healthy previews, DEC015 outage deferral and final independent physical/user verification/merge remain. No source changes, dependencies, product tests, provider calls, live mounts/nodes/data/release or new resource cleanup this round. Full current handoff below links all owners; stop after configured handoff rather than duplicate implementation forwarding.
+
+---
+## Historical SR018 — Working-First Scope Recovery And Revised Architecture
 
 2026-10-13. Incoming ARCH-REV-001/Fail/Design Impact was read with the canonical handoff and reviewer-owned report/revision record (2750f153f8), then the subsequent **direct-user scope feedback** and annotations (3d95901924). Exact user words live in architecture-review-scope-feedback.md. They defer the storage-outage edge case, not normal file sharing or all safeguards. No repeated user questionnaire or new live permission follows. Requirements are now **Approved SR018**, approval-record-sr018.md records renewed approval within that direction and the exact informing message. DEC015 consistently supersedes bounded admission/per-action/unrelated-local guarantees, not merely a REST exception. Hosting/access/physical-validation choices DEC012–014 remain.
 
