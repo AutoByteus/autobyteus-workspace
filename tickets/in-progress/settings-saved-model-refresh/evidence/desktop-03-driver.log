@@ -1,0 +1,7 @@
+DCP-002 Pass delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a Team copy stopped from its sidebar row; its Team model changed and saved; the copy lead's "+" shows the choice without a reload; the next message resumes the lead on it
+DCP-005 Pass delegated-copy-model-change REQ-001 (any member), AC-010 scenario (Team root, UI): one member of a Team copy, after it has run, gets its own model in Settings; the other rows stay as they were; its next turn resumes its conversation on that model while the coordinator keeps its own
+SSR-004 Fail AC-001/002/004/006 same-model settings-only Grok member thinking Save, repeated edit and reopen — locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-test="chat-thinking-option-primary-low"]')[22m
+
+Summary: 2 Pass, 1 Fail
