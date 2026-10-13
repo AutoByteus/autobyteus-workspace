@@ -1,0 +1,43 @@
+{
+  "noFfMerge": "26887250676ffc79f54c190936bbda7bc4fe1837",
+  "parents": [
+    "f13bdd0eb79aacc63dffa5995b9c86f359001468",
+    "df7ba8c14b4f607d65de2bc6c54d633e132a5677"
+  ],
+  "ticketCommit": "df7ba8c14b4f607d65de2bc6c54d633e132a5677",
+  "verifiedBase": "f13bdd0eb79aacc63dffa5995b9c86f359001468",
+  "mergedTarget": {
+    "passed": 8,
+    "skipped": 1,
+    "exit": 0,
+    "noUnhandled": true,
+    "privateRootRemoved": true,
+    "ownedGroupRemaining": [],
+    "testWorkspaceRemnants": [],
+    "command": {
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli",
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+        "--no-watch"
+      ],
+      "environment": "PATH + new HOME/private TMPDIR + TEST_DELIVERY_EXECUTION; AGY_ERROR_EVIDENCE_DIR for target only; no inherited app variables/keys",
+      "gate": "RUN_CLAUDE_E2E absent",
+      "revision": "26887250676ffc79f54c190936bbda7bc4fe1837"
+    }
+  },
+  "productionDeltaFromVerifiedBase": [],
+  "sourceUnchangedFromReviewed": true,
+  "targetSha256": "f2657a9d7c350025e4a5f9648ad1cf8d60cf018bc9a17bedf2dbd67734b46b38",
+  "fixtureSha256": "d408306b1decad92e9ddade8817c1768164a34791f94d25e6e4204ffcedd3933",
+  "licensingExit": 0,
+  "hygieneExit": 0,
+  "userVerification": "evidence/delivery/user-verification.json",
+  "release": "Not required \u2014 explicitly no release/version",
+  "pushAndCleanup": "Not yet completed; final receipts follow"
+}

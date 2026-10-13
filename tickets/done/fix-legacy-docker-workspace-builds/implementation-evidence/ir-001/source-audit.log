@@ -1,0 +1,34 @@
+Source audit; bootstrap base: 2756d7b298ca5b203ebd2310d172b37a5d381b5c
+Task HEAD: 828e727c378ab69051d6c5e114f6a692f056132f
+Branch: codex/fix-legacy-docker-workspace-builds
+PASS exact production-source delta (11 deletions, 4 modifications):
+.gitignore
+README.md
+autobyteus-server-ts/docker/README.md
+docker/.gitignore
+docker/Dockerfile.allinone
+docker/Dockerfile.remote-server
+docker/README.md
+docker/allinone-start-server.sh
+docker/allinone-start-web.sh
+docker/compose.personal-test.yml
+docker/remote-server-entrypoint.sh
+docker/supervisor-allinone.conf
+scripts/personal-docker.sh
+scripts/seed-personal-test-fixtures.py
+scripts/tests/test_docker_build_context_sources.py
+PASS byte-identical retained recipe/helpers/Compose/release/public launcher/ignore/licenses/root manifests and lockfile
+PASS all app source, contracts, package manifests/tsconfigs/scripts unchanged (complete source-delta allowlist)
+PASS historical tickets/evidence unchanged
+PASS no tracked root docker assets remain; no filesystem sweep performed
+PASS bounded retired-identifier audit over 7093 tracked active files (historical/intentional guard exclusions)
+PASS package-relative Docker guide: README.md -> autobyteus-server-ts/docker/README.md
+PASS package-relative Docker guide: autobyteus-server-ts/README.md -> docker/README.md
+Docker guide links resolved: 2
+PASS retained direct COPY inputs do not consume retired assets
+Note: permitted server Docker README edit is copied with the broad server source directory; documentation bytes change, not executable build/runtime inputs. Not fresh-image certification.
+sha256 LICENSE 0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0
+sha256 LICENSING.md ff416568ab01c60e62b28a570f078ed83b61dbc154262fd2bc1f80c16a42fb1f
+sha256 NOTICE c781cf26b278b2dd15b79f96e210c200a195480464f0801888fc7026eccbdca2
+sha256 autobyteus-server-ts/docker/Dockerfile.monorepo 28ba38691af0ea7c328e1a048e031eff62f2f749d58852f170bee20c97863213
+Resource action ledger: no real Docker/launcher/live-node/provider operations. Only explicit git rm of 11 tracked sources; owner-created temporary fixtures cleaned by context managers. Existing ignored state never accessed.

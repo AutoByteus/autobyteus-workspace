@@ -1,0 +1,371 @@
+{
+  "revision": "CRR-001",
+  "entry": "API/E2E Failure-Origin Review",
+  "checkedAt": "2026-10-13T03:29:45.589889+00:00",
+  "head": "d1193a136098768672c39a2c0be8ec3c76202b49",
+  "runs": {
+    "target-1": {
+      "eventFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1.events.jsonl",
+      "eventSha256": "32b1f6c14b6960db08c7478523a0f4b59ef1bad619e47658fb989c6b54c8deaa",
+      "exit": 1,
+      "cases": [
+        {
+          "id": "API-CL01",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "API-CL02",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "API-CL03",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "API-CL04",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "WS-INT",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "WS-BUSY",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "WS-RACE",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "WS-BG",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "LIVE-001",
+          "result": "Not Tested",
+          "leaves": []
+        }
+      ],
+      "resourceObservations": {
+        "ownedGroupRemaining": [],
+        "testWorkspaceRemnants": [],
+        "privateRootRemoved": true,
+        "unhandledErrorMarker": false
+      },
+      "serialAuthority": false
+    },
+    "target-2": {
+      "eventFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2.events.jsonl",
+      "eventSha256": "61e12caeb20707f97417e0fff85bf42a560a8fff2038d66bbbeb348ad1fb48b0",
+      "exit": 1,
+      "cases": [
+        {
+          "id": "API-CL01",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "API-CL02",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "API-CL03",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "API-CL04",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "WS-INT",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "WS-BUSY",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "WS-RACE",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "WS-BG",
+          "result": "Fail",
+          "leaves": [
+            {
+              "message": "this.runSessions.deactivateForRun is not a function",
+              "name": "TypeError",
+              "firstStackFrame": [
+                "    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)"
+              ]
+            },
+            {
+              "message": "expected true to be false // Object.is equality",
+              "name": "AssertionError",
+              "firstStackFrame": [
+                "    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "LIVE-001",
+          "result": "Not Tested",
+          "leaves": []
+        }
+      ],
+      "resourceObservations": {
+        "ownedGroupRemaining": [],
+        "testWorkspaceRemnants": [],
+        "privateRootRemoved": true,
+        "unhandledErrorMarker": false
+      },
+      "serialAuthority": true
+    }
+  },
+  "executableRerunByReviewer": false,
+  "testOrProductionFixByReviewer": false,
+  "baseAndCurrentContainSameIncompleteAuthority": true,
+  "unchangedProductionAndChildFixtureDiffExit": 0,
+  "targetSourceSha256": "c409c0ca35c74425f00990abda709c187f91a75fadc13bd43c2c74132df25420"
+}

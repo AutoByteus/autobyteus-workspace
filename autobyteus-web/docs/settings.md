@@ -1023,21 +1023,48 @@ The saved-run view uses the start surfaces' visual language:
   models.
 - **Members** list for Teams and Orgs. Changing the team- or org-wide model
   updates every non-customized member, including members of placed teams.
-- **Collaborators and delegated copies** (`RunDelegatedLaunchList.vue`, rows from
-  `utils/runSettings/delegatedLaunchRows.ts`), for Agent, Team and Org runs that
-  have any: "Started by agents in this run. Shown as they run; they cannot be
-  edited here." Each collaborator and open delegated copy is listed, read-only,
-  with a Collaborator or Delegated copy badge, and each of its members below it.
-  Every row shows the runtime and model it runs on and its source: Agent
-  default, Team default, Inherited from the run, As configured in this run (a
-  copy of a configured placement or an extra copy at a collaborator address,
-  which has no recorded source), or Source not recorded (a record from before
-  sources were recorded). A skipped default shows an amber line: "{layer}
-  {model} was not used: {detail}". A Team row describes what its members
-  without their own default run on. Member values are read through the contract
-  packages' effective-member functions. Copies whose Task is DONE or CANCELLED,
-  and everything under them, are left out. For a saved Team or Org run, a copy
-  started while Settings is open appears after Refresh or reopening.
+- **Collaborators and delegated copies**, for Agent, Team and Org runs that have
+  any: a second, read-only `RunMembersSection` under Members, with the
+  description "Started by agents in this run. Shown as they run; they cannot be
+  edited here."
+  - **Rows.** The rows come from `utils/runSettings/delegatedLaunchRows.ts`
+    (`teamDelegatedLaunchNodes`, `collaborationDelegatedLaunchNodes`), which builds
+    `RunMemberNode`s with `runMemberTree.memberNode`. They are drawn with the same
+    `RunMemberRow` as Members, so a copy looks like the run's own Members list.
+  - **Collapsed by default.** Each collaborator and open delegated copy is one
+    row. Expansion is local to the section and starts empty. It looks the same
+    for a running and a stopped run.
+  - **Row content.** A row shows a Collaborator or Delegated copy badge. Its
+    summary is `model · runtime · approval`, followed by its source label.
+  - **Notes on a collapsed Team.** A collapsed Team copy or collaborator whose
+    agents have fallback notes also shows "Notes: N".
+  - **Opening a Team** shows its read-only settings card, then its Members:
+    - the copy's coordinator carries the Coordinator chip;
+    - a team-level fallback note is shown once, on the Team;
+    - each member shows only its own notes;
+    - each member opens to its read-only settings card.
+  - **Opening an Agent** shows its read-only settings card.
+  - **Keys and names.** Rows are keyed `<address>@<run ID>`, because one address
+    can hold a collaborator and extra copies. Names follow Members: the role,
+    else the last address segment.
+  - **Source labels:**
+    - Agent default;
+    - Team default;
+    - Inherited from the run;
+    - As configured in this run: a copy of a configured placement, or an extra
+      copy at a collaborator address. It has no recorded source and shows the
+      in-run placement's launch;
+    - Source not recorded: a record from before sources were recorded.
+  - **Fallback line.** A skipped default shows "{layer} {model} was not used:
+    {detail}".
+  - **Effective values.** Member values come from the contract packages'
+    effective-member functions. A member's source is its own, else its Team's.
+  - **Locked.** Rows are never customized or required and have no reset
+    control.
+  - **Closed copies.** Copies whose Task is DONE or CANCELLED, and everything
+    under them, are left out.
+  - **Refresh.** For a saved Team or Org run, a copy started while Settings is
+    open appears after Refresh or reopening.
 - **Save bar** only when there are changes: "Unsaved changes · they apply when
   this run resumes · Cancel · Save". Cancel calls
   `existingRunConfigStore.discardChanges()`. Save shows "Saving…", then "Saved.

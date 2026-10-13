@@ -1,0 +1,23 @@
+== ts-build: pnpm -C autobyteus-ts build
+   exit=0
+== server-prebuild: pnpm -C autobyteus-server-ts prebuild
+   exit=0
+== server-typecheck: pnpm -C autobyteus-server-ts typecheck
+   exit=0
+== server-build: pnpm -C autobyteus-server-ts build
+   exit=0
+== web-probe: pnpm -C autobyteus-web test:e2e:delegated-launch-defaults --output-dir /tmp/dlcd-dr3b/probe-out
+   exit=0
+== web-nuxt: pnpm -C autobyteus-web test:nuxt --run
+   exit=0
+== web-guard-boundary: pnpm -C autobyteus-web guard:web-boundary
+   exit=0
+== web-guard-l10n: pnpm -C autobyteus-web guard:localization-boundary
+   exit=0
+== web-audit-l10n: pnpm -C autobyteus-web audit:localization-literals
+   exit=0
+== licensing: python3 scripts/check_licensing.py
+   exit=0
+== hygiene: python3 scripts/check_repository_artifact_hygiene.py
+   exit=0
+DONE

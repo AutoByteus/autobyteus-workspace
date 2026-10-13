@@ -1,12 +1,22 @@
+/**
+ * Credential-free WebSocket regression: eight scripted-provider cases plus one live case.
+ * Prerequisites: workspace dependencies and server prebuild. Ungated cases own one Node
+ * child per Query; provider frames and initialization are simulated, not SDK inference.
+ * Run with a clean private HOME:
+ * pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts --no-watch
+ * RUN_CLAUDE_E2E=1 and a ready Claude CLI enable the separate live interrupt case.
+ */
 import fs from "node:fs/promises";
 import fsSync from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import type { Options, SpawnedProcess } from "@anthropic-ai/claude-agent-sdk";
 import fastify, { type FastifyInstance } from "fastify";
 import websocket from "@fastify/websocket";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, onTestFinished, vi } from "vitest";
 import WebSocket from "ws";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
@@ -18,20 +28,23 @@ import { ClaudeAgentRunBackend } from "../../../src/agent-execution/backends/cla
 import { ClaudeAgentRunContext } from "../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js";
 import { buildClaudeSessionConfig } from "../../../src/agent-execution/backends/claude/session/claude-session-config.js";
 import { ClaudeSessionManager } from "../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
+import type { AgentToolMcpRunSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { composeSharedCarpenterPrompt } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
-import { ClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import { ClaudeSdkClient, type ClaudeSdkQueryLike } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { recordCase } from "../helpers/runtime-error-case-evidence.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 type SdkQueryCall = {
   prompt?: unknown;
-  options?: Record<string, unknown>;
+  options?: Record<string, unknown> & Pick<Options, "cwd" | "env" | "spawnClaudeCodeProcess">;
 };
+
+const ownedCliFixture = fileURLToPath(new URL("../../fixtures/claude-owned-sdk-cli.mjs", import.meta.url));
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -47,14 +60,20 @@ const LIVE_CLAUDE_STEP_TIMEOUT_MS = Number(
 type FakeCliUserMessage = { uuid: string; message: { content: Array<{ type: string; text?: string }> } };
 
 /**
- * Stand-in for one Claude CLI process behind the SDK streaming-input query: it reads user
- * messages from the real `ClaudeSdkClient` input channel and emits scripted SDK frames.
+ * Scripts provider frames from the real input channel. Public initialization is simulated;
+ * the child acquired through the production-controlled spawn hook has a real EOF/IO lifetime.
  */
-class FakeClaudeCliQuery {
+class FakeClaudeCliQuery implements ClaudeSdkQueryLike {
   readonly userTexts: string[] = [];
   readonly interrupt = vi.fn(async (_options?: unknown) => this.onInterrupt(this));
   readonly close = vi.fn(() => this.end());
   readonly supportedModels = vi.fn(async () => []);
+  private readonly initialization = Promise.resolve({ commands: [], models: [] });
+  readonly initializationResult = vi.fn(() => this.initialization);
+  readonly stdin: SpawnedProcess["stdin"];
+  readonly stdout: SpawnedProcess["stdout"];
+  readonly inputPump: Promise<PromiseSettledResult<void>>;
+  childError: Error | undefined;
   private readonly queue: unknown[] = [];
   private wake: (() => void) | null = null;
   private ended = false;
@@ -62,15 +81,23 @@ class FakeClaudeCliQuery {
   constructor(
     prompt: AsyncIterable<FakeCliUserMessage>,
     readonly sessionId: string,
+    readonly child: SpawnedProcess,
     private readonly onInput: (message: FakeCliUserMessage, cli: FakeClaudeCliQuery) => void,
     private readonly onInterrupt: (cli: FakeClaudeCliQuery) => unknown,
   ) {
-    void (async () => {
+    // Retain public streams now: facade getters are deliberately unavailable after release.
+    this.stdin = child.stdin;
+    this.stdout = child.stdout;
+    child.on("error", (error) => { this.childError = error; });
+    this.inputPump = (async () => {
       for await (const message of prompt) {
         this.userTexts.push(message.message.content.map((block) => block.text ?? "").join(""));
         this.onInput(message, this);
       }
-    })();
+    })().then(
+      () => ({ status: "fulfilled" as const, value: undefined }),
+      (reason: unknown) => ({ status: "rejected" as const, reason }),
+    ); // Observe immediately; teardown joins and surfaces a rejected input pump.
   }
 
   emit(...frames: Array<Record<string, unknown>>): void {
@@ -107,7 +134,9 @@ class FakeClaudeCliQuery {
   }
 
   private end(): void {
+    if (this.ended) return;
     this.ended = true;
+    this.stdin.end();
     this.signal();
   }
 
@@ -128,10 +157,22 @@ const createFakeCliSdkClient = (input: {
   sdkClient.setCachedModuleForTesting({
     query: vi.fn((call: SdkQueryCall) => {
       sdkCalls.push(call);
-      const sessionId = String(call.options?.sessionId ?? call.options?.resume);
+      const options = call.options;
+      if (typeof options?.spawnClaudeCodeProcess !== "function") {
+        throw new Error("Fake Claude Query requires the production-controlled spawn hook.");
+      }
+      const child = options.spawnClaudeCodeProcess({
+        command: process.execPath,
+        args: [ownedCliFixture],
+        cwd: options.cwd,
+        env: options.env ?? {},
+        signal: new AbortController().signal,
+      });
+      const sessionId = String(options.sessionId ?? options.resume);
       const cli = new FakeClaudeCliQuery(
         call.prompt as AsyncIterable<FakeCliUserMessage>,
         sessionId,
+        child,
         input.onInput,
         input.onInterrupt ?? (() => ({ still_queued: [], cancelled: [] })),
       );
@@ -145,9 +186,8 @@ const createFakeCliSdkClient = (input: {
 const createClaudeRunContext = (input: {
   runId: string;
   modelIdentifier?: string;
-  workspaceRoot?: string;
+  workspaceRoot: string;
 }): AgentRunContext<ClaudeAgentRunContext> => {
-  const workspaceRoot = input.workspaceRoot ?? process.cwd();
   const carpenterSystemPrompt = composeSharedCarpenterPrompt({
     agentDefinition: {
       name: "Claude WebSocket E2E Agent",
@@ -166,7 +206,7 @@ const createClaudeRunContext = (input: {
     runtimeContext: new ClaudeAgentRunContext({
       sessionConfig: buildClaudeSessionConfig({
         model: input.modelIdentifier ?? "claude-test-model",
-        workingDirectory: workspaceRoot,
+        workingDirectory: input.workspaceRoot,
         permissionMode: "default",
       }),
       carpenterSystemPrompt,
@@ -179,7 +219,7 @@ const createClaudeAgentRun = async (input: {
   runId: string;
   sdkClient: ClaudeSdkClient;
   modelIdentifier?: string;
-  workspaceRoot?: string;
+  workspaceRoot: string;
 }): Promise<{
   agentRun: AgentRun;
   runContext: AgentRunContext<ClaudeAgentRunContext>;
@@ -190,8 +230,13 @@ const createClaudeAgentRun = async (input: {
     modelIdentifier: input.modelIdentifier,
     workspaceRoot: input.workspaceRoot,
   });
+  const agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority = {
+    activateForRun: () => ({ kind: "not_exposed" }),
+    // No exposed tools means this fixture creates no MCP entries to deactivate.
+    deactivateForRun: () => 0,
+  };
   const sessionManager = new ClaudeSessionManager(
-    { activateForRun: () => ({ kind: "not_exposed" as const }) } as never,
+    agentToolMcpRunSessions,
     {} as never,
     input.sdkClient,
     { cleanupMaterializedWorkspaceSkills: async () => undefined } as never,
@@ -317,8 +362,11 @@ const waitForCondition = async (
   throw new Error(`Timed out waiting for ${label}`);
 };
 
-const createWorkspace = async (label: string): Promise<string> =>
-  fs.mkdtemp(path.join(os.tmpdir(), `${label}-`));
+const createWorkspace = async (label: string): Promise<string> => {
+  const workspace = await fs.mkdtemp(path.join(os.tmpdir(), `${label}-`));
+  onTestFinished(() => fs.rm(workspace, { recursive: true, force: true }));
+  return workspace;
+};
 
 const createClaudeWebSocketHarnessWithSdkClient = async (input: {
   runId: string;
@@ -334,11 +382,12 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
   sdkCalls: SdkQueryCall[];
   sessionManager: ClaudeSessionManager;
 }> => {
+  const workspaceRoot = input.workspaceRoot ?? await createWorkspace("claude-fake-ws");
   const { agentRun, runContext, sessionManager } = await createClaudeAgentRun({
     runId: input.runId,
     sdkClient: input.sdkClient,
     modelIdentifier: input.modelIdentifier,
-    workspaceRoot: input.workspaceRoot,
+    workspaceRoot,
   });
   const agentRunService = {
     getAgentRun: (runId: string) => (runId === input.runId ? agentRun : null),
@@ -384,47 +433,105 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
   } as unknown as Parameters<typeof registerAgentWebsocket>[2];
 
   const app = fastify();
-  await app.register(websocket);
-  await registerAgentWebsocket(app, handler, dummyTeamHandler);
-  const address = await app.listen({ port: 0, host: "127.0.0.1" });
-  const url = new URL(address);
-  const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${input.runId}`);
-  const connectedPromise = waitForMessage(socket);
+  let socket: WebSocket | undefined;
+  try {
+    await app.register(websocket);
+    await registerAgentWebsocket(app, handler, dummyTeamHandler);
+    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+    const url = new URL(address);
+    socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${input.runId}`);
+    const [, connected] = await Promise.all([waitForOpen(socket), waitForMessage(socket)]);
+    const connectedMessage = JSON.parse(connected) as {
+      type: string;
+      payload: { agent_id?: string };
+    };
+    expect(connectedMessage).toMatchObject({
+      type: "CONNECTED",
+      payload: { agent_id: input.runId },
+    });
 
-  await waitForOpen(socket);
-  const connectedMessage = JSON.parse(await connectedPromise) as {
-    type: string;
-    payload: { agent_id?: string };
-  };
-  expect(connectedMessage).toMatchObject({
-    type: "CONNECTED",
-    payload: { agent_id: input.runId },
-  });
+    return {
+      app,
+      socket,
+      agentRun,
+      runContext,
+      sdkCalls: input.sdkCalls,
+      sessionManager,
+    };
+  } catch (error) {
+    try { await closeHarness({ app, socket, sessionManager, runContext }); }
+    catch (cleanupError) {
+      throw new AggregateError([error, cleanupError], "Claude WebSocket setup/owned cleanup failed.");
+    }
+    throw error;
+  }
+};
 
-  return {
-    app,
-    socket,
-    agentRun,
-    runContext,
-    sdkCalls: input.sdkCalls,
-    sessionManager,
-  };
+const expectOwnedChildRunning = (cli: FakeClaudeCliQuery): void => {
+  expect(cli.childError).toBeUndefined();
+  expect(cli.child.exitCode).toBeNull();
+  expect(cli.child.signalCode).toBeNull();
+  expect(cli.stdin.writableEnded).toBe(false);
+  expect(cli.stdout.closed).toBe(false);
 };
 
 const closeHarness = async (harness: {
   app: FastifyInstance;
-  socket: WebSocket;
+  socket?: WebSocket;
   sessionManager: ClaudeSessionManager;
   runContext: AgentRunContext<ClaudeAgentRunContext>;
-}): Promise<void> => {
-  if (
-    harness.socket.readyState === WebSocket.OPEN ||
-    harness.socket.readyState === WebSocket.CONNECTING
-  ) {
-    harness.socket.close();
+}, clis: FakeClaudeCliQuery[] = [], failures: unknown[] = []): Promise<void> => {
+  const errors = [...failures];
+  const attempt = async (release: () => unknown) => {
+    try { await release(); } catch (error) { errors.push(error); }
+  };
+  await attempt(async () => {
+    const socket = harness.socket;
+    if (!socket || socket.readyState === WebSocket.CLOSED) return;
+    if (socket.readyState === WebSocket.CONNECTING) socket.terminate();
+    else socket.close();
+    try {
+      await waitForCondition(() => socket.readyState === WebSocket.CLOSED, "owned websocket closes");
+    } finally {
+      if (socket.readyState !== WebSocket.CLOSED) socket.terminate();
+    }
+  });
+  await attempt(() => harness.sessionManager.closeRunSession(harness.runContext.runId));
+  await attempt(() => expect(harness.sessionManager.hasRunSession(harness.runContext.runId)).toBe(false));
+  for (const cli of clis) {
+    await attempt(async () => {
+      const pump = await cli.inputPump;
+      if (pump.status === "rejected") throw pump.reason;
+    });
+    await attempt(() => {
+      expect(cli.initializationResult).toHaveBeenCalledTimes(1);
+      expect(cli.close).toHaveBeenCalled();
+      expect(cli.childError).toBeUndefined();
+      expect(cli.child.exitCode).toBe(0); // Physical exit, not a close call or killed flag.
+      expect(cli.child.signalCode).toBeNull();
+      expect(cli.stdin.closed).toBe(true);
+      expect(cli.stdout.closed).toBe(true);
+    });
   }
-  await harness.sessionManager.closeRunSession(harness.runContext.runId);
-  await harness.app.close();
+  await attempt(() => harness.app.close());
+  if (errors.length) throw new AggregateError(errors, "Claude WebSocket test/owned cleanup failed.");
+};
+
+const withHarness = async (
+  harness: Awaited<ReturnType<typeof createClaudeWebSocketHarnessWithSdkClient>>,
+  clis: FakeClaudeCliQuery[],
+  action: () => Promise<void>,
+): Promise<void> => {
+  const failures: unknown[] = [];
+  try {
+    await action();
+    if (clis.length) {
+      expect(clis).toHaveLength(1);
+      expectOwnedChildRunning(clis[0]!);
+    }
+  } catch (error) { failures.push(error); }
+  // Keep assertion failures alongside cleanup errors instead of a finally masking them.
+  await closeHarness(harness, clis, failures);
 };
 
 describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
@@ -453,20 +560,21 @@ describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
       const harness = await createClaudeWebSocketHarnessWithSdkClient({ runId, sdkClient, sdkCalls, workspaceRoot: workspace });
       const frames: Array<{ type: string; payload: Record<string, unknown> }> = [];
       harness.socket.on("message", (raw) => frames.push(JSON.parse(String(raw))));
-      try {
+      await withHarness(harness, clis, async () => {
         const sessionId = harness.sessionManager.requireRunSession(runId).sessionId;
         const failed = waitForJsonMessage(harness.socket, (frame) => frame.type === "ERROR" && frame.payload?.error_effect === "terminal", "SDK terminal error");
-        const started = waitForJsonMessage(harness.socket, (frame) => frame.type === "TOOL_EXECUTION_STARTED", "provider tool start");
-        sendE2eSendMessageCommand(harness.socket, { content: "Ordinary work that fails." });
-        await started;
-        // Emulate the normal external tool→next model call sequence, not one synchronous SDK burst
-        // whose future terminal state can outrun the run's serialized source-event pipeline.
-        const succeeded = waitForJsonMessage(harness.socket, (frame) => frame.type === "TOOL_EXECUTION_SUCCEEDED", "provider tool completes");
-        clis[0]!.emit({ type: "user", message: { role: "user", content: [{ type: "tool_result", tool_use_id: "toolu-long", content: "CLAUDE_COMPLETED_WORK" }] } });
-        await succeeded;
-        clis[0]!.result([firstUuid], { subtype: "error_during_execution", is_error: true,
-          ...failure as Record<string, unknown>, response: "PRIVATE_RESPONSE_MARKER" });
-        const observed = await failed;
+        const [observed] = await Promise.all([failed, (async () => {
+          const started = waitForJsonMessage(harness.socket, (frame) => frame.type === "TOOL_EXECUTION_STARTED", "provider tool start");
+          sendE2eSendMessageCommand(harness.socket, { content: "Ordinary work that fails." });
+          await started;
+          // Emulate the normal external tool→next model call sequence, not one synchronous SDK burst
+          // whose future terminal state can outrun the run's serialized source-event pipeline.
+          const succeeded = waitForJsonMessage(harness.socket, (frame) => frame.type === "TOOL_EXECUTION_SUCCEEDED", "provider tool completes");
+          clis[0]!.emit({ type: "user", message: { role: "user", content: [{ type: "tool_result", tool_use_id: "toolu-long", content: "CLAUDE_COMPLETED_WORK" }] } });
+          await succeeded;
+          clis[0]!.result([firstUuid], { subtype: "error_during_execution", is_error: true,
+            ...failure as Record<string, unknown>, response: "PRIVATE_RESPONSE_MARKER" });
+        })()]);
         expect(observed.payload).toMatchObject({ code: "CLAUDE_RUNTIME_TURN_FAILED", error_scope: "turn", error_effect: "terminal" });
         expect(observed.payload?.message).toBe(`CLAUDE_RUNTIME_RESULT_ERROR: ${expected}`);
         expect(frames.some((frame) => frame.type === "TURN_COMPLETED")).toBe(false);
@@ -489,7 +597,7 @@ describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
         expect(clis[0]?.userTexts).toEqual(["Ordinary work that fails.", "Continue the same work."]);
         const dir = process.env["AGY_ERROR_EVIDENCE_DIR"];
         if (dir) await fs.writeFile(path.join(dir, `${id}.json`), JSON.stringify({ expected, frames, sessionId, sdkCalls: sdkCalls.length }, null, 2) + "\n");
-      } finally { await closeHarness(harness); await fs.rm(workspace, { recursive: true, force: true }); }
+      });
       expect(clis[0]?.close).toHaveBeenCalled();
     }));
 
@@ -520,10 +628,11 @@ describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
     });
     const harness = await createClaudeWebSocketHarnessWithSdkClient({ runId, sdkClient, sdkCalls });
 
-    try {
+    await withHarness(harness, clis, async () => {
       const reservedSessionId = harness.sessionManager.requireRunSession(runId).sessionId;
       sendE2eSendMessageCommand(harness.socket, { content: `Remember this exact marker before I interrupt you: ${marker}` });
       await waitForCondition(() => clis[0]?.userTexts.length === 1, "first input reaches the fake CLI");
+      expectOwnedChildRunning(clis[0]!);
       expect(sdkCalls[0]?.options?.sessionId).toBe(reservedSessionId);
       expect(typeof sdkCalls[0]?.prompt).not.toBe("string");
       expect(sdkCalls[0]?.options?.systemPrompt).toBe(harness.runContext.runtimeContext.carpenterSystemPrompt);
@@ -535,6 +644,7 @@ describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
       }));
       await interrupted;
       expect(clis[0]?.interrupt).toHaveBeenCalledWith({ cancelQueued: true });
+      expectOwnedChildRunning(clis[0]!);
 
       const remembered = waitForAccumulatedSegmentContent(
         harness.socket,
@@ -550,9 +660,7 @@ describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
         `Remember this exact marker before I interrupt you: ${marker}`,
         "What exact marker did I ask you to remember?",
       ]);
-    } finally {
-      await closeHarness(harness);
-    }
+    });
     expect(clis[0]?.close).toHaveBeenCalled();
   });
 
@@ -574,7 +682,7 @@ describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
     });
     const harness = await createClaudeWebSocketHarnessWithSdkClient({ runId, sdkClient, sdkCalls });
 
-    try {
+    await withHarness(harness, clis, async () => {
       sendE2eSendMessageCommand(harness.socket, { content: "run a 20 second command" });
       await waitForCondition(() => clis[0]?.userTexts.length === 1, "first input");
       const reply = waitForAccumulatedSegmentContent(harness.socket, "A_DONE and BANANA", "merged reply");
@@ -584,9 +692,7 @@ describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
 
       expect(clis[0]?.userTexts).toEqual(["run a 20 second command", "also say BANANA"]);
       expect(sdkCalls).toHaveLength(1);
-    } finally {
-      await closeHarness(harness);
-    }
+    });
   });
 
   it("requeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)", async () => {
@@ -622,7 +728,7 @@ describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
       return originalSubmit(message, dispatch);
     };
 
-    try {
+    await withHarness(harness, clis, async () => {
       sendE2eSendMessageCommand(harness.socket, { content: "run a long command" });
       await waitForCondition(() => clis[0]?.userTexts.length === 1 && session.activeTurnId !== null, "turn T running");
       const turnT = session.activeTurnId!;
@@ -646,14 +752,12 @@ describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
       // B reached the CLI exactly once, after T, from the same process.
       expect(clis[0]?.userTexts).toEqual(["run a long command", "B: message that arrives as T ends"]);
       expect(sdkCalls).toHaveLength(1);
-    } finally {
-      await closeHarness(harness);
-    }
+    });
   });
 
   it("announces a background completion and streams the turn Claude starts on its own (AC-002)", async () => {
     const runId = "claude-ws-background-notice";
-    const { sdkClient, sdkCalls } = createFakeCliSdkClient({
+    const { sdkClient, sdkCalls, clis } = createFakeCliSdkClient({
       onInput: (message, cli) => {
         cli.init();
         cli.emit(
@@ -675,27 +779,26 @@ describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
     });
     const harness = await createClaudeWebSocketHarnessWithSdkClient({ runId, sdkClient, sdkCalls });
 
-    try {
+    await withHarness(harness, clis, async () => {
       const notice = waitForJsonMessage(
         harness.socket,
         (message) => message.type === "SYSTEM_TASK_NOTIFICATION",
         "background task notice",
       );
       const report = waitForAccumulatedSegmentContent(harness.socket, "Build finished: dist/app", "provider-initiated report");
+      const noticesAndReport = Promise.all([notice, report]);
       sendE2eSendMessageCommand(harness.socket, { content: "build the app in the background" });
 
-      expect((await notice).payload).toMatchObject({
+      const [observedNotice] = await noticesAndReport;
+      expect(observedNotice.payload).toMatchObject({
         sender_id: "system.claude_background_task",
         content: "Background task completed: Build app (completed)",
       });
-      await report;
       await waitForCondition(
         () => harness.runContext.runtimeContext.activeTurnId === null,
         "provider-initiated turn settles",
       );
-    } finally {
-      await closeHarness(harness);
-    }
+    });
   });
 });
 
@@ -715,7 +818,7 @@ describeLiveClaudeRuntime("Claude Agent SDK websocket interrupt/resume live E2E"
         workspaceRoot,
       });
 
-      try {
+      await withHarness(harness, [], async () => {
         const approvalRequestPromise = waitForJsonMessage(
           harness.socket,
           (message) => message.type === "TOOL_APPROVAL_REQUESTED",
@@ -767,10 +870,7 @@ describeLiveClaudeRuntime("Claude Agent SDK websocket interrupt/resume live E2E"
         const resumedResponseText = await rememberedMarkerPromise;
         expect(resumedResponseText).toContain(marker);
         expect(harness.sessionManager.requireRunSession(runId).sessionId).toBe(providerSessionId);
-      } finally {
-        await closeHarness(harness);
-        await fs.rm(workspaceRoot, { recursive: true, force: true });
-      }
+      });
     },
     LIVE_CLAUDE_TEST_TIMEOUT_MS,
   );

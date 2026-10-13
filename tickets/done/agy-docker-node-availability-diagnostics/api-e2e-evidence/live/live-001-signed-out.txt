@@ -1,0 +1,33 @@
+## container
+image=sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a mounts=/Users/normy/autobyteus_org/autobyteus-worktrees/agy-docker-node-availability-diagnostics/autobyteus-server-ts/dist->/app/autobyteus-server-ts/dist(rw=false) 
+## served classifier is the branch build
+2
+## server process env
+HOME=/root
+USER=root
+HOME=/root
+## agy state
+/usr/local/bin/agy
+1.3.3
+no oauth token (signed out)
+## agy models as the server would run it (cwd /app/autobyteus-server-ts, HOME=/root)
+Fetching available models...
+Error: Please sign in to view available models. Launch the CLI without arguments to sign in.
+exit=1
+## agy models with HOME=<empty dir>
+Fetching available models...
+Error: Please sign in to view available models. Launch the CLI without arguments to sign in.
+exit=1
+## GraphQL runtimeAvailability(antigravity_cli)
+{"data":{"runtimeAvailability":{"runtimeKind":"antigravity_cli","enabled":false,"reason":"Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again."}}}
+real	0m0.586s
+user	0m0.004s
+sys	0m0.006s
+
+## GraphQL all kinds
+{"data":{"runtimeAvailability":{"runtimeKind":"autobyteus","enabled":true,"reason":null}}}
+{"data":{"runtimeAvailability":{"runtimeKind":"codex_app_server","enabled":true,"reason":null}}}
+{"data":{"runtimeAvailability":{"runtimeKind":"claude_agent_sdk","enabled":true,"reason":null}}}
+{"data":{"runtimeAvailability":{"runtimeKind":"grok_build","enabled":true,"reason":null}}}
+## GraphQL providerModelCatalogSnapshots(antigravity_cli)
+{"data":null,"errors":[{"message":"Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again.","locations":[{"line":1,"column":18}],"path":["providerModelCatalogSnapshots"]}]}

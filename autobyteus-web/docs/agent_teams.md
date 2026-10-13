@@ -93,10 +93,23 @@ does not change Team coordinator/focus semantics.
 
 ### Member Launch Defaults
 
-A fresh Team start (**Run** on a Team, and mobile run setup) seeds each member
+Every Team start that does not copy a run's member settings seeds each member
 from its own agent default (`utils/runSettings/memberLaunchDefaults.ts`,
-`seedMemberLaunchDefaults`). The root is seeded from the Team default as before.
-The order is the member's agent default, then the root's settings:
+`seedMemberLaunchDefaults`, run by `chatDraftStore.seedTeamMembers`):
+
+| Start | Root | Members |
+| --- | --- | --- |
+| **Run** on a Team (fresh), mobile run setup | Team default → last chat model → default runtime | Seeded and pinned |
+| New chat heading switcher → a Team (`retarget`) | Kept from the composer | Member overrides reset, then the new Team's members seeded and pinned |
+| Org page heading switcher → a Team (carried `startForDefinition`) | Carried | Seeded and pinned |
+| **+** on a Team run (`copied`) | Copied | Copied as recorded, not seeded |
+
+`seedTeamMembers` loads the Team's definitions itself. After its catalog checks it
+re-checks that the draft is still open and still on the same Team. It never
+overwrites a row the user changed meanwhile. A quick switch to another target
+leaves no late seeds. A failed definition or catalog read is logged, and the rows
+then follow the root. The order is the member's agent default, then the root's
+settings:
 
 - A member whose default is usable gets it as its row's own runtime, model and
   model settings, taken together. The row counts as customized. Usable follows
@@ -111,8 +124,9 @@ The order is the member's agent default, then the root's settings:
   changing the root model does not move them, even when the root is set to the
   same model. A pin is released only by resetting that member's model, the row,
   or **Reset all**. The member then follows the root.
-- **+** (copy settings from a run) and the heading switcher carry the run's own
-  settings and are never seeded or pinned.
+- **+** (copy settings from a run) keeps the run's recorded member settings,
+  including a member that was reset to follow the root. It is never seeded or
+  pinned.
 - Mobile setup has no member rows. It applies the seeds asynchronously, only to
   the draft it was computed for and only while the same Team is still selected,
   and shows no note.

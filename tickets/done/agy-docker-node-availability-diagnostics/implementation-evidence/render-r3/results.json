@@ -1,0 +1,76 @@
+{
+  "graphqlSignedOut": {
+    "data": {
+      "runtimeAvailability": {
+        "runtimeKind": "antigravity_cli",
+        "enabled": false,
+        "reason": "Not signed in on this node. Run `agy` to sign in."
+      }
+    }
+  },
+  "signedOutRow": {
+    "text": "Antigravity CLI\nNot signed in on this node. Run `agy` to sign in.\nUnavailable",
+    "title": "Not signed in on this node. Run `agy` to sign in.",
+    "ariaDisabled": "true",
+    "reasonBox": {
+      "x": 890.28125,
+      "y": 568.125,
+      "width": 204.984375,
+      "height": 32,
+      "top": 568.125,
+      "right": 1095.265625,
+      "bottom": 600.125,
+      "left": 890.28125
+    },
+    "rowBox": {
+      "x": 882.28125,
+      "y": 542.625,
+      "width": 294,
+      "height": 63.5,
+      "top": 542.625,
+      "right": 1176.28125,
+      "bottom": 606.125,
+      "left": 882.28125
+    },
+    "label": "Unavailable"
+  },
+  "menuText": "Runtimes\n\nAutoByteus\n35\nCodex App Server\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nNot signed in on this node. Run `agy` to sign in.\nUnavailable",
+  "allRows": [
+    {
+      "kind": "autobyteus",
+      "disabled": null,
+      "text": "AutoByteus\n35"
+    },
+    {
+      "kind": "codex_app_server",
+      "disabled": null,
+      "text": "Codex App Server"
+    },
+    {
+      "kind": "claude_agent_sdk",
+      "disabled": null,
+      "text": "Claude Agent SDK"
+    },
+    {
+      "kind": "grok_build",
+      "disabled": null,
+      "text": "Grok Build"
+    },
+    {
+      "kind": "antigravity_cli",
+      "disabled": "true",
+      "text": "Antigravity CLI\nNot signed in on this node. Run `agy` to sign in.\nUnavailable"
+    }
+  ],
+  "recheckRequests": [
+    "GetRuntimeAvailability:{\"runtimeKind\":\"antigravity_cli\"}"
+  ],
+  "signedInRow": {
+    "text": "Antigravity CLI",
+    "ariaDisabled": null
+  },
+  "submenu": "Gemini 3 Flash\nGemini 3 Pro",
+  "thirdOpenRequests": [],
+  "pageErrors": [],
+  "narrowRow": "Antigravity CLI\nNot signed in on this node. Run `agy` to sign in.\nUnavailable"
+}

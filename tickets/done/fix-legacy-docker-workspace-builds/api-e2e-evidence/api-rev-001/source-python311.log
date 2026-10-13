@@ -1,0 +1,20 @@
+$ /opt/homebrew/bin/python3.11 -m unittest scripts.tests.test_docker_build_context_sources -v
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds
+Clean env PATH=/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin; HOME/TMPDIR owner-created; no inherited application/provider variables
+test_current_guides_keep_supported_paths_and_no_retired_instructions (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_current_guides_keep_supported_paths_and_no_retired_instructions) ... ok
+test_direct_copy_sources_exist_in_repository_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_direct_copy_sources_exist_in_repository_root_context) ... ok
+test_entrypath_guard_rejects_broken_build_fixture (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_entrypath_guard_rejects_broken_build_fixture) ... ok
+test_ignore_guard_rejects_saved_state_protection_loss_fixtures (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_ignore_guard_rejects_saved_state_protection_loss_fixtures) ... ok
+test_retained_entrypaths_use_monorepo_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_retained_entrypaths_use_monorepo_root_context) ... ok
+test_retired_assets_are_absent (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_retired_assets_are_absent) ... ok
+test_retirement_guard_rejects_reintroduced_asset_fixture (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_retirement_guard_rejects_reintroduced_asset_fixture) ... ok
+test_saved_state_exclusions_remain_effective (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_saved_state_exclusions_remain_effective) ... ok
+test_workspace_contracts_are_built_and_materialized_in_monorepo (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest.test_workspace_contracts_are_built_and_materialized_in_monorepo) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.117s
+
+OK
+
+Exit: 0
+Owned HOME/TMPDIR and nested fixture cleanup completed.

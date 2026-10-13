@@ -1,0 +1,9 @@
+{
+  "ticketBranch": "codex/claude-interrupt-resume-fake-cli",
+  "target": "origin/personal",
+  "method": "fresh finalize/claude-interrupt-resume-fake-cli branch from origin/personal; no-ff merge; push HEAD:personal",
+  "receiptDirectory": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli",
+  "noRelease": true,
+  "postCleanupAudit": "final-repository-state.json at persistent receipt directory",
+  "sharedCheckout": "untouched; dirty personal not used for finalization"
+}

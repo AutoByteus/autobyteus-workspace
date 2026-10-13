@@ -1,0 +1,9 @@
+{
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli",
+  "argv": [
+    "node",
+    "tickets/in-progress/claude-interrupt-resume-fake-cli/evidence/implementation/check-target-types.cjs"
+  ],
+  "environment": "PATH + new HOME/private TMPDIR + TEST_API_* reporter fields; AGY_ERROR_EVIDENCE_DIR for target only",
+  "gate": "RUN_CLAUDE_E2E absent"
+}
