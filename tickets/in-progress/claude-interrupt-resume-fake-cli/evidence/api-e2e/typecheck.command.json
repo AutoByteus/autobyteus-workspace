@@ -1,0 +1,11 @@
+{
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli",
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "typecheck"
+  ],
+  "environment": "PATH + new HOME/private TMPDIR + TEST_API_* reporter fields; AGY_ERROR_EVIDENCE_DIR for target only",
+  "gate": "RUN_CLAUDE_E2E absent"
+}

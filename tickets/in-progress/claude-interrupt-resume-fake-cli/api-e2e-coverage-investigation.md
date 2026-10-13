@@ -5,112 +5,111 @@
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/investigation-notes.md`
 - Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/solution-revision-record.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/design-spec.md`
+- Supplemental full solution handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/handoff-architecture-design-complete.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/implementation-handoff.md`
 - Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/implementation-revision-record.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/handoff-architecture-design-complete.md`
 - Implementation checks: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/implementation-checks.md`
-- API/E2E Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/api-e2e-test-case-ledger.md`
-- Round: 1; trigger IR-001; date 2026-10-13. No previous API result/record; baseline starts API-REV-001 after execution.
-- Design review, architecture-review history, source-review report/history: **N/A — not applicable**. Delivery re-entry: N/A.
-- Other relevant supplements: upstream evidence inventory in investigation-notes.md and implementation-checks.md. Evidence only; none changes approved behavior.
+- Triggering failure-origin report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/code-review-report.md`
+- Code-review history: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/code-review-revision-record.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/api-e2e-coverage-investigation.md`
+- Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/api-e2e-test-case-ledger.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/api-e2e-revision-record.md`
+- Current/latest round: **2 — API-REV-002**, trigger CRR-001 Local Fix/API-F001. Prior result API-REV-001 Fail/75.8% preserved in revision record and original target-1/2 evidence.
+- Initial architecture/source reviews: **N/A — not applicable**; current failure-origin review CRR-001 is real, not an initial source Pass. Delivery history: N/A.
+- Supplemental authorities: investigation-notes.md upstream evidence inventory, implementation-checks.md, code-review receipt evidence/code-review/crr-001-origin-check.json; all evidence-only, no behavior-defining supplement.
 
 ## Routing Classification
-Small / Low; Direct Low-Risk; successful-output route Delivery; test review **Not Required — direct low-risk route**.
+**Small / Low** unchanged; initial Direct Low-Risk; initial successful-test policy decision **Not Required — direct low-risk route**. Current repair-return gate: **Required — separately requested proportional durable test review under CRR-001 failure-rework workflow**. Not a full initial source audit. Package is not ready for Delivery until that review.
 
-## Current Requirement And Design Basis
-Approved SR-001 + Ready SR-002 remain authoritative. IR-001 changes one test only. REQ-001..005 / AC-001..005 require eight ungated passes/one live skip, original streaming/error assertions, real controlled acquisition/public cached initialization and exact release, no unhandled errors or user-data impact. AC-006 / REQ-006 is a Delivery finalization gate, not executable API acceptance; merge/push/user verification remain pending, never counted as API passes.
-Immediate baseline cause was missing initializationResult; absent controlled spawn was a separate coverage gap. Inspecting the repair confirms real beginStreamingSession/session manager/owner/pump; no generated receipt or production fallback. Legacy/Compatibility Removal Check clean; Persisted Data Transition Check Not Affected and consistent with diff.
+## Approved Requirement / Design Basis And Conformance Deviation
+SR-001 approved + SR-002 Ready + IR-001 retained. REQ-001..005 / AC-001..005 require original eight passes/one live skip, same conversation/interrupt/busy/late-append/background/error behavior and exact owned initialization/acquisition/release with no unhandled errors. REQ-006 / AC-006 is Delivery finalization/user verification/integrated rerun/merge/push, not completed here.
 
-## Supported Scenarios And Real Usage
-SCN-001..007 all retained: credential-free developer run; user's interrupt/follow-up; busy append; explicit late-append settlement race; provider background completion; four error shapes and next user turn; current opening/release contract. No new product scenarios. Operational harness-failure probes address REQ-005, not speculative product states. Unsupported/contrived scenarios: None in approved basis; no multi-user/browser race invented.
+Baseline missing initializationResult was repaired by IR-001. API-REV-001 then exposed missing deactivateForRun in local MCP authority; independent CRR-001 confirms test fixture, not product defect, and API ownership. Current repair eff597d4ce1f40f1fbe489a6b9a340d6623e2a77 explicitly types that existing local double as AgentToolMcpRunSessionAuthority, supplies both methods, removes its shape-hiding cast. It creates no MCP entries, so deactivation count 0 is truthful and not a physical-release receipt.
 
-## Changed Behavior And Surface Classification
-| Boundary | Change | Consequence / evidence | Broader mode |
-| --- | --- | --- | --- |
-| API/transport/domain/session identity | Preserved, not production modified | Real Fastify/WebSocket, command coordinator, AgentRun, ClaudeSession and return pipeline; original scenarios | Target repository E2E |
-| Process/lifecycle and external SDK adapter | Test-only changed | Query conformance, cached simulated init, one controlled real Node child and exact retained IO after release | Actual pinned-SDK/no-model lifecycle units plus target |
-| Test environment/resources | Changed | Private cwd, all-stage teardown, primary/cleanup failure preservation, joined waits/input pump | Repeat target and temporary harness failure probes |
-| Frontend/browser/auth/permissions/desktop/worker/distributed/persisted transition | No changes | No browser API, UI, credentials policy, native shell or persistence delta | N/A |
-Actual transport is real but provider initialization/frames are simulated. No inference/real CLI conversation claim.
+**Narrow deviation:** SR-002 expected existing MCP double unchanged; actual required contract exposes missing member. Reviewer-authorized conformance within approved test-only intent, not new ownership/runtime/product behavior or design-authority rewrite. All production opening/owner/manager/component proofs, original and added assertions, eight-plus-one scope/gate remain. No production accommodation.
 
-## Project Execution Discovery
-- Workspace: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli
-- Stack: Node 22.23.1 / pnpm 10.28.2 / Vitest 4.0.18; Fastify 4 WebSocket; pinned Claude SDK 0.3.280; macOS.
-- Testing guideline: workspace TESTING.md; no closer TESTING*.md exists.
-- Authorities read: AGENTS.md, DESIGN.md, TESTING.md, autobyteus-server-ts/AGENTS.md, server README.md tests/setup/build sections, package.json, vitest.config.ts, tests/setup/{test-environment-isolation.ts,prisma-env.ts,prisma-global-setup.ts,prisma-test-config.ts}, fixture claude-owned-sdk-cli.mjs, installed SDK Query interface and Vitest reporter declarations.
-- Guideline: narrow checks first; clean HOME/env for E2E; no costly gates/keys; serialize builds/tests against this worktree; stop only owned resources. Source imports mean no dist server build needed. Dedicated install + Prisma prebuild complete upstream, checked evidence. Typecheck rebuilds shared packages serially; untracked SDK dist remains unstaged.
-- Vitest forks/no file parallelism; setup resets only dedicated tests/.tmp SQLite DB before each invocation. No persistent product-data transition. README final test-environment note is coarse; actual Prisma setup is authoritative and TESTING.md agrees.
-- Required secrets: N/A. Gates intentionally absent. Clean subprocess env contains PATH, fresh HOME, private TMPDIR and explicitly named test-owned evidence knobs only. No imported provider keys or app roots.
-- Components: Vitest owns Fastify on loopback port 0, ws client, exact manager session and child; target teardown closes them; onTestFinished removes cwd. Wrapper snapshots child processes/private tmp after execution before removing its private root. Existing project fixture unchanged.
-- Storage: wrapper-private HOME/TMPDIR and worktree tests/.tmp. No service/container/frontend startup; no user's app altered.
-- Independent execution reporter may append per-case ledger/events via TEST_* knobs; it does not modify test behavior. Evidence runner/reporter are ticket-only temporary execution scaffolding retained for reproducibility.
+Legacy / Compatibility Removal Check clean; persisted transition **Not Affected** consistent with unchanged src/fixture. No fallback/version shim or compatibility-only coverage.
 
-## Existing Durable Coverage Inventory
-| Path (server-relative) | Intent / link | Validity | Action |
-| --- | --- | --- | --- |
-| tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts | AC-001..005, SCN-001..007; four error + four streaming cases; one gated live | Still Valid after IR-001; original bodies/assertions remain | Execute then repeat; retain all 9 cases/live gate |
-| tests/fixtures/claude-owned-sdk-cli.mjs | No-model stdin EOF child lifetime | Still Valid, unchanged fixture | Reuse |
-| tests/unit/runtime-management/claude/client/claude-sdk-{session-opening,process-owner,real-child-retry,streaming-session}.test.ts and tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts | Public opening, acquisition fences, actual SDK child, held-child retry, cleanup aggregation | Still Valid; direct child coverage complements scripted E2E | Run 5 files, expected 17 passes |
-| tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts | SDK options/auth/query initialization at module seam | Still Valid; current fake includes initializationResult | Run bounded client/session regression group |
-| tests/unit/agent-execution/backends/claude/session/claude-{session,session-manager,turn-tracker}.test.ts | Session continuation, error/interrupt/background identity/settlement | Still Valid; session helper mocks acquired handle, not opening | Run with client; do not overclaim process proof |
-| tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts and tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts | Live paid CLI/model behavior, older openStreamingSession usage visible | Out Of Scope for no-model test-only repair; gated/stale tooling belongs separate Tasks | Not run, no skipped-suite pass claim |
-| tests/integration/agent-execution/claude-session-manager.integration.test.ts | Mix of live gated and mock manager paths | Out Of Scope: narrower unit manager/session plus real target sufficient | Not run |
-| Other Claude/UI/core/global suites | Unchanged production | Out Of Scope | No broad stale-suite/tooling expansion |
-
-## Durable Coverage Decisions
-Add/Update/Remove this API round: **None planned**. The implemented target already covers required real boundaries and every preserved scenario; no authority to add ninth ungated case or weaken original checks. Temporary failure-path checks rather than alter 8+1 scope. Reconsider only if a real gap emerges. No obsolete assertion removed; no compatibility-only coverage.
-
-## Repository Coverage Execution Plan And Results
-| Order | Case IDs | Command from workspace root (clean env) | Expected | Status / evidence |
-| --- | --- | --- | --- | --- |
-| 1 | LIFE-001 | pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts --no-watch | 17 passes, exit 0 | Planned; evidence/api-e2e/lifecycle.* |
-| 2 | API-CL01..04, WS-INT, WS-BUSY, WS-RACE, WS-BG; LIVE-001 skipped | pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts --no-watch (optional reporting flags only) | 8 passes / 1 skip, zero unhandled, exit 0, child/IO/cwd cleanup | Planned; target-1.* |
-| 3 | REG-001 | pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts --no-watch | All pass | Planned; regressions.* |
-| 4 | TYPE-001 | pnpm -C autobyteus-server-ts typecheck | Production noEmit exits 0, not global test typing | Planned; typecheck.* |
-| 5 | Reuse target case IDs | Repeat target at least twice, fresh HOME/TMPDIR each | Same counts, no owned leaks/unhandled errors | Planned; target-2.*, target-3.* |
-
-## Test-Case Ledger Decision
-Required: Yes — multiple material scenarios/repeats plus potential interruption. Canonical api-e2e-test-case-ledger.md initialized before execution. Reporter records target case transitions individually; wrapper checkpoints grouped lifecycle/regression checks immediately after process exit and before next command.
-
-## Post-Repository Confidence Scorecard / Broader Decision
-All seven mandatory categories: **Pending execution**, no pass/confidence assumed. Categories planned: requirement proof, boundary directness, mock gap, environment fidelity, lifecycle/recovery, user/browser/desktop (N/A: test-only backend transport no changed UI), durable relevance. Will populate after repository evidence. Broader decision pending confidence; candidate targeted Lifecycle harness-failure probe, not browser or paid inference. Real transport/process exercised already by selected E2E/units; no full product journey/desktop change.
-
-## Temporary Executable Validation Plan
-| IDs | Probe | Why temporary |
+## Supported Scenarios / Changed Surfaces
+SCN-001..007 retained: credential-free developer run; user interrupt/follow-up; busy append; supported late-append race; background provider completion; four provider error shapes/continuation; opening/release. No contrived multi-user/browser scenario invented. Operational failure probes address existing REQ-005 harness cleanup, not new product states.
+| Boundary | Change / evidence consequence | Unproven scope |
 | --- | --- | --- |
-| PROBE-BODY, PROBE-CLEANUP, PROBE-SETUP | Disposable sibling file reproduces exact helper prefix and adds operational failure assertions; real manager/socket/app/child except explicitly injected failure | Verify private harness internals on this repair without broadening approved eight+one suite; no new product policy. Remove executable sibling, retain generator/logs |
+| Domain/API/transport/session identity | Production preserved; real Fastify/WebSocket admission/AgentRun/session and return events exercised | No frontend/native-shell claim |
+| External SDK/process lifetime | IR-001 fake alignment + real controlled child; API round-2 MCP fixture conformance only | Provider frames/init simulated in target, actual SDK child units complement; paid inference outside scope |
+| Test environment/lifecycle | Private cwd, exact all-component teardown, truthful error propagation maintained | Temporary reporting-error injection after real release, not every possible OS/fault combination |
+| Frontend/browser/auth policy/desktop/worker/distributed/persistence | Unchanged / inapplicable | Not tested because no affected boundary |
 
-## Not Tested / Infeasible / Deferred
-Paid/live inference deliberately gated; other OS process behavior not certified; frontend/desktop unchanged. Seven pre-existing focused test-typing/stub diagnostics documented upstream, excluded tooling Tasks not silently fixed. Final integrated rerun/user verification/merge remains Delivery. No material uncertainty identified that requires a model call.
+## Project Execution Discovery / Safety
+- Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli
+- Guideline: workspace TESTING.md; no closer TESTING*.md. Applicable AGENTS.md and autobyteus-server-ts/AGENTS.md read; DESIGN.md respected.
+- Other authorities: server README.md setup/tests/build, package.json, vitest.config.ts, tests/setup/{test-environment-isolation.ts,prisma-env.ts,prisma-global-setup.ts,prisma-test-config.ts}, reused claude-owned-sdk-cli.mjs, installed SDK/Vitest public types.
+- Node 22.23.1, pnpm 10.28.2, Vitest 4.0.18, pinned Claude SDK 0.3.280, macOS arm64. Required secrets N/A. No instruction conflict; working documented vitest single-file and typecheck commands used.
+- All commands from the assigned worktree root via evidence/api-e2e/run-isolated.py; environment only PATH, fresh private HOME/TMPDIR, explicit TEST_API_* evidence knobs and target frame directory. No RUN_CLAUDE_E2E, provider keys or app roots. Vitest tests sequential, loopback port 0, Prisma resets worktree-owned tests/.tmp; no user's application/config/data accessed. Source-import suites use current source, not installed/old dist server. Install/prebuild completed upstream; typecheck rebuilt dedicated shared deps serially. Untracked application SDK dist remains unstaged. Temporary roots removed after resource capture; exact command/cwd receipts retained per execution label.
+- Services only Vitest-owned Fastify/socket/manager and child. No frontend/dev/container/desktop service. Private HOME/TMPDIR/workspaces + dedicated test DB, no migration/data bootstrap.
 
-## Ambiguities Or Reroute Triggers
-None observed pre-execution. Actual product/lifecycle flaw or necessary production change => report Solution Designer before fixing and follow failure-origin route; never weaken assertion or silently broaden. Missing evidence is not a pass.
-
-## Investigation Decision
-Proceed to execution: Yes. Durable coverage edits: No. Reroute required: No. Post-repository confidence and broader-validation decision pending actual evidence.
-
-
-## Completed Round 1 Evidence / Revised Decisions — API-REV-001
-- Source under validation: 1f01e802bed7cc0bbead96ce076fa5686dace1c1; cumulative upstream checkpoint 40f993916c. No durable API edits or production changes.
-- LIFE-001: 5 files / 17 passed, exit 0, no unhandled markers; 30.623s wall / 26.25s Vitest. Actual pinned SDK public hook and held-child retry ran. During first invocation the orchestrator incorrectly launched target-1 before lifecycle finished (approximately 8s overlap). Record this execution deviation rather than silently treating it as clean serial proof. No builds overlapped; both use worktree-owned tests/.tmp, so first target not treated as independently clean staged evidence.
-- target-1: 8 failed / 1 skipped, exit 1; 12.981s wall / 9.36s Vitest; no unhandled markers; all eight report the same MCP cleanup TypeError plus retained-session assertion. Resource snapshots show no process group or owned cwd remaining.
-- target-2: **serial** repeat after both previous processes returned, fresh HOME/TMPDIR; 8 failed / 1 skipped, exit 1; 8.912s wall / 7.12s Vitest; identical leaf errors in every case. This confirms the failure without the first overlap. No resource remnants or unhandled markers.
-- API-F001: target line 233 supplies only activateForRun to ClaudeSessionManager. AgentToolMcpRunSessionAuthority explicitly also requires deactivateForRun(runId): number. Real ClaudeAgentToolsMcpSessionState.release (line 51) unconditionally calls it; teardown fails with `this.runSessions.deactivateForRun is not a function`. Exact session correctly remains registered because the MCP component proof failed; hasRunSession(false) then also fails. Source inspection confirms the deficient test double also exists at base 32aca0818e. It was previously masked by malformed Query opening. Baseline presence does not close the issue (TESTING.md Rule 9).
-- All case error trees contain only those two leaves, no original behavioral/child-IO/body assertion error. Original streaming/error bodies reached completion, but **the cases still fail** and AC-001/AC-004/REQ-005 are not satisfied. No production defect is indicated by this failure; no production fix authorized or made.
-- Coverage decision revised: target **Needs Update** for its local MCP authority double, not assertion removal or production safety weakening. Preliminary classification Local Fix / test fixture; recommended owner API/E2E, subject to Code Reviewer failure-origin confirmation. No repair applied pending that review.
-- Planned broader client/session regression group, independent production typecheck rerun, third acceptance repeat and body/cleanup/setup probes: Not Tested this round. Stop further pass-oriented work because the exact target still fails; these remain required after rework. Implementation's 17 units/typecheck are upstream evidence only, not substituted for our unrun commands.
-
-### Mandatory Post-Repository Confidence Scorecard
-| Category | Score | Evidence / uncertainty | Evidence that could improve it |
+## Existing Durable Coverage Inventory / Final Validity Decisions
+| Server-relative path / group | Validity | Requirement / evidence | Action |
 | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 50% | All eight fail cleanup; body checks reached, but critical eight-pass/exact session release not achieved | Conforming test authority + full clean rerun |
-| Changed-boundary execution directness | 95% | Real transport/domain/opening/owner/child/IO run; no production bypass | Post-rework repeated target |
-| Cross-boundary integration realism and mock gap | 95% | Real WebSocket/session/process owners; actual pinned SDK child units complement scripted frames; paid inference not this scope | No live model needed for local malformed authority |
-| Environment/configuration/identity/fixture fidelity | 90% | Fresh private HOME/TMPDIR and serial confirmation; MCP mock incomplete and initial accidental overlap documented | Repair fixture then serial reruns |
-| Failure/edge-case/lifecycle/recovery evidence | 50% | Critical teardown stays failed, although exact physical child/IO checks do not fail and units pass | Target manager release + harness failure probes |
-| User-surface/browser/desktop-shell | N/A | No rendered/frontend/browser API/native shell behavior changed; real ws server path already exercised | N/A |
-| Durable regression coverage quality/relevance | 75% | Original cases relevant/preserved, but incomplete local authority makes every case red | Complete narrow test-only fixture and regressions |
-- Overall: **75.8%**, simple mean of six applicable scores (455/6). Applicable categories below 90%: requirements, lifecycle/recovery, durable quality. Every critical executable AC directly proven: No. Default clean target 95%: No.
-- Broader validation: **Not Required** for failure-origin assessment — exact repeated repository failure directly identifies the malformed local test dependency; actual process/opening/transport boundaries already exercised. Additional browser/desktop/live provider cannot supply its missing method. Repository rework/revalidation is required; this is not a Pass or a justification to omit post-rework regressions/probes.
-- Ambiguity/reroute: API-F001 Local Fix; request focused failure-origin review. No requirement/design change or product fix needed on current evidence. Independent successful-test review remains Not Required — direct low-risk route; failure-origin review is separately Required.
-- Investigation final decision: execution round complete, **Fail**. Hand off cumulative failure evidence to Code Reviewer under matching get_handoff_rules rule; no Delivery/pass handoff.
+| tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts | **Still Valid after repair** (prior Needs Update resolved) | AC-001..005; eight original cases and one live gate; 57 matcher expressions unchanged from IR-001 | Typed MCP double only updated; execute 3 fresh runs |
+| tests/fixtures/claude-owned-sdk-cli.mjs | Still Valid, unchanged | Actual no-model child lifetime reused | Preserve; hash d408306b1decad92e9ddade8817c1768164a34791f94d25e6e4204ffcedd3933 |
+| tests/unit/runtime-management/claude/client/claude-sdk-{session-opening,process-owner,real-child-retry,streaming-session}.test.ts + tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts | Still Valid | Public opening/fences/actual SDK EOF+IO and held-child retry/exact cleanup | Serial 17 pass rerun closes earlier overlap limit |
+| tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts + tests/unit/agent-execution/backends/claude/session/claude-{session,session-manager,turn-tracker}.test.ts | Still Valid | Auth/options/session/interrupt/background/turn/error contracts; session helper mocks acquired handle, not real opening | 109 pass, not substitute for actual SDK lifecycle |
+| Gated live Claude client/backend/manager integration files | Out Of Scope | Paid inference/older stale tooling surfaces not changed | Not run; no skipped-suite pass claim |
+| Other stale/global/UI/core suites | Out Of Scope | No production delta; separately assigned Tasks aac4b26a/0c7efc37 | No scope expansion |
+- Durable add/remove: None. Update: only current typed MCP authority in target (7 additions/1 deletion). No obsolete assertion or replacement coverage removal.
+- Relevant behavior with no durable addition: temporary operational private-helper probes; preserve mandated 8+1 count. No untestable critical in-scope behavior or upstream ambiguity left.
+
+## Repository Plan / Results
+Investigation and ledger were updated before repair, then API-F001 failures rechecked first; all subsequent commands serialized and checkpointed.
+| Order / IDs | Label | Outcome | Vitest / wrapper duration | Evidence (under evidence/api-e2e) |
+| --- | --- | --- | --- | --- |
+| 1 — prior API-F001 first, API-CL01..04 / WS-INT / WS-BUSY / WS-RACE / WS-BG | target-3 | **8 passed / 1 skipped**, exit 0 | 8.87s / 11.353s | target-3.log/.exit/.events.jsonl/.command.json/.resources.json; frame JSONs |
+| 2 — LIFE-001 | lifecycle-r2 | **17 passed / 5 files**, exit 0 | 24.32s / 27.784s | lifecycle-r2.log/.exit/.command.json/.resources.json |
+| 3 — REG-001 | regressions | **109 passed / 4 files**, exit 0 | 11.34s / 14.172s | regressions.log/.exit/.command.json/.resources.json |
+| 4 — TYPE-001 | typecheck | Production noEmit **exit 0** | N/A / 20.833s | typecheck.log/.exit/.command.json/.resources.json |
+| 5 — TYPE-DELTA additional conformance check | focused-types-r2 | **Zero introduced diagnostics**, same 7 baseline; exit 0 | N/A / 24.614s | focused-types-r2.log/.exit/.command.json/.resources.json |
+| 6 — same target IDs | target-4 | **8 passed / 1 skipped**, exit 0 | 9.39s / 12.228s | target-4 logs/case events/receipts/frames |
+| 7 — same target IDs, exact command without reporters | target-5 | **8 passed / 1 skipped**, exit 0 | 10.96s / 13.006s | target-5.log/.exit/.command.json/.resources.json; frame JSONs |
+| Broader lifecycle — three probes | harness-probes | 2 passed / 1 failed; probe instrumentation error before intended setup fault | 8.03s / 9.727s | Retained failed logs/events/receipts; not target failure |
+| Unresolved PROBE-SETUP first | harness-setup-rerun | 1 passed / 2 excluded by name filter, exit 0 | 5.89s / 7.885s | setup rerun logs/events/receipts; exclusion never counted Pass |
+| Full PROBE-BODY / PROBE-CLEANUP / PROBE-SETUP | harness-probes-rerun | **3 passed**, exit 0 | 5.83s / 7.444s | full rerun logs/events/receipts; 3 cwd removed |
+
+### Exact Command Index
+- First prior-failure rerun: `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts --no-watch --reporter=verbose --reporter=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/evidence/api-e2e/case-reporter.mjs`
+- Narrow lifecycle: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts --no-watch`
+- Bounded client/session regressions: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts --no-watch`
+- Production type policy: `pnpm -C autobyteus-server-ts typecheck`
+- Optional focused compile delta: `node tickets/in-progress/claude-interrupt-resume-fake-cli/evidence/implementation/check-target-types.cjs`
+- Exact acceptance repeat: `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts --no-watch`
+- Additional reporting flags on target-3/4 only; no timeout/gate/skip/behavior flags changed. Exact argv/cwd stored for every invocation.
+
+## Ledger / Prior Failure / Temporary Probe Decisions
+Ledger required for multi-case/repeats and interruption continuity; canonical api-e2e-test-case-ledger.md. Original IDs reused. target-3/4 reporter records each case; target-5 uninstrumented full summary reconciled against unchanged nine-case inventory after process returns. Every grouped attempt checkpointed before next runtime.
+
+API-F001 **executably resolved**: three 8/1 exit-0 runs now pass exact manager removal/child/IO/init proofs. CRR-001 remains triggering failed historical review; repaired source awaits its separately requested review. Initial target-1/lifecycle overlap preserved in API-REV-001; current round all serial, no acceptance result depends on it.
+
+Initial temporary PROBE-SETUP observation incorrectly required a session during createRunSession's pre-create close(empty) call. That probe failed before intended listen fault, not a product/target defect. Failed logs retained. Corrected only temporary observer to use hasRunSession and delegate every actual close; 0 prior entry + subsequent owned-session close gives two calls. Reran unresolved setup first (1 pass, 2 name-filter exclusions), then full probes (3 pass). No original target assertion changed. Sibling removed after each attempt; generator/log retained.
+
+## Confidence / Broader-Validation Decisions
+Mandatory post-repository score **94.2%** (565/6), lifecycle 90% bounded uncertainty around explicit exceptional harness cleanup. Broader **Required — Lifecycle**, recorded before probes; selected temporary exact-helper operational execution, not browser/desktop/provider spending.
+| Category | Post-repository | Final | Supporting evidence / remaining uncertainty |
+| --- | --- | --- | --- |
+| Requirement / acceptance-criteria proof | 95% | 100% | All executable AC-001..005 directly satisfied; probe closes exceptional harness cleanup gap. AC-006/REQ-006 is Delivery's later gate, not claimed |
+| Changed-boundary execution directness | 95% | 100% | Typed repaired authority plus real WebSocket/domain/opening/owner/exact session release; temporary probes run the current helper prefix |
+| Cross-boundary integration realism / mock gap | 95% | 95% | Actual pinned SDK/no-model child initialization/retry complements scripted frames. Inference not changed or certified |
+| Environment/configuration/identity/fixture fidelity | 95% | 100% | Three fresh serialized target runs, source-preserved gate/identity, private cwd proof incl setup failure; current typed authority truthful count 0 |
+| Failure/edge-case/lifecycle/recovery | 90% | 95% | Actual held-child retry; body/cleanup/setup failure preservation and independent release directly checked; not universal OS/failure combination proof |
+| User-surface/browser/desktop-shell | N/A | N/A | Test-only backend adapter/harness; no changed UI/browser/native-shell boundary; public ws exercised |
+| Durable regression quality / relevance | 95% | 95% | 57/57 current matchers + all case bodies/gate unchanged; narrow typed repair, 109 regressions. Same 7 excluded baseline test-typing diagnostics, no new diagnostic |
+
+- Final **97.5%** (585/6), +3.3 percentage points after probes. No applicable category below 90%; critical executable criteria proven; default 95% target met. No unresolved material broader-validation risk.
+- Final broader decision: **Required — Lifecycle, completed**. Browser/desktop/live-provider Not Required: no changed UI/native/inference contract; real transport/process boundary already executed.
+
+## Live Environment / Temporary Evidence / Cleanup
+Generator make-harness-probe.py copies exact current helper prefix; only temporary app observation/listen-failure seam. PROBE-BODY and PROBE-CLEANUP enter via real ws send and current owner; cleanup probe throws a reporting error *after actual exact session release*, proving remaining app/socket release and both error identities. PROBE-SETUP fails listen before query/socket, closes precreated exact session/app. afterAll verifies all 3 private onTestFinished cwd removed. This operational diagnostic remains temporary to preserve approved durable case count, not introduce product policy or global helper architecture.
+No model/credentials needed. All roots/process groups owned by wrapper; final snapshots no survivors/target workspace remnants, roots removed. Sampling corroborates, not exhaustive spawn accounting; passing production/target exact child IO/exit and manager absence are primary proof.
+
+## Not Tested / Residual / Final Investigation Decision
+Paid live case skipped/Not Tested; other OS release not certified. Full global test type policy not claimed (same 7 known baseline typing/stub diagnostics, zero introduced). Final integrated rerun, explicit user verification, merge/push and cleanup belong to Delivery; no release requested. No unsupported scenario gap or actual product defect found.
+
+Proceed/execution complete: Yes. Durable update completed: one target. Reroute upstream: No. **API-REV-002 Pass / 97.5%**, API-F001 executably resolved; return cumulative repair package to requesting Code Reviewer for proportional test-code review, not Delivery-ready yet. Initial low-risk no-review decision retained as historical policy; current reviewer-requested failure-rework gate applies. The returned general handoff rules have no applicable condition while that required review is pending (Small/Low, passing, but not ready for Delivery); return to requesting agent per no-match rule.
