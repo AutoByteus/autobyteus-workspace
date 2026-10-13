@@ -71,7 +71,7 @@ const stopNuxt = async child => {
 await fs.mkdir(output, { recursive: true })
 assert.equal((await fs.readdir(output)).length, 0, 'Use a fresh output directory; never overwrite evidence')
 const evidencePath = path.join(output, 'evidence.json')
-const evidence = { startedAt: new Date().toISOString(), platform: `${process.platform}-${process.arch}`, node: process.version, scenarios: {}, browserEvents: [], requests: [], cleanup: {} }
+const evidence = { startedAt: new Date().toISOString(), platform: `${process.platform}-${process.arch}`, node: process.version, scenarios: {}, browserEvents: [], requests: [], iconRequests: [], cleanup: {} }
 let home, stub, nuxt, browser, page, log, fixtureInstalled = false
 const record = () => fs.writeFile(evidencePath, JSON.stringify(evidence, null, 2) + '\n')
 const checkpoint = async (id, status, description) => {
@@ -137,7 +137,9 @@ try {
   page = await context.newPage(); page.setDefaultTimeout(60000)
   page.on('pageerror', e => evidence.browserEvents.push({ type: 'pageerror', text: e.message }))
   page.on('console', e => { if (['warning', 'error'].includes(e.type())) evidence.browserEvents.push({ type: e.type(), text: e.text() }) })
-  page.on('requestfailed', r => evidence.browserEvents.push({ type: 'requestfailed', url: r.url(), reason: r.failure() }))
+  page.on('requestfailed', r => evidence.browserEvents.push({ type: 'requestfailed', url: r.url(), reason: r.failure(), at: new Date().toISOString() }))
+  page.on('request', r => { if (r.url().includes('api.iconify.')) evidence.iconRequests.push({ type: 'request', url: r.url(), at: new Date().toISOString() }) })
+  page.on('response', r => { if (r.url().includes('api.iconify.')) evidence.iconRequests.push({ type: 'response', url: r.url(), status: r.status(), at: new Date().toISOString() }) })
   await page.goto(url)
   await page.getByRole('heading', { name: 'Members (6)', exact: true }).waitFor()
   await delay(2000); await page.reload()
@@ -205,6 +207,9 @@ try {
     assert.deepEqual(await page.locator('section').evaluateAll(ss => ss.map(s => s.querySelector('h2')?.textContent.trim())), ['Description', 'Members (6)', 'Instructions', 'Handoffs'])
     assert.equal(await page.getByRole('button', { name: 'Delete', exact: true }).count(), 0)
     assert.equal(await page.locator('[data-test="handoff-empty-state"]').count(), 1)
+    // Let this newly mounted page's async icons settle before document navigation.
+    // Otherwise the probe itself can abort their requests; keep the strict error gate.
+    await page.waitForLoadState('networkidle')
     await page.goto(url + '?team=missing')
     await page.getByRole('heading', { name: /Agent team not found/i }).waitFor()
     assert.equal(await page.locator('section').count(), 0)
