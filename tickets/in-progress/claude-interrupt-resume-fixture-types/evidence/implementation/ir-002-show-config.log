@@ -1,0 +1,54 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+{
+    "compilerOptions": {
+        "target": "es2022",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "rootDir": "./",
+        "outDir": "./dist",
+        "strict": true,
+        "noImplicitOverride": false,
+        "noPropertyAccessFromIndexSignature": false,
+        "noUncheckedIndexedAccess": false,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "types": [
+            "node"
+        ],
+        "baseUrl": "./",
+        "paths": {},
+        "declaration": true,
+        "declarationMap": true,
+        "noEmit": true,
+        "moduleDetection": "force",
+        "allowSyntheticDefaultImports": true,
+        "resolvePackageJsonExports": true,
+        "resolvePackageJsonImports": true,
+        "preserveConstEnums": true,
+        "useDefineForClassFields": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "strictBuiltinIteratorReturn": true,
+        "alwaysStrict": true,
+        "useUnknownInCatchVariables": true
+    },
+    "files": [
+        "./tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts"
+    ],
+    "include": [
+        "tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules"
+    ]
+}
