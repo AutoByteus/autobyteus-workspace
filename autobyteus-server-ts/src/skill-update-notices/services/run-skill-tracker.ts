@@ -38,43 +38,82 @@ const logger = { warn: (...args: unknown[]) => console.warn(...args) };
  *   skills it uses now but never saw are recorded as seen (its runtime just advertised them). A
  *   missing record is re-created from current files (no retroactive notice).
  */
+export const DEFAULT_SEEN_VERSIONS_RETRY_DELAYS_MS: readonly number[] = [1_000, 5_000, 15_000, 60_000];
+
+type RunWrites = {
+  /** The run's writes, one after another. */
+  chain: Promise<void>;
+  /** A write is waiting for the run's memory folder to exist (retried on a timer). */
+  retry: NodeJS.Timeout | null;
+  retryAttempt: number;
+};
+
 export class RunSkillTracker {
   private readonly runs = new Map<string, TrackedRun>();
-  private readonly tracking = new Map<string, Promise<TrackedRun | null>>();
+  private readonly tracking = new Map<string, Readonly<{ run: AgentRun; promise: Promise<TrackedRun | null> }>>();
+  private readonly writes = new Map<TrackedRun, RunWrites>();
+  private readonly inFlight = new Set<Promise<unknown>>();
+  private readonly retryDelaysMs: readonly number[];
+  private closed = false;
 
   constructor(private readonly deps: Readonly<{
     resolveUsedSkills: RunUsedSkillsResolver;
     snapshotter: Pick<SkillFolderSnapshotter, "snapshot">;
     store: Pick<SeenSkillVersionsStore, "read" | "write" | "forget">;
-  }>) {}
+    /** Delays between attempts to write a record whose memory folder does not exist yet (the last repeats). */
+    seenVersionsRetryDelaysMs?: readonly number[];
+  }>) {
+    this.retryDelaysMs = deps.seenVersionsRetryDelaysMs ?? DEFAULT_SEEN_VERSIONS_RETRY_DELAYS_MS;
+  }
 
   /** Starts tracking a published run. Resolves when its used skills and seen versions are known. */
   trackRun(run: AgentRun, activationKind: AgentRunActivationKind): Promise<TrackedRun | null> {
     const existing = this.tracking.get(run.runId);
-    if (existing) return existing;
-    const tracking = this.loadRun(run, activationKind).catch((error) => {
+    if (existing && existing.run === run) return existing.promise;
+    if (this.closed) return Promise.resolve(null);
+    const promise = this.loadRun(run, activationKind).catch((error) => {
       logger.warn(`SKILL_UPDATE_TRACKING_FAILED:${run.runId}: ${String(error)}`);
       return null;
     });
-    this.tracking.set(run.runId, tracking);
-    return tracking;
+    this.tracking.set(run.runId, { run, promise });
+    this.hold(promise);
+    return promise;
   }
 
   /** The tracked run once its tracking has completed (null when it is not tracked). */
   whenTracked(runId: string): Promise<TrackedRun | null> {
-    return this.tracking.get(runId) ?? Promise.resolve(null);
+    return this.tracking.get(runId)?.promise ?? Promise.resolve(null);
   }
 
   getTrackedRun(runId: string): TrackedRun | null {
     return this.runs.get(runId) ?? null;
   }
 
+  /**
+   * Stops tracking a released run. Nothing more is written for it from now on: a write in
+   * progress stops before its next step, and a waiting retry is cancelled (the run may be deleted
+   * next, and its memory folder must not come back).
+   */
   untrackRun(run: AgentRun): void {
     const tracked = this.runs.get(run.runId);
     if (tracked && tracked.run !== run) return;
-    this.runs.delete(run.runId);
-    this.tracking.delete(run.runId);
+    if (this.tracking.get(run.runId)?.run === run) this.tracking.delete(run.runId);
+    if (tracked) {
+      this.runs.delete(run.runId);
+      this.cancelRetry(tracked);
+      this.writes.delete(tracked);
+    }
     this.deps.store.forget({ runId: run.runId, memoryDir: run.config.memoryDir });
+  }
+
+  /** Stops all tracking and waits for tracking and writes in progress to finish or stop. */
+  async close(): Promise<void> {
+    this.closed = true;
+    for (const tracked of this.runs.values()) this.cancelRetry(tracked);
+    this.runs.clear();
+    this.tracking.clear();
+    this.writes.clear();
+    while (this.inFlight.size > 0) await Promise.allSettled([...this.inFlight]);
   }
 
   /** Each tracked run with the names it uses whose current folder is one of these. */
@@ -124,6 +163,11 @@ export class RunSkillTracker {
     await this.persist(tracked);
   }
 
+  /** Whether this tracked run is still tracked (not released, not closed). */
+  private isCurrent(tracked: TrackedRun): boolean {
+    return !this.closed && this.runs.get(tracked.run.runId) === tracked;
+  }
+
   private async loadRun(run: AgentRun, activationKind: AgentRunActivationKind): Promise<TrackedRun | null> {
     const skillSource = await this.deps.resolveUsedSkills(run);
     const used = skillSource.resolve();
@@ -140,19 +184,74 @@ export class RunSkillTracker {
     for (const name of [...current.keys(), ...(stored ? stored.keys() : [])]) {
       skillDirs.set(name, current.get(name)?.skillDir ?? null);
     }
-    if (!this.tracking.has(run.runId)) return null; // released meanwhile
+    if (this.closed || this.tracking.get(run.runId)?.run !== run) return null; // released meanwhile
     const tracked: TrackedRun = { run, activationKind, skillSource, skillDirs, seen };
     this.runs.set(run.runId, tracked);
-    await this.persist(tracked);
+    void this.persist(tracked);
     return tracked;
   }
 
-  private async persist(tracked: TrackedRun): Promise<void> {
+  /**
+   * Writes the run's record after any write before it. A record whose memory folder does not
+   * exist yet (the runtime creates it with its first trace) is retried on a timer while the run
+   * is tracked; the store never creates the folder.
+   */
+  private persist(tracked: TrackedRun): Promise<void> {
+    const writes = this.writesOf(tracked);
+    this.cancelRetry(tracked);
+    const next = writes.chain.then(() => this.writeNow(tracked));
+    writes.chain = next;
+    this.hold(next);
+    return next;
+  }
+
+  private async writeNow(tracked: TrackedRun): Promise<void> {
+    if (!this.isCurrent(tracked)) return;
+    let result: Awaited<ReturnType<SeenSkillVersionsStore["write"]>>;
     try {
-      await this.deps.store.write({ runId: tracked.run.runId, memoryDir: tracked.run.config.memoryDir },
-        new Map(tracked.seen) as SeenSkillVersions);
+      result = await this.deps.store.write({ runId: tracked.run.runId, memoryDir: tracked.run.config.memoryDir },
+        new Map(tracked.seen) as SeenSkillVersions, () => this.isCurrent(tracked));
     } catch (error) {
       logger.warn(`SEEN_SKILL_VERSIONS_WRITE_FAILED:${tracked.run.runId}: ${String(error)}`);
+      return;
     }
+    const writes = this.writes.get(tracked);
+    if (!writes || !this.isCurrent(tracked)) return;
+    if (result === "written") {
+      writes.retryAttempt = 0;
+      return;
+    }
+    if (result !== "folder_missing" || writes.retry) return;
+    const delays = this.retryDelaysMs;
+    const delay = delays[Math.min(writes.retryAttempt, delays.length - 1)] ?? 60_000;
+    writes.retryAttempt += 1;
+    writes.retry = setTimeout(() => {
+      writes.retry = null;
+      if (this.isCurrent(tracked)) void this.persist(tracked);
+    }, delay);
+    writes.retry.unref?.();
+  }
+
+  private writesOf(tracked: TrackedRun): RunWrites {
+    let writes = this.writes.get(tracked);
+    if (!writes) {
+      writes = { chain: Promise.resolve(), retry: null, retryAttempt: 0 };
+      this.writes.set(tracked, writes);
+    }
+    return writes;
+  }
+
+  private cancelRetry(tracked: TrackedRun): void {
+    const writes = this.writes.get(tracked);
+    if (writes?.retry) {
+      clearTimeout(writes.retry);
+      writes.retry = null;
+    }
+  }
+
+  /** Keeps a promise until it settles, so `close()` can wait for it. */
+  private hold(promise: Promise<unknown>): void {
+    this.inFlight.add(promise);
+    void promise.finally(() => { this.inFlight.delete(promise); }).catch(() => undefined);
   }
 }

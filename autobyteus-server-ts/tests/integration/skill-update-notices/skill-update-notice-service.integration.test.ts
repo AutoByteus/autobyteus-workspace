@@ -1,3 +1,4 @@
+import { existsSync, mkdirSync, readdirSync } from "node:fs";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -98,9 +99,12 @@ const createRun = (world: Awaited<ReturnType<typeof createWorld>>, options: {
   const state = { status: "idle" as string, post: "forwarded" as PostBehavior, turn: 0 };
   const posted: AgentInputUserMessage[] = [];
   const published: AgentRunEvent[] = [];
+  const memoryDir = options.memoryDir === undefined ? path.join(world.root, "memory", options.runId) : options.memoryDir;
+  // The platform creates a run's memory folder; the notice subsystem never does.
+  if (memoryDir) mkdirSync(memoryDir, { recursive: true });
   const run = {
     runId: options.runId,
-    config: { agentDefinitionId: options.definitionId, memoryDir: options.memoryDir === undefined ? path.join(world.root, "memory", options.runId) : options.memoryDir },
+    config: { agentDefinitionId: options.definitionId, memoryDir },
     getStatusSnapshot: () => ({ status: state.status }),
     publishEvent: vi.fn(async (value: AgentRunEvent) => { published.push(value); }),
     postUserMessage: vi.fn(async (message: AgentInputUserMessage, opts: { lifecycleObserver?: (fact: AgentRunInputLifecycle) => void }) => {
@@ -492,6 +496,7 @@ describe("SkillUpdateNoticeService with the real folder watcher", () => {
     tempDirs.push(root);
     const skillDir = path.join(root, "code-review");
     await write(path.join(skillDir, "SKILL.md"), "v1");
+    await fs.mkdir(path.join(root, "memory"), { recursive: true });
     const subsystem = createSkillUpdateNotices({
       agentDefinitionService: { getAgentDefinitionById: async (id: string) => ({ id }) as never },
       skillService: { resolveConfiguredSkillsForAgent: () => [{ name: "code-review", rootPath: skillDir }] as never },
@@ -524,7 +529,7 @@ describe("SkillUpdateNoticeService with the real folder watcher", () => {
 
 describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => {
   /** A service whose tracking snapshots wait for `open()` (a slow first scan of many skill files). */
-  const createGatedService = async () => {
+  const createGatedService = async (options: { seenVersionsRetryDelaysMs?: readonly number[] } = {}) => {
     const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "skill-notice-gated-")));
     tempDirs.push(root);
     const skillDir = path.join(root, "skills", "code-review");
@@ -536,6 +541,7 @@ describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => 
       resolveUsedSkills: async () => ({ resolve: () => [{ name: "code-review", rootPath: skillDir }] }),
       snapshotter: { snapshot: async (skill) => { await gate; return real.snapshot(skill); } },
       store: new SeenSkillVersionsStore(),
+      seenVersionsRetryDelaysMs: options.seenVersionsRetryDelaysMs,
     });
     const watcher = new SkillFolderWatcher({
       createWatch: () => ({ on: () => undefined, add: () => undefined, unwatch: () => undefined, close: async () => undefined }),
@@ -546,6 +552,7 @@ describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => 
 
   it("a new run's first input is dispatched at once, while its skills are still being scanned", async () => {
     const { root, service, tracker, watcher, open } = await createGatedService();
+    mkdirSync(path.join(root, "memory", "run-new"), { recursive: true });
     const { run, dispatchUserInput, dispatched } = createAgentRun({
       runId: "run-new", agentDefinitionId: "def-a", memoryDir: path.join(root, "memory", "run-new"), inputPreface: service,
     });
@@ -560,11 +567,13 @@ describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => 
     await vi.waitFor(() => expect(tracker.getTrackedRun("run-new")).not.toBeNull());
     service.close();
     await watcher.close();
+    await tracker.close();
   });
 
   it("a restored run's first input waits for its check and carries the notice for changes made while it was stopped", async () => {
-    const { root, skillDir, service, watcher, open } = await createGatedService();
+    const { root, skillDir, service, tracker, watcher, open } = await createGatedService();
     const memoryDir = path.join(root, "memory", "run-restored");
+    await fs.mkdir(memoryDir, { recursive: true });
     await new SeenSkillVersionsStore().write({ runId: "run-restored", memoryDir }, new Map([["code-review", {
       skillName: "code-review", skillDir, skillMdPath: path.join(skillDir, "SKILL.md"), files: { "SKILL.md": "digest-of-v0" },
     }]]));
@@ -584,5 +593,71 @@ describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => 
     expect(dispatched(0).content.endsWith("\n\ncontinue")).toBe(true);
     service.close();
     await watcher.close();
+    await tracker.close();
+  });
+
+  // DR-001: a seen-versions write never outlives the run's release or the subsystem's close, and
+  // never re-creates a deleted run's memory folder.
+  const fakeRun = (runId: string, memoryDir: string) =>
+    ({ runId, config: { agentDefinitionId: "def-a", memoryDir }, getStatusSnapshot: () => ({ status: "idle" }) }) as unknown as AgentRun;
+
+  it("DR-001: a run released and deleted while its skills are being scanned does not get its memory folder back", async () => {
+    const { root, service, tracker, watcher, open } = await createGatedService();
+    const memoryDir = path.join(root, "memory", "run-deleted");
+    await fs.mkdir(memoryDir, { recursive: true });
+    const run = fakeRun("run-deleted", memoryDir);
+    service.runPublished(run, "new");
+    await settle();
+
+    service.runReleased(run);
+    await fs.rm(memoryDir, { recursive: true, force: true }); // the run is deleted
+    open();
+    await settle();
+    await tracker.close();
+
+    expect(existsSync(memoryDir)).toBe(false);
+    service.close();
+    await watcher.close();
+  });
+
+  it("DR-001: a record waits for the runtime to create the memory folder, and stops for good once the run is released", async () => {
+    const { root, service, tracker, watcher, open } = await createGatedService({ seenVersionsRetryDelaysMs: [20] });
+    open();
+    const memoryDir = path.join(root, "memory", "run-late-folder");
+    const run = fakeRun("run-late-folder", memoryDir);
+    service.runPublished(run, "new");
+    await tracker.whenTracked("run-late-folder");
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    expect(existsSync(memoryDir)).toBe(false); // never created by the subsystem
+
+    await fs.mkdir(memoryDir, { recursive: true }); // the runtime writes its first trace
+    await vi.waitFor(() => expect(existsSync(path.join(memoryDir, SEEN_SKILL_VERSIONS_FILE_NAME))).toBe(true));
+
+    service.runReleased(run);
+    await fs.rm(memoryDir, { recursive: true, force: true }); // the run is deleted
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    expect(existsSync(memoryDir)).toBe(false);
+    service.close();
+    await watcher.close();
+    await tracker.close();
+  });
+
+  it("DR-001: close waits for tracking and writes in progress; nothing is written after it", async () => {
+    const { root, service, tracker, watcher, open } = await createGatedService();
+    const memoryDir = path.join(root, "memory", "run-closing");
+    await fs.mkdir(memoryDir, { recursive: true });
+    service.runPublished(fakeRun("run-closing", memoryDir), "new");
+    await settle();
+
+    const closing = (async () => { await watcher.close(); service.close(); await tracker.close(); })();
+    open();
+    await closing;
+
+    const after = readdirSync(memoryDir);
+    expect(after.filter((name) => name.endsWith(".tmp"))).toEqual([]);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    expect(readdirSync(memoryDir)).toEqual(after);
+    await fs.rm(memoryDir, { recursive: true }); // no ENOTEMPTY: nothing is still writing
+    expect(existsSync(memoryDir)).toBe(false);
   });
 });

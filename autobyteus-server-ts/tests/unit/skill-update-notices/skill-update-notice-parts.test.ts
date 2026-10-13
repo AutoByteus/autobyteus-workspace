@@ -120,15 +120,36 @@ describe("skill update notice text and message (REQ-007, REQ-008)", () => {
 });
 
 describe("SeenSkillVersionsStore", () => {
-  it("writes the record atomically next to the run's memory and reads it back", async () => {
+  it("writes the record atomically into the run's memory folder and reads it back", async () => {
     const memoryDir = path.join(await tempDir(), "run-1");
+    await fs.mkdir(memoryDir);
     const store = new SeenSkillVersionsStore();
     const versions = new Map([["code-review", snapshotOf("/s/code-review", { "SKILL.md": "a" })]]);
 
-    await store.write({ runId: "run-1", memoryDir }, versions);
+    expect(await store.write({ runId: "run-1", memoryDir }, versions)).toBe("written");
 
     expect((await fs.readdir(memoryDir))).toEqual([SEEN_SKILL_VERSIONS_FILE_NAME]);
     expect(await store.read({ runId: "run-1", memoryDir })).toEqual(versions);
+  });
+
+  it("never creates a missing memory folder, and stops (leaving no temp file) once told to (DR-001)", async () => {
+    const root = await tempDir();
+    const store = new SeenSkillVersionsStore();
+    const versions = new Map([["code-review", snapshotOf("/s/code-review", { "SKILL.md": "a" })]]);
+
+    const missing = path.join(root, "deleted-run");
+    expect(await store.write({ runId: "deleted-run", memoryDir: missing }, versions)).toBe("folder_missing");
+    expect(await fs.readdir(root)).toEqual([]);
+
+    const memoryDir = path.join(root, "released-run");
+    await fs.mkdir(memoryDir);
+    let checks = 0;
+    // Allowed past the folder check, stopped before the rename (released mid-write).
+    const result = await store.write({ runId: "released-run", memoryDir }, versions, () => ++checks <= 2);
+    expect(result).toBe("aborted");
+    expect(await fs.readdir(memoryDir)).toEqual([]);
+    expect(await store.write({ runId: "released-run", memoryDir }, versions, () => false)).toBe("aborted");
+    expect(await fs.readdir(memoryDir)).toEqual([]);
   });
 
   it("treats a missing or invalid record as none, and keeps runs without a memory folder in memory", async () => {

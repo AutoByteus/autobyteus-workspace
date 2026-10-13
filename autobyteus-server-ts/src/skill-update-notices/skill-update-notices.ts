@@ -28,6 +28,7 @@ export const createSkillUpdateNotices = (input: Readonly<{
   settleQuietMs?: number;
   settleCapMs?: number;
   createWatch?: SkillFolderWatchFactory;
+  seenVersionsRetryDelaysMs?: readonly number[];
 }>): SkillUpdateNotices => {
   const snapshotter = new SkillFolderSnapshotter();
   const watcher = new SkillFolderWatcher({
@@ -38,6 +39,7 @@ export const createSkillUpdateNotices = (input: Readonly<{
   const tracker = new RunSkillTracker({
     snapshotter,
     store: new SeenSkillVersionsStore(),
+    seenVersionsRetryDelaysMs: input.seenVersionsRetryDelaysMs,
     resolveUsedSkills: async (run) => {
       // The definition the run was activated with (read once, when the run is tracked).
       const definition = await input.agentDefinitionService.getAgentDefinitionById(run.config.agentDefinitionId);
@@ -56,8 +58,11 @@ export const createSkillUpdateNotices = (input: Readonly<{
     tracker,
     close: () => {
       closing ??= (async () => {
+        // Watcher first (no new changes), then the service (no new deliveries), then the tracker,
+        // which waits for tracking and seen-version writes in progress.
         await watcher.close();
         service.close();
+        await tracker.close();
       })();
       return closing;
     },
