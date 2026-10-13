@@ -1,0 +1,9 @@
+{
+  "selected": {
+    "when": "When API/E2E failure-origin review confirms that the owning problem is an implementation defect.",
+    "recipient_address": "/software_engineering_team/implementation_engineer"
+  },
+  "singleMostSpecificOutcomeRecipient": true,
+  "basis": "CRR-003 Fail / implementation-owned Local Fix; API-F001 confirmed setup-boundary defect",
+  "deliveryStatus": "pending send_message_to"
+}

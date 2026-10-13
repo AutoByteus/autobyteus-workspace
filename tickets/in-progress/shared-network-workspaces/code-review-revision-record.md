@@ -1,6 +1,6 @@
 # Code Review Revision Record
 
-The canonical [code-review-report.md](code-review-report.md) is authoritative for the latest source-review result. CRR001 is the initial baseline, not an inferred previous pass; later entries append actual completed results. Proportional API/E2E test review has not occurred.
+The canonical [code-review-report.md](code-review-report.md) is authoritative for the latest implementation/failure-origin result. CRR001 is the initial baseline, not an inferred previous pass; later entries append actual completed results. Proportional API/E2E test review has not occurred.
 
 ## Revision Index
 
@@ -8,6 +8,7 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | code-review-report.md | Initial Implementation Review after IR002 Large/High completion | N/A | **Fail — Local Fix** | **CR-001 open**; FUP001 outside scope |
 | CRR-002 | code-review-report.md | IR003 Local Fix Complete / CR001 source re-review | CRR001 Fail — Local Fix | **Pass** | **CR-001 resolved**; FUP001 retained |
+| CRR-003 | code-review-report.md | API-REV001 Fail / API-F001 focused failure-origin review | CRR002 source Pass; API001 Fail | **Fail — Local Fix (implementation-owned)** | **CR-002 open**; CR001 resolved; FUP001 retained |
 
 ## Revision Entries
 
@@ -63,3 +64,27 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
 - Personally executed only current Python packaging/installer scope:7 enumerated,6pass/1Go-child-only skip. Reviewed Go race/vet/bootstrap/negative controls/builds from IR003; no reviewer Go rerun or toolchain installation. No delegation, source/test fix, OS resource, Docker, providers, merge/push/release or user verification.
 - Fresh handoff rule: implementation review passes and cumulative package ready for executable coverage -> exact `/software_engineering_team/api_e2e_engineer`. Complete cumulative chain goes to this single outcome recipient under the active communication rule; no extra same-outcome notification, Delivery or implementation work handoff.
 - Remaining gates: actual authorized privileged install, selected modes/Docker, current native tools/assets/peer/restore/healthy mounted previews, independent physical topology, docs/finalization/user verification and permitted release. D001/DEC015 outage hardening stays deferred. Nuxt/Electron baseline updater3fail each remain visible; candidate-only passes not current-source proof.
+
+
+### CRR-003 — ordinary fresh native-Mac activation/mount fails before managed sharing
+
+- Date2026-10-13; canonical `code-review-report.md` updated to latest complete **Fail / Local Fix (implementation-owned)**. Entry point **API/E2E Failure-Origin Review / round3**; scope **N/A — focused origin**, no full source audit/ten-category scorecard or successful-test review.
+- Trigger: `/software_engineering_team/api_e2e_engineer`, **API-REV-001 Fail**, API-F001; reported confidence57.14% and broader validation Required remain unchanged. Prior source result **CRR002 Pass** is historical, not an API Pass or waiver.
+- Reviewed HEAD1009ce87e5df00b90480b689d9309331152ef3ba; source/API input3b7dd9a2895f4b8fedc5e1bcdd00c913d97fae2f. Only non-ticket delta is API-owned REST fixture/coverage correctionaf9f23df93. Focused nine NFS source and12 authorities independently equal source-review input.
+- Relevant revisions: **Approved SR018 / Ready SR019 / ARCH-REV003 / IR003**, cumulative prior history preserved; **API-REV001**; DR **N/A — not performed**. **Large/High Reviewed** retained.
+- Supported basis: SCN001/011/013, BEH001, AC012/018/019 ordinary fresh native-Mac create with original APFS project and normal administrator consent. Source qualification -> Apple enable/restart -> immediate one-shot self-mount -> failure before nonroot mounted probe/job install. No injected outage/forced concurrency. New CAND006 promoted in ticket; no new intended behavior.
+
+#### Prior Finding Resolution
+
+| Finding | Prior status | Current status | Verification |
+| --- | --- | --- | --- |
+| CR-001 | Resolved by IR003/CRR002 | **Remains resolved** | commands.go unchanged; API V01 actual root0755/public0644/nonroot installation and mounted-byte/launchd proof; API-F001 occurs later inside mount_nfs |
+| FUP001 | Outside scope, PM custody | **Unchanged follow-up** | API retains original current-source Nuxt/Electron failures and candidate-only distinction; no duplicate notification, patch, score penalty, Task or worker |
+
+- New finding: **CR-002 P1 open**, linked **API-F001**. V01 fresh first create passed20.486s; V02 failed10.819s, single-VM repro failed11.035s with mount_nfs74/EPROGUNAVAIL diagnostic. Postfailure RPC registration plus unchanged public reconnect rc0/9.615s/sameUUID is recovery evidence only.
+- Origin: implementation-owned fresh activation-to-mount orchestration defect. Published Apple source corroborates command completion is not serving-readiness proof; exact guest RPC/kernel timing remains uninstrumented, not claimed. Error text does not establish ignored locallocks, allowlist causation or a new statd/NLM prerequisite. Requirement clear; no demonstrated structural Design Impact. Proportionate correction stays in existing backend/setup owners and preserves true-error behavior/resources.
+- Prior review gap: source-visible assumption that completed Apple activation followed by one unforgiving mount adequately implements ordinary engine-before-host-mount/one-command setup should have been challenged. Actual OS manifestation required runtime. Only affected correctness/readiness rationale superseded; no new aggregate score/full scorecard at this entry point. Historical CRR002100/100 is not current runtime qualification.
+- Evidence: [CRR003 checks](code-review-evidence/crr-003/checks-and-limits.md), [focused hashes](code-review-evidence/crr-003/focused-audit.json), [derived execution summary](code-review-evidence/crr-003/execution-summary.json), [pinned primary contracts](code-review-evidence/crr-003/source-contracts.json); original API001 report/investigation/ledger/revision and mac-vm/mac-matrix/mac-repro JSON/harness files remain authoritative raw execution evidence.
+- Reviewer personally performed source/authority comparisons, forward trace, raw evidence/harness review and primary-source research; no VM/repository rerun, source/test edit, privileged host action, provider call, delegation or release. API cleanup receipts retained; no new reviewer resource to retire.
+- Required progression: implementation-owned correction and durable startup-boundary regression -> source re-review -> API failing fresh public create first, then remaining approved current-product/mode/physical matrix. No manual reconnect workaround counted as first-use success. No per-action outage machinery, fixed-sleep prescription or source-retention redesign.
+- Routing: fresh returned **“When API/E2E failure-origin review confirms that the owning problem is an implementation defect.”** selects only `/software_engineering_team/implementation_engineer`; rule/receipt recorded in CRR003 routing evidence. Main Task open; no API/Delivery Pass. DEC015/D001 deferred/not fixed; IMP-D001/MP003004/source Update/Remove/AGY policy unchanged. Unqualified release/Guide unavailable deliberate. Remaining Linux/Docker/peer/native-runtime/mounted-UI/physical/user-verification/release gates retained.

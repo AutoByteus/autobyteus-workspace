@@ -1,0 +1,15 @@
+{
+  "entryPoint": "API/E2E Failure-Origin Review",
+  "sourceAuthorityHashChecks": 21,
+  "localLinksChecked": 45,
+  "jsonParse": "Pass",
+  "priorCRR001002EntriesPreservedVerbatim": true,
+  "gitDiffCheck": {
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "reviewerSourceTestChanges": false,
+  "reviewerRuntimeRerun": false,
+  "newReviewerOwnedRuntimeResources": []
+}

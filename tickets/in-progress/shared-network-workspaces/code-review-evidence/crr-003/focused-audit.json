@@ -1,0 +1,117 @@
+{
+  "timestampUTC": "2026-10-13T19:46:13.117866+00:00",
+  "head": "1009ce87e5df00b90480b689d9309331152ef3ba",
+  "sourceReviewInput": "3b7dd9a2895f4b8fedc5e1bcdd00c913d97fae2f",
+  "entryPoint": "API/E2E Failure-Origin Review",
+  "scope": "Only failure path/authority identity; not a repeated full source/size audit",
+  "paths": [
+    {
+      "path": "autobyteus-nfs/internal/cli/run.go",
+      "sha256": "f902a2a1d6b216dca0ac7ad8a73cee71350333c022f88482ffddf85b52484aed",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/interactive-setup.go",
+      "sha256": "409c1c676a9a64a68bb29900e11c97cfd03a763049286b4fa9ac4e91a08ad9ff",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/apple.go",
+      "sha256": "0f20e598310eb2384736f5248b686235c4bccfa5e910267bd7010dde3c073c84",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/apple_apply.go",
+      "sha256": "ad46dfa8455bccf204ed245c598415b32f93ce1caed178be8d62c88dd0b2526d",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/commands.go",
+      "sha256": "19d6b5b27a71b80dfc4fe831242e844f69ca3c0c753c626a8ae10912d2613f18",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/mounts.go",
+      "sha256": "b30c21fa39b9e86515c6a50e72b6e467038107afdb03c6d42ae87ede74e5b5aa",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/apply.go",
+      "sha256": "50ce885648df65b41e781511c1ae7c1ceea242d2f730ed18b5c6f9c8a046fb1e",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/pending.go",
+      "sha256": "d39d9c1de4be3eb0bde29a50f4acc9c8d1294191a2fa7e40512e82dda1f5ad14",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/lifecycle.go",
+      "sha256": "28773a9e7a01ca61d3edc8e62fe6150fc0ae0dfbd0dda66c7e6427139839e1a6",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/requirements-doc.md",
+      "sha256": "62ea50f35b12843a61b287602b843b5050a88b4261de2999d70381bb6755470d",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/approval-record-sr018.md",
+      "sha256": "64399a81bda50aadd8f883930fa9c9fef1c6a3dd46c87fe74e2ed5b38223e249",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/approval-record-sr017.md",
+      "sha256": "dc033fc3641b80e13d3de052eed4e289ee4a3f36b9870f317a72ed102660ebbf",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/design-spec.md",
+      "sha256": "2627e9acec44a7c21c09601a868593804319edc47524616ddb6ac1890a0d8564",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/investigation-notes.md",
+      "sha256": "546c92768ff460db555e4382b4972e44e5ec6fdedd5684aad4f8a21b5bc50a98",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/solution-design-handoff.md",
+      "sha256": "3bc089ff875f55909eda9a8aab214cf7ea743e86460994e3700b2b9ba6244cf4",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/solution-revision-record.md",
+      "sha256": "d321384be35fb04ffed0f020a76cd58adb5ed7619330eea4176a80e5f10ac5c0",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/design-review-report.md",
+      "sha256": "fb1687991301bafee18e68c7fd1f1aea583acc9814fd235acdd52f9f934a2f5e",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/architecture-review-revision-record.md",
+      "sha256": "ba053fb7f07d71b94199ac061e9149a727314abe1ff5f472bc97aa1e9bb43a3f",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/architecture-review-scope-feedback.md",
+      "sha256": "f87c31f89d9da0437a7c87d3271c77af75a31daa88861c2ecd7cfb7c3f78e360",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-handoff.md",
+      "sha256": "d54167d17abda0f5432187a28833ad6b6c5020ab0513d0a0200d24e831c58bb7",
+      "equalSourceReviewInput": true
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-revision-record.md",
+      "sha256": "81ab24810e24d32d68334d162d1a1b89f887ec33ca815b7721b82ceaaf399bb5",
+      "equalSourceReviewInput": true
+    }
+  ],
+  "nonTicketDelta": "M\tautobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts\n",
+  "initialStatus": "?? applications/brief-studio/dist/\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-devkit/dist/\n?? autobyteus-application-frontend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n",
+  "reviewerProductEdits": false
+}
