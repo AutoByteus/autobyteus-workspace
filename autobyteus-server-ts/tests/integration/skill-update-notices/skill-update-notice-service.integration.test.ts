@@ -59,10 +59,12 @@ const createWorld = async () => {
     defineAgent(definitionId, Object.keys(skills));
     for (const [name, dir] of Object.entries(skills)) install(name, dir);
   };
-  const watches = { created: 0 };
-  const createWatch: SkillFolderWatchFactory = () => {
-    watches.created += 1;
-    return { on: () => undefined, add: () => undefined, unwatch: () => undefined, close: async () => undefined };
+  /** One watch per skill folder: which folders were watched, and which of those watches are open. */
+  const watches = { created: [] as string[], open: new Set<string>() };
+  const createWatch: SkillFolderWatchFactory = (dir) => {
+    watches.created.push(dir);
+    watches.open.add(dir);
+    return { on: () => undefined, close: async () => { watches.open.delete(dir); } };
   };
   const subsystem = createSkillUpdateNotices({
     // A copy of the definition as it is now (null once deleted), as the definition service returns.
@@ -397,8 +399,11 @@ describe("SkillUpdateNoticeService (integration)", () => {
 
     world.service.runReleased(first.run);
     expect(world.subsystem.watcher.watchedFolders()).toEqual([skillDir]);
+    expect([...world.watches.open]).toEqual([skillDir]);
     world.service.runReleased(second.run);
     expect(world.subsystem.watcher.watchedFolders()).toEqual([]);
+    expect([...world.watches.open]).toEqual([]); // its watch is closed: handles released (CR-005)
+    expect(world.watches.created).toEqual([skillDir]);
   });
 
   it("AC-002/AC-003: a restored run hears about changes made while it was stopped; a missing record means none", async () => {
@@ -434,7 +439,7 @@ describe("SkillUpdateNoticeService (integration)", () => {
     });
   });
 
-  it("R-5: ALL_INSTALLED runs share one watch with one entry per installed skill folder", async () => {
+  it("R-5: ALL_INSTALLED runs share one watch per installed skill folder, all closed when the runs end", async () => {
     const world = await createWorld();
     const installed: Record<string, string> = {};
     for (let index = 0; index < 60; index += 1) {
@@ -442,11 +447,13 @@ describe("SkillUpdateNoticeService (integration)", () => {
       installed[name] = await world.createSkill(name);
     }
     world.useSkills("all-installed", installed);
-    for (const runId of ["run-1", "run-2", "run-3"]) {
-      await publish(world, createRun(world, { runId, definitionId: "all-installed" }));
-    }
+    const runs = ["run-1", "run-2", "run-3"].map((runId) => createRun(world, { runId, definitionId: "all-installed" }));
+    for (const fake of runs) await publish(world, fake);
     await vi.waitFor(() => expect(world.subsystem.watcher.watchedFolders()).toHaveLength(60));
-    expect(world.watches.created).toBe(1);
+    expect(world.watches.created).toHaveLength(60); // three runs, one watch per folder
+    expect(world.watches.open.size).toBe(60);
+    for (const fake of runs) world.service.runReleased(fake.run);
+    expect(world.watches.open.size).toBe(0);
   });
 
   it("delivers through a real AgentRun: an idle run's next input carries the notice in one dispatch", async () => {

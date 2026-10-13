@@ -6,36 +6,43 @@ import { SkillFolderIgnore } from "../providers/skill-folder-ignore.js";
 export const DEFAULT_SKILL_SETTLE_QUIET_MS = 1000;
 export const DEFAULT_SKILL_SETTLE_CAP_MS = 3000;
 
+/** The watch of one skill folder. Closing it releases all of that folder's OS handles. */
 export type SkillFolderWatch = {
   on(event: "all", listener: (eventName: string, filePath: string) => void): unknown;
   on(event: "error", listener: (error: unknown) => void): unknown;
-  add(paths: string | readonly string[]): unknown;
-  unwatch(paths: string | readonly string[]): unknown;
   close(): Promise<void>;
 };
 
+/** Starts watching one skill folder (recursively, skipping what `ignored` returns true for). */
 export type SkillFolderWatchFactory = (
+  skillDir: string,
   options: { ignored: (filePath: string, stats?: fs.Stats) => boolean },
 ) => SkillFolderWatch;
 
-const defaultWatchFactory: SkillFolderWatchFactory = (options) =>
-  chokidar.watch([], { ignoreInitial: true, persistent: true, ignored: options.ignored }) as unknown as SkillFolderWatch;
+const defaultWatchFactory: SkillFolderWatchFactory = (skillDir, options) =>
+  chokidar.watch(skillDir, { ignoreInitial: true, persistent: true, ignored: options.ignored }) as unknown as SkillFolderWatch;
 
 type SettledListener = (skillDirs: readonly string[]) => void;
+
+type WatchedFolder = { readonly ignore: SkillFolderIgnore; readonly watch: SkillFolderWatch | null };
 
 /**
  * Watches the folders of the skills used by current runs (only those, no polling) and reports
  * the folders that changed once writes settle: 1000 ms of quiet, capped at 3000 ms from the first
  * change of a burst. Noise (REQ-010) is never watched. A deleted skill folder is reported as its
- * folder. Handles are released when a folder is no longer used.
+ * folder.
+ *
+ * Each folder has its own watch, closed as soon as no run uses the folder, which releases exactly
+ * that folder's OS handles (chokidar's `unwatch` only mutes a folder's nested watches; QR-002).
+ * Folders still in use keep their watch, so they never miss a write.
  */
 export class SkillFolderWatcher {
   private readonly quietMs: number;
   private readonly capMs: number;
   private readonly createWatch: SkillFolderWatchFactory;
   private readonly logger: Pick<Console, "warn">;
-  private watch: SkillFolderWatch | null = null;
-  private readonly watched = new Map<string, SkillFolderIgnore>();
+  private readonly watched = new Map<string, WatchedFolder>();
+  private readonly closing = new Set<Promise<void>>();
   private readonly pending = new Set<string>();
   private readonly listeners = new Set<SettledListener>();
   private timer: NodeJS.Timeout | null = null;
@@ -64,20 +71,18 @@ export class SkillFolderWatcher {
     return [...this.watched.keys()].sort();
   }
 
-  /** Watches exactly these skill folders: starts new ones, releases the ones no longer listed. */
+  /** Watches exactly these skill folders: starts new ones, closes the ones no longer listed. */
   syncWatchedFolders(skillDirs: Iterable<string>): void {
     if (this.closed) return;
     const wanted = new Set([...skillDirs].map((dir) => path.resolve(dir)));
-    const removed = [...this.watched.keys()].filter((dir) => !wanted.has(dir));
-    const added = [...wanted].filter((dir) => !this.watched.has(dir));
-    for (const dir of removed) this.watched.delete(dir);
-    for (const dir of added) this.watched.set(dir, new SkillFolderIgnore(dir));
-    if (removed.length > 0) this.watch?.unwatch(removed);
-    if (added.length === 0) return;
-    try {
-      this.ensureWatch().add(added);
-    } catch (error) {
-      this.logger.warn("SKILL_FOLDER_WATCH_FAILED", error);
+    for (const [dir, folder] of [...this.watched]) {
+      if (wanted.has(dir)) continue;
+      this.watched.delete(dir);
+      this.pending.delete(dir);
+      this.closeWatch(folder.watch);
+    }
+    for (const dir of wanted) {
+      if (!this.watched.has(dir)) this.watched.set(dir, this.startWatch(dir));
     }
   }
 
@@ -87,24 +92,36 @@ export class SkillFolderWatcher {
     this.timer = null;
     this.pending.clear();
     this.listeners.clear();
+    for (const folder of this.watched.values()) this.closeWatch(folder.watch);
     this.watched.clear();
-    const watch = this.watch;
-    this.watch = null;
-    await watch?.close();
+    await Promise.all([...this.closing]);
   }
 
-  private ensureWatch(): SkillFolderWatch {
-    if (this.watch) return this.watch;
-    const watch = this.createWatch({
-      ignored: (filePath, stats) => {
-        const owner = this.owningFolder(filePath);
-        return owner ? this.watched.get(owner)!.ignores(filePath, stats?.isDirectory() ?? false) : false;
-      },
-    });
-    watch.on("all", (_eventName, filePath) => this.noteChange(filePath));
-    watch.on("error", (error) => this.logger.warn("SKILL_FOLDER_WATCH_ERROR", error));
-    this.watch = watch;
-    return watch;
+  private startWatch(skillDir: string): WatchedFolder {
+    const ignore = new SkillFolderIgnore(skillDir);
+    try {
+      const watch = this.createWatch(skillDir, {
+        ignored: (filePath, stats) => {
+          const owner = this.owningFolder(filePath);
+          return owner ? this.watched.get(owner)?.ignore.ignores(filePath, stats?.isDirectory() ?? false) ?? false
+            : ignore.ignores(filePath, stats?.isDirectory() ?? false);
+        },
+      });
+      watch.on("all", (_eventName, filePath) => this.noteChange(filePath));
+      watch.on("error", (error) => this.logger.warn("SKILL_FOLDER_WATCH_ERROR", error));
+      return { ignore, watch };
+    } catch (error) {
+      this.logger.warn("SKILL_FOLDER_WATCH_FAILED", error);
+      return { ignore, watch: null };
+    }
+  }
+
+  private closeWatch(watch: SkillFolderWatch | null): void {
+    if (!watch) return;
+    const closing = watch.close()
+      .catch((error) => { this.logger.warn("SKILL_FOLDER_WATCH_CLOSE_FAILED", error); })
+      .finally(() => { this.closing.delete(closing); });
+    this.closing.add(closing);
   }
 
   /** The watched skill folder a path belongs to (the deepest one, if folders nest). */
