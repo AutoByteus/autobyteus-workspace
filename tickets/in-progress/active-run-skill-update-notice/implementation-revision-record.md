@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-003 Pass | N/A (note N-1 and residuals R-1, R-4, R-5 and compaction-recovery identification honored) | `Initial Baseline` | SR-004, ARCH-REV-003; CRR/API-REV/DR `N/A` | Implementation complete; ready for source review |
 | IR-002 | Code Reviewer / `code-review-report.md` / CRR-001 round 1 (Fail — Local Fix) | CR-001, CR-002, CR-003, CR-004 | `Local Fix` | SR-004, ARCH-REV-003, CRR-001; API-REV/DR `N/A` | All four fixed; ready for targeted source review, then API/E2E |
 | IR-003 | Code Reviewer / `code-review-report.md` / CRR-003 failure-origin review of API/E2E APE-001 (Fail — Local Fix) | CR-005 | `Local Fix` | SR-004, ARCH-REV-003, CRR-001…CRR-003, APE-001; DR `N/A` | Per-folder watches released when unused; ready for targeted source review, then the APE-001 rerun |
+| IR-004 | Delivery Engineer / `release-deployment-report.md` § Escalation / DR-001 (blocked — Local Fix) | DR-001 seen-versions write race | `Local Fix` | SR-004, ARCH-REV-003, CRR-001…CRR-004, APE-001, DR-001 | Writes never outlive release or close and never create a run folder; ready for targeted source review, then delivery re-integration |
 
 ## Revision Entries
 
@@ -114,4 +115,24 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: typecheck clean; skill-update-notices unit + integration 33/33 pass; release test fails on the IR-002 watcher (checked); scripted AGY E2E 5/5 (including API/E2E's roots suite); API/E2E's probe: `afterWatch 31 → afterSyncEmpty 0 → afterRewatch 31 → afterSecondSyncEmpty 0 → afterClose 0` (`implementation-evidence/cr-005-unwatch-probe-output.json`).
 - Next recipient or routing: targeted source review per `get_handoff_rules`; then API/E2E rerun of APE-001 (probe plus desktop handle samples) and a proportional test review of `c9e100778` and the new tests.
 - Remaining limitations or risks: unchanged (application execution scope runs not wired, recorded by the reviewer for the Solution Designer). On Linux, inotify keeps one descriptor per process, so the descriptor-count assertion runs on macOS only; the per-folder close is asserted on every platform.
+
+### IR-004 — DR-001 local fix: seen-versions writes never outlive release or close, never create a run folder
+
+- Triggering role, report path, and round: `/software_engineering_team/delivery_engineer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/release-deployment-report.md` § Escalation (DR-001).
+- Triggering finding IDs: DR-001 (seen-versions write race; flaky `ENOTEMPTY` in `skill-update-notice-service.integration.test.ts`).
+- Classification: `Local Fix`
+- Prior authoritative result: IR-003 (`53074d2ac`), integrated by delivery at `98360b8a3`.
+- Current authoritative result: commit `f977849b2` on `codex/active-run-skill-update-notice` (on `98360b8a3`).
+- Related solution revision IDs: `SR-004`
+- Related architecture-review revision IDs: `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-001`…`CRR-004`
+- Related API/E2E revision IDs: APE-001
+- Related delivery revision IDs: `DR-001`
+- Approved behavior or requirement IDs affected: persisted-data decision (record deleted with the run's memory folder; never re-created), REQ-013 (failures do not affect runs), shutdown order (design guidance: close order watcher → service).
+- Root cause: CR-001 moved new-run tracking (and its record write) to the background; `untrackRun` neither stopped nor awaited the write, `loadRun` re-checked tracking only before `runs.set`, the service and subsystem `close()` did not await tracking or writes, and `SeenSkillVersionsStore.write` created the memory folder (`mkdir -p`) before writing.
+- Implementation delta: store `write(owner, versions, shouldContinue)` → `written` / `folder_missing` / `aborted`, no folder creation (`wx` temp file), guard before each step, temp file always removed; tracker: per-run serialized writes, folder-missing retry timer (default 1 s, 5 s, 15 s, then 60 s; injectable), release cancels writing and retries, run-object identity for tracking, `close()` awaiting in-flight work; subsystem close awaits the tracker; integration fakes create run memory folders; three new DR-001 integration cases and a store unit case; module doc updated.
+- Changed files or areas: `autobyteus-server-ts/src/skill-update-notices/{providers/seen-skill-versions-store.ts, services/run-skill-tracker.ts, skill-update-notices.ts}`, `autobyteus-server-ts/tests/{integration/skill-update-notices/skill-update-notice-service.integration.test.ts, unit/skill-update-notices/skill-update-notice-parts.test.ts}`, `autobyteus-server-ts/docs/modules/skill_update_notices.md`.
+- Local validation and result: typecheck clean; skill-update-notices unit + integration 37/37 in ten consecutive runs; new DR-001 cases fail on the previous code (checked); related unit areas 127 files / 1401 tests pass; scripted AGY E2E 5/5.
+- Next recipient or routing: targeted source review per `get_handoff_rules` (Large/High), then delivery re-integration and user verification.
+- Remaining limitations or risks: a record whose memory folder never appears while the run is tracked is not written (the run then restores with "no record": re-created without a retroactive notice, as designed for a missing record). Other limitations unchanged.
 

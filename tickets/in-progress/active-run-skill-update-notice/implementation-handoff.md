@@ -15,13 +15,21 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Local Fix` (CRR-003, after CRR-001)
+- Implementation cycle: `Local Fix` (DR-001, after CRR-003 and CRR-001)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003` (IR-001 baseline; IR-002 CRR-001 local fixes; IR-003 CRR-003 watch-handle release)
+- Current implementation revision ID: `IR-004` (IR-001 baseline; IR-002 CRR-001 local fixes; IR-003 CRR-003 watch-handle release; IR-004 DR-001 seen-versions write lifecycle)
 - Related solution revision IDs: `SR-001`…`SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-001`…`ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`; API/E2E: APE-001 (see `api-e2e-revision-record.md`); delivery: `N/A`
-- Triggering finding IDs: `CR-005` (IR-003); earlier `CR-001`…`CR-004` (IR-002). Review note N-1 and residuals R-1, R-4, R-5 still honored.
+- Related code-review revision IDs: `CRR-001`…`CRR-004`; API/E2E: APE-001 (see `api-e2e-revision-record.md`); delivery: `DR-001` (Local Fix)
+- Triggering finding IDs: DR-001 escalation (IR-004; `release-deployment-report.md` § Escalation); `CR-005` (IR-003); `CR-001`…`CR-004` (IR-002). Review note N-1 and residuals R-1, R-4, R-5 still honored.
+
+## DR-001 Resolution (IR-004)
+
+Branch head before the fix: delivery's `98360b8a3` (merge of `origin/personal@a609de982`, docs sync, records) on top of `f181b9b13`.
+
+| Finding | Fix | Test / evidence |
+| --- | --- | --- |
+| A seen-versions write could outlive the run's release and the subsystem's close, and re-create a deleted run's memory folder (flaky `ENOTEMPTY` in the integration tests) | **Store:** writes only into the run's **existing** memory folder (no `mkdir`; temp file opened with `wx`), checking a "still tracked" guard before each step; returns `written` / `folder_missing` / `aborted`, and removes its temp file when stopped. **Tracker:** a run's writes are serialized; a record whose folder the runtime has not created yet (external runtimes create it with their first trace) is retried at 1 s, 5 s, 15 s, then every 60 s while the run is tracked; at release, the run's writing stops and its retry is cancelled; `close()` waits for tracking and writes in progress. Tracking checks the run object (not only the id), so an older tracking cannot install a stale run after a release and re-track. **Subsystem:** `close()` = watcher → service → tracker (awaited). Standalone runs (metadata written at prepare) and AutoByteus/AGY (folder created by the backend) have their folder before publish | Integration (new, DR-001): released and deleted while scanning → folder not re-created; folder created late → record written by the retry, then release + delete → not re-created; `close()` waits for writes, leaves no temp file, and nothing is written afterwards (`rm` succeeds). Unit (store): missing folder → `folder_missing`, nothing created; guard stops mid-write → `aborted`, no file. All three integration cases fail on the previous tracker/store (checked). Fakes now create run memory folders, as the platform does. `skill-update-notices` unit + integration: 37/37 in **10 consecutive runs** |
 
 ## CRR-003 Resolution (IR-003)
 
@@ -208,6 +216,12 @@ What exists now:
 - The server resolves `autobyteus-ts` from its built `dist`: run `pnpm -C autobyteus-ts build` (or `pnpm -C autobyteus-server-ts prepare:shared`) before server tests.
 
 ## Local Implementation Checks Run
+
+IR-004 (DR-001):
+
+- Server typecheck clean; `tests/unit/skill-update-notices` + `tests/integration/skill-update-notices`: 37/37, ten consecutive runs, no failure; `tests/unit/{skill-update-notices,standalone-application-host,compositions,agent-execution}`: 127 files / 1401 tests pass.
+- Scripted AGY E2E (`agy-skill-update-notice-transport`, `agy-skill-update-notice-roots`): 5/5, including the delegated copy restored after idle (SUN-E2E-002) and AC-003, which depend on the seen record.
+- Docs: `autobyteus-server-ts/docs/modules/skill_update_notices.md` updated for the no-create/retry/release write rule and the awaited close (for delivery's re-check).
 
 IR-003 (CR-005):
 
