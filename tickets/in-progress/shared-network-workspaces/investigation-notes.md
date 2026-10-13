@@ -1,6 +1,51 @@
 # Investigation Notes — Shared Network Workspaces
 
-## Current SR017 — Approved Selection And Architecture Complete
+## Current SR018 — Working-First Scope Recovery And Revised Architecture
+
+2026-10-13. Incoming ARCH-REV-001/Fail/Design Impact was read with the canonical handoff and reviewer-owned report/revision record (2750f153f8), then the subsequent **direct-user scope feedback** and annotations (3d95901924). Exact user words live in architecture-review-scope-feedback.md. They defer the storage-outage edge case, not normal file sharing or all safeguards. No repeated user questionnaire or new live permission follows. Requirements are now **Approved SR018**, approval-record-sr018.md records renewed approval within that direction and the exact informing message. DEC015 consistently supersedes bounded admission/per-action/unrelated-local guarantees, not merely a REST exception. Hosting/access/physical-validation choices DEC012–014 remain.
+
+Evidence and intent are distinct: D-001's static facts remain true, but the approved v1 obligation driving its blocking classification has changed. Healthy preview incompatibility was **not** demonstrated by the review or this round. ARCH-REV-001 remains a Fail against SR017, not a current Pass. A preliminary uncommitted outage-worker/stream-ownership draft was discarded after the user's feedback; it is not an alternate design or implementation instruction. Current design-spec.md is the sole technical authority, Ready SR018, **Large/High** from the remaining service/platform/privilege/source/node/runtime/guide scope. File/action/stream workers, per-action probes and cwd trampolines are no longer in its change map.
+
+### Current read-only production trace / no new experiment claim
+
+Paths below are relative to the task worktree. Source content was read, not executed against mounts:
+
+| Trigger / source | Observation | Revised-v1 disposition |
+| --- | --- | --- |
+| web stores/fileExplorerContentActions.ts -> server src/api/rest/workspaces.ts content handler | Media uses content URL; lookup/getAbsolutePath is metadata/lexical, then parent existsSync/statSync/createReadStream | Preserve healthy ordinary path and current path/error/MIME/stream behavior; no outage worker |
+| web components/fileExplorer/viewers/HtmlPreviewer.vue -> workspace static route | Workspace HTML uses direct static iframe plus relative assets; blob fallback applies outside that context | Validate healthy HTML/assets through mounted path, not just text GraphQL |
+| web components/workspace/agent/ArtifactContentViewer.vue -> server src/api/rest/run-file-changes.ts | Active write_file has buffered states; completed content resolves projection entry, then parent file checks and stream | Preserve buffered/normal completed preview and current API; outage stalls disclosed |
+| server src/run-history/services/run-file-change-projection-service.ts; src/agent-execution/domain/agent-run-file-change-path.ts | Active/stored standalone/Team/Org projections; tracked absolute paths as well as workspace-relative entries are supported | Do not add new workspace confinement, registration or persisted fields merely for preview handling |
+| server src/workspaces/workspace-path-utils.ts; src/api/rest/index.ts; src/api/security/remote-access-policy-plugin.ts | Workspace paths use lexical containment; REST registered normally, existing onRequest access policy remains | Preserve authorization and denied-path semantics; no new route policy |
+| server tests/unit/api/rest/{workspaces,run-file-changes}.test.ts; tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts; tests/integration/api/run-file-changes-api.integration.test.ts | Existing fixtures cover content/static errors, PNG/SVG, artifact no-store/pending/history; current realistic mounts/UI are separate evidence | Reuse tests and extend normal healthy preview coverage; no v1 outage-isolation/backpressure/cancellation matrix |
+
+Specific preserved response observations: workspace missing query400, missing workspace/file404, denied lexical path400; artifact missing tracked entry404, absent file with active pending/streaming entry409, historical/other absent file404; existing files can still be streamed for pending entries. MIME lookup and artifact fallback/no-store remain. New source code is not required just because bytes are mounted; real current-build tests must establish healthy behavior. D-001 and prior FR029 show why no unaffected-local responsiveness claim is made when a parent call stalls.
+
+Tools this round: read-only git/status/source/test inspection, local document edits and artifact consistency checks. Installed Node read as22.23.1; no package install/build/validation suite/provider call or fresh filesystem/agent experiment. Node child_process/stream and Fastify v4 Reply primary documentation was inspected while considering the now-discarded expansion: https://nodejs.org/api/child_process.html , https://nodejs.org/api/stream.html , https://fastify.dev/docs/v4.29.x/Reference/Reply/ . Latest Node docs were not installed-version proof and impose no new v1 subsystem. An initial edit script had a Python syntax error before any write; the corrected authored draft was later superseded by the scope change, not represented as executed product code. Raw FR001–057 evidence remains unchanged.
+
+### Current requirements/design consequences and known limits
+
+- REQ007/008, AC006/007, SCN004, QR002 now separate known setup/new-run checks and healthy repeat/restart from deferred lost-storage isolation. Dependent REQ011/012/016, AC010/016/019, BEH004/006, UC004/006, SCN006/010 and traceability are aligned. No10s diagnostic or unaffected-local claim remains current. The source/OS check itself can wait during outage; print checking/incomplete rather than invent ready.
+- Keep a small server lazy binding checker for new-run/restore preparation, no startup scan or per-action/probe pool. Ordinary file/explorer/terminal/native and REST operations remain OS clients. Known missing/wrong configured path must not deliberately fall back to local/temp. Scoped project-only Git child environment remains necessary normal compatibility, not a sharing dependency or new filesystem subsystem.
+- Private native-runtime skill profiles/exact leases remain because FR011 demonstrated ordinary peer-stop damage. No excuse to silently drop configured skills, share provider homes or resurrect node-private absolute project links. Existing profiles/capsules/SDK/PTY owners are reused.
+- One command/service, selected source, consented selected-Docker preservation, nativeMac/Ubuntu/DockerLinux hosting, Mac/Linux/Docker clients, root /Volumes/autobyteus-shared and Nodes guide remain. Physical healthy Mac + independent Linux + Docker current-build journey and explicit user verification/merge remain mandatory before completion.
+- Deferred follow-up for task ownership: hard-NFS outages can stall media/static/artifact previews, file tools/terminal/native runtime and other work in the same process; no bounded cancellation or recovery/uncertain-write guarantee. Delivery should carry it visibly into operational docs/follow-ups, not silently re-add it to v1 or promise it fixed.
+
+### Supplemental inventory additions / authority disposition
+
+| Artifact | Owner / purpose | Applicability / status |
+| --- | --- | --- |
+| architecture-review-scope-feedback.md | Architecture Reviewer / exact direct-user quote and clarification | Read-only user-direction evidence, incorporated into approved canonical intent; no separate Product spec |
+| approval-record-sr018.md | Solution Designer / renewed approval and informing message | Current Approved SR018/DEC015; no live/deletion/release authorization |
+| design-review-report.md; architecture-review-revision-record.md | Architecture Reviewer / ARCH-REV-001 | Historical Fail on SR017, annotations defer blocking scope; unchanged by designer, re-review requested |
+| requirements-doc.md; design-spec.md; solution-revision-record.md; solution-design-handoff.md | Solution Designer / intended behavior, technical authority, history and complete context | Current SR018, Architecture Design Complete, Large/High; not implementation or validation completion |
+| evidence/feasibility/sr018-artifact-audit.json | Solution Designer / document consistency, hashes and scope check | Authoring-only checks, not product tests or fresh resource observations |
+| Prior SR017 selection/ledger/raw reports and approvals below | Respective recorded owners / historical empirical evidence and decisions | Retained at their true scope; no old outage prototype promoted into current v1 requirement |
+
+All phase gates were read in this conversation: solution-designer workflow, requirements-engineering, architecture-design, design-principles, full templates, root AGENTS/DESIGN/TESTING, applicable server/web instructions and migration/startup/terminal conventions. No source/lifecycle mutation this round. Reviewer artifacts are linked, not edited. Implementation/code-review/API-E2E/delivery receipts remain N/A — not produced; no standalone Product engagement requested. Full current result and next route are solution-design-handoff.md. Prior entries below are history, even where their then-current wording differs.
+
+---
+## Historical SR017 — Approved Selection And Architecture Complete
 
 Latest user explicitly directs the designer to reason, choose and proceed, rather than ask choices. approval-record-sr017.md records exact authority/informing message. Requirements **ApprovedSR017**, DEC012 nativeMac/nativeLinux/Docker-on-Linux hosting with MacDocker clients retained; DEC013 selected trusted-private-network plaintext/coarse host trust; DEC014 independent physical proof before delivery rather than before implementation. No unanswered product-choice questionnaire or Git/delegator blocker. Live changes/release remain unapproved.
 
