@@ -1,0 +1,30 @@
+{
+  "source": "working-tree",
+  "scope": "Actual helper, synthetic dependencies only",
+  "results": [
+    {
+      "scenario": "desktop-org-history",
+      "result": "Pass"
+    },
+    {
+      "scenario": "browser-org-history",
+      "result": "Pass"
+    },
+    {
+      "scenario": "desktop-org-active-rejected",
+      "result": "Pass"
+    },
+    {
+      "scenario": "browser-org-active-rejected",
+      "result": "Pass"
+    },
+    {
+      "scenario": "agent-history",
+      "result": "Pass"
+    },
+    {
+      "scenario": "team-history",
+      "result": "Pass"
+    }
+  ]
+}

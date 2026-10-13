@@ -1,0 +1,17 @@
+{
+  "time": "2026-10-13T17:23:25.970279+00:00",
+  "sourceHead": "76fab065ec30bff5be76dd2e013243abda3a6934",
+  "files": {
+    "autobyteus-server-ts/dist/app.js": "e8229f8dcdd4d4109310653c20851ac9b293d42190efc9a7a949779a0c752fc4",
+    "autobyteus-server-ts/dist/startup/migrations.js": "a9006386397e520277f40e4a9af5178a4125578126f11e255e1dac5d64149a53",
+    "autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs": "8ab8bc0d76eddf396ceac68dd10c781e645ac95becd96318c7989f3f25f3256d",
+    "autobyteus-web/tests/e2e/settings-saved-model-refresh-cases.mjs": "cc6f736dffd1a2ff225f4aadbeb9dcc764a731ed8d8c19a3f14b78f8941ea18a",
+    "autobyteus-web/tests/e2e/fixtures/settings-refresh-desktop.mjs": "548bda72db6011827e2e836456e9bf24a0a02b0c06aceda4dea9421ca90dae07"
+  },
+  "environment": {
+    "node": "v22.23.1",
+    "pnpm": "10.28.2",
+    "macOS": "26.5.2",
+    "arch": "arm64"
+  }
+}

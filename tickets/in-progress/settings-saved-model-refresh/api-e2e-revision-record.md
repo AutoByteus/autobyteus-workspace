@@ -7,6 +7,7 @@ Current investigation and execution coverage report remain authoritative; this i
 |---|---|---|---|---|
 | API-REV-001 | Implementation Complete IR-001; initial validation round | SR-001 approved requirements, SR-002 design, IR-001; ARCH-REV/CRR/DR N/A | N/A | Pass / 95% |
 | API-REV-002 | Implementation Complete IR-002 after Delivery DR-001 Local Fix | SR-001/002 unchanged; IR-002; DR-001; ARCH-REV/CRR N/A | API-REV-001 Pass / 95% (pre-integration) | Pass / 95% (integrated) |
+| API-REV-003 | Implementation Complete IR-003 after new Delivery DR-002 Local Fix | SR-001/002 unchanged; IR-003; DR-002; ARCH-REV/CRR N/A | API-REV-002 Pass / 95% (previous base) | Pass / 95% (latest base) |
 
 ## API-REV-001 — Source-current same-view saved Settings proof
 - Trigger: implementation-handoff.md / implementation_engineer initial request; all AC-001..006.
@@ -45,3 +46,22 @@ Prior completed validation failure: **None**. Iterative harness failures inside 
 
 ### API-REV-002 route selection
 2026-10-13 get_handoff_rules selected the single matching most-specific condition: **Pass + Direct Small/Medium + Low + no policy-required test review → `/software_engineering_team/delivery_engineer`**. No failure-origin or upstream-gap rule matches the completed result; no additional recipient. Full cumulative package and direct evidence are persisted for that handoff.
+
+
+## API-REV-003 — Fresh latest-base Settings and red Stop/root-history proof
+- Date 2026-10-13. Trigger IR-003 after new DR-002 exact-Team-locator integration conflict, no separate finding ID. Prior API-REV-002 **Pass/95%** stays historical; DR-001 remains resolved, not reopened. Related SR-001 approved requirements / SR-002 design unchanged, IR-003 and DR-002 applicable; ARCH-REV/CRR/Product N/A.
+- Medium/Low Direct confirmed. Merge **21bab56a2785f32e137dc54cbb62af43cbd157dc** integrates target **7170fd755d0dd5e806371dd4594eb4a9bf3e2682**; validated HEAD **76fab065ec30bff5be76dd2e013243abda3a6934**. Full cumulative upstream/API/Delivery package and incoming red-default approval read; legacy/persisted-data checks clean/Not Affected.
+- Investigation/ledger initialized before execution. Existing Settings/SSR/DCP and incoming red Stop/root assertions Still Valid. Historical gray-enabled assertion superseded by separately approved target; historical evidence retained. No durable source/test additions, modifications or removals this round.
+- Repository: **4 files/77 narrow**, **33 files/330 web**, **2 files/38 Prisma**, fresh backend build and **6 real API tests** grouping DCM-001..008 Pass. Three syntax, five synthetic actual-runner, six actual-root-helper and 50 independent byte-preservation checks Pass. Repository confidence **81.4%**; broader **Required**.
+- Fresh isolated desktop build **skipBuild false**, asar **e9b395c077453afd31b5e462a1a3299c491837f7523bde29a352f09aa1ce5154**; old 15ff98c7 artifact never reused. Real owned node through production Nodes UI, public setup, scripted model CLIs/zero quota. Desktop full explicit nine cases **9/9 Pass**, browser expanded seven **7/7 Pass**. Zero page errors. No failed attempt or test repair in this round.
+- Critical stopped-parent Save proven in still-connected same Settings view/editor/summary and accepted canonical wire/readback; repeat/settings-only/reopen, Team followers/own choices/exact neighbor, failure/locked read-only retry/no launch, active/root restrictions and continuity retained.
+- Five current red-enabled/gray-disabled Stop variants proven, including disabled hover, native keys/focus, pending/duplicate suppression/reduced-motion/exact targets, open Task/active parent/resume. Agent/Team/Org roots subsequently terminate into exact inactive history. DCP-002 own Team target after older SSR copies and named parent button pass. DCP-003 actual Electron hash and browser HTTP mode=history both pass, closing IR-003 semantic adaptation gap.
+- Ledger audit one Started/Completed per each of 9+7 cases and six separate intentional Stop Checkpoints per surface. Live observers saw all 16 results persisted at completion. Evidence-only boundary and cleanup audits Pass.
+- Canonical investigation/report/ledger/revision updated in place; current **evidence/api-rev-003/** contains 134 screenshots, commands/logs, source/build/backend hashes, wire/DOM, completion observers, cleanup and custody receipts. Seven DR-002 files unchanged against bd0fb189e6; old API/DR evidence retained.
+- Final **Pass / 95%**, all seven categories 95, no category below 90, every critical AC-001..006 directly proven. Broader **Required and completed**; no blocker, failed case, user-only gap or new out-of-scope finding. Test-code review **Not Required — direct low-risk route**.
+- Owned iso-65414-c9a5, both probe roots, four PIDs/six recorded ports and logged API root cleaned; unrelated registry entries untouched. Dependencies/build outputs/ignored unit DB retained. SDK dist not staged. No user data/credentials/quota, push/archive/finalization/release.
+- Limits: scripted providers, Mac only, Fast component-only while desktop reasoning configuration direct, backend restart not full-desktop upgrade, no standalone web vue-tsc. Full incoming TPS provider or Prisma Linux Docker certification out of scope, not claimed.
+- Normal successful output Delivery for independent verification/docs/finalization and **DR-003**, subject to current rule selection. No release authorized. Eventual receipt through Solution Designer to Task Manager run project_task_manager_a5f6d9d306e54970bafdad895bdf731d.
+
+### API-REV-003 route selection
+2026-10-13 current get_handoff_rules selected the single most-specific matching rule: **Pass + Direct Small/Medium + Low + no policy-required durable test review → /software_engineering_team/delivery_engineer**. No failure-origin or upstream-gap rule matches. Full cumulative artifacts/evidence persisted before handoff; no additional recipient.
