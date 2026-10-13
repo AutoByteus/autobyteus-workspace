@@ -1,0 +1,386 @@
+{
+  "resources": [
+    {
+      "round": "fr-001",
+      "type": "container",
+      "name": "ab-sf-fr001-a89eb6d2-a",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr001-a89eb6d2-a"
+    },
+    {
+      "round": "fr-001",
+      "type": "container",
+      "name": "ab-sf-fr001-a89eb6d2-server",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr001-a89eb6d2-server"
+    },
+    {
+      "round": "fr-001",
+      "type": "volume",
+      "name": "ab-sf-fr001-a89eb6d2-nfs-a",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr001-a89eb6d2-nfs-a: no such volume"
+    },
+    {
+      "round": "fr-001",
+      "type": "volume",
+      "name": "ab-sf-fr001-a89eb6d2-data",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr001-a89eb6d2-data: no such volume"
+    },
+    {
+      "round": "fr-001",
+      "type": "network",
+      "name": "ab-sf-fr001-a89eb6d2-net",
+      "absent": true,
+      "stderr": "Error response from daemon: network ab-sf-fr001-a89eb6d2-net not found"
+    },
+    {
+      "round": "fr-002",
+      "type": "container",
+      "name": "ab-sf-fr002-970b8cc9-native",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr002-970b8cc9-native"
+    },
+    {
+      "round": "fr-002",
+      "type": "container",
+      "name": "ab-sf-fr002-970b8cc9-b",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr002-970b8cc9-b"
+    },
+    {
+      "round": "fr-002",
+      "type": "container",
+      "name": "ab-sf-fr002-970b8cc9-a",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr002-970b8cc9-a"
+    },
+    {
+      "round": "fr-002",
+      "type": "container",
+      "name": "ab-sf-fr002-970b8cc9-server",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr002-970b8cc9-server"
+    },
+    {
+      "round": "fr-002",
+      "type": "volume",
+      "name": "ab-sf-fr002-970b8cc9-nfs-b",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr002-970b8cc9-nfs-b: no such volume"
+    },
+    {
+      "round": "fr-002",
+      "type": "volume",
+      "name": "ab-sf-fr002-970b8cc9-nfs-a",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr002-970b8cc9-nfs-a: no such volume"
+    },
+    {
+      "round": "fr-002",
+      "type": "volume",
+      "name": "ab-sf-fr002-970b8cc9-data",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr002-970b8cc9-data: no such volume"
+    },
+    {
+      "round": "fr-002",
+      "type": "network",
+      "name": "ab-sf-fr002-970b8cc9-net",
+      "absent": true,
+      "stderr": "Error response from daemon: network ab-sf-fr002-970b8cc9-net not found"
+    },
+    {
+      "round": "fr-003",
+      "type": "container",
+      "name": "ab-sf-fr003-9467099e-native",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr003-9467099e-native"
+    },
+    {
+      "round": "fr-003",
+      "type": "container",
+      "name": "ab-sf-fr003-9467099e-b",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr003-9467099e-b"
+    },
+    {
+      "round": "fr-003",
+      "type": "container",
+      "name": "ab-sf-fr003-9467099e-a",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr003-9467099e-a"
+    },
+    {
+      "round": "fr-003",
+      "type": "container",
+      "name": "ab-sf-fr003-9467099e-server",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr003-9467099e-server"
+    },
+    {
+      "round": "fr-003",
+      "type": "volume",
+      "name": "ab-sf-fr003-9467099e-nfs-b",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr003-9467099e-nfs-b: no such volume"
+    },
+    {
+      "round": "fr-003",
+      "type": "volume",
+      "name": "ab-sf-fr003-9467099e-nfs-a",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr003-9467099e-nfs-a: no such volume"
+    },
+    {
+      "round": "fr-003",
+      "type": "volume",
+      "name": "ab-sf-fr003-9467099e-data",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr003-9467099e-data: no such volume"
+    },
+    {
+      "round": "fr-003",
+      "type": "network",
+      "name": "ab-sf-fr003-9467099e-net",
+      "absent": true,
+      "stderr": "Error response from daemon: network ab-sf-fr003-9467099e-net not found"
+    },
+    {
+      "round": "fr-004",
+      "type": "container",
+      "name": "ab-sf-fr004-9a2a8f85-denied",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr004-9a2a8f85-denied"
+    },
+    {
+      "round": "fr-004",
+      "type": "container",
+      "name": "ab-sf-fr004-9a2a8f85-native",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr004-9a2a8f85-native"
+    },
+    {
+      "round": "fr-004",
+      "type": "container",
+      "name": "ab-sf-fr004-9a2a8f85-b",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr004-9a2a8f85-b"
+    },
+    {
+      "round": "fr-004",
+      "type": "container",
+      "name": "ab-sf-fr004-9a2a8f85-a",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr004-9a2a8f85-a"
+    },
+    {
+      "round": "fr-004",
+      "type": "container",
+      "name": "ab-sf-fr004-9a2a8f85-server",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr004-9a2a8f85-server"
+    },
+    {
+      "round": "fr-004",
+      "type": "volume",
+      "name": "ab-sf-fr004-9a2a8f85-nfs-b",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr004-9a2a8f85-nfs-b: no such volume"
+    },
+    {
+      "round": "fr-004",
+      "type": "volume",
+      "name": "ab-sf-fr004-9a2a8f85-nfs-a",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr004-9a2a8f85-nfs-a: no such volume"
+    },
+    {
+      "round": "fr-004",
+      "type": "volume",
+      "name": "ab-sf-fr004-9a2a8f85-data",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr004-9a2a8f85-data: no such volume"
+    },
+    {
+      "round": "fr-004",
+      "type": "network",
+      "name": "ab-sf-fr004-9a2a8f85-net",
+      "absent": true,
+      "stderr": "Error response from daemon: network ab-sf-fr004-9a2a8f85-net not found"
+    },
+    {
+      "round": "fr-005",
+      "type": "container",
+      "name": "ab-sf-fr005-886b8333-ro",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr005-886b8333-ro"
+    },
+    {
+      "round": "fr-005",
+      "type": "container",
+      "name": "ab-sf-fr005-886b8333-denied",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr005-886b8333-denied"
+    },
+    {
+      "round": "fr-005",
+      "type": "container",
+      "name": "ab-sf-fr005-886b8333-native",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr005-886b8333-native"
+    },
+    {
+      "round": "fr-005",
+      "type": "container",
+      "name": "ab-sf-fr005-886b8333-b",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr005-886b8333-b"
+    },
+    {
+      "round": "fr-005",
+      "type": "container",
+      "name": "ab-sf-fr005-886b8333-a",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr005-886b8333-a"
+    },
+    {
+      "round": "fr-005",
+      "type": "container",
+      "name": "ab-sf-fr005-886b8333-server",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr005-886b8333-server"
+    },
+    {
+      "round": "fr-005",
+      "type": "volume",
+      "name": "ab-sf-fr005-886b8333-nfs-ro",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr005-886b8333-nfs-ro: no such volume"
+    },
+    {
+      "round": "fr-005",
+      "type": "volume",
+      "name": "ab-sf-fr005-886b8333-nfs-b",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr005-886b8333-nfs-b: no such volume"
+    },
+    {
+      "round": "fr-005",
+      "type": "volume",
+      "name": "ab-sf-fr005-886b8333-nfs-a",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr005-886b8333-nfs-a: no such volume"
+    },
+    {
+      "round": "fr-005",
+      "type": "volume",
+      "name": "ab-sf-fr005-886b8333-data",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr005-886b8333-data: no such volume"
+    },
+    {
+      "round": "fr-005",
+      "type": "network",
+      "name": "ab-sf-fr005-886b8333-net",
+      "absent": true,
+      "stderr": "Error response from daemon: network ab-sf-fr005-886b8333-net not found"
+    },
+    {
+      "round": "fr-006",
+      "type": "container",
+      "name": "ab-sf-fr006-cf955026-ro",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr006-cf955026-ro"
+    },
+    {
+      "round": "fr-006",
+      "type": "container",
+      "name": "ab-sf-fr006-cf955026-denied",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr006-cf955026-denied"
+    },
+    {
+      "round": "fr-006",
+      "type": "container",
+      "name": "ab-sf-fr006-cf955026-native",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr006-cf955026-native"
+    },
+    {
+      "round": "fr-006",
+      "type": "container",
+      "name": "ab-sf-fr006-cf955026-b",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr006-cf955026-b"
+    },
+    {
+      "round": "fr-006",
+      "type": "container",
+      "name": "ab-sf-fr006-cf955026-a",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr006-cf955026-a"
+    },
+    {
+      "round": "fr-006",
+      "type": "container",
+      "name": "ab-sf-fr006-cf955026-server",
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr006-cf955026-server"
+    },
+    {
+      "round": "fr-006",
+      "type": "volume",
+      "name": "ab-sf-fr006-cf955026-nfs-ro",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr006-cf955026-nfs-ro: no such volume"
+    },
+    {
+      "round": "fr-006",
+      "type": "volume",
+      "name": "ab-sf-fr006-cf955026-nfs-b",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr006-cf955026-nfs-b: no such volume"
+    },
+    {
+      "round": "fr-006",
+      "type": "volume",
+      "name": "ab-sf-fr006-cf955026-nfs-a",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr006-cf955026-nfs-a: no such volume"
+    },
+    {
+      "round": "fr-006",
+      "type": "volume",
+      "name": "ab-sf-fr006-cf955026-data",
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr006-cf955026-data: no such volume"
+    },
+    {
+      "round": "fr-006",
+      "type": "network",
+      "name": "ab-sf-fr006-cf955026-net",
+      "absent": true,
+      "stderr": "Error response from daemon: network ab-sf-fr006-cf955026-net not found"
+    }
+  ],
+  "all_recorded_resources_absent": true,
+  "mac_owned_mounts": [],
+  "compiled_probe_removed": true,
+  "image": {
+    "tag": "autobyteus-shared-feasibility:fr-001",
+    "id": "sha256:861ca956b975f4cb6cc296aed9ae080dd0c434c20d1e450bd75ffd5070d78bb9",
+    "architecture": "arm64",
+    "labels": {
+      "org.autobyteus.probe": "fr-001",
+      "org.autobyteus.task": "shared-network-workspaces",
+      "org.opencontainers.image.version": "24.04"
+    },
+    "disposition": "Ownership verified against OCI manifest-list digest in original image-build.log; removed exact task tag without force.",
+    "removal_rc": 0,
+    "stdout": "Untagged: autobyteus-shared-feasibility:fr-001\nDeleted: sha256:861ca956b975f4cb6cc296aed9ae080dd0c434c20d1e450bd75ffd5070d78bb9\n",
+    "stderr": ""
+  },
+  "shared_build_cache": "Not globally pruned; no user images/volumes/nodes removed."
+}

@@ -1,0 +1,88 @@
+[
+  {
+    "round": "fr-001",
+    "run": "ab-sf-fr001-a89eb6d2",
+    "pass_count": 0,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": "RuntimeError(\"('docker', 'run', '-d'): rc=125: docker: Error response from daemon: error while mounting volume '/var/lib/docker/volumes/ab-sf-fr001-a89eb6d2-nfs-a/_data': failed to mount local volume: mount :/ab-sf-fr001-a89eb6d2:/var/lib/docker/volumes/ab-sf-fr001-a89eb6d2-nfs-a/_data, data: addr=172.29.0.2,nfsvers=4.1,proto=tcp,hard,timeo=50,retrans=2,actimeo=1,nosharecache: connection refused\\n\\nRun 'docker run --help' for more information\\n\")",
+    "cleanup_all_rc_zero": true
+  },
+  {
+    "round": "fr-002",
+    "run": "ab-sf-fr002-970b8cc9",
+    "pass_count": 9,
+    "failed_cases": [],
+    "blocked_cases": [
+      {
+        "name": "Mac ordinary native mounted-folder proof",
+        "status": "BLOCKED",
+        "reason": "Native NoUI mount did not succeed; no cached sudo/admin capability; not replaced with API-only reads."
+      }
+    ],
+    "fatal": null,
+    "cleanup_all_rc_zero": true
+  },
+  {
+    "round": "fr-003",
+    "run": "ab-sf-fr003-9467099e",
+    "pass_count": 4,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": "RuntimeError(\"('docker', 'run', '-d'): rc=125: docker: Error response from daemon: invalid config for network ab-sf-fr003-9467099e-net: invalid endpoint settings:\\nuser specified IP address is supported only when connecting to networks with user configured subnets\\n\\nRun 'docker run --help' for more information\\n\")",
+    "cleanup_all_rc_zero": true
+  },
+  {
+    "round": "fr-004",
+    "run": "ab-sf-fr004-9a2a8f85",
+    "pass_count": 5,
+    "failed_cases": [
+      {
+        "name": "server allowlist denies an excluded reachable client",
+        "status": "FAIL",
+        "error": "AssertionError('mount.nfs: mounting 172.29.0.2:/ab-sf-fr004-9a2a8f85 failed, reason given by server: No such file or directory\\n')",
+        "seconds": 0.268
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "AssertionError('mount.nfs: mounting 172.29.0.2:/ab-sf-fr004-9a2a8f85 failed, reason given by server: No such file or directory\\n')",
+    "cleanup_all_rc_zero": true
+  },
+  {
+    "round": "fr-005",
+    "run": "ab-sf-fr005-886b8333",
+    "pass_count": 8,
+    "failed_cases": [
+      {
+        "name": "lock released after writer exits",
+        "status": "FAIL",
+        "error": "RuntimeError('(\\'docker\\', \\'exec\\', \\'ab-sf-fr005-886b8333-native\\'): rc=1: Traceback (most recent call last):\\n  File \"<string>\", line 1, in <module>\\nBlockingIOError: [Errno 11] Resource temporarily unavailable\\n')",
+        "seconds": 0.077
+      }
+    ],
+    "blocked_cases": [
+      {
+        "name": "Mac ordinary native mounted-folder proof",
+        "status": "BLOCKED",
+        "reason": "Native NoUI mount did not succeed; no cached sudo/admin capability; not replaced with API-only reads."
+      }
+    ],
+    "fatal": "RuntimeError('(\\'docker\\', \\'exec\\', \\'ab-sf-fr005-886b8333-native\\'): rc=1: Traceback (most recent call last):\\n  File \"<string>\", line 1, in <module>\\nBlockingIOError: [Errno 11] Resource temporarily unavailable\\n')",
+    "cleanup_all_rc_zero": true
+  },
+  {
+    "round": "fr-006",
+    "run": "ab-sf-fr006-cf955026",
+    "pass_count": 14,
+    "failed_cases": [],
+    "blocked_cases": [
+      {
+        "name": "Mac ordinary native mounted-folder proof",
+        "status": "BLOCKED",
+        "reason": "Native NoUI mount did not succeed; no cached sudo/admin capability; not replaced with API-only reads."
+      }
+    ],
+    "fatal": null,
+    "cleanup_all_rc_zero": true
+  }
+]

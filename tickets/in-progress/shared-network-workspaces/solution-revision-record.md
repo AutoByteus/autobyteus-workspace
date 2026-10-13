@@ -7,6 +7,8 @@
 | SR-001 | Requirements | Authorized 2026-10-13 Project Task dispatch and current feasibility investigation | EV-001–014 / R-001–009 | N/A | Requirements Ready for Approval; design N/A | BEH-001–006; REQ-001–012; AC-001–011; SCN-001–006; DEC-001–006 | Proposed baseline; routine user approval hold |
 | SR-002 | Evidence | User asks for expert feasibility/architecture recommendation | Existing EV-003–012; current primary-doc recheck | Ready for Approval, design N/A | Unchanged; no approval | REQ-001–012 rationale; DEC-001–006 unchanged | NFS reference recommendation explained; no authoritative design/handoff |
 | SR-003 | Requirements | User explicitly requires one-command non-technical setup | EV-015–017 | Ready for Approval SR-001, SR-002 evidence; design N/A | Draft SR-003, no approval | REQ-006/013–015, AC-012–015, SCN-001/008/009, DEC-002/007/008 | Productized managed setup replaces documents-first; hosting clarification pending |
+| SR-004 | Requirements | User reconfirms simple setup/shared-folder criteria and asks experiments before implementation | Current user message; environment/primary candidate docs | Draft SR-003 | Draft SR-004, core direction confirmed; feasibility active | REQ-002/006/016, AC-001/012/016, DEC-001/003/007; SCN-010 | Same path best-effort; no separate Docker setup; prove candidate before implementation |
+| SR-005 | Evidence | Requirements readiness approved within direction; six local feasibility rounds | FR-001–006 / native Mac EPERM / remote access pending | Draft SR-004 feasibility | Approved SR-004 intent; architecture completion Blocked — external evidence | Approved REQ-001–016; AC-016 incomplete; BEH-001–006 | Local Docker/NFS candidate demonstrated; native Mac/multi-machine proof missing |
 
 ## SR-001 — Private-network ordinary shared workspaces
 
@@ -59,3 +61,30 @@
 - Product design: not requested; command automation is not an implicit Product Team/GUI handoff.
 - Routing: N/A — ongoing direct user requirements refinement, no downstream/delegator handoff.
 - Next action: Explain proposed single setup flow and user-friendly architecture; clarify which computer stores the files; settle supported hosting/common path/concurrency and capture explicit complete requirements approval before design.
+
+## SR-004 — Confirm User Direction; Investigate A Working Solution First
+
+- Phase/classification: Requirements / Refinement, 2026-10-13. User explicitly reconfirms command/password/shared-folder/no-extra-in-container setup and cross-computer storage, softens identical paths, and asks for experiments before implementation.
+- Prior/current: Draft SR-003 -> Draft SR-004; no approved complete technical baseline/design. Core direction confirmation is referenced to the current user's exact message, not inferred complete approval.
+- Affected: REQ-002/006 updated; REQ-016, AC-016, SCN-010 added. DEC-001 path now best-effort; DEC-003 basic filesystem coordination is designer recommendation; DEC-007 technology/reference deployment belongs to investigation, real hosts are operational resources. Setup/bootstrap and preservation requirements retained.
+- Intended behavior changed: Yes, common absolute path no longer mandatory; proof-before-implementation gate made explicit; no separate manual setup inside managed containers reinforced.
+- Canonical changes: requirement/support/approval/readiness sections; investigation adds environment and candidate sources and experiment inventory. Historical SR-001–003 records preserved.
+- Approval impact: user direction confirmed, detailed full package still Draft until feasible support basis/readiness approval. No authorization to alter live user mounts/storage or recreate current user nodes.
+- Design/review/classification: N/A; experiments are requirements-feasibility work. Do not author implementation-ready target or start product implementation before gates.
+- New evidence/supplements: evidence/feasibility/fr-001/ (owned local component/OS probes, build logs/environment receipt). Not Product-owned visual design or executable final validation artifacts.
+- Handoff: none while meaningful direct requirements/feasibility work continues.
+- Next: run safe component/native mount/semantics/Docker experiments, collect actual failures and cleanup; obtain separate Linux target access for real cross-computer evidence; settle supported baseline, approve within direction or obtain user decisions if new scope/security/cost is necessary; then authoritative design.
+
+## SR-005 — Approve Intended Behavior; Retain Partial Feasibility Truthfully
+
+- Phase/classification: Evidence / Refinement, 2026-10-13.
+- Approval: SR-004 intended behavior (REQ-001–016, AC-001–016 and supported scenarios) approved by Solution Designer within latest user direction; user informed with exact commentary in approval-record-sr004.md. Previous Draft history preserved; not recast as earlier approval. No behavior-defining supplement/Product UI spec.
+- Evidence: six task-owned rounds on local Mac Docker Desktop; latest14 passes,1 observation,1 Mac blocked; latestexit2. No second computer/model-runtime/product setup validation. No product source changes or implementation handoff.
+- Intended behavior changed this round: No; approval basis is SR-004. Source/evidence/support uncertainty clarified.
+- Artifacts: canonical evidence/approval/readiness updated; full report, experiment index and exact cleanup audit, blocker/result context added. Root/phase authorities read in full in conversation; architecture gate passed, no completed design.
+- Design impact to investigate: direct Docker NFS volumes avoid manual client container mounts and Mac bind bridging; native watcher misses remote changes; startup checks cannot be PID-only; native Mac mount needs explicit privilege approval; shared runtime skill paths and safe managed-node recreation still unresolved production integration. No speculative provider framework or custom filesystem authorized.
+- Failures preserved: startup RPC dependencies; explicit-subnet harness prerequisite; privacy-preserving ENOENT denial; short-lease/immediate implicit-lock release assertion. Later passes do not erase these or prove a universal production guarantee.
+- Task-size/risk/review state: N/A before completed design; known deployment/security/concurrency impacts remain, not downgraded to Low. Review reports N/A — not yet applicable.
+- Result: Blocked — User/External Prerequisite for next required native Mac and real cross-computer experiments. Missing concrete resource/privileged-test approval, not another generic product approval.
+- Next: user supplies scoped Mac experiment approval and separate Linux test access; resume safe proof, resolve integration/identity/runtime gaps, complete design and classification, then apply appropriate review/implementation route. REQ-016 prohibits premature implementation.
+- Routing: see feasibility-blocker-handoff.md; no architecture/implementation-ready claim.

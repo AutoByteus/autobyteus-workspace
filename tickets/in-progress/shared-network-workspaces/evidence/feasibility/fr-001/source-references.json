@@ -1,0 +1,10 @@
+{
+  "downloaded_primary_source": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/NFS/main/NFSPlugin/NFSMount.c",
+    "sha256": "43c83758b5e51a395a27b731a94883df1d4fefca2c3e94b8be368e1fecaa694a",
+    "consulted_lines": "450\u2013515,538\u2013832",
+    "disposition": "Read-only scratch download removed; no wholesale upstream source vendored"
+  },
+  "local_sdk_authority": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/NetFS.framework/Headers/NetFS.h",
+  "consulted_sdk_sections": "NetFSMountURLSync/Async/Cancel, NoUI, AllowLoopback, MountAtMountDir and returned mount paths"
+}

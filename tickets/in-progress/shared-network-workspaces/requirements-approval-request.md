@@ -1,3 +1,5 @@
+> Current status (SR-005): Approved SR-004 intended behavior by Solution Designer within the clarified user direction, with exact user-informing message in approval-record-sr004.md. Earlier approval holds below are historical. Architecture completion is now blocked on scoped native Mac mount approval and real separate Linux test access, not on another product-choice questionnaire. No implementation-ready design or live-node changes.
+
 # Requirements Approval Request / Persisted Context
 
 ## Status And Identity
@@ -73,3 +75,9 @@ The user asks for an expert recommendation/feasibility/architecture explanation 
 ## User Follow-up — SR-003
 
 User rejects a collection of manual filesystem commands and wants one setup command that handles setup, integrates their desktop+installed Docker node and prints a usable path, suitable for non-technical users. This changes intended behavior and the canonical requirements; no approved design exists. Full revised request/context: /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/setup-revision-context.md. Current requirements are Draft SR-003, not Ready/Approved SR-001. DEC-002 is settled as user-directed automated command setup; path/concurrency and actual storage-host scope remain unresolved. No implicit approval for live mounts, exports, service/credential changes, container recreation or active-run interruption.
+
+## Current State — SR-004 (supersedes SR-003 hold rationale)
+
+User reconfirms easy setup/shared folder/no-extra-managed-container steps and ordinary workspace file visibility across their computers; same absolute path is explicitly best-effort, not mandatory; asks for investigation/experiments until a working solution before implementation. Current canonical requirements are Draft SR-004 with core direction confirmed, not complete technical approval. Technology/reference deployment is for the designer to investigate; the actual storage/test computer is an operational input rather than a reason to ask more product-choice questions. Task-owned disposable feasibility probes now start under evidence/feasibility/fr-001; no existing user storage/mount/node changes permitted by implication. No implementation handoff.
+
+Latest full result/context: /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/feasibility-blocker-handoff.md. Local proof/report: same ticket evidence/feasibility/feasibility-report.md.

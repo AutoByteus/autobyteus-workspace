@@ -1,0 +1,766 @@
+{
+  "run": "ab-sf-fr002-970b8cc9",
+  "evidence_scope": "same-Mac Docker Desktop Linux component probes; native Mac attempted separately",
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "network",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-002",
+        "ab-sf-fr002-970b8cc9-net"
+      ],
+      "rc": 0,
+      "seconds": 0.049,
+      "stdout": "dd64461370b672219f93889cafd439aff7e63f3607907e7cd2bc0f042b446154\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr002-970b8cc9-net"
+      ],
+      "rc": 0,
+      "seconds": 0.033,
+      "stdout": "[\n    {\n        \"Name\": \"ab-sf-fr002-970b8cc9-net\",\n        \"Id\": \"dd64461370b672219f93889cafd439aff7e63f3607907e7cd2bc0f042b446154\",\n        \"Created\": \"2026-10-13T04:16:54.016183217Z\",\n        \"Scope\": \"local\",\n        \"Driver\": \"bridge\",\n        \"EnableIPv4\": true,\n        \"EnableIPv6\": false,\n        \"IPAM\": {\n            \"Driver\": \"default\",\n            \"Options\": {},\n            \"Config\": [\n                {\n                    \"Subnet\": \"172.29.0.0/16\",\n                    \"IPRange\": \"\",\n                    \"Gateway\": \"172.29.0.1\"\n                }\n            ]\n        },\n        \"Internal\": false,\n        \"Attachable\": false,\n        \"Ingress\": false,\n        \"ConfigFrom\": {\n            \"Network\": \"\"\n        },\n        \"ConfigOnly\": false,\n        \"Options\": {\n            \"com.docker.network.enable_ipv4\": \"true\",\n            \"com.docker.network.enable_ipv6\": \"false\"\n        },\n        \"Labels\": {\n            \"org.autobyteus.probe\": \"fr-002\"\n        },\n        \"Containers\": {},\n        \"Status\": {\n            \"IPAM\": {\n                \"Subnets\": {\n                    \"172.29.0.0/16\": {\n                        \"IPsInUse\": 3,\n                        \"DynamicIPsAvailable\": 65533\n                    }\n                }\n            }\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-002",
+        "ab-sf-fr002-970b8cc9-data"
+      ],
+      "rc": 0,
+      "seconds": 0.024,
+      "stdout": "ab-sf-fr002-970b8cc9-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr002-970b8cc9-server",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-002",
+        "--network",
+        "ab-sf-fr002-970b8cc9-net",
+        "--cap-add",
+        "DAC_READ_SEARCH",
+        "-p",
+        "127.0.0.1:62467:2049",
+        "--mount",
+        "type=volume,src=ab-sf-fr002-970b8cc9-data,dst=/export",
+        "--mount",
+        "type=bind,src=/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-002/ganesha.conf,dst=/etc/ganesha/ganesha.conf,readonly",
+        "autobyteus-shared-feasibility:fr-001"
+      ],
+      "rc": 0,
+      "seconds": 0.319,
+      "stdout": "7e82ecacead0e4e5bc0b23ec46c3b0a1425d93393feef7e3e45edf5a4a3809a7\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-server",
+        "sh",
+        "-c",
+        "chown 10001:10001 /export; chmod 0770 /export; mkdir -p /run/ganesha /var/lib/nfs/ganesha /run/dbus; rpcbind -w; dbus-daemon --system --fork; ganesha.nfsd -F -L /tmp/ganesha.log -f /etc/ganesha/ganesha.conf >/tmp/ganesha-console.log 2>&1 &"
+      ],
+      "rc": 0,
+      "seconds": 0.115,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-server",
+        "cat",
+        "/tmp/ganesha.log"
+      ],
+      "rc": 0,
+      "seconds": 0.078,
+      "stdout": "13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] main :MAIN :EVENT :nfs-ganesha Starting: Ganesha Version 4.3\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] load_rados_config :CONFIG :WARN :Missing RADOS URLs backend library\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_set_param_from_conf :NFS STARTUP :EVENT :Configuration file successfully parsed\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] init_fds_limit :INODE LRU :EVENT :Setting the system-imposed limit on FDs to 1048576.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] init_server_pkgs :NFS STARTUP :EVENT :Initializing ID Mapper.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] init_server_pkgs :NFS STARTUP :EVENT :ID Mapper successfully initialized.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start_grace :STATE :EVENT :NFS Server Now IN GRACE, duration 5\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start_grace :STATE :EVENT :grace reload client info completed from backend\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_try_lift_grace :STATE :EVENT :check grace:reclaim complete(0) clid count(0)\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_lift_grace_locked :STATE :EVENT :NFS Server Now NOT IN GRACE\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] client_commit :CONFIG :WARN :A protocol is specified for a CLIENT block that is not enabled in NFS_CORE_PARAM, fixing up\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] lower_my_caps :NFS STARTUP :EVENT :CAP_SYS_RESOURCE was successfully removed for proper quota management in FSAL\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] lower_my_caps :NFS STARTUP :EVENT :currently set capabilities are: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap=ep\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Init_svc :DISP :CRIT :Cannot acquire credentials for principal nfs\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Init_admin_thread :NFS CB :EVENT :Admin thread initialized\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_rpc_cb_init_ccache :NFS STARTUP :EVENT :Callback creds directory (/var/run/ganesha) already exists\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] find_keytab_entry :NFS CB :WARN :Configuration file does not specify default realm while getting default realm name\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] gssd_refresh_krb5_machine_credential :NFS CB :CRIT :ERROR: gssd_refresh_krb5_machine_credential: no usable keytab entry found in keytab /etc/krb5.keytab for connection with host localhost\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_rpc_cb_init_ccache :NFS STARTUP :WARN :gssd_refresh_krb5_machine_credential failed (-1765328160:2)\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :Starting delayed executor.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :gsh_dbusthread was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :admin thread was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :reaper thread was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :General fridge was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :             NFS SERVER INITIALIZED\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "ab-sf-fr002-970b8cc9-server"
+      ],
+      "rc": 0,
+      "seconds": 0.021,
+      "stdout": "[\n    {\n        \"Id\": \"7e82ecacead0e4e5bc0b23ec46c3b0a1425d93393feef7e3e45edf5a4a3809a7\",\n        \"Created\": \"2026-10-13T04:16:54.137167676Z\",\n        \"Path\": \"sleep\",\n        \"Args\": [\n            \"infinity\"\n        ],\n        \"State\": {\n            \"Status\": \"running\",\n            \"Running\": true,\n            \"Paused\": false,\n            \"Restarting\": false,\n            \"OOMKilled\": false,\n            \"Dead\": false,\n            \"Pid\": 6567,\n            \"ExitCode\": 0,\n            \"Error\": \"\",\n            \"StartedAt\": \"2026-10-13T04:16:54.251059967Z\",\n            \"FinishedAt\": \"0001-01-01T00:00:00Z\"\n        },\n        \"Image\": \"sha256:861ca956b975f4cb6cc296aed9ae080dd0c434c20d1e450bd75ffd5070d78bb9\",\n        \"ResolvConfPath\": \"/var/lib/docker/containers/7e82ecacead0e4e5bc0b23ec46c3b0a1425d93393feef7e3e45edf5a4a3809a7/resolv.conf\",\n        \"HostnamePath\": \"/var/lib/docker/containers/7e82ecacead0e4e5bc0b23ec46c3b0a1425d93393feef7e3e45edf5a4a3809a7/hostname\",\n        \"HostsPath\": \"/var/lib/docker/containers/7e82ecacead0e4e5bc0b23ec46c3b0a1425d93393feef7e3e45edf5a4a3809a7/hosts\",\n        \"LogPath\": \"/var/lib/docker/containers/7e82ecacead0e4e5bc0b23ec46c3b0a1425d93393feef7e3e45edf5a4a3809a7/7e82ecacead0e4e5bc0b23ec46c3b0a1425d93393feef7e3e45edf5a4a3809a7-json.log\",\n        \"Name\": \"/ab-sf-fr002-970b8cc9-server\",\n        \"RestartCount\": 0,\n        \"Driver\": \"overlayfs\",\n        \"Platform\": \"linux\",\n        \"MountLabel\": \"\",\n        \"ProcessLabel\": \"\",\n        \"AppArmorProfile\": \"\",\n        \"ExecIDs\": null,\n        \"HostConfig\": {\n            \"Binds\": null,\n            \"ContainerIDFile\": \"\",\n            \"LogConfig\": {\n                \"Type\": \"json-file\",\n                \"Config\": {}\n            },\n            \"NetworkMode\": \"ab-sf-fr002-970b8cc9-net\",\n            \"PortBindings\": {\n                \"2049/tcp\": [\n                    {\n                        \"HostIp\": \"127.0.0.1\",\n                        \"HostPort\": \"62467\"\n                    }\n                ]\n            },\n            \"RestartPolicy\": {\n                \"Name\": \"no\",\n                \"MaximumRetryCount\": 0\n            },\n            \"AutoRemove\": false,\n            \"VolumeDriver\": \"\",\n            \"VolumesFrom\": null,\n            \"ConsoleSize\": [\n                0,\n                0\n            ],\n            \"CapAdd\": [\n                \"CAP_DAC_READ_SEARCH\"\n            ],\n            \"CapDrop\": null,\n            \"CgroupnsMode\": \"private\",\n            \"Dns\": null,\n            \"DnsOptions\": [],\n            \"DnsSearch\": [],\n            \"ExtraHosts\": null,\n            \"GroupAdd\": null,\n            \"IpcMode\": \"private\",\n            \"Cgroup\": \"\",\n            \"Links\": null,\n            \"OomScoreAdj\": 0,\n            \"PidMode\": \"\",\n            \"Privileged\": false,\n            \"PublishAllPorts\": false,\n            \"ReadonlyRootfs\": false,\n            \"SecurityOpt\": null,\n            \"UTSMode\": \"\",\n            \"UsernsMode\": \"\",\n            \"ShmSize\": 67108864,\n            \"Runtime\": \"runc\",\n            \"Isolation\": \"\",\n            \"CpuShares\": 0,\n            \"Memory\": 0,\n            \"NanoCpus\": 0,\n            \"CgroupParent\": \"\",\n            \"BlkioWeight\": 0,\n            \"BlkioWeightDevice\": [],\n            \"BlkioDeviceReadBps\": [],\n            \"BlkioDeviceWriteBps\": [],\n            \"BlkioDeviceReadIOps\": [],\n            \"BlkioDeviceWriteIOps\": [],\n            \"CpuPeriod\": 0,\n            \"CpuQuota\": 0,\n            \"CpuRealtimePeriod\": 0,\n            \"CpuRealtimeRuntime\": 0,\n            \"CpusetCpus\": \"\",\n            \"CpusetMems\": \"\",\n            \"Devices\": [],\n            \"DeviceCgroupRules\": null,\n            \"DeviceRequests\": null,\n            \"MemoryReservation\": 0,\n            \"MemorySwap\": 0,\n            \"MemorySwappiness\": null,\n            \"OomKillDisable\": null,\n            \"PidsLimit\": null,\n            \"Ulimits\": [],\n            \"CpuCount\": 0,\n            \"CpuPercent\": 0,\n            \"IOMaximumIOps\": 0,\n            \"IOMaximumBandwidth\": 0,\n            \"Mounts\": [\n                {\n                    \"Type\": \"volume\",\n                    \"Source\": \"ab-sf-fr002-970b8cc9-data\",\n                    \"Target\": \"/export\"\n                },\n                {\n                    \"Type\": \"bind\",\n                    \"Source\": \"/host_mnt/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-002/ganesha.conf\",\n                    \"Target\": \"/etc/ganesha/ganesha.conf\",\n                    \"ReadOnly\": true\n                }\n            ],\n            \"MaskedPaths\": [\n                \"/proc/acpi\",\n                \"/proc/asound\",\n                \"/proc/interrupts\",\n                \"/proc/kcore\",\n                \"/proc/keys\",\n                \"/proc/latency_stats\",\n                \"/proc/sched_debug\",\n                \"/proc/scsi\",\n                \"/proc/timer_list\",\n                \"/proc/timer_stats\",\n                \"/sys/devices/virtual/powercap\",\n                \"/sys/firmware\"\n            ],\n            \"ReadonlyPaths\": [\n                \"/proc/bus\",\n                \"/proc/fs\",\n                \"/proc/irq\",\n                \"/proc/sys\",\n                \"/proc/sysrq-trigger\"\n            ]\n        },\n        \"GraphDriver\": {\n            \"Data\": null,\n            \"Name\": \"\"\n        },\n        \"Mounts\": [\n            {\n                \"Type\": \"volume\",\n                \"Name\": \"ab-sf-fr002-970b8cc9-data\",\n                \"Source\": \"/var/lib/docker/volumes/ab-sf-fr002-970b8cc9-data/_data\",\n                \"Destination\": \"/export\",\n                \"Driver\": \"local\",\n                \"Mode\": \"z\",\n                \"RW\": true,\n                \"Propagation\": \"\"\n            },\n            {\n                \"Type\": \"bind\",\n                \"Source\": \"/host_mnt/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-002/ganesha.conf\",\n                \"Destination\": \"/etc/ganesha/ganesha.conf\",\n                \"Mode\": \"\",\n                \"RW\": false,\n                \"Propagation\": \"rprivate\"\n            }\n        ],\n        \"Config\": {\n            \"Hostname\": \"7e82ecacead0\",\n            \"Domainname\": \"\",\n            \"User\": \"\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": false,\n            \"AttachStderr\": false,\n            \"ExposedPorts\": {\n                \"2049/tcp\": {}\n            },\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"Cmd\": [\n                \"sleep\",\n                \"infinity\"\n            ],\n            \"Image\": \"autobyteus-shared-feasibility:fr-001\",\n            \"Volumes\": null,\n            \"WorkingDir\": \"\",\n            \"Entrypoint\": null,\n            \"OnBuild\": null,\n            \"Labels\": {\n                \"org.autobyteus.probe\": \"fr-002\",\n                \"org.autobyteus.task\": \"shared-network-workspaces\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            },\n            \"StopTimeout\": 1\n        },\n        \"NetworkSettings\": {\n            \"Bridge\": \"\",\n            \"SandboxID\": \"450e6c29bbc0684a2c85a1393722c6bacd0c89f77bc182914444adb38c1cdc90\",\n            \"SandboxKey\": \"/var/run/docker/netns/450e6c29bbc0\",\n            \"Ports\": {\n                \"2049/tcp\": [\n                    {\n                        \"HostIp\": \"127.0.0.1\",\n                        \"HostPort\": \"62467\"\n                    }\n                ]\n            },\n            \"HairpinMode\": false,\n            \"LinkLocalIPv6Address\": \"\",\n            \"LinkLocalIPv6PrefixLen\": 0,\n            \"SecondaryIPAddresses\": null,\n            \"SecondaryIPv6Addresses\": null,\n            \"EndpointID\": \"\",\n            \"Gateway\": \"\",\n            \"GlobalIPv6Address\": \"\",\n            \"GlobalIPv6PrefixLen\": 0,\n            \"IPAddress\": \"\",\n            \"IPPrefixLen\": 0,\n            \"IPv6Gateway\": \"\",\n            \"MacAddress\": \"\",\n            \"Networks\": {\n                \"ab-sf-fr002-970b8cc9-net\": {\n                    \"IPAMConfig\": null,\n                    \"Links\": null,\n                    \"Aliases\": null,\n                    \"MacAddress\": \"b2:af:92:ed:2a:7e\",\n                    \"DriverOpts\": null,\n                    \"GwPriority\": 0,\n                    \"NetworkID\": \"dd64461370b672219f93889cafd439aff7e63f3607907e7cd2bc0f042b446154\",\n                    \"EndpointID\": \"3483fbf2c28156a43fceada077ffc5f72b7c12c326c04e8441ea6ad8ac9cd42c\",\n                    \"Gateway\": \"172.29.0.1\",\n                    \"IPAddress\": \"172.29.0.2\",\n                    \"IPPrefixLen\": 16,\n                    \"IPv6Gateway\": \"\",\n                    \"GlobalIPv6Address\": \"\",\n                    \"GlobalIPv6PrefixLen\": 0,\n                    \"DNSNames\": [\n                        \"ab-sf-fr002-970b8cc9-server\",\n                        \"7e82ecacead0\"\n                    ]\n                }\n            }\n        },\n        \"ImageManifestDescriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n            \"digest\": \"sha256:ecb2fe35453a5f29772f2dd5faec70ba6263270e493f31066246f3d442711b4c\",\n            \"size\": 675,\n            \"platform\": {\n                \"architecture\": \"arm64\",\n                \"os\": \"linux\"\n            }\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-server",
+        "pgrep",
+        "ganesha.nfsd"
+      ],
+      "rc": 0,
+      "seconds": 0.055,
+      "stdout": "19\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-002",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/ab-sf-fr002-970b8cc9",
+        "--opt",
+        "o=addr=172.29.0.2,rw,nfsvers=4.1,proto=tcp,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr002-970b8cc9-nfs-a"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr002-970b8cc9-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr002-970b8cc9-a",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-002",
+        "--network",
+        "ab-sf-fr002-970b8cc9-net",
+        "--user",
+        "10001:10001",
+        "--mount",
+        "type=volume,src=ab-sf-fr002-970b8cc9-nfs-a,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "autobyteus-shared-feasibility:fr-001"
+      ],
+      "rc": 0,
+      "seconds": 0.239,
+      "stdout": "720163a234fd13df601d74fb5ca5d0cc91b694886156c1eb8a02ab16d1237836\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-002",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/ab-sf-fr002-970b8cc9",
+        "--opt",
+        "o=addr=172.29.0.2,rw,nfsvers=4.1,proto=tcp,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr002-970b8cc9-nfs-b"
+      ],
+      "rc": 0,
+      "seconds": 0.028,
+      "stdout": "ab-sf-fr002-970b8cc9-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr002-970b8cc9-b",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-002",
+        "--network",
+        "ab-sf-fr002-970b8cc9-net",
+        "--user",
+        "10001:10001",
+        "--mount",
+        "type=volume,src=ab-sf-fr002-970b8cc9-nfs-b,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "autobyteus-shared-feasibility:fr-001"
+      ],
+      "rc": 0,
+      "seconds": 0.203,
+      "stdout": "3fce69016fa9d43c17ed3f885047823fadfcd01d1403d6109ed53650986b1ef3\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-a",
+        "sh",
+        "-c",
+        "grep \" /Volumes/autobyteus-shared \" /proc/mounts; id; grep CapEff /proc/self/status"
+      ],
+      "rc": 0,
+      "seconds": 0.091,
+      "stdout": ":/ab-sf-fr002-970b8cc9 /Volumes/autobyteus-shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=10001 gid=10001 groups=10001\nCapEff:\t0000000000000000\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-b",
+        "sh",
+        "-c",
+        "grep \" /Volumes/autobyteus-shared \" /proc/mounts; id; grep CapEff /proc/self/status"
+      ],
+      "rc": 0,
+      "seconds": 0.072,
+      "stdout": ":/ab-sf-fr002-970b8cc9 /Volumes/autobyteus-shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=10001 gid=10001 groups=10001\nCapEff:\t0000000000000000\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-a",
+        "python3",
+        "-c",
+        "import pathlib,os; p=pathlib.Path('/Volumes/autobyteus-shared/roundtrip.txt'); f=p.open('w'); f.write('from-a'); f.flush(); os.fsync(f.fileno()); f.close(); print('from-a')"
+      ],
+      "rc": 0,
+      "seconds": 0.105,
+      "stdout": "from-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-b",
+        "python3",
+        "-c",
+        "from pathlib import Path; p=Path('/Volumes/autobyteus-shared/roundtrip.txt'); assert p.read_text()=='from-a'; p.write_text('from-b'); print(p.read_text())"
+      ],
+      "rc": 0,
+      "seconds": 0.14,
+      "stdout": "from-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-a",
+        "python3",
+        "-c",
+        "from pathlib import Path; p=Path('/Volumes/autobyteus-shared/roundtrip.txt'); assert p.read_text()=='from-b'; print(p.read_text())"
+      ],
+      "rc": 0,
+      "seconds": 0.092,
+      "stdout": "from-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-a",
+        "python3",
+        "-c",
+        "from pathlib import Path; import hashlib; z=bytes(range(256))*4096; Path('/Volumes/autobyteus-shared/data.bin').write_bytes(z); print(hashlib.sha256(z).hexdigest())"
+      ],
+      "rc": 0,
+      "seconds": 0.088,
+      "stdout": "fbbab289f7f94b25736c58be46a994c441fd02552cc6022352e3d86d2fab7c83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-b",
+        "python3",
+        "-c",
+        "from pathlib import Path; import hashlib; z=Path('/Volumes/autobyteus-shared/data.bin').read_bytes(); assert z==bytes(range(256))*4096; print(hashlib.sha256(z).hexdigest())"
+      ],
+      "rc": 0,
+      "seconds": 0.125,
+      "stdout": "fbbab289f7f94b25736c58be46a994c441fd02552cc6022352e3d86d2fab7c83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-a",
+        "python3",
+        "-c",
+        "from pathlib import Path; import os; p=Path('/Volumes/autobyteus-shared/ops'); p.mkdir(); (p/'draft').write_text('complete'); os.replace(p/'draft',p/'final'); (p/'link').symlink_to('final'); f=os.open(p/'exclusive',os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o660); os.close(f); (p/'run.sh').write_text('#!/bin/sh\\necho shared-exec\\n'); (p/'run.sh').chmod(0o770); print('published')"
+      ],
+      "rc": 0,
+      "seconds": 0.249,
+      "stdout": "published\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-b",
+        "python3",
+        "-c",
+        "from pathlib import Path; import os,subprocess; p=Path('/Volumes/autobyteus-shared/ops'); assert (p/'final').read_text()=='complete'; assert (p/'link').read_text()=='complete'; assert subprocess.check_output([str(p/'run.sh')],text=True).strip()=='shared-exec';\ntry: os.open(p/'exclusive',os.O_CREAT|os.O_EXCL|os.O_WRONLY)\nexcept FileExistsError: print('exclusive-create denied, symlink and exec OK')\nelse: raise AssertionError('exclusive create should fail')"
+      ],
+      "rc": 0,
+      "seconds": 0.284,
+      "stdout": "exclusive-create denied, symlink and exec OK\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr002-970b8cc9-native",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-002",
+        "--network",
+        "ab-sf-fr002-970b8cc9-net",
+        "--cap-add",
+        "SYS_ADMIN",
+        "autobyteus-shared-feasibility:fr-001"
+      ],
+      "rc": 0,
+      "seconds": 0.548,
+      "stdout": "76ac97eab92b64a4e6bf9e6d1811d309cdb9d05aafe1e59aa2d0134d13343c15\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-native",
+        "sh",
+        "-c",
+        "mkdir -p /Volumes/autobyteus-shared; mount -t nfs -o vers=4.1,proto=tcp,hard,actimeo=1,nosharecache 172.29.0.2:/ab-sf-fr002-970b8cc9 /Volumes/autobyteus-shared; grep \" /Volumes/autobyteus-shared \" /proc/mounts"
+      ],
+      "rc": 0,
+      "seconds": 0.221,
+      "stdout": "172.29.0.2:/ab-sf-fr002-970b8cc9 /Volumes/autobyteus-shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=172.29.0.5,local_lock=none,addr=172.29.0.2 0 0\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-native",
+        "python3",
+        "-c",
+        "from pathlib import Path; p=Path('/Volumes/autobyteus-shared/roundtrip.txt'); assert p.read_text()=='from-b'; p.write_text('from-native-linux'); print(p.read_text())"
+      ],
+      "rc": 0,
+      "seconds": 0.132,
+      "stdout": "from-native-linux\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-a",
+        "python3",
+        "-c",
+        "from pathlib import Path; assert Path('/Volumes/autobyteus-shared/roundtrip.txt').read_text()=='from-native-linux'; print('observed native Linux modification')"
+      ],
+      "rc": 0,
+      "seconds": 0.091,
+      "stdout": "observed native Linux modification\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-shared-netfs-fr001",
+        "nfs://127.0.0.1/ab-sf-fr002-970b8cc9?options=vers:4?options=port:62467?options=tcp?options=retrycnt:0",
+        "/private/tmp/ab-sf-fr002-970b8cc9-mac-9d0e2f9c"
+      ],
+      "rc": 1,
+      "seconds": 0.88,
+      "stdout": "NetFSMountURLSync status=1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-native",
+        "python3",
+        "-c",
+        "import fcntl,errno; f=open('/Volumes/autobyteus-shared/lock','r+');\ntry: fcntl.flock(f,fcntl.LOCK_EX|fcntl.LOCK_NB)\nexcept BlockingIOError: print('excluded')\nelse: raise AssertionError('lock not excluded')"
+      ],
+      "rc": 0,
+      "seconds": 0.09,
+      "stdout": "excluded\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-native",
+        "python3",
+        "-c",
+        "import fcntl; f=open('/Volumes/autobyteus-shared/lock','r+'); fcntl.flock(f,fcntl.LOCK_EX|fcntl.LOCK_NB); print('acquired')"
+      ],
+      "rc": 0,
+      "seconds": 0.088,
+      "stdout": "acquired\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-a",
+        "sh",
+        "-c",
+        "mkdir /Volumes/autobyteus-shared/repo; cd /Volumes/autobyteus-shared/repo; git init -q; echo initial > tracked.txt; git add tracked.txt; git -c user.name=Probe -c user.email=probe@example.invalid commit -qm initial"
+      ],
+      "rc": 0,
+      "seconds": 0.146,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-b",
+        "sh",
+        "-c",
+        "cd /Volumes/autobyteus-shared/repo; git status --porcelain; echo updated > tracked.txt; git add tracked.txt; git -c user.name=Probe -c user.email=probe@example.invalid commit -qm updated; git log -1 --format=%s"
+      ],
+      "rc": 0,
+      "seconds": 0.13,
+      "stdout": "updated\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-native",
+        "sh",
+        "-c",
+        "git -c safe.directory=/Volumes/autobyteus-shared/repo -C /Volumes/autobyteus-shared/repo log -1 --format=%s; cat /Volumes/autobyteus-shared/repo/tracked.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.08,
+      "stdout": "updated\nupdated\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "pause",
+        "ab-sf-fr002-970b8cc9-server"
+      ],
+      "rc": 0,
+      "seconds": 0.044,
+      "stdout": "ab-sf-fr002-970b8cc9-server\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "unpause",
+        "ab-sf-fr002-970b8cc9-server"
+      ],
+      "rc": 0,
+      "seconds": 0.037,
+      "stdout": "ab-sf-fr002-970b8cc9-server\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "unpause",
+        "ab-sf-fr002-970b8cc9-server"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "",
+      "stderr": "Error response from daemon: Container 7e82ecacead0e4e5bc0b23ec46c3b0a1425d93393feef7e3e45edf5a4a3809a7 is not paused\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr002-970b8cc9-server",
+        "cat",
+        "/tmp/ganesha.log"
+      ],
+      "rc": 0,
+      "seconds": 0.067,
+      "stdout": "13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] main :MAIN :EVENT :nfs-ganesha Starting: Ganesha Version 4.3\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] load_rados_config :CONFIG :WARN :Missing RADOS URLs backend library\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_set_param_from_conf :NFS STARTUP :EVENT :Configuration file successfully parsed\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] init_fds_limit :INODE LRU :EVENT :Setting the system-imposed limit on FDs to 1048576.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] init_server_pkgs :NFS STARTUP :EVENT :Initializing ID Mapper.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] init_server_pkgs :NFS STARTUP :EVENT :ID Mapper successfully initialized.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start_grace :STATE :EVENT :NFS Server Now IN GRACE, duration 5\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start_grace :STATE :EVENT :grace reload client info completed from backend\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_try_lift_grace :STATE :EVENT :check grace:reclaim complete(0) clid count(0)\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_lift_grace_locked :STATE :EVENT :NFS Server Now NOT IN GRACE\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] client_commit :CONFIG :WARN :A protocol is specified for a CLIENT block that is not enabled in NFS_CORE_PARAM, fixing up\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] lower_my_caps :NFS STARTUP :EVENT :CAP_SYS_RESOURCE was successfully removed for proper quota management in FSAL\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] lower_my_caps :NFS STARTUP :EVENT :currently set capabilities are: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap=ep\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Init_svc :DISP :CRIT :Cannot acquire credentials for principal nfs\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Init_admin_thread :NFS CB :EVENT :Admin thread initialized\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_rpc_cb_init_ccache :NFS STARTUP :EVENT :Callback creds directory (/var/run/ganesha) already exists\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] find_keytab_entry :NFS CB :WARN :Configuration file does not specify default realm while getting default realm name\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] gssd_refresh_krb5_machine_credential :NFS CB :CRIT :ERROR: gssd_refresh_krb5_machine_credential: no usable keytab entry found in keytab /etc/krb5.keytab for connection with host localhost\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_rpc_cb_init_ccache :NFS STARTUP :WARN :gssd_refresh_krb5_machine_credential failed (-1765328160:2)\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :Starting delayed executor.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :gsh_dbusthread was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :admin thread was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :reaper thread was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :General fridge was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :             NFS SERVER INITIALIZED\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "ab-sf-fr002-970b8cc9-native"
+      ],
+      "rc": 0,
+      "seconds": 0.172,
+      "stdout": "ab-sf-fr002-970b8cc9-native\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "ab-sf-fr002-970b8cc9-b"
+      ],
+      "rc": 0,
+      "seconds": 0.168,
+      "stdout": "ab-sf-fr002-970b8cc9-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "ab-sf-fr002-970b8cc9-a"
+      ],
+      "rc": 0,
+      "seconds": 0.174,
+      "stdout": "ab-sf-fr002-970b8cc9-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "ab-sf-fr002-970b8cc9-server"
+      ],
+      "rc": 0,
+      "seconds": 0.213,
+      "stdout": "ab-sf-fr002-970b8cc9-server\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr002-970b8cc9-nfs-b"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "ab-sf-fr002-970b8cc9-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr002-970b8cc9-nfs-a"
+      ],
+      "rc": 0,
+      "seconds": 0.026,
+      "stdout": "ab-sf-fr002-970b8cc9-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr002-970b8cc9-data"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "ab-sf-fr002-970b8cc9-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "rm",
+        "ab-sf-fr002-970b8cc9-net"
+      ],
+      "rc": 0,
+      "seconds": 0.216,
+      "stdout": "ab-sf-fr002-970b8cc9-net\n",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "Docker-managed NFS volume, no mount command or elevated client capabilities inside node",
+      "result": {
+        "a": ":/ab-sf-fr002-970b8cc9 /Volumes/autobyteus-shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=10001 gid=10001 groups=10001\nCapEff:\t0000000000000000\n",
+        "b": ":/ab-sf-fr002-970b8cc9 /Volumes/autobyteus-shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=10001 gid=10001 groups=10001\nCapEff:\t0000000000000000\n"
+      },
+      "status": "PASS",
+      "seconds": 0.166
+    },
+    {
+      "name": "completed write A -> read/modify B -> read A",
+      "result": {
+        "write": "from-a",
+        "b": "from-b",
+        "a": "from-b"
+      },
+      "status": "PASS",
+      "seconds": 0.34
+    },
+    {
+      "name": "1MiB binary exact cross-client content",
+      "result": {
+        "write": "fbbab289f7f94b25736c58be46a994c441fd02552cc6022352e3d86d2fab7c83",
+        "read": "fbbab289f7f94b25736c58be46a994c441fd02552cc6022352e3d86d2fab7c83"
+      },
+      "status": "PASS",
+      "seconds": 0.214
+    },
+    {
+      "name": "mkdir, atomic replace, relative symlink, exclusive-create, executable mode",
+      "result": {
+        "a": "published",
+        "b": "exclusive-create denied, symlink and exec OK"
+      },
+      "status": "PASS",
+      "seconds": 0.534
+    },
+    {
+      "name": "ordinary Linux OS NFS client",
+      "result": {
+        "mount": "172.29.0.2:/ab-sf-fr002-970b8cc9 /Volumes/autobyteus-shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=172.29.0.5,local_lock=none,addr=172.29.0.2 0 0\n",
+        "roundtrip": "from-native-linux",
+        "a": "observed native Linux modification"
+      },
+      "status": "PASS",
+      "seconds": 0.447
+    },
+    {
+      "name": "Mac ordinary native mounted-folder proof",
+      "status": "BLOCKED",
+      "reason": "Native NoUI mount did not succeed; no cached sudo/admin capability; not replaced with API-only reads."
+    },
+    {
+      "name": "cross-client advisory flock exclusion",
+      "result": "excluded",
+      "status": "PASS",
+      "seconds": 0.091
+    },
+    {
+      "name": "lock released after writer exits",
+      "result": "acquired",
+      "status": "PASS",
+      "seconds": 0.089
+    },
+    {
+      "name": "sequential Git working-copy operations across clients",
+      "result": {
+        "init": "",
+        "b": "updated\n",
+        "native": "updated\nupdated\n"
+      },
+      "status": "PASS",
+      "seconds": 0.362
+    },
+    {
+      "name": "storage interruption stalls IO then recovers without local substitute",
+      "result": {
+        "stalled_during_pause": true,
+        "resumed_stdout": "committed\n",
+        "scope": "backend IO only; AutoByteus readiness timeout not implemented/proved"
+      },
+      "status": "PASS",
+      "seconds": 2.088
+    }
+  ],
+  "cleanup": [
+    {
+      "container": "ab-sf-fr002-970b8cc9-native",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr002-970b8cc9-b",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr002-970b8cc9-a",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr002-970b8cc9-server",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr002-970b8cc9-nfs-b",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr002-970b8cc9-nfs-a",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr002-970b8cc9-data",
+      "rc": 0
+    },
+    {
+      "network": "ab-sf-fr002-970b8cc9-net",
+      "rc": 0
+    }
+  ],
+  "network": {
+    "Subnet": "172.29.0.0/16",
+    "IPRange": "",
+    "Gateway": "172.29.0.1"
+  },
+  "loopback_port": 62467,
+  "server_log": "13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] main :MAIN :EVENT :nfs-ganesha Starting: Ganesha Version 4.3\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] load_rados_config :CONFIG :WARN :Missing RADOS URLs backend library\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_set_param_from_conf :NFS STARTUP :EVENT :Configuration file successfully parsed\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] init_fds_limit :INODE LRU :EVENT :Setting the system-imposed limit on FDs to 1048576.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] init_server_pkgs :NFS STARTUP :EVENT :Initializing ID Mapper.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] init_server_pkgs :NFS STARTUP :EVENT :ID Mapper successfully initialized.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start_grace :STATE :EVENT :NFS Server Now IN GRACE, duration 5\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start_grace :STATE :EVENT :grace reload client info completed from backend\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_try_lift_grace :STATE :EVENT :check grace:reclaim complete(0) clid count(0)\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_lift_grace_locked :STATE :EVENT :NFS Server Now NOT IN GRACE\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] client_commit :CONFIG :WARN :A protocol is specified for a CLIENT block that is not enabled in NFS_CORE_PARAM, fixing up\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] lower_my_caps :NFS STARTUP :EVENT :CAP_SYS_RESOURCE was successfully removed for proper quota management in FSAL\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] lower_my_caps :NFS STARTUP :EVENT :currently set capabilities are: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap=ep\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Init_svc :DISP :CRIT :Cannot acquire credentials for principal nfs\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Init_admin_thread :NFS CB :EVENT :Admin thread initialized\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_rpc_cb_init_ccache :NFS STARTUP :EVENT :Callback creds directory (/var/run/ganesha) already exists\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] find_keytab_entry :NFS CB :WARN :Configuration file does not specify default realm while getting default realm name\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] gssd_refresh_krb5_machine_credential :NFS CB :CRIT :ERROR: gssd_refresh_krb5_machine_credential: no usable keytab entry found in keytab /etc/krb5.keytab for connection with host localhost\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_rpc_cb_init_ccache :NFS STARTUP :WARN :gssd_refresh_krb5_machine_credential failed (-1765328160:2)\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :Starting delayed executor.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :gsh_dbusthread was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :admin thread was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :reaper thread was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :General fridge was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :             NFS SERVER INITIALIZED\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n",
+  "server_ip": "172.29.0.2",
+  "mac_mountpoint": "/private/tmp/ab-sf-fr002-970b8cc9-mac-9d0e2f9c",
+  "mac_mount_attempt": {
+    "rc": 1,
+    "stdout": "NetFSMountURLSync status=1\n",
+    "stderr": "",
+    "mounted": false
+  },
+  "server_log_final": "13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] main :MAIN :EVENT :nfs-ganesha Starting: Ganesha Version 4.3\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] load_rados_config :CONFIG :WARN :Missing RADOS URLs backend library\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_set_param_from_conf :NFS STARTUP :EVENT :Configuration file successfully parsed\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] init_fds_limit :INODE LRU :EVENT :Setting the system-imposed limit on FDs to 1048576.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] init_server_pkgs :NFS STARTUP :EVENT :Initializing ID Mapper.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] init_server_pkgs :NFS STARTUP :EVENT :ID Mapper successfully initialized.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start_grace :STATE :EVENT :NFS Server Now IN GRACE, duration 5\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start_grace :STATE :EVENT :grace reload client info completed from backend\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_try_lift_grace :STATE :EVENT :check grace:reclaim complete(0) clid count(0)\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_lift_grace_locked :STATE :EVENT :NFS Server Now NOT IN GRACE\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] client_commit :CONFIG :WARN :A protocol is specified for a CLIENT block that is not enabled in NFS_CORE_PARAM, fixing up\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] lower_my_caps :NFS STARTUP :EVENT :CAP_SYS_RESOURCE was successfully removed for proper quota management in FSAL\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] lower_my_caps :NFS STARTUP :EVENT :currently set capabilities are: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap=ep\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Init_svc :DISP :CRIT :Cannot acquire credentials for principal nfs\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Init_admin_thread :NFS CB :EVENT :Admin thread initialized\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_rpc_cb_init_ccache :NFS STARTUP :EVENT :Callback creds directory (/var/run/ganesha) already exists\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] find_keytab_entry :NFS CB :WARN :Configuration file does not specify default realm while getting default realm name\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] gssd_refresh_krb5_machine_credential :NFS CB :CRIT :ERROR: gssd_refresh_krb5_machine_credential: no usable keytab entry found in keytab /etc/krb5.keytab for connection with host localhost\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_rpc_cb_init_ccache :NFS STARTUP :WARN :gssd_refresh_krb5_machine_credential failed (-1765328160:2)\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :Starting delayed executor.\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :gsh_dbusthread was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :admin thread was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :reaper thread was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :General fridge was started successfully\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :             NFS SERVER INITIALIZED\n13/10/2026 04:16:54 : epoch 6acdb0b6 : 7e82ecacead0 : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n"
+}
