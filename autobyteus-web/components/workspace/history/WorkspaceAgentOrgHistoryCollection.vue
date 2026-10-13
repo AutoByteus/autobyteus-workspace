@@ -65,7 +65,7 @@
               <button
                 v-if="run.isActive"
                 type="button"
-                class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-red-500 hover:bg-red-50 hover:text-red-600 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-50"
                 :title="t('workspace.agentOrg.history.stopLabel')"
                 :aria-label="t('workspace.agentOrg.history.stopLabel')"
                 :disabled="isTerminating(run.rootRunId)"
