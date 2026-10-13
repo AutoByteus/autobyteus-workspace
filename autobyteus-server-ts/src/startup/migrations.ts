@@ -2,6 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+import { createRequire } from "node:module";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -82,140 +83,89 @@ export function getPrismaRuntimeTargetPreference(
   return [];
 }
 
-function listBundledPrismaEngineDirs(appRoot: string): string[] {
-  const candidates = [path.join(appRoot, "node_modules", "@prisma", "engines")];
-  const pnpmRoot = path.join(appRoot, "node_modules", ".pnpm");
-
-  if (!fs.existsSync(pnpmRoot)) {
-    return candidates;
-  }
-
+function resolveInstalledPrismaEngineMetadata(
+  appRoot: string,
+): { engineDir: string; engineRevision: string } | null {
   try {
-    const pnpmEntries = fs.readdirSync(pnpmRoot, { withFileTypes: true });
-    for (const entry of pnpmEntries) {
-      if (!entry.isDirectory()) continue;
-      if (!entry.name.startsWith("@prisma+engines@")) continue;
-      candidates.push(path.join(pnpmRoot, entry.name, "node_modules", "@prisma", "engines"));
-    }
+    // Follow the same local CLI as getPrismaCommand, not an unrelated store entry.
+    const cliPath = fs.realpathSync(path.join(appRoot, "node_modules", "prisma", "build", "index.js"));
+    const engineManifest = fs.realpathSync(createRequire(cliPath).resolve("@prisma/engines/package.json"));
+    const versionManifest = createRequire(engineManifest).resolve("@prisma/engines-version/package.json");
+    const metadata = JSON.parse(fs.readFileSync(versionManifest, "utf8"));
+    const engineRevision: unknown = metadata?.prisma?.enginesVersion;
+    if (typeof engineRevision !== "string" || !/^[a-f0-9]{40}$/i.test(engineRevision)) return null;
+    return { engineDir: path.dirname(engineManifest), engineRevision };
   } catch {
-    return candidates;
+    // Unknown CLI identity must not cause a guess at another package/cache version.
+    // Leave the normal CLI's own resolution and error handling in charge.
+    return null;
   }
-
-  return candidates;
 }
 
-function resolveBundledPrismaEnginePair(appRoot: string): PrismaEnginePair | null {
+function resolveBundledPrismaEnginePair(engineDir: string): PrismaEnginePair | null {
   const querySuffix = getRuntimeQueryEngineSuffix();
   const schemaExtension = getRuntimeSchemaEngineExtension();
 
-  for (const engineDir of listBundledPrismaEngineDirs(appRoot)) {
-    if (!fs.existsSync(engineDir)) continue;
+  let entries: string[];
+  try {
+    entries = fs.readdirSync(engineDir);
+  } catch {
+    return null;
+  }
 
-    let entries: string[];
-    try {
-      entries = fs.readdirSync(engineDir);
-    } catch {
-      continue;
-    }
+  const sortedEntries = entries.sort((a, b) => a.localeCompare(b));
+  for (const targetToken of getPrismaRuntimeTargetPreference()) {
+    const queryCandidateName = sortedEntries.find(
+      (name) => name.startsWith("libquery_engine-") &&
+        name.endsWith(querySuffix) &&
+        name.includes(targetToken),
+    );
+    const schemaCandidateName = sortedEntries.find((name) => {
+      if (!name.startsWith("schema-engine-") || !name.includes(targetToken)) return false;
+      if (name.endsWith(".sha256")) return false;
+      return schemaExtension.length === 0 ? !name.endsWith(".exe") : name.endsWith(schemaExtension);
+    });
 
-    const sortedEntries = entries.sort((a, b) => a.localeCompare(b));
-    for (const targetToken of getPrismaRuntimeTargetPreference()) {
-      const queryCandidateName = sortedEntries.find(
-        (name) => name.startsWith("libquery_engine-") &&
-          name.endsWith(querySuffix) &&
-          name.includes(targetToken),
-      );
-      const schemaCandidateName = sortedEntries.find((name) => {
-        if (!name.startsWith("schema-engine-") || !name.includes(targetToken)) return false;
-        if (name.endsWith(".sha256")) return false;
-        return schemaExtension.length === 0 ? !name.endsWith(".exe") : name.endsWith(schemaExtension);
-      });
+    if (!queryCandidateName || !schemaCandidateName) continue;
 
-      if (!queryCandidateName || !schemaCandidateName) continue;
+    const queryEngineLibrary = path.join(engineDir, queryCandidateName);
+    const schemaEngineBinary = path.join(engineDir, schemaCandidateName);
+    if (!isReadableFile(queryEngineLibrary) || !isReadableFile(schemaEngineBinary)) continue;
 
-      const queryEngineLibrary = path.join(engineDir, queryCandidateName);
-      const schemaEngineBinary = path.join(engineDir, schemaCandidateName);
-      if (!isReadableFile(queryEngineLibrary) || !isReadableFile(schemaEngineBinary)) continue;
-
-      return {
-        queryEngineLibrary,
-        schemaEngineBinary,
-        source: "bundled",
-        sourcePath: engineDir,
-      };
-    }
+    return {
+      queryEngineLibrary,
+      schemaEngineBinary,
+      source: "bundled",
+      sourcePath: engineDir,
+    };
   }
 
   return null;
 }
 
-function resolveCachedPrismaEnginePair(cacheRoot: string): PrismaEnginePair | null {
-  if (!fs.existsSync(cacheRoot)) {
-    return null;
-  }
-
-  let bestMatch:
-    | {
-        queryEngineLibrary: string;
-        schemaEngineBinary: string;
-        sourcePath: string;
-        preferenceIndex: number;
-        mtimeMs: number;
-      }
-    | null = null;
-  const targetPreferences = getPrismaRuntimeTargetPreference();
-
-  let cacheVersions: fs.Dirent[];
+function resolveCachedPrismaEnginePair(cacheRoot: string, engineRevision: string): PrismaEnginePair | null {
+  const versionDir = path.join(cacheRoot, engineRevision);
+  let targetEntries: fs.Dirent[];
   try {
-    cacheVersions = fs.readdirSync(cacheRoot, { withFileTypes: true });
+    targetEntries = fs.readdirSync(versionDir, { withFileTypes: true });
   } catch {
     return null;
   }
 
-  for (const versionEntry of cacheVersions) {
-    if (!versionEntry.isDirectory()) continue;
-    const versionDir = path.join(cacheRoot, versionEntry.name);
-
-    let targetEntries: fs.Dirent[];
-    try {
-      targetEntries = fs.readdirSync(versionDir, { withFileTypes: true });
-    } catch {
-      continue;
-    }
-
-    for (const targetEntry of targetEntries) {
-      if (!targetEntry.isDirectory()) continue;
+  const sortedTargets = targetEntries.filter((entry) => entry.isDirectory())
+    .sort((a, b) => a.name.localeCompare(b.name));
+  for (const targetToken of getPrismaRuntimeTargetPreference()) {
+    for (const targetEntry of sortedTargets) {
+      if (!targetEntry.name.includes(targetToken)) continue;
       const sourcePath = path.join(versionDir, targetEntry.name);
-      const preferenceIndex = targetPreferences.findIndex((token) => targetEntry.name.includes(token));
-      if (preferenceIndex === -1) continue;
-
       const queryEngineLibrary = path.join(sourcePath, "libquery-engine");
       const schemaEngineBinary = path.join(sourcePath, "schema-engine");
       if (!isReadableFile(queryEngineLibrary) || !isReadableFile(schemaEngineBinary)) continue;
-
-      const queryMtime = fs.statSync(queryEngineLibrary).mtimeMs;
-      const schemaMtime = fs.statSync(schemaEngineBinary).mtimeMs;
-      const mtimeMs = Math.max(queryMtime, schemaMtime);
-      if (
-        !bestMatch ||
-        preferenceIndex < bestMatch.preferenceIndex ||
-        (preferenceIndex === bestMatch.preferenceIndex && mtimeMs > bestMatch.mtimeMs)
-      ) {
-        bestMatch = { queryEngineLibrary, schemaEngineBinary, sourcePath, preferenceIndex, mtimeMs };
-      }
+      return { queryEngineLibrary, schemaEngineBinary, source: "cache", sourcePath };
     }
   }
 
-  if (!bestMatch) {
-    return null;
-  }
-
-  return {
-    queryEngineLibrary: bestMatch.queryEngineLibrary,
-    schemaEngineBinary: bestMatch.schemaEngineBinary,
-    source: "cache",
-    sourcePath: bestMatch.sourcePath,
-  };
+  return null;
 }
 
 export function resolvePrismaEnginePair(
@@ -232,12 +182,15 @@ export function resolvePrismaEnginePair(
     };
   }
 
-  const bundled = resolveBundledPrismaEnginePair(appRoot);
+  const installed = resolveInstalledPrismaEngineMetadata(appRoot);
+  if (!installed) return null;
+
+  const bundled = resolveBundledPrismaEnginePair(installed.engineDir);
   if (bundled) {
     return bundled;
   }
 
-  return resolveCachedPrismaEnginePair(cacheRoot);
+  return resolveCachedPrismaEnginePair(cacheRoot, installed.engineRevision);
 }
 
 export function buildPrismaCommandEnv(

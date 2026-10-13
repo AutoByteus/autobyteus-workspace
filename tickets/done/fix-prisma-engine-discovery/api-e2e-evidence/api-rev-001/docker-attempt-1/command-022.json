@@ -1,0 +1,10 @@
+{
+  "command": [
+    "docker",
+    "inspect",
+    "api-prisma-90067e31-699-first"
+  ],
+  "exit": 1,
+  "stdout": "[]\n",
+  "stderr": "error: no such object: api-prisma-90067e31-699-first\n"
+}

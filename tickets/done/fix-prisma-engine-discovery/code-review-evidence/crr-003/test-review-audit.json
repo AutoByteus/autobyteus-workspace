@@ -1,0 +1,71 @@
+{
+  "checkedAt": "2026-10-13T16:47:36.894896+00:00",
+  "review": "CRR-003 proportional successful-test review; read-only identity/evidence checks, no runtime rerun",
+  "head": "e3ec50c2fed2137664cca472cbc67e75cf5ca63e",
+  "branch": "codex/fix-prisma-engine-discovery",
+  "sourcePassCommit": "277c0c33d3671ce7aeedf2e8e30a4fb1baa94e0c",
+  "testedApiCommit": "dd7de6ed4607bfa43b830e5c80d291b5f41e0bdd",
+  "durableDeltaSinceSourcePass": [
+    "autobyteus-server-ts/package.json",
+    "autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs"
+  ],
+  "durableApiInputsUnchanged": true,
+  "inputSha256": {
+    "autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs": "3c53ee3205226487d526f87b518126643ff4a7850a287113b0442a4b66e603b8",
+    "autobyteus-server-ts/package.json": "e4e242bcf21905a2f08622d4be929e76c744312ee9d3f206c7e080d6e6b0eee2"
+  },
+  "packageDeltaOnlyNamedScript": true,
+  "retainedRawFilesHashVerified": 69,
+  "policiesUnchanged": [
+    "AGENTS.md",
+    "DESIGN.md",
+    "TESTING.md",
+    "autobyteus-server-ts/AGENTS.md"
+  ],
+  "priorSourceFailureOriginReportSha256": "88a13dd63cf6cbb61e2d2b1b119a88543f22b6dc9fe813c05591769ff12c29d6",
+  "distEvidence": {
+    "files": 4559,
+    "differences": [
+      "startup/migrations.d.ts.map",
+      "startup/migrations.js"
+    ],
+    "image": "sha256:1779a6e136a2fcd48a3045687a88ded45628e306471f5fd9d3eb4321017b21fa",
+    "platform": "arm64",
+    "note": "Evidence audit, not a fresh build/image execution"
+  },
+  "nativeEvidence": {
+    "oldRpcCode": -32601,
+    "matchingRevision": "605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+    "matchingMigrationDirectories": 27,
+    "canonicalEnv": true
+  },
+  "recreationEvidence": {
+    "firstId": "0407073a88605c09f0f4ad8d88254a66a18fbd46ef25934bfe26b03a386f419d",
+    "recreatedId": "8ac4a1ac0eaa7c95625f459d301667268a188954e2bb714ce151be908a660607",
+    "dataEqual": true,
+    "incompatibleCacheEqual": true,
+    "noPins": true,
+    "signedOut": true,
+    "distUnchanged": true
+  },
+  "healthEvidence": [
+    {
+      "file": "health-first.json",
+      "url": "http://127.0.0.1:62074",
+      "lastThree200StatusOk": true
+    },
+    {
+      "file": "health-recreated.json",
+      "url": "http://127.0.0.1:62101",
+      "lastThree200StatusOk": true
+    }
+  ],
+  "cleanupEvidence": {
+    "containersRemaining": [],
+    "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-prisma-command-emk3dspj/tmp/api-prisma-docker-HBmlye",
+    "rootAbsent": true,
+    "errors": []
+  },
+  "suiteOrDockerOrUserNodeExecution": false,
+  "initialWorktreeStatus": "?? applications/brief-studio/dist/\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-devkit/dist/\n?? autobyteus-application-frontend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/"
+}

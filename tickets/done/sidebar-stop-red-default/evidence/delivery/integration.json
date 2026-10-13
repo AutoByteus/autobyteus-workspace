@@ -1,0 +1,27 @@
+{
+  "startedAt": "2026-10-13T16:32:41.950283+00:00",
+  "candidate": "33b0242265604a568310dff5f6cce63b7b124ce5",
+  "base": "0c37f58d88220be3683a15da6e0956d6ab13c4db",
+  "integration": "Already current; git fetch origin personal and git merge --no-edit origin/personal produced Already up to date",
+  "newBaseCommits": false,
+  "checkpoint": "Not needed; tracked candidate clean, untracked SDK outputs excluded",
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "test:nuxt",
+    "components/workspace/history/__tests__/DelegatedStopButton.spec.ts",
+    "components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts",
+    "components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+    "composables/__tests__/useWorkspaceHistoryMutations.spec.ts",
+    "composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts",
+    "stores/__tests__/delegatedLaunchDraftStore.spec.ts",
+    "--run",
+    "--maxWorkers=2"
+  ],
+  "outerHome": "/tmp/sidebar-stop-red-delivery-home-_zlw_a0f",
+  "browserRerun": "Not needed: no base/source/test/dependency change since API-REV-001; same validated candidate. Additional focused Delivery rerun voluntarily performed.",
+  "exitCode": 0,
+  "outerHomeRemoved": true,
+  "completedAt": "2026-10-13T16:33:09.365699+00:00"
+}

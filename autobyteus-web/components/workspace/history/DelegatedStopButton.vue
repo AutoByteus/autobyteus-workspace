@@ -1,9 +1,9 @@
 <template>
-  <!-- Like a running run's Stop: neutral at rest and red on hover, on a running copy or collaborator row. -->
+  <!-- Like a running run's Stop: red when available, muted while stopping a copy or collaborator. -->
   <button
     v-if="visible"
     type="button"
-    class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 disabled:cursor-default disabled:opacity-60"
+    class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 disabled:cursor-default disabled:opacity-60"
     :disabled="stopping"
     :title="label"
     :aria-label="label"

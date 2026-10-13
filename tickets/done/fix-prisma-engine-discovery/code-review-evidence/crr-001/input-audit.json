@@ -1,0 +1,24 @@
+{
+  "base": "e22245f097c208e66065302cfc30814cc5ffd14f",
+  "reviewedHead": "fec5a7b41aae7caf2246621348e843c3da509412",
+  "changedNonTicketPaths": [
+    "autobyteus-server-ts/src/startup/migrations.ts",
+    "autobyteus-server-ts/tests/unit/startup/migrations-command.test.ts",
+    "autobyteus-server-ts/tests/unit/startup/migrations-prisma-engine-env.test.ts"
+  ],
+  "checks": {
+    "only_three_expected_non_ticket_paths": true,
+    "command_types_native_platform_unchanged": true,
+    "complete_explicit_pair_unchanged": true,
+    "env_exec_deploy_errors_tail_unchanged": true,
+    "old_unowned_loop_removed": true,
+    "mtime_ranking_removed": true,
+    "no_hardcoded_prisma_version_or_commit": true,
+    "api_harness_not_yet_authored": true
+  },
+  "sourceNonemptyBefore": 280,
+  "sourceNonemptyAfter": 243,
+  "sourceDelta": "60\t107\tautobyteus-server-ts/src/startup/migrations.ts",
+  "sourceSha256": "02902ddd053b2f4ccb944a8b035bbd9fee20444535778af7cb495e17c38b9cc0",
+  "distSha256": "a9006386397e520277f40e4a9af5178a4125578126f11e255e1dac5d64149a53"
+}

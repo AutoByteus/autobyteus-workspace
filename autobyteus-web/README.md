@@ -59,6 +59,14 @@ For runtime details and contributor workflow, see:
 
 - `docs/localization.md`
 
+## Token Meter
+
+The workspace **Token** tab includes **Output TPS** for the selected exact
+agent: an estimated, last-reported output rate with runtime/model and timestamp.
+It needs two compatible usage reports within one turn, includes intervening
+tools/waits, and is not restored after reload. See
+[Output TPS: method, states and runtime limits](docs/token_meter.md).
+
 ## Server Modes
 
 AutoByteus supports two server operation modes: internal and external.

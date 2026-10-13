@@ -18,7 +18,7 @@ vi.mock('~/services/runConfigEditing/delegatedLaunchSelectionClient', async (imp
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
 
 /** BEH-001..003: shared sidebar Stop styling and preserved per-copy interaction. CSS rendering is checked separately. */
-const root = { rootKind: 'AGENT_TEAM' as const, rootRunId: 'root' }
+const roots = ['AGENT', 'AGENT_TEAM', 'AGENT_ORG'] as const
 const row = (overrides: Partial<RunHistoryTransientExecutionRow> = {}): RunHistoryTransientExecutionRow => ({
   kind: 'transient_execution', transientKind: 'task_agent', rowKey: 'agent:worker-run', teamRunId: 'root',
   memberAddress: '/writer', agentRunId: 'worker-run', teamRunIdForNode: null, memberKind: 'agent',
@@ -39,17 +39,19 @@ beforeEach(() => {
   client.stopDelegatedExecution.mockReset()
 })
 
-describe.each(copies)('sidebar $kind copy Stop', (copy) => {
-  it.each([false, true])('matches normal run color tokens, retaining focus and semantics (selected=%s)', (isSelected) => {
+describe.each(roots.flatMap(rootKind => copies.map(copy => ({ ...copy, rootKind }))))(
+  'sidebar $kind copy Stop under $rootKind', (copy) => {
+  const root = { rootKind: copy.rootKind, rootRunId: 'root' }
+  it.each([false, true])('uses red enabled and muted disabled tokens, retaining focus and semantics (selected=%s)', (isSelected) => {
     liveness.live.add(copy.id)
     const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: copy.row, stopRoot: root, isSelected } })
     const button = wrapper.get(stopSelector)
     expect(button.classes()).toEqual(expect.arrayContaining([
-      'text-gray-400', 'transition-colors', 'hover:bg-red-50', 'hover:text-red-600',
+      'text-red-500', 'disabled:text-gray-400', 'disabled:hover:text-gray-400', 'disabled:hover:bg-transparent', 'transition-colors', 'hover:bg-red-50', 'hover:text-red-600',
       'focus:outline-none', 'focus-visible:ring-2', 'focus-visible:ring-red-500/40',
       'disabled:cursor-default', 'disabled:opacity-60',
     ]))
-    expect(button.classes()).not.toContain('text-red-500')
+    expect(button.classes()).not.toContain('text-gray-400')
     expect(button.attributes('type')).toBe('button')
     expect(button.attributes('title')).toBe(`Stop ${copy.row.displayName}`)
     expect(button.attributes('aria-label')).toBe(button.attributes('title'))
@@ -105,6 +107,7 @@ describe.each(copies)('sidebar $kind copy Stop', (copy) => {
   })
 })
 
+const root = { rootKind: 'AGENT_TEAM' as const, rootRunId: 'root' }
 describe('Team copy member rows', () => {
   it('never offers an individual member Stop in place of the whole Team', () => {
     liveness.live.add('member-run')
