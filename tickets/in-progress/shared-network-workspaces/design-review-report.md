@@ -1,5 +1,7 @@
 # Design Review Report
 
+> **Subsequent user direction (2026-10-13): working v1 first.** The user explicitly defers the outage edge case discussed in D-001. Do **not** require the D-001 outage-isolation correction as v1 work. See [scope feedback](architecture-review-scope-feedback.md), routed to Solution Designer to align requirements and design. The completed ARCH-REV-001 result below evaluates the **prior SR017 guarantees**; it is not a Pass or a fresh verdict on the as-yet-unrevised v1 package. Technical evidence remains valid; the blocking scope is superseded by user direction.
+
 ## Review Round Meta
 
 - Upstream Requirements Doc: `requirements-doc.md`, **Approved SR-017**; decision authority verified against `approval-record-sr017.md`.

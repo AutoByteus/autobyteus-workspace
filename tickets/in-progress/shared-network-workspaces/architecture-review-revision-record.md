@@ -31,3 +31,7 @@ None.
 - Material classification changes: none from Large/High; new review outcome Design Impact, not missing approval/hardware.
 - Recommended recipient: `/software_engineering_team/solution_designer`; configured rule to be applied after persistence. No implementation forwarding.
 - Remaining risks: current-source setup/runtime/mode/UI and independent physical proof remain downstream obligations; historical probes are not product signoff. No live mounts/nodes/data/provider use or upstream/source modifications performed by this review.
+
+## Post-ARCH-REV-001 User Scope Feedback — Not A Completed Review Round
+
+On 2026-10-13 the user explicitly prioritizes a working normal-path v1 and defers the outage edge case explained for D-001. Exact context and requested Solution Designer reconciliation are in `architecture-review-scope-feedback.md`. D-001 is **not required as a v1 blocker under this direction**; its source facts are not claimed fixed. ARCH-REV-001 remains the completed review of SR017's former guarantees. No new architecture Pass/review result or new ARCH-REV ID is fabricated before a revised canonical package is available. Requirements/AC and architecture alignment belongs to Solution Designer; no duplicate user choice questionnaire is requested. Basic normal-use correctness and data/consent protections are not waived.
