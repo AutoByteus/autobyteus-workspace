@@ -1,0 +1,17 @@
+{
+  "base": "e22245f097c208e66065302cfc30814cc5ffd14f",
+  "checks": {
+    "command_selection_and_public_pair_types_byte_identical": true,
+    "native_filenames_and_platform_preferences_byte_identical": true,
+    "env_command_migration_error_boundary_byte_identical": true,
+    "old_store_scan_removed": true,
+    "revision_mtime_policy_removed": true,
+    "no_other_tracked_source_recipe_helper_manifest_lockfile_schema_license_or_caller_changes": true
+  },
+  "unexpected_changes": [],
+  "production_source_nonempty_lines": 243,
+  "production_changed_line_delta": "60\t107\tautobyteus-server-ts/src/startup/migrations.ts",
+  "sourceSha256": "02902ddd053b2f4ccb944a8b035bbd9fee20444535778af7cb495e17c38b9cc0",
+  "untracked_new_test": "autobyteus-server-ts/tests/unit/startup/migrations-command.test.ts",
+  "note": "No Docker/user-node command in this permanent-source implementation. This is source preservation proof, not native Docker/image equality proof."
+}
