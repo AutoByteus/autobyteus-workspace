@@ -122,3 +122,5 @@ Existing compact Team/Agent header crowding at approved200px center is the upstr
 
 ## Selected Handoff Rule
 `get_handoff_rules` returned the direct Pass / Small-or-Medium / Low / no test review / complete validated package rule. **Single most-specific recipient: `/software_engineering_team/delivery_engineer`**. Reviewed-route test review, failed-validation origin review and pre-execution upstream-gap rules do not apply. Persisted before sending; tool confirmation determines delivery of the handoff. No duplicate forwarding to Implementation/Solution Designer/Project Task Manager.
+
+Evidence formatting audit: retained logs/diagnostic HTML had generated trailing whitespace; normalized trailing whitespace only for repository checkability. No assertions, results, screenshots or source/test identity changed. Final complete-branch git diff --check passes.

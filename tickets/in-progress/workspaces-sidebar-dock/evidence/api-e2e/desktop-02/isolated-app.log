@@ -27,9 +27,9 @@ DevTools listening on ws://127.0.0.1:37305/devtools/browser/681e4207-b67e-4753-9
 [2026-10-13T14:04:50.618Z] [INFO] [electron] Working directory: /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
 [2026-10-13T14:04:50.618Z] [INFO] [electron] App data directory: /tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-z8GcGn/server-data
 [2026-10-13T14:04:50.618Z] [INFO] [electron] Executing: /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/app.js --port 38223 --data-dir /tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-z8GcGn/server-data
-[21588:1013/140450.693263:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[21588:1013/140450.693263:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
 [21588:1013/140450.693861:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
-[21588:1013/140450.710761:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[21588:1013/140450.710761:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
 [2026-10-13T14:04:50.781Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
 [2026-10-13T14:04:50.781Z] [INFO] [electron.embedded-server.stdout] App root directory: /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
 [2026-10-13T14:04:50.781Z] [INFO] [electron.embedded-server.stdout] App data directory: /tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-z8GcGn/server-data
@@ -291,9 +291,9 @@ DevTools listening on ws://127.0.0.1:37305/devtools/browser/681e4207-b67e-4753-9
 [2026-10-13T14:04:57.479Z] [INFO] [electron] ServerStatusManager: Checking server health
 [2026-10-13T14:04:57.480Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
 [21588:1013/140457.523071:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
-[21588:1013/140457.523149:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[21588:1013/140457.523149:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
 [21588:1013/140457.523191:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
-[21588:1013/140457.523227:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[21588:1013/140457.523227:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
 [2026-10-13T14:04:57.602Z] [INFO] [electron.embedded-server.stdout] Closed agent session 3f51c149-6426-4297-b421-cb1671b3bd4b
 [2026-10-13T14:04:57.602Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: 3f51c149-6426-4297-b421-cb1671b3bd4b
 [2026-10-13T14:04:57.602Z] [INFO] [electron.embedded-server.stdout] Closed agent session 9c2b30ec-79af-4cb3-bce1-ebae4ce77b24
