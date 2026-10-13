@@ -1,0 +1,265 @@
+{
+  "at": "2026-10-13T06:22:12.210378+00:00",
+  "instanceId": "iso-55097-2f31",
+  "stepCount": 11,
+  "steps": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/tickets/in-progress/agent-org-creation-cache-field-completeness/api-desktop-01/e01-observe.json",
+      "result": "Pass",
+      "events": 0
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/tickets/in-progress/agent-org-creation-cache-field-completeness/api-desktop-01/e02-catalog-observe.json",
+      "result": "Pass",
+      "events": 0
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/tickets/in-progress/agent-org-creation-cache-field-completeness/api-desktop-01/e02-control-agent-create.json",
+      "result": "Pass",
+      "events": 0
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/tickets/in-progress/agent-org-creation-cache-field-completeness/api-desktop-01/e02-primary-agent-create.json",
+      "result": "Pass",
+      "events": 0
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/tickets/in-progress/agent-org-creation-cache-field-completeness/api-desktop-01/e03-agent-edit.json",
+      "result": "Pass",
+      "events": 0
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/tickets/in-progress/agent-org-creation-cache-field-completeness/api-desktop-01/e04-control-org-create.json",
+      "result": "Pass",
+      "events": 0
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/tickets/in-progress/agent-org-creation-cache-field-completeness/api-desktop-01/e04-org-catalog-observe.json",
+      "result": "Pass",
+      "events": 0
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/tickets/in-progress/agent-org-creation-cache-field-completeness/api-desktop-01/e04-primary-org-create.json",
+      "result": "Pass",
+      "events": 0
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/tickets/in-progress/agent-org-creation-cache-field-completeness/api-desktop-01/e05-org-edit.json",
+      "result": "Pass",
+      "events": 0
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/tickets/in-progress/agent-org-creation-cache-field-completeness/api-desktop-01/e06-reread-and-validation.json",
+      "result": "Pass",
+      "events": 0
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/tickets/in-progress/agent-org-creation-cache-field-completeness/api-desktop-01/e07-final-observe.json",
+      "result": "Pass",
+      "events": 0
+    }
+  ],
+  "browserEvents": [],
+  "targetedCode13Errors": 0,
+  "uiMutationCount": 6,
+  "uiMutations": [
+    {
+      "operation": "createAgentDefinition",
+      "id": "cache-control-agent",
+      "diagnosticPropertyExplicit": true,
+      "diagnosticValue": null,
+      "query": "mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {\n  createAgentDefinition(input: $input) {\n    ...AgentDefinitionMutationFields\n    __typename\n  }\n}\n\nfragment AgentDefinitionMutationFields on AgentDefinition {\n  __typename\n  id\n  name\n  role\n  description\n  instructions\n  category\n  avatarUrl\n  toolNames\n  inputProcessorNames\n  llmResponseProcessorNames\n  toolExecutionResultProcessorNames\n  toolInvocationPreprocessorNames\n  lifecycleProcessorNames\n  skillNames\n  skillScope\n  ownershipScope\n  ownerTeamId\n  ownerTeamName\n  ownerApplicationId\n  ownerApplicationName\n  ownerPackageId\n  ownerLocalApplicationId\n  defaultLaunchConfig {\n    llmModelIdentifier\n    runtimeKind\n    llmConfig\n    __typename\n  }\n  loadIssue {\n    code\n    reason\n    definitionPath\n    packageRoot\n    __typename\n  }\n}",
+      "variables": {
+        "input": {
+          "name": "Cache Control Agent",
+          "role": "Cache validation observer",
+          "category": "Cache validation",
+          "description": "Disposable definition for real catalog cache proof.",
+          "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+          "avatarUrl": "",
+          "skillNames": [],
+          "skillScope": "CONFIGURED",
+          "toolNames": [],
+          "inputProcessorNames": [],
+          "llmResponseProcessorNames": [],
+          "toolExecutionResultProcessorNames": [],
+          "toolInvocationPreprocessorNames": [],
+          "lifecycleProcessorNames": [],
+          "defaultLaunchConfig": null
+        }
+      },
+      "httpStatus": 200
+    },
+    {
+      "operation": "createAgentDefinition",
+      "id": "cache-validation-agent",
+      "diagnosticPropertyExplicit": true,
+      "diagnosticValue": null,
+      "query": "mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {\n  createAgentDefinition(input: $input) {\n    ...AgentDefinitionMutationFields\n    __typename\n  }\n}\n\nfragment AgentDefinitionMutationFields on AgentDefinition {\n  __typename\n  id\n  name\n  role\n  description\n  instructions\n  category\n  avatarUrl\n  toolNames\n  inputProcessorNames\n  llmResponseProcessorNames\n  toolExecutionResultProcessorNames\n  toolInvocationPreprocessorNames\n  lifecycleProcessorNames\n  skillNames\n  skillScope\n  ownershipScope\n  ownerTeamId\n  ownerTeamName\n  ownerApplicationId\n  ownerApplicationName\n  ownerPackageId\n  ownerLocalApplicationId\n  defaultLaunchConfig {\n    llmModelIdentifier\n    runtimeKind\n    llmConfig\n    __typename\n  }\n  loadIssue {\n    code\n    reason\n    definitionPath\n    packageRoot\n    __typename\n  }\n}",
+      "variables": {
+        "input": {
+          "name": "Cache Validation Agent",
+          "role": "Cache validation observer",
+          "category": "Cache validation",
+          "description": "Disposable definition for real catalog cache proof.",
+          "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+          "avatarUrl": "",
+          "skillNames": [],
+          "skillScope": "CONFIGURED",
+          "toolNames": [],
+          "inputProcessorNames": [],
+          "llmResponseProcessorNames": [],
+          "toolExecutionResultProcessorNames": [],
+          "toolInvocationPreprocessorNames": [],
+          "lifecycleProcessorNames": [],
+          "defaultLaunchConfig": null
+        }
+      },
+      "httpStatus": 200
+    },
+    {
+      "operation": "updateAgentDefinition",
+      "id": "cache-validation-agent",
+      "diagnosticPropertyExplicit": true,
+      "diagnosticValue": null,
+      "query": "mutation UpdateAgentDefinition($input: UpdateAgentDefinitionInput!) {\n  updateAgentDefinition(input: $input) {\n    ...AgentDefinitionMutationFields\n    __typename\n  }\n}\n\nfragment AgentDefinitionMutationFields on AgentDefinition {\n  __typename\n  id\n  name\n  role\n  description\n  instructions\n  category\n  avatarUrl\n  toolNames\n  inputProcessorNames\n  llmResponseProcessorNames\n  toolExecutionResultProcessorNames\n  toolInvocationPreprocessorNames\n  lifecycleProcessorNames\n  skillNames\n  skillScope\n  ownershipScope\n  ownerTeamId\n  ownerTeamName\n  ownerApplicationId\n  ownerApplicationName\n  ownerPackageId\n  ownerLocalApplicationId\n  defaultLaunchConfig {\n    llmModelIdentifier\n    runtimeKind\n    llmConfig\n    __typename\n  }\n  loadIssue {\n    code\n    reason\n    definitionPath\n    packageRoot\n    __typename\n  }\n}",
+      "variables": {
+        "input": {
+          "id": "cache-validation-agent",
+          "name": "Cache Validation Agent Edited",
+          "role": "Cache validation observer",
+          "category": "Cache validation",
+          "description": "Description updated through the ordinary Agent edit form.",
+          "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+          "avatarUrl": "",
+          "skillNames": [],
+          "skillScope": "CONFIGURED",
+          "toolNames": [],
+          "inputProcessorNames": [],
+          "llmResponseProcessorNames": [],
+          "toolExecutionResultProcessorNames": [],
+          "toolInvocationPreprocessorNames": [],
+          "lifecycleProcessorNames": [],
+          "defaultLaunchConfig": null
+        }
+      },
+      "httpStatus": 200
+    },
+    {
+      "operation": "createAgentOrgDefinition",
+      "id": "cache-control-org",
+      "diagnosticPropertyExplicit": true,
+      "diagnosticValue": [],
+      "query": "mutation CreateAgentOrgDefinition($input: CreateAgentOrgDefinitionInput!) {\n  createAgentOrgDefinition(input: $input) {\n    ...AgentOrgDefinitionFields\n    __typename\n  }\n}\n\nfragment AgentOrgDefinitionFields on AgentOrgDefinition {\n  id\n  name\n  description\n  instructions\n  category\n  avatarUrl\n  revision\n  handoffs {\n    from\n    to\n    rules\n    __typename\n  }\n  members {\n    memberName\n    ref\n    refType\n    refScope\n    __typename\n  }\n  defaultLaunchConfig {\n    llmModelIdentifier\n    runtimeKind\n    llmConfig\n    __typename\n  }\n  loadIssues {\n    kind\n    definitionId\n    name\n    code\n    reason\n    definitionPath\n    packageRoot\n    usingLastGood\n    __typename\n  }\n  __typename\n}",
+      "variables": {
+        "input": {
+          "name": "Cache Control Org",
+          "description": "Disposable Org with real referenced Agents and preserved routing.",
+          "members": [
+            {
+              "memberName": "cache_control_agent",
+              "ref": "cache-control-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            }
+          ],
+          "handoffs": [],
+          "instructions": "",
+          "category": null,
+          "avatarUrl": null,
+          "defaultLaunchConfig": null
+        }
+      },
+      "httpStatus": 200
+    },
+    {
+      "operation": "createAgentOrgDefinition",
+      "id": "cache-validation-org",
+      "diagnosticPropertyExplicit": true,
+      "diagnosticValue": [],
+      "query": "mutation CreateAgentOrgDefinition($input: CreateAgentOrgDefinitionInput!) {\n  createAgentOrgDefinition(input: $input) {\n    ...AgentOrgDefinitionFields\n    __typename\n  }\n}\n\nfragment AgentOrgDefinitionFields on AgentOrgDefinition {\n  id\n  name\n  description\n  instructions\n  category\n  avatarUrl\n  revision\n  handoffs {\n    from\n    to\n    rules\n    __typename\n  }\n  members {\n    memberName\n    ref\n    refType\n    refScope\n    __typename\n  }\n  defaultLaunchConfig {\n    llmModelIdentifier\n    runtimeKind\n    llmConfig\n    __typename\n  }\n  loadIssues {\n    kind\n    definitionId\n    name\n    code\n    reason\n    definitionPath\n    packageRoot\n    usingLastGood\n    __typename\n  }\n  __typename\n}",
+      "variables": {
+        "input": {
+          "name": "Cache Validation Org",
+          "description": "Disposable Org with real referenced Agents and preserved routing.",
+          "members": [
+            {
+              "memberName": "cache_control_agent",
+              "ref": "cache-control-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            },
+            {
+              "memberName": "cache_validation_agent_edited",
+              "ref": "cache-validation-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            }
+          ],
+          "handoffs": [
+            {
+              "from": "/cache_control_agent",
+              "to": "/cache_validation_agent_edited",
+              "rules": [
+                "When this review is complete, hand the package to the next member.",
+                "Preserve the original member identity and rules."
+              ]
+            }
+          ],
+          "instructions": "",
+          "category": null,
+          "avatarUrl": null,
+          "defaultLaunchConfig": null
+        }
+      },
+      "httpStatus": 200
+    },
+    {
+      "operation": "updateAgentOrgDefinition",
+      "id": "cache-validation-org",
+      "diagnosticPropertyExplicit": true,
+      "diagnosticValue": [],
+      "query": "mutation UpdateAgentOrgDefinition($input: UpdateAgentOrgDefinitionInput!) {\n  updateAgentOrgDefinition(input: $input) {\n    ...AgentOrgDefinitionFields\n    __typename\n  }\n}\n\nfragment AgentOrgDefinitionFields on AgentOrgDefinition {\n  id\n  name\n  description\n  instructions\n  category\n  avatarUrl\n  revision\n  handoffs {\n    from\n    to\n    rules\n    __typename\n  }\n  members {\n    memberName\n    ref\n    refType\n    refScope\n    __typename\n  }\n  defaultLaunchConfig {\n    llmModelIdentifier\n    runtimeKind\n    llmConfig\n    __typename\n  }\n  loadIssues {\n    kind\n    definitionId\n    name\n    code\n    reason\n    definitionPath\n    packageRoot\n    usingLastGood\n    __typename\n  }\n  __typename\n}",
+      "variables": {
+        "input": {
+          "id": "cache-validation-org",
+          "expectedRevision": "e4e960cbcc3d2030048ad95dc48586680b2ac2afe42458cca900acba54d6ca02",
+          "name": "Cache Validation Org Edited",
+          "description": "Description edited through the ordinary Org edit form.",
+          "members": [
+            {
+              "memberName": "cache_control_agent",
+              "ref": "cache-control-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            },
+            {
+              "memberName": "cache_validation_agent_edited",
+              "ref": "cache-validation-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            }
+          ],
+          "handoffs": [
+            {
+              "from": "/cache_control_agent",
+              "to": "/cache_validation_agent_edited",
+              "rules": [
+                "When this review is complete, hand the package to the next member.",
+                "Preserve the original member identity and rules."
+              ]
+            }
+          ]
+        }
+      },
+      "httpStatus": 200
+    }
+  ],
+  "publicFixtureMutationCount": 1,
+  "publicFixturePurpose": "Healthy hidden instructions/category only, never issue generation or required UI save bypass",
+  "ownedSavedFilesReadback": "persisted-file-readback.json",
+  "realCacheProof": "Public actual registered Apollo readQuery/cache-first + actual Pinia values, before API read/reload, no HTTP/doubles/injection",
+  "cleanup": "cleanup-check.json",
+  "humanAcceptance": "Not requested/received for this NEW Task; agent proof only",
+  "historicalUiFailRewritten": false
+}

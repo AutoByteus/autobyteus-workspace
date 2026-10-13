@@ -1,0 +1,32 @@
+{
+  "at": "2026-10-13T06:33:31.253437+00:00",
+  "testedPackageHead": "232dd5c920a05e56a236a39f0c7716543d48af2d",
+  "sourceCommit": "47f74a7f8b9d6097b5763aef2790d1e59bfc0ac4",
+  "sourceAndDurableTestByteIdentityToTestedPackage": true,
+  "sourceBlobs": {
+    "autobyteus-web/graphql/mutations/agentDefinitionMutations.ts": "c655d8e3cdf76f04be74100196abafef302883f7",
+    "autobyteus-web/graphql/mutations/agentOrgDefinitionMutations.ts": "2817cb65d523a03c9a97d96b38415b5808d6e30f",
+    "autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts": "2d9e902853378daafdde1f0793d67fa4f1bfcb7a"
+  },
+  "currentBuiltAsarHashMatches": true,
+  "helpersSyntaxCheck": "3 files Pass",
+  "sourceAndCanonicalReportDiffCheck": "Pass; raw terminal evidence only blank EOF/trailing WARN formatter spaces retained",
+  "fullStagedDiffCheckExitCode": 2,
+  "rawLogNotices": [
+    "tickets/in-progress/agent-org-creation-cache-field-completeness/api-checks-01/focused.log:68: new blank line at EOF.",
+    "tickets/in-progress/agent-org-creation-cache-field-completeness/api-checks-01/related.log:420: new blank line at EOF.",
+    "tickets/in-progress/agent-org-creation-cache-field-completeness/api-desktop-01/desktop-build.log:270: trailing whitespace.",
+    "+ WARN ",
+    "tickets/in-progress/agent-org-creation-cache-field-completeness/api-desktop-01/desktop-build.log:585: trailing whitespace.",
+    "+ WARN"
+  ],
+  "initialAuditAuthoringCorrection": "First receipt parser assumed only EOF notices; observed raw pnpm WARN formatter trailing spaces and corrected parser allowance. No evidence/source edited to hide notices. First parser failed before receipt write.",
+  "artifactHygiene": "Pass (index-inclusive git ls-files)",
+  "stagedOnlyApiPaths": true,
+  "stagedPathCountBeforeAuditReceipt": 44,
+  "sourceOrDurableCoverageChangesByApi": "None",
+  "generatedOutputStaged": false,
+  "otherOwnerChangesStaged": false,
+  "ledgerCasesReconciled": "R01\u201303/E01\u201307 Pass",
+  "environmentCleanup": "cleanup-check.json own root/record/group/embedded process/ports absent"
+}

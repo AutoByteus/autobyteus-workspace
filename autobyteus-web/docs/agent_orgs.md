@@ -55,6 +55,18 @@ independently launchable and keep their own coordinator and Team-local handoffs.
   Apollo response metadata such as `__typename` is not echoed into input.
   An omitted optional update remains omitted rather than resetting stored intent.
 
+### Mutation Response And Catalog Cache Contract
+
+Create and update share `AgentOrgDefinitionFields`. It selects the catalog's
+`loadIssues` entries with `kind`, `definitionId`, `name`, `code`, `reason`,
+`definitionPath`, `packageRoot`, and `usingLastGood`. The existing store can
+therefore publish complete mutation responses into the full catalog cache;
+an older normalized row is not a substitute for a complete update response.
+Healthy saves return the server's explicit empty list. Diagnostic values are
+preserved rather than replaced with synthetic defaults or hidden, without
+changing warning generation, expected revisions, input omission, members,
+handoffs, save navigation, or cache ownership.
+
 Canonical `org-config.json` and `team-config.json` output has no `schemaVersion`.
 Org input validation remains strict. Referenced Team inputs use the supported-field
 reader described in [Agent Teams](./agent_teams.md); unused metadata and absent

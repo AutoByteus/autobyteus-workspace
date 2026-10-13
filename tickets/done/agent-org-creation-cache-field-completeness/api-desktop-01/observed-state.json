@@ -1,0 +1,270 @@
+{
+  "queries": {
+    "GetAgentDefinitions": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssue {\n      code\n      reason\n      definitionPath\n      packageRoot\n      __typename\n    }\n  }\n}",
+    "GetAgentOrgDefinitions": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n    __typename\n  }\n}"
+  },
+  "agentCatalogBefore": [
+    {
+      "__typename": "AgentDefinition",
+      "id": "autobyteus-daily-assistant",
+      "name": "Daily Assistant",
+      "role": "General Agent",
+      "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+      "instructions": "You are Daily Assistant, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+      "category": null,
+      "avatarUrl": null,
+      "toolNames": [
+        "run_bash",
+        "read_file",
+        "read_url",
+        "search_web",
+        "close_tab",
+        "dom_snapshot",
+        "list_tabs",
+        "navigate_to",
+        "open_tab",
+        "run_script",
+        "screenshot",
+        "get_process_output",
+        "start_background_process",
+        "stop_background_process",
+        "download_media",
+        "edit_image",
+        "generate_image",
+        "generate_speech",
+        "read_media_file",
+        "list_available_agents"
+      ],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "toolInvocationPreprocessorNames": [],
+      "lifecycleProcessorNames": [],
+      "skillNames": [],
+      "skillScope": "ALL_INSTALLED",
+      "ownershipScope": "SHARED",
+      "ownerTeamId": null,
+      "ownerTeamName": null,
+      "ownerApplicationId": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "defaultLaunchConfig": null,
+      "loadIssue": null
+    },
+    {
+      "__typename": "AgentDefinition",
+      "id": "autobyteus-retrospective-skill-improver",
+      "name": "Retrospective Skill Improver",
+      "role": "retrospective skill improver",
+      "description": "Improves configured durable skill packages from target run work-trace evidence.",
+      "instructions": "You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\n\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\n\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\n\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\n\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\n\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\n",
+      "category": "skill-improvement",
+      "avatarUrl": null,
+      "toolNames": [
+        "run_bash",
+        "send_message_to"
+      ],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "toolInvocationPreprocessorNames": [],
+      "lifecycleProcessorNames": [],
+      "skillNames": [
+        "retrospective-skill-improver"
+      ],
+      "skillScope": "CONFIGURED",
+      "ownershipScope": "SHARED",
+      "ownerTeamId": null,
+      "ownerTeamName": null,
+      "ownerApplicationId": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "defaultLaunchConfig": null,
+      "loadIssue": null
+    }
+  ],
+  "controlAgent": {
+    "__typename": "AgentDefinition",
+    "id": "cache-control-agent",
+    "name": "Cache Control Agent",
+    "role": "Cache validation observer",
+    "description": "Disposable definition for real catalog cache proof.",
+    "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+    "category": "Cache validation",
+    "avatarUrl": null,
+    "toolNames": [],
+    "inputProcessorNames": [],
+    "llmResponseProcessorNames": [],
+    "toolExecutionResultProcessorNames": [],
+    "toolInvocationPreprocessorNames": [],
+    "lifecycleProcessorNames": [],
+    "skillNames": [],
+    "skillScope": "CONFIGURED",
+    "ownershipScope": "SHARED",
+    "ownerTeamId": null,
+    "ownerTeamName": null,
+    "ownerApplicationId": null,
+    "ownerApplicationName": null,
+    "ownerPackageId": null,
+    "ownerLocalApplicationId": null,
+    "defaultLaunchConfig": null,
+    "loadIssue": null
+  },
+  "primaryAgent": {
+    "__typename": "AgentDefinition",
+    "id": "cache-validation-agent",
+    "name": "Cache Validation Agent",
+    "role": "Cache validation observer",
+    "description": "Disposable definition for real catalog cache proof.",
+    "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+    "category": "Cache validation",
+    "avatarUrl": null,
+    "toolNames": [],
+    "inputProcessorNames": [],
+    "llmResponseProcessorNames": [],
+    "toolExecutionResultProcessorNames": [],
+    "toolInvocationPreprocessorNames": [],
+    "lifecycleProcessorNames": [],
+    "skillNames": [],
+    "skillScope": "CONFIGURED",
+    "ownershipScope": "SHARED",
+    "ownerTeamId": null,
+    "ownerTeamName": null,
+    "ownerApplicationId": null,
+    "ownerApplicationName": null,
+    "ownerPackageId": null,
+    "ownerLocalApplicationId": null,
+    "defaultLaunchConfig": null,
+    "loadIssue": null
+  },
+  "primaryAgentEdited": {
+    "__typename": "AgentDefinition",
+    "id": "cache-validation-agent",
+    "name": "Cache Validation Agent Edited",
+    "role": "Cache validation observer",
+    "description": "Description updated through the ordinary Agent edit form.",
+    "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+    "category": "Cache validation",
+    "avatarUrl": null,
+    "toolNames": [],
+    "inputProcessorNames": [],
+    "llmResponseProcessorNames": [],
+    "toolExecutionResultProcessorNames": [],
+    "toolInvocationPreprocessorNames": [],
+    "lifecycleProcessorNames": [],
+    "skillNames": [],
+    "skillScope": "CONFIGURED",
+    "ownershipScope": "SHARED",
+    "ownerTeamId": null,
+    "ownerTeamName": null,
+    "ownerApplicationId": null,
+    "ownerApplicationName": null,
+    "ownerPackageId": null,
+    "ownerLocalApplicationId": null,
+    "defaultLaunchConfig": null,
+    "loadIssue": null
+  },
+  "orgCatalogBefore": [],
+  "controlOrg": {
+    "id": "cache-control-org",
+    "name": "Cache Control Org",
+    "description": "Disposable Org with real referenced Agents and preserved routing.",
+    "instructions": "",
+    "category": null,
+    "avatarUrl": null,
+    "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+    "handoffs": [],
+    "members": [
+      {
+        "memberName": "cache_control_agent",
+        "ref": "cache-control-agent",
+        "refType": "AGENT",
+        "refScope": "SHARED",
+        "__typename": "AgentOrgMember"
+      }
+    ],
+    "defaultLaunchConfig": null,
+    "loadIssues": [],
+    "__typename": "AgentOrgDefinition"
+  },
+  "primaryOrg": {
+    "id": "cache-validation-org",
+    "name": "Cache Validation Org",
+    "description": "Disposable Org with real referenced Agents and preserved routing.",
+    "instructions": "",
+    "category": null,
+    "avatarUrl": null,
+    "revision": "7e0c9acfaa14d2bfe9decac6e201ddd57fdded3732fed69cc723b2e196868669",
+    "handoffs": [
+      {
+        "from": "/cache_control_agent",
+        "to": "/cache_validation_agent_edited",
+        "rules": [
+          "When this review is complete, hand the package to the next member.",
+          "Preserve the original member identity and rules."
+        ],
+        "__typename": "AgentOrgHandoff"
+      }
+    ],
+    "members": [
+      {
+        "memberName": "cache_control_agent",
+        "ref": "cache-control-agent",
+        "refType": "AGENT",
+        "refScope": "SHARED",
+        "__typename": "AgentOrgMember"
+      },
+      {
+        "memberName": "cache_validation_agent_edited",
+        "ref": "cache-validation-agent",
+        "refType": "AGENT",
+        "refScope": "SHARED",
+        "__typename": "AgentOrgMember"
+      }
+    ],
+    "defaultLaunchConfig": null,
+    "loadIssues": [],
+    "__typename": "AgentOrgDefinition"
+  },
+  "primaryOrgEdited": {
+    "id": "cache-validation-org",
+    "name": "Cache Validation Org Edited",
+    "description": "Description edited through the ordinary Org edit form.",
+    "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+    "category": "Preserved category",
+    "avatarUrl": null,
+    "revision": "9b7b80ce9fb93e382c3273b78087a73e76f63d1a23aa256e112d66c478a4c8e5",
+    "handoffs": [
+      {
+        "from": "/cache_control_agent",
+        "to": "/cache_validation_agent_edited",
+        "rules": [
+          "When this review is complete, hand the package to the next member.",
+          "Preserve the original member identity and rules."
+        ],
+        "__typename": "AgentOrgHandoff"
+      }
+    ],
+    "members": [
+      {
+        "memberName": "cache_control_agent",
+        "ref": "cache-control-agent",
+        "refType": "AGENT",
+        "refScope": "SHARED",
+        "__typename": "AgentOrgMember"
+      },
+      {
+        "memberName": "cache_validation_agent_edited",
+        "ref": "cache-validation-agent",
+        "refType": "AGENT",
+        "refScope": "SHARED",
+        "__typename": "AgentOrgMember"
+      }
+    ],
+    "defaultLaunchConfig": null,
+    "loadIssues": [],
+    "__typename": "AgentOrgDefinition"
+  }
+}
