@@ -1,7 +1,36 @@
 # API/E2E Execution Coverage Report — resume-pdf-search-preview
 
-## Current Execution Round Meta
-- Owner/date: api_e2e_engineer /2026-10-13; **round2 /API-REV-002**, latest authoritative completed round.
+## Current Scope-Correction Round — API-REV-003
+- Owner/date: api_e2e_engineer /2026-10-13, round3. Trigger: direct user request to remove the PDF-specific Electron package command/probe and keep only the environment/build/isolation improvements global.
+- Result: **Pass for requested removal and guidance checks;95% scoped confidence**. This is not a newly executed PDF/application pass. Prior API-REV-002 actual Electron Pass95% remains pinned historical application evidence; CRR-004 reviewed that earlier scope. Current source CRR-002, CRR-003/004 and DR-002 cumulative chain retained. Small/High/Reviewed unchanged.
+- Removed: autobyteus-web/package.json entry test:e2e:search-pdf-electron and autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs (306lines). No replacement shared entrypoint, renamed suite or relocation. Deleted-file diff is evidence/api-electron-removal.diff.
+- Updated: autobyteus-server-ts/docs/modules/file_explorer.md removes active command discovery; TESTING.md separates reusable setup from ticket journeys; docs/isolated-app-instances.md invokes ticket-owned automation rather than requiring a permanent package script.
+- Existing source/unit/integration/HTTP/browser tests and shared878-byte synthetic PDF remain unchanged; this removal does not delete product functionality. PDF-specific Electron durable automation is deliberately no longer available as a current command. Original logs, screenshots, assertions, package/source hashes and cleanup receipts remain unchanged.
+
+### Execution / Evidence
+- Package JSON parsed; named script and file absent; git grep found no active reference outside ticket history. Seven guide Bash blocks passed bash -n after substituting the documented ticket-owned file/argument placeholders. Syntax validation only, not a new runtime qualification of those templates.
+- Exact focused command: node --test autobyteus-web/scripts/isolated-app/__tests__/*.node-test.mjs autobyteus-web/scripts/electron-launch/__tests__/*.node-test.mjs, from assigned worktree with clean PATH/HOME/TMPDIR/LANG/TZ only. **51pass,0fail,0skip**. Own TemporaryDirectory HOME/TMPDIR removed. No actual Electron launch, native rebuild, live-server request or provider call was performed in this removal round.
+- Evidence: evidence/api-electron-removal-check.json (scope/reference/recipe/unchanged hashes/cleanup), evidence/api-electron-removal-lifecycle.log (executed51checks), evidence/api-electron-removal.diff (exact non-artifact delta). Text-scoped git diff --check passed. Production, lockfile and shared fixture unchanged; pre-existing dirty Delivery artifacts hash-identical before/after.
+- A first combined shell command was rejected by the tool before execution because its cleanup used rm -f. Replaced with scoped Python TemporaryDirectory cleanup; no hidden failed case or source finding.
+
+### Confidence / Broader Decision
+| Category | Scope confidence | Basis |
+| --- | --- | --- |
+| Functional correctness |95%|Named script/file actually removed; product behavior untouched |
+| API/contract correctness |95%|No API/runtime diff; prior application proof retained, not rerun |
+| Integration/regression protection |95%|51 existing launcher checks; other coverage retained; desktop PDF permanence intentionally removed |
+| Environment/data/fixture validity |95%|Clean private test environment; fixture byte pin unchanged; no user data used |
+| Failure/lifecycle/recovery |95%|Focused lifecycle checks and owned temp cleanup; actual restart proof retained from prior runs |
+| User/browser/desktop evidence honesty |95%|No fresh UI claim; prior screenshots/assertions preserved at their exact builds |
+| Coverage relevance |95%|Scope corrected to explicit user direction; no replacement global PDF suite |
+Broader validation **Not Required for this test-removal/doc-only delta**; no production, packaging or launcher behavior changed. No fresh55-profile/166-repository/full-Electron rerun claim. Prior application95% does not automatically validate later runtime revisions. AC-004 and DR-002 external rollout/user/finalization hold remain separate and unresolved by this round.
+
+### Handoff
+Proportional successful coverage-removal/guidance review **Required** on existing Small/High route. Request that current removal scope supersede the old new-probe discovery references in downstream owned artifacts; do not reintroduce the deleted package command. Complete cumulative upstream package/evidence retained. No failure-origin/source blame, requirement/design recovery, release/merge/deploy or user-acceptance inference.
+
+
+## Retained Application Execution — API-REV-002
+- Owner/date: api_e2e_engineer /2026-10-13; **round2 /API-REV-002**, retained previous actual-application execution round.
 - Trigger: direct user instruction to perform the full real Electron test ourselves and improve inadequate Linux/container testing guidance. This adds validation depth/guidance, not product behavior.
 - Previous result: API-REV-001 Pass95% for real backend/Nuxt/Chromium web-equivalent AC-001–003; **not Electron proof**. Prior result/history/evidence retained.
 - Worktree:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview; branch codex/resume-pdf-search-preview.

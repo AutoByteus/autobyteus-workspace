@@ -191,3 +191,9 @@ Round1/API-REV-001 complete:all5casesPass; final run03/cleanup reconciled into c
 
 ## Latest Reconciliation — API-REV-002
 All4round2casesPass and finalcleanupPass; completed events recorded before further work; no interrupted/active/unstarted cases. Canonical report currentround2 reconciles attempted404/testsyntax failures, actual03/04success and retained prior evidence. No AC-004/deployment/user verification inferred.
+
+## API-REV-003 — User-Requested Tooling Scope Correction
+
+- 2026-10-13T04:26:38.305308+00:00 API-008 Planned: remove named shared Electron PDF script/probe; check active references and generic recipe syntax; focused launcher regression checks only. Prior API-002/003/006/007 execution records preserved, not rerun claims.
+
+- 2026-10-13T04:28:48.781764+00:00 API-008 Pass: script/probe removed; no active non-ticket references;7recipe Bash syntax checks;51Node checksPass/0fail/0skip; privateHOME/TMPDIR removed. No Electron/PDF rerun; prior evidence retained.

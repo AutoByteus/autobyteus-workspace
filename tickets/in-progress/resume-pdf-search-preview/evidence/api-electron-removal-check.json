@@ -1,0 +1,97 @@
+{
+  "startedAt": "2026-10-13T04:26:38.305308+00:00",
+  "head": "e7a5c20c71220c346c45e465c3e91f97cc35937b",
+  "protectedDirtyFilesBefore": {
+    "delivery-revision-record.md": "a5a4176003a13dc37e1995b008b2876782c5bc703d6dc321b4d1ce9fff8a39ea",
+    "docs-sync-report.md": "99f23e22caca446c1377e1675c407c77bf8262f48c0851ac5cb13e343952acde",
+    "handoff-summary.md": "1b3a15ff14034498372571d83056dfefbeb8c0e96dccdc48d4831dd90dd378ad",
+    "release-deployment-report.md": "e52c859f5aa7da1f85dbd9651dfbffbe5e372b1618aa049c31a1a022d346a5ba",
+    "evidence/delivery-dr002-integration.log": "4f4e2621c7106fe160e652c16489ef601c612bc1b69fefe3aba77f67f4182f84"
+  },
+  "statusBeforeRemoval": " M tickets/in-progress/resume-pdf-search-preview/api-e2e-coverage-investigation.md\n M tickets/in-progress/resume-pdf-search-preview/api-e2e-test-case-ledger.md\n M tickets/in-progress/resume-pdf-search-preview/delivery-revision-record.md\n M tickets/in-progress/resume-pdf-search-preview/docs-sync-report.md\n M tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-integration.log\n M tickets/in-progress/resume-pdf-search-preview/handoff-summary.md\n M tickets/in-progress/resume-pdf-search-preview/release-deployment-report.md\n?? applications/brief-studio/dist/\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-devkit/dist/\n?? autobyteus-application-frontend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-checks.log\n?? tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-cleanup.json\n?? tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-final-base-lifecycle.log\n?? tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-package.json\n?? tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-runtime.log\n?? tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-xvfb.log\n",
+  "scope": [
+    "autobyteus-web/package.json",
+    "autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs",
+    "autobyteus-server-ts/docs/modules/file_explorer.md",
+    "docs/isolated-app-instances.md"
+  ],
+  "result": "Pass",
+  "packageJson": "Pass",
+  "namedScriptAbsent": true,
+  "probeAbsent": true,
+  "noActiveReferencesOutsideTicketHistory": true,
+  "guideBashBlocks": [
+    {
+      "block": 1,
+      "bashSyntax": "Pass",
+      "executed": false
+    },
+    {
+      "block": 2,
+      "bashSyntax": "Pass",
+      "executed": false
+    },
+    {
+      "block": 3,
+      "bashSyntax": "Pass",
+      "executed": false
+    },
+    {
+      "block": 4,
+      "bashSyntax": "Pass",
+      "executed": false
+    },
+    {
+      "block": 5,
+      "bashSyntax": "Pass",
+      "executed": false
+    },
+    {
+      "block": 6,
+      "bashSyntax": "Pass",
+      "executed": false
+    },
+    {
+      "block": 7,
+      "bashSyntax": "Pass",
+      "executed": false
+    }
+  ],
+  "runtimeRerun": false,
+  "protectedDirtyFilesAfterScopeEdit": {
+    "delivery-revision-record.md": "a5a4176003a13dc37e1995b008b2876782c5bc703d6dc321b4d1ce9fff8a39ea",
+    "docs-sync-report.md": "99f23e22caca446c1377e1675c407c77bf8262f48c0851ac5cb13e343952acde",
+    "handoff-summary.md": "1b3a15ff14034498372571d83056dfefbeb8c0e96dccdc48d4831dd90dd378ad",
+    "release-deployment-report.md": "e52c859f5aa7da1f85dbd9651dfbffbe5e372b1618aa049c31a1a022d346a5ba",
+    "evidence/delivery-dr002-integration.log": "4f4e2621c7106fe160e652c16489ef601c612bc1b69fefe3aba77f67f4182f84"
+  },
+  "attemptBeforeExecution": "First combined command rejected by tool because rm -f cleanup syntax is prohibited; no command ran. Replaced with scoped Python TemporaryDirectory cleanup.",
+  "lifecycle": {
+    "command": "node --test autobyteus-web/scripts/isolated-app/__tests__/*.node-test.mjs autobyteus-web/scripts/electron-launch/__tests__/*.node-test.mjs",
+    "exitCode": 0,
+    "log": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/api-electron-removal-lifecycle.log",
+    "environment": "env-i equivalent, own HOME/TMPDIR and PATH/LANG/TZ only",
+    "tempRoot": "/tmp/resume-api-removal.halu57em",
+    "tempRootRemoved": true
+  },
+  "finishedAt": "2026-10-13T04:28:48.781764+00:00",
+  "focusedTests": {
+    "pass": 51,
+    "fail": 0,
+    "skipped": 0
+  },
+  "productionAndLockfileUnchanged": true,
+  "sharedFixtureUnchangedSha256": "999bd43e8b679a7f1b65482120948444dca47a1e541122cae3bb27862069e87d",
+  "protectedDirtyFilesFinal": {
+    "delivery-revision-record.md": "a5a4176003a13dc37e1995b008b2876782c5bc703d6dc321b4d1ce9fff8a39ea",
+    "docs-sync-report.md": "99f23e22caca446c1377e1675c407c77bf8262f48c0851ac5cb13e343952acde",
+    "handoff-summary.md": "1b3a15ff14034498372571d83056dfefbeb8c0e96dccdc48d4831dd90dd378ad",
+    "release-deployment-report.md": "e52c859f5aa7da1f85dbd9651dfbffbe5e372b1618aa049c31a1a022d346a5ba",
+    "evidence/delivery-dr002-integration.log": "4f4e2621c7106fe160e652c16489ef601c612bc1b69fefe3aba77f67f4182f84"
+  },
+  "scopeCommits": {
+    "globalGuidance": "dbe37b66a",
+    "scriptProbeRemovalAndGuide": "cbb37464d"
+  },
+  "textScopedWhitespaceCheck": "Pass"
+}

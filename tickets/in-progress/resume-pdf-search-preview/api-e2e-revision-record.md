@@ -5,6 +5,7 @@ Canonical investigation/report own current truth; missing history is not Pass.
 | --- | --- | --- | --- |
 | API-REV-001 |CRR-002 source Pass; R1/SR-001–004,ARCH-REV-001–003,IR-001/002,CRR-001/002 |N/A |Pass AC-001–003/95%;AC-004 Delivery-owned |
 | API-REV-002 |Direct user full-Electron/Linux-guidance request; current sourceCRR-002/testCRR-003/DR-001 hold |API-REV-001 Pass95%(web-equivalent) |Pass95%(actual packaged Electron+Linux recipe) |
+| API-REV-003 |Direct user removal of redundant shared PDF Electron command/probe; CRR-004/DR-002 retained |API-REV-002 Pass95%(actual Electron) |Pass95%(removal/guidance checks only); prior application evidence retained |
 
 ## API-REV-001 — joined current-stack PDF and protected identity proven
 - Date/owner:2026-10-12/api_e2e_engineer, round1. Trigger /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/code-review-report.md CRR-002/round2 Pass, CR-F-001 closed independently upstream. Source7f321575058d744c8e635b3aff0a6d1f4557e2c4; base2756d7b298ca5b203ebd2310d172b37a5d381b5c.
@@ -41,3 +42,18 @@ No unresolved prior round failures. API-REV-001 was Pass for its scoped layer. N
 - Cleanup final api-electron-cleanup.json: appgroup/root/fixtures/CDP/ports, ownedX100/X101, temp builder/runtime homes/cache/cookie gone; UID no live process. ExistingX99/PID35 and livePID61 untouched; original read-only SHA unchanged7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5. Test prerequisite packages/current untracked build outputs retained; upstream dirty artifacts untouched/unstaged.
 - New/remaining failure IDs:None. Successful output: **Code Review Required** for new test/guidance, not failure-origin or directDelivery.
 - Residual scope: no real-provider/native-picker/physical-desktop/otherdistro/Windows tests; not material to fixed Files path. DR-001 host/runtime/rollout/user/finalization hold unchanged; no public release requested.
+
+## API-REV-003 — Keep setup global; remove ticket-specific Electron command
+- Date/owner/round:2026-10-13/api_e2e_engineer/3; direct user scope correction. Related current sourceCRR002, testCRR003/004, DeliveryDR002; R1/SR001–004/ARCH001–003/IR001–002 unchanged.
+- Why: user rejected permanently registering the PDF-specific desktop validation as shared/global tooling. Remove rather than rename/relocate it; reusable Linux/container setup remains global.
+- Changed durable paths: delete tests/e2e/search-pdf-electron-probe.mjs and its package entry; remove module-doc command reference; clarify rootTESTING and genericLinuxguide ticket-owned automation. No replacement durable Electron PDF test by explicit user direction. Existing sharedfixture/HTTP/browser/other tests unchanged.
+- Cases: API008 added for removal/reference/recipe/lifecycle checks; old API002/003/006/007 actual observations retained, not rerun.51existing Node checksPass/no skips,7Bash blocks syntaxPass, package/file/reference checksPass. No productionbuild/applicationrun/paidprovider/userdata change.
+### Prior Failure Resolution
+None. No unresolved API failure; tool-rejected initial shell cleanup syntax occurred before execution and was replaced with scopedTemporaryDirectory cleanup. Not a runtime/source defect.
+- Canonical investigation/report/ledger/history updated in place; new scopecheck/lifecyclelog/deletiondiff evidence. PriorAPI002 report/evidence preserved as application history, not a current runnable-suite promise.
+- Prior result/confidence:API002 actualElectronPass95%. Current:Pass95% for removal/guidance delta only; no fresh application confidence claim. BroaderNotRequired for doc/testremoval; production/lockfile/fixture unchanged and launcherchecksPass.
+- Remaining risk: permanent packagedPDF regression automation intentionally removed; future scenario-specific task-owned automation uses sharedsetup. AC004/DR002 externalhold unchanged, not delivery/user/deployment success.
+- Recommended owner/route: fresh rules; successful Small/High coverage-removal proportionalCodeReview Required, not source/failure-origin re-review. Downstream owners must drop old command discovery references without changing historical execution claims.
+- Cleanup: ownprivateHOME/tmp removed; no app/display/ports or userfile created; otherdirtyDeliveryartifact hashes unchanged, buildoutputs leftunstaged.
+
+- Scope commits: dbe37b66a (standalone globalTESTING policy clarification); cbb37464d (named script/probe removal, active module reference and genericguide). Reports/evidence committed separately; no merge/push/deploy by this round.
