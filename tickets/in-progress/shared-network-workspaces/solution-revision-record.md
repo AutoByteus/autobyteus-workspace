@@ -208,3 +208,14 @@ SR-013 route decision2026-10-13: fresh get_handoff_rules returned only completed
 - Status: Draft design still incomplete/unclassified; prior feasibility/gates unchanged. No new experiments/source/CI/live actions. Routine direct-user naming result, fresh rules checked before disposition; no duplicate PM or implementation handoff.
 
 SR014 route decision: current rules cover completed architecture size/risk and delivery-receipt gaps only. None applies to naming-only user clarification with Draft design. Return directly to user; no duplicate PM, implementation forwarding or delegate_task.
+
+## SR-015 — Approved Nodes NFS Guide Scope
+
+- Trigger: user suggests another Nodes tab similar to Docker Guide with download/run links, supplies current UI screenshot.
+- Approval: requirements SR012+clarifications -> Approved SR015 within explicit latest user direction, exact approval-record-sr015.md/informing message. Adds informational guide only; no renewed generic question, public/security/Windows/mount wizard or physical gate waiver.
+- IDs: REQ020/AC020/UC007/BEH007/SCN014/DEC011; all previous sharing/one-command/service/hosting/source/private-state/validation obligations retained. Original screenshot copied into ticket with source/hash; source evidence current tab/panel/clipboard/localization/tests inspected.
+- Canonical artifacts aligned: requirements/readiness/scope/UI/scenarios/traceability, Draft design with guide DS005/file boundaries, investigation/history/full current context. Product-owned separate package/visualizer N/A — support not requested; no invented Product mode/repository/handoff.
+- Status: approved intent, design still incomplete/unclassified/not forward-ready; no UI source/test/render/installer/CI/experiment/release/live changes or new passes. Existing Docker Guide/tab/node state preserved; command copy must not execute; unknown release unavailable; NFS Windows excluded.
+- Routing: direct-user scope conversation unless fresh rules apply; no duplicate PM approval request, premature implementation or task closure. Rule disposition recorded in current result after lookup.
+
+SR-015 route decision2026-10-13: fresh get_handoff_rules returned only completed architecture size/risk and returned-delivery receipt-gap rules. NONE applies to the user-directed guide requirements refinement with Draft design. Return directly to the user; no architecture/implementation/Product handoff, duplicate PM notification, delegate_task or task closure. No rendered tab or finished command claimed.

@@ -2,9 +2,9 @@
 
 ## Solution And Approval Basis
 
-- Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63; current solution revision SR-014 (user-directed naming refinement; requirements remain Approved SR-012).
-- Approved intent: requirements-doc.md SR-012, designer within explicit service-first/nativeMac/Linux/Docker user direction; approval-record-sr012.md contains exact informing message. No behavior-defining supplements or Product-owned UI package.
-- **Design status: Draft — NOT implementation-ready.** Concrete established boundaries below are design decisions; backend/platform qualification, proportionate trusted-LAN permission policy and runtime exposure remain incomplete and explicitly gated. Do not implement from this draft.
+- Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63; current solution revision SR-015 (approved Nodes NFS Guide scope; core SR-012 behavior retained).
+- Approved intent: requirements-doc.md SR-015, approval-record-sr015.md within explicit Nodes guide direction; prior SR-012 service/hosting authority and record retained. No behavior-defining supplements or separate Product-owned UI package; user screenshot is pattern evidence.
+- **Design status: Draft — needs completion/alignment with SR-015 guide addition, NOT implementation-ready.** Concrete established boundaries below are design decisions; backend/platform qualification, proportionate trusted-LAN permission policy and runtime exposure remain incomplete and explicitly gated. Do not implement from this draft.
 - Canonical investigation: investigation-notes.md in this ticket; executed raw rounds at evidence/feasibility/fr-001–047. Actual physical gate REQ-016/AC-016 remains in force pending the separate async user sequencing answer.
 - Authorities read full2026-10-13: solution-designer references/architecture-design.md, design-principles.md, formal design template; root DESIGN.md/TESTING.md, server/web AGENTS.md; server Startup Initialization and Lazy Services, Terminal Service Unification and data_migration_guideline.md. No conflict with these authorities. Design-examples N/A — not yet used to decide a new structure.
 - Isolated worktree /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces, branch codex/shared-network-workspaces; base origin/personal@f13bdd0eb79aacc63dffa5995b9c86f359001468, finalization origin/personal. No source modifications/merge/release.
@@ -68,6 +68,25 @@ For v1 recommend trusted-private-LAN-only deployment with basic explicit network
 
 This recommendation answers product/package/distribution shape. It does not complete native mode qualification, minimal exact authorization/export policy, final implementation language/distribution contracts, supported OS/CPU/version matrix, lifecycle/correctness paths or the physical forward gate. The next full design must turn these rough boundaries into a proportionate implementation map. No changed source, CI run, installer, release, user command or new test pass is claimed.
 
+## Nodes NFS Guide Addition — SR-015
+
+The user explicitly asks for another Nodes tab like Docker Guide, giving download/run links and command-copy instructions; their screenshot is retained at evidence/ui-reference/docker-guide-user.png. Approved REQ020/AC020/UC007/BEH007/SCN014 add this informational surface only. It is not a browser-driven mounting wizard, live dashboard, Windows support or Product Team/visualizer request. No new rendered UI exists yet.
+
+Current owners: components/settings/NodeManagerTabs.vue owns tab buttons/ARIA/test identities; NodeManager.vue owns selected-panel union/validTabs/route-query synchronization; DockerNodeStartGuideCard.vue owns its current guide display/copy feedback, with pure command definitions in utils/dockerNodeLauncherCommands.ts. Existing component tests check tab isolation and clipboard output/failure. The NFS guide should use those boundaries, preserve node selection and existing tabs, and not reach a Docker daemon/mount helper/backend merely to show/copy instructions.
+
+Target guide spine DS005: `Nodes -> NFS Guide tab/panel -> supported release/command definitions -> display -> clipboard or download link -> user's terminal -> existing DS001 service setup`. Opening/copying a guide cannot start a service or mutate storage. Actual setup verification still belongs to the standalone service; the guide explains printed root/project selection and automatic selected managedDocker integration. Bootstrap remains one complete install-and-start invocation, unlike making the user copy required install and then mount/configure commands separately.
+
+Candidate in-scope files:
+- components/settings/NodeManagerTabs.vue and NodeManager.vue: add nfsGuide alongside dockerGuide, matching accessibility/selection/route behavior; preserve all old tab meanings.
+- components/settings/NfsGuideCard.vue (planned): AutoByteus NFS download/first-use/create/connect/workspace guidance, supported platform wording and exact command-copy feedback. Reuse established guide pattern, not a pixel-perfect screenshot clone or a broad command registry.
+- utils/nfsLauncherCommands.ts (planned): pure supported release/download/command descriptors, single installed-entry/first-use contract; no fake executable URLs, no live node lookups or command execution. Final syntax depends on service packaging design.
+- localization/messages/en/settings.ts and zh-CN/settings.ts: localized tab/content/accessibility/copy/unavailable/error text, existing localization policy.
+- corresponding colocated NodeManager/guide/descriptor tests and a current-build user-journey probe: tab/route isolation, display/copy equality, clipboard failure/unavailable release, supported platform labels and preserved navigation. Isolated desktop for full product journey; a UI test alone does not prove installer/filesystem readiness.
+
+UI lifecycle states are selected/unselected, command copied, copy failed and release unavailable. Explain which computer executes a command rather than assuming browser OS/current bound remote node is its execution target. Do not render Windows merely because the reference Docker guide has a PowerShell card. Exact future release links must be validated downstream before advertised as ready. Keep the service independently obtainable outside the app; this tab is a discoverability/onboarding guide, not its lifecycle owner.
+
+Product-owned final visual artifact N/A — explicit separate Product Team support not requested; user-supplied existing pattern and approved requirements govern this narrow addition. No new mockup/visualizer/external designer repository or task is invented. Final geometry should inherit existing accessible/responsive guide components; source implementation/rendered validation remains downstream work.
+
 ## Task Size And Architectural Risk
 
 **Not classified yet — completed design required first.** Concrete affected surfaces include new service/platform distribution, privilege/lifecycle/Docker apply, workspace/runtime admission, file/terminal operation ownership and private runtime skill integration. Known security/data-continuity and cross-process impacts rule out assuming Low. Final Small/Medium/Large and Low/High classification/escalation belong to the completed package, not the number of probes. Scope discovered outside the guardrail goes back as follow-up, not implicit expansion.
@@ -95,6 +114,7 @@ This recommendation answers product/package/distribution shape. It does not comp
 | BEH-004 operational | 007/008/014; AC006/007/014 | Absent/wrong/denied/unavailable/recovery; unrelated local work unaffected | DS004 requested shared-action admission + operation owner; no global startup or kernel deadline claim |
 | BEH-005 operational | 009/010/017/019; AC008/009/017/019 | Explicit grant/apply/detach; private state/storage and occupied target preservation | DS001 source/grant/lifecycle ownership; selected node consent and exact retained resources |
 | BEH-006 user/system | 011; AC010 | Deliberate reload/reopen; unsaved edits preserved | DS004 current explorer operation owner; remote watcher events not a readiness dependency |
+| BEH-007 user/interaction | 020; AC020 | User opens Nodes NFS Guide; copy/download only, existing tabs preserved | DS005 guide discovery -> user terminal -> DS001; no browser-driven mount/service execution |
 
 ## Task Design Health Assessment
 
@@ -186,7 +206,7 @@ Folder depth: entry/interactive transport, service lifecycle/control, private pe
 
 ## Change Scope, Tradeoffs And Risks
 
-Draft boundary: UC001–006/BEH001–006 in approved scope only. New service integration, existing path/run/file/terminal/native runtime boundaries and necessary private-profile correction are in scope. Leave private databases/memories/CLI homes, public service/SDK, Windows, unrelated runtime/platform refactors and parked collaboration unchanged. Known automatic remote watcher limits documented, not a new notification subsystem. Follow-ups: any out-of-scope OS-specific build/dependency portability, broad runtime ownership redesign or public/HA filesystem service is separate work, not needed here.
+Draft boundary: UC001–007/BEH001–007 in approved scope only. New service integration, existing path/run/file/terminal/native runtime boundaries and necessary private-profile correction are in scope. Leave private databases/memories/CLI homes, public service/SDK, Windows, unrelated runtime/platform refactors and parked collaboration unchanged. Known automatic remote watcher limits documented, not a new notification subsystem. Follow-ups: any out-of-scope OS-specific build/dependency portability, broad runtime ownership redesign or public/HA filesystem service is separate work, not needed here.
 
 Key tradeoffs: kernel clients avoid FUSE/CLI interception; native Mac nfsd available but different protocol/port/lifecycle; Ganesha VFS has stronger demonstrated NFS4.1 semantics but cannot directly export tested Mac bind; UNFS3 offers normal-folder portability/single-user UID presentation with no NLM and still-unqualified lifecycle/native packaging. Native UNFS3/libtirpc1.3.8 actual Mac kernel mount fails bad RPC in FR047 despite successful build; do not select it as a uniform engine. Native Apple nfsd remains the demonstrated Mac-serving route. Backend cannot be picked just to satisfy command aesthetics. Working mounted components are not a finished service.
 
