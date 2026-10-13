@@ -1,0 +1,24 @@
+{
+  "startedAt": "2026-10-13T04:01:58.702Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-detail&id=api-desktop-engineering-team"
+    }
+  ],
+  "details": {
+    "memberUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=detail&id=api-coordinator&returnToTeam=api-desktop-engineering-team",
+    "teamReturnUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-detail&id=api-desktop-engineering-team",
+    "editUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-edit&id=api-desktop-engineering-team",
+    "backToCatalog": true,
+    "definitionsUnchanged": true,
+    "runDestination": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+    "chatText": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nAPI Desktop Engineering Team\nContext Files (0)\n(drag, paste, or upload)\nTemp workspace\nAuto-approve\nclaude-fable-5\nAutoByteus\nOff\n\nAll 6 members use these settings\n·\nCustomize members",
+    "noMessageSent": true
+  },
+  "result": "Pass",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "finishedAt": "2026-10-13T04:01:59.490Z"
+}

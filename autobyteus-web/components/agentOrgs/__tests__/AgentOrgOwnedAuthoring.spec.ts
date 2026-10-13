@@ -20,14 +20,14 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
 const makeAgent = (id: string, name: string, ownershipScope = 'SHARED', extra = {}) => ({
   __typename: 'AgentDefinition', id, name, description: `${name} description`, role: null, instructions: 'Agent instructions',
   category: null, avatarUrl: null, toolNames: [], inputProcessorNames: [], llmResponseProcessorNames: [],
-  toolExecutionResultProcessorNames: [], toolInvocationPreprocessorNames: [], lifecycleProcessorNames: [], skillNames: [],
+  toolExecutionResultProcessorNames: [], toolInvocationPreprocessorNames: [], lifecycleProcessorNames: [], skillNames: [], skillScope: 'CONFIGURED', loadIssue: null,
   ownershipScope, ownerOrgId: null, ownerOrgName: null, ownerTeamId: null, ownerTeamName: null,
   ownerApplicationId: null, ownerApplicationName: null, ownerPackageId: null, ownerLocalApplicationId: null,
   defaultLaunchConfig: null, ...extra,
 })
 const original = () => ({
   __typename: 'AgentOrgDefinition', id: 'owned-org', name: 'Owned organization', description: 'Original description',
-  revision: 'org-rev-1', instructions: 'Hidden instructions', category: 'keep', avatarUrl: 'https://example.test/org.png',
+  loadIssues: [], revision: 'org-rev-1', instructions: 'Hidden instructions', category: 'keep', avatarUrl: 'https://example.test/org.png',
   defaultLaunchConfig: { __typename: 'DefaultLaunchConfig', llmModelIdentifier: 'model', runtimeKind: 'autobyteus', llmConfig: { temperature: 0.3 } },
   members: [
     { __typename: 'AgentOrgMember', memberName: 'direct', ref: 'owned-direct', refType: 'AGENT', refScope: 'AGENT_ORG_OWNED' },
@@ -40,7 +40,7 @@ const original = () => ({
 })
 const makeTeam = () => ({
   __typename: 'AgentTeamDefinition', id: 'owned-team', name: 'Local research', description: 'Exact local Team',
-  instructions: 'Keep Team instructions', category: null, avatarUrl: null, revision: 'team-rev-1', handoffs: [],
+  instructions: 'Keep Team instructions', category: null, avatarUrl: null, revision: 'team-rev-1', handoffs: [], loadIssues: [],
   ownershipScope: 'AGENT_ORG_OWNED', ownerOrgId: 'owned-org', ownerOrgName: 'Owned organization',
   ownerTeamId: null, ownerTeamName: null, ownerApplicationId: null, ownerApplicationName: null,
   ownerPackageId: null, ownerLocalApplicationId: null, defaultLaunchConfig: null, coordinatorMemberName: 'lead',
@@ -57,13 +57,14 @@ describe('cold Org-owned authoring through real stores and Apollo', () => {
   let team: ReturnType<typeof makeTeam> | null
   let direct: ReturnType<typeof makeAgent> | null
   let exactError = false
+  let unexpectedIo: string[]
   let calls: Array<{ field: string; variables: any }>
   let heldTeamRead: (() => void) | null
   let holdTeam: boolean
   let holdCatalog: boolean
   let heldCatalog: (() => void) | null
   beforeEach(() => {
-    setActivePinia(createPinia()); org = original(); otherOrgs = []; team = makeTeam()
+    setActivePinia(createPinia()); unexpectedIo = []; org = original(); otherOrgs = []; team = makeTeam()
     io.route = reactive({ query: {} }); io.push.mockImplementation(async ({ query }) => { io.route.query = query })
     direct = makeAgent('owned-direct', 'Local direct', 'AGENT_ORG_OWNED', { ownerOrgId: org.id })
     calls = []; heldTeamRead = null; holdTeam = false; exactError = false; holdCatalog = false; heldCatalog = null
@@ -73,7 +74,8 @@ describe('cold Org-owned authoring through real stores and Apollo', () => {
       const complete = () => {
         if (exactError && field === 'agentTeamDefinition') { observer.error(new Error('Exact read unavailable')); return }
         let value: any
-        if (field === 'agentOrgDefinitions') value = [org, ...otherOrgs]
+        if (field === 'definitionProblems') value = []
+        else if (field === 'agentOrgDefinitions') value = [org, ...otherOrgs]
         else if (field === 'agentOrgEndpointCatalog') value = {
           from: [
             { kind: 'agent', address: '/direct', memberName: 'direct', definitionId: 'owned-direct', coordinatorAddress: null, coordinatorMemberName: null },
@@ -98,7 +100,7 @@ describe('cold Org-owned authoring through real stores and Apollo', () => {
           expect(Object.keys(input).sort()).toEqual(['description', 'handoffs', 'members', 'name'])
           input.members.forEach((m: any) => expect(Object.keys(m).sort()).toEqual(['memberName', 'ref', 'refScope', 'refType']))
           org = { ...org, ...input, revision: `org-rev-${Number(org.revision.slice(-1)) + 1}` }; value = org
-        } else throw new Error(`Unexpected I/O: ${field}`)
+        } else { unexpectedIo.push(field); throw new Error(`Unexpected I/O: ${field}`) }
         observer.next({ data: { [field]: structuredClone(value) } }); observer.complete()
       }
       if (holdCatalog && field === 'agentTeamDefinitions') heldCatalog = complete
@@ -106,7 +108,7 @@ describe('cold Org-owned authoring through real stores and Apollo', () => {
       else complete()
     })) })
   })
-  afterEach(() => { wrapper?.unmount(); wrapper = undefined; io.client.stop() })
+  afterEach(() => { wrapper?.unmount(); wrapper = undefined; io.client.stop(); expect(unexpectedIo).toEqual([]) })
   const open = async (view = 'org-detail') => {
     io.route.query = { view, id: org.id }
     wrapper = mount(AgentOrgExperience); await flushPromises()
