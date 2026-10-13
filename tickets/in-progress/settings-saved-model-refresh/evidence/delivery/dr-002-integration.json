@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-10-13T17:03:02.522005+00:00",
+  "candidate": "5d95381a6637b7fa7eb5a703e8c161064bb05d69",
+  "previously_integrated_base": "0c37f58d88220be3683a15da6e0956d6ab13c4db",
+  "latest_fetched_target": "7170fd755d0dd5e806371dd4594eb4a9bf3e2682",
+  "commands": [
+    "git fetch origin personal",
+    "git merge --no-edit origin/personal",
+    "git diff --cc -- autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+    "git merge --abort"
+  ],
+  "result": "Blocked: new DCP-002 locator conflict after latest base advanced; merge safely aborted",
+  "conflict_path": "autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+  "original_DR_001_conflict": "Resolved by IR-002 and API-REV-002; not reopened",
+  "post_integration_checks": "Not run: new merge failed",
+  "finalization": "Not performed"
+}

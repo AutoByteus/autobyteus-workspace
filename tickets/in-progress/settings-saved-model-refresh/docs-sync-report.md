@@ -1,16 +1,14 @@
 # Docs Sync Report — settings-saved-model-refresh
 
-## Scope
-- Task `5ee10f33-b73e-4373-b646-e87613e9c57b`; Medium / Low; Direct Low-Risk.
-- Trigger: API-REV-001 Passed, 95% confidence; initial Delivery round DR-001.
-- Bootstrap base: `1a2379c57088e8976aeb0f43e1e607e1acc103c6`.
-- Latest fetched `origin/personal`: `0c37f58d88220be3683a15da6e0956d6ab13c4db`.
-- Integrated base used for docs sync: **None — integration blocked**.
+## Scope / current round
+DR-002, triggered by API-REV-002 Pass/95% after IR-002. Medium / Low / Direct Low-Risk unchanged.
+Bootstrap base 1a2379c570; IR-002 integrated 0c37f58d88. Delivery's new fetch found origin/personal **7170fd755d0dd5e806371dd4594eb4a9bf3e2682**.
 
-## Long-Lived Docs Reviewed
-Root AGENTS.md, RELEASE.md, TESTING.md, DESIGN.md and web/server AGENTS.md read. No canonical documentation changed. This is **not** a no-impact decision: docs sync must resume after the latest-base integration and executable rerun succeed.
+## Result: Blocked — Local Fix
+Initial DR-001 ledger conflict is resolved and API/E2E proved both suites. This is a **new** latest-base conflict in the same harness's DCP-002 locator block: candidate's exact-root Team row selector versus incoming explicit named parent Stop selector. Incoming sidebar-stop-red-default supersedes earlier gray-default assertions and expands real Stop checks; preserve its current red behavior and candidate's exact-target fix, SSR cases and desktop support together.
 
-## Delivery Continuation
-**Blocked — Local Fix**. `git merge --no-edit origin/personal` conflicted in the shared `autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs` ledger completion block. Both branches added ledger handling; latest base also adds required stop-style assertions. Conflict evidence is in `evidence/delivery/initial-integration-conflict.patch`. Merge aborted; validated candidate d25b1e74ed preserved. No integrated-state rerun or docs sync claimed.
+No integrated-state docs sync performed; **not a No-impact decision**. Long-lived docs unchanged. Root policies and web/server AGENTS previously reviewed; RELEASE.md unchanged at last-change 3514fe48ea. Source design/requirements remain SR-002/SR-001. Subsequent docs sync should describe final integrated Settings readback behavior, not promote obsolete gray-default expectations.
 
-Recommended recipient: `/software_engineering_team/implementation_engineer`, code-local integration repair. Preserve both suites and route executable validation normally before Delivery resumes. No changed intended behavior or architectural reclassification established.
+Integration failed before any docs/source edits, then safely aborted to validated candidate 5d95381a66. Only blocker artifacts updated after abort. New evidence: evidence/delivery/dr-002-integration.json, dr-002-integration-conflict.patch, dr-002-merge.log.
+
+Next action: Implementation Engineer resolves code-local integration and validates through applicable route, then Delivery resumes verification/docs/finalization. No docs-impact conclusion or success handoff yet.

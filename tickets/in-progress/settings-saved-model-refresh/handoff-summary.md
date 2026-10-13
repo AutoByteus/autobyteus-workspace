@@ -1,12 +1,12 @@
 # Delivery Handoff Summary — settings-saved-model-refresh
 
-**DR-001: Blocked; not a completion receipt.**
+**DR-002: Blocked — new latest-base conflict; not Delivery Completed.**
+Task 5ee10f33-b73e-4373-b646-e87613e9c57b; Medium / Low / Direct Low-Risk. Independent architecture/source/test-code review and Product supplements N/A.
 
-- Task `5ee10f33-b73e-4373-b646-e87613e9c57b`; Medium / Low; Direct Low-Risk. Independent architecture/source/test-code reviews N/A — not applicable.
-- API-REV-001 reports Passed, 95%, with all AC-001..006 proven on d25b1e74ed. Delivery has read its proof table but has not completed independent evidence verification or an integrated rerun.
-- Initial fetch advanced base from 1a2379c570 to 0c37f58d88. Merge of origin/personal into codex/settings-saved-model-refresh hit a content conflict in delegated-launch-defaults-probe.mjs; safely aborted back to d25b1e74ed.
-- Request: resolve code-local integration preserving SSR desktop/browser coverage, source-current task-copy-stop-style DCP assertions and one coherent ledger; rerun relevant executable checks and return through applicable validation route. No production behavior change requested.
-- No archive, ticket push, target merge/push, release or cleanup performed. Worktree and untracked SDK dist build outputs retained; do not stage dist. Dirty main checkout untouched.
-- No release authorized; RELEASE.md defaults to source-only finalization to origin/personal when verified.
-- Authoritative blocker: release-deployment-report.md. Evidence: evidence/delivery/initial-integration.json and initial-integration-conflict.patch. Cumulative upstream requirements/design/implementation/API artifacts remain unchanged in this directory.
-- Eventual successful completion must return through Solution Designer to Task Manager run `project_task_manager_a5f6d9d306e54970bafdad895bdf731d`; not yet eligible.
+- API-REV-002: Pass/95%, 181 web tests / 6 API tests / 9 final desktop / 6 browser journeys; SR-001/002 unchanged, IR-002 integration validated. Old DR-001 conflict fully resolved.
+- Current candidate 5d95381a6637b7fa7eb5a703e8c161064bb05d69 includes 0c37f58d88. New Delivery fetch sees target 7170fd755d0dd5e806371dd4594eb4a9bf3e2682.
+- New merge conflict: delegated-launch-defaults-probe.mjs DCP-002 exact-root row versus named parent button. Incoming base separately supersedes gray Stop visuals with approved red-default coverage. Preserve both current-base changes and SSR/desktop/ledger/exact-ID improvements.
+- Combined diff saved; merge aborted to validated candidate. No unresolved index; no product source change by Delivery. Independent evidence verification and integrated rerun remain open, not a rejection of API-REV-002.
+- No archive/push/finalization/release/cleanup. Main checkout untouched; untracked SDK dist outputs retained, do not stage.
+- Authoritative current state: release-deployment-report.md, docs-sync-report.md, delivery-revision-record.md; new raw evidence evidence/delivery/dr-002-*.
+- Repair handed through configured code-local route; eventual completion returns through Solution Designer to exact Task Manager run project_task_manager_a5f6d9d306e54970bafdad895bdf731d. No release authorized.
