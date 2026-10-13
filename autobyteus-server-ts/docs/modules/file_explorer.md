@@ -122,3 +122,13 @@ Read the probe header for build prerequisites and isolation. It owns a current
 backend, Nuxt host and browser; it searches, selects a previously unloaded PDF,
 asserts rendered pages, and checks tree/text identity and HTTP denials. This is
 web-equivalent Files coverage, not deployed-build or user-verification evidence.
+
+For the full packaged product layer, run
+`pnpm -C autobyteus-web test:e2e:search-pdf-electron --output-dir <fresh-directory>`.
+This distinct probe uses the actual main renderer/preload and embedded backend,
+normal Chat/workspace/Files entry, PDF/text/tree interactions, and canonical
+restart/reopen/stop. Read its header and the
+[Linux isolated-instance guide](../../../docs/isolated-app-instances.md#linux)
+for current native-build, non-root, sandbox and whole-session display setup.
+`--skip-build` is valid only after building the same current worktree. Neither
+agent-owned layer substitutes for target rollout or explicit user acceptance.

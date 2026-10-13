@@ -1,0 +1,41 @@
+DR-002 latest-base integration before delivery docs; 2026-10-13T04:06:24.865004+00:00
+Initial fetch moved origin/personal2756d7b298ca5b203ebd2310d172b37a5d381b5c→b238f2bf20624d80a70bdf75c321a36180f15fdc; intake55d3e54ed059c053739f48ca25fe285f5cf410f9 was23ahead/47behind.
+Explicit12-path local checkpoint6d24160781b6daf7b1df190045372638cb87e6c6 protects DR-001 docs/reports/evidence and unchanged designer receipt/blocker. No build output staged. This is safety, not repository finalization.
+$ git show --no-patch --format=%H%n%P%n%s HEAD
+32cab9e357b01057523a31d01fad99d07d02f2bd
+6d24160781b6daf7b1df190045372638cb87e6c6 b238f2bf20624d80a70bdf75c321a36180f15fdc
+Merge remote-tracking branch 'origin/personal' into codex/resume-pdf-search-preview
+exit=0
+$ git merge-base --is-ancestor origin/personal HEAD
+exit=0
+$ git rev-list --left-right --count HEAD...origin/personal
+25	0
+exit=0
+$ git diff 6d2416078 HEAD -- autobyteus-server-ts/src/file-explorer autobyteus-server-ts/src/workspaces/workspace-path-utils.ts autobyteus-server-ts/src/api/rest/workspaces.ts autobyteus-web/components/fileExplorer autobyteus-web/stores/fileExplorerSearchActions.ts
+exit=0
+$ git status --short
+?? applications/brief-studio/dist/
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-devkit/dist/
+?? autobyteus-application-frontend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-build.log
+?? tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-install.log
+?? tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-integration.log
+?? tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-lifecycle.log
+?? tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-owned-run-path.txt
+?? tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-profile.log
+exit=0
+Automatic ort merge32cab9e357b01057523a31d01fad99d07d02f2bd; no conflicts. Both global Linux policy and newer base agy/Docker isolation policy retained; base inherited webversion1.5.3-beta.2, no release by ticket.
+Base alters chat/member/runtime and tooling; same ticket search/reader/viewer source unchanged. Post-integration55focused checks and a fresh native build/actual packaged journey required; results in separate delivery logs/evidence.
+$ git fetch origin personal
+From https://github.com/AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+   b238f2bf2..dec0f562c  personal   -> origin/personal
+exit=0
+$ git rev-parse origin/personal
+dec0f562ce6f26a09d1e6f59d59e838142cb4865
+exit=0
+$ git merge-base --is-ancestor origin/personal HEAD
+exit=1
+Expected ancestry guard rejected after concurrent remote advance: one unrelated delivery-receipt docs commitdec0f562ce6f26a09d1e6f59d59e838142cb4865 beyondb238. No runtime/source/test/policy delta. Initial guard invocation ended AssertionError before cleanup; raw native results untouched, no executable failure. Protect new evidence/docs before integrating this base-only receipt.
