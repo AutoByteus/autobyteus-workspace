@@ -35,5 +35,5 @@
 - Docs sync: **Pass — Updated**. The Projects/disclosure and architecture updates still match the verified integrated source.
 - Verification: **Sufficient — Verified from evidence**, per `verification-record.md` and `delivery-evidence/dr-002/verification-judgement.json`; no repeat user check required under the updated authoritative skill. DR-001's previous workflow hold is historical, not a product/requirements finding.
 - Post-verification fetch: origin/personal still a609de982; no new integration/rerun required.
-- User explicitly requested source finalization and **no new release/version**. Continue archive/finalization and safe cleanup. No performance-speedup or actual-user-platform claim is added.
+- User explicitly requested source finalization and **no new release/version**. Archive/source finalization and safe cleanup are now Completed; see current release-deployment-report.md for exact commits and durable paths. No performance-speedup or actual-user-platform claim is added.
 - No docs-local/code/packaging/upstream behavior defect. Complete final status is governed by release-deployment-report.md and DR-002, not earlier historical pending statements.
