@@ -28,6 +28,8 @@ AC-001..004 directly proven. AC-005 is closed only with this final source/runtim
 ## Ticket archive / repository finalization
 Verification complete before archive or push. Archive destination `tickets/done/task-copy-stop-style/`; repository finalization results will be recorded after commands succeed. Before final commit, stage only explicit ticket old/new paths and two canonical docs; run cross-platform path hygiene (200-character/Windows rules), licensing and staged whitespace. Never stage SDK dist or ignored build outputs.
 
+Merged-state whitespace gate caught two upstream implementation test logs with blank EOF lines (staged archive rename check did not expose them). Only EOF whitespace normalized, original raw logs retained externally with hashes in evidence/delivery/merged-whitespace-correction.json. Failed local merge c1ba081a was never pushed; its tree exactly matched retained ticket commit 773dbda99. Recreated only that unpublished finalize branch after a bounded ticket documentation correction; no test/source change or duplicate target finalization.
+
 ## Data and cleanup
 Persisted data **Not Affected**; migration/reset/discard/rebuild-of-user-data **Not required**. Only test-owned DBs/homes/ports/processes used. No live user worker/data touched.
 
