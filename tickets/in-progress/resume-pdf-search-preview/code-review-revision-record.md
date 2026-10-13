@@ -9,6 +9,7 @@ Current canonical `code-review-report.md` (or separate future `api-e2e-test-revi
 | CRR-001 | code-review-report.md | Implementation Review / IR-001 initial High-risk handoff | N/A | Fail — Design Impact | CR-F-001 open |
 | CRR-002 | code-review-report.md | Implementation Review / IR-002 correction after SR-004 / ARCH-REV-003 | Fail — Design Impact | Pass | CR-F-001 resolved |
 | CRR-003 | api-e2e-test-review-report.md | Successful API/E2E test-code review / API-REV-001 Pass | N/A — first test-review result; source CRR-002 Pass retained | Pass | None; CR-F-001 stays resolved |
+| CRR-004 | api-e2e-test-review-report.md | Successful API/E2E test/guidance review / API-REV-002 actual Electron Pass | Pass (CRR-003 prior scope) | Pass | None; CR-F-001 stays resolved |
 
 ## Revision Entries
 
@@ -78,3 +79,24 @@ None for this first successful-test review. Prior source CR-F-001 remains resolv
 - Execution evidence inspected, not rerun: final22backendfiles/108tests +9webfiles/58tests, no skips; current diagnostic first2tests Pass; browser/API two finalrun03cases Pass, zero actual/warmup errors, exact878PDF bytes, real two ink-bearing canvases/no alert and client/tree/text identity. Two screenshots personally inspected; build hashes/cleanup agree. Prior failed attempts retained, no error waiver; binary fixture/raw-log whitespace not globally clean, text-scoped check Pass.
 - Recommended recipient: Delivery Engineer under fresh successful-test-review Pass handoff rule; attach separate report/history and complete passed package/all nine durable paths/evidence. No duplicate notification.
 - Remaining gates: AC-004 actual host/build/frontend/runtime pin, safe8001 rollout/rollback/timing approval, explicit user close/re-search/open verification, integrity/final cleanup; no public release requested. Browser proves web-equivalent Files path, not native shell/deployed user outcome. Original read-only SHA unchanged per API evidence. Reviewer only authored two review artifacts; no test/process/data/runtime mutation. Upstream dirty informational receipt and untracked SDK/devkit/Brief Studio outputs left untouched/unstaged.
+
+### CRR-004 — Actual Electron probe and Linux/container guidance reviewed
+
+- Date/reviewer:2026-10-13/code_reviewer.
+- Canonical report updated: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-test-review-report.md`. Source `code-review-report.md` remains CRR-002 Pass unchanged.
+- Entry point/round/scope: Successful API/E2E Test-Code Review /2/N/A — proportional new probe/script/testing-guidance review, no source audit/thresholds/scorecard or confidence recalculation.
+- Trigger: API/E2E Engineer `api-e2e-execution-coverage-report.md`, API-REV-002 Pass95%, after direct user actual-Electron/agent-owned-setup/Linux-guidance request; previous API-REV-001/CRR-003 web-equivalent proof retained but not relabelled full desktop.
+- Relevant SR-001–004 (ApprovedR1/SR-001), ARCH-REV-001–003(current003), IR-001/002, API-REV-001/002, DR-001 Blocked. Source remains reviewed7f321575; runtime built at ea6c3235a with matching source/embedded hashes. New test/script8b32aa30a, global single-fileTESTING3d843ed9b, Linux guide3c5b40b99, intake artifacts3cd4d9faa.
+- Prior authoritative result: CRR-003 **Pass** for prior nine durable paths. Current: **Pass** for four new/updated probe/script/guidance paths; Small/High unchanged.
+- Why new record: user-required deeper validation produced actual native packaged Electron test and reusable safe Linux setup guidance; independently inspected new durable code/docs and qualified execution, without reopening source or previously reviewed tests.
+- Supported scenario/material-premise basis changes: None to approved product behavior. SCN-001–003 and canonical isolated restart/display/non-root/cleanup contract govern tests; public synthetic registration plus actual menu/Files actions/read-only diagnostics preserve actor fidelity. Invalid cold-REST-after-metadata ordering corrected, not promoted to source defect or new autoactivation requirement.
+
+#### Prior Finding Resolution
+
+None — no prior unresolved successful-test-review finding. CR-F-001 stays resolved at source CRR-002.
+
+- New/remaining finding IDs: None. Source score/validation confidence changes: N/A; source95/100 unchanged and API-owned95% accepted as context only.
+- Current evidence inspected, not rerun:51Node +4Electron profile testsPass/no skips; native ARM64 full buildPass; actual03/04 each four casesPass, file://asar/preload/Electron42.4.1 and real embedded200/MIME/exact878PDF/text/4denials, normal lazy search-click two ink canvases/loaded text reuse/tree identity, restart sameid/root/ports/newtarget/registration/reopen. Prior166checks retained, not claimed rerun. Both final04 page screenshots inspected; source/embedded hashes and asar pin match API report; zero renderer errors.
+- Guidance/cleanup: seven Bash blocks syntax-checked; whole-session non-root setpriv+xvfb-run recipe actually run04; no --no-sandbox/global security/account changes. Canonical stop forcedfalse/rootremoved/bothportsreleased/listempty, owned display100/101/UID processes/temp homes/cache gone; shared99/VNC35/server61 and original SHA unchanged. Packages/untracked native build prerequisites retained explicitly.
+- Recommended recipient: Delivery Engineer under fresh successful-test-review Pass rule; cumulative R1/SR/ARCH/IR/source/test/API-REV-002 and DR-001 context/new durable paths/evidence. No duplicate informational notification.
+- Remaining gates: DR-001/AC-004 actual host/runtime/frontend pins, authorized rollout/rollback/timing, explicit user acceptance/verification, integrity/finalization/final cleanup. Actual agent-run desktop proof does not authorize deployed8001 changes or complete delivery. No public release. Reviewer only edited two review artifacts; upstream delivery docs/artifacts/history and local outputs untouched/unstaged.

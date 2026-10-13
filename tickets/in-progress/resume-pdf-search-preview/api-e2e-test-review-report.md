@@ -2,74 +2,68 @@
 
 ## Review Meta
 
-- Date/reviewer: 2026-10-12 / code_reviewer; successful test-review round **1**, current **CRR-003**.
-- Trigger: api_e2e_engineer's **API-REV-001 Pass**, separate proportional durable-test review Required on Small / High route. Not a source re-review or failure-origin review.
-- Workspace: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview`; branch `codex/resume-pdf-search-preview`.
-- Canonical artifact root: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview`. Artifact names below resolve beneath this root; test paths resolve beneath workspace.
-- Requirements context: `requirements-doc.md`, Approved R1/SR-001, unchanged. Investigation/solution context: `investigation-notes.md`, `solution-revision-record.md`, `design-spec.md`, `solution-handoff.md`; cumulative SR-001–004.
-- Supplemental context: baseline screenshot/runtime-failure/installed-checksum/isolated-reproduction evidence; current API ledger, build-identity, final backend/web logs, final browser evidence/screenshots and cleanup; historical failed attempts retained by API owner.
-- Architecture context: `design-review-report.md` / `architecture-review-revision-record.md`, current ARCH-REV-003 Pass; cumulative ARCH-REV-001–003.
-- Implementation context: `implementation-handoff.md` / `implementation-revision-record.md`, IR-001/002 and informational CRR-002 receipt.
-- Original source report: `code-review-report.md`, **CRR-002 Pass**, unchanged by this review. CR-F-001 remains resolved; source score not reopened or rescored.
-- Review history: `code-review-revision-record.md`, CRR-001–003; no prior unresolved successful-test-review finding.
-- Coverage investigation/report/history: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, API-REV-001; case ledger `api-e2e-test-case-ledger.md`.
-- API result/confidence accepted as context: **Pass / 95%**, seven final categories95; validation-owned AC-001–003 only. AC-004 explicitly Delivery-owned/unexecuted. No independent confidence score assigned here.
-- Delivery revision: N/A — not performed.
-- Reviewed durable changes: baseline cleanup commit `4c3734952c4e1219687b71df20ff4f4d00572958`, coverage commit `0ab2dedfc`; evidence/report `2e9d65dac`, intake HEAD `bdf89a0a1`; diff from source-review artifact `7cd2a2db5`. Production source unchanged from reviewed `7f321575058d744c8e635b3aff0a6d1f4557e2c4`.
-- Testing guidelines applied: root `TESTING.md`, server/web `AGENTS.md`, discovered runner/setup and package scripts. No closer guideline. Distinguish web-equivalent component journey from Electron shell/live deployment/user verification. Earlier SR-004 execution-role conflict is now satisfied by API-owned path-boundary execution, not waived. No new guideline conflict affecting test review.
-- Supported product-scenario basis: **Yes**. SCN-001 established Files search→nested PDF click/render; SCN-002 browse/search shared identity/text; SCN-003 approved confinement/denial contract; SCN-004 remains operational delivery. Synthetic data/tests confirm those independently approved paths, not new product behavior. Ordinary query changes justify the superseding-search test; no contradictory concurrent workflow premise.
+- Date/reviewer: 2026-10-13 / code_reviewer; successful test-review round **2**, current **CRR-004**.
+- Trigger: API/E2E Engineer's **API-REV-002 Pass**, after explicit user request for agent-owned actual full Electron validation and improved Linux/container guidance. Separate proportional successful test/guidance review; not source re-review, failure-origin review or delivery completion.
+- Workspace: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview`, branch `codex/resume-pdf-search-preview`.
+- Canonical artifact root: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview`. Artifact names below resolve beneath this root; reviewed paths resolve beneath workspace.
+- Requirements/investigation/solution context: `requirements-doc.md`, Approved R1/SR-001 unchanged; `investigation-notes.md`, `solution-revision-record.md`, `design-spec.md`, `solution-handoff.md`; cumulative SR-001–004. No new product behavior or scope approval inferred from deeper validation.
+- Architecture context: `design-review-report.md` / `architecture-review-revision-record.md`, ARCH-REV-001–003, current003 Pass. Implementation: `implementation-handoff.md` / `implementation-revision-record.md`, IR-001/002.
+- Source authority: `code-review-report.md`, **CRR-002 Pass**, unchanged; CR-F-001 resolved. History: `code-review-revision-record.md`, CRR-001–004.
+- Prior successful test review: CRR-003 Pass at `ea6c3235a`; its nine earlier durable test/support changes remain valid for their prior scope. No prior unresolved test-review finding. Current review focuses on four newly changed paths below; previous browser proof is not relabelled Electron proof.
+- Current coverage context: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-case-ledger.md`; API-REV-001/002. API-owned current result **Pass95%**, all seven final categories95; no independent confidence reassignment here.
+- Delivery context: `delivery-revision-record.md`, DR-001 **Blocked**; `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `solution-blocked-result.md` and retained delivery evidence. New isolated Electron proof does not itself resolve host/rollout/user-acceptance/finalization gates.
+- Supplements: retained original evidence, prior IR/CRR/API proof/failure logs; current native-build/lifecycle/profile/platform/recipe/cleanup evidence and final `evidence/api-electron-run04/{evidence.json,desktop.log,lifecycle JSON/logs,electron-pdf-page-one.png,electron-pdf-page-two.png,electron-after-restart.png}`. Both PDF page screenshots personally inspected. Product supplements: N/A — none changed.
+- Reviewed commits: global TESTING single-file policy commit `3d843ed9b`; detailed guide `3c5b40b99`; probe/script `8b32aa30a`; intake evidence/report HEAD `3cd4d9faa`. Runtime built at `ea6c3235a`, production source identical to reviewed `7f321575058d744c8e635b3aff0a6d1f4557e2c4`; no source, lockfile or shared PDF-byte delta.
+- Guidelines applied: current root `TESTING.md`, package AGENTS and relevant `docs/isolated-app-instances.md` Linux/lifecycle sections. Updated global policy remains general; suite cases live in test header/script, not TESTING. No material guideline conflict; OS sandbox-policy choices remain explicit operator decisions, not automatic agent setup.
+- Supported Product Scenario Basis: **Yes**. Approved SCN-001–003 establish Files search/open/shared identity and confinement before tests. User's explicit full-product validation direction and canonical isolated lifecycle contract establish packaged/non-root/display/cleanup proof; supported restart→normal Files reopen exercises persistence/identity, not raw-REST autoactivation or arbitrary hidden-state setup. SCN-004 delivery remains separate.
 
-## Changed Durable Test Scope
+## Changed Durable Test / Guidance Scope
 
-| Path | Change | Scenario / requirement | Coherent responsibility / notes |
+| Path | Change | Related scenario / contract | Coherent responsibility |
 | --- | --- | --- | --- |
-| autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts | Updated | SCN-001/002, REQ-001/004 | Exact relative locator replaces suffix-only assertion that missed the defect |
-| autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts | Updated | SCN-003, REQ-002/004 | Adds loaded-tree nonmutation after denied projection; retains unloaded-null, denial, watcher and lease checks |
-| autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts | Updated | SCN-003, REQ-002; TESTING Rule9 | Separate labelled baseline teardown fix; all five original real-owner route assertions unchanged |
-| autobyteus-server-ts/tests/e2e/file-explorer/search-content-http.e2e.test.ts | Added | SCN-001–003, REQ-001/002/004 | Six real socket GraphQL→REST PDF/text/absolute/traversal/sibling cases |
-| autobyteus-web/stores/__tests__/fileExplorerStore.spec.ts | Updated | SCN-002, REQ-004 | Loaded-node reuse, ordered relative lazy results, ordinary superseding-query completion isolation |
-| autobyteus-web/tests/e2e/search-pdf-preview-probe.mjs | Added | SCN-001–003, AC-001–003 | Own current backend/Nuxt/Chromium; real UI selection/render, transport/identity/denial assertions and cleanup |
-| autobyteus-web/tests/e2e/fixtures/search-pdf-preview.page.vue | Added | SCN-001/002, REQ-001/004 | Temporary host mounts unchanged FileExplorerLayout after public workspace-store fetch, no private setup writes or transport/viewer swaps |
-| test-support/file-explorer/resume-preview.pdf | Added | SCN-001, AC-001 | Shared deterministic valid synthetic two-page PDF; no personal content |
-| autobyteus-web/package.json | Updated | Test discoverability / TESTING.md | Adds test:e2e:search-pdf-preview script for durable probe |
+| autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs | Added | SCN-001–003, REQ-001/002/004; actual isolated desktop/lifecycle contract | Canonical isolated start/CDP/stop/list, current package identity, real embedded bytes/denials, normal chat target/workspace/Files/PDF/text/tree interactions, restart/reopen and owned cleanup |
+| autobyteus-web/package.json | Updated | Durable test discoverability | Adds test:e2e:search-pdf-electron; no runtime dependency or version change |
+| TESTING.md | Updated | User-directed general Linux/container testing policy | Actual Electron layer, agent-owned ordinary prerequisites, non-root sandbox preservation, full-session display lifetime and truthful cleanup/blockers; separate single-file docs(testing) commit verified |
+| docs/isolated-app-instances.md | Updated | Canonical lifecycle and safe local-test setup | Qualified native package/Corepack/library/namespace diagnostics, non-root/root-container private directories/setpriv/Xvfb whole-session recipes, returned instance/ports and canonical cleanup |
 
-- No durable test changed: **No**. Nine paths reviewed; none removed/disabled/skipped. Fixtures/package script included as test support, not production source audit.
-- Temporary configs/pages/roots, logs/screenshots and ledger are execution evidence, not durable production/test changes to audit as source. No source line limits, forced splits, source scorecard or execution-confidence recalculation applied.
+- No durable test changed: **No**. Four current paths reviewed; none removed/disabled/skipped. Prior nine paths/shared878-byte PDF unchanged and carried forward, not re-audited as fresh source.
+- Logs/screenshots/build outputs/temporary displays/homes/UID/root/fixtures are execution context, not production source. No source size/delta limits, forced test splitting or full implementation scorecard applied.
 
 ## Proportional Test-Code Checks
 
 | Check | Result | Evidence / notes |
 | --- | --- | --- |
-| Scenario grouping/names clear | Pass | Focused socket suite, two named probe cases, narrow store/path additions; no unrelated scenarios mixed in |
-| Assertions prove approved requirements | Pass | Exact relative set/string, HTTP200/PDF MIME/exact fixture bytes, four400 denials/exact existing detail/no sentinel or PDF bytes; actual two ink-bearing canvases/loading/alerts, workspace identity, text bytes/tree reuse |
-| Meaningful fixture/setup/helper reuse | Pass | One shared two-page PDF across socket/browser; small GraphQL/content/state helpers; own-root setup and cleanup, not new production owners |
-| Isolation/determinism suitable for boundary | Pass | Ephemeral/owned ports/data/home/DB, public registration, bounded waits, existing serial runner; final cleanup receipt confirms roots/process groups/browser/host/ports removed |
-| Large files coherent/navigable | Pass | Probe follows one search-preview journey and its byte/security contract; no size-based deduction or split required |
-| No stale/duplicate/disabled/compatibility-only tests | Pass | Weak suffix assertion replaced, no removed facade restored, internal absolute strategy coverage preserved; nothing skipped/removed; two probe cases intentionally supplement lower-boundary checks |
-| Coverage agrees with investigation/execution | Pass | Current first diagnostic2tests, final22backendfiles/108tests plus9webfiles/58tests, no skips; browser2cases final run03 Pass; shared fixture/request/state/pixel evidence agrees with changed assertions |
-| Tests confirm independently supported scenarios | Pass | R1/SCN-001–003 precede fixtures; containment and snapshot assertions governed by approved/established contract; no synthetic outside-strategy incident or new user workflow inferred |
-| Real triggers/actor steps without artificial state | Pass | New socket fixture enters public createWorkspace/search/read APIs; browser types/clicks actual Files and expands folders, observes state read-only. Component host uses public fetch; store unit mocks remain bounded and real-stack proof closes mock gap |
+| Scenario names/grouping clear | Pass | Four bounded cases: packaged identity, embedded byte/security boundary, actual UI journey, canonical restart/reopen; header names prerequisites/platform/scope |
+| Assertions prove requirements, not incidental details | Pass | Relative path set,200/PDF MIME/exact fixture bytes, text/four400 denials/no outside bytes; unloaded nested result/loaded-node reuse; two ink-bearing canvases/no loading/alerts/errors and matching workspace/URL origin; restart new target with persisted registration/same instance/root/ports |
+| Fixtures/helpers reuse meaningful repetition | Pass | Existing shared synthetic PDF; small gql/content/state/CLI/normal UI-entry helpers; no copied production path policy or new runtime API |
+| Isolation/determinism appropriate | Pass | Non-root precondition, clean lifecycle environment, owned fixtures/public API registration, canonical returned endpoints, bounded waits, fresh output refusal, stop/list/root/fixture receipt; completed execution confirms own display/UID/ports cleanup |
+| File remains coherent/navigable | Pass | One packaged Files journey plus its lifecycle; no unrelated provider/native-picker/account flows or size-driven split |
+| No stale/duplicate/disabled/compatibility-only tests | Pass | Existing browser test retained for distinct web-equivalent layer; no old facade/viewer bypass restored; no skips or compatibility format |
+| Coverage agrees with investigation and execution | Pass | Current51Node lifecycle/environment +4Electron profile checks/no skips; native package build; final03/04 each four actual cases Pass. Prior166checks explicitly retained, not claimed rerun or double-counted |
+| Independent supported scenario basis | Pass | Actual Files goal and confinement precede fixtures; isolated restart is established lifecycle operation. No production defect invented from invalid first-attempt cold REST sequence |
+| Real entry/actor steps without artificial state | Pass | Public createWorkspace/createAgentDefinition seeds synthetic fixtures; actual packaged /chat and real target/workspace menus→Files→search/click, read-only observations; no fixture route/component host, transport mocks/private state writes/viewer substitution/path adapter |
 
-### Bounded Setup / Evidence Judgments
+### Focused Harness / Guidance Judgments
 
-- Baseline REST teardown previously invoked product workspace removal, which requires a process supervisor absent from that route-only harness. The fix closes only test-created workspaces, removes their cache/registry entries and owned fixture root; it does not exercise or weaken a production removal workflow, fabricate initial state, or change five route assertions. Separate baseline-fix commit and green re-execution match TESTING Rule9.
-- New HTTP suite initializes its own actual AppConfig root before public requests; registry path resolves from current AppConfig, not a root captured by manager construction. The full-suite early isolated config and clean execution commands are recorded; no inherited user roots/keys used. Focused cleanup affects owned cache/root only.
-- Probe captures pre-case cold Vite warmup errors separately and starts a fresh validation page; **every actual validation-page console/page error remains fatal**. Final run03 evidence has zero actual and warmup errors. No filter/clear or reader/viewer relaxation concealed a failed case; prior run01 failure retained.
-- Process-group drain/retry addresses an observed test-owned descendant-cache cleanup failure, with final zero live group members/closed ports/root removal recorded. Not new product recovery machinery.
-- Final byte/state assertions and both inspected screenshots agree: initial nested PDF absent, text node reused, lazy PDF relative node; two896×1095 canvases with5665/5676dark pixels, spinner absent/no alert, actual PAGE ONE/PAGE TWO visible. Screenshots support, not replace, API/DOM/state/pixel assertions.
-- Full-branch whitespace check is **not** globally clean: PDF xref trailing spaces/raw-log formatting retained intentionally; text-scoped source/tests/docs check passes. Preserve validated878-byte fixture and raw failure logs, rather than whitespace-normalizing PDF offsets or rewriting execution history.
-- Evidence inspected: `evidence/api-browser-run03/{evidence.json,pdf-rendered.png,pdf-second-page.png,backend.log,frontend.log}`, `api-backend-regression-final.log`, `api-web-focused-rerun.log`, `api-path-boundary-isolated.log`, `api-build-identity.log`, `api-cleanup.json` and current canonical investigation/report/ledger/history.
-- No full or focused execution rerun needed: changed assertions/adapter/fixture/harness judgments are decidable from diff, current source context and passed execution evidence. Reviewer started no processes or changed test/production code.
+- Probe attaches to the canonical returned CDP endpoint and actual packaged renderer; file://asar route, preload and Electron user-agent evidence agree. Current embedded explorer hash equals current dist, source hash equals reviewed source; package/build pins recorded, not confused with installed /app or deployed8001.
+- The first new restart attempt's404 preceded normal Files activation after metadata-only listing. Current probe follows the real supported user reopen/search/click sequence and retains200/MIME/exact bytes/render/identity assertions. It does not fake-warm private state or relax the reader; corrected test fidelity, not an asserted runtime defect. Initial failure and later regex parse failure remain raw history, not hidden passes.
+- Renderer page/console errors are collected through actual interactions and checked after main journey and restart; final run04 reports zero. The observer does not waive browser errors to force success.
+- `TESTING.md` additions are global policy, not ticket cases/results; verified separate one-file commit. The detailed guide keeps build as worktree owner distinct from non-root application, gives private-home/runtime/output setup, uses sandbox diagnostics without automatic global sysctl/AppArmor/setuid/account changes, and keeps Xvfb alive across start→automation→stop.
+- setpriv/xvfb-run recipe was actually qualified for observed Ubuntu24.04.5/Linuxkit6.12.54/arm64 with UID61193/private directories, and seven Bash blocks checked with documented placeholder substitution. Guide explicitly conditions other distro/kernel security policies; no universal Linux/macOS claim or sandbox-disable recommendation. Existing OS-policy options remain user/operator choices, not automatic testing instructions.
+- Final evidence confirms file://packaged /chat, preload true, initial nested PDF unloaded, relative lazy result and loaded text-node reuse; two real canvases with ink, no spinner/alert/error, PAGE ONE/PAGE TWO visible in inspected screenshots; persisted registration/new renderer target and normal reopened PDF after canonical restart.
+- Cleanup receipt confirms canonical stop forced=false, owned root gone/ports released/list empty, own fixtures/CDP/displays100/101/runtime homes/cache gone and UID61193 no live processes. Shared VNC99/PID35 and live serverPID61 untouched; installed reusable prerequisites/current untracked package outputs explicitly retained, not silently counted cleaned.
+- Evidence inspected: current report/history/investigation/ledger, `api-electron-run04/evidence.json`, actual lifecycle JSON/logs, `api-electron-guidance-check.json`, `api-electron-cleanup.json`, current build/lifecycle/profile logs and screenshots. Earlier run01/02 issues and prior browser layer remain retained context.
+- No successful workflow rerun needed: assertions/fixture/lifecycle/guidance are judgeable from diff, established contracts and existing execution evidence. Reviewer launched no app/display or test server and made no test/source fixes.
 
 ## Findings
 
-**None.** No actionable test correctness, organization, isolation or requirement-proof issue identified; no hypothetical lifecycle scenario or stylistic preference promoted to a finding. Successful test review only; API-owned corrected iteration failures do not trigger source failure-origin attribution here.
+**None.** No actionable test/guidance correctness, scenario-fidelity, isolation or maintainability defect identified. No speculative failure/recovery/concurrency premise or stylistic preference promoted. This remains successful test review, not failure-origin attribution or source rescoring.
 
 ## Latest Authoritative Result
 
-- Result: **Pass**, successful API/E2E test-code review round1 / **CRR-003**.
-- Changed durable paths: all nine listed above; unresolved test-review finding IDs: None.
-- Recommended recipient: Delivery Engineer under fresh successful-test-review handoff rule; cumulative source Pass/validation Pass/test-review Pass chain, no direct user completion claim.
-- get_handoff_rules on 2026-10-12 selects only “When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work” → `/software_engineering_team/delivery_engineer`. No source-pass informational or failure rule applies to this separate result.
-- Source report remains CRR-002 Pass, unchanged; Small / High preserved. This review does not claim rollout or full-ticket success.
-- **AC-004 still outstanding**: host Docker/image/frontend/runtime pin, safe8001 rollout/rollback/timing approval if disruptive, explicit user close-failed-tab/re-search/open verification, original integrity and final cleanup. No public release requested; no live8001/PID61 tests or /app/user-state modifications. Original recorded hash unchanged; upstream dirty informational solution-history receipt and local untracked build prerequisites remain untouched/unstaged.
+- Result: **Pass**, separate successful test/guidance review round2 / **CRR-004**; four new/updated paths reviewed, no unresolved findings.
+- Source report remains CRR-002 Pass95/100 unchanged; CR-F-001 resolved. Prior CRR-003 test Pass preserved for its nine-path scope. Small / High unchanged; API-owned95% is context, not reviewer-rescored confidence.
+- Recommended next recipient: Delivery Engineer through fresh successful-test-review rule, complete cumulative chain including API-REV-002/DR-001 and all new durable paths/evidence.
+- Fresh get_handoff_rules (2026-10-13) selects only the successful post-API/E2E durable-test review rule → `/software_engineering_team/delivery_engineer`; no source-pass informational, failure-origin or upstream-gap rule matches.
+- New proof addresses agent-owned actual isolated Electron validation, not deployment or user acceptance. **DR-001/AC-004 remains open** for host Docker/image/frontend/runtime pins, safe8001 rollout/rollback/timing approval, explicit user verification/integrity/finalization/cleanup. No public release, live8001 request, personal fixture or /app/production-data edit; no assumption agent testing equals acceptance.
+- Reviewer changed only this canonical test report and cumulative review history. Delivery-owned dirty area docs/artifacts and upstream informational solution receipt/untracked build outputs retained untouched/unstaged.
