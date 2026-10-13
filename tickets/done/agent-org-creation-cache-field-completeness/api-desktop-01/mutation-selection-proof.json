@@ -1,0 +1,112 @@
+{
+  "at": "2026-10-13T06:25:56.514Z",
+  "method": "Offline AST audit of captured actual UI HTTP GraphQL mutation requests, not fixture/source-only proof",
+  "instanceId": "iso-55097-2f31",
+  "requestCount": 6,
+  "implicitTypenameIgnored": true,
+  "rows": [
+    {
+      "operation": "createAgentDefinition",
+      "id": "cache-control-agent",
+      "field": "loadIssue",
+      "fields": [
+        "code",
+        "reason",
+        "definitionPath",
+        "packageRoot"
+      ],
+      "httpStatus": 200,
+      "rawDiagnosticExplicit": true,
+      "rawDiagnosticValue": null,
+      "result": "Pass"
+    },
+    {
+      "operation": "createAgentDefinition",
+      "id": "cache-validation-agent",
+      "field": "loadIssue",
+      "fields": [
+        "code",
+        "reason",
+        "definitionPath",
+        "packageRoot"
+      ],
+      "httpStatus": 200,
+      "rawDiagnosticExplicit": true,
+      "rawDiagnosticValue": null,
+      "result": "Pass"
+    },
+    {
+      "operation": "updateAgentDefinition",
+      "id": "cache-validation-agent",
+      "field": "loadIssue",
+      "fields": [
+        "code",
+        "reason",
+        "definitionPath",
+        "packageRoot"
+      ],
+      "httpStatus": 200,
+      "rawDiagnosticExplicit": true,
+      "rawDiagnosticValue": null,
+      "result": "Pass"
+    },
+    {
+      "operation": "createAgentOrgDefinition",
+      "id": "cache-control-org",
+      "field": "loadIssues",
+      "fields": [
+        "kind",
+        "definitionId",
+        "name",
+        "code",
+        "reason",
+        "definitionPath",
+        "packageRoot",
+        "usingLastGood"
+      ],
+      "httpStatus": 200,
+      "rawDiagnosticExplicit": true,
+      "rawDiagnosticValue": [],
+      "result": "Pass"
+    },
+    {
+      "operation": "createAgentOrgDefinition",
+      "id": "cache-validation-org",
+      "field": "loadIssues",
+      "fields": [
+        "kind",
+        "definitionId",
+        "name",
+        "code",
+        "reason",
+        "definitionPath",
+        "packageRoot",
+        "usingLastGood"
+      ],
+      "httpStatus": 200,
+      "rawDiagnosticExplicit": true,
+      "rawDiagnosticValue": [],
+      "result": "Pass"
+    },
+    {
+      "operation": "updateAgentOrgDefinition",
+      "id": "cache-validation-org",
+      "field": "loadIssues",
+      "fields": [
+        "kind",
+        "definitionId",
+        "name",
+        "code",
+        "reason",
+        "definitionPath",
+        "packageRoot",
+        "usingLastGood"
+      ],
+      "httpStatus": 200,
+      "rawDiagnosticExplicit": true,
+      "rawDiagnosticValue": [],
+      "result": "Pass"
+    }
+  ],
+  "result": "Pass"
+}
