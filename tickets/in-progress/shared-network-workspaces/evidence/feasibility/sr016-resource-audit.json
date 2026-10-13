@@ -1,0 +1,539 @@
+{
+  "exactDockerAbsences": [
+    {
+      "round": "fr-048",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr048-89d4026b-init"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-048",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr048-89d4026b-allowed"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-048",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr048-89d4026b-excluded"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-048",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr048-89d4026b-server"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-048",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr048-89d4026b-client-a"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-048",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr048-89d4026b-client-b"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-048",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr048-89d4026b-source"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-048",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr048-89d4026b-nfs-a"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-048",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr048-89d4026b-nfs-b"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-048",
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr048-89d4026b-net"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-049",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr049-f3e78b84-init"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-049",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr049-f3e78b84-allowed"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-049",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr049-f3e78b84-excluded"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-049",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr049-f3e78b84-server"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-049",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr049-f3e78b84-client-a"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-049",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr049-f3e78b84-client-b"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-049",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr049-f3e78b84-source"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-049",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr049-f3e78b84-nfs-a"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-049",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr049-f3e78b84-nfs-b"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-049",
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr049-f3e78b84-net"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-050",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-init"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-050",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-allowed"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-050",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-excluded"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-050",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-server"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-050",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-050",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-050",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-source"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-050",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-nfs-a"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-050",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-nfs-b"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-050",
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-net"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-051",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr051-51270571-init"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-051",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr051-51270571-allowed"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-051",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr051-51270571-excluded"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-051",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr051-51270571-server"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-051",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr051-51270571-client-a"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-051",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr051-51270571-client-b"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-051",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr051-51270571-source"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-051",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr051-51270571-nfs-a"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-051",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr051-51270571-nfs-b"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-051",
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr051-51270571-net"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-052",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr052-2ecf19a0-server"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-052",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr052-2ecf19a0-client-a"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-052",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr052-2ecf19a0-nfs-a"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-053",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr053-d94621ec-server"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-053",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr053-d94621ec-client-a"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-053",
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr053-d94621ec-client-b"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-053",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr053-d94621ec-nfs-a"
+      ],
+      "absent": true,
+      "rc": 1
+    },
+    {
+      "round": "fr-053",
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr053-d94621ec-nfs-b"
+      ],
+      "absent": true,
+      "rc": 1
+    }
+  ],
+  "allExactAbsent": true,
+  "vmPolicy": "FR052/053 exact credential-free clone stopped/process exited/deleted; no host filesystem share or provider login",
+  "retainedImages": [
+    "ab-sf-fr040-unfs:probe",
+    "ab-sf-fr050-unfs:probe"
+  ],
+  "retentionReason": "immutable public-source-only task evidence candidate, no live storage/providers or active jobs; not released service"
+}

@@ -1,0 +1,6 @@
+{
+  "newEvidenceFiles": 34,
+  "privateValuePatternHits": [],
+  "method": "bounded private-key/provider-token/JWT/quoted-token-value pattern scan; no provider credentials used in these rounds",
+  "limits": "not a universal proof of absence of every possible secret"
+}

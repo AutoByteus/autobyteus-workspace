@@ -732,5 +732,130 @@
     "production_patch": false,
     "cleanup_all_rc_zero": true,
     "cleanup_limitations": "Native no-auth VM fully retired after exact job/mount stop. Build-only success not serving proof. FR044 stale/missing private binary/log and FR046/047 bad RPC retained, not hidden."
+  },
+  {
+    "round": "fr-048",
+    "run": "ab-sf-fr048-89d4026b",
+    "scope": "isolated Linux UNFS3 permission/identity contract, one physical Mac Docker VM; no agents, native Mac serving, physical LAN or product setup proof",
+    "pass_count": 3,
+    "failed_cases": [
+      {
+        "name": "simultaneous independent mounted exclusive-create attempts have exactly one winner",
+        "status": "FAIL",
+        "error": "AssertionError(['WON', 'WON'])",
+        "seconds": 0.085
+      }
+    ],
+    "fatal": "AssertionError(['WON', 'WON'])",
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "vendor_counterfactual": false,
+    "exclusive_contract": "FAIL",
+    "diagnostic_not_acceptance": false,
+    "cleanup_all_rc_zero": true,
+    "cleanup_limitations": "Exact Docker absences rechecked; no host mounts/providers/user nodes; Mac clones052/053 deleted; full mode/current-source/physical/installer proof absent."
+  },
+  {
+    "round": "fr-049",
+    "run": "ab-sf-fr049-f3e78b84",
+    "scope": "isolated repeat diagnostic: concurrent exclusive-create metadata and different-UID Git; contract violations retained separately, observation cases are not acceptance pass; no providers or physical LAN",
+    "pass_count": 4,
+    "failed_cases": [
+      {
+        "name": "Linux native-source ownership supports coordinated different-UID Git without global trust override",
+        "status": "FAIL",
+        "error": "RuntimeError('[eval]:1\\nrequire(\\'fs\\').appendFileSync(\"/Volumes/autobyteus-shared/project/preexisting.txt\",\\' \\'+msg+\\'\\')\\n                                                                                      ^\\n\\nReferenceError: msg is not defined\\n    at [eval]:1:87\\n    at runScriptInThisContext (node:internal/vm:209:10)\\n    at node:internal/process/execution:446:12\\n    at [eval]-wrapper:6:24\\n    at runScriptInContext (node:internal/process/execution:444:60)\\n    at evalFunction (node:internal/process/execution:279:30)\\n    at evalTypeScript (node:internal/process/execution:291:3)\\n    at node:internal/main/eval_string:74:3\\n\\nNode.js v22.23.3\\n')",
+        "seconds": 0.178
+      }
+    ],
+    "fatal": "RuntimeError('[eval]:1\\nrequire(\\'fs\\').appendFileSync(\"/Volumes/autobyteus-shared/project/preexisting.txt\",\\' \\'+msg+\\'\\')\\n                                                                                      ^\\n\\nReferenceError: msg is not defined\\n    at [eval]:1:87\\n    at runScriptInThisContext (node:internal/vm:209:10)\\n    at node:internal/process/execution:446:12\\n    at [eval]-wrapper:6:24\\n    at runScriptInContext (node:internal/process/execution:444:60)\\n    at evalFunction (node:internal/process/execution:279:30)\\n    at evalTypeScript (node:internal/process/execution:291:3)\\n    at node:internal/main/eval_string:74:3\\n\\nNode.js v22.23.3\\n')",
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "vendor_counterfactual": false,
+    "exclusive_contract": "FAIL",
+    "diagnostic_not_acceptance": true,
+    "cleanup_all_rc_zero": true,
+    "cleanup_limitations": "Exact Docker absences rechecked; no host mounts/providers/user nodes; Mac clones052/053 deleted; full mode/current-source/physical/installer proof absent."
+  },
+  {
+    "round": "fr-050",
+    "run": "ab-sf-fr050-7c155f0a",
+    "scope": "isolated vendor-patch counterfactual: same concurrent exclusive-create contract plus different-UID Git; not product build, current-source integration, native Mac or physical LAN",
+    "pass_count": 4,
+    "failed_cases": [
+      {
+        "name": "Linux native-source ownership supports coordinated different-UID Git without global trust override",
+        "status": "FAIL",
+        "error": "RuntimeError(\"warning: unable to access '/root/.config/git/ignore': Permission denied\\nwarning: unable to access '/root/.config/git/attributes': Permission denied\\nfatal: error when closing loose object file: Permission denied\\n\")",
+        "seconds": 0.247
+      }
+    ],
+    "fatal": "RuntimeError(\"warning: unable to access '/root/.config/git/ignore': Permission denied\\nwarning: unable to access '/root/.config/git/attributes': Permission denied\\nfatal: error when closing loose object file: Permission denied\\n\")",
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "vendor_counterfactual": true,
+    "exclusive_contract": "PASS in scoped Linux trials",
+    "diagnostic_not_acceptance": false,
+    "cleanup_all_rc_zero": true,
+    "cleanup_limitations": "Exact Docker absences rechecked; no host mounts/providers/user nodes; Mac clones052/053 deleted; full mode/current-source/physical/installer proof absent."
+  },
+  {
+    "round": "fr-051",
+    "run": "ab-sf-fr051-51270571",
+    "scope": "root NFS daemon with all-squashed data, binary-verifier patch, exact-process-only Git trust; root daemon never equivalent to client root access; no product/native Mac/physical LAN proof",
+    "pass_count": 5,
+    "failed_cases": [],
+    "fatal": null,
+    "scoped_runner_exit": 0,
+    "production_patch": false,
+    "vendor_counterfactual": true,
+    "exclusive_contract": "PASS in scoped Linux trials",
+    "diagnostic_not_acceptance": false,
+    "cleanup_all_rc_zero": true,
+    "cleanup_limitations": "Exact Docker absences rechecked; no host mounts/providers/user nodes; Mac clones052/053 deleted; full mode/current-source/physical/installer proof absent."
+  },
+  {
+    "round": "fr-052",
+    "run": "ab-sf-fr052-2ecf19a0",
+    "scope": "patched UNFS3 root daemon with all-squashed data serves chosen Mac bind to actual native Mac and two Docker clients; exact per-process Git trust and concurrent create; one physical Mac only, no agents/NLM/final product proof",
+    "pass_count": 1,
+    "failed_cases": [
+      {
+        "name": "two independent Linux daemon mounts share same Mac-bound storage identity at agreed path",
+        "status": "FAIL",
+        "error": "RuntimeError(\"docker: Error response from daemon: No such image: sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1\\n\\nRun 'docker run --help' for more information\\n\")",
+        "seconds": 0.048
+      }
+    ],
+    "fatal": "RuntimeError(\"docker: Error response from daemon: No such image: sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1\\n\\nRun 'docker run --help' for more information\\n\")",
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "vendor_counterfactual": true,
+    "exclusive_contract": "not reached",
+    "diagnostic_not_acceptance": false,
+    "cleanup_all_rc_zero": true,
+    "cleanup_limitations": "Exact Docker absences rechecked; no host mounts/providers/user nodes; Mac clones052/053 deleted; full mode/current-source/physical/installer proof absent."
+  },
+  {
+    "round": "fr-053",
+    "run": "ab-sf-fr053-d94621ec",
+    "scope": "patched UNFS3 root daemon with all-squashed data serves chosen Mac bind to actual native Mac and two Docker clients; exact per-process Git trust and concurrent create; one physical Mac only, no agents/NLM/final product proof",
+    "pass_count": 7,
+    "failed_cases": [
+      {
+        "name": "squashed-data backend permits coordinated native Mac and Linux Git with exact native-process-only project trust",
+        "status": "FAIL",
+        "error": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr053-macos', '/usr/bin/sudo'): error: could not lock config file /Volumes/autobyteus-shared/project/.git/config: Stale NFS file handle\\nfatal: could not set 'core.filemode' to 'true'\\n\")",
+        "seconds": 0.222
+      }
+    ],
+    "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr053-macos', '/usr/bin/sudo'): error: could not lock config file /Volumes/autobyteus-shared/project/.git/config: Stale NFS file handle\\nfatal: could not set 'core.filemode' to 'true'\\n\")",
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "vendor_counterfactual": true,
+    "exclusive_contract": "not reached",
+    "diagnostic_not_acceptance": false,
+    "cleanup_all_rc_zero": true,
+    "cleanup_limitations": "Exact Docker absences rechecked; no host mounts/providers/user nodes; Mac clones052/053 deleted; full mode/current-source/physical/installer proof absent."
   }
 ]

@@ -1,5 +1,15 @@
 # Investigation Notes — Shared Network Workspaces
 
+## Current SR-016 Continuation Checkpoint
+
+User requires proper handoff and a working delivered version, then resumes after power interruption; task is not cancelled/completed. Approved intent remains SR015. Actual owned work FR048–053 extends the canonical evidence, not production implementation. Current report: evidence/feasibility/backend-correctness-report.md (Solution Designer, BEH001–005/REQ004/005/009/010/016–018/AC004/008/016–018, unapproved evidence supplement, no intended-behavior authority). Exact source/packet metadata, results/failures, image-build/patch inputs and cleanup are in those round folders and experiment-index.json.
+
+Unpatched UNFS exclusive-create fails FR048; FR0496/12 violations with five complete binary-verifier/NUL-prefix causal witnesses and one incomplete capture. Original sources nfs.c/Config/exports.y cited in report; latest upstream inspected still uses this hash path. FR050 patch12/12 exclusion passes but actual nonroot Git close-permission fails; FR051 root daemon without -s and all-squashed data5 scoped passes including private-root denial and exact-process Git trust. FR052 old base application image missing (environment), then FR053 existing public-source probe image provides nativeMac/twoDocker selected-Mac-folder7 sharing passes but Git stale-handle failure. Native concurrent check after Git not reached. No all-mode/100%/finished command/agent/current-source proof inferred.
+
+Re-traced current runtime sources Claude bootstrap/query options/client, Codex bootstrap/exact client leases and SkillService scope/collision owner; exact paths/contracts in Draft design SR016. Official Go compile/install and os/exec docs were inspected as a packaging lead, not a selected installed toolchain. Docker official host-network docs do not establish original-IP allowlist preservation under Desktop NAT. These unresolved boundaries remain owned technical design, not work to pass speculatively to Implementation.
+
+New direct-user questions (pending) are persisted in requirements-approval-request.md; no physical-gate waiver or final plaintext policy approved.48 exact Docker resource absences rechecked, all per-round cleanup rc0; fresh credential-free Mac clones052/053 stopped/exited/deleted. No active background experiment, host share, providers, user storage/mount/node/home/database mutation or global prune. Public-source-only pinned probe images and original immutable OS cache intentionally retained. Current full context feasibility-blocker-handoff.md; original task unfinished and Draft not implementation-ready.
+
 ## Investigation Meta
 
 - Package: `shared-network-workspaces` / Project Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.

@@ -1,3 +1,19 @@
+# Current Direct-User Decisions — SR-016
+
+Approved intent remains requirements-doc.md SR015/approval-record-sr015.md, retaining the full service/hosting/source/physical contract and Nodes NFS Guide. This is not approval of a specific protocol security policy or a waiver of the physical gate. Latest user requests proper handoff through a finished working delivery, then resumes after poweroff; that is continuation, not cancellation or implicit answers.
+
+Two focused async questions presented directly to the user, still pending:
+
+1. “For the first working version, may AutoByteus NFS use unencrypted NFS restricted to your chosen trusted LAN, with no public exposure or individual user accounts? Anyone authorized on that network could access the shared files; I recommend this simple v1 only for your trusted home network.” Options: Yes—trusted-LAN-only v1; Require encrypted, authenticated access.
+2. “The current requirements require a second physical Linux computer before implementation. May we move that physical Mac/Linux/Docker test to a mandatory delivery gate, while implementing after the isolated native-Mac/Docker feasibility tests? The final real-machine test would still be required.” Options: Yes—physical test before delivery; No—keep physical test before implementation.
+
+Reasoning: the first determines a real visible security/trust boundary, not excessive enterprise infrastructure; the second can unblock sequencing without claiming the real LAN proof passed. No endpoint/authorized independent Linux access is available in this package. If original sequencing stays, that prerequisite is still required before implementation. PM cannot answer for the user. No user build/mount/prototype commands supplied; final supported command comes only after a working implementation/validation.
+
+These answers do not themselves finish the design: FR048–053 revealed/reproduced exclusive-create/nonroot Git/Mac-bind stale-handle gaps, and final backend/runtime/package contracts remain Solution Designer-owned. No implementation handoff from Draft, scope narrowing, frozen project/agent context notification or silent new security policy.
+
+---
+## Historical SR-012 Approval And Sequencing Context
+
 # Current Approval And Pending Sequencing — SR-012
 
 The previous SR-011 staging question is resolved by the user's latest explicit service-first/nativeMac/Linux/Docker implementation direction. Approved requirements-doc.md SR-012 and approval-record-sr012.md are authoritative. One persistent service owns first-run configuration and continued lifecycle; selected source files are served directly, selected managed Docker nodes require no separate in-container commands. Existing filesystem/preservation/approval boundaries retained.
