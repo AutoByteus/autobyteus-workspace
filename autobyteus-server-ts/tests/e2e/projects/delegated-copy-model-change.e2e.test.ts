@@ -37,7 +37,11 @@ import { fileURLToPath } from "node:url";
 //   the model does not have are refused (AC-006); the Team stream publishes the saved choice; the provider stops offering
 //   the chosen model before the resume: the failure is visible, nothing starts, the conversation is kept, and after the
 //   user picks another model the copy resumes the same conversation on it (REQ-008).
-// About 20 seconds. Run: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
+// DCM-008 one member of a Team copy (the reviewer, after it has run; REQ-001 "any member", the AC-010 scenario): the copy is
+//   stopped and only the reviewer gets its own model: it resumes on it in the same conversation, while the coordinator and
+//   the never-started member keep their models and the choice is recorded on the reviewer alone; then a Team choice saved
+//   together with the reviewer's own choice: the coordinator and the follower take the Team's, the reviewer keeps its own.
+// About 25 seconds. Run: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
 //   ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
 //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-copy-model-change.e2e.test.ts --no-watch
 const { home, priorHome } = await vi.hoisted(async () => {
@@ -191,6 +195,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     await agentDefinition("specialist", [], { runtimeKind: AGY, llmModelIdentifier: ALT2 });
     await agentDefinition("fresh", []);
     await teamDefinition("crew", { lead: "worker", slow: "grokker", own: "specialist", fresh: "fresh" });
+    await teamDefinition("trio", { lead: "worker", reviewer: "scribe", tester: "fresh" });
     ids.org = (await graphql(`mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}`,
       { input: { name: `DCM Org ${randomUUID().slice(0, 6)}`, description: "Org root", instructions: "Follow requests.", handoffs: [], members: [
         { memberName: "manager", ref: ids.manager, refType: "AGENT", refScope: "SHARED" }] } })).createAgentOrgDefinition.id;
@@ -484,6 +489,70 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
       .resolves.toMatchObject({ accepted: true });
     await until(async () => (await launchesOf(nestedRunId, from)).length > 0, "team: nested copy resumed", 60_000);
     expect(await launchesOf(nestedRunId, from)).toEqual([MODEL]);
+    await terminate("team", root.rootId);
+  }, 300_000);
+
+  it("DCM-008: one member of a Team copy gets its own model: it resumes on it in the same conversation while its teammates keep theirs; with a Team choice in the same Save, the member's own choice wins", async () => {
+    const root = await startRoot("team");
+    const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.trio!)}`, description: "Review the change." }));
+    expect(delegated.delegated, JSON.stringify(delegated)).toBe(true);
+    const teamRunId = delegated.target_team_run_id as string;
+    const members = await teamCopyMembers(root, teamRunId);
+    const { lead, reviewer, tester } = members as Record<"lead" | "reviewer" | "tester", { address: string; agentRunId: string }>;
+    await started(lead.agentRunId, "team: trio lead started");
+    // The reviewer has run once (on the copy's started model).
+    await expect(root.memberCalls(lead, callTool("send_message_to", { recipient_address: reviewer.address, content: "First review. Marker REVIEW-ONE." })))
+      .resolves.toMatchObject({ accepted: true });
+    await started(reviewer.agentRunId, "team: reviewer started");
+    expect(await launchesOf(reviewer.agentRunId)).toEqual([MODEL]);
+
+    // Stop the copy; only the reviewer gets its own model.
+    await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ success: true, outcome: "STOPPED" });
+    await expect(update(root.rootKind, root.rootId, [{ agentRunId: reviewer.agentRunId, selection: choice(ALT2) }]))
+      .resolves.toMatchObject({ success: true, outcome: "UPDATED" });
+    const recorded = async () => {
+      const record = objectsIn(await root.storedTree()).find((entry) => entry.team_run_id === teamRunId && entry.started_at && Array.isArray(entry.members))!;
+      return {
+        team: record.user_team_launch_selection?.llm_model_identifier ?? null,
+        members: Object.fromEntries((record.members as Rec[]).map((member) => [String(member.address).split("/").pop(),
+          member.user_launch_selection?.llm_model_identifier ?? null])),
+      };
+    };
+    expect(await recorded()).toEqual({ team: null, members: { lead: null, reviewer: ALT2, tester: null } });
+
+    // The coordinator resumes on its own model and sends the reviewer work: the reviewer resumes its conversation on the
+    // choice; the never-started tester starts on its started model.
+    let from = (await agyLaunches()).length;
+    await expect(root.memberCalls(lead, callTool("send_message_to", { recipient_address: reviewer.address, content: "Second review. Marker REVIEW-TWO." })))
+      .resolves.toMatchObject({ accepted: true });
+    await until(async () => (await launchesOf(reviewer.agentRunId, from)).length > 0, "team: reviewer resumed", 60_000);
+    const reviewerResume = (await agyLaunches()).slice(from).filter((entry) => entry.runId === reviewer.agentRunId);
+    expect(reviewerResume.map((entry) => entry.model)).toEqual([ALT2]);
+    const reviewerConversation = reviewerResume[0]!.conversation;
+    expect(reviewerConversation, "the reviewer resumes its own conversation").toBeTruthy();
+    expect(await launchesOf(lead.agentRunId, from)).toEqual([MODEL]);
+    await expect(root.memberCalls(lead, callTool("send_message_to", { recipient_address: tester.address, content: "Please test it." })))
+      .resolves.toMatchObject({ accepted: true });
+    await until(async () => (await launchesOf(tester.agentRunId, from)).length > 0, "team: tester started", 60_000);
+    expect(await launchesOf(tester.agentRunId, from)).toEqual([MODEL]);
+    expect(JSON.stringify(await root.conversationOf(reviewer.agentRunId, reviewer.address))).toContain("Marker REVIEW-ONE");
+
+    // One Save with a Team choice and the reviewer's own: the coordinator and the follower take the Team's, the reviewer
+    // keeps its own and its conversation.
+    await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ success: true, outcome: "STOPPED" });
+    await expect(update(root.rootKind, root.rootId, [{ teamRunId, selection: choice(ALT) }, { agentRunId: reviewer.agentRunId, selection: choice(ALT2) }]))
+      .resolves.toMatchObject({ success: true });
+    expect(await recorded()).toEqual({ team: ALT, members: { lead: null, reviewer: ALT2, tester: null } });
+    from = (await agyLaunches()).length;
+    for (const target of [reviewer, tester]) {
+      await expect(root.memberCalls(lead, callTool("send_message_to", { recipient_address: target.address, content: "Once more." })))
+        .resolves.toMatchObject({ accepted: true });
+      await until(async () => (await launchesOf(target.agentRunId, from)).length > 0, `team: ${target.address} resumed`, 60_000);
+    }
+    const after = (await agyLaunches()).slice(from);
+    expect(after.filter((entry) => entry.runId === lead.agentRunId).map((entry) => entry.model)).toEqual([ALT]);
+    expect(after.filter((entry) => entry.runId === reviewer.agentRunId).map((entry) => [entry.model, entry.conversation])).toEqual([[ALT2, reviewerConversation]]);
+    expect(after.filter((entry) => entry.runId === tester.agentRunId).map((entry) => entry.model)).toEqual([ALT]);
     await terminate("team", root.rootId);
   }, 300_000);
 

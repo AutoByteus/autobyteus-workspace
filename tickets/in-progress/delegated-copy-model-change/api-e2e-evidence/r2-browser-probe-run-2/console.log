@@ -1,0 +1,3 @@
+DCP-005 Pass delegated-copy-model-change REQ-001 (any member), AC-010 scenario (Team root, UI): one member of a Team copy, after it has run, gets its own model in Settings; the other rows stay as they were; its next turn resumes its conversation on that model while the coordinator keeps its own
+Summary: 1 Pass, 0 Fail
+exit 0

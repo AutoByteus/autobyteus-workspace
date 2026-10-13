@@ -48,7 +48,10 @@
 //   DCP-004 (delegated-copy-model-change AC-005, AC-011) The delegating agent wakes the copy while the user edits: Save
 //           is refused and records nothing; after a Save and a backend restart the choice is shown and the copy resumes
 //           on it.
-//   DCP-001..DCP-004 alone: pnpm -C autobyteus-web test:e2e:delegated-copy-model-change
+//   DCP-005 (delegated-copy-model-change REQ-001 "any member", the AC-010 scenario; Team root) One member of a Team copy,
+//           after it has run, gets its own model in Settings: only its row changes; its next turn resumes its
+//           conversation on that model while the coordinator keeps its own.
+//   DCP-001..DCP-005 alone: pnpm -C autobyteus-web test:e2e:delegated-copy-model-change
 // Settings rows (SR-006) are the read-only member rows, collapsed until opened, with the same look as the Members list
 // (`model · runtime · approval · source`, Coordinator chip, an opened Team's card then its Members, "Notes: N" on a
 // collapsed Team); DLP-003 (running) and DLP-007 (stopped and running again) also read them as Settings opens them.
@@ -147,6 +150,11 @@ const offerAgyModels = (ids) => fs.writeFile(agyModelsFile, ids.map((id) => `${i
 /** AGY launches of one run so far, with their `--model`. */
 const agyLaunchesOf = async (runId) => (await fs.readFile(argvLog, 'utf8').catch(() => '')).trim().split('\n').filter(Boolean).map((line) => JSON.parse(line))
   .filter((entry) => entry.cwd.includes(`/${runId}/`)).map((entry) => entry.argv.includes('--model') ? entry.argv[entry.argv.indexOf('--model') + 1] : null)
+/** AGY launches of one run so far: `[--model, --conversation]` (a fresh launch has no conversation flag). */
+const agyLaunchDetailsOf = async (runId) => (await fs.readFile(argvLog, 'utf8').catch(() => '')).trim().split('\n').filter(Boolean).map((line) => JSON.parse(line))
+  .filter((entry) => entry.cwd.includes(`/${runId}/`)).map((entry) => [
+    entry.argv.includes('--model') ? entry.argv[entry.argv.indexOf('--model') + 1] : null,
+    entry.argv.includes('--conversation') ? entry.argv[entry.argv.indexOf('--conversation') + 1] : null])
 const segment = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '')
 const callTool = (name, args) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`
 const objectsIn = (value) => Array.isArray(value) ? value.flatMap(objectsIn) : value && typeof value === 'object' ? [value, ...Object.values(value).flatMap(objectsIn)] : []
@@ -1188,6 +1196,74 @@ defineCase('DCP-004', 'delegated-copy-model-change AC-011, AC-005 (UI): the dele
   await waitFor('copy resumed after the restart', async () => (await agyLaunchesOf(r.copyRunId)).length > resumeFrom, 60000)
   r.resumedModels = (await agyLaunchesOf(r.copyRunId)).slice(resumeFrom)
   assert(r.resumedModels.every((model) => model === MODEL), 'copy did not resume on the chosen model after the restart', r.resumedModels)
+  return r
+})
+
+defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 scenario (Team root, UI): one member of a Team copy, after it has run, gets its own model in Settings; the other rows stay as they were; its next turn resumes its conversation on that model while the coordinator keeps its own', async (page) => {
+  const r = {}
+  await newChatFor(page, '/agent-teams', names.home)
+  await chooseModel(page, page.locator(sel('chat-composer')), AGY, MODEL)
+  const before = new Set(await teamRunIds(ids.home))
+  await typeAndSend(page, callTool('delegate_task', { recipient_address: address('pair'), description: 'Pair review work.' }))
+  await page.waitForURL(/\/workspace/, { timeout: 180000 })
+  r.teamRunId = await waitFor('new team run', async () => (await teamRunIds(ids.home)).find((id) => !before.has(id)), 60000)
+  const copy = await waitFor('Pair copy in the team run', async () => teamCopies(await teamTree(r.teamRunId), 'pair')[0], 120000, 1500)
+  r.copyTeamRunId = pick(copy, 'teamRunId')
+  r.members = membersOf(copy)
+  const member = 'unoffered'
+  const memberAddress = `${address('pair')}/${member}`
+  await waitFor('copy lead started', async () => (await agyLaunchesOf(r.members.lead)).length > 0, 60000)
+  // The member runs once, from the copy lead's own conversation (on the Team value).
+  await openTeamRun(page, r.teamRunId, ids.home)
+  await openSidebarAgent(page, r.members.lead)
+  r.firstCall = await callFromComposer(page, 'copy lead → member', 'send_message_to', { recipient_address: memberAddress, content: 'First review.' })
+  assert(r.firstCall.includes('"accepted":true'), 'message to the member not accepted', r.firstCall)
+  await waitFor('member ran once', async () => (await agyLaunchesOf(r.members[member])).length > 0, 60000)
+  r.memberFirst = await agyLaunchDetailsOf(r.members[member])
+  assert(JSON.stringify(r.memberFirst.map(([model]) => model)) === JSON.stringify([ALT]), 'member did not run on the Team value first', r.memberFirst)
+
+  // Settings: stop the copy from its row, open the copy, then only the member, change its model and Save.
+  await openTeamRun(page, r.teamRunId, ids.home)
+  await openSettings(page)
+  const section = page.locator(sel('run-delegated-launches'))
+  const teamKey = `${address('pair')}@${r.copyTeamRunId}`
+  const rowOf = (key) => section.locator(sel(`run-member-${key}`)).first()
+  const keyOf = (name) => `${address('pair')}/${name}@${r.members[name]}`
+  await waitFor('Settings Team copy row has the stop icon', async () => rowOf(teamKey).locator(sel('run-member-stop')).first().isVisible().catch(() => false), 60000)
+  await rowOf(teamKey).locator(sel('run-member-stop')).first().click()
+  await openMember(section, teamKey)
+  await waitFor('Team copy stopped (model unlocked)', async () => !(await modelLocked(rowOf(teamKey))), 60000, 1000)
+  const summaryOf = async (key) => (await rowOf(key).locator(sel('run-member-summary')).first().innerText()).replace(/\s+/g, ' ')
+  r.before = { team: await summaryOf(teamKey), lead: await summaryOf(keyOf('lead')), engineer: await summaryOf(keyOf('engineer')), member: await summaryOf(keyOf(member)) }
+  await openMember(section, keyOf(member))
+  await chooseCopyModel(page, rowOf(keyOf(member)), MODEL)
+  await saveSettings(page)
+  await waitFor('saved', async () => /^\s*Saved\./.test(await saveBarText(page)), 60000, 1000)
+  await openMember(section, teamKey)
+  r.after = { team: await summaryOf(teamKey), lead: await summaryOf(keyOf('lead')), engineer: await summaryOf(keyOf('engineer')), member: await summaryOf(keyOf(member)) }
+  r.memberSource = await rowOf(keyOf(member)).getAttribute('data-source')
+  assert(r.after.member.includes(MODEL_LABEL) && !r.after.member.includes(ALT_LABEL) && r.memberSource === null, 'the member row should show its new model without an origin', r)
+  assert(r.after.team === r.before.team && r.after.lead === r.before.lead && r.after.engineer === r.before.engineer, 'the other rows should be unchanged', r)
+  // The whole Team copy card: the edited member with its unchanged teammates (the Save bar would cover a viewport shot).
+  await shot(page, 'DCP-005-settings-team-copy-member-saved-1280', 1280)
+  await rowOf(teamKey).screenshot({ path: path.join(outDir, 'DCP-005-team-copy-card-member-saved.png') })
+  const stored = objectsIn(await teamTree(r.teamRunId)).find((record) => pick(record, 'teamRunId') === r.copyTeamRunId && pick(record, 'startedAt') && Array.isArray(record.members))
+  r.storedChoices = { team: pick(stored, 'userTeamLaunchSelection') ?? null,
+    members: Object.fromEntries(stored.members.map((m) => [String(m.address).split('/').pop(), (pick(m, 'userLaunchSelection') ?? null) && (pick(pick(m, 'userLaunchSelection'), 'llmModelIdentifier'))])) }
+  assert(r.storedChoices.team === null && JSON.stringify(r.storedChoices.members) === JSON.stringify({ lead: null, engineer: null, [member]: MODEL }), 'the choice should be recorded on the member only', r.storedChoices)
+
+  // Its next turn: from the copy lead's conversation; the member resumes its conversation on the choice; the lead keeps its own.
+  await backToConversation(page)
+  const leadFrom = (await agyLaunchesOf(r.members.lead)).length
+  const memberFrom = (await agyLaunchesOf(r.members[member])).length
+  await openSidebarAgent(page, r.members.lead)
+  r.secondCall = await callFromComposer(page, 'copy lead → member again', 'send_message_to', { recipient_address: memberAddress, content: 'Second review.' })
+  assert(r.secondCall.includes('"accepted":true'), 'second message to the member not accepted', r.secondCall)
+  await waitFor('member resumed', async () => (await agyLaunchesOf(r.members[member])).length > memberFrom, 60000)
+  r.memberResume = (await agyLaunchDetailsOf(r.members[member])).slice(memberFrom)
+  r.leadResume = (await agyLaunchesOf(r.members.lead)).slice(leadFrom)
+  assert(r.memberResume.length === 1 && r.memberResume[0][0] === MODEL && r.memberResume[0][1], 'the member should resume its conversation on the chosen model', r.memberResume)
+  assert(r.leadResume.every((model) => model === ALT), 'the coordinator should keep its own model', r.leadResume)
   return r
 })
 

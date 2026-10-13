@@ -7,7 +7,7 @@
 - Execution coverage report: `tickets/in-progress/delegated-copy-model-change/api-e2e-execution-coverage-report.md`
 - API/E2E revision record: `tickets/in-progress/delegated-copy-model-change/api-e2e-revision-record.md`
 - Scope: API-REV-001; repository suites, a multi-case server E2E, a browser probe and an isolated desktop instance.
-- Last updated: 2026-10-13
+- Last updated: 2026-10-13 (API-REV-002: delivery evidence gap, per-member choice in a Team copy)
 
 ## Planned Cases
 
@@ -29,6 +29,9 @@
 | DCP-004 | UI refusal when woken during the edit; backend restart persistence | AC-011, AC-005 | Browser probe | same | 7 |
 | DLP-001..010 | Earlier ticket's UI cases (shared Settings rows) | preserved | Browser probe | full probe | 8 |
 | ISO-001 | Real runtimes in an isolated desktop instance: a Codex copy stopped, switched and resumed in its thread; AutoByteus capacity refusal | design step 6, AC-006 | Isolated desktop instance | `isolated-app start --build` | 9 |
+| DCM-008 | One member of a Team copy (after it ran) gets its own model; resumes its conversation on it; teammates keep theirs; Team + member choice in one Save | REQ-001 (any member), AC-010 scenario, AC-003 | Server E2E | `delegated-copy-model-change.e2e.test.ts` | 10 |
+| DCP-005 | The same through the UI (Team root): only the member's row changes; next turn resumes its conversation on the choice; the coordinator keeps its own | REQ-001, AC-010 scenario | Browser probe | `test:e2e:delegated-copy-model-change` | 10 |
+| ISO-002 | Real runtimes: the code reviewer (Codex) of a delegated SE-like Team copy switched in Settings and resumed in its thread; coordinator (Claude) unchanged | AC-010 scenario | Isolated desktop instance | `isolated-app start --build` | 11 |
 
 ## Execution Events
 
@@ -41,10 +44,15 @@
 | 5 | DCP-002, DCP-004 | Completed | probe run 2 | 2/2 | 2/2; "+" from the copy lead prefills "Gemini test"; refusal "This copy is running. Stop it, then change its model."; after the backend restart the row shows the choice and the copy resumes on it | Pass | `browser-probe-run-2/` | full chain |
 | 6 | DCM, REG-001, REG-002, full probe | Completed | background chain | all pass | DCM 5/5 (run 2); earlier suites 3, 2+1 skip, 3, 1, 7+1 skip; integration 371 pass, 2 fail = TESTING.md known exception; full probe 14/14 | Pass | `server-e2e/`, `server-integration.log`, `browser-probe-full-run-1/` | ISO-001 |
 | 7 | ISO-001 | Completed | `iso-63395-445e` (worktree build); key file imported into the instance DB; definitions via GraphQL; browser-automation attach-only; recorded | real switch and resume; capacity refusal | Codex copy: locked with the hint while running, Stop in Settings, runtime locked, `gpt-5.6-luna` → `gpt-6-luna` saved, user's message resumed it: same thread `01a1351b-…`, ledger `gpt-6-luna` (2 reports); native copy `deepseek-v4-flash`: 7 non-offered models refused with the capacity message, nothing recorded, menu lists only the 27 eligible; ~$0.006 | Pass | `isolated-instance/iso-0*.png`, `iso-journey.mp4`, `ledger.txt` | instance stopped, data root and vault removed |
+| 8 | DCM-008 | Completed | DCM file, clean env | per-member choice proven | 6/6; reviewer resumed with `--conversation` on ALT2 while lead MODEL, never-started tester MODEL; recorded on the reviewer only; combined Save: lead and tester ALT (Team), reviewer ALT2 in the same conversation | Pass | `server-e2e/r2-dcm-run-1.log` | probe |
+| 9 | DCP-005 | Completed | probe `--cases DCP-005` | per-member choice in the UI | member (ran on ALT) set to Gemini test; team, lead and engineer rows identical before/after; recorded on the member only; next turn: `[gemini-3.8-flash-low, 50f13249-…]` (its conversation); lead stayed ALT | Pass | `r2-browser-probe-run-1/` | screenshot framing fixed (member row scrolled into view) |
+| 10 | ISO-002 | Completed | `iso-49221-f368` (worktree build; no key import needed); Review Team (lead Claude via the run, code_reviewer Codex `gpt-5.6-luna`, writer); recorded | the AC-010 scenario on real runtimes | reviewer ran once; Settings: Stop, only code_reviewer → GPT-6-Luna (runtime locked to Codex App Server), other rows unchanged; user's message from its conversation: same thread `01a13536-…`, both turns, ledger `codex_app_server/gpt-6-luna`; lead `claude-haiku-5-5` unchanged; choice on the reviewer only (~$0.01) | Pass | `r2-isolated-instance/iso2-0*.png`, `iso2-journey.mp4`, `ledger.txt` | instance stopped, data removed |
+| 11 | DCM, full probe | Completed | DCM repeat; full probe (15 cases) | all pass | DCM 6/6; probe 15/15, no browser errors, cleanup complete | Pass | `server-e2e/r2-dcm-run-2.log`, `r2-browser-probe-full-run-1/` | — |
+| 12 | DCP-005 | Completed | probe `--cases DCP-005` with an element screenshot of the Team copy card | the member row visible with its teammates | pass; card shows lead (Coordinator, ALT, Team default), engineer (Grok, Agent default) unchanged and `unoffered` on Gemini test without origin; its earlier fallback note still shown (observation O-4) | Pass | `r2-browser-probe-run-2/DCP-005-team-copy-card-member-saved.png` | handoff |
 
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: 7
+- Last durably recorded event: 12
 - Cases still running or not started: none
 - Interruption note: none
 - Reconciled into execution coverage report: `Yes`

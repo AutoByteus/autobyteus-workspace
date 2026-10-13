@@ -15,9 +15,9 @@
 - Code Review Revision Record: `tickets/in-progress/delegated-copy-model-change/code-review-revision-record.md`
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `tickets/in-progress/delegated-copy-model-change/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
+- Current API/E2E Revision ID: `API-REV-002` (round 2: delivery evidence gap — per-member choice in a Team copy)
 - API/E2E Test-Case Ledger: `tickets/in-progress/delegated-copy-model-change/api-e2e-test-case-ledger.md`
-- Current Investigation Round: 1
+- Current Investigation Round: 2
 - Trigger: CRR-002 `Pass` from `/software_engineering_team/code_reviewer`
 - Prior Investigation Reviewed: None
 - Latest Authoritative Investigation: this document, round 1
@@ -77,10 +77,13 @@ The user can stop one delegated copy or collaborator (Agent or Team, and the cop
 | DCM-007 | Woken during the edit (AC-011); invalid settings (AC-006); idle shutdown and wake keep the choice (AC-005); provider refusal at resume is visible and recoverable (REQ-008); Team stream `DELEGATED_LAUNCH_SELECTIONS_CHANGED` after `UPDATED` | AC-005, AC-006, AC-011, REQ-008 | DCM E2E | lifecycle and failure paths |
 | DCP-002 | Team root through the UI: sidebar stop icon on a Team copy; Team model edited and saved; live view updated in place; copy lead's "+" and member context show the choice; resume | AC-002, AC-003, round-2 | probe | UI for Team roots |
 | DCP-003 | Org root through the UI: Org row stop icon; Settings Stop; edit; Save; resume | AC-001, AC-002 | probe | UI for Org roots |
+| DCM-008 | One member of a Team copy (after it ran) gets its own model: resumes its conversation on it; the coordinator and the never-started member keep theirs; choice recorded on that member only; a Team choice and the member's own in one Save | REQ-001 (any member), AC-010 scenario, AC-003 | DCM E2E | Round 2 (delivery DR gap): only unit tests covered `{agentRunId: <Team copy member>}` |
+| DCP-005 | The same through the UI in a Team root, with a screenshot of the member row and its unchanged teammates | REQ-001, AC-010 scenario | probe | Round 2 |
 | DCP-004 | Woken during the edit through the UI: Save shows the refusal and keeps nothing; backend restart (as an app restart) keeps the choice in Settings and at resume | AC-011, AC-005 | probe | UI refusal text; restart persistence |
 
 ## Broader Validation Decision
 
+- Round 2 adds ISO-002: the AC-010 scenario on real runtimes (the code reviewer of an SE-like Team copy on Codex switched and resumed; coordinator on Claude unchanged).
 - `Required`: server E2E and browser probe as above; isolated desktop instance with real runtimes for the design's step 6 (real Codex copy stopped, switched and resumed in its thread) and the AutoByteus capacity refusal with a real native catalog (AC-006).
 
 ## Not Tested / Infeasible
