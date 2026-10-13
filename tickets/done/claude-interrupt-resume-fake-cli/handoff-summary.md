@@ -36,3 +36,6 @@ All same-folder paths: requirements-doc.md; investigation-notes.md; solution-rev
 
 ## Explicit User Verification / Finalization Continuation
 User explicitly verified: **“verified. finalize, no need to release a new version”**. Reference: [verification receipt](evidence/delivery/user-verification.json). Post-signal fetch found origin/personal unchanged at f13bdd0eb7; no re-integration or renewed verification required. Ticket now archived to tickets/done/claude-interrupt-resume-fake-cli before final commit. No release/version bump/tag/deployment. Repository commit/push/no-ff merge/cleanup are the remaining owning gates; DR-002 will record their actual results, not anticipated success.
+
+## Actual Merged-State Check
+Ticket commit `df7ba8c14b4f607d65de2bc6c54d633e132a5677` pushed; no-ff merge `26887250676ffc79f54c190936bbda7bc4fe1837` on fresh finalize branch. Exact target rerun on that merge: **8 passed / 1 live skipped, exit 0**, no unhandled/owned remnants and private root removed. Reviewed target/fixture byte-identical; production delta none. Merged licensing/hygiene exit 0. [Merged summary](evidence/delivery/merged-validation-summary.json). Target push and post-finalization cleanup not yet claimed.
