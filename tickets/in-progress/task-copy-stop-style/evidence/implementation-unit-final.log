@@ -1,0 +1,34 @@
+
+> autobyteus@1.5.3-beta.4 test:nuxt /home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/DelegatedStopButton.spec.ts stores/__tests__/delegatedLaunchDraftStore.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style/autobyteus-web
+
+stderr | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/delegatedLaunchDraftStore.spec.ts (5 tests) 14ms
+ ✓ components/workspace/history/__tests__/DelegatedStopButton.spec.ts (11 tests) 61ms
+
+ Test Files  2 passed (2)
+      Tests  16 passed (16)
+   Start at  15:12:47
+   Duration  9.74s (transform 5.28s, setup 16.27s, collect 407ms, tests 76ms, environment 1.27s, prepare 613ms)
+
