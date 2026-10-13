@@ -1,0 +1,137 @@
+[
+  {
+    "command": [
+      "docker",
+      "exec",
+      "api-o1-prisma-026a3138ea3f",
+      "supervisorctl",
+      "status",
+      "autobyteus_server"
+    ],
+    "exit": 3,
+    "output": "autobyteus_server                STOPPED   Not started\n"
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "api-o1-prisma-026a3138ea3f",
+      "supervisorctl",
+      "status"
+    ],
+    "exit": 3,
+    "output": "autobyteus_server                STOPPED   Not started\nchrome                           BACKOFF   Exited too quickly (process log may have details)\ncopyq                            STARTING  \ndbus                             STARTING  \ndisable_screensaver              EXITED    Oct 13 01:15 PM\nfcitx                            STARTING  \nsocat                            STARTING  \ntigervnc                         STARTING  \nwebsockify                       STARTING  \nxfce                             STARTING  \n"
+  },
+  {
+    "command": [
+      "docker",
+      "cp",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-o1-owned-hwrkdyhi/pinned.conf",
+      "api-o1-prisma-026a3138ea3f:/etc/supervisor/conf.d/supervisor-autobyteus-server.conf"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "api-o1-prisma-026a3138ea3f",
+      "supervisorctl",
+      "version"
+    ],
+    "exit": 0,
+    "output": "4.3.0\n"
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "api-o1-prisma-026a3138ea3f",
+      "supervisorctl",
+      "reread"
+    ],
+    "exit": 0,
+    "output": "autobyteus_server: changed\n"
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "api-o1-prisma-026a3138ea3f",
+      "supervisorctl",
+      "status",
+      "autobyteus_server"
+    ],
+    "exit": 3,
+    "output": "autobyteus_server                STOPPED   Not started\n"
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "api-o1-prisma-026a3138ea3f",
+      "supervisorctl",
+      "status"
+    ],
+    "exit": 3,
+    "output": "autobyteus_server                STOPPED   Not started\nchrome                           BACKOFF   Exited too quickly (process log may have details)\ncopyq                            STARTING  \ndbus                             STARTING  \ndisable_screensaver              EXITED    Oct 13 01:15 PM\nfcitx                            STARTING  \nsocat                            STARTING  \ntigervnc                         STARTING  \nwebsockify                       STARTING  \nxfce                             STARTING  \n"
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "api-o1-prisma-026a3138ea3f",
+      "supervisorctl",
+      "update",
+      "autobyteus_server"
+    ],
+    "exit": 0,
+    "output": "autobyteus_server: stopped\nautobyteus_server: updated process group\n"
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "api-o1-prisma-026a3138ea3f",
+      "--format",
+      "{{json .NetworkSettings.Ports}}"
+    ],
+    "exit": 0,
+    "output": "{\"8000/tcp\":[{\"HostIp\":\"127.0.0.1\",\"HostPort\":\"53109\"}]}\n"
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "api-o1-prisma-026a3138ea3f",
+      "supervisorctl",
+      "status"
+    ],
+    "exit": 3,
+    "output": "autobyteus_server                RUNNING   pid 265, uptime 0:00:07\nchrome                           FATAL     Exited too quickly (process log may have details)\ncopyq                            RUNNING   pid 92, uptime 0:00:07\ndbus                             RUNNING   pid 85, uptime 0:00:07\ndisable_screensaver              EXITED    Oct 13 01:15 PM\nfcitx                            RUNNING   pid 88, uptime 0:00:07\nsocat                            RUNNING   pid 102, uptime 0:00:07\ntigervnc                         RUNNING   pid 86, uptime 0:00:07\nwebsockify                       RUNNING   pid 107, uptime 0:00:07\nxfce                             RUNNING   pid 87, uptime 0:00:07\n"
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "api-o1-prisma-026a3138ea3f",
+      "python3",
+      "-c",
+      "import json; p='265'; pairs=dict(x.split('=',1) for x in open('/proc/'+p+'/environ','rb').read().decode().split('\\0') if '=' in x);print(json.dumps({k:pairs.get(k) for k in ['PRISMA_QUERY_ENGINE_LIBRARY','PRISMA_SCHEMA_ENGINE_BINARY']}))"
+    ],
+    "exit": 0,
+    "output": "{\"PRISMA_QUERY_ENGINE_LIBRARY\": \"/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-3.0.x.so.node\", \"PRISMA_SCHEMA_ENGINE_BINARY\": \"/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-linux-arm64-openssl-3.0.x\"}\n"
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "api-o1-prisma-026a3138ea3f",
+      "cat",
+      "/var/log/supervisor/autobyteus_server.log"
+    ],
+    "exit": 0,
+    "output": "Platform detection: Windows=false\nApp root directory: /app/autobyteus-server-ts\nApp data directory: /home/autobyteus/data\nConfig file path: /home/autobyteus/data/.env\nLoading environment from: /home/autobyteus/data/.env\n[dotenv@17.3.1] injecting env (3) from ../../home/autobyteus/data/.env -- tip: \u2699\ufe0f  load multiple .env files with { path: ['.env.local', '.env'] }\nEnvironment variables loaded successfully\nServer public base URL configured to: http://localhost:8000\n=== Starting logging configuration ===\nLogging config file is ignored in Node.js: /app/autobyteus-server-ts/logging_config.ini\n============================================================\nSERVER PUBLIC URL: http://localhost:8000\nAPP ROOT DIRECTORY: /app/autobyteus-server-ts\nAPP DATA DIRECTORY: /home/autobyteus/data\nDB DIRECTORY: /home/autobyteus/data/db\nLOGS DIRECTORY: /home/autobyteus/data/logs\nDOWNLOAD DIRECTORY: /home/autobyteus/data/download\nMEMORY DIRECTORY: /home/autobyteus/data/memory\n============================================================\nAgentFactory (Singleton) initialized.\nRunning Prisma migrations...\nUsing Prisma engine overrides from existing-env: process.env (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)\nPrisma schema loaded from prisma/schema.prisma\nDatasource \"db\": SQLite database \"production.db\" at \"file:/home/autobyteus/data/db/production.db\"\n\nSQLite database production.db created at file:/home/autobyteus/data/db/production.db\n\n27 migrations found in prisma/migrations\n\nApplying migration `20260203074245_init`\nApplying migration `20260208094000_add_external_channel_tables`\nApplying migration `20260209174500_add_channel_message_receipt_turn_id`\nApplying migration `20260209213000_remove_agent_conversation_tables`\nApplying migration `20260210101500_add_agent_avatar`\nApplying migration `20260210192000_add_agent_team_avatar`\nApplying migration `20260211214500_add_sync_columns_and_tombstones`\nApplying migration `20260212070000_remove_workflow_definition`\nApplying migration `20260309103000_add_channel_binding_launch_preset`\nApplying migration `20260310153000_add_channel_binding_team_definition_id`\nApplying migration `20260331102000_remove_channel_bindings_table`\nApplying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`\nApplying migration `20260517090000_add_app_data_migration_records`\nApplying migration `20260624090000_add_token_usage_ledger_events`\nApplying migration `20260625193000_token_usage_component_pricing_explainability`\nApplying migration `20260629120000_add_token_usage_display_fields`\nApplying migration `20260702093000_token_usage_execution_address`\nApplying migration `20260726090000_add_secret_vault`\nApplying migration `20260730090000_add_token_usage_provider_name`\nApplying migration `20260801090000_token_usage_member_display_name`\nApplying migration `20260814090000_team_run_execution_tree_v1`\nApplying migration `20260819090000_add_token_usage_run_records`\nApplying migration `20260820090000_redesign_app_data_migration_summary`\nApplying migration `20260822090000_add_token_usage_analytics`\nApplying migration `20260923130000_add_claude_sdk_usage_state`\nApplying migration `20260924120000_remove_external_channel_tables`\nApplying migration `20261009120000_token_meter_context_readings`\n\nThe following migration(s) have been applied:\n\nmigrations/\n  \u2514\u2500 20260203074245_init/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260208094000_add_external_channel_tables/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260209174500_add_channel_message_receipt_turn_id/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260209213000_remove_agent_conversation_tables/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260210101500_add_agent_avatar/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260210192000_add_agent_team_avatar/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260211214500_add_sync_columns_and_tombstones/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260212070000_remove_workflow_definition/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260309103000_add_channel_binding_launch_preset/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260310153000_add_channel_binding_team_definition_id/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260331102000_remove_channel_bindings_table/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260517090000_add_app_data_migration_records/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260624090000_add_token_usage_ledger_events/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260625193000_token_usage_component_pricing_explainability/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260629120000_add_token_usage_display_fields/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260702093000_token_usage_execution_address/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260726090000_add_secret_vault/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260730090000_add_token_usage_provider_name/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260801090000_token_usage_member_display_name/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260814090000_team_run_execution_tree_v1/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260819090000_add_token_usage_run_records/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260820090000_redesign_app_data_migration_summary/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260822090000_add_token_usage_analytics/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260923130000_add_claude_sdk_usage_state/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260924120000_remove_external_channel_tables/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20261009120000_token_meter_context_readings/\n    \u2514\u2500 migration.sql\n      \nAll migrations have been successfully applied.\nDatabase migrations completed successfully.\nprisma:info Starting a sqlite pool with 21 connections.\nInitialized server settings service with 19 predefined settings\nAgentRunManager initialized.\nAgentRunManager initialized.\nLoading workspace packages to trigger registration...\nSuccessfully loaded workspace packages.\nCreating temp workspace at: /home/autobyteus/data/temp_workspace\nCreated metadata-only FileSystemWorkspace at /home/autobyteus/data/temp_workspace.\nInitialized TempWorkspace at /home/autobyteus/data/temp_workspace with fixed ID 'temp_ws_default'\nTemp workspace created and cached with ID: temp_ws_default\nRegistering agent customization processors...\nInput processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.\nRegistered input processor 'WorkspacePathSanitizationProcessor'.\nInput processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.\nRegistered input processor 'UserInputContextBuildingProcessor'.\nLLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.\nRegistered LLM response processor 'MediaUrlTransformerProcessor'.\nAgent customization processor registration complete.\nSuccessfully registered tool definition: 'read_file'\nSuccessfully registered tool definition: 'write_file'\nSuccessfully registered tool definition: 'edit_file'\nSuccessfully registered tool definition: 'run_bash'\nSuccessfully registered tool definition: 'start_background_process'\nSuccessfully registered tool definition: 'get_background_processes'\nSuccessfully registered tool definition: 'get_process_output'\nSuccessfully registered tool definition: 'stop_background_process'\nSuccessfully registered tool definition: 'search_web'\nSuccessfully registered tool definition: 'read_media_file'\nSuccessfully registered tool definition: 'download_media'\nSuccessfully registered tool definition: 'read_url'\nRegistered required tool unit: Core Tools\nSuccessfully registered tool definition: 'delegate_task'\nSuccessfully registered tool definition: 'list_available_agents'\nSuccessfully registered tool definition: 'generate_image'\nSuccessfully registered tool definition: 'edit_image'\nSuccessfully registered tool definition: 'generate_speech'\nSuccessfully registered tool definition: 'generate_video'\nRegistered required tool unit: Task Delegation Tools\nRegistered required tool unit: Agent Discovery Tools\nRegistered required tool unit: Media Tools\nRegistered required tool unit: Browser Tools\nSuccessfully registered tool definition: 'publish_artifacts'\nRegistered required tool unit: Published Artifact Tools\nSuccessfully registered tool definition: 'send_message_to'\nSuccessfully registered tool definition: 'get_handoff_rules'\nRegistered required tool unit: Agent Communication Tools\nSuccessfully registered tool definition: 'list_projects'\nSuccessfully registered tool definition: 'list_project_tasks'\nSuccessfully registered tool definition: 'create_or_update_project'\nSuccessfully registered tool definition: 'create_or_update_task'\nRegistered required tool unit: Project Task Tools\nSuccessfully registered tool definition: 'search_web'\nRegistered required tool unit: Search Tools\nServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated\nInitialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.\n{\"level\":30,\"time\":1791897344589,\"pid\":265,\"hostname\":\"4b10b2cd6efa\",\"msg\":\"Server listening at http://127.0.0.1:39309\"}\n{\"level\":30,\"time\":1791897344619,\"pid\":265,\"hostname\":\"4b10b2cd6efa\",\"msg\":\"Server listening at http://0.0.0.0:8000\"}\n[2026-10-13T13:15:44.619Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000\nScheduling Studio-only non-critical startup tasks...\nBackground cache pre-loading process has started.\nCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.\nPopulating MCP server config cache for the first time...\nRunning MCP tool registration background task...\nLoading and registering all MCP server configurations from file...\nBackground task 'Memory Sync Worker' completed successfully.\nMCP server config cache populated with 0 items.\nFound 0 total MCP server configs.\nSynchronized cached configurations with the core MCP config service.\nPre-loaded 0 MCP server configs into cache.\nFinished loading and registering all MCP server configurations.\nBackground task 'MCP Tool Registration' completed successfully.\nPre-loaded 35 LLM models into cache.\nPre-loaded 7 image models into cache.\nPre-loaded 3 audio models into cache.\nBackground application cache pre-loading completed.\nBackground task 'Cache Pre-loading' completed successfully.\n"
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "tool": "create_or_update_task",
+  "task": {
+    "projectId": "project_a1377344-25db-482a-97cc-ecfdb0fb495a",
+    "taskId": "project_task_6b8c9612-c94b-4d62-8053-00ef94bd94df",
+    "status": "TODO",
+    "attachedContextFiles": [
+      {
+        "storedFilename": "ctx_13e3334b0acd__follow-up-context.md",
+        "displayName": "follow-up-context.md"
+      },
+      {
+        "storedFilename": "ctx_fa7f561b0c8d__cause-comparison.md",
+        "displayName": "cause-comparison.md"
+      },
+      {
+        "storedFilename": "ctx_2d45cc22d813__investigation-notes.md",
+        "displayName": "investigation-notes.md"
+      },
+      {
+        "storedFilename": "ctx_3dd5ed942154__user-acceptance-scope-change.json",
+        "displayName": "user-acceptance-scope-change.json"
+      },
+      {
+        "storedFilename": "ctx_cab65fad2108__backup-receipt.json",
+        "displayName": "backup-receipt.json"
+      },
+      {
+        "storedFilename": "ctx_73c2caf32f78__live-preservation.json",
+        "displayName": "live-preservation.json"
+      },
+      {
+        "storedFilename": "ctx_cdaa60cda225__normal-startup-facts.json",
+        "displayName": "normal-startup-facts.json"
+      },
+      {
+        "storedFilename": "ctx_a75e19d3521a__prisma-realpath-packages.json",
+        "displayName": "prisma-realpath-packages.json"
+      },
+      {
+        "storedFilename": "ctx_5118ef7aab09__node0-node2-control.json",
+        "displayName": "node0-node2-control.json"
+      }
+    ]
+  },
+  "delegated": false,
+  "originalTaskStatusPatched": false,
+  "custodyOwner": "/project_task_manager",
+  "userAuthority": "delivery-evidence/dr-002/user-acceptance-scope-change.json",
+  "note": "Separate follow-up registered TODO with saved public context; no source/live repair dispatch or original Task DONE."
+}
