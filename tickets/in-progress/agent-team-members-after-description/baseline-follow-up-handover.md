@@ -25,7 +25,7 @@
 - autobyteus-web/graphql/mutations/agentOrgDefinitionMutations.ts: select existing list-required loadIssues subfields kind/definitionId/name/code/reason/definitionPath/packageRoot/usingLastGood in create/update fragment.
 - autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts: real stores/Apollo/InMemoryCache plus AST-selected response double; original Agent/Org create cases and added ordinary edit response/cache/reread cases. No fixture supplying unselected fields, production error suppression or migration/recovery framework.
 - No reviewer Pass of this prepared work; no actual corrected desktop creation run, deployment or defect closure.
-- User-stop separation: revert09731dcd140a08e5bdab6e0889d54aaaf2812f22 restores ONLY these three paths to pre-fix source. Complete exclusion of standalone baseline-only regression from active UI package is the next targeted source/test transfer operation under SR-003; preservation above exists before exclusion.
+- User-stop separation: revert09731dcd140a08e5bdab6e0889d54aaaf2812f22 restores ONLY these three paths to pre-fix source. At manifest creation, complete active baseline-regression exclusion was the next targeted operation under SR-003; preservation existed before exclusion. The completion receipt below records the finished transfer.
 
 ## Evidence / Reproduction (Historical, Not New Pass)
 - Technical authority: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/code-review-report.md and code-review-revision-record.md, CRR-001/002.
