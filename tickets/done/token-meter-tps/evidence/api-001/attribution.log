@@ -1,0 +1,49 @@
+
+> autobyteus@1.5.3-beta.4 test:nuxt /home/autobyteus/workspace/.codex/worktrees/token-meter-tps/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/tokenUsageMeterStore.spec.ts composables/__tests__/useTokenUsageWorkspaceScope.spec.ts stores/__tests__/agentRunCollaborationStore.spec.ts stores/__tests__/agentOrgInspection.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/token-meter-tps/autobyteus-web
+
+stderr | stores/__tests__/tokenUsageMeterStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRunCollaborationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentRunCollaborationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/tokenUsageMeterStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentRunCollaborationStore.spec.ts (4 tests) 18ms
+ ✓ stores/__tests__/tokenUsageMeterStore.spec.ts (24 tests) 43ms
+stderr | stores/__tests__/agentOrgInspection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useTokenUsageWorkspaceScope.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentOrgInspection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useTokenUsageWorkspaceScope.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useTokenUsageWorkspaceScope.spec.ts (10 tests) 17ms
+ ✓ stores/__tests__/agentOrgInspection.spec.ts (5 tests) 30ms
+
+ Test Files  4 passed (4)
+      Tests  43 passed (43)
+   Start at  16:21:41
+   Duration  18.35s (transform 7.41s, setup 28.95s, collect 1.00s, tests 108ms, environment 3.78s, prepare 1.48s)

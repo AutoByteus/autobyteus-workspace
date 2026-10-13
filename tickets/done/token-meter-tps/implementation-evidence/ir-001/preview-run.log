@@ -1,0 +1,20 @@
+/home/autobyteus/workspace/.codex/worktrees/token-meter-tps/tickets/in-progress/token-meter-tps/implementation-evidence/ir-001/render-2026-10-13T15-58-16-921Z fail AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
++ [
++   {
++     kind: 'console',
++     text: "WebSocket connection to 'ws://127.0.0.1:42003/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
++   },
++   {
++     kind: 'console',
++     text: "WebSocket connection to 'ws://127.0.0.1:42003/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
++   },
++   {
++     kind: 'console',
++     text: "WebSocket connection to 'ws://127.0.0.1:42003/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
++   }
++ ]
+- []
+
+    at file:///home/autobyteus/workspace/.codex/worktrees/token-meter-tps/tickets/in-progress/token-meter-tps/implementation-evidence/ir-001/preview.mjs:91:10

@@ -1,7 +1,15 @@
+import { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext';
+import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture';
+import { AgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationContext';
+import { agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture';
+import { createAgentContext } from '~/services/agentOrgExecution/agentOrgMemberContextFactory';
+import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import type { TokenUsageRunSummaryDto } from '@autobyteus/team-stream-contracts';
 import { useTokenUsageMeterStore } from '../tokenUsageMeterStore';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
+import { toAgentProjectionMessage, toAgentPresentationProjectionMessage } from '~/services/agentStreaming/teamStreamDtoAdapters';
 import { handleTokenUsageUpdated } from '~/services/agentStreaming/handlers/tokenUsageHandler';
 import { mapTokenUsageRunSummaryDto } from '~/services/agentStreaming/tokenUsageRunSummaryMapper';
 import { getApolloClient } from '~/utils/apolloClient';
@@ -582,5 +590,191 @@ describe('tokenUsageMeterStore', () => {
       summary: buildSummary({ revision: Number.MAX_SAFE_INTEGER + 1 }),
     })).toThrow('non-negative safe-integer revision');
     expect(() => mapTokenUsageRunSummaryDto({ ...buildSummaryDto(), revision: undefined }, { runId: 'run-1' })).toThrow();
+  });
+});
+
+describe('live-only exact AgentRun throughput admission', () => {
+  beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks(); });
+  const live = (revision: number, seconds: number, extra: Partial<TokenUsageUpdatedPayload> = {}) => buildPayload({
+    usage_event_id: `live-${revision}`, idempotency_key: `live-key-${revision}`, turn_id: 'turn',
+    observed_at: `2026-10-13T10:00:${String(seconds).padStart(2, '0')}.000Z`,
+    meter_delta_output_tokens: 200,
+    run_summary_after_event: buildSummaryDto({ revision, usage_report_count: revision }),
+    ...extra,
+  });
+
+  it('never hydrates throughput, rejects stale live summaries, and re-baselines across a newer fetch', () => {
+    const store = useTokenUsageMeterStore();
+    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ revision: 9 }) });
+    store.upsertRecordBackedStandaloneRunSummary({ runId: 'run-1', summary: buildSummary({ outputTokens: 999999 }) });
+    expect(store.getRunThroughput('run-1')).toBeNull();
+    expect(store.applyTokenUsageUpdated(live(8, 0))).toBe(false);
+    expect(store.getRunThroughput('run-1')).toBeNull();
+    store.applyTokenUsageUpdated(live(10, 0));
+    store.applyTokenUsageUpdated(live(11, 10));
+    expect(store.getRunThroughput('run-1')).toMatchObject({ tokensPerSecond: 20 });
+    store.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ revision: 12 }) });
+    expect(store.getRunThroughput('run-1')).toMatchObject({ tokensPerSecond: 20 });
+    expect(store.applyTokenUsageUpdated(live(12, 15))).toBe(false);
+    store.applyTokenUsageUpdated(live(13, 20));
+    expect(store.getRunThroughput('run-1')?.status).toBe('collecting');
+    expect(store.getStandaloneRunSummary('run-1')?.outputTokens).toBe(999999);
+  });
+
+  it('observes actual Team view record-usage + dispatch-agent effects once with summary runtime', () => {
+    const store = useTokenUsageMeterStore();
+    const team = buildTestTeamContext({ teamRunId: 'team', rootChildren: [testAgentNode('/lead', { agentRunId: 'member' })], coordinatorAddress: '/lead' });
+    for (const [revision, seconds] of [[1, 0], [2, 10], [3, 15]]) {
+      const details = buildTeamPayload('member', {
+        usage_event_id: `team-event-${revision}`, idempotency_key: `team-key-${revision}`,
+        change_sequence: revision, turn_id: 'team-turn',
+        observed_at: `2026-10-13T10:00:${String(seconds).padStart(2, '0')}.000Z`,
+        meter_delta_output_tokens: revision === 3 ? 150 : 200,
+        run_summary_after_event: buildSummaryDto({ run_id: 'member', root_team_run_id: 'team', revision, usage_report_count: revision }),
+      });
+      const result = team.view.applyMessage({ type: 'TOKEN_USAGE_UPDATED', payload: details });
+      expect(result.disposition).toBe('applied');
+      expect(result.effects.map((effect) => effect.kind)).toEqual(['record_team_token_usage', 'dispatch_agent']);
+      for (const effect of result.effects) {
+        if (effect.kind === 'record_team_token_usage') {
+          expect(store.applyTeamTokenUsage(team.view.getRootTeamRunId(), effect.agentRunId, effect.details)).toBe(true);
+        } else if (effect.kind === 'dispatch_agent') {
+          const projection = toAgentProjectionMessage(effect.message, effect.agentRunId);
+          if (projection.type !== 'TOKEN_USAGE_UPDATED') throw new Error('Expected usage projection');
+          expect(handleTokenUsageUpdated(projection.payload, team.view.getAgentContext(effect.agentRunId)!)).toBe(false);
+        }
+      }
+      expect(store.getRunThroughput('member')).toMatchObject(revision === 1
+        ? { status: 'collecting' }
+        : { tokensPerSecond: revision === 2 ? 20 : 30, identity: { runId: 'member', runtimeKind: 'codex_app_server' } });
+    }
+    expect(store.getTeamSummary('team')?.usageReportCount).toBe(3);
+    expect(store.getTeamSummary('team')?.outputTokens).toBe(550);
+    expect(store.getRunThroughput('team')).toBeNull();
+  });
+
+  it('observes Org/collaboration presentation reports through the common handler', () => {
+    const store = useTokenUsageMeterStore();
+    for (const [revision, seconds] of [[1, 0], [2, 10]]) {
+      const { agent_run_id, change_sequence, ...payload } = buildTeamPayload('child', {
+        usage_event_id: `child-${revision}`, turn_id: 'turn',
+        observed_at: `2026-10-13T10:00:${String(seconds).padStart(2, '0')}.000Z`,
+        meter_delta_output_tokens: 200,
+        run_summary_after_event: buildSummaryDto({ run_id: 'child', revision, usage_report_count: revision }),
+      });
+      const projection = toAgentPresentationProjectionMessage({ type: 'TOKEN_USAGE_UPDATED', payload }, 'child');
+      if (projection.type !== 'TOKEN_USAGE_UPDATED') throw new Error('Expected usage projection');
+      handleTokenUsageUpdated(projection.payload, buildContext('child'));
+    }
+    expect(store.getRunThroughput('child')).toMatchObject({ tokensPerSecond: 20, identity: { runId: 'child', runtimeKind: 'codex_app_server' } });
+    expect(store.getRunThroughput('run-1')).toBeNull();
+  });
+
+  it('invalidates known fresh missing-summary calls without changing summary admission', () => {
+    const store = useTokenUsageMeterStore();
+    store.applyTokenUsageUpdated(live(1, 0));
+    store.applyTokenUsageUpdated(live(2, 10));
+    const saved = store.getRunSummary('run-1');
+    expect(store.applyTokenUsageUpdated(live(3, 15, { run_summary_after_event: null }))).toBe(false);
+    expect(store.getRunSummary('run-1')).toEqual(saved);
+    expect(store.getRunThroughput('run-1')).toEqual({ status: 'unavailable', reason: 'missingSummary' });
+    store.applyTokenUsageUpdated(live(3, 20));
+    expect(store.getRunThroughput('run-1')?.status).toBe('collecting');
+    store.applyTokenUsageUpdated(live(4, 25));
+    expect(store.getRunThroughput('run-1')).toMatchObject({ tokensPerSecond: 40 });
+    store.applyTokenUsageUpdated(live(2, 30, { run_summary_after_event: null })); // seen event key is ignored
+    expect(store.getRunThroughput('run-1')).toMatchObject({ tokensPerSecond: 40 });
+  });
+
+  it('breaks Team sampling on a fresh missing summary and leaves costs unchanged', () => {
+    const store = useTokenUsageMeterStore();
+    const member = (revision: number, seconds: number) => buildTeamPayload('member', {
+      usage_event_id: `team-${revision}`, idempotency_key: `team-${revision}`, turn_id: 'turn',
+      observed_at: `2026-10-13T10:00:${String(seconds).padStart(2, '0')}.000Z`,
+      run_summary_after_event: buildSummaryDto({ run_id: 'member', root_team_run_id: 'team', revision, usage_report_count: revision }),
+    });
+    store.applyTeamTokenUsage('team', 'member', member(1, 0));
+    store.applyTeamTokenUsage('team', 'member', member(2, 10));
+    expect(store.getRunThroughput('member')?.status).toBe('ready');
+    const total = store.getTeamSummary('team');
+    const missing = { ...member(3, 15), run_summary_after_event: null };
+    expect(store.applyTeamTokenUsage('team', 'member', missing)).toBe(false);
+    expect(store.getRunThroughput('member')).toEqual({ status: 'unavailable', reason: 'missingSummary' });
+    expect(store.getTeamSummary('team')).toEqual(total);
+    store.applyTeamTokenUsage('team', 'member', member(3, 20));
+    expect(store.getRunThroughput('member')?.status).toBe('collecting');
+  });
+
+  it('rejects mismatched exact identities before observation', () => {
+    const store = useTokenUsageMeterStore();
+    expect(() => store.applyTokenUsageUpdated(live(1, 0, {
+      run_summary_after_event: buildSummaryDto({ run_id: 'other' }),
+    }))).toThrow('different AgentRun');
+    expect(store.getRunThroughput('run-1')).toBeNull();
+    expect(store.applyTeamTokenUsage('team', 'wrong', buildTeamPayload('member'))).toBe(false);
+    expect(store.getRunThroughput('wrong')).toBeNull();
+  });
+});
+
+// TPS-ATTRIBUTION / AC-002: enter actual exact-identity context owners, not just projection helpers.
+describe('throughput through real Org and collaboration context admission', () => {
+  beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks(); });
+  const launch = { runtimeKind: 'codex_app_server' as const, llmModelIdentifier: 'configured-alias',
+    llmConfig: null, autoExecuteTools: false, workspaceRootPath: null };
+  const entries = (statuses: readonly { agent_run_id: string; member_address: string }[]) => statuses.map(row => ({
+    agentRunId: row.agent_run_id, memberAddress: parseAgentTeamAddress(row.member_address),
+    context: createAgentContext({ agentRunId: row.agent_run_id, address: parseAgentTeamAddress(row.member_address),
+      agentDefinitionId: 'test-definition', launch }, '2026-10-13T10:00:00Z', null),
+  }));
+  const event = (runId: string, address: string, revision: number, output: number) => {
+    const { agent_run_id, change_sequence, ...payload } = buildTeamPayload(runId, {
+      usage_event_id: `${runId}-${revision}`, idempotency_key: `${runId}-${revision}`, turn_id: 'turn',
+      model_identifier: `reported-${runId}`,
+      observed_at: `2026-10-13T10:00:${revision === 1 ? '00' : '10'}.000Z`,
+      meter_delta_output_tokens: output,
+      run_summary_after_event: buildSummaryDto({ run_id: runId, revision, usage_report_count: revision }),
+    });
+    return { kind: 'agent_presentation' as const, agent_run_id: runId, member_address: address,
+      message: { type: 'TOKEN_USAGE_UPDATED' as const, payload } };
+  };
+  it('keeps four Org target kinds and same-address task copies distinct through sequenced reports', () => {
+    const view = taskBearingView();
+    const org = new AgentOrgExecutionContext({ orgRunId: 'org-run', view, entries: entries(view.agent_statuses) });
+    const subjects = [
+      ['agent-director', '/director', 'agent_org_direct_agent'],
+      ['agent-lead-configured', '/team/lead', 'agent_org_team_member'],
+      ['agent-worker-task', '/worker', 'agent_org_task_agent'],
+      ['agent-task-lead', '/team/lead', 'agent_org_task_team_member'],
+    ];
+    let sequence = view.base_change_sequence;
+    for (const revision of [1, 2]) for (const [index, [id, address]] of subjects.entries()) {
+      expect(org.applyEvent(++sequence, event(id!, address!, revision, (index + 1) * 100))).toBe('applied');
+    }
+    const meter = useTokenUsageMeterStore();
+    for (const [index, [id, , kind]] of subjects.entries()) {
+      org.select({ kind: 'agent_execution', agentRunId: id! });
+      const selected = org.selectedTarget()!;
+      expect(selected.kind).toBe(kind);
+      expect(meter.getRunThroughput(selected.context.state.runId)).toMatchObject({ status: 'ready',
+        tokensPerSecond: (index + 1) * 10, identity: { runId: id, modelIdentifier: `reported-${id}`, runtimeKind: 'codex_app_server' } });
+    }
+    expect(meter.getRunThroughput('org-run')).toBeNull();
+    expect(() => org.applyEvent(++sequence, event('agent-task-lead', '/director', 3, 9999))).toThrow(/identity/);
+    expect(meter.getRunThroughput('agent-task-lead')).toMatchObject({ tokensPerSecond: 40 });
+  });
+  it('routes hosted Agent and Team calls without attributing children to their standalone host', () => {
+    const view = agentRootView();
+    const root = new AgentRunCollaborationContext({ hostRunId: 'host-run', view, entries: entries(view.agent_statuses) });
+    let sequence = view.base_change_sequence;
+    const subjects = [['cua-run', '/computer_use_agent'], ['pp-run', '/product_team/prototyper']];
+    for (const revision of [1, 2]) for (const [index, [id, address]] of subjects.entries()) {
+      expect(root.applyEvent(++sequence, event(id!, address!, revision, (index + 1) * 200))).toBe('applied');
+    }
+    const meter = useTokenUsageMeterStore();
+    for (const [index, [id]] of subjects.entries()) expect(meter.getRunThroughput(root.getAgentContext(id!)!.state.runId))
+      .toMatchObject({ tokensPerSecond: (index + 1) * 20, identity: { runId: id, modelIdentifier: `reported-${id}` } });
+    expect(meter.getRunThroughput('host-run')).toBeNull();
+    expect(() => root.applyEvent(++sequence, event('host-run', '/research_assistant', 1, 9999))).toThrow(/identity/);
+    expect(meter.getRunThroughput('host-run')).toBeNull();
   });
 });

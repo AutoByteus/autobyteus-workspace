@@ -1,0 +1,7 @@
+linux-arm64
+uid=0(root) gid=0(root) groups=0(root)
+uid=61031 gid=61031 groups=61031
+namespace_status=0
+/usr/bin/Xvfb
+/usr/bin/xvfb-run
+/usr/bin/xauth
