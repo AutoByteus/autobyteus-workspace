@@ -347,6 +347,10 @@ const openTeamRun = async (page, teamRunId, teamDefinitionId) => {
     return false
   }, 60000, 1500)
   await teamRow.click(); await settle(page, 2500)
+  // Selection may toggle a previously expanded persisted row closed. Explicitly expose its children.
+  if (await teamRow.getAttribute('aria-expanded') === 'false') {
+    await teamRow.locator(sel('workspace-team-run-disclosure')).click(); await settle(page, 800)
+  }
 }
 const openSettings = async (page) => {
   await page.locator(sel('workspace-header-edit-config')).click()
@@ -1077,8 +1081,10 @@ defineCase('DCP-002', 'delegated-copy-model-change AC-002/003, IR-002 (Team root
   r.plusModel = (await page.locator(`${sel('chat-composer')} ${sel('chat-model-trigger')}`).innerText()).replace(/\s+/g, ' ')
   assert(r.plusModel.includes(MODEL_LABEL) && !r.plusModel.includes(ALT_LABEL), '"+" from the copy lead should prefill the chosen model', r.plusModel)
   await shot(page, 'DCP-002-plus-from-copy-lead-1280', 1280)
-  // The next message resumes the follower lead on the Team choice.
+  // The next message is sent by the root manager, not the last-selected copy lead.
   await openTeamRun(page, r.teamRunId, ids.home)
+  await page.locator(sel(`workspace-team-member-${r.teamRunId}-/manager`)).click()
+  await settle(page, 1000)
   const resumeFrom = (await agyLaunchesOf(r.copyMembers.lead)).length
   r.resume = await callFromComposer(page, 'message the copy lead', 'send_message_to', { target_agent_run_id: r.copyMembers.lead, content: 'Please continue.' })
   assert(r.resume.includes('"accepted":true'), 'message to the stopped copy not accepted', r.resume)
@@ -1234,6 +1240,14 @@ defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 
   await openMember(section, teamKey)
   await waitFor('Team copy stopped (model unlocked)', async () => !(await modelLocked(rowOf(teamKey))), 60000, 1000)
   const summaryOf = async (key) => (await rowOf(key).locator(sel('run-member-summary')).first().innerText()).replace(/\s+/g, ' ')
+  const engineerRecord = async () => {
+    const team = teamCopies(await teamTree(r.teamRunId), 'pair').find(record => pick(record, 'teamRunId') === r.copyTeamRunId)
+    const execution = team?.members.find(member => pick(member, 'agentRunId') === r.members.engineer)
+    const source = pick(team, 'source')?.members.find(member => member.address === execution?.address)
+    assert(execution && source, 'Engineer canonical execution/source missing', team)
+    return { execution, source }
+  }
+  r.engineerBefore = await engineerRecord()
   r.before = { team: await summaryOf(teamKey), lead: await summaryOf(keyOf('lead')), engineer: await summaryOf(keyOf('engineer')), member: await summaryOf(keyOf(member)) }
   await openMember(section, keyOf(member))
   await chooseCopyModel(page, rowOf(keyOf(member)), MODEL)
@@ -1243,7 +1257,12 @@ defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 
   r.after = { team: await summaryOf(teamKey), lead: await summaryOf(keyOf('lead')), engineer: await summaryOf(keyOf('engineer')), member: await summaryOf(keyOf(member)) }
   r.memberSource = await rowOf(keyOf(member)).getAttribute('data-source')
   assert(r.after.member.includes(MODEL_LABEL) && !r.after.member.includes(ALT_LABEL) && r.memberSource === null, 'the member row should show its new model without an origin', r)
-  assert(r.after.team === r.before.team && r.after.lead === r.before.lead && r.after.engineer === r.before.engineer, 'the other rows should be unchanged', r)
+  r.engineerAfter = await engineerRecord()
+  // Catalog hydration may replace the same model's raw ID with its friendly label; configuration must stay exact.
+  const catalogLabel = text => text.replace('grok-4.7', 'Grok 4.7')
+  assert(r.after.team === r.before.team && r.after.lead === r.before.lead
+    && catalogLabel(r.after.engineer) === catalogLabel(r.before.engineer)
+    && JSON.stringify(r.engineerAfter) === JSON.stringify(r.engineerBefore), 'the other rows should keep their exact settings', r)
   // The whole Team copy card: the edited member with its unchanged teammates (the Save bar would cover a viewport shot).
   await shot(page, 'DCP-005-settings-team-copy-member-saved-1280', 1280)
   await rowOf(teamKey).screenshot({ path: path.join(outDir, 'DCP-005-team-copy-card-member-saved.png') })
