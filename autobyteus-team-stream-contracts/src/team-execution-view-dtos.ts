@@ -79,6 +79,38 @@ export const teamMemberLaunchSource = (
   member: MemberLaunchDto,
 ): LaunchConfigurationSourceDto | null => member.launch_source ?? team.default_launch_source ?? null;
 
+/**
+ * The user's model choice for one delegated copy or collaborator instance: it replaces only the
+ * model and its settings. Absent when the user made no choice (every older record).
+ */
+export type UserLaunchSelectionDto = Readonly<{
+  llm_model_identifier: string;
+  llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
+  selected_at: string;
+}>;
+
+/**
+ * The single launch rule of a copy or collaborator agent (mirrors the server's
+ * `effectiveCopyAgentLaunch`): its own choice, else (when it follows its Team) the Team's choice,
+ * else its started launch. `selected` tells which choice applied.
+ */
+export const teamCopyAgentLaunch = (input: Readonly<{
+  started: AgentLaunchConfigurationDto;
+  followsTeam?: boolean;
+  teamSelection?: UserLaunchSelectionDto | null;
+  agentSelection?: UserLaunchSelectionDto | null;
+}>): Readonly<{ launch: AgentLaunchConfigurationDto; selected: "agent" | "team" | null }> => {
+  const selection = input.agentSelection ?? (input.followsTeam ? input.teamSelection ?? null : null);
+  if (!selection) return { launch: input.started, selected: null };
+  return {
+    launch: { ...input.started, llm_model_identifier: selection.llm_model_identifier, llm_config: selection.llm_config },
+    selected: input.agentSelection ? "agent" : "team",
+  };
+};
+
+/** A recorded Team member follows its Team's launch (and choice) iff it records no own launch. */
+export const teamMemberFollowsTeam = (member: MemberLaunchDto): boolean => member.launch_configuration === undefined;
+
 /** The definition snapshot of a task copy started from the catalog (absent for every other copy). */
 export type TaskAgentExecutionSourceDto = Readonly<{
   kind: "agent";
@@ -104,6 +136,7 @@ export type TaskAgentExecutionDto = Readonly<{
   delegator_agent_run_id: string | null;
   started_at: string;
   source?: TaskAgentExecutionSourceDto;
+  user_launch_selection?: UserLaunchSelectionDto;
 }>;
 
 export type TaskTeamAgentExecutionDto = Readonly<{
@@ -111,6 +144,7 @@ export type TaskTeamAgentExecutionDto = Readonly<{
   address: string;
   agent_run_id: string;
   platform_agent_run_id: string | null;
+  user_launch_selection?: UserLaunchSelectionDto;
 }>;
 
 export type TaskTeamNestedTeamExecutionDto = Readonly<{
@@ -133,6 +167,7 @@ export type TaskTeamExecutionDto = Readonly<{
   delegator_agent_run_id: string | null;
   started_at: string;
   source?: TaskTeamExecutionSourceDto;
+  user_team_launch_selection?: UserLaunchSelectionDto;
 }>;
 
 export type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
@@ -167,6 +202,7 @@ export type CollaboratorEntryDto =
       launch_source?: LaunchConfigurationSourceDto;
       added_at: string;
       added_via_agent_run_id: string;
+      user_launch_selection?: UserLaunchSelectionDto;
     }>
   | Readonly<{
       kind: "agent_team";
@@ -179,11 +215,13 @@ export type CollaboratorEntryDto =
         agent_definition_id: string;
         agent_run_id: string;
         platform_agent_run_id: string | null;
+        user_launch_selection?: UserLaunchSelectionDto;
       }> & MemberLaunchDto)[];
       handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[] }>[];
       task_executions: readonly TaskExecutionDto[];
       added_at: string;
       added_via_agent_run_id: string;
+      user_team_launch_selection?: UserLaunchSelectionDto;
     }> & TeamLaunchDto;
 
 const launchConfigurationSchema: z.ZodType<AgentLaunchConfigurationDto> = z.object({
@@ -205,6 +243,13 @@ const launchSourceSchema: z.ZodType<LaunchConfigurationSourceDto> = z.object({
   }).strict()),
 }).strict();
 const memberLaunchSchema = { launch_configuration: launchConfigurationSchema.optional(), launch_source: launchSourceSchema.optional() };
+const userLaunchSelectionSchema: z.ZodType<UserLaunchSelectionDto> = z.object({
+  llm_model_identifier: nonEmptyStringSchema,
+  llm_config: z.record(z.string(), jsonValueSchema).nullable(),
+  selected_at: nonEmptyStringSchema,
+}).strict();
+const agentSelectionSchema = { user_launch_selection: userLaunchSelectionSchema.optional() };
+const teamSelectionSchema = { user_team_launch_selection: userLaunchSelectionSchema.optional() };
 
 const handoffDtoSchema = z.object({ from: nonEmptyStringSchema, to: nonEmptyStringSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
 
@@ -232,12 +277,12 @@ const taskTeamSourceSchema: z.ZodType<TaskTeamExecutionSourceDto> = z.object({
 export const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto> = z.object({
   kind: z.literal("task_agent"), address: agentTeamAddressDtoSchema, agent_run_id: nonEmptyStringSchema,
   platform_agent_run_id: nullableNonEmptyStringSchema, delegator_agent_run_id: nullableNonEmptyStringSchema,
-  started_at: nonEmptyStringSchema, source: taskAgentSourceSchema.optional(),
+  started_at: nonEmptyStringSchema, source: taskAgentSourceSchema.optional(), ...agentSelectionSchema,
 }).strict();
 
 const taskTeamAgentSchema: z.ZodType<TaskTeamAgentExecutionDto> = z.object({
   kind: z.literal("task_team_agent"), address: agentTeamAddressDtoSchema,
-  agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema,
+  agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema, ...agentSelectionSchema,
 }).strict();
 
 const taskTeamNestedSchema: z.ZodType<TaskTeamNestedTeamExecutionDto> = z.lazy(() => z.object({
@@ -251,7 +296,7 @@ export const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto> = z.laz
   members: z.array(z.union([taskTeamAgentSchema, taskTeamNestedSchema])),
   task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
   delegator_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
-  source: taskTeamSourceSchema.optional(),
+  source: taskTeamSourceSchema.optional(), ...teamSelectionSchema,
 }).strict());
 
 export const collaboratorEntryDtoSchema: z.ZodType<CollaboratorEntryDto> = z.discriminatedUnion("kind", [
@@ -259,7 +304,7 @@ export const collaboratorEntryDtoSchema: z.ZodType<CollaboratorEntryDto> = z.dis
     kind: z.literal("agent"), address: agentTeamAddressDtoSchema, agent_definition_id: nonEmptyStringSchema,
     agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema,
     launch_configuration: launchConfigurationSchema, launch_source: launchSourceSchema.optional(),
-    added_at: nonEmptyStringSchema, added_via_agent_run_id: nonEmptyStringSchema,
+    added_at: nonEmptyStringSchema, added_via_agent_run_id: nonEmptyStringSchema, ...agentSelectionSchema,
   }).strict(),
   z.object({
     kind: z.literal("agent_team"), address: agentTeamAddressDtoSchema, team_definition_id: nonEmptyStringSchema,
@@ -267,11 +312,12 @@ export const collaboratorEntryDtoSchema: z.ZodType<CollaboratorEntryDto> = z.dis
     members: z.array(z.object({
       address: agentTeamAddressDtoSchema, agent_definition_id: nonEmptyStringSchema,
       agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema, ...memberLaunchSchema,
+      ...agentSelectionSchema,
     }).strict()).min(1),
     handoffs: z.array(handoffDtoSchema), default_launch_configuration: launchConfigurationSchema,
     default_launch_source: launchSourceSchema.optional(),
     task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
-    added_at: nonEmptyStringSchema, added_via_agent_run_id: nonEmptyStringSchema,
+    added_at: nonEmptyStringSchema, added_via_agent_run_id: nonEmptyStringSchema, ...teamSelectionSchema,
   }).strict(),
 ]);
 

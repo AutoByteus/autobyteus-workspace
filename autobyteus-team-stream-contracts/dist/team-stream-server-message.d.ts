@@ -999,6 +999,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             delegator_agent_run_id: string | null;
             started_at: string;
             source?: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+            user_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
             kind: "task_agent";
             address: string;
@@ -1007,6 +1008,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             delegator_agent_run_id: string | null;
             started_at: string;
             source?: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+            user_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
         }>, unknown>>, z.ZodType<Readonly<{
             kind: "task_team";
             address: string;
@@ -1016,6 +1018,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             delegator_agent_run_id: string | null;
             started_at: string;
             source?: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+            user_team_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
             kind: "task_team";
             address: string;
@@ -1025,6 +1028,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             delegator_agent_run_id: string | null;
             started_at: string;
             source?: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+            user_team_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
         }>, unknown>>]>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{

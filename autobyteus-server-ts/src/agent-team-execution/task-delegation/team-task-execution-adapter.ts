@@ -14,7 +14,7 @@ import {
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { foldTeamAggregateStatus, type AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../agent-collaboration/execution/task/task-execution-tree-projection.js";
-import { restoreTaskTeamNode } from "../../agent-collaboration/execution/task/task-team-node-restoration.js";
+import { restoreTaskAgentNode, restoreTaskTeamNode } from "../../agent-collaboration/execution/task/task-team-node-restoration.js";
 import {
   createCollaborationMemberExecutionIdentity,
   createTeamRootExecutionIdentity,
@@ -229,7 +229,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
           address: indexed.address,
           agentRunId: indexed.agentRunId,
           platformAgentRunId: indexed.source.platformAgentRunId,
-          sourceNode: this.sources.requireAgent(indexed.address, indexed.source.source),
+          sourceNode: restoreTaskAgentNode({ source: this.sources.requireAgent(indexed.address, indexed.source.source), execution: indexed.source }),
         });
         assertOpen();
         continue;
@@ -237,7 +237,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
       const source = this.sources.requireTeam(indexed.address, indexed.source.source);
       const run = await host.restoreTaskTeam({ assertOpen,
         handoffs: source.handoffs,
-        teamNode: restoreTaskTeamNode({ source: source.node, execution: indexed.source }),
+        teamNode: restoreTaskTeamNode({ source: source.node, execution: indexed.source, followerAddresses: source.followerAddresses }),
       });
       assertOpen();
       this.options.teamRunResolver.registerManaged(run);
@@ -245,7 +245,10 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     }
   }
 
-  async tryShutDownIfQuiet(reference: TaskExecutionReference): Promise<boolean> {
+  tryShutDownIfQuiet(reference: TaskExecutionReference): Promise<boolean> { return this.shutDown(reference, "idle"); }
+  shutDownForUser(reference: TaskExecutionReference): Promise<boolean> { return this.shutDown(reference, "user"); }
+
+  private async shutDown(reference: TaskExecutionReference, mode: "idle" | "user"): Promise<boolean> {
     const index = this.options.getIndex();
     const indexed = index.getTaskExecution(reference);
     if (!indexed) return false;
@@ -257,7 +260,9 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
         (execution.kind === "agent" ? execution.agentRunId : execution.teamRunId) === key));
     let shutDown: boolean;
     try {
-      shutDown = await host.tryShutDownDirectTaskExecutionIfQuiet(reference);
+      shutDown = mode === "idle"
+        ? await host.tryShutDownDirectTaskExecutionIfQuiet(reference)
+        : await host.shutDownDirectTaskExecutionForUser(reference);
     } catch (error) {
       if (error instanceof TaskExecutionTeardownIndeterminateError) this.options.enterLifecycleFailStop();
       throw error;

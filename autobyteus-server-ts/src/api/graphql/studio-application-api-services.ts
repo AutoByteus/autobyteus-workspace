@@ -11,6 +11,7 @@ import type { AgentOrgRunService } from "../../agent-org-execution/services/agen
 import type { StudioRunModelConfigService } from "../../run-history/services/studio-run-model-config-service.js";
 import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
 import type { CollaborationRootHistoryService } from "../../run-history/services/collaboration-root-history-service.js";
+import type { DelegatedLaunchSelectionService } from "../../run-history/services/delegated-launch-selection-service.js";
 
 type StudioApplicationApiServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
@@ -22,6 +23,7 @@ type StudioApplicationApiServices = Readonly<{
   definitionAdmissionService: DefinitionAdmissionService;
   collaborationRootHistoryService: CollaborationRootHistoryService;
   runModelConfigService: StudioRunModelConfigService;
+  delegatedLaunchSelectionService: DelegatedLaunchSelectionService;
   bundleService: ApplicationBundleService;
   capabilityService: ApplicationCapabilityService;
   packageQueries: ApplicationPackageRegistryService;
@@ -43,6 +45,7 @@ export const configureStudioApplicationApiServices = (
     || !services.definitionAdmissionService
     || !services.collaborationRootHistoryService
     || !services.runModelConfigService
+    || !services.delegatedLaunchSelectionService
     || !services.bundleService
     || !services.capabilityService
     || !services.packageQueries
@@ -106,6 +109,9 @@ export const getStudioCollaborationRootHistoryService = (): CollaborationRootHis
 
 export const getStudioRunModelConfigService = (): StudioRunModelConfigService =>
   requireConfiguredServices().runModelConfigService;
+
+export const getStudioDelegatedLaunchSelectionService = (): DelegatedLaunchSelectionService =>
+  requireConfiguredServices().delegatedLaunchSelectionService;
 
 export const getStudioApplicationPackageQueries =
   (): ApplicationPackageRegistryService => requireConfiguredServices().packageQueries;

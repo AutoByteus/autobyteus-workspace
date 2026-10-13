@@ -129,4 +129,9 @@ export interface RootTaskExecutionAdapter<TPlacement> {
   assertRestorableChain(agentRunId: string): void;
   restoreChain(agentRunId: string, assertOpen: () => void): Promise<void>;
   tryShutDownIfQuiet(reference: TaskExecutionReference): Promise<boolean>;
+  /**
+   * User Stop (DS-002) of one live copy, quiet or not: interrupts and releases it into the same
+   * restorable state as idle shutdown (indexed, offline, Task open). False when it is not live.
+   */
+  shutDownForUser(reference: TaskExecutionReference): Promise<boolean>;
 }

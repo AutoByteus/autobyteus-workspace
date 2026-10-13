@@ -18,7 +18,7 @@ import type {
 } from "../domain/run-execution-tree-shared-records.js";
 import { isCollaboratorTeamEntry } from "../domain/run-execution-tree-shared-records.js";
 import { parseTaskAgentExecutionSource, parseTaskTeamExecutionSource } from "./task-execution-source-schema.js";
-import { parseOptionalLaunchFields } from "./launch-configuration-source-schema.js";
+import { parseOptionalLaunchFields, parseOptionalUserLaunchSelection } from "./launch-configuration-source-schema.js";
 
 /**
  * Execution-tree files are read tolerantly and written exactly (REQ-018): each parser
@@ -171,6 +171,7 @@ const parseTaskTeamMember = (value: unknown, label: string): TaskTeamMemberExecu
       address: canonicalNonRootAddress(member.address, `${label}.address`),
       agentRunId: requiredString(member.agentRunId, `${label}.agentRunId`),
       platformAgentRunId: nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`),
+      ...parseOptionalUserLaunchSelection(member, "userLaunchSelection", label),
     };
   }
   requireKeys(member, ["address", "teamRunId", "members", "taskExecutions"], label);
@@ -200,6 +201,7 @@ export const parseTaskExecution = (value: unknown, label: string): TaskExecution
       ...parseDelegator(execution, label),
       startedAt: isoTimestamp(execution.startedAt, `${label}.startedAt`),
       ...parseTaskAgentExecutionSource(execution, label),
+      ...parseOptionalUserLaunchSelection(execution, "userLaunchSelection", label),
     };
   }
   requireKeys(execution, ["address", "teamRunId", "members", "taskExecutions", "startedAt"], label);
@@ -213,6 +215,7 @@ export const parseTaskExecution = (value: unknown, label: string): TaskExecution
     ...parseDelegator(execution, label),
     startedAt: isoTimestamp(execution.startedAt, `${label}.startedAt`),
     ...parseTaskTeamExecutionSource(execution, address, label),
+    ...parseOptionalUserLaunchSelection(execution, "userTeamLaunchSelection", label),
   };
 };
 
@@ -318,6 +321,7 @@ const parseCollaboratorTeamMember = (
     agentRunId: requiredString(member.agentRunId, `${label}.agentRunId`),
     platformAgentRunId: nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`),
     ...parseOptionalLaunchFields(member, { launch: "launchConfiguration", source: "launchSource" }, label),
+    ...parseOptionalUserLaunchSelection(member, "userLaunchSelection", label),
   };
 };
 
@@ -338,6 +342,7 @@ export const parseCollaboratorEntry = (value: unknown, label: string): Collabora
       ...parseOptionalLaunchFields(entry, { source: "launchSource" }, label),
       addedAt: isoTimestamp(entry.addedAt, `${label}.addedAt`),
       addedViaAgentRunId: requiredString(entry.addedViaAgentRunId, `${label}.addedViaAgentRunId`),
+      ...parseOptionalUserLaunchSelection(entry, "userLaunchSelection", label),
     };
   }
   if (entry.kind !== "agent_team") throw new Error(`${label}.kind must be 'agent' or 'agent_team'.`);
@@ -371,6 +376,7 @@ export const parseCollaboratorEntry = (value: unknown, label: string): Collabora
     taskExecutions: parseTaskExecutions(entry.taskExecutions, `${label}.taskExecutions`),
     addedAt: isoTimestamp(entry.addedAt, `${label}.addedAt`),
     addedViaAgentRunId: requiredString(entry.addedViaAgentRunId, `${label}.addedViaAgentRunId`),
+    ...parseOptionalUserLaunchSelection(entry, "userTeamLaunchSelection", label),
   };
 };
 

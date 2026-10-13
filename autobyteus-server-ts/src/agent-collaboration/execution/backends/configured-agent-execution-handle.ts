@@ -27,8 +27,10 @@ import {
 import type { MemberExecutionContext } from "../domain/member-execution-context.js";
 import type { RootAgentExecutionCallbacks } from "../domain/root-agent-execution-callbacks.js";
 import type {
+  AgentModelChoice,
   ConfiguredAgentActivationMode,
   ConfiguredAgentExecutionSpec,
+  RetainedAgentExecutionControl,
 } from "../domain/configured-agent-execution.js";
 import { CollaborationAgentActivationError } from "../domain/configured-agent-execution.js";
 import type {
@@ -52,7 +54,7 @@ export type PreparedConfiguredAgentActivation = Readonly<{
 }>;
 
 /** Root-neutral owner of one configured or task AgentRun's provider/local mechanics. */
-export class ConfiguredAgentExecutionHandle {
+export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionControl {
   readonly identity: CollaborationMemberExecutionIdentity;
   readonly physicalScope: RootExecutionPhysicalScope;
   private activationOperation: AgentRunActivationOperation | null = null;
@@ -66,6 +68,9 @@ export class ConfiguredAgentExecutionHandle {
   private activationMode: ConfiguredAgentActivationMode;
   private readonly overlay: ConfiguredAgentStatusOverlay;
   private readonly planner: ConfiguredAgentActivationPlanner;
+  /** The spec the next activation uses; only its model choice changes, and only while stopped. */
+  private execution: ConfiguredAgentExecutionSpec;
+  private activationFence: Promise<void> | null = null;
 
   constructor(private readonly options: {
     identity: CollaborationMemberExecutionIdentity;
@@ -93,6 +98,7 @@ export class ConfiguredAgentExecutionHandle {
       || typeof options.callbacks.commitPlatformBindingChange !== "function") {
       throw new Error("RootAgentExecutionCallbacks are required.");
     }
+    this.execution = options.execution;
     this.platformAgentRunId = options.execution.platformAgentRunId?.trim() || null;
     this.activationMode = options.activationMode;
     this.overlay = new ConfiguredAgentStatusOverlay(this.identity, (snapshot) => {
@@ -181,6 +187,42 @@ export class ConfiguredAgentExecutionHandle {
   async interrupt(): Promise<AgentOperationResult> {
     return this.agentRun ? this.agentRun.interrupt() : { accepted: true };
   }
+  isStopped(): boolean {
+    return !this.agentRun?.isActive() && !this.readinessAttempt && !this.activationOperation && !this.configurationPreparing;
+  }
+
+  async withActivationFence<T>(operation: () => Promise<T> | T): Promise<T> {
+    // A pending activation is awaited once: a failed attempt that is kept for its retry never clears,
+    // so waiting on it again would spin. `operation` then reads `isStopped()` and decides itself.
+    let awaitedReadiness = false;
+    for (;;) {
+      if (this.activationFence) { await this.activationFence; continue; }
+      if (this.readinessAttempt && !awaitedReadiness) {
+        awaitedReadiness = true;
+        await this.readinessAttempt.then(() => undefined, () => undefined);
+        continue;
+      }
+      break;
+    }
+    let release!: () => void;
+    this.activationFence = new Promise<void>((resolve) => { release = resolve; });
+    try { return await operation(); }
+    finally { this.activationFence = null; release(); }
+  }
+
+  /** User Stop (DS-002): interrupt, then release the exact runtime with input left open (restorable). */
+  async releaseRuntimeForUserStop(): Promise<AgentOperationResult> {
+    if (this.agentRun?.isActive()) await this.agentRun.interrupt().catch(() => undefined);
+    return this.releaseRuntime(false);
+  }
+
+  replaceModelChoice(choice: AgentModelChoice): void {
+    if (!this.isStopped()) {
+      throw new Error(`AgentRun '${this.identity.agentRunId}' is running; its model can change only while it is stopped.`);
+    }
+    this.execution = Object.freeze({ ...this.execution, llmModelIdentifier: choice.llmModelIdentifier, llmConfig: choice.llmConfig });
+  }
+
   async fenceForRootShutdown(): Promise<AgentOperationResult> {
     // Fence before the stale check so root shutdown can never re-activate a dead member.
     this.cancelActivation();
@@ -291,6 +333,8 @@ export class ConfiguredAgentExecutionHandle {
     }
     if (this.agentRun?.isActive()) return Promise.resolve(this.agentRun);
     if (this.readinessAttempt) return this.readinessAttempt;
+    // A user Stop or model change holds activation; this activation starts after it, on the new spec.
+    if (this.activationFence) return this.activationFence.then(() => this.ensureReady());
     let retrySafe = false;
     const attempt = this.initializeReady(() => { retrySafe = true; });
     this.readinessAttempt = attempt;
@@ -383,7 +427,7 @@ export class ConfiguredAgentExecutionHandle {
   }
 
   private async buildAgentRunConfig(): Promise<AgentRunConfig> {
-    const execution = this.options.execution;
+    const execution = this.execution;
     let workspaceId: string | null = null;
     if (execution.workspaceRootPath) {
       try {

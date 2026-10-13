@@ -1,3 +1,4 @@
+import type { RetainedAgentExecutionControl } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
@@ -36,6 +37,10 @@ export interface TeamRunBackend {
   discardReleasedDirectTaskExecution(reference: TaskExecutionReference): void;
   hasLiveDirectTaskExecution(reference: TaskExecutionReference): boolean;
   tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference): Promise<boolean>;
+  /** User Stop of one live direct task execution, quiet or not; it stays restorable. False when not live. */
+  shutDownDirectTaskExecutionForUser(reference: TaskExecutionReference): Promise<boolean>;
+  /** User control of a direct configured or collaborator Agent of this TeamRun; null for any other AgentRun. */
+  getRetainedAgentControl(agentRunId: string): RetainedAgentExecutionControl | null;
   cancelRuntimeActivation(): void;
   releaseOwnedRuntime(): Promise<AgentOperationResult>;
   prepareTermination(): Promise<PreparedLocalExecutionTermination>;

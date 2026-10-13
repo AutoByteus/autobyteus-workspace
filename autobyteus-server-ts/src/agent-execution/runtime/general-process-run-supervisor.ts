@@ -1,3 +1,4 @@
+import { DelegatedLaunchSelectionService } from "../../run-history/services/delegated-launch-selection-service.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { AgentOrgDefinitionService } from "../../agent-org-definition/services/agent-org-definition-service.js";
@@ -129,6 +130,7 @@ export class GeneralProcessRunSupervisor {
   readonly teamRunHistoryService: TeamRunHistoryService;
   readonly agentOrgRunHistoryCatalogService: AgentOrgRunHistoryCatalogService;
   readonly collaborationRootHistoryService: CollaborationRootHistoryService;
+  readonly delegatedLaunchSelectionService: DelegatedLaunchSelectionService;
   private readonly agentRunManager: AgentRunManager;
   private readonly agentTeamRunManager: AgentTeamRunManager;
   private readonly agentOrgRunManager: AgentOrgRunManager;
@@ -361,6 +363,13 @@ export class GeneralProcessRunSupervisor {
       bindProcessTeamRunService(teamRunService);
       teamRunServiceBound = true;
 
+      this.delegatedLaunchSelectionService = new DelegatedLaunchSelectionService({
+        teams: agentTeamRunManager,
+        orgs: agentOrgRunManager,
+        agents: standaloneRootManager,
+        agentRuns: agentRunService,
+        validator: input.modelSelectionValidator,
+      });
       this.agentRunManager = agentRunManager;
       this.agentTeamRunManager = agentTeamRunManager;
       this.agentOrgRunManager = agentOrgRunManager;

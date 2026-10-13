@@ -301,6 +301,7 @@ export const buildStudioServer = async (input: {
       definitionAdmissionService: hostDefinitionServices.definitionAdmissionService,
       collaborationRootHistoryService: generalProcessRunSupervisor.collaborationRootHistoryService,
       runModelConfigService,
+      delegatedLaunchSelectionService: generalProcessRunSupervisor.delegatedLaunchSelectionService,
     });
 
     const app = fastify({

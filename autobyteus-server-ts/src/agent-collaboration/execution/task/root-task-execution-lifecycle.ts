@@ -46,6 +46,17 @@ export type TaskExecutionAgentStatus = "offline" | "initializing" | "idle" | "ru
  */
 export type DeliverTaskWork = (ingressAgentRunId: string, content: string, referenceFiles: readonly string[]) => Promise<AgentOperationResult>;
 
+/** A user Stop of task copies (SR-006): those it stopped and those that were already offline. */
+export type TaskExecutionUserStopResult = Readonly<{
+  stopped: readonly TaskExecutionReference[];
+  alreadyStopped: readonly TaskExecutionReference[];
+}>;
+
+/** A step that runs only while the listed copies are stopped (AR-001); otherwise the running ones. */
+export type StoppedTaskExecutionsStep<T> =
+  | Readonly<{ ran: true; value: T }>
+  | Readonly<{ ran: false; running: readonly TaskExecutionReference[] }>;
+
 /** A Task's helper and, only when this call started it (or joined the attempt starting it), its launch notes. */
 export type TaskHelperResult = Readonly<{ target: TaskExecutionTarget; launchNotes?: readonly string[] }>;
 
@@ -62,6 +73,10 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
   private accepting = true;
   private readonly resourceScope: RootTaskExecutionResourceScope<TPlacement>;
   private readonly helperAttempts = new Map<string, Promise<TaskHelperResult>>();
+  /** Copies a user Stop is stopping, by key, with the attempt that marked them (SR-006). */
+  private readonly stopping = new Map<string, Promise<void>>();
+  /** Re-checked whenever a live lease is released (a Stop drains held leases outside the queue). */
+  private leaseWaiters: Array<() => void> = [];
 
   constructor(
     private readonly adapter: RootTaskExecutionAdapter<TPlacement>,
@@ -361,6 +376,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
     }
     // The Task side's loaded records are the authority: no durable read, closed stays closed after restart.
     this.resourceScope.assertInputAllowed(agentRunId);
+    this.assertNotStopping(agentRunId);
     return this.queue.submit({ kind: "wake", executeAtQueueHead: () => this.acquireAtHead(agentRunId) });
   }
 
@@ -370,6 +386,8 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
     }
     const assertOpen = () => this.resourceScope.assertInputAllowed(agentRunId);
     assertOpen();
+    // A wake queued before a Stop marked its chain is refused at the head, never restored.
+    this.assertNotStopping(agentRunId);
     const chain = this.adapter.taskExecutionChainFor(agentRunId);
     if (!chain.length) return Object.freeze({ assertOpen, release: () => undefined });
     this.adapter.assertRestorableChain(agentRunId);
@@ -399,6 +417,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
           if (next > 0) this.leases.set(key, next);
           else this.leases.delete(key);
         }
+        this.notifyLeaseWaiters();
         if (this.accepting) this.armLive(chain);
       },
     });
@@ -418,9 +437,101 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
   private async shutdownAtHead(reference: TaskExecutionReference): Promise<void> {
     if (!this.accepting) return;
     if (this.leases.has(taskExecutionReferenceKey(reference))) return;
+    if (this.stopping.has(taskExecutionReferenceKey(reference))) return;
     if (!this.adapter.isLive(reference)) return;
     // Not quiet: a later idle/offline/error status or lease release re-arms.
     await this.adapter.tryShutDownIfQuiet(reference);
+  }
+
+  /**
+   * User Stop of task copies (SR-006), `executions` innermost first (`delegatedStopSet`):
+   * 1. marks them stopping: from now on a live lease on any chain containing one is refused with
+   *    `TASK_EXECUTION_STOPPING`, before any queue step (deliveries into, from or by them are refused);
+   * 2. waits, outside the queue, for the leases already held on them to be released (in-flight
+   *    deliveries finish; their inner queue steps still run, since this never holds the queue head);
+   * 3. submits one non-waiting `stop` step per copy, innermost first, that releases a live copy into
+   *    the restorable idle-shutdown state;
+   * 4. clears the marks. An overlapping Stop first lets the earlier attempt settle.
+   */
+  async stopForUser(executions: readonly TaskExecutionReference[]): Promise<TaskExecutionUserStopResult> {
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting commands.");
+    const keys = [...new Set(executions.map(taskExecutionReferenceKey))];
+    for (;;) {
+      const overlapping = [...new Set(keys.flatMap((key) => this.stopping.get(key) ?? []))];
+      if (!overlapping.length) break;
+      await Promise.allSettled(overlapping);
+    }
+    let settle!: () => void;
+    const attempt = new Promise<void>((resolve) => { settle = resolve; });
+    keys.forEach((key) => this.stopping.set(key, attempt));
+    executions.forEach((reference) => this.schedule.cancel(reference));
+    try {
+      await this.leasesReleased(keys);
+      const stopped: TaskExecutionReference[] = [];
+      const alreadyStopped: TaskExecutionReference[] = [];
+      for (const reference of executions) {
+        const done = await this.queue.submit({ kind: "stop", executeAtQueueHead: () => this.stopAtHead(reference) });
+        (done ? stopped : alreadyStopped).push(reference);
+      }
+      return Object.freeze({ stopped: Object.freeze(stopped), alreadyStopped: Object.freeze(alreadyStopped) });
+    } finally {
+      keys.forEach((key) => { if (this.stopping.get(key) === attempt) this.stopping.delete(key); });
+      settle();
+      this.resourceScope.taskExecutionsStatusChanged(executions);
+    }
+  }
+
+  /**
+   * AR-001: runs `operation` at the queue head only while every listed copy is stopped (not live,
+   * not held by a lease and not being stopped); wake, activation, idle shutdown and Stop cannot
+   * interleave with it. Otherwise nothing runs and the running copies are returned.
+   */
+  async whileTaskExecutionsStopped<T>(
+    references: readonly TaskExecutionReference[],
+    operation: () => Promise<T> | T,
+  ): Promise<StoppedTaskExecutionsStep<T>> {
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting commands.");
+    return this.queue.submit({
+      kind: "reconfigure",
+      executeAtQueueHead: async (): Promise<StoppedTaskExecutionsStep<T>> => {
+        const running = references.filter((reference) => {
+          const key = taskExecutionReferenceKey(reference);
+          return this.stopping.has(key) || this.leases.has(key) || this.adapter.isLive(reference);
+        });
+        if (running.length) return Object.freeze({ ran: false, running: Object.freeze(running) });
+        return Object.freeze({ ran: true, value: await operation() });
+      },
+    });
+  }
+
+  /** Never awaits a lease: the Stop already drained them and refuses new ones. */
+  private async stopAtHead(reference: TaskExecutionReference): Promise<boolean> {
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting commands.");
+    if (!this.adapter.isLive(reference)) return false;
+    this.schedule.cancel(reference);
+    return this.adapter.shutDownForUser(reference);
+  }
+
+  private assertNotStopping(agentRunId: string): void {
+    if (!this.stopping.size) return;
+    if (this.adapter.taskExecutionChainFor(agentRunId).some((reference) => this.stopping.has(taskExecutionReferenceKey(reference)))) {
+      throw new TaskDelegationError("TASK_EXECUTION_STOPPING", "This copy is being stopped by the user.");
+    }
+  }
+
+  private leasesReleased(keys: readonly string[]): Promise<void> {
+    const held = () => keys.some((key) => this.leases.has(key));
+    if (!held()) return Promise.resolve();
+    return new Promise<void>((resolve) => {
+      const check = () => { if (held()) this.leaseWaiters.push(check); else resolve(); };
+      this.leaseWaiters.push(check);
+    });
+  }
+
+  private notifyLeaseWaiters(): void {
+    const waiters = this.leaseWaiters;
+    this.leaseWaiters = [];
+    waiters.forEach((check) => check());
   }
 
   private armLive(chain: readonly TaskExecutionReference[]): void {

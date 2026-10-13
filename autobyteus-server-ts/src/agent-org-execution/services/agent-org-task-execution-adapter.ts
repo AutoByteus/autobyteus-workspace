@@ -17,7 +17,7 @@ import {
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { foldTeamAggregateStatus, type AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../agent-collaboration/execution/task/task-execution-tree-projection.js";
-import { restoreTaskTeamNode } from "../../agent-collaboration/execution/task/task-team-node-restoration.js";
+import { restoreTaskAgentNode, restoreTaskTeamNode } from "../../agent-collaboration/execution/task/task-team-node-restoration.js";
 import {
   createCollaborationMemberExecutionIdentity,
   createRootExecutionPhysicalScope,
@@ -267,7 +267,10 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
       assertOpen();
       if (this.isLive(referenceOf(indexed))) continue;
       if (indexed.kind === "agent") {
-        const source = this.sources.require(indexed.address, "agent", indexed.source.source).node;
+        const source = restoreTaskAgentNode({
+          source: this.sources.require(indexed.address, "agent", indexed.source.source).node,
+          execution: indexed.source,
+        });
         const sourceNode = Object.freeze({
           ...source,
           agentRunId: indexed.agentRunId,
@@ -287,7 +290,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
         continue;
       }
       const source = this.sources.require(indexed.address, "agent_team", indexed.source.source);
-      const teamNode = restoreTaskTeamNode({ source: source.node, execution: indexed.source });
+      const teamNode = restoreTaskTeamNode({ source: source.node, execution: indexed.source, followerAddresses: source.followerAddresses });
       const handoffs = source.handoffs;
       if (indexed.host.hostKind === "root") {
         await this.options.teams.restoreRootTaskTeam({ assertOpen,
@@ -305,7 +308,10 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
     }
   }
 
-  async tryShutDownIfQuiet(reference: TaskExecutionReference): Promise<boolean> {
+  tryShutDownIfQuiet(reference: TaskExecutionReference): Promise<boolean> { return this.shutDown(reference, "idle"); }
+  shutDownForUser(reference: TaskExecutionReference): Promise<boolean> { return this.shutDown(reference, "user"); }
+
+  private async shutDown(reference: TaskExecutionReference, mode: "idle" | "user"): Promise<boolean> {
     const index = this.options.getIndex();
     const indexed = index.getTaskExecution(reference);
     if (!indexed || !this.isLive(reference)) return false;
@@ -316,11 +322,18 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
     let shutDown = false;
     try {
       if (indexed.host.hostKind === "team") {
-        shutDown = await this.options.teams.require(indexed.host.hostRunId).tryShutDownDirectTaskExecutionIfQuiet(reference);
-      } else {
-        shutDown = indexed.kind === "agent"
+        const host = this.options.teams.require(indexed.host.hostRunId);
+        shutDown = mode === "idle"
+          ? await host.tryShutDownDirectTaskExecutionIfQuiet(reference)
+          : await host.shutDownDirectTaskExecutionForUser(reference);
+      } else if (indexed.kind === "agent") {
+        shutDown = mode === "idle"
           ? await this.options.rootAgents.tryShutDownTaskIfQuiet(indexed.agentRunId)
-          : await this.options.teams.tryShutDownRootTaskTeamIfQuiet(indexed.teamRunId);
+          : await this.options.rootAgents.shutDownTaskForUser(indexed.agentRunId);
+      } else {
+        shutDown = mode === "idle"
+          ? await this.options.teams.tryShutDownRootTaskTeamIfQuiet(indexed.teamRunId)
+          : await this.options.teams.shutDownRootTaskTeamForUser(indexed.teamRunId);
       }
     } catch (error) {
       if (error instanceof TaskExecutionTeardownIndeterminateError) this.options.enterLifecycleFailStop();

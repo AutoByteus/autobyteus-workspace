@@ -11,9 +11,10 @@ import {
   type TeamRunExecutionTreeDto,
   type TeamStreamServerMessage,
   type TeamTaskExecutionReferenceDto,
+  type UserLaunchSelectionDto,
 } from "@autobyteus/team-stream-contracts";
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
-import { isCollaboratorTeamEntry, type RecordedMemberLaunch } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import { isCollaboratorTeamEntry, type RecordedMemberLaunch, type UserLaunchSelection } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type {
   CollaboratorEntry,
@@ -170,6 +171,13 @@ const projectMemberLaunch = (member: RecordedMemberLaunch) => ({
   ...(member.launchConfiguration ? { launch_configuration: projectLaunchConfiguration(member.launchConfiguration) } : {}),
   ...(member.launchSource ? { launch_source: projectLaunchSource(member.launchSource) } : {}),
 });
+/** A user model choice, emitted only when recorded. */
+const optionalSelection = <K extends "user_launch_selection" | "user_team_launch_selection">(key: K, selection: UserLaunchSelection | undefined) =>
+  (selection ? { [key]: {
+    llm_model_identifier: selection.llmModelIdentifier,
+    llm_config: selection.llmConfig as Record<string, import("@autobyteus/team-stream-contracts").JsonValue> | null,
+    selected_at: selection.selectedAt,
+  } } : {}) as Partial<Record<K, UserLaunchSelectionDto>>;
 const optionalSource = <K extends string>(key: K, source: LaunchConfigurationSource | undefined) =>
   (source ? { [key]: projectLaunchSource(source) } : {}) as Partial<Record<K, LaunchConfigurationSourceDto>>;
 
@@ -180,6 +188,7 @@ export const projectCollaboratorEntry = (entry: CollaboratorEntry): Collaborator
       launch_configuration: projectLaunchConfiguration(entry.launchConfiguration),
       ...optionalSource("launch_source", entry.launchSource),
       added_at: entry.addedAt, added_via_agent_run_id: entry.addedViaAgentRunId,
+      ...optionalSelection("user_launch_selection", entry.userLaunchSelection),
     }
   : {
       kind: "agent_team", address: entry.address, team_definition_id: entry.teamDefinitionId,
@@ -187,12 +196,14 @@ export const projectCollaboratorEntry = (entry: CollaboratorEntry): Collaborator
       members: entry.members.map((member) => ({
         address: member.address, agent_definition_id: member.agentDefinitionId,
         agent_run_id: member.agentRunId, platform_agent_run_id: member.platformAgentRunId, ...projectMemberLaunch(member),
+        ...optionalSelection("user_launch_selection", member.userLaunchSelection),
       })),
       handoffs: entry.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
       default_launch_configuration: projectLaunchConfiguration(entry.defaultLaunchConfiguration),
       ...optionalSource("default_launch_source", entry.defaultLaunchSource),
       task_executions: entry.taskExecutions.map(projectTaskExecution),
       added_at: entry.addedAt, added_via_agent_run_id: entry.addedViaAgentRunId,
+      ...optionalSelection("user_team_launch_selection", entry.userTeamLaunchSelection),
     };
 
 const projectConfiguredMember = (member: ConfiguredExecutionNode): ConfiguredMemberExecutionDto => {
@@ -224,6 +235,7 @@ const projectTaskExecution = (execution: TaskExecution): TaskExecutionDto => {
       launch_configuration: projectLaunchConfiguration(execution.source.launchConfiguration),
       ...optionalSource("launch_source", execution.source.launchSource),
     } } : {}),
+    ...optionalSelection("user_launch_selection", execution.userLaunchSelection),
   };
   return {
     kind: "task_team", address: execution.address, team_run_id: execution.teamRunId,
@@ -240,6 +252,7 @@ const projectTaskExecution = (execution: TaskExecution): TaskExecutionDto => {
       default_launch_configuration: projectLaunchConfiguration(execution.source.defaultLaunchConfiguration),
       ...optionalSource("default_launch_source", execution.source.defaultLaunchSource),
     } } : {}),
+    ...optionalSelection("user_team_launch_selection", execution.userTeamLaunchSelection),
   };
 };
 
@@ -247,6 +260,7 @@ const projectTaskTeamMember = (member: TaskTeamMemberExecution): TaskTeamMemberE
   if ("agentRunId" in member) return {
     kind: "task_team_agent", address: member.address, agent_run_id: member.agentRunId,
     platform_agent_run_id: member.platformAgentRunId,
+    ...optionalSelection("user_launch_selection", member.userLaunchSelection),
   };
   return projectNestedTaskTeam(member);
 };
