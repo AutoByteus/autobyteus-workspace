@@ -1,0 +1,20 @@
+{
+  "result": "Blocked — not Delivery Completed/Terminal",
+  "selectedRule": "non-deployment issue requiring upstream classification",
+  "recipientAddress": "/software_engineering_team/solution_designer",
+  "toolResult": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /software_engineering_team/solution_designer.\",\"target_agent_run_id\":\"solution_designer_2ec9c50fc89d4a1cb72e6224a75e68e1\"}"
+      }
+    ],
+    "structuredContent": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to /software_engineering_team/solution_designer.",
+      "target_agent_run_id": "solution_designer_2ec9c50fc89d4a1cb72e6224a75e68e1"
+    }
+  },
+  "receiptWriteDiagnostic": "Initial receipt serialization used JSON booleans as Python literals and failed before writing; corrected with literal JSON artifact. Handoff itself succeeded."
+}

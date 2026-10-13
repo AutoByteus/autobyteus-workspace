@@ -1,0 +1,19 @@
+{
+  "result": "Pass",
+  "cleanup": {
+    "stop": {
+      "instanceId": "iso-33485-2309",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-ZYsZtc",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "list": {
+      "instances": []
+    }
+  },
+  "evidence": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/desktop-06/evidence.json"
+}

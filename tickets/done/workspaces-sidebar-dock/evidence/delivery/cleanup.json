@@ -1,0 +1,67 @@
+{
+  "startedAt": "2026-10-13T15:06:29Z",
+  "custodyVerifiedBeforeRemoval": true,
+  "remoteSourceMergeVerified": true,
+  "events": [
+    {
+      "removedGeneratedOutput": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-application-backend-sdk/dist"
+    },
+    {
+      "removedGeneratedOutput": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-application-frontend-sdk/dist"
+    },
+    {
+      "removedGeneratedOutput": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-application-sdk-contracts/dist"
+    },
+    {
+      "command": [
+        "git",
+        "worktree",
+        "remove",
+        "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "git",
+        "worktree",
+        "remove",
+        "/home/autobyteus/workspace/.codex/worktrees/finalize-workspaces-sidebar-dock"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "git",
+        "branch",
+        "-D",
+        "codex/workspaces-sidebar-dock"
+      ],
+      "remoteAncestorVerified": true,
+      "exitCode": 0,
+      "output": "Deleted branch codex/workspaces-sidebar-dock (was 7db35db8d).\n"
+    },
+    {
+      "command": [
+        "git",
+        "branch",
+        "-D",
+        "finalize/workspaces-sidebar-dock"
+      ],
+      "remoteAncestorVerified": true,
+      "exitCode": 0,
+      "output": "Deleted branch finalize/workspaces-sidebar-dock (was 1a2379c57).\n"
+    }
+  ],
+  "remoteTicketBranchCleanup": "Not required \u2014 retained at7db35db8d for provenance",
+  "worktreePrune": "Not required \u2014 both registrations removed by targeted git worktree remove",
+  "userRuntimeDataServiceTouched": false,
+  "worktreeRemoval": "Completed",
+  "localTicketAndFinalizeBranchRemoval": "Completed",
+  "registrationsAbsent": true,
+  "pathsAbsent": true,
+  "ignoredDependenciesAndPackagedBuildOutputs": "Removed with owned task worktree only",
+  "finishedAt": "2026-10-13T15:09:36Z"
+}

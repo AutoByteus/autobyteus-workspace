@@ -21,7 +21,7 @@ const mountShell = (width: number, startSurface = false) => {
   const policy = computed(() => resolveResponsiveWorkspaceShellState({
     viewportWidth: width, viewportHeight: 800, leftPanelPreference: 'visible', leftPanelPreferredWidth: 320,
     rightPanelPreference: right.isRightPanelVisible.value ? 'visible' : 'hidden-by-user',
-    rightPanelPreferredWidth: right.rightPanelWidth.value, rightPanelResizeIntent: right.rightPanelResizeIntent.value,
+    rightPanelPreferredWidth: right.preferredRightPanelWidth.value, rightPanelResizeIntent: right.rightPanelResizeIntent.value,
   }))
   const wrapper = mount(WorkspaceToolShell, {
     props: { startSurface },

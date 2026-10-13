@@ -1,0 +1,17 @@
+
+> autobyteus@1.5.3-beta.3 test:e2e:workspaces-sidebar-dock /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web
+> node tests/e2e/workspaces-sidebar-dock-probe.mjs --browser-uid 1000 --output-dir ../tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/browser-01 --ledger-file /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/api-e2e-test-case-ledger.md
+
+{
+  "result": "Fail",
+  "cases": {},
+  "cleanup": {
+    "routeRemoved": true,
+    "privateHomeRemoved": true,
+    "nuxtExit": 0,
+    "portFree": true,
+    "browserClosed": true
+  },
+  "evidence": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/browser-01/evidence.json"
+}
+ ELIFECYCLE  Command failed with exit code 1.

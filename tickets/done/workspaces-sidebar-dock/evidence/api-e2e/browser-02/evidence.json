@@ -1,0 +1,60 @@
+{
+  "startedAt": "2026-10-13T14:04:50.116Z",
+  "source": "9848d80eec3f522e4a3b06d2a2834c294d023c1b",
+  "platform": "linux-arm64",
+  "cases": {
+    "BR-001": {
+      "result": "Fail",
+      "name": "Wide Team/Activity actual pointer drag, three cycles and meaningful controls",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[role=\"tab\"][data-tab-name=\"teamMembers\"]')\u001b[22m\n",
+      "stack": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[role=\"tab\"][data-tab-name=\"teamMembers\"]')\u001b[22m\n\n    at /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/tests/e2e/workspaces-sidebar-dock-probe.mjs:178:86\n    at async scenario (/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/tests/e2e/workspaces-sidebar-dock-probe.mjs:59:5)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/tests/e2e/workspaces-sidebar-dock-probe.mjs:176:3"
+    }
+  },
+  "snapshots": [],
+  "browserErrors": [],
+  "operations": [
+    "GetApplicationsCapability",
+    "GetSkillImprovementCapability",
+    "GetAgentDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetApplicationsCapability",
+    "GetSkillImprovementCapability",
+    "GetAgentDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory"
+  ],
+  "cleanup": {
+    "routeRemoved": true,
+    "privateHomeRemoved": true,
+    "nuxtExit": 0,
+    "portFree": true,
+    "browserClosed": true
+  },
+  "browserUid": 1000,
+  "port": 34609,
+  "nuxtPid": 21613,
+  "browser": "153.0.8010.52",
+  "warmupErrors": [],
+  "result": "Fail",
+  "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[role=\"tab\"][data-tab-name=\"teamMembers\"]')\u001b[22m\n",
+  "finishedAt": "2026-10-13T14:05:47.696Z"
+}

@@ -1,0 +1,84 @@
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1680
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1680, reused 83, downloaded 0, added 0
+Progress: resolved 1680, reused 196, downloaded 0, added 0
+Progress: resolved 1680, reused 282, downloaded 0, added 0
+Progress: resolved 1680, reused 437, downloaded 0, added 0
+Progress: resolved 1680, reused 504, downloaded 0, added 0
+Progress: resolved 1680, reused 521, downloaded 0, added 0
+Progress: resolved 1680, reused 611, downloaded 0, added 0
+Progress: resolved 1680, reused 687, downloaded 0, added 0
+Progress: resolved 1680, reused 840, downloaded 0, added 0
+Progress: resolved 1680, reused 1060, downloaded 0, added 0
+Progress: resolved 1680, reused 1304, downloaded 0, added 0
+Progress: resolved 1680, reused 1542, downloaded 0, added 0
+Progress: resolved 1680, reused 1678, downloaded 0, added 12
+Progress: resolved 1680, reused 1678, downloaded 0, added 46
+Progress: resolved 1680, reused 1678, downloaded 0, added 83
+Progress: resolved 1680, reused 1678, downloaded 0, added 122
+Progress: resolved 1680, reused 1678, downloaded 0, added 130
+Progress: resolved 1680, reused 1678, downloaded 0, added 132
+Progress: resolved 1680, reused 1678, downloaded 0, added 202
+Progress: resolved 1680, reused 1678, downloaded 0, added 233
+Progress: resolved 1680, reused 1678, downloaded 0, added 263
+Progress: resolved 1680, reused 1678, downloaded 0, added 273
+Progress: resolved 1680, reused 1678, downloaded 0, added 341
+Progress: resolved 1680, reused 1678, downloaded 0, added 372
+Progress: resolved 1680, reused 1678, downloaded 0, added 418
+Progress: resolved 1680, reused 1678, downloaded 0, added 446
+Progress: resolved 1680, reused 1678, downloaded 0, added 467
+Progress: resolved 1680, reused 1678, downloaded 0, added 486
+Progress: resolved 1680, reused 1678, downloaded 0, added 503
+Progress: resolved 1680, reused 1678, downloaded 0, added 507
+Progress: resolved 1680, reused 1678, downloaded 0, added 517
+Progress: resolved 1680, reused 1678, downloaded 0, added 529
+Progress: resolved 1680, reused 1678, downloaded 0, added 579
+Progress: resolved 1680, reused 1678, downloaded 0, added 621
+Progress: resolved 1680, reused 1678, downloaded 0, added 663
+Progress: resolved 1680, reused 1678, downloaded 0, added 709
+Progress: resolved 1680, reused 1678, downloaded 0, added 767
+Progress: resolved 1680, reused 1678, downloaded 0, added 793
+Progress: resolved 1680, reused 1678, downloaded 0, added 844
+Progress: resolved 1680, reused 1678, downloaded 0, added 885
+Progress: resolved 1680, reused 1678, downloaded 0, added 929
+Progress: resolved 1680, reused 1678, downloaded 0, added 954
+Progress: resolved 1680, reused 1678, downloaded 0, added 955
+Progress: resolved 1680, reused 1678, downloaded 0, added 980
+Progress: resolved 1680, reused 1678, downloaded 0, added 1014
+Progress: resolved 1680, reused 1678, downloaded 0, added 1052
+Progress: resolved 1680, reused 1678, downloaded 0, added 1081
+Progress: resolved 1680, reused 1678, downloaded 0, added 1136
+Progress: resolved 1680, reused 1678, downloaded 0, added 1150
+Progress: resolved 1680, reused 1678, downloaded 0, added 1222
+Progress: resolved 1680, reused 1678, downloaded 0, added 1277
+Progress: resolved 1680, reused 1678, downloaded 0, added 1313
+Progress: resolved 1680, reused 1678, downloaded 0, added 1360
+Progress: resolved 1680, reused 1678, downloaded 0, added 1386
+Progress: resolved 1680, reused 1678, downloaded 0, added 1419
+Progress: resolved 1680, reused 1678, downloaded 0, added 1463
+Progress: resolved 1680, reused 1678, downloaded 0, added 1524
+Progress: resolved 1680, reused 1678, downloaded 0, added 1551
+Progress: resolved 1680, reused 1678, downloaded 0, added 1579
+Progress: resolved 1680, reused 1678, downloaded 0, added 1626
+Progress: resolved 1680, reused 1678, downloaded 0, added 1679
+Progress: resolved 1680, reused 1678, downloaded 0, added 1680
+Progress: resolved 1680, reused 1678, downloaded 0, added 1680, done
+ WARN  Failed to create bin at /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 1m 6.4s using pnpm v10.28.2

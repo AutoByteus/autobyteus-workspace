@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-13",
+  "bootstrapBase": "d9bccf2550b918ab138e30486ef4dbf1d5e9d1ff",
+  "validatedArtifactHead": "6110c1dae2c40da618535f843afa01231f4ef12d",
+  "fetchedBase": "e22245f097c208e66065302cfc30814cc5ffd14f",
+  "integrationCommit": "4127815cd5383e055ff430674691e59f47742238",
+  "method": "merge origin/personal into ticket",
+  "checkpoint": "Not needed; upstream tracked state clean, only generated untracked application SDK dist excluded",
+  "newBaseCommitsIntegrated": true,
+  "conflicts": false,
+  "incomingProductDelta": "autobyteus-web/package.json version 1.5.3-beta.3 to 1.5.3-beta.4 only; unrelated delivered-ticket documentation",
+  "unchangedSourceAndProbeHashes": {
+    "autobyteus-web/utils/layout/responsiveLayoutPolicy.ts": true,
+    "autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts": true,
+    "autobyteus-web/tests/e2e/workspaces-sidebar-dock-probe.mjs": true,
+    "autobyteus-web/tests/e2e/fixtures/workspaces-sidebar-dock.page.vue": true
+  },
+  "packageVersion": "1.5.3-beta.4",
+  "priorNativeValidatedBuildVersion": "1.5.3-beta.3",
+  "priorNativeEvidenceStillApplicable": "Renderer/server/dependencies/Electron source unchanged by integration; prior native journey is scoped to that build, not relabelled beta.4. Integrated renderer/browser rerun separately.",
+  "integratedRepositoryCommand": "corepack pnpm -C autobyteus-web test:nuxt --run utils/layout/__tests__ composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts layouts/__tests__/default-docking.spec.ts layouts/__tests__/default-drawer.spec.ts composables/__tests__/useRightPanel.spec.ts components/layout/__tests__ composables/__tests__/useAccessibleDrawer.spec.ts",
+  "repositoryResult": "exit 0, 15 files / 146 tests passed",
+  "browserCommand": "corepack pnpm -C autobyteus-web test:e2e:workspaces-sidebar-dock --browser-uid 1000 --output-dir ../tickets/in-progress/workspaces-sidebar-dock/evidence/delivery/browser-integrated",
+  "liveClientOr8001Access": false,
+  "finalizationPushTagReleaseInstalledUpdate": false
+}
