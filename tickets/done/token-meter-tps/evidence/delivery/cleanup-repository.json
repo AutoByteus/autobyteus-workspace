@@ -1,0 +1,21 @@
+{
+  "completedAt": "2026-10-13T16:42:17.748857+00:00",
+  "worktree": "/home/autobyteus/workspace/.codex/worktrees/token-meter-tps",
+  "directoryAbsent": true,
+  "registrationAbsent": true,
+  "generatedUntrackedDirsRemoved": [
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist"
+  ],
+  "ignoredTaskBuildOutputsRemovedWithWorktree": true,
+  "statusBeforeWorktreeRemoval": "clean",
+  "branchesDeleted": {
+    "codex/token-meter-tps": "Deleted branch codex/token-meter-tps (was 1c1511646).",
+    "finalize/token-meter-tps": "Deleted branch finalize/token-meter-tps (was 288f3a08f)."
+  },
+  "worktreePrune": "Not required - targeted removal cleared registration",
+  "remoteBranchCleanup": "Not required - remote ticket retained for provenance",
+  "custodyManifest": "/home/autobyteus/workspace/.codex/delivery-records/token-meter-tps/pre-cleanup-custody.json",
+  "exportedVerifiedBlobs": 142,
+  "noSharedCheckoutOrUnrelatedWorktreeChanges": true
+}

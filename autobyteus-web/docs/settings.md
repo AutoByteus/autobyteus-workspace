@@ -1071,7 +1071,10 @@ The saved-run view uses the start surfaces' visual language:
     the run's red stop icon on its own row, never on one member of a Team. It
     calls `delegatedLaunchDraftStore.stop` (`stopDelegatedExecution`): the copy and
     the copies it started stop and stay restorable; the run keeps running. The same
-    icon is on the copy's sidebar row (`DelegatedStopButton`).
+    action is on the copy's sidebar row (`DelegatedStopButton`), whose enabled
+    icon is red at rest, darker red on pale red when hovered, and red again on
+    leave, like all sidebar root Stops. Disabled/pending sidebar icons are muted
+    gray without the enabled-hover accent. Settings stop styling is unchanged.
   - **Editing (SR-007).** While a copy is stopped (stopped by the user, idled out,
     or the run is stopped), its rows edit the model and its settings like a stopped
     run's member (`RunSettingsCard`; runtime, approval and workspace locked); a

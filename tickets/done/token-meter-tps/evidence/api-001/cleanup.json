@@ -1,0 +1,90 @@
+{
+  "temporaryRoots": [
+    {
+      "path": "/tmp/token-tps-api-UndPyc",
+      "removed": true
+    },
+    {
+      "path": "/tmp/token-tps-desktop-BtOj9p",
+      "removed": true
+    }
+  ],
+  "ports": {
+    "41593": {
+      "receipt": "tickets/in-progress/token-meter-tps/evidence/api-001/browser-2/result.json",
+      "kind": "uiPort",
+      "acceptsConnections": false
+    },
+    "42263": {
+      "receipt": "tickets/in-progress/token-meter-tps/evidence/api-001/browser-2/result.json",
+      "kind": "backendPort",
+      "acceptsConnections": false
+    },
+    "38975": {
+      "receipt": "tickets/in-progress/token-meter-tps/evidence/api-001/browser-1/result.json",
+      "kind": "uiPort",
+      "acceptsConnections": false
+    },
+    "41165": {
+      "receipt": "tickets/in-progress/token-meter-tps/evidence/api-001/browser-1/result.json",
+      "kind": "backendPort",
+      "acceptsConnections": false
+    },
+    "43689": {
+      "receipt": "tickets/in-progress/token-meter-tps/evidence/api-001/transport-2/result.json",
+      "kind": "uiPort",
+      "acceptsConnections": false
+    },
+    "38993": {
+      "receipt": "tickets/in-progress/token-meter-tps/evidence/api-001/transport-2/result.json",
+      "kind": "backendPort",
+      "acceptsConnections": false
+    },
+    "37867": {
+      "receipt": "tickets/in-progress/token-meter-tps/evidence/api-001/transport-3/result.json",
+      "kind": "uiPort",
+      "acceptsConnections": false
+    },
+    "35435": {
+      "receipt": "tickets/in-progress/token-meter-tps/evidence/api-001/transport-3/result.json",
+      "kind": "backendPort",
+      "acceptsConnections": false
+    }
+  },
+  "processes": {
+    "36890": {
+      "exists": false,
+      "receipt": "tickets/in-progress/token-meter-tps/evidence/api-001/browser-2/result.json"
+    },
+    "28600": {
+      "exists": false,
+      "receipt": "tickets/in-progress/token-meter-tps/evidence/api-001/browser-1/result.json"
+    },
+    "30413": {
+      "exists": false,
+      "receipt": "tickets/in-progress/token-meter-tps/evidence/api-001/transport-2/result.json"
+    },
+    "36181": {
+      "exists": false,
+      "receipt": "tickets/in-progress/token-meter-tps/evidence/api-001/transport-3/result.json"
+    }
+  },
+  "routesRemoved": true,
+  "desktopCanonicalStop": {
+    "stop": {
+      "instanceId": "iso-42155-574d",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/tmp/token-tps-desktop-BtOj9p/tmp/autobyteus-isolated-root-K39f7m",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "list": {
+      "instances": []
+    }
+  },
+  "desktopFakeCliHash": "a2a2cca8d4b1a2edbe3ab7cd0926e3ab95364e4c40dd9743f68dbdfc93c60f4e",
+  "worktreeTestDatabaseRemoved": true
+}

@@ -1,0 +1,9 @@
+{
+  "initialSupplementalCachedDiffCheck": "Failed before report commit/push: remote Git output trailing whitespace in target-push.log lines1-4",
+  "correction": "Whitespace only; per-line trailing spaces and EOF normalized, all substantive diagnostic text preserved",
+  "rawOriginalOutsideGit": "/home/autobyteus/workspace/.codex/delivery-records/workspaces-sidebar-dock/target-push.log",
+  "beforeSha256": "9e817651886418b831671a1513ed211771e28d5ccbe5a216e7f9e297c42abd8b",
+  "afterSha256": "722329327a609740a1d4279f0f43570ed762ffa3f40be7fb28a5ade923864e43",
+  "sourceTestAssertionsChanged": false,
+  "sourceMergePushReplayed": false
+}

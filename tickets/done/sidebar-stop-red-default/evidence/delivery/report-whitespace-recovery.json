@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-13T16:45:27.750015+00:00",
+  "cause": "git diff --cached --check caught trailing spaces in copied Git remote push output; no report commit or push occurred",
+  "recovery": "Normalize only line-ending whitespace in copied evidence; preserve exact raw logs outside Git",
+  "records": [
+    {
+      "file": "ticket-push.log",
+      "rawOriginal": "/home/autobyteus/workspace/.codex/delivery-records/sidebar-stop-red-default/ticket-push.log",
+      "beforeSHA256": "68931b8f0f34564eb6c2c3a465050161715f541427571b7b48c56ed27bfbd82f",
+      "afterSHA256": "01f7042d2eaeae3548d4f423438671f338e93bb26d425c7c1c364d5a3f677cbb",
+      "contentChanged": "Whitespace only; commands, remote warnings and push results unchanged"
+    },
+    {
+      "file": "target-push.log",
+      "rawOriginal": "/home/autobyteus/workspace/.codex/delivery-records/sidebar-stop-red-default/target-push.log",
+      "beforeSHA256": "ef3458f9dee3fc798d6ca7c45afd51e02633c70b3163d000f60ce849379122c5",
+      "afterSHA256": "20d0c62d394bcee7efeee1e5373a66844154100fa0fe1a274c1659e7a38079ec",
+      "contentChanged": "Whitespace only; commands, remote warnings and push results unchanged"
+    }
+  ]
+}

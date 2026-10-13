@@ -1,0 +1,7 @@
+
+> autobyteus@1.5.3-beta.4 test:e2e:delegated-launch-defaults /home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style/autobyteus-web
+> node tests/e2e/delegated-launch-defaults-probe.mjs --cases DCP-001,DCP-002 --output-dir /home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style/tickets/in-progress/task-copy-stop-style/evidence/delivery/browser-integrated
+
+DCP-001 Pass delegated-copy-model-change AC-001/002/004/011, DEC-010: a running copy is locked with a stop icon; Stop from the sidebar; its model changed in Settings and saved; the next message resumes it on that model
+DCP-002 Pass delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a Team copy stopped from its sidebar row; its Team model changed and saved; the copy lead's "+" shows the choice without a reload; the next message resumes the lead on it
+Summary: 2 Pass, 0 Fail

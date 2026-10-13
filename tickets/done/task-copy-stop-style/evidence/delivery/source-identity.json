@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-10-13T15:32:25.659455+00:00",
+  "sourceCommit": "61e20a031cfed1a87aedaa96b11e2ed26f996d42",
+  "validatedCandidate": "5d921266d0b40f3ddbc5c50c309ed498a4eea778",
+  "integratedCandidate": "edf5e434b40094b70effe4448e75465d8219e771",
+  "files": [
+    {
+      "path": "autobyteus-web/components/workspace/history/DelegatedStopButton.vue",
+      "sha256": "d72a3cc0807ff666d2dd43d17e8626b0c0561f2455994a379fa3b6958ee9323c",
+      "unchangedSinceAPI": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/DelegatedStopButton.spec.ts",
+      "sha256": "b434c01e3c8600c18761ea31873fb4796da6e50034411cf05b6c8b17bd65b996",
+      "unchangedSinceAPI": true
+    },
+    {
+      "path": "autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+      "sha256": "2d518400e33c0c112618f8db6f84343627f03007babacd72a16521c9dcef708b",
+      "unchangedSinceAPI": true
+    }
+  ]
+}

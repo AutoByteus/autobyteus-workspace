@@ -1,0 +1,22 @@
+{
+  "bootstrapBase": "d9bccf2550b918ab138e30486ef4dbf1d5e9d1ff",
+  "verifiedIntegratedBase": "e22245f097c208e66065302cfc30814cc5ffd14f",
+  "ticketFinalCommit": "7db35db8d1455b81046933c6f2aea0b41e1b4c99",
+  "ticketPush": "Completed \u2014 remote exact SHA verified",
+  "ticketRemote": "refs/heads/codex/workspaces-sidebar-dock",
+  "finalizationBranch": "finalize/workspaces-sidebar-dock",
+  "targetBaseBeforeMerge": "e22245f097c208e66065302cfc30814cc5ffd14f",
+  "mergeCommit": "1a2379c57088e8976aeb0f43e1e607e1acc103c6",
+  "method": "no-ff isolated worktree",
+  "mergeTreeEqualsTicketTree": true,
+  "mergedLicensing": "Passed",
+  "mergedHygiene": "Passed",
+  "cumulativeDiffCheck": "Passed",
+  "prePushFreshBaseEquality": "Passed",
+  "targetPush": "Completed \u2014 remote exact SHA and ticket ancestry verified",
+  "remoteTargetAfterPush": "1a2379c57088e8976aeb0f43e1e607e1acc103c6",
+  "sourceOnlyVerification": "Complete per R2 user-approved acceptance",
+  "release": "No release; no tag/version/deployment/installed change",
+  "mainCheckoutFinalizedFrom": false,
+  "buildOutputsStaged": false
+}

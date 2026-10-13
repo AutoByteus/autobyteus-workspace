@@ -1,0 +1,33 @@
+{
+  "recordedAt": "2026-10-13T13:48:10.817116+00:00",
+  "worktree": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock",
+  "branch": "codex/workspaces-sidebar-dock",
+  "sourceCommit": "1262714f6494a1292b69bda1f0cda02f2c2f1014",
+  "nuxt": {
+    "port": 39839,
+    "ownedLauncherPids": [
+      8489,
+      10947,
+      13108
+    ],
+    "stopped": true,
+    "portListeningAfterCleanup": false
+  },
+  "chromium": {
+    "version": "153.0.8010.52",
+    "freshHeadless": "all preview drivers closed browsers in finally",
+    "unprivilegedUser": "vncuser",
+    "chromiumSandbox": true,
+    "privateHomeRemoved": true
+  },
+  "temporaryPreviewRouteRemoved": true,
+  "privateNuxtHomeRemoved": true,
+  "startedIsolatedDesktop": false,
+  "startedDisplay": false,
+  "startedBackendOrDatabase": false,
+  "paidInference": false,
+  "liveAppOr8001TestedOrRestarted": false,
+  "userAppDataUsed": false,
+  "tagPushMergeReleaseDeployment": "none",
+  "retained": "task worktree/branch/dependencies; generated contract/web build outputs (not staged); ticket evidence for downstream"
+}

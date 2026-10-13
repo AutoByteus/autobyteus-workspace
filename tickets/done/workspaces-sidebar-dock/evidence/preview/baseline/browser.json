@@ -1,0 +1,90 @@
+{
+  "browser": "153.0.8010.52",
+  "events": [
+    {
+      "type": "console",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "console",
+      "text": "TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:39839/_nuxt/pages/implementation-shell-preview.vue"
+    },
+    {
+      "type": "console",
+      "text": "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:39839/_nuxt/pages/implementation-shell-preview.vue"
+    },
+    {
+      "type": "console",
+      "text": "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:39839/_nuxt/pages/implementation-shell-preview.vue"
+    },
+    {
+      "type": "console",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "console",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentOrgDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentOrgDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentOrgDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    }
+  ],
+  "ops": [
+    "GetApplicationsCapability",
+    "GetSkillImprovementCapability",
+    "GetAgentDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetApplicationsCapability",
+    "GetSkillImprovementCapability",
+    "GetAgentDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentOrgDefinitions"
+  ]
+}

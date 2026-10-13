@@ -1,0 +1,24 @@
+{
+  "startedAt": "2026-10-13T16:39:48.775934+00:00",
+  "worktree": "/home/autobyteus/workspace/.codex/worktrees/sidebar-stop-red-default",
+  "sourceMerge": "4c77cec80d965e0f96658cb2d2881fa6d6a39d96",
+  "ticketCommit": "fd69ea4b0e8d20394631d3de9ce5c30bebc61e56",
+  "steps": [
+    {
+      "name": "remote-preserved",
+      "argv": [
+        "git",
+        "--git-dir=/home/autobyteus/workspace/autobyteus-workspace/.git",
+        "ls-remote",
+        "origin",
+        "refs/heads/personal"
+      ],
+      "exitCode": 0,
+      "output": "288f3a08fb220539dd782a39dbb523df07839f10\trefs/heads/personal\n",
+      "at": "2026-10-13T16:39:49.292553+00:00"
+    }
+  ],
+  "remoteTicketBranch": "Retained for provenance; deletion not required",
+  "prune": "Not required: targeted removal of own registration only",
+  "result": "Stopped safely before cleanup: remote advanced after successful source finalization"
+}

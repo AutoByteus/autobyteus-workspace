@@ -1,0 +1,73 @@
+{
+  "viewport": {
+    "width": 1000,
+    "height": 800,
+    "dpr": 1
+  },
+  "state": {
+    "shell": {
+      "viewportWidth": 1000,
+      "viewportHeight": 800,
+      "mode": "wide",
+      "isNarrow": false,
+      "isShortHeight": false,
+      "showGenericSurfaceControls": false,
+      "leftPanel": {
+        "preference": "visible",
+        "presentation": "docked",
+        "presentationSource": "user",
+        "consumedWidth": 320,
+        "preferredWidth": 320,
+        "stripBehavior": null,
+        "stripActivation": null
+      },
+      "rightPanel": {
+        "preference": "visible",
+        "presentation": "docked",
+        "presentationSource": "user",
+        "consumedWidth": 438,
+        "preferredWidth": 438,
+        "stripBehavior": null,
+        "stripActivation": null,
+        "resizeIntent": "user-sized",
+        "centerProtectionMode": "user-override",
+        "effectiveCenterMinWidth": 200
+      },
+      "showLeftStrip": false,
+      "showRightStrip": false
+    },
+    "rawRight": 438,
+    "measuredRight": 438,
+    "intent": "user-sized",
+    "leftWidth": 320,
+    "selection": {
+      "kind": "team_run",
+      "rootTeamRunId": "layout-preview-team"
+    },
+    "focus": "layout-preview-agent",
+    "tab": "teamMembers"
+  },
+  "left": {
+    "x": 0,
+    "y": 0,
+    "width": 320,
+    "height": 800,
+    "right": 320
+  },
+  "drawer": null,
+  "backdrop": null,
+  "center": {
+    "x": 323,
+    "y": 0,
+    "width": 237,
+    "height": 800,
+    "right": 560
+  },
+  "right": {
+    "x": 562,
+    "y": 0,
+    "width": 438,
+    "height": 800,
+    "right": 1000
+  }
+}

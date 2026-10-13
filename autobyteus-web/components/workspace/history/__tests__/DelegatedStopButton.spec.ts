@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import WorkspaceTransientExecutionRow from '../WorkspaceTransientExecutionRow.vue'
@@ -7,44 +7,113 @@ import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 
 const liveness = vi.hoisted(() => ({ live: new Set<string>() }))
+const client = vi.hoisted(() => ({ stopDelegatedExecution: vi.fn() }))
 vi.mock('~/services/runConfigEditing/delegatedCopyLiveness', () => ({
   isDelegatedCopyLive: (_root: unknown, reference: { agentRunId?: string; teamRunId?: string }) =>
     liveness.live.has(reference.agentRunId ?? reference.teamRunId ?? ''),
 }))
+vi.mock('~/services/runConfigEditing/delegatedLaunchSelectionClient', async (importOriginal) => ({
+  ...(await importOriginal<object>()), ...client,
+}))
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
 
-/** DS-002 (SR-007): a running copy or collaborator row in the sidebar has the same stop icon as a running run. */
-const root = { rootKind: 'AGENT_TEAM' as const, rootRunId: 'root' }
+/** BEH-001..003: shared sidebar Stop styling and preserved per-copy interaction. CSS rendering is checked separately. */
+const roots = ['AGENT', 'AGENT_TEAM', 'AGENT_ORG'] as const
 const row = (overrides: Partial<RunHistoryTransientExecutionRow> = {}): RunHistoryTransientExecutionRow => ({
   kind: 'transient_execution', transientKind: 'task_agent', rowKey: 'agent:worker-run', teamRunId: 'root',
   memberAddress: '/writer', agentRunId: 'worker-run', teamRunIdForNode: null, memberKind: 'agent',
   displayName: 'writer', currentStatus: AgentStatus.Running, delegatedBy: 'pm', depth: 0, hasChildren: false, ...overrides,
 })
+const copies = [
+  { kind: 'Agent', id: 'worker-run', reference: { agentRunId: 'worker-run' }, row: row() },
+  { kind: 'Team', id: 'review-team', reference: { teamRunId: 'review-team' }, row: row({
+    transientKind: 'task_team', agentRunId: null, teamRunIdForNode: 'review-team', memberKind: 'agent_team',
+    rowKey: 'team:review-team', displayName: 'reviewers',
+  }) },
+]
+const stopSelector = '[data-test="workspace-delegated-stop"]'
 
-beforeEach(() => { setActivePinia(createPinia()); liveness.live.clear() })
+beforeEach(() => {
+  setActivePinia(createPinia())
+  liveness.live.clear()
+  client.stopDelegatedExecution.mockReset()
+})
 
-describe('sidebar copy rows: per-copy Stop', () => {
-  it('shows the stop icon on a running copy and stops exactly that copy without opening the row', async () => {
-    liveness.live.add('worker-run')
-    const store = useDelegatedLaunchDraftStore()
-    const stop = vi.spyOn(store, 'stop').mockResolvedValue(true)
-    const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: row(), stopRoot: root } })
-    await wrapper.get('[data-test="workspace-delegated-stop"]').trigger('click')
-    expect(stop).toHaveBeenCalledWith(root, { agentRunId: 'worker-run' })
-    expect(wrapper.emitted('select')).toBeUndefined()
+describe.each(roots.flatMap(rootKind => copies.map(copy => ({ ...copy, rootKind }))))(
+  'sidebar $kind copy Stop under $rootKind', (copy) => {
+  const root = { rootKind: copy.rootKind, rootRunId: 'root' }
+  it.each([false, true])('uses red enabled and muted disabled tokens, retaining focus and semantics (selected=%s)', (isSelected) => {
+    liveness.live.add(copy.id)
+    const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: copy.row, stopRoot: root, isSelected } })
+    const button = wrapper.get(stopSelector)
+    expect(button.classes()).toEqual(expect.arrayContaining([
+      'text-red-500', 'disabled:text-gray-400', 'disabled:hover:text-gray-400', 'disabled:hover:bg-transparent', 'transition-colors', 'hover:bg-red-50', 'hover:text-red-600',
+      'focus:outline-none', 'focus-visible:ring-2', 'focus-visible:ring-red-500/40',
+      'disabled:cursor-default', 'disabled:opacity-60',
+    ]))
+    expect(button.classes()).not.toContain('text-gray-400')
+    expect(button.attributes('type')).toBe('button')
+    expect(button.attributes('title')).toBe(`Stop ${copy.row.displayName}`)
+    expect(button.attributes('aria-label')).toBe(button.attributes('title'))
+    expect(button.attributes('disabled')).toBeUndefined()
+    expect(button.get('[data-icon="heroicons:stop-20-solid"]').attributes('aria-hidden')).toBe('true')
   })
 
-  it('stops a whole Team copy from its row, never one member of it; a stopped copy shows no icon', () => {
-    liveness.live.add('review-team').add('member-run')
-    const team = mount(WorkspaceTransientExecutionRow, { props: { stopRoot: root, row: row({
-      transientKind: 'task_team', agentRunId: null, teamRunIdForNode: 'review-team', memberKind: 'agent_team', rowKey: 'team:review-team',
-    }) } })
-    expect(team.find('[data-test="workspace-delegated-stop"]').exists()).toBe(true)
-    const member = mount(WorkspaceTransientExecutionRow, { props: { stopRoot: root, row: row({ transientKind: 'task_team_child', agentRunId: 'member-run' }) } })
-    expect(member.find('[data-test="workspace-delegated-stop"]').exists()).toBe(false)
-    const stopped = mount(WorkspaceTransientExecutionRow, { props: { stopRoot: root, row: row({ agentRunId: 'idle-run' }) } })
-    expect(stopped.find('[data-test="workspace-delegated-stop"]').exists()).toBe(false)
-    const noRoot = mount(WorkspaceTransientExecutionRow, { props: { row: row() } })
-    expect(noRoot.find('[data-test="workspace-delegated-stop"]').exists()).toBe(false)
+  it('stops exactly this copy without selecting or toggling its row; activation keys are contained', async () => {
+    liveness.live.add(copy.id)
+    const stop = vi.spyOn(useDelegatedLaunchDraftStore(), 'stop').mockResolvedValue(true)
+    const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: copy.row, stopRoot: root, hasChildren: true } })
+    const button = wrapper.get(stopSelector)
+    await button.trigger('keydown', { key: 'Enter' })
+    await button.trigger('keydown', { key: ' ' })
+    // happy-dom does not synthesize native keyboard clicks; the browser check covers that activation.
+    await button.trigger('click')
+    expect(stop).toHaveBeenCalledExactlyOnceWith(root, copy.reference)
+    expect(wrapper.emitted('select')).toBeUndefined()
+    expect(wrapper.emitted('toggle')).toBeUndefined()
+  })
+
+  it('keeps pending visible, disabled and pulsing, prevents duplicate stops, then hides the stopped copy', async () => {
+    liveness.live.add(copy.id)
+    let finish!: (value: unknown) => void
+    client.stopDelegatedExecution.mockReturnValue(new Promise((resolve) => { finish = resolve }))
+    const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: copy.row, stopRoot: root } })
+    const button = wrapper.get(stopSelector)
+    await button.trigger('click')
+    liveness.live.delete(copy.id)
+    expect(button.attributes('disabled')).toBeDefined()
+    expect(button.attributes('aria-label')).toBe(`Stopping ${copy.row.displayName}…`)
+    expect(button.attributes('title')).toBe(button.attributes('aria-label'))
+    expect(button.get('[data-icon="heroicons:stop-20-solid"]').classes()).toEqual(expect.arrayContaining([
+      'animate-pulse', 'motion-reduce:animate-none',
+    ]))
+    await button.trigger('click')
+    // The store also rejects a duplicate from another surface while this request is in flight.
+    await expect(useDelegatedLaunchDraftStore().stop(root, copy.reference)).resolves.toBe(false)
+    expect(client.stopDelegatedExecution).toHaveBeenCalledExactlyOnceWith(root, copy.reference)
+    finish({ success: true, outcome: 'STOPPED', message: 'Stopped.', notStoppedUnattributed: 0 })
+    await flushPromises()
+    expect(wrapper.find(stopSelector).exists()).toBe(false)
+    expect(wrapper.emitted('select')).toBeUndefined()
+    expect(wrapper.emitted('toggle')).toBeUndefined()
+  })
+
+  it('does not offer Stop without a live copy or a root', () => {
+    const stopped = mount(WorkspaceTransientExecutionRow, { props: { row: copy.row, stopRoot: root } })
+    expect(stopped.find(stopSelector).exists()).toBe(false)
+    liveness.live.add(copy.id)
+    const noRoot = mount(WorkspaceTransientExecutionRow, { props: { row: copy.row } })
+    expect(noRoot.find(stopSelector).exists()).toBe(false)
+  })
+})
+
+const root = { rootKind: 'AGENT_TEAM' as const, rootRunId: 'root' }
+describe('Team copy member rows', () => {
+  it('never offers an individual member Stop in place of the whole Team', () => {
+    liveness.live.add('member-run')
+    const member = mount(WorkspaceTransientExecutionRow, { props: { stopRoot: root,
+      row: row({ transientKind: 'task_team_child', agentRunId: 'member-run' }),
+    } })
+    expect(member.find(stopSelector).exists()).toBe(false)
   })
 })

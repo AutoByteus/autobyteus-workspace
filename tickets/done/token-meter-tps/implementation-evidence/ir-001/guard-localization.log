@@ -1,0 +1,8 @@
+
+> autobyteus@1.5.3-beta.4 guard:localization-boundary /home/autobyteus/workspace/.codex/worktrees/token-meter-tps/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Failed.
+components/workspace/usage/__tests__/TokenUsageThroughputCard.spec.ts:5: direct localization/messages import is forbidden outside localization/runtime and localization/messages.
+components/workspace/usage/__tests__/TokenUsageThroughputCard.spec.ts:6: direct localization/messages import is forbidden outside localization/runtime and localization/messages.
+ ELIFECYCLE  Command failed with exit code 1.

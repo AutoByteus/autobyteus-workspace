@@ -1,7 +1,8 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import { nextTick } from 'vue';
+import { nextTick, ref } from 'vue';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import TokenUsageMeterPanel from '../TokenUsageMeterPanel.vue';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
@@ -118,7 +119,7 @@ const messages: Record<string, string> = {
 };
 
 const translate = (key: string, params?: Record<string, unknown>) => {
-  const template = messages[key] ?? key;
+  const template = messages[key] ?? localizationRuntime.translate(key);
   return Object.entries(params ?? {}).reduce(
     (text, [param, value]) => text.replace(`{${param}}`, String(value)).replace(`{{${param}}}`, String(value)),
     template,
@@ -128,6 +129,7 @@ const translate = (key: string, params?: Record<string, unknown>) => {
 vi.mock('~/composables/useLocalization', () => ({
   useLocalization: () => ({
     t: translate,
+    resolvedLocale: ref('en'),
   }),
 }));
 
@@ -301,6 +303,47 @@ describe('TokenUsageMeterPanel', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+  });
+
+  it('shows TPS before totals load, then a frozen exact-run reading independent of rolled-up totals', async () => {
+    const contexts = useAgentContextsStore();
+    const selection = useAgentSelectionStore();
+    const meter = useTokenUsageMeterStore();
+    const context = buildAgentContext('run-1', 'Project Task Manager');
+    context.state.currentStatus = AgentStatus.Running;
+    contexts.runs.set('run-1', context);
+    selection.setRunSelection('run-1', 'agent');
+    vi.mocked(getApolloClient).mockReturnValue({ query: vi.fn().mockResolvedValue({ data: {} }) } as any);
+    const wrapper = mountPanel();
+    expect(wrapper.find('[data-test="token-usage-primary"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="throughput-state"]').text()).toBe('Collecting');
+    for (const [revision, seconds] of [[1, 0], [2, 10]]) {
+      meter.applyTokenUsageUpdated({
+        usage_event_id: `report-${revision}`, idempotency_key: `report-${revision}`, run_id: 'run-1',
+        turn_id: 'turn', model_identifier: 'exact-reported-model', reports_model_call: true,
+        observed_at: `2026-10-13T10:00:${String(seconds).padStart(2, '0')}.000Z`, meter_delta_output_tokens: 200,
+        run_summary_after_event: buildSummaryDto(buildSummary({ revision, usageReportCount: revision })),
+      });
+    }
+    await nextTick();
+    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('20.0 tokens/s');
+    expect(wrapper.get('[data-test="throughput-identity"]').text()).toContain('exact-reported-model');
+    meter.upsertRecordBackedStandaloneRunSummary({ runId: 'run-1', summary: buildSummary({
+      outputTokens: 99999, latestModelIdentifier: 'child-model', revision: 500,
+    }) });
+    context.config.llmModelIdentifier = 'changed-model';
+    context.state.currentStatus = AgentStatus.Offline;
+    await nextTick();
+    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('20.0 tokens/s');
+    expect(wrapper.get('[data-test="throughput-identity"]').text()).toContain('exact-reported-model');
+    expect(wrapper.get('[data-test="throughput-qualification"]').text()).toBe('Estimated · Last reported');
+    expect(wrapper.get('[data-test="token-usage-primary"]').text()).toContain('child-model');
+    contexts.runs.set('new-run', buildAgentContext('new-run', 'Other Agent'));
+    selection.setRunSelection('new-run', 'agent');
+    await nextTick();
+    expect(wrapper.find('[data-test="throughput-value"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="throughput-state"]').text()).toBe('— Unavailable');
+    wrapper.unmount();
   });
 
   it('shows selected Claude model and configured estimate with a visible assumed cache rate', () => {

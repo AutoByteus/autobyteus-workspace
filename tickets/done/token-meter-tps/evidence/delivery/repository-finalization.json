@@ -1,0 +1,10 @@
+{
+  "sourceMerge": "288f3a08fb220539dd782a39dbb523df07839f10",
+  "ticketCommit": "1c15116461a4abb9daafdc33374fbd0831ae8ab8",
+  "initialTicketCommit": "90624f77d706b48616b2458884113ccbc2eb6400",
+  "finalBase": "4c77cec80d965e0f96658cb2d2881fa6d6a39d96",
+  "method": "ticket push, dedicated finalize branch at origin/personal, no-ff merge, target push",
+  "mergeTreeEqualsVerifiedTicket": true,
+  "remoteAtCleanup": "1c15116461a4abb9daafdc33374fbd0831ae8ab8\trefs/heads/codex/token-meter-tps\n288f3a08fb220539dd782a39dbb523df07839f10\trefs/heads/personal",
+  "recordedAt": "2026-10-13T16:40:19.989402+00:00"
+}
