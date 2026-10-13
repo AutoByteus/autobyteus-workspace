@@ -1,0 +1,698 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-server-ts
+App data directory: /tmp/delegated-team-collapse-tXDVmJ
+Config file path: /tmp/delegated-team-collapse-tXDVmJ/.env
+Loading environment from: /tmp/delegated-team-collapse-tXDVmJ/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../tmp/delegated-team-collapse-tXDVmJ/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:40215
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:40215
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/delegated-team-collapse-tXDVmJ
+DB DIRECTORY: /tmp/delegated-team-collapse-tXDVmJ/db
+LOGS DIRECTORY: /tmp/delegated-team-collapse-tXDVmJ/logs
+DOWNLOAD DIRECTORY: /tmp/delegated-team-collapse-tXDVmJ/download
+MEMORY DIRECTORY: /tmp/delegated-team-collapse-tXDVmJ/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/tmp/delegated-team-collapse-tXDVmJ/db/development.db"
+
+SQLite database development.db created at file:/tmp/delegated-team-collapse-tXDVmJ/db/development.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:67900) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/delegated-team-collapse-tXDVmJ/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/temp_workspace.
+Initialized TempWorkspace at /tmp/delegated-team-collapse-tXDVmJ/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+{"level":30,"time":1791873770532,"pid":67900,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:34429"}
+{"level":30,"time":1791873770579,"pid":67900,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:40215"}
+[2026-10-13T06:42:50.579Z] [INFO] [server.runtime] Server listening on 127.0.0.1:40215
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: solution-designer
+Agent Definition created successfully with ID: architecture-reviewer
+Agent Definition created successfully with ID: implementation-engineer
+Agent Definition created successfully with ID: code-reviewer
+Agent Definition created successfully with ID: api-e2e-engineer
+Agent Definition created successfully with ID: delivery-engineer
+Agent Definition created successfully with ID: project-task-manager-probe
+Agent Team Definition created successfully with ID: software-engineering-team-probe
+Agent Team Definition created successfully with ID: late-engineering-team-probe
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Created and registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+AGY compaction detection off for run project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+AGY compaction detection off for run project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d
+Created agent session 8782bb36-c4a2-4457-83ad-8375072fda95 for run project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d
+Agent WebSocket connected: session=8782bb36-c4a2-4457-83ad-8375072fda95, run=project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d
+Agent websocket attached for run project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6
+Created agent session 96f91ff2-60da-45fd-b5df-26699f5dab90 for run project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6
+Agent WebSocket connected: session=96f91ff2-60da-45fd-b5df-26699f5dab90, run=project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6
+{"level":40,"time":1791873785508,"pid":67900,"hostname":"74ff273d28fe","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_i33QaNj8zpTXn1OsQuHiPPV7SK7xGXpiOFkqfFk5WVc","statusCode":405,"elapsedMs":0.23612499237060547,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+AGY compaction detection off for run solution_designer_62bb4ecdeebd4ed3afbfc3945bf6abf4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791873785829,"pid":67900,"hostname":"74ff273d28fe","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_i33QaNj8zpTXn1OsQuHiPPV7SK7xGXpiOFkqfFk5WVc","statusCode":405,"elapsedMs":0.2779160141944885,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+AGY compaction detection off for run solution_designer_e1aa7c9347414b49a1f2d84fa7aa235a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791873786055,"pid":67900,"hostname":"74ff273d28fe","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_i33QaNj8zpTXn1OsQuHiPPV7SK7xGXpiOFkqfFk5WVc","statusCode":405,"elapsedMs":0.2286670207977295,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+AGY compaction detection off for run solution_designer_11d4f930a33240299352fcef339aebdc: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791873786383,"pid":67900,"hostname":"74ff273d28fe","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_i33QaNj8zpTXn1OsQuHiPPV7SK7xGXpiOFkqfFk5WVc","statusCode":405,"elapsedMs":0.29579097032546997,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+AGY compaction detection off for run solution_designer_46146dbf981c4d458a82d6a4c48e5209: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791873786610,"pid":67900,"hostname":"74ff273d28fe","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_i33QaNj8zpTXn1OsQuHiPPV7SK7xGXpiOFkqfFk5WVc","statusCode":405,"elapsedMs":0.23062503337860107,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+AGY compaction detection off for run solution_designer_f5da107dd72f448b91b3ad8c07374e52: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791873786831,"pid":67900,"hostname":"74ff273d28fe","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_i33QaNj8zpTXn1OsQuHiPPV7SK7xGXpiOFkqfFk5WVc","statusCode":405,"elapsedMs":0.20354199409484863,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+AGY compaction detection off for run solution_designer_4af0a4821d994c32b8c0979949edf12c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791873787054,"pid":67900,"hostname":"74ff273d28fe","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_i33QaNj8zpTXn1OsQuHiPPV7SK7xGXpiOFkqfFk5WVc","statusCode":405,"elapsedMs":0.18674999475479126,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+AGY compaction detection off for run solution_designer_9b95575ca5f241e199c8f04813b5976e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791873787586,"pid":67900,"hostname":"74ff273d28fe","reqId":"req-v","method":"GET","url":"/mcp/agent-tools/agtrun_M5Py9uaWlWV4em3nM7rGEGCAHTPzHkWPvsb9NCt37Mg","statusCode":405,"elapsedMs":0.17320799827575684,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+AGY compaction detection off for run solution_designer_ec0da580b4784f5fad8274e425a98524: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 8782bb36-c4a2-4457-83ad-8375072fda95
+Agent WebSocket disconnected: 8782bb36-c4a2-4457-83ad-8375072fda95
+Closed agent session 96f91ff2-60da-45fd-b5df-26699f5dab90
+Agent WebSocket disconnected: 96f91ff2-60da-45fd-b5df-26699f5dab90
+Created terminal session ec8561c0-7d88-4157-b7cd-3485f08a4ba7 using backend PtySession for target /tmp/delegated-team-home-v9Lmme
+Terminal WebSocket connected: ec8561c0-7d88-4157-b7cd-3485f08a4ba7
+Terminal websocket attached for cwd /tmp/delegated-team-home-v9Lmme
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/architecture_reviewer_7d817428b3aa4c3f8bf78b39117dd7e6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/implementation_engineer_5ffd491723ea468bb32a8c70a9ac34fd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/code_reviewer_21d5ad18cf9941a8b24f2e6bdab8eedf/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/api_e2e_engineer_d430f583468e49b09fcc364814d2fcea/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/delivery_engineer_8e8611c0c7674cb8950fb439e3b4c397/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/architecture_reviewer_4bee1141d42b4fbd84da53240dfc564a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/implementation_engineer_2772211dca00426789486377012056ac/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/code_reviewer_1decdb72faae4e82b587de56b5766b17/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/api_e2e_engineer_2922f6f5f7e44f53a393ad027ae4b7ca/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/delivery_engineer_d14b314c9eb04cd69e9263ba325cc494/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/architecture_reviewer_d8f6bf65900d4baaa6e8afed03e8161e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/implementation_engineer_11b492d2c585486a9e2e0d12467f1255/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/code_reviewer_e42d604ca57a4a23ba5ef5b1ba66c667/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/delivery_engineer_d435e6a474b347cd9a6b26ffbec83940/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/api_e2e_engineer_8e7fe0c6372f40e69b788eee9e041b21/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/architecture_reviewer_2d604bf5c54246d5bb997289c3831ae4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/implementation_engineer_8608b4ccd9f745398b77fe9e1c44e569/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/code_reviewer_929abe4c87464da68b82f03f3022366f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/api_e2e_engineer_d83fe52357a1455ab154605363e3aab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/delivery_engineer_241b81e83292442aad3b13568647a668/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/architecture_reviewer_afdec84db6d3409dada38062792df3d3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/implementation_engineer_96f201ffbe1a43e088e320deed5804fe/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/code_reviewer_e0b9fc92a6074719a2d410cf7bb8ee0d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/api_e2e_engineer_95b8d08b10a94c1fad1724dd1d67a8e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/delivery_engineer_c77f27a97dc441f59a88eb9feaed34c2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/architecture_reviewer_2cb73e0e0f8c454694d6cc0914fcf102/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/implementation_engineer_c92629c806a640d0816a0950ca0ee07a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/code_reviewer_fddcd852dc304d968911feabddab0828/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/api_e2e_engineer_ef73eb854f1e4ce5b893e14d912e7b5d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/delivery_engineer_a0389d3b57614cc88e75f64ea27a1849/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/architecture_reviewer_169efa93bdc447ea9cde5a17af9e9970/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/implementation_engineer_2552eca5fb9d4bb09872771f9fa040bd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/code_reviewer_11c248f5ef0a47b3bfd391968491f2d6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/api_e2e_engineer_f9fabda49ebc4e7c9d739051cdf2a9e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/delivery_engineer_cc67085ea689494198ca8ca1e57c6834/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/architecture_reviewer_0b89f556b548409792141cb032c96ab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/implementation_engineer_b59fa53b253b4c16864e28beec9340c8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/code_reviewer_1ab96a64fbef4a1482f13e8597e95727/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/api_e2e_engineer_26d316f1ff3a44dc83c96830135b8925/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/delivery_engineer_a57c8cf35e6a4b4ba2a12b6dc8f23977/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/architecture_reviewer_4bee1141d42b4fbd84da53240dfc564a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/implementation_engineer_2772211dca00426789486377012056ac/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/code_reviewer_1decdb72faae4e82b587de56b5766b17/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/api_e2e_engineer_2922f6f5f7e44f53a393ad027ae4b7ca/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/delivery_engineer_d14b314c9eb04cd69e9263ba325cc494/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/architecture_reviewer_d8f6bf65900d4baaa6e8afed03e8161e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/implementation_engineer_11b492d2c585486a9e2e0d12467f1255/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/code_reviewer_e42d604ca57a4a23ba5ef5b1ba66c667/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/api_e2e_engineer_8e7fe0c6372f40e69b788eee9e041b21/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/delivery_engineer_d435e6a474b347cd9a6b26ffbec83940/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/architecture_reviewer_2d604bf5c54246d5bb997289c3831ae4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/implementation_engineer_8608b4ccd9f745398b77fe9e1c44e569/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/code_reviewer_929abe4c87464da68b82f03f3022366f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/api_e2e_engineer_d83fe52357a1455ab154605363e3aab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/delivery_engineer_241b81e83292442aad3b13568647a668/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/architecture_reviewer_afdec84db6d3409dada38062792df3d3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/implementation_engineer_96f201ffbe1a43e088e320deed5804fe/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/code_reviewer_e0b9fc92a6074719a2d410cf7bb8ee0d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/api_e2e_engineer_95b8d08b10a94c1fad1724dd1d67a8e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/delivery_engineer_c77f27a97dc441f59a88eb9feaed34c2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/architecture_reviewer_2cb73e0e0f8c454694d6cc0914fcf102/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/implementation_engineer_c92629c806a640d0816a0950ca0ee07a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/api_e2e_engineer_ef73eb854f1e4ce5b893e14d912e7b5d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/code_reviewer_fddcd852dc304d968911feabddab0828/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/delivery_engineer_a0389d3b57614cc88e75f64ea27a1849/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/architecture_reviewer_169efa93bdc447ea9cde5a17af9e9970/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/implementation_engineer_2552eca5fb9d4bb09872771f9fa040bd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/code_reviewer_11c248f5ef0a47b3bfd391968491f2d6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/api_e2e_engineer_f9fabda49ebc4e7c9d739051cdf2a9e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/delivery_engineer_cc67085ea689494198ca8ca1e57c6834/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/implementation_engineer_b59fa53b253b4c16864e28beec9340c8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/architecture_reviewer_0b89f556b548409792141cb032c96ab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/code_reviewer_1ab96a64fbef4a1482f13e8597e95727/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/api_e2e_engineer_26d316f1ff3a44dc83c96830135b8925/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/delivery_engineer_a57c8cf35e6a4b4ba2a12b6dc8f23977/raw_traces_active.jsonl
+Closed PTY session ec8561c0-7d88-4157-b7cd-3485f08a4ba7
+Terminal WebSocket disconnected: ec8561c0-7d88-4157-b7cd-3485f08a4ba7
+Created terminal session 287ee8a8-d2a2-4def-9a1a-146599cf3310 using backend PtySession for target /tmp/delegated-team-home-v9Lmme
+Terminal WebSocket connected: 287ee8a8-d2a2-4def-9a1a-146599cf3310
+Terminal websocket attached for cwd /tmp/delegated-team-home-v9Lmme
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/architecture_reviewer_7d817428b3aa4c3f8bf78b39117dd7e6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/implementation_engineer_5ffd491723ea468bb32a8c70a9ac34fd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/code_reviewer_21d5ad18cf9941a8b24f2e6bdab8eedf/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/api_e2e_engineer_d430f583468e49b09fcc364814d2fcea/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/delivery_engineer_8e8611c0c7674cb8950fb439e3b4c397/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/architecture_reviewer_4bee1141d42b4fbd84da53240dfc564a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/implementation_engineer_2772211dca00426789486377012056ac/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/code_reviewer_1decdb72faae4e82b587de56b5766b17/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/api_e2e_engineer_2922f6f5f7e44f53a393ad027ae4b7ca/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/delivery_engineer_d14b314c9eb04cd69e9263ba325cc494/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/architecture_reviewer_d8f6bf65900d4baaa6e8afed03e8161e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/implementation_engineer_11b492d2c585486a9e2e0d12467f1255/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/code_reviewer_e42d604ca57a4a23ba5ef5b1ba66c667/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/api_e2e_engineer_8e7fe0c6372f40e69b788eee9e041b21/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/delivery_engineer_d435e6a474b347cd9a6b26ffbec83940/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/architecture_reviewer_2d604bf5c54246d5bb997289c3831ae4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/implementation_engineer_8608b4ccd9f745398b77fe9e1c44e569/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/code_reviewer_929abe4c87464da68b82f03f3022366f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/api_e2e_engineer_d83fe52357a1455ab154605363e3aab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/delivery_engineer_241b81e83292442aad3b13568647a668/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/architecture_reviewer_afdec84db6d3409dada38062792df3d3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/implementation_engineer_96f201ffbe1a43e088e320deed5804fe/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/code_reviewer_e0b9fc92a6074719a2d410cf7bb8ee0d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/api_e2e_engineer_95b8d08b10a94c1fad1724dd1d67a8e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/delivery_engineer_c77f27a97dc441f59a88eb9feaed34c2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/architecture_reviewer_2cb73e0e0f8c454694d6cc0914fcf102/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/implementation_engineer_c92629c806a640d0816a0950ca0ee07a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/code_reviewer_fddcd852dc304d968911feabddab0828/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/api_e2e_engineer_ef73eb854f1e4ce5b893e14d912e7b5d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/delivery_engineer_a0389d3b57614cc88e75f64ea27a1849/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/architecture_reviewer_169efa93bdc447ea9cde5a17af9e9970/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/implementation_engineer_2552eca5fb9d4bb09872771f9fa040bd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/code_reviewer_11c248f5ef0a47b3bfd391968491f2d6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/api_e2e_engineer_f9fabda49ebc4e7c9d739051cdf2a9e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/delivery_engineer_cc67085ea689494198ca8ca1e57c6834/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/architecture_reviewer_0b89f556b548409792141cb032c96ab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/implementation_engineer_b59fa53b253b4c16864e28beec9340c8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/code_reviewer_1ab96a64fbef4a1482f13e8597e95727/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/api_e2e_engineer_26d316f1ff3a44dc83c96830135b8925/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/delivery_engineer_a57c8cf35e6a4b4ba2a12b6dc8f23977/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/architecture_reviewer_4bee1141d42b4fbd84da53240dfc564a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/implementation_engineer_2772211dca00426789486377012056ac/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/code_reviewer_1decdb72faae4e82b587de56b5766b17/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/api_e2e_engineer_2922f6f5f7e44f53a393ad027ae4b7ca/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/delivery_engineer_d14b314c9eb04cd69e9263ba325cc494/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/architecture_reviewer_d8f6bf65900d4baaa6e8afed03e8161e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/implementation_engineer_11b492d2c585486a9e2e0d12467f1255/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/code_reviewer_e42d604ca57a4a23ba5ef5b1ba66c667/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/api_e2e_engineer_8e7fe0c6372f40e69b788eee9e041b21/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/delivery_engineer_d435e6a474b347cd9a6b26ffbec83940/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/architecture_reviewer_2d604bf5c54246d5bb997289c3831ae4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/implementation_engineer_8608b4ccd9f745398b77fe9e1c44e569/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/code_reviewer_929abe4c87464da68b82f03f3022366f/raw_traces_active.jsonl
+Closed PTY session 287ee8a8-d2a2-4def-9a1a-146599cf3310
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/api_e2e_engineer_d83fe52357a1455ab154605363e3aab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/delivery_engineer_241b81e83292442aad3b13568647a668/raw_traces_active.jsonl
+Terminal WebSocket disconnected: 287ee8a8-d2a2-4def-9a1a-146599cf3310
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/architecture_reviewer_afdec84db6d3409dada38062792df3d3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/implementation_engineer_96f201ffbe1a43e088e320deed5804fe/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/code_reviewer_e0b9fc92a6074719a2d410cf7bb8ee0d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/api_e2e_engineer_95b8d08b10a94c1fad1724dd1d67a8e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/delivery_engineer_c77f27a97dc441f59a88eb9feaed34c2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/architecture_reviewer_2cb73e0e0f8c454694d6cc0914fcf102/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/implementation_engineer_c92629c806a640d0816a0950ca0ee07a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/code_reviewer_fddcd852dc304d968911feabddab0828/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/api_e2e_engineer_ef73eb854f1e4ce5b893e14d912e7b5d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/delivery_engineer_a0389d3b57614cc88e75f64ea27a1849/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/architecture_reviewer_169efa93bdc447ea9cde5a17af9e9970/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/implementation_engineer_2552eca5fb9d4bb09872771f9fa040bd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/code_reviewer_11c248f5ef0a47b3bfd391968491f2d6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/api_e2e_engineer_f9fabda49ebc4e7c9d739051cdf2a9e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/delivery_engineer_cc67085ea689494198ca8ca1e57c6834/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/architecture_reviewer_0b89f556b548409792141cb032c96ab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/implementation_engineer_b59fa53b253b4c16864e28beec9340c8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/code_reviewer_1ab96a64fbef4a1482f13e8597e95727/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/api_e2e_engineer_26d316f1ff3a44dc83c96830135b8925/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/delivery_engineer_a57c8cf35e6a4b4ba2a12b6dc8f23977/raw_traces_active.jsonl
+Created terminal session b4e1b634-7ff1-4396-9b90-faf5e9f8f326 using backend PtySession for target /tmp/delegated-team-home-v9Lmme
+Terminal WebSocket connected: b4e1b634-7ff1-4396-9b90-faf5e9f8f326
+Terminal websocket attached for cwd /tmp/delegated-team-home-v9Lmme
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/architecture_reviewer_7d817428b3aa4c3f8bf78b39117dd7e6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/implementation_engineer_5ffd491723ea468bb32a8c70a9ac34fd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/code_reviewer_21d5ad18cf9941a8b24f2e6bdab8eedf/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/api_e2e_engineer_d430f583468e49b09fcc364814d2fcea/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_996b6c9a09d94724a84da9c5f61c1db6/collaboration/software_engineering_team_probe_9c1deeff92ed4d8a87c4a25d638879ec/delivery_engineer_8e8611c0c7674cb8950fb439e3b4c397/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/architecture_reviewer_4bee1141d42b4fbd84da53240dfc564a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/implementation_engineer_2772211dca00426789486377012056ac/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/code_reviewer_1decdb72faae4e82b587de56b5766b17/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/api_e2e_engineer_2922f6f5f7e44f53a393ad027ae4b7ca/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/delivery_engineer_d14b314c9eb04cd69e9263ba325cc494/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/architecture_reviewer_d8f6bf65900d4baaa6e8afed03e8161e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/implementation_engineer_11b492d2c585486a9e2e0d12467f1255/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/code_reviewer_e42d604ca57a4a23ba5ef5b1ba66c667/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/api_e2e_engineer_8e7fe0c6372f40e69b788eee9e041b21/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/delivery_engineer_d435e6a474b347cd9a6b26ffbec83940/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/architecture_reviewer_2d604bf5c54246d5bb997289c3831ae4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/implementation_engineer_8608b4ccd9f745398b77fe9e1c44e569/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/code_reviewer_929abe4c87464da68b82f03f3022366f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/api_e2e_engineer_d83fe52357a1455ab154605363e3aab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/delivery_engineer_241b81e83292442aad3b13568647a668/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/architecture_reviewer_afdec84db6d3409dada38062792df3d3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/implementation_engineer_96f201ffbe1a43e088e320deed5804fe/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/code_reviewer_e0b9fc92a6074719a2d410cf7bb8ee0d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/api_e2e_engineer_95b8d08b10a94c1fad1724dd1d67a8e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/delivery_engineer_c77f27a97dc441f59a88eb9feaed34c2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/architecture_reviewer_2cb73e0e0f8c454694d6cc0914fcf102/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/implementation_engineer_c92629c806a640d0816a0950ca0ee07a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/code_reviewer_fddcd852dc304d968911feabddab0828/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/api_e2e_engineer_ef73eb854f1e4ce5b893e14d912e7b5d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/delivery_engineer_a0389d3b57614cc88e75f64ea27a1849/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/architecture_reviewer_169efa93bdc447ea9cde5a17af9e9970/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/implementation_engineer_2552eca5fb9d4bb09872771f9fa040bd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/code_reviewer_11c248f5ef0a47b3bfd391968491f2d6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/api_e2e_engineer_f9fabda49ebc4e7c9d739051cdf2a9e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/delivery_engineer_cc67085ea689494198ca8ca1e57c6834/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/architecture_reviewer_0b89f556b548409792141cb032c96ab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/implementation_engineer_b59fa53b253b4c16864e28beec9340c8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/code_reviewer_1ab96a64fbef4a1482f13e8597e95727/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/api_e2e_engineer_26d316f1ff3a44dc83c96830135b8925/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/delivery_engineer_a57c8cf35e6a4b4ba2a12b6dc8f23977/raw_traces_active.jsonl
+Closed PTY session b4e1b634-7ff1-4396-9b90-faf5e9f8f326
+Terminal WebSocket disconnected: b4e1b634-7ff1-4396-9b90-faf5e9f8f326
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/architecture_reviewer_4bee1141d42b4fbd84da53240dfc564a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/implementation_engineer_2772211dca00426789486377012056ac/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/code_reviewer_1decdb72faae4e82b587de56b5766b17/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/api_e2e_engineer_2922f6f5f7e44f53a393ad027ae4b7ca/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/delivery_engineer_d14b314c9eb04cd69e9263ba325cc494/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/architecture_reviewer_d8f6bf65900d4baaa6e8afed03e8161e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/implementation_engineer_11b492d2c585486a9e2e0d12467f1255/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/code_reviewer_e42d604ca57a4a23ba5ef5b1ba66c667/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/api_e2e_engineer_8e7fe0c6372f40e69b788eee9e041b21/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/delivery_engineer_d435e6a474b347cd9a6b26ffbec83940/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/architecture_reviewer_2d604bf5c54246d5bb997289c3831ae4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/implementation_engineer_8608b4ccd9f745398b77fe9e1c44e569/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/code_reviewer_929abe4c87464da68b82f03f3022366f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/api_e2e_engineer_d83fe52357a1455ab154605363e3aab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/delivery_engineer_241b81e83292442aad3b13568647a668/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/architecture_reviewer_afdec84db6d3409dada38062792df3d3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/implementation_engineer_96f201ffbe1a43e088e320deed5804fe/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/code_reviewer_e0b9fc92a6074719a2d410cf7bb8ee0d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/api_e2e_engineer_95b8d08b10a94c1fad1724dd1d67a8e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/delivery_engineer_c77f27a97dc441f59a88eb9feaed34c2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/architecture_reviewer_2cb73e0e0f8c454694d6cc0914fcf102/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/implementation_engineer_c92629c806a640d0816a0950ca0ee07a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/code_reviewer_fddcd852dc304d968911feabddab0828/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/api_e2e_engineer_ef73eb854f1e4ce5b893e14d912e7b5d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/delivery_engineer_a0389d3b57614cc88e75f64ea27a1849/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/architecture_reviewer_169efa93bdc447ea9cde5a17af9e9970/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/implementation_engineer_2552eca5fb9d4bb09872771f9fa040bd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/code_reviewer_11c248f5ef0a47b3bfd391968491f2d6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/api_e2e_engineer_f9fabda49ebc4e7c9d739051cdf2a9e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/delivery_engineer_cc67085ea689494198ca8ca1e57c6834/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/architecture_reviewer_0b89f556b548409792141cb032c96ab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/implementation_engineer_b59fa53b253b4c16864e28beec9340c8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/code_reviewer_1ab96a64fbef4a1482f13e8597e95727/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/api_e2e_engineer_26d316f1ff3a44dc83c96830135b8925/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/delivery_engineer_a57c8cf35e6a4b4ba2a12b6dc8f23977/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/architecture_reviewer_4bee1141d42b4fbd84da53240dfc564a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/implementation_engineer_2772211dca00426789486377012056ac/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/code_reviewer_1decdb72faae4e82b587de56b5766b17/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/api_e2e_engineer_2922f6f5f7e44f53a393ad027ae4b7ca/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/delivery_engineer_d14b314c9eb04cd69e9263ba325cc494/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/architecture_reviewer_d8f6bf65900d4baaa6e8afed03e8161e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/implementation_engineer_11b492d2c585486a9e2e0d12467f1255/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/code_reviewer_e42d604ca57a4a23ba5ef5b1ba66c667/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/api_e2e_engineer_8e7fe0c6372f40e69b788eee9e041b21/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/delivery_engineer_d435e6a474b347cd9a6b26ffbec83940/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/architecture_reviewer_2d604bf5c54246d5bb997289c3831ae4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/implementation_engineer_8608b4ccd9f745398b77fe9e1c44e569/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/code_reviewer_929abe4c87464da68b82f03f3022366f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/api_e2e_engineer_d83fe52357a1455ab154605363e3aab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/delivery_engineer_241b81e83292442aad3b13568647a668/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/architecture_reviewer_afdec84db6d3409dada38062792df3d3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/implementation_engineer_96f201ffbe1a43e088e320deed5804fe/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/code_reviewer_e0b9fc92a6074719a2d410cf7bb8ee0d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/api_e2e_engineer_95b8d08b10a94c1fad1724dd1d67a8e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/delivery_engineer_c77f27a97dc441f59a88eb9feaed34c2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/architecture_reviewer_2cb73e0e0f8c454694d6cc0914fcf102/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/implementation_engineer_c92629c806a640d0816a0950ca0ee07a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/code_reviewer_fddcd852dc304d968911feabddab0828/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/implementation_engineer_8608b4ccd9f745398b77fe9e1c44e569/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/api_e2e_engineer_ef73eb854f1e4ce5b893e14d912e7b5d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/delivery_engineer_a0389d3b57614cc88e75f64ea27a1849/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/architecture_reviewer_169efa93bdc447ea9cde5a17af9e9970/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/implementation_engineer_2552eca5fb9d4bb09872771f9fa040bd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/code_reviewer_11c248f5ef0a47b3bfd391968491f2d6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/api_e2e_engineer_f9fabda49ebc4e7c9d739051cdf2a9e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/delivery_engineer_cc67085ea689494198ca8ca1e57c6834/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/architecture_reviewer_0b89f556b548409792141cb032c96ab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/implementation_engineer_b59fa53b253b4c16864e28beec9340c8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/code_reviewer_1ab96a64fbef4a1482f13e8597e95727/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/api_e2e_engineer_26d316f1ff3a44dc83c96830135b8925/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/delivery_engineer_a57c8cf35e6a4b4ba2a12b6dc8f23977/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/implementation_engineer_8608b4ccd9f745398b77fe9e1c44e569/raw_traces_active.jsonl
+Agent websocket attached for run project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d
+Created agent session c82f22e4-2a11-4450-9616-e9e2e18d5ead for run project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d
+Agent WebSocket connected: session=c82f22e4-2a11-4450-9616-e9e2e18d5ead, run=project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+Agent websocket attached for run project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d
+Created agent session 749635e9-a5f0-4c1d-bef8-46d98b7d9831 for run project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d
+Agent WebSocket connected: session=749635e9-a5f0-4c1d-bef8-46d98b7d9831, run=project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d
+AGY compaction detection off for run project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/architecture_reviewer_4bee1141d42b4fbd84da53240dfc564a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/implementation_engineer_2772211dca00426789486377012056ac/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/code_reviewer_1decdb72faae4e82b587de56b5766b17/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/api_e2e_engineer_2922f6f5f7e44f53a393ad027ae4b7ca/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/delivery_engineer_d14b314c9eb04cd69e9263ba325cc494/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/architecture_reviewer_d8f6bf65900d4baaa6e8afed03e8161e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/implementation_engineer_11b492d2c585486a9e2e0d12467f1255/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/code_reviewer_e42d604ca57a4a23ba5ef5b1ba66c667/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/api_e2e_engineer_8e7fe0c6372f40e69b788eee9e041b21/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/delivery_engineer_d435e6a474b347cd9a6b26ffbec83940/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/architecture_reviewer_2d604bf5c54246d5bb997289c3831ae4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/implementation_engineer_8608b4ccd9f745398b77fe9e1c44e569/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/code_reviewer_929abe4c87464da68b82f03f3022366f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/api_e2e_engineer_d83fe52357a1455ab154605363e3aab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/delivery_engineer_241b81e83292442aad3b13568647a668/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/architecture_reviewer_afdec84db6d3409dada38062792df3d3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/implementation_engineer_96f201ffbe1a43e088e320deed5804fe/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/code_reviewer_e0b9fc92a6074719a2d410cf7bb8ee0d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/api_e2e_engineer_95b8d08b10a94c1fad1724dd1d67a8e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/delivery_engineer_c77f27a97dc441f59a88eb9feaed34c2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/architecture_reviewer_2cb73e0e0f8c454694d6cc0914fcf102/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/implementation_engineer_c92629c806a640d0816a0950ca0ee07a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/code_reviewer_fddcd852dc304d968911feabddab0828/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/api_e2e_engineer_ef73eb854f1e4ce5b893e14d912e7b5d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/delivery_engineer_a0389d3b57614cc88e75f64ea27a1849/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/architecture_reviewer_169efa93bdc447ea9cde5a17af9e9970/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/implementation_engineer_2552eca5fb9d4bb09872771f9fa040bd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/code_reviewer_11c248f5ef0a47b3bfd391968491f2d6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/api_e2e_engineer_f9fabda49ebc4e7c9d739051cdf2a9e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/delivery_engineer_cc67085ea689494198ca8ca1e57c6834/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/architecture_reviewer_0b89f556b548409792141cb032c96ab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/implementation_engineer_b59fa53b253b4c16864e28beec9340c8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/code_reviewer_1ab96a64fbef4a1482f13e8597e95727/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/api_e2e_engineer_26d316f1ff3a44dc83c96830135b8925/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/delivery_engineer_a57c8cf35e6a4b4ba2a12b6dc8f23977/raw_traces_active.jsonl
+{"level":40,"time":1791873815025,"pid":67900,"hostname":"74ff273d28fe","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_i33QaNj8zpTXn1OsQuHiPPV7SK7xGXpiOFkqfFk5WVc","statusCode":405,"elapsedMs":0.41637498140335083,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/architecture_reviewer_4bee1141d42b4fbd84da53240dfc564a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/code_reviewer_1decdb72faae4e82b587de56b5766b17/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/implementation_engineer_2772211dca00426789486377012056ac/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/api_e2e_engineer_2922f6f5f7e44f53a393ad027ae4b7ca/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/delivery_engineer_d14b314c9eb04cd69e9263ba325cc494/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/architecture_reviewer_d8f6bf65900d4baaa6e8afed03e8161e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/implementation_engineer_11b492d2c585486a9e2e0d12467f1255/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/code_reviewer_e42d604ca57a4a23ba5ef5b1ba66c667/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/api_e2e_engineer_8e7fe0c6372f40e69b788eee9e041b21/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/delivery_engineer_d435e6a474b347cd9a6b26ffbec83940/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/architecture_reviewer_2d604bf5c54246d5bb997289c3831ae4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/implementation_engineer_8608b4ccd9f745398b77fe9e1c44e569/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/code_reviewer_929abe4c87464da68b82f03f3022366f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/api_e2e_engineer_d83fe52357a1455ab154605363e3aab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/delivery_engineer_241b81e83292442aad3b13568647a668/raw_traces_active.jsonl
+AGY compaction detection off for run solution_designer_a9d420d87c3e4328ae9d6c46cd10bf74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/architecture_reviewer_afdec84db6d3409dada38062792df3d3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/implementation_engineer_96f201ffbe1a43e088e320deed5804fe/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/code_reviewer_e0b9fc92a6074719a2d410cf7bb8ee0d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/api_e2e_engineer_95b8d08b10a94c1fad1724dd1d67a8e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/delivery_engineer_c77f27a97dc441f59a88eb9feaed34c2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/architecture_reviewer_2cb73e0e0f8c454694d6cc0914fcf102/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/implementation_engineer_c92629c806a640d0816a0950ca0ee07a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/code_reviewer_fddcd852dc304d968911feabddab0828/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/api_e2e_engineer_ef73eb854f1e4ce5b893e14d912e7b5d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/delivery_engineer_a0389d3b57614cc88e75f64ea27a1849/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/architecture_reviewer_169efa93bdc447ea9cde5a17af9e9970/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/implementation_engineer_2552eca5fb9d4bb09872771f9fa040bd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/code_reviewer_11c248f5ef0a47b3bfd391968491f2d6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/api_e2e_engineer_f9fabda49ebc4e7c9d739051cdf2a9e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/delivery_engineer_cc67085ea689494198ca8ca1e57c6834/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/architecture_reviewer_0b89f556b548409792141cb032c96ab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/implementation_engineer_b59fa53b253b4c16864e28beec9340c8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/code_reviewer_1ab96a64fbef4a1482f13e8597e95727/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/api_e2e_engineer_26d316f1ff3a44dc83c96830135b8925/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/delivery_engineer_a57c8cf35e6a4b4ba2a12b6dc8f23977/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_6dca3a2113a5479aa57132f8a7723c5a/architecture_reviewer_04fc222b199c49979e958e7e3225a689/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_6dca3a2113a5479aa57132f8a7723c5a/implementation_engineer_c65f7fcaf3df4761b1af0f3f3d8b42e0/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_6dca3a2113a5479aa57132f8a7723c5a/code_reviewer_35ee37ef4d78440abd73cac6b455853d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_6dca3a2113a5479aa57132f8a7723c5a/api_e2e_engineer_b41ac0325c1d40898579a9cd06356b57/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_6dca3a2113a5479aa57132f8a7723c5a/delivery_engineer_b2c988042fa14dbea6d5b369a1308523/raw_traces_active.jsonl
+{"level":40,"time":1791873815878,"pid":67900,"hostname":"74ff273d28fe","reqId":"req-13","method":"GET","url":"/mcp/agent-tools/agtrun_i33QaNj8zpTXn1OsQuHiPPV7SK7xGXpiOFkqfFk5WVc","statusCode":405,"elapsedMs":0.21816694736480713,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-tXDVmJ/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-tXDVmJ/workspace.
+Reusing registered workspace ID: agent_ws_6f627e073f698a0bdd11e75740da7464dd17ac6ff6767ce934981f7689ac0cb5
+AGY compaction detection off for run solution_designer_41e2a1598efb40b9809325d3ca835382: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/late_engineering_team_probe_2b666e7ab8764e03a1e0ed273e23b128/solution_designer_41e2a1598efb40b9809325d3ca835382/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/late_engineering_team_probe_2b666e7ab8764e03a1e0ed273e23b128/architecture_reviewer_97dfb285f97a4417b1b14366b68adac4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/late_engineering_team_probe_2b666e7ab8764e03a1e0ed273e23b128/implementation_engineer_546a1b4cf0444f03901d810880aeab5c/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/late_engineering_team_probe_2b666e7ab8764e03a1e0ed273e23b128/api_e2e_engineer_39a418e0b37a41b383aacdc707de1034/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/late_engineering_team_probe_2b666e7ab8764e03a1e0ed273e23b128/code_reviewer_2d5c5f95b4a24e6f8d97df0c15d5e31d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/late_engineering_team_probe_2b666e7ab8764e03a1e0ed273e23b128/delivery_engineer_1d11ffdeb98a4843aba632f7ef89ef76/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/architecture_reviewer_4bee1141d42b4fbd84da53240dfc564a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/implementation_engineer_2772211dca00426789486377012056ac/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/code_reviewer_1decdb72faae4e82b587de56b5766b17/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/api_e2e_engineer_2922f6f5f7e44f53a393ad027ae4b7ca/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_bab12af0c5f644f69032d4cb22b35b29/delivery_engineer_d14b314c9eb04cd69e9263ba325cc494/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/architecture_reviewer_d8f6bf65900d4baaa6e8afed03e8161e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/implementation_engineer_11b492d2c585486a9e2e0d12467f1255/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/code_reviewer_e42d604ca57a4a23ba5ef5b1ba66c667/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/api_e2e_engineer_8e7fe0c6372f40e69b788eee9e041b21/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_c55213dc07df4a99a9f87b19c53cc8e0/delivery_engineer_d435e6a474b347cd9a6b26ffbec83940/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/architecture_reviewer_2d604bf5c54246d5bb997289c3831ae4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/implementation_engineer_8608b4ccd9f745398b77fe9e1c44e569/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/code_reviewer_929abe4c87464da68b82f03f3022366f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/api_e2e_engineer_d83fe52357a1455ab154605363e3aab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_96cde840afe348e8a00433183c80974d/delivery_engineer_241b81e83292442aad3b13568647a668/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/architecture_reviewer_afdec84db6d3409dada38062792df3d3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/implementation_engineer_96f201ffbe1a43e088e320deed5804fe/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/code_reviewer_e0b9fc92a6074719a2d410cf7bb8ee0d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/api_e2e_engineer_95b8d08b10a94c1fad1724dd1d67a8e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_d3f8ede6fa8e4427a1ec8e638bb5027e/delivery_engineer_c77f27a97dc441f59a88eb9feaed34c2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/architecture_reviewer_2cb73e0e0f8c454694d6cc0914fcf102/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/code_reviewer_fddcd852dc304d968911feabddab0828/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/implementation_engineer_c92629c806a640d0816a0950ca0ee07a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/api_e2e_engineer_ef73eb854f1e4ce5b893e14d912e7b5d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_3511e4913d0141188af0dad5939268c8/delivery_engineer_a0389d3b57614cc88e75f64ea27a1849/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/architecture_reviewer_169efa93bdc447ea9cde5a17af9e9970/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/implementation_engineer_2552eca5fb9d4bb09872771f9fa040bd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/code_reviewer_11c248f5ef0a47b3bfd391968491f2d6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/api_e2e_engineer_f9fabda49ebc4e7c9d739051cdf2a9e2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_2f146cc5bd5b423a86a708c6602e7bea/delivery_engineer_cc67085ea689494198ca8ca1e57c6834/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/architecture_reviewer_0b89f556b548409792141cb032c96ab6/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/implementation_engineer_b59fa53b253b4c16864e28beec9340c8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/code_reviewer_1ab96a64fbef4a1482f13e8597e95727/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/api_e2e_engineer_26d316f1ff3a44dc83c96830135b8925/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_49b12fd32b134fe58917a2c5157a291c/delivery_engineer_a57c8cf35e6a4b4ba2a12b6dc8f23977/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_6dca3a2113a5479aa57132f8a7723c5a/architecture_reviewer_04fc222b199c49979e958e7e3225a689/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_6dca3a2113a5479aa57132f8a7723c5a/implementation_engineer_c65f7fcaf3df4761b1af0f3f3d8b42e0/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_6dca3a2113a5479aa57132f8a7723c5a/code_reviewer_35ee37ef4d78440abd73cac6b455853d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_6dca3a2113a5479aa57132f8a7723c5a/api_e2e_engineer_b41ac0325c1d40898579a9cd06356b57/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-tXDVmJ/memory/agents/project_task_manager_probe_fe58ee0b3fd44178bcf7a6d47b858a3d/collaboration/software_engineering_team_probe_6dca3a2113a5479aa57132f8a7723c5a/delivery_engineer_b2c988042fa14dbea6d5b369a1308523/raw_traces_active.jsonl
+{"level":40,"time":1791873816635,"pid":67900,"hostname":"74ff273d28fe","reqId":"req-17","method":"GET","url":"/mcp/agent-tools/agtrun_i33QaNj8zpTXn1OsQuHiPPV7SK7xGXpiOFkqfFk5WVc","statusCode":405,"elapsedMs":0.18733298778533936,"msg":"http request completed"}
+Closed agent session c82f22e4-2a11-4450-9616-e9e2e18d5ead
+Agent WebSocket disconnected: c82f22e4-2a11-4450-9616-e9e2e18d5ead
+Closed agent session 749635e9-a5f0-4c1d-bef8-46d98b7d9831
+Agent WebSocket disconnected: 749635e9-a5f0-4c1d-bef8-46d98b7d9831
+[2026-10-13T06:43:37.557Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-13T06:43:37.570Z] [INFO] [server.runtime] Server closed cleanly.

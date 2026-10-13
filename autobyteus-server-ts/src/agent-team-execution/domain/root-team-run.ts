@@ -53,6 +53,14 @@ import type { CollaborationAgentPlatformBindingChange } from "../../agent-collab
 import { TeamAgentPlatformBindingCommitter } from "../services/team-agent-platform-binding-committer.js";
 import type { FrozenTeamRunTerminationScope } from "./frozen-team-run-termination-scope.js";
 import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-gate.js";
+import type {
+  DelegatedLaunchSelectionCommand,
+  DelegatedLaunchUpdateResult,
+  DelegatedStopResult,
+} from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
+import type { DelegatedLaunchChange, DelegatedRunReference } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import { createTeamDelegatedLaunchCommand } from "../services/team-run-delegated-launches.js";
 
 export type RootTeamRunPackageSnapshot = Readonly<{
   tree: TeamRunExecutionTreeSnapshot;
@@ -84,6 +92,7 @@ export class RootTeamRun {
   private readonly materializationGate: RootTeamRunMaterializationGate;
   private readonly collaborators: TeamRunCollaborators;
   private readonly delivery: TeamRunMessageDelivery;
+  private readonly delegatedLaunches: DelegatedLaunchSelectionCommand;
   private readonly unsubscribeTaskExecutionEvents: () => void;
   private termination: Promise<AgentOperationResult> | null = null;
   private frozenTerminationScope: FrozenTeamRunTerminationScope | null = null;
@@ -184,6 +193,19 @@ export class RootTeamRun {
       replaceTree: (tree) => this.replaceTree(tree),
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
     });
+    this.delegatedLaunches = createTeamDelegatedLaunchCommand({
+      rootTeamRunId: this.teamRunId,
+      config: options.config,
+      rootRun: options.rootRun,
+      teamRunResolver: this.teamRunResolver,
+      taskExecutions: this.taskExecutions,
+      persistence: options.persistence,
+      getTree: () => this.tree,
+      getIndex: () => this.index,
+      assertAdmitting: () => this.assertAdmitting(),
+      replaceTree: (tree) => this.replaceTree(tree),
+      publish: (event) => options.publisher.publish(event),
+    });
     this.unsubscribeTaskExecutionEvents = options.publisher.subscribe(({ event }) => {
       this.taskExecutions.onRootEvent(event);
     });
@@ -200,6 +222,18 @@ export class RootTeamRun {
   /** A task execution's own live status for the Task side (`offline` once this root stops admitting). */
   taskExecutionStatus(execution: TaskExecutionReference): AgentExecutionStatus {
     return this.taskExecutions.taskExecutionStatus(execution);
+  }
+
+  /** DS-002: the user's Stop of one delegated copy or collaborator and the copies it started. */
+  stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
+    return this.materializationGate.run(() => this.delegatedLaunches.stop(target));
+  }
+  /** DS-001: the user's model choice for stopped delegated copies or collaborators of this live run. */
+  updateDelegatedLaunchSelections(
+    changes: readonly DelegatedLaunchChange[],
+    validator: RunModelSelectionValidator,
+  ): Promise<DelegatedLaunchUpdateResult> {
+    return this.materializationGate.run(() => this.delegatedLaunches.update(changes, validator));
   }
 
   get teamRunId(): string { return this.tree.rootTeam.teamRunId; }

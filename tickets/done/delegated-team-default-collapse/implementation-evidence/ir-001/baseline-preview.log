@@ -1,0 +1,8 @@
+file:///home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/implementation-evidence/ir-001/rendered-preview.mjs:77
+  if (evidence.errors.length || evidence.state.error) throw new Error('Browser errors: ' + JSON.stringify(evidence.errors) + ', store error=' + evidence.state.error);
+                                                            ^
+
+Error: Browser errors: ["WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"], store error=null
+    at file:///home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/implementation-evidence/ir-001/rendered-preview.mjs:77:61
+
+Node.js v22.23.3

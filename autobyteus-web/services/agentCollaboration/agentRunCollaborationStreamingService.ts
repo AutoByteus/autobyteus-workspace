@@ -51,8 +51,6 @@ export class AgentRunCollaborationStreamingService {
     publish(context: AgentRunCollaborationContext, commit: () => void): void
     onInactive(): void
     reportError(message: string): void
-    /** A collaborator was added in place (its new Team opens once). */
-    onCollaboratorAdded?(context: AgentRunCollaborationContext): void
     /** Task executions were closed in place (Task DONE); a selected one leaves with its rows. */
     onTaskExecutionsClosed?(context: AgentRunCollaborationContext): void
   }>) {}
@@ -205,8 +203,6 @@ export class AgentRunCollaborationStreamingService {
         // A new child: reconnect for a fresh snapshot that includes its context.
         this.closeSocket('Agent collaboration reload')
         this.connect()
-      } else if (message.payload.event.kind === 'collaborator_added') {
-        this.options.onCollaboratorAdded?.(this.context)
       } else if (message.payload.event.kind === 'task_executions_closed') {
         this.options.onTaskExecutionsClosed?.(this.context)
       }

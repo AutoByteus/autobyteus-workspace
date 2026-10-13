@@ -1,0 +1,8 @@
+2026-10-13 CRR-001 owned runtime uid/gid24018.
+64MiB native run: iso-34599-db5e; canonical stop confirmed data removal and ports34599/36943 released, list empty.
+Private512MiB native run: iso-33677-4dfc; canonical stop confirmed data removal and ports33677/33271 released, list empty.
+No uid24018 processes remain after both sessions. No owned data root remains under /tmp/collapse-review-crr001.1GB4Pg/tmp.
+Private /dev/shm mount unmounted; private namespace exited. Parent /dev/shm remains original64MiB mount. No sandbox/OS security/limit/global mount change.
+Private HOME/bin/TMPDIR/runtime /tmp/collapse-review-crr001.1GB4Pg removed after preserving logs/receipts.
+Reviewer diagnostics/evidence and current unpacked build/dependencies/worktree intentionally retained.
+User runtime/data/config/credentials untouched; no paid/local inference, production restart, merge, push, release, deploy or Task completion.

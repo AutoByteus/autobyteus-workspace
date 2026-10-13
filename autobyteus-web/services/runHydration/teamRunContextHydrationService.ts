@@ -192,7 +192,7 @@ const stageProjection = (input: {
 }): MemberRunStateCommit | null => {
   if (!input.state) return null;
   const { projection } = input.state;
-  const configured = teamAgentSourceAt(input.tree, input.address);
+  const configured = teamAgentSourceAt(input.tree, input.address, input.agentRunId);
   if (!configured) throw new Error(`AgentRun '${input.agentRunId}' has no configured or collaborator placement.`);
   input.context.state.conversation = buildConversationFromProjection(
     input.agentRunId,

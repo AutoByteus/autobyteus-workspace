@@ -1,0 +1,25 @@
+{
+  "ownedUid": 24019,
+  "ownedUidProcessesRemaining": 0,
+  "canonicalInstanceId": "iso-39201-ab83",
+  "canonicalStop": {
+    "instanceId": "iso-39201-ab83",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/tmp/collapse-api-rev002.ots9s6/tmp/autobyteus-isolated-root-I1faSf",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  },
+  "ownedRegistryEmpty": true,
+  "ownedAutoDataRootRemoved": true,
+  "privateHomeBinTmpRuntimeRemoved": true,
+  "privateNamespaceSessionExit": 0,
+  "privateShmAfterUsedBytes": 0,
+  "parentMountUnchanged": true,
+  "parentNamespaceUnchanged": true,
+  "sandboxOrGlobalSecurityChanged": false,
+  "userAppDataOrCredentialsTouched": false,
+  "buildDependenciesWorktreeRetained": true
+}

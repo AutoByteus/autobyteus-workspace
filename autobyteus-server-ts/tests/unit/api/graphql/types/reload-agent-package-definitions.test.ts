@@ -22,6 +22,7 @@ describe("reloadAgentPackageDefinitions GraphQL boundary", () => {
       definitionAdmissionService: {} as never,
       collaborationRootHistoryService: {} as never,
       runModelConfigService: {} as never,
+      delegatedLaunchSelectionService: {} as never,
       bundleService: {} as ApplicationBundleService,
       capabilityService: {} as never,
       packageQueries: {} as ApplicationPackageRegistryService,

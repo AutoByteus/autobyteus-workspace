@@ -1,0 +1,2 @@
+#!/bin/sh
+AGY_FAKE_CASE=linked_skills exec /usr/bin/node "/home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs" "$@"

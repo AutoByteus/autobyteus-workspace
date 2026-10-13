@@ -242,6 +242,9 @@ export class RootAgentExecutionRegistry {
       this.active.set(sourceNode.agentRunId, created);
       this.taskAgentRunIds.add(sourceNode.agentRunId);
       handle = created;
+    } else if (handle.isStopped()) {
+      // A retained handle (idle shutdown or user Stop) resumes on the copy's current effective launch.
+      handle.replaceModelChoice(sourceNode);
     }
     // The chain is live before any input is reserved.
     await handle.getOrCreateAgentRun();
@@ -264,6 +267,27 @@ export class RootAgentExecutionRegistry {
       });
       if (!result.accepted) {
         throw new TaskExecutionTeardownIndeterminateError(agentRunId, result.message ?? `Task AgentRun '${agentRunId}' shutdown was rejected.`);
+      }
+      return true;
+    } finally {
+      this.shuttingDown.delete(agentRunId);
+    }
+  }
+
+  /**
+   * User Stop (DS-002) of one live root-hosted task Agent, quiet or not: interrupts it and releases
+   * its runtime with input left open. The handle stays registered, so the next message restores it.
+   */
+  async shutDownTaskForUser(agentRunId: string): Promise<boolean> {
+    const handle = this.active.get(agentRunId);
+    if (!handle || !this.isTaskLive(agentRunId) || this.shuttingDown.has(agentRunId)) return false;
+    this.shuttingDown.add(agentRunId);
+    try {
+      const result = await handle.releaseRuntimeForUserStop().catch((cause: unknown) => {
+        throw new TaskExecutionTeardownIndeterminateError(agentRunId, `Task AgentRun '${agentRunId}' stop did not finish.`, { cause });
+      });
+      if (!result.accepted) {
+        throw new TaskExecutionTeardownIndeterminateError(agentRunId, result.message ?? `Task AgentRun '${agentRunId}' stop was rejected.`);
       }
       return true;
     } finally {

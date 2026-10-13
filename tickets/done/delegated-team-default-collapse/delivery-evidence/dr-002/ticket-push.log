@@ -1,0 +1,9 @@
+remote:
+remote: Create a pull request for 'requirements/delegated-team-default-collapse' on GitHub by visiting:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/pull/new/requirements/delegated-team-default-collapse
+remote:
+remote: GitHub found 940 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 429 moderate, 70 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To https://github.com/AutoByteus/autobyteus-workspace.git
+ * [new branch]          requirements/delegated-team-default-collapse -> requirements/delegated-team-default-collapse

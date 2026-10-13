@@ -1,3 +1,10 @@
+import {
+  applyDelegatedLaunchSelectionsToCollaborators,
+  applyDelegatedLaunchSelectionsToTaskExecutions,
+  type DelegatedLaunchForest,
+  type DelegatedLaunchSelections,
+} from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import { taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import type {
   CollaboratorEntry,
   RootConfiguredTeamExecutionNode,
@@ -228,3 +235,22 @@ export const replaceAgentPlatformBindingWithoutConversationInTree = (input: {
   }
   return validateTeamRunExecutionTreePayload(next, input.tree.rootTeam.teamRunId);
 };
+
+/** The tree's delegated copies and collaborators, for the user model choice and Stop (DS-001, DS-002). */
+export const teamDelegatedLaunchForest = (tree: TeamRunExecutionTreeSnapshot): DelegatedLaunchForest => Object.freeze({
+  collaborators: tree.rootTeam.collaborators,
+  taskExecutionLists: taskExecutionListsOf({ taskExecutions: tree.rootTeam.taskExecutions, collaborators: tree.rootTeam.collaborators }),
+});
+
+/** Records user model choices on the tree's copies and collaborators; started values are untouched. */
+export const applyTeamDelegatedLaunchSelections = (
+  tree: TeamRunExecutionTreeSnapshot,
+  selections: DelegatedLaunchSelections,
+): TeamRunExecutionTreeSnapshot => validateTeamRunExecutionTreePayload({
+  ...tree,
+  rootTeam: {
+    ...tree.rootTeam,
+    collaborators: applyDelegatedLaunchSelectionsToCollaborators(tree.rootTeam.collaborators, selections),
+    taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(tree.rootTeam.taskExecutions, selections),
+  },
+}, tree.rootTeam.teamRunId);

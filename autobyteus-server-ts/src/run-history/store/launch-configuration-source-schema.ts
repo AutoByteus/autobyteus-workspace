@@ -1,4 +1,5 @@
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
+import type { UserLaunchSelection } from "../domain/run-execution-tree-shared-records.js";
 import {
   CONFIGURED_LAUNCH_LAYERS,
   LAUNCH_CONFIGURATION_FALLBACK_REASONS,
@@ -6,6 +7,7 @@ import {
   type LaunchConfigurationSource,
 } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import {
+  isoTimestamp,
   nullableString,
   objectRecord,
   parseLaunchConfiguration,
@@ -56,3 +58,31 @@ export const parseOptionalLaunchFields = (
     ? { [keys.source]: parseLaunchConfigurationSource(record[keys.source], `${label}.${keys.source}`) }
     : {}),
 });
+
+/**
+ * The optional user model choice of a copy or collaborator record (`userLaunchSelection` on
+ * agent-level records, `userTeamLaunchSelection` on team-level records). Absent truthfully means
+ * no user choice (every record written before selections existed); present values are validated
+ * and projected exactly.
+ */
+export const parseOptionalUserLaunchSelection = <TKey extends "userLaunchSelection" | "userTeamLaunchSelection">(
+  record: Record<string, unknown>,
+  key: TKey,
+  label: string,
+): { [K in TKey]?: UserLaunchSelection } => {
+  if (record[key] === undefined) return {};
+  const at = `${label}.${key}`;
+  const selection = objectRecord(record[key], at);
+  requireKeys(selection, ["llmModelIdentifier", "llmConfig", "selectedAt"], at);
+  if (
+    selection.llmConfig !== null
+    && (!selection.llmConfig || typeof selection.llmConfig !== "object" || Array.isArray(selection.llmConfig))
+  ) throw new Error(`${at}.llmConfig must be an object or null.`);
+  return {
+    [key]: {
+      llmModelIdentifier: requiredString(selection.llmModelIdentifier, `${at}.llmModelIdentifier`),
+      llmConfig: selection.llmConfig === null ? null : structuredClone(selection.llmConfig as Record<string, unknown>),
+      selectedAt: isoTimestamp(selection.selectedAt, `${at}.selectedAt`),
+    },
+  } as { [K in TKey]?: UserLaunchSelection };
+};

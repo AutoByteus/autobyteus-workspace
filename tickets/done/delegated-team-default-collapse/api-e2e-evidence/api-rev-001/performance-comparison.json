@@ -1,0 +1,312 @@
+{
+  "baseline-final": {
+    "samples": [
+      {
+        "cold": {
+          "label": "cold-frontend-store-1",
+          "start": 1848,
+          "host": 98.39999997615814,
+          "rows": 38.19999998807907,
+          "rowsPreloaded": false,
+          "member": 32.69999998807907,
+          "rowReadyMs": 38.19999998807907,
+          "initialRows": 49,
+          "selectedMember": "implementation_engineer_ea4a51748d16411499ece4480ce8de41",
+          "visibleRowsAfterMemberSelection": 49,
+          "requests": {
+            "GetAgentRunCollaborationMemberProjection": 132,
+            "GetRunFileChanges": 134,
+            "GetRunProjection": 2,
+            "GetAgentRunResumeConfig": 2,
+            "GetTaskWorkerTasks": 3,
+            "GetAgentRunCollaboration": 2,
+            "GetSkills": 1,
+            "GetSkillImprovementCapability": 1
+          },
+          "roleRevealRequests": 126,
+          "roleRevealArtifactReads": 126
+        },
+        "warm": {
+          "label": "warm-reselection-1",
+          "start": 2646.800000011921,
+          "host": 7,
+          "rows": 7.099999964237213,
+          "rowsPreloaded": true,
+          "member": 13.399999976158142,
+          "rowReadyMs": 7.099999964237213,
+          "initialRows": 49,
+          "selectedMember": "implementation_engineer_ea4a51748d16411499ece4480ce8de41",
+          "visibleRowsAfterMemberSelection": 49,
+          "requests": {
+            "GetRunProjection": 2,
+            "GetAgentRunResumeConfig": 2,
+            "GetRunFileChanges": 2
+          }
+        }
+      },
+      {
+        "cold": {
+          "label": "cold-frontend-store-2",
+          "start": 1570.5,
+          "host": 131.4000000357628,
+          "rows": 54.30000001192093,
+          "rowsPreloaded": false,
+          "member": 14.5,
+          "rowReadyMs": 54.30000001192093,
+          "initialRows": 49,
+          "selectedMember": "implementation_engineer_ea4a51748d16411499ece4480ce8de41",
+          "visibleRowsAfterMemberSelection": 49,
+          "requests": {
+            "GetAgentRunCollaborationMemberProjection": 132,
+            "GetRunFileChanges": 134,
+            "GetRunProjection": 2,
+            "GetAgentRunResumeConfig": 2,
+            "GetTaskWorkerTasks": 3,
+            "GetAgentRunCollaboration": 2,
+            "GetSkills": 1,
+            "GetSkillImprovementCapability": 1
+          },
+          "roleRevealRequests": 126,
+          "roleRevealArtifactReads": 126
+        },
+        "warm": {
+          "label": "warm-reselection-2",
+          "start": 2571.400000035763,
+          "host": 4,
+          "rows": 4.099999964237213,
+          "rowsPreloaded": true,
+          "member": 12.399999976158142,
+          "rowReadyMs": 4.099999964237213,
+          "initialRows": 49,
+          "selectedMember": "implementation_engineer_ea4a51748d16411499ece4480ce8de41",
+          "visibleRowsAfterMemberSelection": 49,
+          "requests": {
+            "GetRunProjection": 2,
+            "GetAgentRunResumeConfig": 2,
+            "GetRunFileChanges": 2
+          }
+        }
+      },
+      {
+        "cold": {
+          "label": "cold-frontend-store-3",
+          "start": 1747,
+          "host": 71.5,
+          "rows": 4.800000011920929,
+          "rowsPreloaded": true,
+          "member": 29.899999976158142,
+          "rowReadyMs": 4.800000011920929,
+          "initialRows": 49,
+          "selectedMember": "implementation_engineer_ea4a51748d16411499ece4480ce8de41",
+          "visibleRowsAfterMemberSelection": 49,
+          "requests": {
+            "GetAgentRunCollaborationMemberProjection": 90,
+            "GetRunFileChanges": 92,
+            "GetTaskWorkerTasks": 3,
+            "GetRunProjection": 2,
+            "GetAgentRunResumeConfig": 2,
+            "GetAgentRunCollaboration": 1,
+            "GetSkills": 1,
+            "GetSkillImprovementCapability": 1
+          },
+          "roleRevealRequests": 84,
+          "roleRevealArtifactReads": 84
+        },
+        "warm": {
+          "label": "warm-reselection-3",
+          "start": 2223.899999976158,
+          "host": 10.100000023841858,
+          "rows": 10.100000023841858,
+          "rowsPreloaded": true,
+          "member": 30.19999998807907,
+          "rowReadyMs": 10.100000023841858,
+          "initialRows": 49,
+          "selectedMember": "implementation_engineer_ea4a51748d16411499ece4480ce8de41",
+          "visibleRowsAfterMemberSelection": 49,
+          "requests": {
+            "GetRunProjection": 2,
+            "GetAgentRunResumeConfig": 2,
+            "GetRunFileChanges": 2
+          }
+        }
+      }
+    ],
+    "medians": {
+      "cold": {
+        "host": 98.4,
+        "rowReadyMs": 38.2,
+        "member": 29.9,
+        "projectionCounts": [
+          126,
+          126,
+          84
+        ]
+      },
+      "warm": {
+        "host": 7,
+        "rowReadyMs": 7.1,
+        "member": 13.4,
+        "projectionCounts": [
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "changed-final": {
+    "samples": [
+      {
+        "cold": {
+          "label": "cold-frontend-store-1",
+          "start": 1958.0999999642372,
+          "host": 81.40000003576279,
+          "rows": 81.5,
+          "rowsPreloaded": false,
+          "member": 19,
+          "rowReadyMs": 81.5,
+          "initialRows": 7,
+          "selectedMember": "implementation_engineer_4033546d5c91491895a6cf37de49fafe",
+          "visibleRowsAfterMemberSelection": 13,
+          "requests": {
+            "GetAgentRunCollaborationMemberProjection": 90,
+            "GetRunFileChanges": 92,
+            "GetRunProjection": 2,
+            "GetAgentRunResumeConfig": 2,
+            "GetTaskWorkerTasks": 3,
+            "GetSkills": 1,
+            "GetSkillImprovementCapability": 1,
+            "GetAgentRunCollaboration": 1
+          },
+          "roleRevealRequests": 84,
+          "roleRevealArtifactReads": 84
+        },
+        "warm": {
+          "label": "warm-reselection-1",
+          "start": 2919.599999964237,
+          "host": 14,
+          "rows": 14.200000047683716,
+          "rowsPreloaded": true,
+          "member": 15.199999988079071,
+          "rowReadyMs": 14.200000047683716,
+          "initialRows": 7,
+          "selectedMember": "implementation_engineer_4033546d5c91491895a6cf37de49fafe",
+          "visibleRowsAfterMemberSelection": 13,
+          "requests": {
+            "GetRunProjection": 2,
+            "GetAgentRunResumeConfig": 2,
+            "GetRunFileChanges": 2
+          }
+        }
+      },
+      {
+        "cold": {
+          "label": "cold-frontend-store-2",
+          "start": 1705.1000000238419,
+          "host": 132.19999998807907,
+          "rows": 132.19999998807907,
+          "rowsPreloaded": false,
+          "member": 17.19999998807907,
+          "rowReadyMs": 132.19999998807907,
+          "initialRows": 7,
+          "selectedMember": "implementation_engineer_4033546d5c91491895a6cf37de49fafe",
+          "visibleRowsAfterMemberSelection": 13,
+          "requests": {
+            "GetAgentRunCollaborationMemberProjection": 90,
+            "GetRunFileChanges": 92,
+            "GetRunProjection": 2,
+            "GetAgentRunResumeConfig": 2,
+            "GetTaskWorkerTasks": 3,
+            "GetSkills": 1,
+            "GetSkillImprovementCapability": 1,
+            "GetAgentRunCollaboration": 1
+          },
+          "roleRevealRequests": 84,
+          "roleRevealArtifactReads": 84
+        },
+        "warm": {
+          "label": "warm-reselection-2",
+          "start": 2635.300000011921,
+          "host": 6.300000011920929,
+          "rows": 6.399999976158142,
+          "rowsPreloaded": true,
+          "member": 14.199999988079071,
+          "rowReadyMs": 6.399999976158142,
+          "initialRows": 7,
+          "selectedMember": "implementation_engineer_4033546d5c91491895a6cf37de49fafe",
+          "visibleRowsAfterMemberSelection": 13,
+          "requests": {
+            "GetRunProjection": 2,
+            "GetAgentRunResumeConfig": 2,
+            "GetRunFileChanges": 2
+          }
+        }
+      },
+      {
+        "cold": {
+          "label": "cold-frontend-store-3",
+          "start": 1821.699999988079,
+          "host": 69.30000001192093,
+          "rows": 69.30000001192093,
+          "rowsPreloaded": false,
+          "member": 14.5,
+          "rowReadyMs": 69.30000001192093,
+          "initialRows": 7,
+          "selectedMember": "implementation_engineer_4033546d5c91491895a6cf37de49fafe",
+          "visibleRowsAfterMemberSelection": 13,
+          "requests": {
+            "GetAgentRunCollaborationMemberProjection": 90,
+            "GetRunFileChanges": 92,
+            "GetRunProjection": 2,
+            "GetAgentRunResumeConfig": 2,
+            "GetTaskWorkerTasks": 3,
+            "GetAgentRunCollaboration": 1,
+            "GetSkills": 1,
+            "GetSkillImprovementCapability": 1
+          },
+          "roleRevealRequests": 84,
+          "roleRevealArtifactReads": 84
+        },
+        "warm": {
+          "label": "warm-reselection-3",
+          "start": 2670.5,
+          "host": 9.399999976158142,
+          "rows": 9.5,
+          "rowsPreloaded": true,
+          "member": 15.599999964237213,
+          "rowReadyMs": 9.5,
+          "initialRows": 7,
+          "selectedMember": "implementation_engineer_4033546d5c91491895a6cf37de49fafe",
+          "visibleRowsAfterMemberSelection": 13,
+          "requests": {
+            "GetRunProjection": 2,
+            "GetAgentRunResumeConfig": 2,
+            "GetRunFileChanges": 2
+          }
+        }
+      }
+    ],
+    "medians": {
+      "cold": {
+        "host": 81.4,
+        "rowReadyMs": 81.5,
+        "member": 17.2,
+        "projectionCounts": [
+          84,
+          84,
+          84
+        ]
+      },
+      "warm": {
+        "host": 9.4,
+        "rowReadyMs": 9.5,
+        "member": 15.2,
+        "projectionCounts": [
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  }
+}

@@ -503,6 +503,16 @@ Team persisted files:
     `defaultLaunchConfiguration` and shares its source. The run-history domain
     functions `effectiveMemberLaunchConfiguration` and
     `effectiveMemberLaunchSource` are the only readers of a member's launch.
+  - The user's model choice for one copy or collaborator instance (see
+    [User model choice of copies and collaborators](./agent_communication.md#user-model-choice-and-stop-of-copies-and-collaborators))
+    is `userLaunchSelection: {llmModelIdentifier, llmConfig, selectedAt}` on an
+    agent-level record (a collaborator Agent, a collaborator Team member, a task
+    Agent, a task Team's member Agent) and `userTeamLaunchSelection` (same shape)
+    on a team-level record (a collaborator Team, a task Team). It replaces only the
+    model and its settings, beside the started values, which are never changed. The
+    run-history domain function `effectiveCopyAgentLaunch` (with
+    `memberFollowsTeam`) is the single rule: the agent's own choice, else the Team's
+    when the member follows its Team, else the started launch.
   - All of these fields are optional, with truthful absence, so no migration is
     needed. A record written before them restores every member on the Team
     value, and its source reads as not recorded. Writers emit the fields only

@@ -1,0 +1,38 @@
+{
+  "uid": 24017,
+  "environment": "private HOME, Xvfb, non-root, sandbox preserved",
+  "result": "Fail",
+  "instance": {
+    "instanceId": "iso-41393-128e",
+    "pid": 70839,
+    "executablePath": "/home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus",
+    "backendUrl": "http://127.0.0.1:37951",
+    "graphqlUrl": "http://127.0.0.1:37951/graphql",
+    "controlEndpoint": "http://127.0.0.1:41393",
+    "controlPort": 41393,
+    "serverPort": 37951,
+    "dataRoot": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-R6BVCA",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-R6BVCA/server-data/db/production.db",
+    "logPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-app/iso-41393-128e.log"
+  },
+  "journeyExit": 1,
+  "failure": {
+    "message": "Desktop journey probe failed; inspect journey/evidence.json"
+  },
+  "stop": {
+    "instanceId": "iso-41393-128e",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-R6BVCA",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  },
+  "listAfter": {
+    "instances": []
+  },
+  "ownedDataRootAbsent": true
+}

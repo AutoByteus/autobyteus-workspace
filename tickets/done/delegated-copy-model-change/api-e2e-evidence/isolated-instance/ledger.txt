@@ -1,0 +1,4 @@
+run_id|latest_runtime_kind|latest_model_identifier|usd
+pm_manager_18c4271203084ed7bb96479e4bc366ac|claude_agent_sdk|claude-haiku-5-5|0.00294
+codex_writer_4fb6312c056e41b2af17af36ec655d2e|codex_app_server|gpt-6-luna|0.00193
+native_writer_279eedd1e2f84274a02c46aa10b31c0f|autobyteus|deepseek-v4-flash|0.00123

@@ -53,6 +53,7 @@ export type TaskDelegationErrorCode =
   | "TASK_EXECUTION_CONTEXT_UNAVAILABLE"
   | "TASK_EXECUTION_RESTORE_FAILED"
   | "TASK_REACTIVATION_STOP_PENDING"
+  | "TASK_EXECUTION_STOPPING"
   | "TASK_COPY_NOT_ASSIGNABLE";
 
 export class TaskDelegationError extends Error {

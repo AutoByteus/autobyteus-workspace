@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-34599-db5e",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}

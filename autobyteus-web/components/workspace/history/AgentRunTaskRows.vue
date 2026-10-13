@@ -23,6 +23,7 @@
       :continuing-ancestor-depths="display.continuingAncestorDepths"
       :has-following-sibling="display.hasFollowingSibling"
       :task="taskOf(display.row)"
+      :stop-root="{ rootKind: 'AGENT', rootRunId: runId }"
       @select="select"
       @toggle="toggle"
       @locate-task="(task: TaskWorkerTask) => locate(task, () => emit('open-run'))"

@@ -255,3 +255,38 @@ describe('stopped AgentOrg Team workspace composition', () => {
     expect((await h.manager.updateStoppedRunConfig(input)).outcome).toBe('UNCHANGED'); expect(write).not.toHaveBeenCalled();
   });
 });
+
+describe('stopped AgentOrg Save with delegated copies (AR-004, AR-003)', () => {
+  const withTeamCopy = async (h: Awaited<ReturnType<typeof setup>>) => {
+    const tree = { ...h.tree, rootOrg: { ...h.tree.rootOrg, taskExecutions: [{
+      address: '/team', teamRunId: 'team-copy', startedAt: '2026-10-13T00:00:00.000Z', delegatorAgentRunId: 'worker', taskExecutions: [],
+      members: [{ address: '/team/lead', agentRunId: 'copy-lead', platformAgentRunId: null }],
+    }] } };
+    await h.store.write(h.dir, tree as never);
+    return tree;
+  };
+
+  it('records a Team choice on a configured-placement copy in the same write as configured patches', async () => {
+    const h = await setup(); h.failStop(); await withTeamCopy(h);
+    const write = vi.spyOn(h.store, 'write');
+    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [],
+      modelPatches: [select('CONFIGURED_AGENT', '/worker')],
+      delegatedChanges: [{ teamRunId: 'team-copy', selection: { llmModelIdentifier: 'larger', llmConfig: { temperature: 0, enabled: false } } }] });
+    expect(result).toMatchObject({ outcome: 'UPDATED', success: true });
+    expect(write).toHaveBeenCalledTimes(1);
+    const saved = (await h.store.read(h.dir, 'org'))!;
+    expect(saved.rootOrg.taskExecutions[0]).toMatchObject({ teamRunId: 'team-copy',
+      userTeamLaunchSelection: { llmModelIdentifier: 'larger', llmConfig: { temperature: 0, enabled: false } } });
+    expect((saved.rootOrg.members[0] as { launchConfiguration: { llmModelIdentifier: string } }).launchConfiguration.llmModelIdentifier).toBe('equal');
+  });
+
+  it('refuses the whole Save when a delegated model is unavailable and writes nothing', async () => {
+    const h = await setup(); h.failStop(); await withTeamCopy(h);
+    const write = vi.spyOn(h.store, 'write');
+    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [],
+      modelPatches: [select('CONFIGURED_AGENT', '/worker')],
+      delegatedChanges: [{ teamRunId: 'team-copy', selection: { llmModelIdentifier: 'not-offered', llmConfig: null } }] });
+    expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false });
+    expect(write).not.toHaveBeenCalled();
+  });
+});

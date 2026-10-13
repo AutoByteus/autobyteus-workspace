@@ -247,6 +247,12 @@ export class AgentOrgExecutionContext {
       }
       this.view = { ...this.view,
         closed_task_executions: removeReopenedTaskExecutions(this.view.closed_task_executions, event.task_executions) }
+    } else if (event.kind === 'delegated_launch_selections_changed') {
+      // A Save on the live run (DS-001): reload so the records and the member contexts show the choice.
+      if (event.selections.some((entry) => 'agentRunId' in entry ? !this.index.agents.has(entry.agentRunId) : !this.index.teams.has(entry.teamRunId))) {
+        this.correlationFailure('A saved model choice names no agent or Team of this AgentOrg.')
+      }
+      return 'checkpoint_required'
     } else if (event.kind === 'collaborator_added') {
       // One hosted instance per entry: its executions get contexts now, Offline. Applied in
       // place (no checkpoint) so the pending send that added it keeps its acknowledgement.

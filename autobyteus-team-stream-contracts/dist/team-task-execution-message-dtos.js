@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { nonEmptyStringSchema } from "./schema-helpers.js";
-import { collaboratorEntryDtoSchema, taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema, } from "./team-execution-view-dtos.js";
+import { collaboratorEntryDtoSchema, taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema, userLaunchSelectionDtoSchema, } from "./team-execution-view-dtos.js";
 /** A delegated child (task Agent or task Team) was committed under its host TeamRun. */
 export const teamTaskExecutionStartedPayloadSchema = z.object({
     change_sequence: z.number().int().positive(),
@@ -23,5 +23,16 @@ export const teamTaskExecutionsReopenedPayloadSchema = teamTaskExecutionsClosedP
 export const teamCollaboratorAddedPayloadSchema = z.object({
     change_sequence: z.number().int().positive(),
     collaborator: collaboratorEntryDtoSchema,
+}).strict();
+/**
+ * The user's model choices of these delegated copies or collaborators were saved on the live run
+ * (DS-001). Each names one record by its run ID (unique in the tree) with its choice as now recorded.
+ */
+export const teamDelegatedLaunchSelectionsChangedPayloadSchema = z.object({
+    change_sequence: z.number().int().positive(),
+    selections: z.array(z.union([
+        z.object({ agent_run_id: nonEmptyStringSchema, selection: userLaunchSelectionDtoSchema }).strict(),
+        z.object({ team_run_id: nonEmptyStringSchema, selection: userLaunchSelectionDtoSchema }).strict(),
+    ])).min(1),
 }).strict();
 //# sourceMappingURL=team-task-execution-message-dtos.js.map

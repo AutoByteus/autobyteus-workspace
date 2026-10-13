@@ -1,3 +1,10 @@
+import {
+  applyDelegatedLaunchSelectionsToCollaborators,
+  applyDelegatedLaunchSelectionsToTaskExecutions,
+  type DelegatedLaunchForest,
+  type DelegatedLaunchSelections,
+} from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import { taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import type {
   CollaborationAgentNoConversationBindingReplacement,
   CollaborationAgentPlatformBinding,
@@ -133,3 +140,19 @@ export const replaceStandaloneRootPlatformBindingWithoutConversation = (input: {
   if (matches !== 1) throw new Error("Platform binding replacement target was not found exactly once in the Agent-root tree.");
   return revalidate(next);
 };
+
+/** The tree's delegated copies and collaborators, for the user model choice and Stop (DS-001, DS-002). */
+export const standaloneDelegatedLaunchForest = (tree: StandaloneRootTreeSnapshot): DelegatedLaunchForest => Object.freeze({
+  collaborators: tree.collaborators,
+  taskExecutionLists: taskExecutionListsOf({ taskExecutions: tree.taskExecutions, collaborators: tree.collaborators }),
+});
+
+/** Records user model choices on the tree's copies and collaborators; started values are untouched. */
+export const applyStandaloneDelegatedLaunchSelections = (
+  tree: StandaloneRootTreeSnapshot,
+  selections: DelegatedLaunchSelections,
+): StandaloneRootTreeSnapshot => revalidate({
+  ...tree,
+  collaborators: applyDelegatedLaunchSelectionsToCollaborators(tree.collaborators, selections),
+  taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(tree.taskExecutions, selections),
+});

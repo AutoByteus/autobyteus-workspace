@@ -35,6 +35,7 @@
         :continuing-ancestor-depths="displayRow.continuingAncestorDepths"
         :has-following-sibling="displayRow.hasFollowingSibling"
         :task="taskOf(displayRow.row)"
+        :stop-root="{ rootKind: 'AGENT_TEAM', rootRunId: team.teamRunId }"
         @select="$emit('select', $event)"
         @toggle="$emit('toggle', $event)"
         @locate-task="(task: TaskWorkerTask) => locate(task, () => emit('open-run'))"
