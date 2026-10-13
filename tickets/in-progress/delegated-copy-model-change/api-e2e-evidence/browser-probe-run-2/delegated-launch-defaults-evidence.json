@@ -1,0 +1,147 @@
+{
+  "startedAt": "2026-10-13T11:25:22.766Z",
+  "cases": {
+    "DCP-002": {
+      "title": "delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a Team copy stopped from its sidebar row; its Team model changed and saved; the copy lead's \"+\" shows the choice without a reload; the next message resumes the lead on it",
+      "result": "Pass",
+      "ms": 37999,
+      "details": {
+        "teamRunId": "home_team_23f5_cfdd32fa1d5e4529a1dfdddd2d02bfaf",
+        "copyTeamRunId": "pair_team_a71d_1e0c5526120544258e7839c43dcec546",
+        "copyMembers": {
+          "lead": "lead_dd86_a1abdcce503b4dfebb9c20ca74df7956",
+          "engineer": "engineer_e2dd_bd3d0071e62844f689257e7e0d36ea02",
+          "unoffered": "unoffered_7f9b_edb0bd360c9c45509781f5a0161cb2a2"
+        },
+        "runningLocked": true,
+        "runningHint": "Stop this copy to change its model.",
+        "savedTeamSummary": "Gemini test · Antigravity · Auto-approve",
+        "plusModel": "Gemini test Antigravity",
+        "resume": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"lead_dd86_a1abdcce503b4dfebb9c20ca74df7956\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"lead_dd86_a1abdcce503b4dfebb9c20ca74df7956\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 13, 01:26 PM\n\nto lead\n\nPlease continue.\n\nMessage\nlead\nOct 13, 01:26 PM\n\nPlease continue.\nMessage\nlead\nOct 13, 01:26 PM\n\nPlease continue.",
+        "resumedModels": [
+          "gemini-3.8-flash-low"
+        ]
+      }
+    },
+    "DCP-004": {
+      "title": "delegated-copy-model-change AC-011, AC-005 (UI): the delegating agent wakes the copy while the user edits: Save is refused and records nothing; after a Save and an app (backend) restart the choice is shown and the copy resumes on it",
+      "result": "Pass",
+      "ms": 29933,
+      "details": {
+        "runId": "manager_340b_ee06ebbbeb514a508dfc26d214e6a274",
+        "copyCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"writer_5df8_61349a8937764af3a3c4c40f117ff336\",\\n \"task_id\": \"ad_hoc_task_a9ea1905-5681-4d93-acce-f358d127ad0a\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"writer_5df8_61349a8937764af3a3c4c40f117ff336\",\"task_id\":\"ad_hoc_task_a9ea1905-5681-4d93-acce-f358d127ad0a\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "copyRunId": "writer_5df8_61349a8937764af3a3c4c40f117ff336",
+        "refusal": "This copy is running. Stop it, then change its model.",
+        "barAfterRefusal": "Unsaved changes · they apply when this run resumes\n\nCancel\nSave",
+        "storedAfterRefusal": {
+          "address": "/writer_5df8",
+          "agentRunId": "writer_5df8_61349a8937764af3a3c4c40f117ff336",
+          "platformAgentRunId": "d65a7821-21f0-41d8-ae84-d9d5e4943c1d",
+          "delegatorAgentRunId": "manager_340b_ee06ebbbeb514a508dfc26d214e6a274",
+          "startedAt": "2026-10-13T11:26:40.127Z",
+          "source": {
+            "kind": "agent",
+            "agentDefinitionId": "writer-5df8",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-alt-model",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-1g0MU6/server-data/temp_workspace"
+            },
+            "launchSource": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          }
+        },
+        "afterRestartSummary": "Gemini test · Antigravity · Auto-approve",
+        "resume": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_5df8_61349a8937764af3a3c4c40f117ff336\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_5df8_61349a8937764af3a3c4c40f117ff336\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nMessage\nOct 13, 01:27 PM\n\nto writer 5df8\n\nAfter the restart.\n\nMessage\nOct 13, 01:26 PM\n\nto writer 5df8\n\nAre you there?\n\nMessage\nwriter 5df8\nOct 13, 01:26 PM\n\nAre you there?\nMessage\nwriter 5df8\nOct 13, 01:26 PM\n\nAre you there?",
+        "resumedModels": [
+          "gemini-3.8-flash-low"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 383
+    },
+    {
+      "label": "frontend",
+      "pid": 414
+    },
+    {
+      "label": "backend-restarted-dcp-004",
+      "pid": 1083
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 1083,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 414,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 383,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-1g0MU6"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-1g0MU6",
+  "backendUrl": "http://127.0.0.1:61243",
+  "frontUrl": "http://127.0.0.1:61244",
+  "definitions": {
+    "ids": {
+      "manager": "manager-340b",
+      "lead": "lead-dd86",
+      "worker": "worker-156d",
+      "plain": "plain-a741",
+      "engineer": "engineer-e2dd",
+      "reviewer": "reviewer-1800",
+      "writer": "writer-5df8",
+      "offline": "offline-8547",
+      "unoffered": "unoffered-7f9b",
+      "badsettings": "badsettings-c50c",
+      "incomplete": "incomplete-ec0d",
+      "build": "build-team-291b",
+      "pair": "pair-team-a71d",
+      "squad": "squad-team-33dc",
+      "home": "home-team-23f5",
+      "launchOrg": "launchorg-org-86ae",
+      "hostOrg": "hostorg-org-b029"
+    },
+    "names": {
+      "manager": "Manager 340b",
+      "lead": "Lead dd86",
+      "worker": "Worker 156d",
+      "plain": "Plain a741",
+      "engineer": "Engineer e2dd",
+      "reviewer": "Reviewer 1800",
+      "writer": "Writer 5df8",
+      "offline": "Offline 8547",
+      "unoffered": "Unoffered 7f9b",
+      "badsettings": "Badsettings c50c",
+      "incomplete": "Incomplete ec0d",
+      "build": "Build Team 291b",
+      "pair": "Pair Team a71d",
+      "squad": "Squad Team 33dc",
+      "home": "Home Team 23f5",
+      "launchOrg": "LaunchOrg Org 86ae",
+      "hostOrg": "HostOrg Org b029"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 2,
+    "fail": 0
+  },
+  "completedAt": "2026-10-13T11:27:02.258Z"
+}

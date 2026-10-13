@@ -14,22 +14,48 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-001..ARCH-REV-003
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md` (this folder)
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Trigger: IR-001 handoff from `/software_engineering_team/implementation_engineer`
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Full Re-Audit`
+- Review Scope Evidence: the IR-002 delta (`b3928c649f..0fb29b6d8c`, 53 files) adds stream events to both contract packages and changes the web member-context spine and three server owners. All structural checks were rerun on the changed areas. Round 1 evidence carries forward for the unchanged server Stop, Save, restore and validation paths.
+- Trigger: IR-002 local-fix handoff (CR-001..CR-003) from `/software_engineering_team/implementation_engineer`
+- Prior Review Round Reviewed: 1 (CRR-001, `Fail`)
+- Latest Authoritative Round: 2
 - Failure-origin / delivery fields: N/A
 
-Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change`, `a609de982a..312653734c` (server + contracts `71d51a1608`, web `312653734c`).
+Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change`, `a609de982a..0fb29b6d8c` (IR-001: `71d51a1608`, `312653734c`; IR-002: `810742c628` server + contracts, `0fb29b6d8c` web).
 
 ## Routing Classification Review
 
 - Task size `Large`, architectural risk `High`, route `Implementation Review`. Independent source review is required: `Yes`.
 - Classification evidence or correction required: None. The change touches persisted fields, two contract packages, new GraphQL commands, a forced per-copy shutdown in three root kinds, and concurrency between Stop, wake, idle shutdown, restore and Save.
+
+## Round 2 Re-Audit Summary
+
+- **CR-001 resolved.**
+  - `teamAgentSourceAt(tree, address, agentRunId)` and `collaborationInstanceSource(instances, agentRunId, source)` apply the contract rule (`teamCopyAgentLaunch` / `collaborationCopyAgentLaunch`) with the server's follower rule: recorded member → no own launch; configured-placement copy → equal to the Team default; nested Team members never follow; Agent copies and collaborators use their own choice.
+  - Every member-context call site passes the run ID (Team context factory, run and member hydration, view workspace lookup, Org view index, Agent collaboration index).
+  - The remaining address-only calls are the started-source reads in `delegatedLaunchRows`, which applies the rule itself, and an existence check in `agentOrgExecutionContext.validateTaskExecutionStarted`.
+  - Specs cover both casings.
+- **CR-002 resolved.**
+  - The command publishes `recordedDelegatedLaunchSelections` in `afterDurability`, only after a committed write. Team: `DELEGATED_LAUNCH_SELECTIONS` → `DELEGATED_LAUNCH_SELECTIONS_CHANGED`. Org/Agent: `delegated_launch_selections_changed`, defined by one contract schema. This follows the existing `collaborator_added` publication pattern.
+  - Web Team view: records the choices in place, rejects unknown runs, and refreshes the member contexts.
+  - Web Org/Agent views: validate the run IDs, then reload through `checkpoint_required`.
+  - `savedByRoot`, `saved` and `savedOf` are removed.
+  - Server tests: one event after UPDATED, none after UNCHANGED.
+- **CR-003 resolved.** Each split is a coherent owner and behavior is unchanged:
+  - `root-task-execution-lifecycle.ts` is now 488 lines; leases, stopping marks and the drain moved to `TaskExecutionLiveHolds`.
+  - `configured-agent-execution-handle.ts` is now 484 lines; `AgentActivationFence` moved to `configured-agent-execution-support.ts`.
+  - `agent-team-run-manager.ts` is now 436 lines; the plan and options moved to `team-run-delegated-launch-plan.ts`.
+- **Reviewer-run checks:**
+  - `typecheck` exit 0.
+  - Server: the changed unit tests plus `tests/unit/agent-collaboration`, 41 files / 486 tests pass.
+  - Web: `collaborators`, `teamExecution`, `agentOrgExecution`, `agentCollaboration`, the draft store spec and `runSettings`, 27 files / 179 tests pass.
+  - Contracts: 16/16 and 27/27 pass.
+  - `tests/architecture/application-framework-boundaries.test.ts` fails one SR-011 case. The test and the files it reads (`application-standalone-package-validator.ts`, `host-definition-services.ts`) are unchanged from base `a609de982a`, so this is a pre-existing base failure, not from this branch. It should be reported to its owner under TESTING.md Rule 9.
+- **Non-blocking note.** `configured-agent-execution-support.ts` groups three unrelated helpers (`AgentActivationFence`, `describeActivationFailure`, `completedLocalTermination`) under a "support" name. The design principles discourage that kind of name. Consider moving the fence into `agent-activation-fence.ts` and the other two helpers into concern-named files the next time the file is touched.
 
 ## Review Scope
 
@@ -92,46 +118,46 @@ Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delega
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health preserved | Fail | The "one rule" refactor stops at the server and contracts; the four web selectors were not switched (CR-001) | CR-001 |
+| Task design health preserved | Pass | Round 2: one rule from the server through the contracts to the web member contexts | — |
 | Supplemental artifacts | Pass | None | — |
-| Data-flow spine clarity | Pass | DS-001..DS-003 trace cleanly; DS-004 only partly (CR-002) | — |
+| Data-flow spine clarity | Pass | Round 2: DS-004 is complete (Save → publication → live view → contexts) | — |
 | Ownership boundary | Pass | Service → root → command → port; the lifecycle owns marks and queue; handles own fences | — |
 | Off-spine clarity | Pass | Validation reused; status publication owned by the roots | — |
 | Existing capability reuse | Pass | `validateMany`, the persistence commit, the restore projectors and the run-settings controls are reused | — |
 | Reusable owned structures | Pass | `effectiveCopyAgentLaunch`, the contract rule functions, the pure apply and resolve functions | — |
-| Shared-structure tightness | Fail | `savedByRoot` keeps a client-side copy of committed server state (CR-002) | CR-002 |
-| Repeated coordination ownership | Fail | Launch policy for copy members is still inline in the web selectors (CR-001) | CR-001 |
+| Shared-structure tightness | Pass | Round 2: `savedByRoot` removed; the server is the single source | — |
+| Repeated coordination ownership | Pass | Round 2: the contract rule is used in one place per casing | — |
 | Empty indirection | Pass | The service owns routing and outcome mapping | — |
-| Separation of concerns / file responsibility | Fail | Three owners are over the hard limit (CR-003) | CR-003 |
+| Separation of concerns / file responsibility | Pass | Round 2: all changed owners ≤ 488 lines | — |
 | Ownership-driven dependency | Pass | The run-history domain stays independent; `execution/task` does not import collaborators | — |
 | Authoritative Boundary Rule | Pass | Roots never bypass the lifecycle queue; the service never touches handles | — |
 | File placement | Pass | — | — |
 | Layout | Pass | — | — |
 | Interface clarity | Pass | Explicit run-ID references; exactly one ID per change | — |
 | Naming | Pass | — | — |
-| No unjustified duplication | Fail | CR-001 | CR-001 |
+| No unjustified duplication | Pass | One instance-choice walk per DTO casing (the established precedent) | — |
 | Patch-on-patch control | Pass | — | — |
 | Dead code removed in touched files | Pass | The old projector exports were reshaped; no dead code found | — |
-| Tests clear and requirement-aligned | Pass | Lifecycle (AR-006 drain, refusal at the head, idle skip), copy-launch rule (AR-005, old record), Team/Org root Save and Stop, e2e DCM-001..004 | Add selector tests (CR-001) |
+| Tests clear and requirement-aligned | Pass | Round 1 tests plus round 2 selector specs (both casings), publication tests (UPDATED/UNCHANGED) and view-application specs | — |
 | Test structure | Pass | — | — |
 | No stale tests | Pass | — | — |
-| API/E2E readiness | Fail | The server is ready. The web member context and the live view would make API/E2E report wrong models after a choice | CR-001, CR-002 |
+| API/E2E readiness | Pass | Server and web paths are consistent | — |
 
 ## Source File Size And Structure Audit
 
 | Source File | Effective Lines | `>500` | `>220` Delta | SoC | Placement | Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `agent-team-execution/services/agent-team-run-manager.ts` | 530 (was 466) | Fail | Pass (78) | The delegated stopped-Save plan, reader and options were added to the manager | Pass | CR-003 | Extract the delegated-launch part (reader, plan and interpret glue, options) into an owned sibling file |
-| `agent-collaboration/execution/task/root-task-execution-lifecycle.ts` | 521 (was 418) | Fail | Pass (111) | The user-Stop protocol (marks, drain, steps) and `whileTaskExecutionsStopped` are a distinct concern | Pass | CR-003 | Extract the stopping-mark and lease-drain mechanics into an owned collaborator of the lifecycle; the queue steps stay with the lifecycle |
-| `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` | 516 (was 476) | Fail | Pass (48) | Fence, stop and model swap were added | Pass | CR-003 | Bring it back under 500 (for example, move the activation-fence mechanics into a small owned helper, or trim nearby code) |
-| All other changed source files | ≤ 481 | Pass | Pass | Pass | Pass | — | `root-team-run.ts` (481) and `general-process-run-supervisor.ts` (476) are near the limit |
+| `agent-team-execution/services/agent-team-run-manager.ts` | 436 (round 2) | Pass | Pass | Pass | Pass | CR-003 resolved | — |
+| `agent-collaboration/execution/task/root-task-execution-lifecycle.ts` | 488 (round 2) | Pass | Pass | Pass (`TaskExecutionLiveHolds` extracted) | Pass | CR-003 resolved | — |
+| `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` | 484 (round 2) | Pass | Pass | Pass (`AgentActivationFence` extracted) | Pass | CR-003 resolved | Non-blocking: the "support" file name |
+| All other changed source files | ≤ 486 | Pass | Pass | Pass | Pass | — | Near the limit: `teamExecutionViewState.ts` (486), `root-team-run.ts` (481), `general-process-run-supervisor.ts` (476) |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
 | No backward-compatibility mechanisms | Pass | Optional fields with truthful absence |
-| No legacy retention | Fail | Removal Plan item "inline started-launch derivations … web selectors" not done (CR-001) |
+| No legacy retention | Pass | Round 2: the selectors apply the rule (CR-001 resolved) |
 | Dead code removed | Pass | — |
 | Persisted-data decision followed | Pass | `Directly Usable — No Migration`; AC-005 old-record test |
 | No dual reads/writes | Pass | — |
@@ -141,8 +167,8 @@ Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delega
 
 | Item / Path | Type | Evidence | Why | Required Action |
 | --- | --- | --- | --- | --- |
-| Inline started-launch reads in the four copy-member selectors (`autobyteus-web/services/collaborators/agentSourceSelectors.ts`) | LegacyBranch | File unchanged; design Removal Plan lists it | The single rule must be used there | Switch to `teamCopyAgentLaunch` / `collaborationCopyAgentLaunch` (CR-001) |
-| `savedByRoot` overlay (`stores/delegatedLaunchDraftStore.ts`) | CompatWrapper (client shadow state) | Exists only because live views get no update | A second copy of server state | Remove it once the live view reflects the commit (CR-002) |
+| Inline started-launch reads in the copy-member selectors | LegacyBranch | — | — | **Resolved in round 2** (instance rule applied) |
+| `savedByRoot` overlay | CompatWrapper | — | — | **Removed in round 2** |
 
 ## Docs-Impact Verdict
 
@@ -155,24 +181,24 @@ Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delega
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: 8.8 / 88
+- Overall score: 9.2 / 92 (round 2; round 1 was 8.8)
 
 | Priority | Category | Score | Why | Weakness | Improve |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.2 | DS-001..DS-003 implemented as designed; the Stop and Save serialization is clear | DS-004 is cut short by the missing view update | CR-002 |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.1 | The lifecycle owns marks and queue; handles own fences; the service only routes | — | — |
-| 3 | API / Interface Clarity | 9.0 | Explicit references and the existing outcome vocabulary | The Save response carries no tree, unlike the design | CR-002 |
-| 4 | Separation of Concerns and File Placement | 8.0 | New files are well placed | Three owners over the 500-line hard limit | CR-003 |
-| 5 | Shared-Structure / Data-Model Tightness | 8.5 | One server rule and the contract rule functions | Client shadow state `savedByRoot` | CR-002 |
-| 6 | Naming and Readability | 9.0 | Clear vocabulary; dense but documented | — | — |
-| 7 | API/E2E Readiness | 8.6 | Server paths are e2e-proven | The web member context and the live view show the wrong model after a choice | CR-001, CR-002 |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.6 | Stop, Save, restore and validation are correct, and the concurrency protocol matches SR-006 | The member context ignores the choice | CR-001 |
-| 9 | No Backward-Compatibility / No Legacy | 9.2 | No migration or version branches | Inline legacy derivation remains in the selectors | CR-001 |
-| 10 | Cleanup Completeness | 8.5 | Most of the Removal Plan is done | The web selector item is not done | CR-001 |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.4 | DS-001..DS-004 complete, with publication through the existing live-mutation pattern | — | — |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.3 | The lifecycle owns `TaskExecutionLiveHolds`; the handle owns its fence; the port publishes | — | — |
+| 3 | API / Interface Clarity | 9.2 | Explicit references; one contract schema per casing for the new event | — | — |
+| 4 | Separation of Concerns and File Placement | 9.0 | All owners under the limit with coherent extractions | The "support" helper file groups three helpers; several files are near the limit | Concern-named files on the next touch |
+| 5 | Shared-Structure / Data-Model Tightness | 9.2 | No client shadow state; the selection record is reused in the event | — | — |
+| 6 | Naming and Readability | 9.0 | Clear vocabulary | `configured-agent-execution-support.ts` | Rename on the next touch |
+| 7 | API/E2E Readiness | 9.2 | Server and web consistent; e2e DCM-001..004 and probe DCP-001 re-run by implementation | Real-runtime check pending (design step 6) | — |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.3 | The per-instance rule is consistent end to end; publication only after a committed write | — | — |
+| 9 | No Backward-Compatibility / No Legacy | 9.4 | No version branches; inline derivations replaced | — | — |
+| 10 | Cleanup Completeness | 9.2 | Removal Plan complete; shadow state removed | — | — |
 
 ## Findings
 
-### CR-001 — The copy-member selectors ignore the user's choice (Medium, Local Fix)
+### CR-001 — The copy-member selectors ignore the user's choice (Medium, Local Fix) — **Resolved (round 2)**
 
 - Basis: SCN-001 → SCN-007. The design Removal Plan and Task Design Health require the single launch rule at the web selectors. The prior ticket's AR-001 contract: a copy member's conversation context shows the runtime/model it actually runs on.
 - Evidence: `autobyteus-web/services/collaborators/agentSourceSelectors.ts` is unchanged in this change.
@@ -185,7 +211,7 @@ Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delega
   2. Extend `agentSourceSelectors.spec.ts`: an agent copy with a choice, a Team copy follower and non-follower with a Team choice, a collaborator member with a choice, in both DTO casings.
   3. Re-check the "+" prefill from a copy member.
 
-### CR-002 — Live views do not reflect a saved choice; the web keeps a client-side shadow (Medium, Local Fix)
+### CR-002 — Live views do not reflect a saved choice; the web keeps a client-side shadow (Medium, Local Fix) — **Resolved (round 2)**
 
 - Basis: SCN-001 / SCN-007 on a live root. DESIGN.md §4 asks to preserve server authority and freshness. Design DS-001 returns `{outcome, tree}`, and DS-004 has the rows read the run tree DTO.
 - Evidence:
@@ -199,7 +225,7 @@ Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delega
   3. Add a test that a Save on a live root updates the view's tree.
 - If neither option fits the existing publication model, return it to the Solution Designer as `Design Impact` instead of keeping the shadow.
 
-### CR-003 — Three changed owners exceed the 500 effective-line hard limit (Medium, Local Fix)
+### CR-003 — Three changed owners exceed the 500 effective-line hard limit (Medium, Local Fix) — **Resolved (round 2)**
 
 - Evidence:
   - `agent-team-run-manager.ts`: 466 → 530.
@@ -213,26 +239,30 @@ Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delega
 
 ## Classification
 
-- `Local Fix` → `/software_engineering_team/implementation_engineer` for CR-001..CR-003. CR-002 escalates to `Design Impact` only if the existing publication model cannot carry the update.
+- Round 2: N/A (Pass). Round 1 was `Local Fix` for CR-001..CR-003, all resolved.
 
 ## Recommended Recipient
 
-- `/software_engineering_team/implementation_engineer`. After the fix: source review (targeted delta review), then API/E2E.
+- `/software_engineering_team/api_e2e_engineer` (primary). Informational pass notice to `/software_engineering_team/implementation_engineer`.
 
 ## Residual Risks
 
 - Stop interrupts work in progress (the user's choice); older copies without a delegator are not stopped (`notStoppedUnattributed`).
 - A standalone stopped Save writes two files; a metadata failure is reported (C-005).
 - A collaborator Save holds fences while waiting for the queue head. No deadlock path exists today; keep queue steps free of collaborator activation (C-004).
-- `root-team-run.ts` (481) and `general-process-run-supervisor.ts` (476) are near the size limit.
+- Near the size limit: `teamExecutionViewState.ts` (486), `root-team-run.ts` (481), `general-process-run-supervisor.ts` (476).
+- Another client with Team/Org Settings open sees a choice saved elsewhere only after Refresh; its live views update.
+- A pre-existing base failure in `tests/architecture/application-framework-boundaries.test.ts` (SR-011), not caused by this branch.
 - The real-runtime check (Codex/Claude) and user verification (AC-010) remain.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 2, Full Re-Audit)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 8.8 / 88. Categories below 9.0: Separation of Concerns 8.0, Shared-Structure 8.5, API/E2E Readiness 8.6, Runtime Correctness 8.6, Cleanup 8.5.
-- Recommended Recipient: `/software_engineering_team/implementation_engineer`
-- Notes: The server design, including the concurrency protocol, is implemented carefully and matches SR-005..SR-007. The three findings are bounded: the web launch rule at the selectors, the live view update after Save, and file sizes.
+- Score Summary: 9.2 / 92; every category is at least 9.0
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Notes: CR-001..CR-003 are resolved and verified against the code and tests. The package is ready for API/E2E.
+  - Priorities: the per-instance member context and "+" prefill after a choice, the live Team/Org/Agent view updates after Save, and the real-runtime check (Codex/Claude).
+  - Coverage hints for the Org UI, collaborator Team Stop and AutoByteus capacity are in `implementation-handoff.md`.

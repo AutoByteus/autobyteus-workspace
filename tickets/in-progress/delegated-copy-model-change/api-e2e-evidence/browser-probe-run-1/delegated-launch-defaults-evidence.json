@@ -1,0 +1,156 @@
+{
+  "startedAt": "2026-10-13T11:20:35.220Z",
+  "cases": {
+    "DCP-001": {
+      "title": "delegated-copy-model-change AC-001/002/004/011, DEC-010: a running copy is locked with a stop icon; Stop from the sidebar; its model changed in Settings and saved; the next message resumes it on that model",
+      "result": "Pass",
+      "ms": 22604,
+      "details": {
+        "runId": "manager_508d_647c57e5d79d49c892d5a296a0148a62",
+        "copyCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"writer_a774_d1a4751766f14c5fa6e28b50f323b63b\",\\n \"task_id\": \"ad_hoc_task_a660b9ed-7f9d-4cdf-894b-77e9e39c5c3c\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"writer_a774_d1a4751766f14c5fa6e28b50f323b63b\",\"task_id\":\"ad_hoc_task_a660b9ed-7f9d-4cdf-894b-77e9e39c5c3c\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "copyRunId": "writer_a774_d1a4751766f14c5fa6e28b50f323b63b",
+        "firstModels": [
+          "dlc-alt-model"
+        ],
+        "runningLocked": true,
+        "runningHint": "Stop this copy to change its model.",
+        "rootStillRunning": "active",
+        "savedSummary": "Gemini test · Antigravity · Auto-approve",
+        "savedSource": null,
+        "stored": {
+          "address": "/writer_a774",
+          "agentRunId": "writer_a774_d1a4751766f14c5fa6e28b50f323b63b",
+          "platformAgentRunId": "a0c48c2a-e20a-41b7-a4e4-a5bf2ff9f93b",
+          "delegatorAgentRunId": "manager_508d_647c57e5d79d49c892d5a296a0148a62",
+          "startedAt": "2026-10-13T11:21:15.667Z",
+          "source": {
+            "kind": "agent",
+            "agentDefinitionId": "writer-a774",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-alt-model",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-PkPnTJ/server-data/temp_workspace"
+            },
+            "launchSource": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          "userLaunchSelection": {
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "selectedAt": "2026-10-13T11:21:25.096Z"
+          }
+        },
+        "resumeCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_a774_d1a4751766f14c5fa6e28b50f323b63b\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_a774_d1a4751766f14c5fa6e28b50f323b63b\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 13, 01:21 PM\n\nto writer a774\n\nOne more paragraph.\n\nMessage\nwriter a774\nOct 13, 01:21 PM\n\nOne more paragraph.\nMessage\nwriter a774\nOct 13, 01:21 PM\n\nOne more paragraph.",
+        "resumedModels": [
+          "gemini-3.8-flash-low"
+        ]
+      }
+    },
+    "DCP-002": {
+      "title": "delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a Team copy stopped from its sidebar row; its Team model changed and saved; the copy lead's \"+\" shows the choice without a reload; the next message resumes the lead on it",
+      "result": "Fail",
+      "ms": 78611,
+      "error": "Timed out waiting for sidebar Team copy row has the stop icon",
+      "details": null
+    },
+    "DCP-003": {
+      "title": "delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model",
+      "result": "Pass",
+      "ms": 22098,
+      "details": {
+        "orgRunId": "hostorg_org_2035_29f49bb037c1499480953439dc73eb36",
+        "copyCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"writer_a774_03fd980d16ee408383b557408d0e135e\",\\n \"task_id\": \"ad_hoc_task_7b0e81e1-0749-433a-9953-cc58d63baa07\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"writer_a774_03fd980d16ee408383b557408d0e135e\",\"task_id\":\"ad_hoc_task_7b0e81e1-0749-433a-9953-cc58d63baa07\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "copyRunId": "writer_a774_03fd980d16ee408383b557408d0e135e",
+        "savedSummary": "Gemini test · Antigravity · Auto-approve",
+        "resume": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_a774_03fd980d16ee408383b557408d0e135e\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_a774_03fd980d16ee408383b557408d0e135e\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 13, 01:23 PM\n\nto writer a774\n\nOne more paragraph.\n\nMessage\nwriter a774\nOct 13, 01:23 PM\n\nOne more paragraph.\nMessage\nwriter a774\nOct 13, 01:23 PM\n\nOne more paragraph.",
+        "resumedModels": [
+          "gemini-3.8-flash-low"
+        ]
+      }
+    },
+    "DCP-004": {
+      "title": "delegated-copy-model-change AC-011, AC-005 (UI): the delegating agent wakes the copy while the user edits: Save is refused and records nothing; after a Save and an app (backend) restart the choice is shown and the copy resumes on it",
+      "result": "Fail",
+      "ms": 74192,
+      "error": "Timed out waiting for the Save is refused",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 97163
+    },
+    {
+      "label": "frontend",
+      "pid": 97193
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 97193,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 97163,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-PkPnTJ"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-PkPnTJ",
+  "backendUrl": "http://127.0.0.1:60993",
+  "frontUrl": "http://127.0.0.1:60994",
+  "definitions": {
+    "ids": {
+      "manager": "manager-508d",
+      "lead": "lead-0dfc",
+      "worker": "worker-576e",
+      "plain": "plain-4874",
+      "engineer": "engineer-0212",
+      "reviewer": "reviewer-9e1d",
+      "writer": "writer-a774",
+      "offline": "offline-2dfe",
+      "unoffered": "unoffered-97a1",
+      "badsettings": "badsettings-3195",
+      "incomplete": "incomplete-e7e4",
+      "build": "build-team-68ba",
+      "pair": "pair-team-3b8c",
+      "squad": "squad-team-617e",
+      "home": "home-team-a0f3",
+      "launchOrg": "launchorg-org-cbba",
+      "hostOrg": "hostorg-org-2035"
+    },
+    "names": {
+      "manager": "Manager 508d",
+      "lead": "Lead 0dfc",
+      "worker": "Worker 576e",
+      "plain": "Plain 4874",
+      "engineer": "Engineer 0212",
+      "reviewer": "Reviewer 9e1d",
+      "writer": "Writer a774",
+      "offline": "Offline 2dfe",
+      "unoffered": "Unoffered 97a1",
+      "badsettings": "Badsettings 3195",
+      "incomplete": "Incomplete e7e4",
+      "build": "Build Team 68ba",
+      "pair": "Pair Team 3b8c",
+      "squad": "Squad Team 617e",
+      "home": "Home Team a0f3",
+      "launchOrg": "LaunchOrg Org cbba",
+      "hostOrg": "HostOrg Org 2035"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 2,
+    "fail": 2
+  },
+  "completedAt": "2026-10-13T11:24:25.303Z"
+}
