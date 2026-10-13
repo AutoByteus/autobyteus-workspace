@@ -1,0 +1,89 @@
+{
+  "seconds": 14.748,
+  "exit": 0,
+  "timedout": false,
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-claude-validation-7niwjzd5",
+  "privateStateEntryCountBeforeRemoval": 1330,
+  "privateTopLevelStateBeforeRemoval": [
+    "home",
+    "home/.cache",
+    "home/Library",
+    "tmp",
+    "tmp/node-compile-cache"
+  ],
+  "privateTmpNonCacheStateBeforeRemoval": [],
+  "ownedGroupRemaining": [],
+  "fixtureChildrenObserved": [
+    {
+      "pid": 40792,
+      "ppid": 38354,
+      "pgid": 37381,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    }
+  ],
+  "ownedProcessesObserved": [
+    {
+      "pid": 37381,
+      "ppid": 36317,
+      "pgid": 37381,
+      "command": "<defunct>"
+    },
+    {
+      "pid": 38296,
+      "ppid": 37381,
+      "pgid": 37381,
+      "command": "node ./node_modules/.bin/../vitest/vitest.mjs run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts --no-watch"
+    },
+    {
+      "pid": 38310,
+      "ppid": 38296,
+      "pgid": 37381,
+      "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/@esbuild+darwin-arm64@0.27.3/node_modules/@esbuild/darwin-arm64/bin/esbuild --service=0.27.3 --ping"
+    },
+    {
+      "pid": 38342,
+      "ppid": 38296,
+      "pgid": 37381,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/node_modules/prisma/build/index.js migrate reset --force --skip-generate"
+    },
+    {
+      "pid": 38347,
+      "ppid": 38342,
+      "pgid": 37381,
+      "command": "(schema-engine-da)"
+    },
+    {
+      "pid": 38350,
+      "ppid": 38342,
+      "pgid": 37381,
+      "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64 -d /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/prisma/schema.prisma"
+    },
+    {
+      "pid": 38354,
+      "ppid": 38296,
+      "pgid": 37381,
+      "command": "(node)"
+    },
+    {
+      "pid": 40792,
+      "ppid": 38354,
+      "pgid": 37381,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    },
+    {
+      "pid": 40917,
+      "ppid": 38354,
+      "pgid": 37381,
+      "command": "(node)"
+    },
+    {
+      "pid": 41179,
+      "ppid": 38354,
+      "pgid": 37381,
+      "command": "(node)"
+    }
+  ],
+  "privateRootRemoved": true,
+  "unhandledErrorMarker": false,
+  "testWorkspaceRemnants": []
+}
