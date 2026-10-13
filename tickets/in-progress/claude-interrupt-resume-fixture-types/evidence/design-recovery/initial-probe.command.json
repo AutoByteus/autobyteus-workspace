@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "node",
+    "tickets/in-progress/claude-interrupt-resume-fixture-types/evidence/design-recovery/probe-ready-state-typing.cjs"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types",
+  "environment": "PATH/private HOME/TMPDIR only; source substituted only in-memory; no app/model/provider/child"
+}

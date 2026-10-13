@@ -8,6 +8,8 @@ Package `claude-interrupt-resume-fixture-types`, Project Task `project_task_11c7
 
 | SR-002 | Design | Approved SR-001 + A-01..06 | Requirements Approved; design N/A | Requirements unchanged; design Ready | Same IDs; Architecture Design Complete, Small/Low |
 
+| SR-003 | Design | IR-001/IMPL-F001 and A-07..10 | Requirements Approved; SR-002 design insufficient for exposed narrowing | Requirements unchanged; SR-003 design Ready | Same IDs; Design Impact resolved at technical decision, Small/Low |
+
 ## SR-001 — Maintain declared fixture contracts without behavior change
 - Initial Baseline; Task Manager carried explicit dispatch authorization and prior seven-diagnostic/provenance package, current source confirms seven errors/runtime8+1.
 - Prior authority N/A. Current requirements Approved; design not yet applicable. No earlier current-task review/approval inferred.
@@ -26,3 +28,15 @@ Package `claude-interrupt-resume-fixture-types`, Project Task `project_task_11c7
 - Classification Small/Low, narrow four-file local type/check surface, no product policy/security/persistence/concurrency/runtime contract change; escalation triggers in design.
 - Applied get_handoff_rules selects direct implementation `/software_engineering_team/implementation_engineer` for Architecture Design Complete + Small/Low. Initial independent review N/A — not applicable; current proportionate self-review and independent executable validation remain required. Full route/context in handoff-architecture-design-complete.md, no prior Task Pass promoted or duplicate forwarding.
 - Remaining limits: no final patch implemented/validated/merged; no repo-wide test clean claim or live/otherOS evidence. Next: configured implementation/validation/Delivery workflow.
+
+## SR-003 — Fresh mutable socket-state observation without cleanup behavior change
+- Phase/classification **Design / Design Impact**; trigger Implementation Engineer IR-001/IMPL-F001 report and failed actual scoped command (one TS2367, exit2).
+- Prior requirements Approved SR-001 / design Ready SR-002 but insufficient for newly typed async comparison. Current requirements **Approved unchanged SR-001**, revised design **Ready SR-003**.
+- IDs: BEH-001/002/003, SCN-001..003, REQ-001/002/003/004, AC-001/003/004/005; all scope/validation/finalization obligations remain. Scenario validity changes **None**.
+- Decision: boolean socketClosed closure rereads current readyState at original guard/poll/finally points; same close/terminate/wait/deadline/actions. No casts/filter/owner/product behavior change.
+- Evidence: A-07..10, design-recovery virtual full-graph probe current oneTS2367/candidate zero/source unchanged. Initial workspace-cwd TS2688 probe failures preserved; corrected to real package compiler cwd without weakened flags/filtered diagnostics.
+- Canonical sections changed: investigation recovery/evidence/inventory; design current basis/intended delta/behavior map/health/removal/DS-004/interface/file map/shape/sequence/risk/classification; cumulative handoff updated for current return. Requirements artifact unchanged; no behavior-defining supplement or Product authority introduced.
+- Approval impact **None**: exact SR-001 approval/user-informed message continues to cover intended behavior; no renewed requirement approval needed for equivalent technical source form. Previous completed Task remains untouched.
+- Prior IR-001 specialist records/read-only source delta preserved; executable IMPL-F001 closure pending, not marked pass merely from design feasibility. Implementation must update its owned preservation proof for only authorized predicate reversal, execute all pending checks/self-review and later independent validation.
+- Classification **Small/Low unchanged**: same four paths, no production lifecycle/concurrency/interface/persistence/security/deployment change. Initial independent review N/A; fresh get_handoff_rules confirms revised direct implementation recipient `/software_engineering_team/implementation_engineer`. Full current context/route in cumulative handoff.
+- Remaining limits: actual named command/cases/prompt/negative control/production checks not rerun by Solution Designer; no final pass or merge claimed. Next: resume implementation under SR-003, retain prior failed output/history, complete checks and route normally.
