@@ -493,12 +493,15 @@ recorded `delegatorAgentRunId` (created before the resource lifecycle) has no
 starter. Branch lines run straight through member and task rows.
 
 A delegated task-Agent or task-Team row in a live run has a small stop icon
-(`DelegatedStopButton`) while the copy runs. Like the normal sidebar run Stop,
-it is neutral at rest (`text-gray-400`, project `#999999`), red on a pale-red
-background on hover (`hover:text-red-600 hover:bg-red-50`), and neutral again
-on pointer leave, using the existing color transition. Its labelled native
-button, focus-visible ring, disabled/pulsing pending state and reduced-motion
-override are unchanged. This applies under Agent,
+(`DelegatedStopButton`) while the copy runs. All actionable sidebar Stops—Agent,
+Team and Org roots as well as Agent and whole-Team copies—are red at rest
+(`text-red-500`, `#ef4444`), darker red on a pale-red background on hover
+(`hover:text-red-600 hover:bg-red-50`), and red again on pointer leave.
+Disabled/pending sidebar Stops are muted (`text-gray-400`, project `#999999`)
+with their existing reduced opacity and cursor; even on hover they remain gray
+on a transparent background. Each control keeps its existing transition and
+native button semantics: roots retain native focus, copies their focus-visible
+ring, pending pulse and reduced-motion override. This applies under Agent,
 Team and Org roots (`WorkspaceTransientExecutionRow`,
 `WorkspaceAgentOrgHistoryCollection`). It stops only that copy and the copies it
 started (`delegatedLaunchDraftStore.stop` → `stopDelegatedExecution`). The copy
