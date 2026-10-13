@@ -1,0 +1,69 @@
+{
+  "actualExit": 0,
+  "expectedExit": 0,
+  "seconds": 15.134,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 20778,
+      "ppid": 20773,
+      "pgid": 20778,
+      "command": "(node)"
+    },
+    {
+      "pid": 20823,
+      "ppid": 20778,
+      "pgid": 20778,
+      "command": "(node)"
+    },
+    {
+      "pid": 20853,
+      "ppid": 20823,
+      "pgid": 20778,
+      "command": "(node)"
+    },
+    {
+      "pid": 20885,
+      "ppid": 20853,
+      "pgid": 20778,
+      "command": "sh -c node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs"
+    },
+    {
+      "pid": 20915,
+      "ppid": 20853,
+      "pgid": 20778,
+      "command": "(node)"
+    },
+    {
+      "pid": 20916,
+      "ppid": 20885,
+      "pgid": 20778,
+      "command": "(node)"
+    },
+    {
+      "pid": 20923,
+      "ppid": 20885,
+      "pgid": 20778,
+      "command": "(node)"
+    },
+    {
+      "pid": 21658,
+      "ppid": 20853,
+      "pgid": 20778,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-application-backend-sdk/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 21693,
+      "ppid": 20778,
+      "pgid": 20778,
+      "command": "(node)"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delivery-fixture-types-xzesefnr",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

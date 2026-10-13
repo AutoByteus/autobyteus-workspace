@@ -1,0 +1,12 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "typecheck"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types",
+  "started": "2026-10-13T04:30:27.101331+00:00",
+  "environment": "PATH/private temporary HOME/TMPDIR only; removed after exit",
+  "basis": "SR-003 / IR-002"
+}

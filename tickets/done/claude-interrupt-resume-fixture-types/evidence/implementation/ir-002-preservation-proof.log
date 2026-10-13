@@ -1,0 +1,47 @@
+{
+  "base": "b238f2bf20624d80a70bdf75c321a36180f15fdc",
+  "preservedSourceExceptAuthorizedEdits": true,
+  "originalSourceSHA256": "f2657a9d7c350025e4a5f9648ad1cf8d60cf018bc9a17bedf2dbd67734b46b38",
+  "currentSourceSHA256": "3d7a40b5bf62946dabe0d03e2d060ab7b04de36895c29a7a415850036d44ade9",
+  "runtimeDependenciesAndExistingScriptsUnchanged": true,
+  "lockDiff": "server importer only, 3 added lines",
+  "declaredWsVersion": "8.18.1",
+  "soleRoot": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts"
+  ],
+  "graphFileCount": 2032,
+  "totalDiagnostics": 0,
+  "inheritedCompilerPolicyUnchanged": true,
+  "inferredCallbacks": [
+    {
+      "parameter": "error",
+      "type": "Error"
+    },
+    {
+      "parameter": "data",
+      "type": "RawData"
+    },
+    {
+      "parameter": "error",
+      "type": "Error"
+    },
+    {
+      "parameter": "raw",
+      "type": "RawData"
+    }
+  ],
+  "promptEqual": true,
+  "promptSHA256": "91edbb6d1c3089aa6fc957d6ef25ddb91905eed5af5460ed8119d9574b6f5b06",
+  "prompt": "## Agent Identity\n\n- Name: Claude WebSocket E2E Agent\n- Description: Exercises Claude create and resume instruction projection\n\n### Responsibilities and Boundaries\n\nKeep persistent instructions separate from user turns.",
+  "emittedPromptModules": [
+    "autobyteus-server-ts/src/agent-definition/domain/models.ts",
+    "autobyteus-server-ts/src/agent-execution/prompt/carpenter-prompt-composer.ts",
+    "autobyteus-server-ts/src/agent-team-execution/services/team-collaboration-instruction-renderer.ts",
+    "autobyteus-server-ts/src/agent-team-execution/services/member-collaboration-instruction-renderer.ts",
+    "autobyteus-server-ts/src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts",
+    "autobyteus-server-ts/src/agent-execution/prompt/standalone-collaboration-instruction.ts",
+    "autobyteus-server-ts/src/agent-execution/prompt/carpenter-prompt-sections.ts",
+    "autobyteus-server-ts/src/agent-execution/prompt/markdown-heading-containment.ts"
+  ],
+  "temporaryPromptModulesRemovedOnExit": true
+}

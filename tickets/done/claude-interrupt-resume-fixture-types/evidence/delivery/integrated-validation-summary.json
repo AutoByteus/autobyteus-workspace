@@ -1,0 +1,112 @@
+{
+  "package": "claude-interrupt-resume-fixture-types",
+  "projectTask": "project_task_11c75527-3875-4664-a49c-d1c871064d5c",
+  "recordedUtc": "2026-10-13T04:59:53.946438+00:00",
+  "result": "Pass \u2014 current integrated checks; new explicit user verification pending",
+  "task_size": "Small",
+  "architectural_risk": "Low",
+  "route": "Direct low-risk; independent reviews N/A, successful test review Not Required; current IR-002 proportional self-review plus current independent API-REV-001",
+  "bootstrapBase": "b238f2bf20624d80a70bdf75c321a36180f15fdc",
+  "checkedLatestBase": "dec0f562ce6f26a09d1e6f59d59e838142cb4865",
+  "integrationCommit": "d9dad8fe1e6b65921a1efd07ebd9899fd009e061",
+  "reviewedCheckpoint": "2aaabd7580719ed20619377d336baadac41595fe",
+  "integrationMethod": "Merge origin/personal into ticket branch",
+  "baseCommitsIntegrated": 1,
+  "baseDelta": "Only unrelated delegated-launch-config-defaults finalization documentation",
+  "sourceAndDevMetadataPreservedFromPassedPackage": true,
+  "productionFixtureAndGlobalTestingDelta": [],
+  "implementationPaths": [
+    "autobyteus-server-ts/package.json",
+    "autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+    "autobyteus-server-ts/tsconfig.claude-interrupt-resume-e2e.json",
+    "pnpm-lock.yaml"
+  ],
+  "targetSha256": "3d7a40b5bf62946dabe0d03e2d060ab7b04de36895c29a7a415850036d44ade9",
+  "allChecksSerial": true,
+  "priorTaskPassOrUserVerificationReused": false,
+  "checks": {
+    "scoped": {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "typecheck:claude-interrupt-resume-e2e"
+      ],
+      "actualExit": 0,
+      "totalCompilerDiagnostics": 0,
+      "noUnhandled": true,
+      "privateRootRemoved": true,
+      "ownedGroupRemaining": [],
+      "workspaceRemnants": [],
+      "seconds": 13.356
+    },
+    "target-integrated": {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+        "--no-watch"
+      ],
+      "actualExit": 0,
+      "totalCompilerDiagnostics": 0,
+      "noUnhandled": true,
+      "privateRootRemoved": true,
+      "ownedGroupRemaining": [],
+      "workspaceRemnants": [],
+      "seconds": 7.268,
+      "passed": 8,
+      "liveSkipped": 1
+    },
+    "production": {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "typecheck"
+      ],
+      "actualExit": 0,
+      "totalCompilerDiagnostics": 0,
+      "noUnhandled": true,
+      "privateRootRemoved": true,
+      "ownedGroupRemaining": [],
+      "workspaceRemnants": [],
+      "seconds": 14.464
+    },
+    "focused-units": {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/agent-execution/prompt/carpenter-prompt-composer.test.ts",
+        "tests/unit/agent-execution/agent-run-status-projection-service.test.ts",
+        "tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts",
+        "tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts",
+        "tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts",
+        "tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts",
+        "tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts",
+        "--no-watch"
+      ],
+      "actualExit": 0,
+      "totalCompilerDiagnostics": 0,
+      "noUnhandled": true,
+      "privateRootRemoved": true,
+      "ownedGroupRemaining": [],
+      "workspaceRemnants": [],
+      "seconds": 25.004,
+      "passed": 48,
+      "files": 7
+    },
+    "guards": {
+      "licensingExit": 0,
+      "trackedHygieneExit": 0,
+      "finalCandidateIndexCheck": "Pending after new verification"
+    }
+  }
+}

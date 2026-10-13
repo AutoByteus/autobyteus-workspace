@@ -1,0 +1,9 @@
+{
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types",
+  "argv": [
+    "node",
+    "tickets/in-progress/claude-interrupt-resume-fixture-types/evidence/probe-current-types.cjs"
+  ],
+  "environment": "PATH + temporary HOME + TMPDIR only; no keys/app roots or live gate",
+  "revision": "b238f2bf20624d80a70bdf75c321a36180f15fdc"
+}

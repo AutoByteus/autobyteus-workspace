@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "node",
+    "tickets/in-progress/claude-interrupt-resume-fixture-types/evidence/design-recovery/probe-ready-state-typing.cjs"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types",
+  "environment": "PATH/private HOME/TMPDIR only; virtual readFile bytes preserves NodeNext compiler-host metadata; no source write/child/app/model"
+}
