@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true
+  },
+  "include": ["tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts"],
+  "exclude": ["dist", "node_modules"]
+}

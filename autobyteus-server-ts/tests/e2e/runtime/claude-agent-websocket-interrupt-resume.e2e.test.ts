@@ -5,6 +5,10 @@
  * Run with a clean private HOME:
  * pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts --no-watch
  * RUN_CLAUDE_E2E=1 and a ready Claude CLI enable the separate live interrupt case.
+ * Optional scoped typecheck (this file and normal imports, inherited build compiler policy):
+ * pnpm -C autobyteus-server-ts typecheck:claude-interrupt-resume-e2e
+ * Run server prebuild first for shared outputs/Prisma. Any compiler diagnostic fails;
+ * a clean scoped result is not a repository-wide test-typecheck or live-provider pass.
  */
 import fs from "node:fs/promises";
 import fsSync from "node:fs";
@@ -19,6 +23,7 @@ import websocket from "@fastify/websocket";
 import { describe, expect, it, onTestFinished, vi } from "vitest";
 import WebSocket from "ws";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
@@ -189,11 +194,11 @@ const createClaudeRunContext = (input: {
   workspaceRoot: string;
 }): AgentRunContext<ClaudeAgentRunContext> => {
   const carpenterSystemPrompt = composeSharedCarpenterPrompt({
-    agentDefinition: {
+    agentDefinition: new AgentDefinition({
       name: "Claude WebSocket E2E Agent",
       description: "Exercises Claude create and resume instruction projection",
       instructions: "Keep persistent instructions separate from user turns.",
-    },
+    }),
   });
   return new AgentRunContext({
     runId: input.runId,
@@ -404,7 +409,6 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
       return {
         runId,
         status: snapshot.status,
-        canInterrupt: snapshot.can_interrupt === true,
         isActive: runId === input.runId,
         shouldConnectStream: runId === input.runId,
         lastKnownStatus: snapshot.status === "error" ? "ERROR" : "ACTIVE",
@@ -487,13 +491,15 @@ const closeHarness = async (harness: {
   };
   await attempt(async () => {
     const socket = harness.socket;
-    if (!socket || socket.readyState === WebSocket.CLOSED) return;
+    if (!socket) return;
+    const socketClosed = (): boolean => socket.readyState === WebSocket.CLOSED;
+    if (socketClosed()) return;
     if (socket.readyState === WebSocket.CONNECTING) socket.terminate();
     else socket.close();
     try {
-      await waitForCondition(() => socket.readyState === WebSocket.CLOSED, "owned websocket closes");
+      await waitForCondition(socketClosed, "owned websocket closes");
     } finally {
-      if (socket.readyState !== WebSocket.CLOSED) socket.terminate();
+      if (!socketClosed()) socket.terminate();
     }
   });
   await attempt(() => harness.sessionManager.closeRunSession(harness.runContext.runId));
