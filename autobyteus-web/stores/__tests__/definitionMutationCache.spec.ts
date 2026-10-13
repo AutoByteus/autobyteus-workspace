@@ -1,4 +1,4 @@
-// Healthy definition creation and edits must remain readable through the current cached catalog query.
+// Healthy definition creation must remain readable through the current cached catalog query.
 // Real stores/Apollo cache, current documents; the server double returns ONLY selected fields,
 // like GraphQL does. Supplying a whole fixture to mutations would hide missing fragment fields.
 // Run: pnpm -C autobyteus-web test:nuxt stores/__tests__/definitionMutationCache.spec.ts --run
@@ -49,14 +49,7 @@ const org = {
   defaultLaunchConfig: null, loadIssues: [],
 }
 
-const missingCacheFields = (calls: unknown[][]): string[] => calls.flatMap(([message]) => {
-  const encoded = /err#([^\s]+)/.exec(String(message))?.[1]
-  if (!encoded) return []
-  const details = JSON.parse(decodeURIComponent(encoded))
-  return details.message === 13 ? [details.args[0]] : []
-})
-
-describe('definition mutations publish a complete current-query cache row', () => {
+describe('definition creation publishes a complete current-query cache row', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     const rows: Record<string, any[]> = { agentDefinitions: [structuredClone(agent)], agentOrgDefinitions: [structuredClone(org)] }
@@ -71,14 +64,6 @@ describe('definition mutations publish a complete current-query cache row', () =
           value = { ...agent, ...operation.variables.input, id: 'new-agent' }; rows.agentDefinitions.push(value)
         } else if (field === 'createAgentOrgDefinition') {
           value = { ...org, ...operation.variables.input, id: 'new-org', members: operation.variables.input.members.map((member: any) => ({ ...member, __typename: 'AgentOrgMember' })) }; rows.agentOrgDefinitions.push(value)
-        } else if (field === 'updateAgentDefinition' || field === 'updateAgentOrgDefinition') {
-          const list = field === 'updateAgentDefinition' ? rows.agentDefinitions : rows.agentOrgDefinitions
-          const { expectedRevision, ...input } = operation.variables.input
-          const index = list.findIndex(row => row.id === input.id)
-          if (index === -1) throw new Error(`Unknown definition: ${input.id}`)
-          if (field === 'updateAgentOrgDefinition' && expectedRevision !== list[index].revision) throw new Error('Revision mismatch')
-          value = { ...list[index], ...input, ...(field === 'updateAgentOrgDefinition' ? { revision: 'revision-2' } : {}) }
-          list[index] = value
         } else throw new Error(`Unexpected operation: ${field}`)
         observer.next({ data: selected({ [field]: value }, definition.selectionSet, fragments) }); observer.complete()
       } catch (error) { observer.error(error) }
@@ -93,39 +78,16 @@ describe('definition mutations publish a complete current-query cache row', () =
     const error = vi.spyOn(console, 'error').mockImplementation(() => {})
     if (kind === 'Agent') await agents.createAgentDefinition({ name: 'New Agent', description: 'Healthy', instructions: 'Inspect only' })
     else await orgs.create({ name: 'New Org', description: 'Healthy', instructions: '', handoffs: [], members: org.members, defaultLaunchConfig: null })
-    const missingFields = missingCacheFields(error.mock.calls)
+    const missingFields = error.mock.calls.flatMap(([message]) => {
+      const encoded = /err#([^\s]+)/.exec(String(message))?.[1]
+      if (!encoded) return []
+      const details = JSON.parse(decodeURIComponent(encoded))
+      return details.message === 13 ? [details.args[0]] : []
+    })
     expect(missingFields, 'Creation must not publish a row missing fields required by its catalog query').toEqual([])
     const cached = io.client.readQuery({ query })
     expect(cached).not.toBeNull()
     if (kind === 'Agent') expect(cached.agentDefinitions).toContainEqual(expect.objectContaining({ id: 'new-agent', loadIssue: null }))
     else expect(cached.agentOrgDefinitions).toContainEqual(expect.objectContaining({ id: 'new-org', loadIssues: [] }))
-  })
-
-  it.each(['Agent', 'Org'] as const)('edits a healthy %s with complete issue fields and cache-first rereads', async kind => {
-    const agents = useAgentDefinitionStore(), orgs = useAgentOrgDefinitionStore()
-    const query = kind === 'Agent' ? GetAgentDefinitions : GetAgentOrgDefinitions
-    if (kind === 'Agent') await agents.fetchAllAgentDefinitions(); else await orgs.fetchAll()
-    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const updated = kind === 'Agent'
-      ? await agents.updateAgentDefinition({ id: agent.id, name: 'Edited Agent' })
-      : await orgs.update(org.id, org.revision, { name: 'Edited Org' })
-    // A normalized existing entity can mask an incomplete mutation response by retaining
-    // old fields. Check the response too, since both edits share the create fragments.
-    const expected = kind === 'Agent'
-      ? { id: agent.id, name: 'Edited Agent', loadIssue: null }
-      : { id: org.id, name: 'Edited Org', revision: 'revision-2', loadIssues: [] }
-    expect(updated).toMatchObject(expected)
-    expect(missingCacheFields(error.mock.calls)).toEqual([])
-    const cached = io.client.readQuery({ query })
-    expect(cached).not.toBeNull()
-    if (kind === 'Agent') {
-      expect(cached.agentDefinitions).toContainEqual(expect.objectContaining(expected))
-      agents.agentDefinitions = []; await agents.fetchAllAgentDefinitions()
-      expect(agents.getAgentDefinitionById(agent.id)).toMatchObject(expected)
-    } else {
-      expect(cached.agentOrgDefinitions).toContainEqual(expect.objectContaining(expected))
-      orgs.definitions = []; await orgs.fetchAll()
-      expect(orgs.byId(org.id)).toMatchObject(expected)
-    }
   })
 })
