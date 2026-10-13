@@ -35,12 +35,12 @@ vi.mock('~/stores/existingRunConfigStore', async () => {
     draft: {
       kind: 'agent', runId: 'run-1', isActive: false, editability: { editable: true, reason: null },
       metadata: { agentDefinitionId: 'writer', runtimeKind: 'codex_app_server', autoExecuteTools: true, llmModelIdentifier: 'gpt-5.5', workspaceRootPath: null },
-      draftSelection: { llmModelIdentifier: 'gpt-6', llmConfig: null },
+      draftSelection: { llmModelIdentifier: 'gpt-6', llmConfig: null }, delegatedSnapshot: null,
     },
     loadingCanonical: false, saving: false, reconciling: false, reconciliationRequired: false,
     feedback: null, fieldErrors: [], modelOptionsByAddress: {}, dirty: true, canSave: true,
     loadAgentCanonical: vi.fn(), clear: vi.fn(), applyCachedAgentLifecycle: vi.fn(),
-    save: vi.fn(async () => true), discardChanges: vi.fn(), reloadCanonical: vi.fn(async () => undefined),
+    save: vi.fn(async () => true), discardChanges: vi.fn(), reloadCanonical: vi.fn(async () => true),
   })
   return { useExistingRunConfigStore: () => mocks.store }
 })
@@ -76,7 +76,6 @@ describe('ExistingRunConfigEditor: copies\' choices in the run\'s Save bar', () 
       changes: [{ key: 'agent:copy', selection: { llmModelIdentifier: 'sonnet', llmConfig: null } }],
       configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/', llmModelIdentifier: 'gpt-6', llmConfig: null }] })
     expect(mocks.store!.save).not.toHaveBeenCalled()
-    expect(mocks.store!.discardChanges).toHaveBeenCalled()
     expect(mocks.store!.reloadCanonical).toHaveBeenCalled()
   })
 

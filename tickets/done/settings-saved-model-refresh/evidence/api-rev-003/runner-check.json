@@ -1,0 +1,27 @@
+{
+  "scope": "Local runner/checkpoint self-check only; synthetic cases, no API/browser/desktop",
+  "source": "autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+  "results": [
+    {
+      "variant": "desktop-absolute",
+      "result": "Pass"
+    },
+    {
+      "variant": "browser-relative",
+      "result": "Pass"
+    },
+    {
+      "variant": "default-order",
+      "result": "Pass"
+    },
+    {
+      "variant": "no-ledger",
+      "result": "Pass"
+    },
+    {
+      "variant": "unknown-case",
+      "result": "Pass"
+    }
+  ],
+  "ownedTemporaryFilesRemoved": true
+}

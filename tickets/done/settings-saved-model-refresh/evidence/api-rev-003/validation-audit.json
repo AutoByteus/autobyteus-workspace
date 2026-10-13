@@ -1,0 +1,111 @@
+{
+  "timestamp": "2026-10-13T17:34:45.710926+00:00",
+  "surfaces": {
+    "desktop": {
+      "caseOrder": [
+        "SSR-001",
+        "SSR-002",
+        "SSR-003",
+        "SSR-004",
+        "DCP-001",
+        "DCP-002",
+        "DCP-003",
+        "DCP-004",
+        "DCP-005"
+      ],
+      "summary": {
+        "pass": 9,
+        "fail": 0
+      },
+      "oneStartedAndCompletedPerCase": true,
+      "completedResultsObservedPersisted": true,
+      "subcaseCheckpoints": [
+        "- 2026-10-13T17:23:14.033Z DCP-001-copy Checkpoint StopDelegatedExecution real success; disabled-hover and native target verified",
+        "- 2026-10-13T17:23:23.627Z DCP-001-root Checkpoint TerminateAgentRun real success; disabled-hover and native target verified",
+        "- 2026-10-13T17:23:52.489Z DCP-002-copy Checkpoint StopDelegatedExecution real success; disabled-hover and native target verified",
+        "- 2026-10-13T17:24:11.433Z DCP-002-root Checkpoint TerminateAgentTeamRun real success; disabled-hover and native target verified",
+        "- 2026-10-13T17:24:40.123Z DCP-003-copy Checkpoint StopDelegatedExecution real success; disabled-hover and native target verified",
+        "- 2026-10-13T17:24:43.463Z DCP-003-root Checkpoint TerminateAgentOrgRun real success; disabled-hover and native target verified"
+      ],
+      "noPageErrors": true,
+      "ownedRootRemoved": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-rbrIwf",
+      "releasedPorts": [
+        65191,
+        65192,
+        65414,
+        65415
+      ],
+      "ownedProcesses": [
+        {
+          "label": "backend",
+          "pid": 44647,
+          "absent": true
+        },
+        {
+          "label": "backend-restarted-dcp-004",
+          "pid": 67704,
+          "absent": true
+        }
+      ],
+      "screenshotCount": 69,
+      "sourceHead": "76fab065ec30bff5be76dd2e013243abda3a6934",
+      "skipBuild": false,
+      "asarSha256": "e9b395c077453afd31b5e462a1a3299c491837f7523bde29a352f09aa1ce5154",
+      "instanceId": "iso-65414-c9a5",
+      "desktopPidAbsent": 57442
+    },
+    "browser": {
+      "caseOrder": [
+        "SSR-001",
+        "SSR-002",
+        "SSR-003",
+        "SSR-004",
+        "DCP-001",
+        "DCP-002",
+        "DCP-003"
+      ],
+      "summary": {
+        "pass": 7,
+        "fail": 0
+      },
+      "oneStartedAndCompletedPerCase": true,
+      "completedResultsObservedPersisted": true,
+      "subcaseCheckpoints": [
+        "- 2026-10-13T17:29:11.367Z DCP-001-copy Checkpoint StopDelegatedExecution real success; disabled-hover and native target verified",
+        "- 2026-10-13T17:29:20.963Z DCP-001-root Checkpoint TerminateAgentRun real success; disabled-hover and native target verified",
+        "- 2026-10-13T17:29:53.015Z DCP-002-copy Checkpoint StopDelegatedExecution real success; disabled-hover and native target verified",
+        "- 2026-10-13T17:30:13.525Z DCP-002-root Checkpoint TerminateAgentTeamRun real success; disabled-hover and native target verified",
+        "- 2026-10-13T17:30:42.602Z DCP-003-copy Checkpoint StopDelegatedExecution real success; disabled-hover and native target verified",
+        "- 2026-10-13T17:30:45.968Z DCP-003-root Checkpoint TerminateAgentOrgRun real success; disabled-hover and native target verified"
+      ],
+      "noPageErrors": true,
+      "ownedRootRemoved": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-bE6UG5",
+      "releasedPorts": [
+        49359,
+        49360
+      ],
+      "ownedProcesses": [
+        {
+          "label": "backend",
+          "pid": 71489,
+          "absent": true
+        },
+        {
+          "label": "frontend",
+          "pid": 71509,
+          "absent": true
+        }
+      ],
+      "screenshotCount": 65
+    }
+  },
+  "apiRoots": [
+    {
+      "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-dU0rHJ",
+      "absent": true
+    }
+  ],
+  "status": " M tickets/in-progress/settings-saved-model-refresh/api-e2e-coverage-investigation.md\n M tickets/in-progress/settings-saved-model-refresh/api-e2e-execution-coverage-report.md\n M tickets/in-progress/settings-saved-model-refresh/api-e2e-revision-record.md\n M tickets/in-progress/settings-saved-model-refresh/api-e2e-test-case-ledger.md\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-003/\n",
+  "sourceDeltaSinceValidatedHead": "",
+  "result": "Pass"
+}

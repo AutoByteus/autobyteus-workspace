@@ -62,7 +62,7 @@ describe('delegatedLaunchDraftStore', () => {
     client.updateDelegatedLaunchSelections.mockResolvedValue({ success: true, outcome: 'UPDATED', message: 'Saved.', fieldErrors: [] })
     store.edit('agent:copy', { llmModelIdentifier: 'opus', llmConfig: null }, { llmModelIdentifier: 'sonnet', llmConfig: null })
     const patch = { scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/pm', llmModelIdentifier: 'x', llmConfig: null }
-    await expect(store.save([patch])).resolves.toBe(true)
+    await expect(store.save([patch], async () => true)).resolves.toBe(true)
     expect(client.updateDelegatedLaunchSelections).toHaveBeenCalledWith({ ...root,
       changes: [{ key: 'agent:copy', selection: { llmModelIdentifier: 'sonnet', llmConfig: null } }], configuredPatches: [patch] })
     expect(store.dirty).toBe(false)
@@ -78,7 +78,7 @@ describe('delegatedLaunchDraftStore', () => {
     client.updateDelegatedLaunchSelections.mockResolvedValue({ success: false, outcome: 'COPY_RUNNING',
       message: 'This copy is running. Stop it, then change its model.', fieldErrors: [{ path: 'changes[0]', message: 'x' }] })
     store.edit('agent:copy', { llmModelIdentifier: 'opus', llmConfig: null }, { llmModelIdentifier: 'sonnet', llmConfig: null })
-    await expect(store.save()).resolves.toBe(false)
+    await expect(store.save([], async () => true)).resolves.toBe(false)
     expect(store.dirty).toBe(true)
     expect(store.feedback).toEqual({ kind: 'error', message: 'This copy is running. Stop it, then change its model.' })
     expect(store.fieldErrors).toEqual([{ path: 'changes[0]', message: 'x' }])
@@ -96,4 +96,24 @@ describe('delegatedLaunchDraftStore', () => {
     expect(store.isStopping(root, { teamRunId: 'se-copy' })).toBe(false)
     expect(store.stopFeedback).toEqual({ kind: 'info', message: 'Stopped. 1 older copy kept running.' })
   })
+})
+
+it.each(['mutation', 'readback'])('ignores an old %s completion after navigating away and back to the same root', async phase => {
+  const store = useDelegatedLaunchDraftStore()
+  store.bind(root)
+  store.edit('agent:copy', { llmModelIdentifier: 'opus', llmConfig: null }, { llmModelIdentifier: 'sonnet', llmConfig: null })
+  let finish!: (value: any) => void
+  const pending = new Promise<any>(resolve => { finish = resolve })
+  client.updateDelegatedLaunchSelections.mockReturnValue(phase === 'mutation' ? pending : Promise.resolve({ success: true, message: 'Saved' }))
+  const reconcile = vi.fn(() => phase === 'readback' ? pending : Promise.resolve(true))
+  const saving = store.save([], reconcile)
+  await flush()
+  store.bind(null); store.bind(root)
+  store.edit('agent:copy', { llmModelIdentifier: 'sonnet', llmConfig: null }, { llmModelIdentifier: 'other', llmConfig: null })
+  finish(phase === 'mutation' ? { success: true, message: 'Saved' } : true)
+  expect(await saving).toBe(false)
+  expect(store.edits['agent:copy'].llmModelIdentifier).toBe('other')
+  expect(store.feedback).toBeNull()
+  expect(store.saving).toBe(false)
+  if (phase === 'mutation') expect(reconcile).not.toHaveBeenCalled()
 })

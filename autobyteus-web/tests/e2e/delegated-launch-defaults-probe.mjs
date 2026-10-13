@@ -67,6 +67,11 @@
 // Optional --ledger-file <file> appends per-case checkpoints before the next journey starts.
 // Prerequisites: `pnpm -C autobyteus-server-ts build`, Google Chrome. No CLI logins.
 // Usage: pnpm -C autobyteus-web test:e2e:delegated-launch-defaults [--output-dir <fresh dir>] [--cases DLP-001,DLP-003] [--keep]
+// --desktop builds/owns an isolated app on macOS and selects the private backend via Node Manager.
+// --skip-build requires this worktree's verified-current bundle.
+// Focused SSR-001..004 cases are opt-in via test:e2e:settings-saved-model-refresh (see its case-module header).
+import { desktopAdapter } from './fixtures/settings-refresh-desktop.mjs'
+import { registerSavedRefreshCases } from './settings-saved-model-refresh-cases.mjs'
 import { spawn } from 'node:child_process'
 import { createWriteStream, existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
@@ -90,6 +95,7 @@ const arg = (name, fallback) => {
   return i !== -1 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : fallback
 }
 const outDir = path.resolve(webDir, arg('output-dir', `test-results/delegated-launch-defaults-${Date.now()}`))
+const desktop = process.argv.includes('--desktop')
 const keep = process.argv.includes('--keep')
 const ledgerFile = arg('ledger-file', null)
 const checkpoint = async (id, event, detail = '') => {
@@ -357,6 +363,10 @@ const openTeamRun = async (page, teamRunId, teamDefinitionId) => {
     return false
   }, 60000, 1500)
   await teamRow.click(); await settle(page, 2500)
+  // Selection may toggle a previously expanded persisted row closed. Explicitly expose its children.
+  if (await teamRow.getAttribute('aria-expanded') === 'false') {
+    await teamRow.locator(sel('workspace-team-run-disclosure')).click(); await settle(page, 800)
+  }
 }
 const openSettings = async (page) => {
   await page.locator(sel('workspace-header-edit-config')).click()
@@ -503,7 +513,7 @@ defineCase('DLP-002', 'AC-012: Org launch page seeds the placed team from its te
   await closeDrawer(drawer)
   await page.locator(sel('org-launch-run')).click()
   await page.waitForURL(/mode=active/, { timeout: 180000 }); await settle(page, 2500)
-  const params = new URL(page.url()).searchParams
+  const params = new URL(page.url().includes('#') ? page.url().split('#')[1] : page.url(), 'http://probe.local').searchParams
   r.orgRunId = params.get('runId') ?? params.get('rootRunId') ?? params.get('orgRunId')
   const tree = (await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}', { id: r.orgRunId })).getAgentOrgRunConfig.executionTree
   const root = tree.rootOrg ?? tree.root_org
@@ -523,7 +533,7 @@ const startManagerChat = async (page, model, firstMessage) => {
   await chooseModel(page, page.locator(sel('chat-composer')), AGY, model)
   await typeAndSend(page, firstMessage)
   await page.waitForURL((u) => /\/chat\?id=/.test(u.toString()) && !/id=temp-/.test(u.toString()), { timeout: 180000 })
-  const runId = new URL(page.url()).searchParams.get('id')
+  const runId = new URL(page.url().includes('#') ? page.url().split('#')[1] : page.url(), 'http://probe.local').searchParams.get('id')
   await page.locator('[data-testid="agent-workspace-surface"]').waitFor({ timeout: 120000 }); await settle(page, 1500)
   return runId
 }
@@ -627,7 +637,7 @@ defineCase('DLP-004', 'AC-010: Team run (New chat) and Org run (Org launch page)
   await chooseModel(page, page.locator(sel('org-launch-card')), AGY, MODEL)
   await page.locator(sel('org-launch-run')).click()
   await page.waitForURL(/mode=active/, { timeout: 180000 }); await settle(page, 2500)
-  const params = new URL(page.url()).searchParams
+  const params = new URL(page.url().includes('#') ? page.url().split('#')[1] : page.url(), 'http://probe.local').searchParams
   r.orgRunId = params.get('runId') ?? params.get('rootRunId') ?? params.get('orgRunId')
   await page.locator('[data-test^="agent-org-agent-row-"]').filter({ hasText: /manager/i }).first().click(); await settle(page, 2500)
   r.orgSquadCall = await callFromComposer(page, 'org: delegate Squad', 'delegate_task', { recipient_address: address('squad'), description: 'Squad work.' })
@@ -828,7 +838,7 @@ defineCase('DLP-009', 'SR-005 (AC-011, AC-012): carried starts seed members: Tea
   await closeDrawer(drawer)
   await page.locator(sel('org-launch-run')).click()
   await page.waitForURL(/mode=active/, { timeout: 180000 }); await settle(page, 2500)
-  const params = new URL(page.url()).searchParams
+  const params = new URL(page.url().includes('#') ? page.url().split('#')[1] : page.url(), 'http://probe.local').searchParams
   r.orgRunId = params.get('runId') ?? params.get('rootRunId') ?? params.get('orgRunId')
   const tree = (await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}', { id: r.orgRunId })).getAgentOrgRunConfig.executionTree
   const root = tree.rootOrg ?? tree.root_org
@@ -1085,7 +1095,7 @@ const keyboardStopRoot = async (page, id, kind, runId, stop, row, key) => {
   await waitFor(`${id} inactive sidebar retains row without Stop`, async () => await row.isVisible() && !(await stop.isVisible().catch(() => false)), 60000)
   if (kind === 'AGENT_ORG') {
     await page.locator(sel(`agent-org-run-archive-${runId}`)).waitFor({ state: 'attached' })
-    assert(new URL(page.url()).searchParams.get('mode') === 'history', 'Org stop should inspect history', page.url())
+    assert(new URL(page.url().includes('#') ? page.url().split('#')[1] : page.url(), 'http://probe.local').searchParams.get('mode') === 'history', 'Org stop should inspect history', page.url())
   }
   r.urlAfter = page.url()
   await shot(page, `${id}-root-stopped-history`)
@@ -1207,7 +1217,10 @@ defineCase('DCP-002', 'delegated-copy-model-change AC-002/003, IR-002 (Team root
   await waitFor('copy lead started on the Team default', async () => (await agyLaunchesOf(r.copyMembers.lead)).length > 0, 60000)
   assert(JSON.stringify(await agyLaunchesOf(r.copyMembers.lead)) === JSON.stringify([ALT]), 'copy lead did not start on the Team default (ALT)', await agyLaunchesOf(r.copyMembers.lead))
   await openTeamRun(page, r.teamRunId, ids.home)
-  const teamSidebarRow = page.locator(sel('workspace-team-transient-execution-row')).filter({ hasText: address('pair').slice(1).replace(/_/g, ' ') }).first()
+  // Earlier SSR cases retain stopped copies with the same label; bind to this root and Team address.
+  const teamSidebarRow = page.locator(`${sel('workspace-team-transient-execution-row')}[data-team-run-id="${r.teamRunId}"][data-transient-kind="task_team"][data-member-address="${address('pair')}"]`)
+  await waitFor('one exact Team copy sidebar row', async () => await teamSidebarRow.count() === 1, 60000)
+  r.sidebarTarget = await teamSidebarRow.evaluate(el => ({ rootRunId: el.dataset.teamRunId, address: el.dataset.memberAddress, kind: el.dataset.transientKind }))
   const parentStop = page.locator(sel(`workspace-team-row-${r.teamRunId}`)).locator('xpath=..').getByRole('button', { name: 'Terminate team', exact: true })
   r.paint = await sidebarPaint(page, 'DCP-002', teamSidebarRow, parentStop)
   await openTeamRun(page, r.teamRunId, ids.home)
@@ -1221,9 +1234,7 @@ defineCase('DCP-002', 'delegated-copy-model-change AC-002/003, IR-002 (Team root
   r.runningHint = await teamRow().locator(sel('run-member-stop-hint')).first().innerText().catch(() => null)
   assert(r.runningLocked && /Stop this copy to change its model/.test(r.runningHint ?? ''), 'running Team copy should be locked with the hint', r)
   // Stop from the copy's own sidebar row (the Team row, not one of its members).
-  // The copy's own row in the run tree (labelled like its address, e.g. "pair team 3b8c"), not one of its members.
-  const teamLabel = address('pair').slice(1).replace(/_/g, ' ')
-  const sidebarStop = page.locator(sel('workspace-team-transient-execution-row')).filter({ hasText: teamLabel }).locator(sel('workspace-delegated-stop')).first()
+  const sidebarStop = teamSidebarRow.locator(sel('workspace-delegated-stop'))
   await waitFor('sidebar Team copy row has the stop icon', async () => {
     if (await sidebarStop.isVisible().catch(() => false)) return true
     await expandWorkspaces(page)
@@ -1250,8 +1261,10 @@ defineCase('DCP-002', 'delegated-copy-model-change AC-002/003, IR-002 (Team root
   r.plusModel = (await page.locator(`${sel('chat-composer')} ${sel('chat-model-trigger')}`).innerText()).replace(/\s+/g, ' ')
   assert(r.plusModel.includes(MODEL_LABEL) && !r.plusModel.includes(ALT_LABEL), '"+" from the copy lead should prefill the chosen model', r.plusModel)
   await shot(page, 'DCP-002-plus-from-copy-lead-1280', 1280)
-  // The next message resumes the follower lead on the Team choice.
+  // The next message is sent by the root manager, not the last-selected copy lead.
   await openTeamRun(page, r.teamRunId, ids.home)
+  await page.locator(sel(`workspace-team-member-${r.teamRunId}-/manager`)).click()
+  await settle(page, 1000)
   const resumeFrom = (await agyLaunchesOf(r.copyMembers.lead)).length
   r.resume = await callFromComposer(page, 'message the copy lead', 'send_message_to', { target_agent_run_id: r.copyMembers.lead, content: 'Please continue.' })
   assert(r.resume.includes('"accepted":true'), 'message to the stopped copy not accepted', r.resume)
@@ -1271,7 +1284,7 @@ defineCase('DCP-003', 'delegated-copy-model-change AC-001/002 (Org root, UI): a 
   await chooseModel(page, page.locator(sel('org-launch-card')), AGY, MODEL)
   await page.locator(sel('org-launch-run')).click()
   await page.waitForURL(/mode=active/, { timeout: 180000 }); await settle(page, 2500)
-  const params = new URL(page.url()).searchParams
+  const params = new URL(page.url().includes('#') ? page.url().split('#')[1] : page.url(), 'http://probe.local').searchParams
   r.orgRunId = params.get('runId') ?? params.get('rootRunId') ?? params.get('orgRunId')
   await page.locator('[data-test^="agent-org-agent-row-"]').filter({ hasText: /manager/i }).first().click(); await settle(page, 2500)
   r.copyCall = await callFromComposer(page, 'org: delegate Writer', 'delegate_task', { recipient_address: address('writer'), description: 'Draft the notes.' })
@@ -1376,6 +1389,8 @@ defineCase('DCP-004', 'delegated-copy-model-change AC-011, AC-005 (UI): the dele
   // AC-005: the app restarts (the backend process), the run is reopened: Settings still shows the choice.
   await stopOwned(backend)
   backend = await startBackend('backend-restarted-dcp-004')
+  // File/hash navigation does not reload the desktop renderer as an HTTP navigation does.
+  if (desktop) await page.reload({ waitUntil: 'domcontentloaded' })
   await openAgentRun(page, r.runId)
   await openSettings(page)
   await openMember(section, key)
@@ -1429,6 +1444,14 @@ defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 
   await openMember(section, teamKey)
   await waitFor('Team copy stopped (model unlocked)', async () => !(await modelLocked(rowOf(teamKey))), 60000, 1000)
   const summaryOf = async (key) => (await rowOf(key).locator(sel('run-member-summary')).first().innerText()).replace(/\s+/g, ' ')
+  const engineerRecord = async () => {
+    const team = teamCopies(await teamTree(r.teamRunId), 'pair').find(record => pick(record, 'teamRunId') === r.copyTeamRunId)
+    const execution = team?.members.find(member => pick(member, 'agentRunId') === r.members.engineer)
+    const source = pick(team, 'source')?.members.find(member => member.address === execution?.address)
+    assert(execution && source, 'Engineer canonical execution/source missing', team)
+    return { execution, source }
+  }
+  r.engineerBefore = await engineerRecord()
   r.before = { team: await summaryOf(teamKey), lead: await summaryOf(keyOf('lead')), engineer: await summaryOf(keyOf('engineer')), member: await summaryOf(keyOf(member)) }
   await openMember(section, keyOf(member))
   await chooseCopyModel(page, rowOf(keyOf(member)), MODEL)
@@ -1438,7 +1461,12 @@ defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 
   r.after = { team: await summaryOf(teamKey), lead: await summaryOf(keyOf('lead')), engineer: await summaryOf(keyOf('engineer')), member: await summaryOf(keyOf(member)) }
   r.memberSource = await rowOf(keyOf(member)).getAttribute('data-source')
   assert(r.after.member.includes(MODEL_LABEL) && !r.after.member.includes(ALT_LABEL) && r.memberSource === null, 'the member row should show its new model without an origin', r)
-  assert(r.after.team === r.before.team && r.after.lead === r.before.lead && r.after.engineer === r.before.engineer, 'the other rows should be unchanged', r)
+  r.engineerAfter = await engineerRecord()
+  // Catalog hydration may replace the same model's raw ID with its friendly label; configuration must stay exact.
+  const catalogLabel = text => text.replace('grok-4.7', 'Grok 4.7')
+  assert(r.after.team === r.before.team && r.after.lead === r.before.lead
+    && catalogLabel(r.after.engineer) === catalogLabel(r.before.engineer)
+    && JSON.stringify(r.engineerAfter) === JSON.stringify(r.engineerBefore), 'the other rows should keep their exact settings', r)
   // The whole Team copy card: the edited member with its unchanged teammates (the Save bar would cover a viewport shot).
   await shot(page, 'DCP-005-settings-team-copy-member-saved-1280', 1280)
   await rowOf(teamKey).screenshot({ path: path.join(outDir, 'DCP-005-team-copy-card-member-saved.png') })
@@ -1462,10 +1490,15 @@ defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 
   return r
 })
 
-// ---------------------------------------------------------------------------------------------
+// Focused stopped-parent regression shares the existing public fixture/runtime/UI helpers.
+if (onlyCases?.some(id => id.startsWith('SSR-'))) registerSavedRefreshCases({ defineCase, assert, waitFor, delay, sel, startManagerChat, callFromComposer, address,
+  agentTree, objectsIn, pick, teamCopies, membersOf, collaboratorAt, openSettings, backToConversation,
+  openMember, chooseCopyModel, saveSettings, saveBarText, shot, agyLaunchDetailsOf, MODEL, ALT, MODEL_LABEL, ALT_LABEL,
+  modelLocked, conversationText, typeAndSend })
+const desktopSurface = desktopAdapter({ webDir, outDir, chromium, assert, waitFor })
 let exitCode = 0
 try {
-  assert(chrome && existsSync(chrome), 'Google Chrome not found (use --browser-executable)')
+  assert(desktop || (chrome && existsSync(chrome)), 'Google Chrome not found (use --browser-executable)')
   assert(existsSync(path.join(serverDir, 'dist/app.js')), 'Build the server first: pnpm -C autobyteus-server-ts build')
   assert(!existsSync(outDir), `Output directory exists; pass a fresh --output-dir (${outDir})`)
   await fs.mkdir(outDir, { recursive: true })
@@ -1501,20 +1534,30 @@ try {
   backend = await startBackend('backend')
   await seed()
   evidence.definitions = { ids, names }
-  spawnOwned('frontend', 'pnpm', ['dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...baseEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: backendUrl })
-  await waitFor('Nuxt dev', async () => (await fetch(`${frontUrl}/chat`, { signal: AbortSignal.timeout(5000) })).ok, 240000, 1000)
-  browser = await chromium.launch({ headless: true, executablePath: chrome, args: ['--no-sandbox'] })
-  const context = await browser.newContext({ viewport: { width: 1512, height: 952 }, locale: 'en-US' })
-  const page = await context.newPage(); page.setDefaultTimeout(30000)
+  let context, page
+  if (desktop) {
+    const surface = await desktopSurface.start(backendUrl, process.argv.includes('--skip-build'))
+    ;({ browser, context, page, frontUrl } = surface)
+    evidence.desktop = surface.identity
+  } else {
+    spawnOwned('frontend', 'pnpm', ['dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...baseEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: backendUrl })
+    await waitFor('Nuxt dev', async () => (await fetch(`${frontUrl}/chat`, { signal: AbortSignal.timeout(5000) })).ok, 240000, 1000)
+    browser = await chromium.launch({ headless: true, executablePath: chrome })
+    context = await browser.newContext({ viewport: { width: 1512, height: 952 }, locale: 'en-US' })
+    page = await context.newPage()
+  }
+  page.setDefaultTimeout(30000)
   const browserErrors = []; page.on('pageerror', (e) => browserErrors.push(e.message)); evidence.browserErrors = browserErrors
-  // Warm up Nuxt's dependency optimizer (a cold optimize reload would otherwise disrupt the first journey).
-  for (const route of ['/chat', '/agents', '/agent-teams', '/agent-orgs', '/workspace']) {
+  // Warm only Nuxt; desktop uses the built production renderer.
+  if (!desktop) for (const route of ['/chat', '/agents', '/agent-teams', '/agent-orgs', '/workspace']) {
     await page.goto(`${frontUrl}${route}`, { waitUntil: 'domcontentloaded' }).catch(() => {}); await delay(4000)
   }
   browserErrors.length = 0
-  for (const c of cases) {
-    if (onlyCases && !onlyCases.includes(c.id)) continue
-    await checkpoint(c.id, 'Started', outDir)
+  const selectedCases = onlyCases ? onlyCases.map(id => {
+    const found = cases.find(c => c.id === id); assert(found, `Unknown case ${id}`); return found
+  }) : cases
+  for (const c of selectedCases) {
+    await checkpoint(c.id, 'Started', `${desktop ? 'desktop' : 'browser'}; ${outDir}`)
     const started = Date.now()
     const errorsBefore = browserErrors.length
     try {
@@ -1528,9 +1571,9 @@ try {
       evidence.cases[c.id] = { title: c.title, result: 'Fail', ms: Date.now() - started, error: error.message, details: error.details ?? null }
     }
     const outcome = evidence.cases[c.id]
-    await checkpoint(c.id, 'Completed', `${outcome.result}; ${outcome.error ?? ''}; ${path.join(outDir, 'delegated-launch-defaults-evidence.json')}`)
     console.log(`${c.id} ${outcome.result} ${c.title}${outcome.error ? ` — ${outcome.error}` : ''}`)
     await fs.writeFile(path.join(outDir, 'delegated-launch-defaults-evidence.json'), JSON.stringify(evidence, null, 2))
+    await checkpoint(c.id, 'Completed', `${outcome.result}; ${outcome.error ?? 'assertions passed'}; ${path.join(outDir, 'delegated-launch-defaults-evidence.json')}`)
   }
   const results = Object.values(evidence.cases).map((outcome) => outcome.result)
   evidence.summary = { pass: results.filter((x) => x === 'Pass').length, fail: results.filter((x) => x === 'Fail').length }
@@ -1540,7 +1583,9 @@ try {
   evidence.fatal = String(error?.stack ?? error)
   console.error(`[delegated-launch-defaults] ${error.message}`)
 } finally {
-  await browser?.close().catch(() => {})
+  if (desktop) {
+    try { evidence.cleanup.push({ desktop: await desktopSurface.stop() }) } catch (error) { evidence.cleanup.push({ error: error.message }); exitCode = 1 }
+  } else await browser?.close().catch(() => {})
   for (const child of owned.reverse()) evidence.cleanup.push({ pid: child.pid, stop: await stopOwned(child) })
   if (ownedRoot && !keep) { await fs.rm(ownedRoot, { recursive: true, force: true }); evidence.cleanup.push({ removed: ownedRoot }) }
   evidence.completedAt = new Date().toISOString()

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex min-h-0 flex-1 flex-col" :aria-busy="draftStore.loadingCanonical || draftStore.saving || draftStore.reconciling">
+  <div class="flex min-h-0 flex-1 flex-col" :aria-busy="draftStore.loadingCanonical || draftStore.saving || draftStore.reconciling || delegatedDraft.saving">
     <div v-if="!draft" class="flex-1 overflow-y-auto px-4 py-4">
       <p
         :role="draftStore.feedback?.kind === 'error' ? 'alert' : 'status'"
@@ -9,6 +9,9 @@
       >
         {{ draftStore.feedback?.kind === 'error' ? draftStore.feedback.message : t('workspace.runModelConfig.loading') }}
       </p>
+      <button v-if="draftStore.reconciliationRequired" type="button" data-test="existing-run-refresh"
+        class="mt-2 rounded px-1 text-sm font-medium text-blue-600 hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-500/40"
+        @click="draftStore.retryCanonicalRefresh">{{ t('runSettings.existing.refresh') }}</button>
     </div>
 
     <ExistingRunSettings
@@ -52,6 +55,7 @@ import ExistingRunSettings from '~/components/run-settings/ExistingRunSettings.v
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
@@ -102,6 +106,7 @@ const props = defineProps<{ target?: Readonly<{ kind: 'agent_org'; orgRunId: str
 const selection = useAgentSelectionStore()
 const history = useRunHistoryStore()
 const draftStore = useExistingRunConfigStore()
+const windowNode = useWindowNodeContextStore()
 const contexts = useAgentContextsStore()
 const definitions = useAgentDefinitionStore()
 const catalogs = useLLMProviderConfigStore()
@@ -130,7 +135,7 @@ const selectedCanonical = computed(() => {
   return null
 })
 
-watch([selectedKind, selectedRunId], ([kind, id]) => {
+watch([selectedKind, selectedRunId, () => windowNode.bindingRevision], ([kind, id]) => {
   if (!kind || !id) {
     draftStore.clear()
     return
@@ -149,14 +154,12 @@ watch(selectedCanonical, (payload) => {
 const delegatedDraft = useDelegatedLaunchDraftStore()
 /** The run whose copies and collaborators are shown (DS-001): their choices are kept per run. */
 const delegatedRoot = computed<DelegatedRoot | null>(() => {
-  const current = draft.value
-  if (!current) return null
-  if (current.kind === 'agent') return { rootKind: 'AGENT', rootRunId: current.runId }
-  if (current.kind === 'team') return { rootKind: 'AGENT_TEAM', rootRunId: current.teamRunId }
-  return { rootKind: 'AGENT_ORG', rootRunId: current.orgRunId }
+  const kind = selectedKind.value, rootRunId = selectedRunId.value
+  if (!kind || !rootRunId) return null
+  return { rootKind: kind === 'agent' ? 'AGENT' : kind === 'team' ? 'AGENT_TEAM' : 'AGENT_ORG', rootRunId }
 })
-// A re-read of the run clears the draft for a moment; only another run starts the copies' edit over.
-watch(delegatedRoot, (root) => { if (root) delegatedDraft.bind(root) }, { immediate: true })
+// Bind to selection, not draft publication: another run/node invalidates in-flight saves immediately.
+watch([delegatedRoot, () => windowNode.bindingRevision], ([root]) => delegatedDraft.bind(root), { immediate: true })
 
 onBeforeUnmount(() => { draftStore.clear(); delegatedDraft.bind(null) })
 
@@ -167,7 +170,7 @@ const stopSubject = computed<RunStopSubject | null>(() => {
   if (current.kind === 'team') return { kind: 'team', teamRunId: current.teamRunId }
   return { kind: 'agent_org', orgRunId: current.orgRunId }
 })
-const stopAction = useRunStopAction(stopSubject, { onStopped: () => draftStore.reloadCanonical() })
+const stopAction = useRunStopAction(stopSubject, { onStopped: async () => { await draftStore.reloadCanonical() } })
 
 const refreshRequired = computed(() => draftStore.reconciliationRequired || draft.value?.editability.reason === 'REFRESH_REQUIRED')
 const state = computed<'editable' | 'read_only' | 'refresh_required'>(() => {
@@ -175,7 +178,7 @@ const state = computed<'editable' | 'read_only' | 'refresh_required'>(() => {
   return draft.value?.editability.editable ? 'editable' : 'read_only'
 })
 const canEdit = computed(() => Boolean(draft.value && draft.value.editability.editable && !draft.value.isActive
-  && !refreshRequired.value && !draftStore.saving && !draftStore.reconciling && !draftStore.loadingCanonical))
+  && !refreshRequired.value && !delegatedDraft.saving && !draftStore.saving && !draftStore.reconciling && !draftStore.loadingCanonical))
 const saveError = computed(() => (draftStore.feedback?.kind === 'error' ? draftStore.feedback.message
   : delegatedDraft.feedback?.kind === 'error' ? delegatedDraft.feedback.message : null))
 
@@ -230,8 +233,8 @@ const isAgentLive = (agentRunId: string): boolean => {
  * SR-007: a stopped copy's model can change while the run is stopped and editable, or while it runs
  * (only its copies can then change); never while it is archived, owned elsewhere, or anything is in flight.
  */
-const delegatedEditable = computed(() => Boolean(draft.value && !refreshRequired.value && !draftStore.saving && !draftStore.reconciling
-  && !draftStore.loadingCanonical && !delegatedDraft.saving
+const delegatedEditable = computed(() => Boolean(draft.value && !refreshRequired.value && !delegatedDraft.saving && !draftStore.saving && !draftStore.reconciling
+  && !draftStore.loadingCanonical
   && (draft.value.editability.editable || (draft.value.isActive && draft.value.editability.reason === 'RUN_ACTIVE'))))
 const delegatedControl = computed<DelegatedRowControl>(() => {
   const root = delegatedRoot.value
@@ -245,7 +248,7 @@ const delegatedControl = computed<DelegatedRowControl>(() => {
 
 /**
  * REQ-007 (SR-007): collaborators and open delegated copies of the run. Team and Org runs read the
- * saved tree; a standalone Agent run reads its collaboration view. Closed copies are left out.
+ * saved tree; a stopped Agent reads its Settings snapshot, an active Agent its live view. Closed copies are left out.
  */
 const delegatedRows = computed<readonly RunMemberNode[]>(() => {
   const current = draft.value
@@ -255,7 +258,8 @@ const delegatedRows = computed<readonly RunMemberNode[]>(() => {
     const closed = useAgentTeamContextsStore().getTeamContextById(current.teamRunId)?.view.getClosedTaskExecutions() ?? []
     return teamDelegatedLaunchNodes(current.executionTree, closed, deps, delegatedControl.value)
   }
-  const view = current.kind === 'agent' ? useAgentRunCollaborationStore().contextFor(current.runId)?.view ?? null : null
+  const view = current.kind === 'agent' ? (current.isActive
+    ? useAgentRunCollaborationStore().contextFor(current.runId)?.view ?? null : current.delegatedSnapshot) : null
   if (current.kind === 'agent' && !view) return []
   const org = current.kind === 'agent_org' ? current.executionTree.rootOrg : null
   const collaborators = org?.collaborators ?? view!.execution_tree.collaborators
@@ -320,16 +324,13 @@ const orgWorkspaceDirty = computed(() => draft.value?.kind === 'agent_org'
 const canSave = computed(() => {
   if (!delegatedDraft.dirty) return draftStore.canSave
   // A workspace change is saved on its own; the copies' choices can join model changes only.
-  return delegatedDraft.changesAllowed && !delegatedDraft.saving && !orgWorkspaceDirty.value
+  return delegatedEditable.value && delegatedDraft.changesAllowed && !orgWorkspaceDirty.value
     && (!draftStore.dirty || draftStore.canSave)
 })
 const save = async (): Promise<void> => {
   if (!delegatedDraft.dirty) { await draftStore.save(); return }
   if (!canSave.value) return
-  const saved = await delegatedDraft.save(configuredPatches())
-  if (!saved) return
-  draftStore.discardChanges()
-  await draftStore.reloadCanonical()
+  await delegatedDraft.save(configuredPatches(), () => draftStore.reloadCanonical(true))
 }
 const cancel = (): void => {
   draftStore.discardChanges()

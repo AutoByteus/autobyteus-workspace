@@ -1,3 +1,4 @@
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { defineStore } from 'pinia'
 import {
   delegatedTargetKey,
@@ -30,6 +31,8 @@ const stopKey = (root: DelegatedRoot, reference: DelegatedReference): string => 
 export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', {
   state: () => ({
     root: null as DelegatedRoot | null,
+    bindingRevision: -1,
+    saveRequestId: 0,
     /** This edit's choices and the model each target had when it was first edited. */
     edits: {} as Record<DelegatedTargetKey, ExistingRunModelSelection>,
     originals: {} as Record<DelegatedTargetKey, ExistingRunModelSelection>,
@@ -61,7 +64,11 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
      * are the server's: rows read them from the run (its live view, or Settings' reload after Save).
      */
     bind(root: DelegatedRoot | null): void {
-      if (sameRoot(this.root, root)) return
+      const binding = useWindowNodeContextStore().bindingRevision
+      if (sameRoot(this.root, root) && this.bindingRevision === binding) return
+      this.bindingRevision = binding
+      this.saveRequestId += 1
+      this.saving = false
       this.root = root ? { ...root } : null
       this.discard()
       this.optionsByKey = {}
@@ -73,15 +80,15 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
     async loadOptions(): Promise<void> {
       const root = this.root
       if (!root) return
-      const requestId = ++this.optionsRequestId
+      const requestId = ++this.optionsRequestId, binding = useWindowNodeContextStore().bindingRevision
       this.optionsStatus = 'loading'
       try {
         const options = await loadDelegatedLaunchModelOptions(root)
-        if (requestId !== this.optionsRequestId) return
+        if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
         this.optionsByKey = options
         this.optionsStatus = 'ready'
       } catch {
-        if (requestId !== this.optionsRequestId) return
+        if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
         this.optionsByKey = {}
         this.optionsStatus = 'unavailable'
       }
@@ -104,29 +111,35 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
      * Saves this edit's choices; on a stopped run, together with the run's own settings in one Save
      * (AR-004). A running copy refuses the whole Save (`COPY_RUNNING`): stop it and save again.
      */
-    async save(configuredPatches: readonly DelegatedConfiguredPatch[] = []): Promise<boolean> {
+    async save(configuredPatches: readonly DelegatedConfiguredPatch[], reconcile: () => Promise<boolean>): Promise<boolean> {
       const root = this.root
       if (!root || this.saving || (!this.dirty && !configuredPatches.length)) return false
+      const request = ++this.saveRequestId, binding = useWindowNodeContextStore().bindingRevision
+      const current = () => request === this.saveRequestId && binding === useWindowNodeContextStore().bindingRevision && sameRoot(this.root, root)
       this.saving = true
       this.feedback = null
       this.fieldErrors = []
       try {
         const result = await updateDelegatedLaunchSelections({ ...root, changes: this.changes, configuredPatches })
-        if (!sameRoot(this.root, root)) return false
+        if (!current()) return false
         if (!result.success) {
           this.feedback = { kind: 'error', message: result.message }
           this.fieldErrors = [...result.fieldErrors]
           return false
         }
-        this.discard()
-        this.feedback = { kind: 'success', message: result.message }
         void this.loadOptions()
+        // Keep the save lock through canonical publication. A committed edit is not unsaved work,
+        // even if the read fails; the Settings owner exposes read-only Refresh in that case.
+        let reconciled = false
+        try { reconciled = await reconcile() } finally { if (current()) this.discard() }
+        if (!current() || !reconciled) return false
+        this.feedback = { kind: 'success', message: result.message }
         return true
       } catch (error) {
-        if (sameRoot(this.root, root)) this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
+        if (current()) this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
         return false
       } finally {
-        if (sameRoot(this.root, root)) this.saving = false
+        if (current()) this.saving = false
       }
     },
     isStopping(root: DelegatedRoot, reference: DelegatedReference): boolean {

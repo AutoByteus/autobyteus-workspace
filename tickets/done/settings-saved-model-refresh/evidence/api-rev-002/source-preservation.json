@@ -1,0 +1,107 @@
+{
+  "result": "Pass",
+  "checks": [
+    {
+      "path": "autobyteus-web/components/run-settings/ExistingRunSettings.vue",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/runSettings.ts",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/runSettings.ts",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/delegatedLaunchDraftStore.spec.ts",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/existingRunConfigStore.spec.ts",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/delegatedLaunchDraftStore.ts",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/existingRunConfigEditActions.ts",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/existingRunConfigResultActions.ts",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/existingRunConfigStore.ts",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/types/agent/ExistingRunModelConfigDraft.ts",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/tests/e2e/settings-saved-model-refresh-cases.mjs",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/tests/e2e/fixtures/settings-refresh-desktop.mjs",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/package.json",
+      "baseline": "d25b1e74ed",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/DelegatedStopButton.vue",
+      "baseline": "0c37f58d88",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/DelegatedStopButton.spec.ts",
+      "baseline": "0c37f58d88",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+      "section": "stop helper block",
+      "baseline": "0c37f58d88",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+      "section": "DCP-001",
+      "baseline": "0c37f58d88",
+      "identical": true
+    }
+  ]
+}

@@ -1,0 +1,396 @@
+
+> autobyteus@1.5.3-beta.4 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/config/__tests__ stores/__tests__/existingRunConfigStore.spec.ts stores/__tests__/delegatedLaunchDraftStore.spec.ts components/run-settings/__tests__ utils/runSettings/__tests__ services/agentCollaboration/__tests__ stores/__tests__/agentRunCollaboration components/workspace/history/__tests__/DelegatedStopButton.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts composables/__tests__/useWorkspaceHistoryMutations.spec.ts components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts components/workspace/usage/__tests__/TokenUsageThroughputCard.spec.ts composables/__tests__/useTokenUsageWorkspaceScope.spec.ts stores/__tests__/tokenUsageMeterStore.spec.ts stores/__tests__/tokenUsageThroughput.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web
+
+stderr | stores/__tests__/tokenUsageMeterStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/tokenUsageThroughput.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/run-settings/__tests__/RunDelegatedLaunchSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/existingRunConfigStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/tokenUsageMeterStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/tokenUsageThroughput.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/run-settings/__tests__/RunDelegatedLaunchSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/existingRunConfigStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/tokenUsageThroughput.spec.ts (44 tests) 8ms
+ ✓ components/workspace/config/__tests__/ModelConfigSection.spec.ts (23 tests) 97ms
+ ✓ stores/__tests__/tokenUsageMeterStore.spec.ts (24 tests) 31ms
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > shows TPS before totals load, then a frozen exact-run reading independent of rolled-up totals
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > shows selected Claude model and configured estimate with a visible assumed cache rate
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > renders the approved Token Meter hierarchy with server-owned component values
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > hydrates lifetime standalone values after two post-restart events have no persisted snapshot
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > shows a standalone run total that includes its collaborators and refetches it when the host reports usage (REQ-006)
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > renders the selected Claude known prompt/capacity and derived progress without changing cost
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > marks the runtime-reported compaction threshold on the context bar (AC-008)
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > shows no compaction marker when the runtime reports no threshold
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ✓ stores/__tests__/existingRunConfigStore.spec.ts (31 tests) 274ms
+ ✓ components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts (8 tests) 153ms
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > marks a genuine runtime-reported overflow and keeps the bar clamped (REQ-009, P7)
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > after a completed compaction (D-13) > keeps the previous autobyteus reading muted with the note until the next reading
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > after a completed compaction (D-13) > keeps the previous claude_agent_sdk reading muted with the note until the next reading
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > after a completed compaction (D-13) > shows no note for codex_app_server
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > after a completed compaction (D-13) > shows no note for antigravity_cli
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > refetches a standalone roll-up when the host saves a reading without a new model call (D-9)
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > shows prompt usage and an explicit unavailable context limit without a fake denominator
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > expands calculation details with server-provided unit prices and thinking included copy
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > shows server-provided generic cache-write tokens, price, and cost in both disclosure levels
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > omits the thinking-token subline when no reasoning tokens are present
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ✓ components/run-settings/__tests__/RunDelegatedLaunchSection.spec.ts (6 tests) 179ms
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > shows varies-by-call calculation details for mixed pricing without a fake unit price
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > uses the focused team member as primary and keeps aggregate usage only in the Team section
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > hydrates the exact focused team member when post-restart team events lack a persisted snapshot
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > hydrates the team aggregate when only a partial live team summary exists
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > rejects non-Agent focus without falling back to the team aggregate as primary usage
+[Vue warn]: injection "Symbol(route location)" not found.
+  at <TokenUsageMeterPanel ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ✓ components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts (23 tests) 404ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts (8 tests) 279ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (17 tests) 357ms
+stderr | components/run-settings/__tests__/RunMembersLine.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/run-settings/__tests__/OrgLaunchPage.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRunCollaborationDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/run-settings/__tests__/RunMembersLine.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/run-settings/__tests__/OrgLaunchPage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/run-settings/__tests__/RunMembersLine.spec.ts (4 tests) 55ms
+stderr | composables/__tests__/useWorkspaceHistoryMutations.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunCollaborationDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/DelegatedStopButton.spec.ts (31 tests) 137ms
+stdout | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/delegatedLaunchDraftStore.spec.ts (7 tests) 15ms
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentRunCollaborationDisclosure.spec.ts (4 tests) 28ms
+ ✓ components/run-settings/__tests__/OrgLaunchPage.spec.ts (3 tests) 63ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts (3 tests) 31ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts (6 tests) 33ms
+stdout | composables/__tests__/useWorkspaceHistoryMutations.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistoryMutations.spec.ts (4 tests) 6ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts (12 tests) 16ms
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRunCollaborationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/delegatedLaunchRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/memberLaunchDefaults.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useTokenUsageWorkspaceScope.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/runMemberTree.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunCollaborationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts (6 tests) 22ms
+stdout | utils/runSettings/__tests__/delegatedLaunchRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/runSettings/__tests__/memberLaunchDefaults.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/runSettings/__tests__/memberLaunchDefaults.spec.ts (6 tests) 6ms
+ ✓ utils/runSettings/__tests__/delegatedLaunchRows.spec.ts (3 tests) 5ms
+stdout | composables/__tests__/useTokenUsageWorkspaceScope.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useTokenUsageWorkspaceScope.spec.ts (10 tests) 15ms
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentRunCollaborationStore.spec.ts (4 tests) 12ms
+stdout | utils/runSettings/__tests__/runMemberTree.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (2 tests) 30ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts (2 tests) 25ms
+ ✓ utils/runSettings/__tests__/runMemberTree.spec.ts (5 tests) 39ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts (3 tests) 13ms
+stderr | stores/__tests__/agentRunCollaborationStoreClosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/delegatedCopyChoices.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/startModelDefaults.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/usage/__tests__/TokenUsageThroughputCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/modelOptions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/launchReadiness.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentRunCollaborationStoreClosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/runSettings/__tests__/delegatedCopyChoices.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/runSettings/__tests__/startModelDefaults.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/runSettings/__tests__/startModelDefaults.spec.ts (7 tests) 5ms
+ ✓ utils/runSettings/__tests__/delegatedCopyChoices.spec.ts (5 tests) 6ms
+stdout | components/workspace/usage/__tests__/TokenUsageThroughputCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentRunCollaborationStoreClosure.spec.ts (2 tests) 8ms
+stdout | utils/runSettings/__tests__/modelOptions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/usage/__tests__/TokenUsageThroughputCard.spec.ts (7 tests) 51ms
+stdout | utils/runSettings/__tests__/launchReadiness.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/runSettings/__tests__/modelOptions.spec.ts (5 tests) 3ms
+ ✓ utils/runSettings/__tests__/launchReadiness.spec.ts (5 tests) 3ms
+
+ Test Files  33 passed (33)
+      Tests  330 passed (330)
+   Start at  19:05:16
+   Duration  16.76s (transform 6.33s, setup 109.40s, collect 12.56s, tests 2.41s, environment 8.08s, prepare 5.24s)
