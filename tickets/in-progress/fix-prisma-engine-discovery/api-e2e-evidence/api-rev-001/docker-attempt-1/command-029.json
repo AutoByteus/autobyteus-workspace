@@ -1,0 +1,12 @@
+{
+  "command": [
+    "docker",
+    "inspect",
+    "--format",
+    "{{json .Config.Labels}}",
+    "api-prisma-90067e31-699-recreated"
+  ],
+  "exit": 0,
+  "stdout": "{\"autobyteus.prisma-e2e\":\"api-prisma-90067e31-699\",\"org.opencontainers.image.licenses\":\"AGPL-3.0-only\",\"org.opencontainers.image.version\":\"24.04\"}\n",
+  "stderr": ""
+}

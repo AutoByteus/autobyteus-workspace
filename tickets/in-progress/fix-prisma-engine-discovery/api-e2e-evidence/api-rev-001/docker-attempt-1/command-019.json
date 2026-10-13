@@ -1,0 +1,13 @@
+{
+  "command": [
+    "docker",
+    "exec",
+    "api-prisma-90067e31-699-first",
+    "node",
+    "-e",
+    "const fs=require('fs');const e=fs.readFileSync('/proc/44/environ','utf8').split('\\0');if(e.some(v=>/^PRISMA_(QUERY_ENGINE_LIBRARY|SCHEMA_ENGINE_BINARY)=/.test(v)))process.exit(1);console.log('no explicit engine pins')"
+  ],
+  "exit": 0,
+  "stdout": "no explicit engine pins\n",
+  "stderr": ""
+}

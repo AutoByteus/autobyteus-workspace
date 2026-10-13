@@ -1,0 +1,30 @@
+{
+  "id": "8ac4a1ac0eaa7c95625f459d301667268a188954e2bb714ce151be908a660607",
+  "image": "sha256:1779a6e136a2fcd48a3045687a88ded45628e306471f5fd9d3eb4321017b21fa",
+  "mounts": [
+    {
+      "Type": "bind",
+      "Source": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-prisma-command-emk3dspj/tmp/api-prisma-docker-HBmlye/home",
+      "Destination": "/root",
+      "Mode": "",
+      "RW": true,
+      "Propagation": "rprivate"
+    },
+    {
+      "Type": "bind",
+      "Source": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-prisma-command-emk3dspj/tmp/api-prisma-docker-HBmlye/data",
+      "Destination": "/home/autobyteus/data",
+      "Mode": "",
+      "RW": true,
+      "Propagation": "rprivate"
+    },
+    {
+      "Type": "bind",
+      "Source": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-prisma-command-emk3dspj/tmp/api-prisma-docker-HBmlye/dist",
+      "Destination": "/app/autobyteus-server-ts/dist",
+      "Mode": "",
+      "RW": false,
+      "Propagation": "rprivate"
+    }
+  ]
+}

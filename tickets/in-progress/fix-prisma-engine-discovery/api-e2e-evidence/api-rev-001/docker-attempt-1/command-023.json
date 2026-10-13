@@ -1,0 +1,27 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "-d",
+    "--pull",
+    "never",
+    "--name",
+    "api-prisma-90067e31-699-recreated",
+    "--label",
+    "autobyteus.prisma-e2e=api-prisma-90067e31-699",
+    "-p",
+    "127.0.0.1::8000",
+    "--mount",
+    "type=bind,src=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-prisma-command-emk3dspj/tmp/api-prisma-docker-HBmlye/home,dst=/root",
+    "--mount",
+    "type=bind,src=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-prisma-command-emk3dspj/tmp/api-prisma-docker-HBmlye/data,dst=/home/autobyteus/data",
+    "--mount",
+    "type=bind,src=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-prisma-command-emk3dspj/tmp/api-prisma-docker-HBmlye/dist,dst=/app/autobyteus-server-ts/dist,readonly",
+    "-e",
+    "AUTOBYTEUS_SKIP_SYNC=1",
+    "sha256:1779a6e136a2fcd48a3045687a88ded45628e306471f5fd9d3eb4321017b21fa"
+  ],
+  "exit": 0,
+  "stdout": "8ac4a1ac0eaa7c95625f459d301667268a188954e2bb714ce151be908a660607\n",
+  "stderr": ""
+}
