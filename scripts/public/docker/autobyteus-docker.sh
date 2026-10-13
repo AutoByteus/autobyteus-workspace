@@ -48,8 +48,14 @@ entry_path_has_dir() {
 }
 
 entry_shell_quote() {
-  local value="$1"
-  printf "'%s'" "${value//\'/\'\\\'\'}"
+  local value="$1" prefix
+  printf "'"
+  while [[ "$value" == *"'"* ]]; do
+    prefix="${value%%\'*}"
+    printf '%s%s' "$prefix" "'\\''"
+    value="${value#*\'}"
+  done
+  printf "%s'" "$value"
 }
 
 entry_profile_path() {
