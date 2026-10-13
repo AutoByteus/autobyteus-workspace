@@ -1,7 +1,7 @@
 # Delivery Handoff — task-copy-stop-style
 
 ## Current authority
-DR-001, initial round; **Verified — repository finalization/cleanup pending**. Approved R1 / SR-001+002; IR-001; API-REV-001 Pass (95%, all seven categories 95%). **Small / Low / Direct Low-Risk** retained. Independent architecture/source/test-code reviews and Product design: **N/A — not applicable**.
+DR-001, initial round; **Delivery Completed — source-only**. Approved R1 / SR-001+002; IR-001; API-REV-001 Pass (95%, all seven categories 95%). **Small / Low / Direct Low-Risk** retained. Independent architecture/source/test-code reviews and Product design: **N/A — not applicable**.
 
 ## Cause / change / preserved behavior
 One shared sidebar Stop class was always red. `DelegatedStopButton.vue` now uses the existing normal parent gray-400 (#999999); red-600 on red-50 hover and 150ms transition remain, returning to neutral on leave. Both Agent and whole-Team copies share this owner. No lifecycle, handlers, visibility, geometry, Settings or backend production delta. Native focus, labels, pending/disabled/pulse and reduced-motion preserved. Canonical runtime and Settings docs synchronized.
@@ -12,7 +12,7 @@ Delivery opened critical upstream JSON, logs, six rest/hover/leave PNGs plus foc
 Upstream old-token negative control failed four styling cases as expected; restored final source positive checks pass. Scoped source confidence 95%; no Electron shell/packaging/full desktop, paid inference, whole-suite or installed-app claim. See `evidence/delivery/verification.json`, `integration.json`, `unit.log`, `browser.log`, `browser-integrated/delegated-launch-defaults-evidence.json`, PNGs, and `cleanup-runtime.json`.
 
 ## Source / release / running app
-Finalization target origin/personal using isolated finalize branch and no-ff merge per RELEASE.md. Exact ticket/merge/push/cleanup result is in release-deployment-report.md and the external final-repository-receipt.json. **No release** (guide default; none requested): no version bump, tag, publication, deployment or installed/running-app update/restart. Source integration must not be described as the user's running app already fixed. No migration/data loss, user-worker stop or live-user-data access.
+Source finalized and pushed to origin/personal: ticket **3b34a9a2c78145e8e69a06b243bfcc8d8bad9947**, no-ff merge **be4190e94b4fd715ae41951a0ff9648d4f65f5fa** from isolated finalize branch per RELEASE.md. Owned worktree/local branches/generated outputs/shim removed; remote ticket retained. Repository receipt and final report-only publication SHA are preserved externally; no duplicate source merge. Exact ticket/merge/push/cleanup result is in release-deployment-report.md and the external final-repository-receipt.json. **No release** (guide default; none requested): no version bump, tag, publication, deployment or installed/running-app update/restart. Source integration must not be described as the user's running app already fixed. No migration/data loss, user-worker stop or live-user-data access.
 
 ## Cumulative package (durable paths)
 - `/home/autobyteus/workspace/.codex/delivery-records/task-copy-stop-style/package/tickets/done/task-copy-stop-style/requirements-doc.md`
