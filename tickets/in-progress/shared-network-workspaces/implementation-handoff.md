@@ -1,172 +1,247 @@
-# Implementation Handoff — IR-001 / Design Impact
+# Implementation Handoff — IR-002
 
 ## Current result
 
-**Design Impact — IMP-D001. Implementation is not complete or ready for source
-review.** During initial production-path tracing, the required reuse of existing
-source-generation leases proved inconsistent with the current skill owner.
-Only workspace-link holders exist; source Update/Remove deletes old source
-bytes independently. Resolve this narrow ownership instruction before dependent
-runtime implementation. Do not add retention machinery merely to satisfy a
-mistaken reuse premise.
+**Implementation Complete — ready for independent Large/High source review.**
+Implementation-scoped checks were executed personally, including full affected
+unit suites, builds and narrow integration regressions. This is **not an all-green
+repository result**: complete Nuxt/Electron suites expose the same three existing,
+unrelated updater-classification failures. Their source is unchanged; see the
+follow-up below. No implementation or testing sub-work is delegated.
 
-No production source has been changed. This handoff is an initial preparation
-and escalation baseline, not a completed product implementation. The current
-code and this handoff are authoritative; no earlier implementation result is
-inferred from absent artifacts.
+This is not delivery, release, physical-system qualification or API/E2E signoff.
+Current code and this handoff are authoritative; preserve IR-001's design finding
+history instead of rewriting it into an earlier implementation pass.
 
 ## Upstream artifact package
 
-Canonical worktree:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`.
-Branch `codex/shared-network-workspaces`; finalization `origin/personal`.
-Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.
-Source inspected at `e642fd477d071e21d46a8d3b09c5370c5bbdba28`.
-
-Canonical ticket root:
+Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`.
+Branch: `codex/shared-network-workspaces`; base/finalization: `origin/personal`.
+Task: `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.
+Ticket root (all ticket-relative artifacts below live here):
 `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces`.
-All ticket artifacts named below are in that root. The cumulative upstream
-index remains `solution-design-handoff.md`; its historical statuses do not
-override the current reviewer report.
 
-- `requirements-doc.md`: Approved SR018; `approval-record-sr018.md` and
-  `approval-record-sr017.md`; exact user direction in
+- `solution-design-handoff.md`: full cumulative upstream index, not superseded by
+  this implementation summary. `investigation-notes.md` is the full supplement/raw
+  evidence inventory; read its still-relevant links, limitations and historical failures.
+- `requirements-doc.md`: unchanged **Approved SR018**; approvals
+  `approval-record-sr018.md`, `approval-record-sr017.md`, user direction in
   `architecture-review-scope-feedback.md`.
-- `investigation-notes.md`: canonical cumulative investigation and complete
-  supplement/raw-evidence inventory. Prior failures and limitations retained.
-- `design-spec.md`: Ready SR018, Large/High, reviewed at `5251ab48bc`.
-- `solution-revision-record.md`: SR-018 plus informational ARCH-REV-002 receipt.
+- `design-spec.md`: **Ready SR019**, reviewed design commit `4c28e7865b`.
+- `solution-revision-record.md`: cumulative requirements/design history.
 - `design-review-report.md`, `architecture-review-revision-record.md`:
-  **ARCH-REV-002 Pass**, committed `d27df8ff65`; independent architecture review
-  is applicable, not N/A. ARCH-REV-001/D-001 remains historical.
-- Relevant private-runtime evidence:
-  `evidence/feasibility/private-runtime-skill-report.md`,
-  `evidence/feasibility/native-private-readiness-report.md`,
-  `evidence/feasibility/real-agent-roundtrip-report.md`,
-  `evidence/feasibility/sr017-selection-report.md`. These are historical
-  capability/peer-stop evidence, not proof of current source-byte leases.
-- Retained full package: `evidence/feasibility/experiment-index.json`, raw
-  fr-001–057, `feasibility-report.md`, `macos-vm-feasibility-report.md`,
-  `native-folder-hosting-report.md`, `backend-correctness-report.md`,
-  `sr018-artifact-audit.json` under `evidence/feasibility/`; UI reference
-  `evidence/ui-reference/docker-guide-user.png`. No historical result is
-  expanded into current implementation validation.
-- Current finding:
-  `implementation-evidence/ir-001/source-lease-design-impact.md`, with exact
-  inspected-file hashes in `implementation-evidence/ir-001/source-audit.json`.
-- Product-owned behavior supplement: N/A — not requested. Code-review,
-  API/E2E and delivery artifacts: N/A — not yet produced, not bypassed.
+  **ARCH-REV-003 Pass**, review commit `65b0e6e57a`; independent architecture review
+  applies. ARCH-REV-002's source-lease acceptance is superseded, ARCH-REV-001/D-001
+  remains historical. No production behavior is qualified by those reviews.
+- `implementation-revision-record.md`: IR-001 baseline plus this IR-002 round.
+  Trigger: **IMP-D001**, detailed original evidence
+  `implementation-evidence/ir-001/source-lease-design-impact.md` and `source-audit.json`.
+- Retained feasibility supplements under `evidence/feasibility/`:
+  `sr019-artifact-audit.json`, `sr018-artifact-audit.json`, `sr017-selection-report.md`,
+  `experiment-index.json` and all indexed raw FR001–057 receipts, `feasibility-report.md`,
+  `macos-vm-feasibility-report.md`, `native-folder-hosting-report.md`,
+  `backend-correctness-report.md`, `private-runtime-skill-report.md`,
+  `native-private-readiness-report.md`, `real-agent-roundtrip-report.md`.
+  These are historical experiments, not current-product qualification.
+- UI reference: `evidence/ui-reference/docker-guide-user.png`; no separate
+  Product-owned behavior supplement was requested (N/A — not applicable).
+- Current implementation evidence index:
+  `implementation-evidence/ir-002/checks-and-limits.md`; exact source hashes,
+  expanded check receipts, native metadata discovery, rendered artifacts and all
+  earlier failures reside alongside it. `progress.md` is historical checkpoint context.
+- CRR / API-REV / DR: **N/A — not yet performed**, not waived or marked passed.
 
 ## Current implementation summary
 
-- Cycle: Initial; revision `IR-001` in `implementation-revision-record.md`.
-- Related solution revisions: SR-018 current; retained SR-017 decisions/history.
-- Architecture revision: ARCH-REV-002 current; ARCH-REV-001 historical.
-- CRR / API-REV / DR: N/A — no downstream round.
-- Incoming triggering finding: N/A (initial architecture Pass).
-- Newly identified finding: **IMP-D001**, detailed report above.
-- Delta: three implementation records plus one source-audit JSON only; no
-  production code, tests, upstream design or reviewer artifacts modified.
+- Cycle: Rework after upstream design correction; revision **IR-002**.
+- Related revisions: SR-019 / Approved SR-018; ARCH-REV-003, retained preceding history.
+  CRR/API-REV/DR N/A. Triggering finding IMP-D001.
+- Production/source tests/docs: `c57ab71c90930a0c98e1310d07b0808d28dfbd14`.
+  Separate baseline fixes: launcher quoting `6717bcb221`; isolated-core traversal
+  fixture `f34fc81aa2` (full core rerun:298 files/2,019 tests pass).
+- Standalone Go service, installer/release plumbing, selected managed-node adapter,
+  optional launcher reference, lazy application binding and scoped Git child env,
+  private linked runtime profiles and Nodes NFS Guide are implemented.
+- **IMP-D001 resolution implemented:** catalog lookup is not source acquisition.
+  Exact private process/profile cleanup owns wrappers/links only. Source Update/
+  Remove keeps its independent deletion policy; no source-byte pin/refcount,
+  snapshot, copy fallback or retirement queue. AGY's capsule/manifest restore policy
+  and ordinary local materialization/collision/runtime permissions remain unchanged.
+- Source files, node private volumes/auth state and healthy REST streams are not
+  moved into another storage layer. No outage worker/stream lease/cwd trampoline.
 
 ## Routing classification
 
-- `task_size: Large`; `architectural_risk: High` — retained, not downgraded.
-- Design reference: Task Size And Architectural Risk. Privileged persistent
-  service, source/node preservation, multiple runtimes and distribution still
-  justify that classification. No completed-implementation confirmation claimed.
-- Selected route: **Solution Designer**.
-- Fresh `get_handoff_rules` returned a specific Design Impact/Requirement
-  Gap/Unclear route to `/software_engineering_team/solution_designer`.
-  Completed-implementation Code Review and direct API/E2E rules do not match.
-- Lightweight direct-route self-review: Not Applicable (Large/High and incomplete).
-- Required correction: distinguish private profile/process ownership from
-  source-byte retention, selecting the smallest truthful source contract.
-  No user product-choice questionnaire is requested.
+- `task_size: Large`; `architectural_risk: High` — **confirmed**, no downgrade.
+- Design section: Task Size And Architectural Risk. Multiple privileged OS engines,
+  persistent storage identity, destructive-boundary Docker preservation, runtime
+  lifecycle and release surfaces confirm the original scope/blast radius.
+- Selected completion route: **Code Review**, per current handoff rules for completed
+  Large/High work, exact recipient `/software_engineering_team/code_reviewer`.
+  Request that review after this cumulative package is persisted. This is not
+  delegation of implementation or execution of testing to another team.
+- Direct-route lightweight review: N/A — independent source review is required.
+- New design-impact/requirement escalation: None identified. Additional independent
+  evidence and release gates remain outstanding, not silently converted to a design
+  waiver or called completed implementation validation.
 
 ## Reviewed behavior implementation trace
 
-| Behavior | Planned production owner/path | Current outcome |
-| --- | --- | --- |
-| BEH001 | New Go service/install/platform/Docker setup; launcher attachment | Not implemented in this round |
-| BEH002 | Shared binding and existing runtime preparation/private skills | Source-owner trace identified IMP-D001; dependent change not implemented |
-| BEH003 | OS NFS clients/backends and narrow child Git environment | Not implemented or tested |
-| BEH004 | Setup/status and lazy new-run/restore binding | Not implemented; no old outage guarantees reinstated |
-| BEH005 | Exact setup/node preservation and private runtime state | No live changes; private-profile versus source lifecycle requires correction |
-| BEH006 | Existing workspace/static/artifact REST readers and explorer | Unchanged; healthy mounted current-build proof still required |
-| BEH007 | Nodes NFS Guide, pure release descriptor and localization | Not implemented or rendered |
+Production paths below are relative to the worktree root.
 
-Scope Guardrail respected: Yes. No new product behavior, migration, unsupported
-hosting, broad outage machinery or source-deletion change was introduced.
+| Behavior | Approved change / preserved outcome | Actual owner and key paths | Implementation result / evidence limit |
+| --- | --- | --- | --- |
+| BEH001 | One app-independent guided service, selected original source and same mapping across reconnect | `autobyteus-nfs/cmd/autobyteus-nfs`; `internal/cli`, `setup`, `config`, `service`, `platform/jobs.go`; `scripts/public/nfs/install.sh`; release workflow/packaging | Implemented normal create/connect/status/reconnect/detach and pending-state ownership. Unit/fake transport, compile and refusal smoke only; real install/restart qualification outstanding. |
+| BEH002 | Standalone/Team/Org/restore normal tools/cwd, configured skills, no intentional shared temp fallback | server `agent-execution/services/shared-run-workspace-admission.ts` via `agent-run-manager.ts`; `workspaces/shared-workspace-binding.ts`; native helper/resolvers; shared `runtime-skill-profile.ts` and `prepare-private-runtime-skills.ts`; Claude/Codex/Grok exact discovery adapters/process owners | Shared activation check central, private linked profiles/process close implemented; ordinary local branch retained as a distinct supported mode. Unit and native signed-out discovery proof, not real native tool/support-asset/peer-turn proof. |
+| BEH003 | Same filesystem bytes and documented concurrency/Git behavior | Go `backend/apple*`, `ganesha*`, `platform/mounts.go`, filesystem/file-handle qualification; server `runtime-management/shared/scoped-project-git-environment.ts`; core `tools/terminal/terminal-child-environment.ts` and existing PTY/process owners | Hard TCP NFS3/NFS4.1 mapping, source nonroot map-all, child-only exact-project Git trust preserving indices. No merge/sync/cache substitute; mounted filesystem/concurrent peer semantics await actual matrix. |
+| BEH004 | Known bad new-run binding not ready, ordinary healthy reconnect, no local substitute | Go `setup/status.go`, `lifecycle.go`, `service/supervisor.go`; server lazy descriptor/mount/source/UUID/access checker | No global workspace startup scan or per-turn/file checks. Actual bad binding rejected, status host/node distinctions retained. Checks may stall; no outage deadline. |
+| BEH005 | Explicit consent/trust/nonroot source, preserve exact selected nodes and all private state | Go `setup/plan.go`, `apply.go`, `detach_nodes.go`; Docker `snapshot.go`, `recreate.go`, `recovery.go`, `ownership.go`, probe receipts; root/private config, Apple exact blocks; launcher `nfs-attachment.sh`, `container-config.sh` | Immutable selected-node image/config/private/anonymous volumes/ports/network aliases preserved, no general launcher reuse or node image pull. Pre-start rollback vs new-drain-after-possible-work distinction; fake transport tests. No real nodes were modified. |
+| BEH006 | Healthy explorer reload/media/HTML/relative assets/completed artifacts use existing contracts | Existing `api/rest/workspaces.ts`, `api/rest/run-file-changes.ts` and projection/stream readers **unchanged**; extended `tests/unit/api/rest/workspaces.test.ts` and existing completed-artifact tests | Local byte/MIME/static/missing/projection/no-store regressions pass. No new authorization/path/stream policy. Actual mounted UI and broader API proof remain downstream. |
+| BEH007 | Nodes NFS Guide, truthful copy/download availability, existing settings pattern | web `NodeManager.vue`, `NodeManagerTabs.vue`, `NfsGuideCard.vue`, pure `utils/nfsLauncherCommands.ts`, en/zh-CN settings strings | Actual components rendered; route, keyboard, responsive English/Chinese, unavailable release, fixture copy success/failure checked. Default release is null; no invented/published command or automatic execution. |
 
-## Key source areas and design-health check
+Scope Guardrail respected: **Yes**. Windows, Mac-Docker storage hosting, public
+multi-tenant/secure internet NFS, sync/HA/distributed Git conflict resolution and
+bounded-outage isolation were not added. Native/managed Docker **clients on both
+Mac/Linux** remain included; Docker-on-Linux storage is separate from Mac hosting.
 
-IMP-D001 traces the actual Sources confirmation → store → GraphQL →
-`SkillSourceService` → `GitHubSkillRepository.cleanup` path, then distinguishes
-`WorkspaceSkillMaterializer` link holders from source ownership. The existing
-AGY capsule holds private symlinks and tolerates missing sources on restore;
-it has no reusable source lease. Current skills docs and inspected regression
-test encode that lifecycle.
+## Design health, ownership and implementation decisions
 
-Reviewed posture Larger Requirement and Missing Invariant / Boundary Or
-Ownership Issue remain apt for the normal peer-stop defect. **One reuse
-assumption is challenged**: current source-generation pinning is absent.
-Do not bypass the skill owner or silently reinterpret link-holder receipts.
-Routed as Design Impact; detailed report includes a narrow resolution request,
-not a demand to harden all concurrent source operations.
+Reviewed posture Larger Requirement / Missing Invariant / Boundary Or Ownership
+Issue confirmed. Narrow refactor needed now is implemented for process-private
+skill links, known shared activation and selected-node preservation. The design's
+source-lease premise was already corrected through IR-001/SR019/ARCH-REV-003; this
+round follows the corrected contract rather than implementing a new source owner.
+Existing registry, filesystem, PTY and REST stream owners remain authoritative.
 
-## Assumptions and risks retained
+Normal partial preparation/close ownership is explicit: register profile before
+awaits; native close must complete before deleting only its profile. Failed close
+retains the profile for retry; source bytes and peer profiles are not cleanup targets.
+Existing source Update/Remove may break links. Neither current catalog resolution
+nor metadata-only native discovery proves retention of source support files.
 
-- ARCH-REV-002 remains the upstream Pass; this report is not a replacement
-  architecture review or a claim that all other design details were validated.
-- FR011 peer-stop still must be fixed. It does not itself require old source
-  retention. Existing source cleanup is not reported as a new baseline bug.
-- DEC015 accepted outage stalls remain disclosed; D-001 is deferred, not fixed.
-- Native Mac/native Linux/Docker-on-Linux hosting and native/managed Docker
-  clients on both OSes, selected source/private state/consent/rollback,
-  normal healthy previews and scoped child Git environment remain mandatory.
-- Independent physical Mac/Linux/Docker proof is a pre-delivery obligation,
-  not an implementation prerequisite. No new permissions or hardware supplied
-  by this handoff. No release or runnable public command is claimed.
+Service configuration uses fixed root-owned private directories and a separately
+traversable fixed libexec binary for nonroot probes. Per-node public opt-in reference
+is a typed root-owned record, not a root-sourced launcher `.env`. A descriptor
+**directory** is bound read-only, avoiding old atomic-file inode binds. Pending
+setup/recreation and disposable probes have exact-resource receipts; no generic
+workflow engine, per-action pool or watchdog. External edits cause refusal or a
+retained-settings report, not blind overwrite. Cleanup preserves source/marker,
+recovery and named volumes; the guarded empty mount directory is conservatively
+retained rather than recursively removing filesystem parents.
 
-## Legacy, size and persisted-data checks
+## Legacy / compatibility / size checks
 
-No production source touched: no compatibility mechanism, dual path, dead-code
-removal, source-file growth or new shared structure introduced. No unrelated
-cleanup was performed. Canonical design principles were applied to the missing
-owner/reuse premise. No unrelated dead-code finding established.
+- No compatibility shim, dual persisted shape or source copy fallback introduced.
+  Configured shared vs ordinary local are the two approved modes, not old/new
+  versions. Registered shared resolver failures propagate instead of falling back.
+- Touched dead code removed/not introduced: obsolete shell helper placement moved
+  to its current owner; no duplicate legacy implementation retained. No unrelated
+  dead-code cleanup or established out-of-scope dead-code finding.
+- Shared structures kept tight: specialized private runtime profile/adapter and
+  optional per-session child env; no general global filesystem abstraction.
+- Canonical design guidance reapplied. No changed implementation file exceeds
+  500 effective nonempty lines; new Go owner files <=220 nonempty after decomposition.
+  Existing launcher runtime shrank 497 ->450. Source audit records size pressure;
+  test files are outside the hard implementation-file limit.
 
-Approved transition decisions remain unchanged: registry/run references and
-launcher state directly usable; private profiles discard/rebuild only under
-their exact owner; new service records are new subjects; existing project
-links preserved. No migration, version branch or source retention implemented.
+## Persisted data transition
 
-## Local implementation checks
+Approved decisions followed: existing workspace/run/launcher references **Directly
+Usable — No Migration**; execution-private profile files **Discard or Rebuild**
+under their exact owner; new service subjects have new typed records. Known-field
+readers tolerate additive fields; no schemaVersion, startup migration, history
+scan, source retarget queue or version-specific runtime fallback was introduced.
+AGY keeps its existing capsule manifest and missing-source warn/skip restore.
 
-- Read-only current source/docs/test inspection; hashes recorded in
-  `implementation-evidence/ir-001/source-audit.json`.
-- `git diff --check` and record/audit consistency checks for this handoff.
-- Product build/typecheck/unit/integration/API/E2E: **not run**. No production
-  change exists to validate. Inspected test expectations are not a test pass.
-- No dependencies installed, provider use, live mount/export/node/VM changes,
-  credentials, user-data mutation or release. No test resource to clean up.
-- Environment observed: Node v22.23.1. No build-dependency/environment failure
-  is being used as a blocker.
+## Local implementation checks and frontend feedback
 
-## Frontend rendered-result check
+Read `implementation-evidence/ir-002/checks-and-limits.md` for commands, final logs,
+retained failures, native metadata-only receipts and explicit untested layers.
+Server: 686 files/5,402 tests passed, four files/seven tests skipped; production
+build/typecheck pass. Initial terminal scope109 and guide scope21 pass. Go seven
+test packages/race/vet and four-target cross-compile pass; only native version/
+unqualified-release refusal was executed. Fake launcher38 run/two skips; installer/
+packaging six tests pass. Full core rerun:298 files/2,019 tests pass. Web production
+build and normal integration preparation pass; changed-boundary integration9 files/
+52 tests pass, without provider gates. Full original Nuxt:611 files pass/1 fail/
+2 skip;4,258 tests pass/3 fail/5 skip. Full original Electron:35 files pass/1 fail/
+1 skip;188 tests pass/3 fail/1 skip. Both failures are the same baseline updater
+classification issue, not NFS regressions. Candidate experiment results are not a
+substitute for these authoritative suite outcomes.
 
-Not Applicable to this documentation-only escalation. The requested guide has
-not been implemented; future rendered implementation inspection remains
-required. No screenshot/UI result is claimed.
+Frontend loop: existing Docker Guide/settings components and approved screenshot
+informed the design. Actual Nuxt NodeManager/NfsGuideCard rendered in an owned
+browser on a task-only page with fake definition WebSocket and clipboard. Desktop
+1280x1000, mobile390x844; en/zh-CN, actual route and keyboard navigation, no-release
+disabled actions, fixture release copy-success and copy-error states inspected.
+Responsive pill wrapping and keyboard focus/selection were implemented. Eight
+assertions pass, no browser errors; screenshots plus direct interactions recorded.
+The fixture URL is `.invalid`, real clipboard untouched. First cleanup-race failure
+is retained; second run confirms browser/dev/page/home cleanup. This is not a full
+application, Electron-shell, live mount, user verification or API/E2E pass.
 
-## Remaining implementation and downstream checks
+## Environment, dependencies and limitations
 
-All SR018 production implementation remains. Resolve IMP-D001 in the canonical
-design and return the cumulative package via configured rules. Then implement
-service/installer/supervisors/Docker preservation, launcher, binding, runtime
-profiles/exact leases/Git environment, guide and implementation-scoped checks.
-Independent source review remains required by Large/High.
+Node22.23.1/pnpm workspace tools; installed shared-package dependencies and rebuilt
+current outputs. Go1.27.2 official Darwin-arm64 archive checksum verified in a
+**task-owned temporary toolchain**, not a global Go installation; removed after
+checks with a cleanup receipt. Native installed
+CLI metadata-only discovery: Claude SDK0.3.280, Codex0.162.1, Grok1.0.52, signed-out
+throwaway homes, no provider prompts/keys. No user CLI config was edited.
 
-API/E2E owns broader executable coverage/current-build healthy setup, normal
-previews, actual native agents and peer-stop/restore. Delivery owns docs,
-independent physical proof, merge, explicit user verification, permitted
-release and cleanup. None has been completed by this preparation round.
+Source/tests/docs are development commits only. Generated SDK dist outputs remain
+untracked and deliberately unstaged. No merge, push, tag, publication, codesigning,
+Docker engine build/pull, package install, root action, export, mount, live user
+node disruption or provider inference was performed. Release pins derive from the
+reviewed reference inventory; current publication qualification is deliberately
+empty. The UI must remain unavailable until actual qualified publication.
+
+**DEC015/D-001 remains deferred, not repaired:** hard NFS may stall file operations,
+previews, startup, terminals and unrelated work. Local component tests cannot prove
+actual file handles, native OS job/restart behavior, kernel permissions, physical
+network semantics or prompt/tool behavior. Go coverage particularly leaves most
+privileged setup paths unexecuted; see numerical report, not just green test exits.
+
+## Out-of-scope finding and testing ownership
+
+`implementation-evidence/ir-002/updater-follow-up.md` records the unchanged updater's
+stack-path false positive. A diagnostic candidate patch and its separate rerun are
+preserved **only as evidence, not applied to current source**. The project Tasks
+owner should triage it independently; no new task/worker was spawned. Root
+TESTING.md rule9 distinguishes small baseline repairs from separate product-change
+follow-ups; the implementation skill's Scope Guardrail also excludes unrelated
+production behavior. The in-scope launcher defect and fixture-only core correction remain separate development
+commits; updater production changes were not bundled with NFS.
+
+The user's request for full personal testing was honored within this role's
+permitted local-check scope; no tests were delegated. The implementation skill
+reserves API/E2E authoring/execution and broad system validation for the independent
+validation role, so this round does not execute or claim those gates. The main
+project Task remains open, not Done or Cancelled. The two previously cancelled
+sub-work copies reported no edits, children or processes; no remaining delegated
+implementation work is being awaited.
+
+## Required downstream coverage / delivery gates
+
+1. Independent Large/High source review, including exact root-resource ownership,
+   partial setup, native child/profile cleanup, selected-node daemon identity,
+   consent/rollback, source Update/Remove and launcher attachment retention.
+2. Current-build selected modes: native Mac APFS/Apple; native Ubuntu24.04 ext4/
+   Ganesha; Docker-on-Linux storage; native and managed Docker clients on **both**
+   Mac/Linux. Original nonempty source/identity, wrong/occupied target refusal,
+   nonroot/root-squash, normal reconnect/restart and safe detach.
+3. Real selected Docker Config/HostConfig/image/private volume/auth/ports/aliases
+   preservation, requested IP mappings, pending/accepted-work recovery, stopped
+   nodes, unavailable daemon and general launcher recreate/upgrade retention.
+4. Normal standalone/Team/Org and all selected runtimes: actual native discovery
+   and canonical paths, **previously unread support assets through native tools**,
+   separate live peer stop, restore, source Update/Remove, partial setup/exact close,
+   AGY capsule and ordinary local policies, scoped Git and explicit cwd semantics.
+5. Healthy current-product explorer/media/HTML/relative assets/completed-artifact
+   streams with unchanged auth/path/projection/MIME/errors/cache behavior. No claim
+   of outage isolation or cancellation deadlines.
+6. Independent physical Mac/Linux/Docker topology proof is mandatory **before
+   delivery**, not retroactively an implementation prerequisite. API/E2E owns
+   independent executable coverage; Delivery owns docs sync, finalization/merge,
+   explicit user verification, approved release/signing/public assets and cleanup.
+   Existing approvals do not authorize live user resources or paid provider use.

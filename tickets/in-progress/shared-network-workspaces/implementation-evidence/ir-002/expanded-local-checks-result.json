@@ -1,0 +1,124 @@
+{
+  "scope": "expanded implementation checks; live/provider/API-E2E gates unset",
+  "sourceCommit": "c57ab71c90930a0c98e1310d07b0808d28dfbd14",
+  "steps": [
+    {
+      "name": "core-unit-all",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit",
+        "--no-watch",
+        "--maxWorkers=2"
+      ],
+      "startedAt": "2026-10-13T18:16:56Z",
+      "temporaryHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-core-unit-all-n97_2rc2",
+      "pid": 85744,
+      "exitCode": 1,
+      "seconds": 36.031,
+      "leftoverOwnProcessGroup": false,
+      "temporaryHomeRemoved": true
+    },
+    {
+      "name": "web-unit-all",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "startedAt": "2026-10-13T18:17:33Z",
+      "temporaryHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-web-unit-all-9jjl7ks2",
+      "pid": 87794,
+      "exitCode": 1,
+      "seconds": 592.629,
+      "leftoverOwnProcessGroup": false,
+      "temporaryHomeRemoved": true
+    },
+    {
+      "name": "electron-unit-all",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:electron",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "startedAt": "2026-10-13T18:27:25Z",
+      "temporaryHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-electron-unit-all-y4olvhx7",
+      "pid": 98320,
+      "exitCode": 1,
+      "seconds": 6.702,
+      "leftoverOwnProcessGroup": false,
+      "temporaryHomeRemoved": true
+    },
+    {
+      "name": "web-build",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "build"
+      ],
+      "startedAt": "2026-10-13T18:27:32Z",
+      "temporaryHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-web-build-rvlo5v7e",
+      "pid": 98480,
+      "exitCode": 0,
+      "seconds": 25.39,
+      "leftoverOwnProcessGroup": false,
+      "temporaryHomeRemoved": true
+    },
+    {
+      "name": "integration-prepare",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "test:integration:prepare"
+      ],
+      "startedAt": "2026-10-13T18:27:58Z",
+      "temporaryHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-integration-prepare-2nqsv864",
+      "pid": 98546,
+      "exitCode": 0,
+      "seconds": 26.988,
+      "leftoverOwnProcessGroup": false,
+      "temporaryHomeRemoved": true
+    },
+    {
+      "name": "changed-boundary-integration",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/integration/agent-execution/agent-run-manager.integration.test.ts",
+        "tests/integration/agent-execution/agent-run-service.integration.test.ts",
+        "tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts",
+        "tests/integration/skills/skill-integration.test.ts",
+        "tests/integration/file-explorer/file-explorer.integration.test.ts",
+        "tests/integration/file-explorer/file-name-indexer.integration.test.ts",
+        "tests/integration/file-explorer/file-search.integration.test.ts",
+        "tests/integration/file-explorer/file-system-watcher.integration.test.ts",
+        "tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts",
+        "--no-watch",
+        "--maxWorkers=1"
+      ],
+      "startedAt": "2026-10-13T18:28:25Z",
+      "temporaryHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe",
+      "pid": 98983,
+      "exitCode": 0,
+      "seconds": 28.541,
+      "leftoverOwnProcessGroup": false,
+      "temporaryHomeRemoved": true
+    }
+  ]
+}

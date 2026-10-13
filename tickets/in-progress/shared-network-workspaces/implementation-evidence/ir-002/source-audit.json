@@ -1,0 +1,978 @@
+{
+  "reviewedUpstream": "65b0e6e57a0f93d8343ccbefc1b5227642d7e557",
+  "files": [
+    {
+      "path": ".github/workflows/release-nfs.yml",
+      "sha256": "f30c41ddb7a4a8d0ca1adc94bc5cbb87c04ba99ea3d5591e30f03c823d14c056",
+      "bytes": 8457
+    },
+    {
+      "path": "RELEASE.md",
+      "sha256": "973acaef47469bc581bc100f8bb8f18d6eec4d0ed6fdae2db098e7498b2a33a2",
+      "bytes": 15831
+    },
+    {
+      "path": "autobyteus-nfs/LICENSE",
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "bytes": 34523
+    },
+    {
+      "path": "autobyteus-nfs/README.md",
+      "sha256": "bfa812eccfe25a7220b46a8f32f0e6048513b54a137082fb8782522a0c3ae389",
+      "bytes": 8215
+    },
+    {
+      "path": "autobyteus-nfs/THIRD_PARTY_NOTICES",
+      "sha256": "d62a4405292a896dff13e574e82c27af9064babb0ceb293bbbb616f96dcf0eca",
+      "bytes": 1230
+    },
+    {
+      "path": "autobyteus-nfs/cmd/autobyteus-nfs/main.go",
+      "sha256": "37e293b1f8c9f8d77fef9aa4663cbbabaf5a0c352f55a50cb6c5554ef13f74da",
+      "bytes": 577,
+      "nonemptyLines": 22,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/cmd/autobyteus-nfs/release.json",
+      "sha256": "534e86b9d8af6c3731eb2efcf368cc491386d75322f21d0504e17f48a6a35eb2",
+      "bytes": 88
+    },
+    {
+      "path": "autobyteus-nfs/go.mod",
+      "sha256": "0acde025fab9e5f59679ff97aa22951067acde3ba3b295f562326f289f779cbf",
+      "bytes": 76
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/apple.go",
+      "sha256": "0f20e598310eb2384736f5248b686235c4bccfa5e910267bd7010dde3c073c84",
+      "bytes": 5077,
+      "nonemptyLines": 140,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/apple_apply.go",
+      "sha256": "ad46dfa8455bccf204ed245c598415b32f93ce1caed178be8d62c88dd0b2526d",
+      "bytes": 3994,
+      "nonemptyLines": 129,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/backend_test.go",
+      "sha256": "ff2ed921a5fd7cdab459fc7333328c03ec41f91a315c4f121069f7a6c970e1fe",
+      "bytes": 2857
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/cleanup_test.go",
+      "sha256": "185c5986fa691fa87650c1880b97f8682e9f800e3d5d73659e55c745ade770c2",
+      "bytes": 2449
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/ganesha.go",
+      "sha256": "b3dee53dd35bc9542fda6be567361aaedd3655eb4849c9faa10b46b3ee5d8522",
+      "bytes": 1363,
+      "nonemptyLines": 54,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/ganesha_native.go",
+      "sha256": "d3a203c0ece0efb587a9566c472aed2d6b6dc101f34d266fa36c4dc8ca5aea2e",
+      "bytes": 4173,
+      "nonemptyLines": 133,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/ubuntu_packages.go",
+      "sha256": "b5facb8c9b6a6301fc44abae9ad16a3d62aa3a4025e56ddf54f029033aa2fac4",
+      "bytes": 3907,
+      "nonemptyLines": 111,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/cli_test.go",
+      "sha256": "e027b4b7aa117356550b3f7b6aeaf62726c0c634290c3ce31654174668107b72",
+      "bytes": 1707
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/inputs.go",
+      "sha256": "d94cc5791fd8b683015d1979fec682ff7a8633fbf48fd6c4c39665e5f7d13419",
+      "bytes": 5062,
+      "nonemptyLines": 162,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/install.go",
+      "sha256": "40fb431ed64a56918c20ec1a341f5f90968c630f1241e2edec4c29631bf4b585",
+      "bytes": 3432,
+      "nonemptyLines": 123,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/interactive-setup.go",
+      "sha256": "409c1c676a9a64a68bb29900e11c97cfd03a763049286b4fa9ac4e91a08ad9ff",
+      "bytes": 2790,
+      "nonemptyLines": 92,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/launcher.go",
+      "sha256": "87c232ffd410661804af0d0610adda5b4a2792591b54c42ea6335c63bb55f54b",
+      "bytes": 1411,
+      "nonemptyLines": 43,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/run.go",
+      "sha256": "f902a2a1d6b216dca0ac7ad8a73cee71350333c022f88482ffddf85b52484aed",
+      "bytes": 6222,
+      "nonemptyLines": 190,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/terminal.go",
+      "sha256": "a506deed4b7a4d8b511fddbd4bbf32e3b5d75036b6662ece8e078264e241c713",
+      "bytes": 1222,
+      "nonemptyLines": 50,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/verify-release.go",
+      "sha256": "3b1f2a01827f537f3e635cc88f39dd16bc3efc40f415ff273f202e76ce24c788",
+      "bytes": 1012,
+      "nonemptyLines": 36,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/config/config_test.go",
+      "sha256": "1e69bf11c68ffc47b53e8df6ea1bcbb2c66cb883f10af6440aca12c98b121a32",
+      "bytes": 3599
+    },
+    {
+      "path": "autobyteus-nfs/internal/config/connection.go",
+      "sha256": "5b7eb5f831992e1f1fa6a94d92f884abbd2b4fe59350761477432352f3a730f3",
+      "bytes": 4520,
+      "nonemptyLines": 138,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/config/source-marker.go",
+      "sha256": "1ca541549adb980079a6624f2eb80675a4f9cb574fe1c367c9f6bfbecce1a071",
+      "bytes": 950,
+      "nonemptyLines": 38,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/config/state.go",
+      "sha256": "1c0691c2c454269ae5327b66e7c28a9f0318aeaec8fe2ab1ad98a98f7cd13a6b",
+      "bytes": 2960,
+      "nonemptyLines": 85,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/config/store.go",
+      "sha256": "50851f3c5beea87e2e482eca287daa6d41f45c13223cf0de1993e1130d47b250",
+      "bytes": 2983,
+      "nonemptyLines": 124,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/attachment.go",
+      "sha256": "45bda66ab5e8c69bfac891a06d409792edeb77cebec14de72c3b0b5a8e8d05c9",
+      "bytes": 5192,
+      "nonemptyLines": 106,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/client.go",
+      "sha256": "618f09a83d9bd63ea930513af68415baf8452948f928a1c90c3a356f64d4029a",
+      "bytes": 3985,
+      "nonemptyLines": 136,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/docker_test.go",
+      "sha256": "47efc62cdc1279d6145a46eb50f1166ebeac1a7520db8556bd403836e033c66c",
+      "bytes": 9909
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/engine.go",
+      "sha256": "0c09243620d03e31bb7640a661aa13316a6ea997672e362a8eac477493123bf3",
+      "bytes": 5317,
+      "nonemptyLines": 140,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/exec.go",
+      "sha256": "a136ef244da1bdca1856527fe42bded90a23ae77c9284aa0f6326a8bf48b821a",
+      "bytes": 2429,
+      "nonemptyLines": 80,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/ownership.go",
+      "sha256": "516fe147e46982a43781de4e1bf95bb11e1ea64826ac158d59a08a0c956b52fc",
+      "bytes": 550,
+      "nonemptyLines": 19,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/probe_cleanup.go",
+      "sha256": "82250ce2c3d5ea90b37a7b8fb4d518f3593447b95f1dbe91daab3e8ecb167db6",
+      "bytes": 1429,
+      "nonemptyLines": 48,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/recovery.go",
+      "sha256": "bd648fb6fa0d053cb6dbacdc0922eb05fa3655ebed328a564a6cfba7a932dc5f",
+      "bytes": 2498,
+      "nonemptyLines": 87,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/recreate.go",
+      "sha256": "028c876b0fcfa2085ad412751fc80a29dc0494b842a4e1bf3c9d0d67e005dfca",
+      "bytes": 6043,
+      "nonemptyLines": 195,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/snapshot.go",
+      "sha256": "12a8cc9aede92cd3e1b43274739c049e63e35e00f30d22acf4eb7759c550706f",
+      "bytes": 7801,
+      "nonemptyLines": 213,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/commands.go",
+      "sha256": "6c8a72033f1b6c049bb82310da137d7284a145ab0e6cc2c6cd11faabb8f81419",
+      "bytes": 2157,
+      "nonemptyLines": 78,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/filesystem_darwin.go",
+      "sha256": "bc9643275be6b10e2d5121b87d42e01c1f4997c3947272e794ecb51bfa2418d6",
+      "bytes": 429,
+      "nonemptyLines": 22,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/filesystem_linux.go",
+      "sha256": "10d3db6a6515bd317d6581fa7c56a92305ae7edbf861bd2e4dbeff5719c6162a",
+      "bytes": 937,
+      "nonemptyLines": 35,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/handle_syscalls_linux_amd64.go",
+      "sha256": "5a4fdfd4d9c2acb1c4d2ccf71c9e2ea7d88b771ef66528be34610a82415ef8b4",
+      "bytes": 149,
+      "nonemptyLines": 4,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/handle_syscalls_linux_arm64.go",
+      "sha256": "b5824f4049b80a37b8ae654e02f52bfa4f95c0339e23854eb42a28d02c61a56e",
+      "bytes": 137,
+      "nonemptyLines": 4,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/handles_darwin.go",
+      "sha256": "7d15ccbf3b8d2d79607f2578e91697ee25e14e84465e65675449e73f9e20b3b4",
+      "bytes": 176,
+      "nonemptyLines": 3,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/handles_linux.go",
+      "sha256": "1c041901d3ab4f22db06c41371aa5cd8a447573bdf1591bcc871198569846127",
+      "bytes": 1280,
+      "nonemptyLines": 49,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/jobs.go",
+      "sha256": "cf687b9385a8c51aca8f7256ca695425c0d9e2bb2f6f1480df8bb579b5ce70c4",
+      "bytes": 3168,
+      "nonemptyLines": 110,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/lock.go",
+      "sha256": "c2639b9461b3bc6dba19ae05f2e1c019000852b345aaee5e8d8cf75976063cf5",
+      "bytes": 720,
+      "nonemptyLines": 21,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/mount-observation.go",
+      "sha256": "b1683288edfb49c36b8f70b5618ab43392ae0a3705c9a031d43ed392654632de",
+      "bytes": 3222,
+      "nonemptyLines": 106,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/mounts.go",
+      "sha256": "b30c21fa39b9e86515c6a50e72b6e467038107afdb03c6d42ae87ede74e5b5aa",
+      "bytes": 4154,
+      "nonemptyLines": 156,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/platform_test.go",
+      "sha256": "f3f0f156d04995e22946e2700df4b2046ed89e8c8a564cecfbda59456ec9915e",
+      "bytes": 2587
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/source.go",
+      "sha256": "9157b7407aa498bc2b2fcad248f066afb93fc6e308e71090a1407dce3ac90ca7",
+      "bytes": 2213,
+      "nonemptyLines": 59,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/service/probe.go",
+      "sha256": "edfca738b36c3cd11bf8be20d8ca28461890a5c51b12dd38bda391221fe6fe7c",
+      "bytes": 4472,
+      "nonemptyLines": 155,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/service/probe_test.go",
+      "sha256": "32766a47a2e619a0c53db804d438429a6d6edb28ad8d67a736d3cb3dec1f5c55",
+      "bytes": 1396
+    },
+    {
+      "path": "autobyteus-nfs/internal/service/supervisor.go",
+      "sha256": "b1bc16f43d80c956c560481a226108a510f1e0ce47bae765c32361525e2cbc84",
+      "bytes": 722,
+      "nonemptyLines": 28,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/apply.go",
+      "sha256": "50ce885648df65b41e781511c1ae7c1ceea242d2f730ed18b5c6f9c8a046fb1e",
+      "bytes": 5952,
+      "nonemptyLines": 185,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/detach_nodes.go",
+      "sha256": "2136c50138bd823505f23d62accec10eae5f94e8fc9296baebca6085de1ce495",
+      "bytes": 2552,
+      "nonemptyLines": 79,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/detach_nodes_test.go",
+      "sha256": "46c04300be0f9c20e023fc1080890e512d51542f3efa9af578aa776e574a131e",
+      "bytes": 5030
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/lifecycle.go",
+      "sha256": "28773a9e7a01ca61d3edc8e62fe6150fc0ae0dfbd0dda66c7e6427139839e1a6",
+      "bytes": 4287,
+      "nonemptyLines": 143,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/pending.go",
+      "sha256": "d39d9c1de4be3eb0bde29a50f4acc9c8d1294191a2fa7e40512e82dda1f5ad14",
+      "bytes": 2911,
+      "nonemptyLines": 104,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/plan.go",
+      "sha256": "4eca3ededce5bc0c0d1a288b985e7a58aca2a187a07874e11370642634ca2295",
+      "bytes": 6871,
+      "nonemptyLines": 187,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/service.go",
+      "sha256": "cdac08a5063742891175c92145e651a3a53d42b281cf00ae2257d2141bcc3d85",
+      "bytes": 1289,
+      "nonemptyLines": 46,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/setup_test.go",
+      "sha256": "29cbd9c636f6cb32b6a65569f315134d700df5d167ba6988c6ff30b9bffcd654",
+      "bytes": 1396
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/status.go",
+      "sha256": "6d488eb5638dfaef59a30187d54ddbc978f1fd8f3e7604dfff8733fe4df07558",
+      "bytes": 3025,
+      "nonemptyLines": 91,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/packaging/Dockerfile",
+      "sha256": "baec0ab6265c5949e867989e2ccdcb005689066ffd35d6b007ad44048b8abb7e",
+      "bytes": 952
+    },
+    {
+      "path": "autobyteus-nfs/packaging/RELEASE.md",
+      "sha256": "2d1168c92af4bfa59f72a061696d4f11de03621e838d72c02a13afb7e799af36",
+      "bytes": 2725
+    },
+    {
+      "path": "autobyteus-nfs/packaging/release-lock.json",
+      "sha256": "9d2dbab65a182d2a5f9472a73279147cc1f4402e4e71d74ba6e252db355b8513",
+      "bytes": 556
+    },
+    {
+      "path": "autobyteus-nfs/packaging/release.py",
+      "sha256": "0f78271304458555259504bd4be769c26f12c7adba5ce75f621ad5518d0b45fe",
+      "bytes": 3604,
+      "nonemptyLines": 70,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-nfs/testdata/attachment.json",
+      "sha256": "be6e16edb94d0a2aa4bc1030cf02f3e289c55bdb0681d26cb33b397740ad2d74",
+      "bytes": 219
+    },
+    {
+      "path": "autobyteus-server-ts/docs/modules/shared_network_workspaces.md",
+      "sha256": "5ae5867f88b7605a1fd80bb4f690f62df436878a2a368ab7476b6e83fee513d0",
+      "bytes": 2509
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/acp/acp-private-skill-adapter.ts",
+      "sha256": "7bbc7c0799c0e0617579506746b2dfa91c1751855d4d002bd29749ec65ad0a7c",
+      "bytes": 646,
+      "nonemptyLines": 9,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts",
+      "sha256": "c010e8778c5534290c23bd5163a4dae4938799fb15784b2e2c603c55b38da093",
+      "bytes": 15104,
+      "nonemptyLines": 243,
+      "baselineNonemptyLines": 225
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts",
+      "sha256": "b87e3f3c31b9fcf5d0a1249016f3ee6a87bc04fa2754d80feca0982432362283",
+      "bytes": 9973,
+      "nonemptyLines": 137,
+      "baselineNonemptyLines": 133
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts",
+      "sha256": "21f47d5b08fa999422a229a13067180db91c15734fe41ab87c5332c690540125",
+      "bytes": 7805,
+      "nonemptyLines": 144,
+      "baselineNonemptyLines": 144
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "sha256": "062959398cbc57c173bd235a31d0284258d46b501e84adfaf47c8ba1e642640d",
+      "bytes": 20642,
+      "nonemptyLines": 473,
+      "baselineNonemptyLines": 470
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/native-shared-workspace.ts",
+      "sha256": "5f867889b5cad1f2b17da1e484f3e4fc7684ea8f33511a695db5a999165a43c8",
+      "bytes": 861,
+      "nonemptyLines": 12,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts",
+      "sha256": "352a9d5a3b95871f71f5abfcb4985faf220b723a2a05fd2d35f4cc7d2ea5dba3",
+      "bytes": 3922,
+      "nonemptyLines": 63,
+      "baselineNonemptyLines": 58
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-context.ts",
+      "sha256": "63ff6ec0d8f0b919929a98d6ab5f7e2f14ebf45de87d4ccd5c442ce13a93cdc8",
+      "bytes": 2096,
+      "nonemptyLines": 42,
+      "baselineNonemptyLines": 38
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
+      "sha256": "90120859a0a702389b8751461477dcc4e255a3f2dfe40500cb0ac28a799177e8",
+      "bytes": 6469,
+      "nonemptyLines": 129,
+      "baselineNonemptyLines": 121
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/claude-workspace-resolver.ts",
+      "sha256": "a7eb77255740019e794f9a8f1f2533671806f2bac59919a1fe383f9d1bbee2c1",
+      "bytes": 2010,
+      "nonemptyLines": 45,
+      "baselineNonemptyLines": 42
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts",
+      "sha256": "ab9cd75ee7230a301a57260d59a3e259a0b37173ee0b58390de52728587a0572",
+      "bytes": 2520,
+      "nonemptyLines": 47,
+      "baselineNonemptyLines": 41
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-query-options.ts",
+      "sha256": "3a7489d4ab15a8e1a127297926a74ff806ca4245f6702f7b46b6322a35dd2d00",
+      "bytes": 3436,
+      "nonemptyLines": 56,
+      "baselineNonemptyLines": 50
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts",
+      "sha256": "a333507cb606981f4ee9c323bcd3572547059ad44f08ed21a35addf28663e699",
+      "bytes": 3690,
+      "nonemptyLines": 62,
+      "baselineNonemptyLines": 57
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-context.ts",
+      "sha256": "1625da0aeace974dbe6cc2148e9e7cc5603cf8df43334fc41c690d7fb7d2a050",
+      "bytes": 1827,
+      "nonemptyLines": 36,
+      "baselineNonemptyLines": 32
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
+      "sha256": "e593a9afdcad1bdacbe8a02ee1075e143edc12d8e9bc3d7ebde0c2fd90cb669b",
+      "bytes": 17754,
+      "nonemptyLines": 401,
+      "baselineNonemptyLines": 394
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/codex-workspace-resolver.ts",
+      "sha256": "f99e23744d2bf028e2697aa698240ebea9cd7e73b97dc2e2fcbc7e140f88562b",
+      "bytes": 1926,
+      "nonemptyLines": 44,
+      "baselineNonemptyLines": 41
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-private-skill-discovery.ts",
+      "sha256": "5ca8d2d52b82544b1db674c46b5693843925b4bf279a3c352e8ee395314393d7",
+      "bytes": 1727,
+      "nonemptyLines": 25,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts",
+      "sha256": "615a6eda5ee7eaa82cb738928c298a625328c1c8b67d39a32802050cea4ccba4",
+      "bytes": 10672,
+      "nonemptyLines": 240,
+      "baselineNonemptyLines": 233
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/grok/grok-build-agent-run-backend-factory.ts",
+      "sha256": "f436262ea12d5aaf4e44a01370d5f33ba6bd680172dd017377eb97487fae8be3",
+      "bytes": 1461,
+      "nonemptyLines": 27,
+      "baselineNonemptyLines": 25
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/grok/grok-private-skills.ts",
+      "sha256": "df1653601247b7fdd757549ba89f44302843dc8a970d4e26b292b96511d1505f",
+      "bytes": 1536,
+      "nonemptyLines": 26,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/provider-preparation-guard.ts",
+      "sha256": "4935a703822715a4f822292b3f7790af444574fcbe4e0c15ba6c842e2d7c38fc",
+      "bytes": 628,
+      "nonemptyLines": 10,
+      "baselineNonemptyLines": 8
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/shared/prepare-private-runtime-skills.ts",
+      "sha256": "1db465cae99382bb21f8a7cf1348f3239abeab3af92c40f7f92ea52495531ca6",
+      "bytes": 2428,
+      "nonemptyLines": 38,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/shared/runtime-skill-profile.ts",
+      "sha256": "7250813a88486b12d68bb177f1cf5401c143990900ef7f848e0eb71eb1e40282",
+      "bytes": 6144,
+      "nonemptyLines": 130,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+      "sha256": "53757f09ee25d4aefea4eaaf61681e5cae2b30bfb66dc5054fc344956eb760b1",
+      "bytes": 17586,
+      "nonemptyLines": 350,
+      "baselineNonemptyLines": 344
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/shared-run-workspace-admission.ts",
+      "sha256": "158b35399bf0f4dd0d890a5e6a37db8a24e233b7a07f7e20ff65acd2835b103e",
+      "bytes": 883,
+      "nonemptyLines": 14,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/acp/acp-client-connection.ts",
+      "sha256": "3e2e481f0cbba987dc4c6f553ab41ae3016d1aa8a205864dded5999a7b9609ca",
+      "bytes": 10084,
+      "nonemptyLines": 223,
+      "baselineNonemptyLines": 220
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-private-skill-discovery.ts",
+      "sha256": "9493ff40db90d662b69dd7dee977f144962065f105668c402f15044d323a03c8",
+      "bytes": 740,
+      "nonemptyLines": 8,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts",
+      "sha256": "94ce3b38f1fd8c8a08cdd5f7e9a5de96830784910df60024d4cbcaf787cfa9ed",
+      "bytes": 17749,
+      "nonemptyLines": 466,
+      "baselineNonemptyLines": 460
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts",
+      "sha256": "887c114470e15fcef3eaf7082f62d87181b9def0f73d9e6d100045b2aac2e654",
+      "bytes": 6040,
+      "nonemptyLines": 114,
+      "baselineNonemptyLines": 108
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/shared/scoped-project-git-environment.ts",
+      "sha256": "a2c3aa9196aeb6162b944278bd029bca3df3f506442e0f905cff250c0621e8d5",
+      "bytes": 817,
+      "nonemptyLines": 11,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts",
+      "sha256": "87083def824ee2ad935bafe7c8f4528b99299802549ab8706b0e2ea2254fe6fe",
+      "bytes": 4826,
+      "nonemptyLines": 132,
+      "baselineNonemptyLines": 128
+    },
+    {
+      "path": "autobyteus-server-ts/src/workspaces/shared-workspace-binding.ts",
+      "sha256": "120f80590f26240afeb7148f732488b222c6b1ce08c21cd9b004fafd1bc2ec6c",
+      "bytes": 4817,
+      "nonemptyLines": 74,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-server-ts/src/workspaces/shared-workspace-mount-observation.ts",
+      "sha256": "a52e09427ee99862f4b272edcaca683847c128e8519294e36e4fecafd229fca1",
+      "bytes": 2850,
+      "nonemptyLines": 44,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts",
+      "sha256": "aa8d6c5ff9de2e71b20b42f145801fcc91f398c62f794a4e6e651d4f9bd11d62",
+      "bytes": 34831
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts",
+      "sha256": "6fa941775369f26ddc4775c80529d9ce589c8ef8762cdef23fe0258b3056d65d",
+      "bytes": 2196
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/shared/prepare-private-runtime-skills.test.ts",
+      "sha256": "53e65cc51015fbedf20f7b143bfb60ece8c77df5fa018de1fe67bbf354f0bd33",
+      "bytes": 2382
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/shared/private-skill-discovery.test.ts",
+      "sha256": "1aaf73c218b8cbff815ce6c317d55e288ceee6c9d16650fd250a517ec71b8765",
+      "bytes": 4302
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/shared/runtime-skill-profile.test.ts",
+      "sha256": "a6728a8d4885cc6ab36545c895c4a5fe1458feed7e64a1c8ecfee2648d5f35e9",
+      "bytes": 4581
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/shared/shared-workspace-resolvers.test.ts",
+      "sha256": "543070953cd6023789bf561a93c09b5ae08c4d9527435a6c2a1eda9935d6eabe",
+      "bytes": 1943
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/api/rest/workspaces.test.ts",
+      "sha256": "adda7ecc151b1af00afcabdc76fe297b7b49ac941c8b27fd0d3f2163712a5ab2",
+      "bytes": 5596
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts",
+      "sha256": "6019dba16880b0cc58bcc71f48e1c88c232c90448a962ed00835bf21a5301e95",
+      "bytes": 4932
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/runtime-management/shared/scoped-project-git-environment.test.ts",
+      "sha256": "d5532f88b367f0239b0167392984fdb8a3c681f17916ca2dcf0fc713e160daae",
+      "bytes": 818
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/skills/github/private-profile-source-lifecycle.test.ts",
+      "sha256": "e79dc7c2d2d7e7d84168fb13a62d129d4275070811166bb45f98c45846710ff6",
+      "bytes": 2781
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/workspaces/shared-workspace-binding.test.ts",
+      "sha256": "f3022589398a681c5b47c380fd4da8373860e4c6d7a85b76f9fc47c4f457dfdb",
+      "bytes": 4946
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/background-process-context.ts",
+      "sha256": "a7eb22415fd2c5c2afb3209873287571872319374845f9d91f11b418fda04f31",
+      "bytes": 1169,
+      "nonemptyLines": 24,
+      "baselineNonemptyLines": 22
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/direct-shell-session.ts",
+      "sha256": "eabb16c2b07777569542a71f0a67587374170a467de984d04a5be04fc8dda2dc",
+      "bytes": 6334,
+      "nonemptyLines": 208,
+      "baselineNonemptyLines": 208
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/isolated-pty-session.ts",
+      "sha256": "587551a723376fa559369c5716c09d7ab8d3fe11cfc56c9c4cc986c387683dc6",
+      "bytes": 10056,
+      "nonemptyLines": 345,
+      "baselineNonemptyLines": 345
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/pty-session.ts",
+      "sha256": "c98843ea5cd0a91c7c18bf1fcae7dcfcaa31df99a10f7849a760f2084b6538d0",
+      "bytes": 6844,
+      "nonemptyLines": 253,
+      "baselineNonemptyLines": 253
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/terminal-child-environment.ts",
+      "sha256": "8f252d57b50c6685747f9ef1d23361e25519d7241ad6ee5356ff7c0c0c436df2",
+      "bytes": 482,
+      "nonemptyLines": 8,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/terminal-session.ts",
+      "sha256": "31cb0598bb1587cdaa568a7cf548e53084eafb60dd260088f8141c69e33ad3c5",
+      "bytes": 427,
+      "nonemptyLines": 10,
+      "baselineNonemptyLines": 10
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/tools/run-bash.ts",
+      "sha256": "8b009e892d252b2255951c41bbcd6d5d457980249722ace860b0e04c07dc9325",
+      "bytes": 3345,
+      "nonemptyLines": 67,
+      "baselineNonemptyLines": 65
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/tools/terminal/run-bash.test.ts",
+      "sha256": "37d562df7d0671d98f575116cda20f031d67cd4f6b3445c86ed71e3048384c5e",
+      "bytes": 9963
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/utils/file-utils.test.ts",
+      "sha256": "cf078a9051fd4985c81c3bb832751ce9311904cd502864fb151ba4bea532842a",
+      "bytes": 2448,
+      "baselineFixCommit": "f34fc81aa2"
+    },
+    {
+      "path": "autobyteus-web/components/settings/NfsGuideCard.vue",
+      "sha256": "7f4d771b47e72a7b79000ba3f1e4ce2ac0c1392605b85b41142dc5a633337732",
+      "bytes": 6349,
+      "nonemptyLines": 74,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "autobyteus-web/components/settings/NodeManager.vue",
+      "sha256": "172f13f6416de6a03a35329a0fac52fb76a389f9d97f824dae812bb0c0abb13a",
+      "bytes": 14629,
+      "nonemptyLines": 332,
+      "baselineNonemptyLines": 325
+    },
+    {
+      "path": "autobyteus-web/components/settings/NodeManagerTabs.vue",
+      "sha256": "e444e455b6caaf183425d0667c4e57f3261929bd49df0e3421b5d6994ed97434",
+      "bytes": 2315,
+      "nonemptyLines": 54,
+      "baselineNonemptyLines": 42
+    },
+    {
+      "path": "autobyteus-web/components/settings/__tests__/NfsGuideCard.spec.ts",
+      "sha256": "e0c2e60bfaeec50c4a394d37fc012b27576d291b94b3c7002ecc637aa15905ae",
+      "bytes": 2633
+    },
+    {
+      "path": "autobyteus-web/components/settings/__tests__/NodeManager.spec.ts",
+      "sha256": "f0a0d2925a54c1a2fd7f7bd1bf7f45147f6d8f6d24fb6bd4c8da425332889dd5",
+      "bytes": 13097
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/settings.ts",
+      "sha256": "00f513eff8ef373a4aa4a20145e04c350392bde4ae7ff26562476897255d4935",
+      "bytes": 47997,
+      "nonemptyLines": 427,
+      "baselineNonemptyLines": 400
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/settings.ts",
+      "sha256": "8fba39ef26e245fb6ec8d3ef93cb09c396f516f513d38fc17da603e2fa3fba74",
+      "bytes": 47112,
+      "nonemptyLines": 427,
+      "baselineNonemptyLines": 400
+    },
+    {
+      "path": "autobyteus-web/utils/__tests__/nfsLauncherCommands.spec.ts",
+      "sha256": "93945ba340891c7e182c0c422dd3f47db07a2daf6cba80e42ed96aec631138b1",
+      "bytes": 1243
+    },
+    {
+      "path": "autobyteus-web/utils/nfsLauncherCommands.ts",
+      "sha256": "f2334a5de1e7025b696cbb926fe955fad2f3c8e5101a1ff7d4136e478e54ebea",
+      "bytes": 1137,
+      "nonemptyLines": 23,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "scripts/public/docker/autobyteus-docker.d/bash/container-config.sh",
+      "sha256": "aff124997a9d792ca082663c858fe3ee99826e648a9c994e20ba84d5badd7166",
+      "bytes": 3333,
+      "nonemptyLines": 54,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh",
+      "sha256": "420b380b169649ff3dd6e99911c0e3f2e3668d176c3a5da9f31391077a7aff7e",
+      "bytes": 21734,
+      "nonemptyLines": 450,
+      "baselineNonemptyLines": 497
+    },
+    {
+      "path": "scripts/public/docker/autobyteus-docker.d/bash/nfs-attachment.sh",
+      "sha256": "cbb5e72436196241196bd5572e11d0897bd561bf573f95713deeed391aa14652",
+      "bytes": 2699,
+      "nonemptyLines": 35,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "scripts/public/docker/autobyteus-docker.sh",
+      "sha256": "691097c3a9cbf2bd517463caa8d6752644c18ae44218034d761b5747b8000fae",
+      "bytes": 9692,
+      "nonemptyLines": 242,
+      "baselineNonemptyLines": 236
+    },
+    {
+      "path": "scripts/public/nfs/install.sh",
+      "sha256": "c3480d39b0c218843166ad3c69dce92d15de24ff6c342055ad05f601b4891f8a",
+      "bytes": 3284,
+      "nonemptyLines": 45,
+      "baselineNonemptyLines": 0
+    },
+    {
+      "path": "scripts/tests/test_nfs_installer_fixture.py",
+      "sha256": "d686b2dd326043597a067a1bbe2b632dae07f74f274dc6d7d2150d82bac206c0",
+      "bytes": 3904
+    },
+    {
+      "path": "scripts/tests/test_nfs_packaging_and_launcher.py",
+      "sha256": "3aed28f6b5cfdc2cc187baf0d7e8e3d151ed1ad5752e058da3da0ddb47fb21a5",
+      "bytes": 3959
+    },
+    {
+      "path": "scripts/tests/test_public_docker_launcher_shared_workspace.py",
+      "sha256": "45b8ccd6a998c6a4a7ebb2a282b8a07e7af20a5ae696fff9efd3996e6c96b347",
+      "bytes": 57423
+    }
+  ],
+  "pressure": [
+    [
+      "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts",
+      243,
+      225
+    ],
+    [
+      "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      473,
+      470
+    ],
+    [
+      "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
+      401,
+      394
+    ],
+    [
+      "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts",
+      240,
+      233
+    ],
+    [
+      "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+      350,
+      344
+    ],
+    [
+      "autobyteus-server-ts/src/runtime-management/acp/acp-client-connection.ts",
+      223,
+      220
+    ],
+    [
+      "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts",
+      466,
+      460
+    ],
+    [
+      "autobyteus-ts/src/tools/terminal/isolated-pty-session.ts",
+      345,
+      345
+    ],
+    [
+      "autobyteus-ts/src/tools/terminal/pty-session.ts",
+      253,
+      253
+    ],
+    [
+      "autobyteus-web/components/settings/NodeManager.vue",
+      332,
+      325
+    ],
+    [
+      "autobyteus-web/localization/messages/en/settings.ts",
+      427,
+      400
+    ],
+    [
+      "autobyteus-web/localization/messages/zh-CN/settings.ts",
+      427,
+      400
+    ],
+    [
+      "scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh",
+      450,
+      497
+    ],
+    [
+      "scripts/public/docker/autobyteus-docker.sh",
+      242,
+      236
+    ]
+  ],
+  "note": "Nonempty-line upper bound (includes comments); tests excluded from source-size guard; baseline quote fix included via source path",
+  "productionSourceHash": "8267720954e31425f761b500fa6abdd88134b3e3bbd97b715c99a7fa058d202d",
+  "implementationCommit": "c57ab71c90930a0c98e1310d07b0808d28dfbd14",
+  "baselineFixes": [
+    "6717bcb221",
+    "f34fc81aa2"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "scope": "local compile + native version/refusal smoke, not OS hosting qualification",
+  "toolchain": "go version go1.27.2 darwin/arm64",
+  "outputs": [
+    {
+      "target": "darwin-arm64",
+      "sha256": "18d6f00453428a12f5c15f1fb35d7e271c7a7fa9403a4a8af7c4476a00c90983",
+      "bytes": 10509266
+    },
+    {
+      "target": "darwin-amd64",
+      "sha256": "bb06632a3f177dc2b3999a1c737072ed8fcb37ac2124bd0dc570ae98536ce904",
+      "bytes": 11266976
+    },
+    {
+      "target": "linux-arm64",
+      "sha256": "31331bf740b864c642ade0fbbaaca96e4e0ee7861251ae56947aed50bed432ef",
+      "bytes": 10224511
+    },
+    {
+      "target": "linux-amd64",
+      "sha256": "87359e47e0cc45f2599eca58c4f0cf63d14fbce32a3648a5a94dda7ef597ed9c",
+      "bytes": 11080115
+    }
+  ],
+  "temporaryOutput": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-cross-build-k4m_gh_9",
+  "cleanupConfirmed": true
+}
