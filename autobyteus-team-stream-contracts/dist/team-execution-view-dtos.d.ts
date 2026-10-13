@@ -187,6 +187,7 @@ export type CollaboratorEntryDto = Readonly<{
     added_via_agent_run_id: string;
     user_team_launch_selection?: UserLaunchSelectionDto;
 }> & TeamLaunchDto;
+export declare const userLaunchSelectionDtoSchema: z.ZodType<UserLaunchSelectionDto>;
 export declare const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto>;
 export declare const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto>;
 export declare const collaboratorEntryDtoSchema: z.ZodType<CollaboratorEntryDto>;

@@ -2595,6 +2595,23 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
         }, z.core.$strict>, z.ZodObject<{
             teamRunId: z.ZodString;
         }, z.core.$strict>]>>;
+    }, z.core.$strict>, z.ZodObject<{
+        kind: z.ZodLiteral<"delegated_launch_selections_changed">;
+        selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+            agentRunId: z.ZodString;
+            selection: z.ZodObject<{
+                llmModelIdentifier: z.ZodString;
+                llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                selectedAt: z.ZodString;
+            }, z.core.$strict>;
+        }, z.core.$strict>, z.ZodObject<{
+            teamRunId: z.ZodString;
+            selection: z.ZodObject<{
+                llmModelIdentifier: z.ZodString;
+                llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                selectedAt: z.ZodString;
+            }, z.core.$strict>;
+        }, z.core.$strict>]>>;
     }, z.core.$strict>], "kind">;
 }, z.core.$strict>, z.ZodObject<{
     root_subject_kind: z.ZodLiteral<"agent">;
@@ -2980,6 +2997,23 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
             agentRunId: z.ZodString;
         }, z.core.$strict>, z.ZodObject<{
             teamRunId: z.ZodString;
+        }, z.core.$strict>]>>;
+    }, z.core.$strict>, z.ZodObject<{
+        kind: z.ZodLiteral<"delegated_launch_selections_changed">;
+        selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+            agentRunId: z.ZodString;
+            selection: z.ZodObject<{
+                llmModelIdentifier: z.ZodString;
+                llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                selectedAt: z.ZodString;
+            }, z.core.$strict>;
+        }, z.core.$strict>, z.ZodObject<{
+            teamRunId: z.ZodString;
+            selection: z.ZodObject<{
+                llmModelIdentifier: z.ZodString;
+                llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                selectedAt: z.ZodString;
+            }, z.core.$strict>;
         }, z.core.$strict>]>>;
     }, z.core.$strict>], "kind">;
 }, z.core.$strict>], "root_subject_kind">;
@@ -4490,6 +4524,23 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
             }, z.core.$strict>, z.ZodObject<{
                 teamRunId: z.ZodString;
             }, z.core.$strict>]>>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"delegated_launch_selections_changed">;
+            selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+                agentRunId: z.ZodString;
+                selection: z.ZodObject<{
+                    llmModelIdentifier: z.ZodString;
+                    llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                    selectedAt: z.ZodString;
+                }, z.core.$strict>;
+            }, z.core.$strict>, z.ZodObject<{
+                teamRunId: z.ZodString;
+                selection: z.ZodObject<{
+                    llmModelIdentifier: z.ZodString;
+                    llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                    selectedAt: z.ZodString;
+                }, z.core.$strict>;
+            }, z.core.$strict>]>>;
         }, z.core.$strict>], "kind">;
     }, z.core.$strict>, z.ZodObject<{
         root_subject_kind: z.ZodLiteral<"agent">;
@@ -4875,6 +4926,23 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                 agentRunId: z.ZodString;
             }, z.core.$strict>, z.ZodObject<{
                 teamRunId: z.ZodString;
+            }, z.core.$strict>]>>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"delegated_launch_selections_changed">;
+            selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+                agentRunId: z.ZodString;
+                selection: z.ZodObject<{
+                    llmModelIdentifier: z.ZodString;
+                    llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                    selectedAt: z.ZodString;
+                }, z.core.$strict>;
+            }, z.core.$strict>, z.ZodObject<{
+                teamRunId: z.ZodString;
+                selection: z.ZodObject<{
+                    llmModelIdentifier: z.ZodString;
+                    llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                    selectedAt: z.ZodString;
+                }, z.core.$strict>;
             }, z.core.$strict>]>>;
         }, z.core.$strict>], "kind">;
     }, z.core.$strict>], "root_subject_kind">;

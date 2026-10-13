@@ -1204,6 +1204,23 @@ export declare const agentRunCollaborationEventDtoSchema: z.ZodDiscriminatedUnio
     }, z.core.$strict>, z.ZodObject<{
         teamRunId: z.ZodString;
     }, z.core.$strict>]>>;
+}, z.core.$strict>, z.ZodObject<{
+    kind: z.ZodLiteral<"delegated_launch_selections_changed">;
+    selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agentRunId: z.ZodString;
+        selection: z.ZodObject<{
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            selectedAt: z.ZodString;
+        }, z.core.$strict>;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+        selection: z.ZodObject<{
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            selectedAt: z.ZodString;
+        }, z.core.$strict>;
+    }, z.core.$strict>]>>;
 }, z.core.$strict>], "kind">;
 export type AgentRunCollaborationTreeDto = Readonly<z.infer<typeof agentRunCollaborationTreeDtoSchema>>;
 export type AgentRunCollaborationViewDto = Readonly<z.infer<typeof agentRunCollaborationViewDtoSchema>>;

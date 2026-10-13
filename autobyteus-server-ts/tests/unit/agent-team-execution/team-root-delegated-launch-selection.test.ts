@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import type { TaskAgentExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
+import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { flushMicrotasks } from "../agent-org-execution/helpers/task-publication-handles.js";
 import { getAgentConversationActivityInspector } from "../../../src/agent-memory/services/agent-conversation-activity-inspector.js";
 import { ROOT, bringInBoth, cleanupDirectories, entriesOf, harness } from "./helpers/team-root-collaborator-harness.js";
@@ -40,11 +41,18 @@ describe("Team root delegated copy Stop and model choice", () => {
     expect(copy.finish).toHaveBeenCalled();
     expect(f.root.isActive()).toBe(true);
 
+    const events: TeamRunEvent[] = [];
+    const unsubscribe = f.root.subscribeToEvents(({ event }) => { events.push(event); });
     await expect(f.root.updateDelegatedLaunchSelections([{ agentRunId: copyRunId, selection: choice }], validator()))
       .resolves.toMatchObject({ outcome: "UPDATED" });
+    unsubscribe();
     const durable = (await f.dependencies.executionTreeStore.read(f.teamMemoryDir, ROOT))!;
     const recorded = durable.rootTeam.taskExecutions.find((task) => "agentRunId" in task && task.agentRunId === copyRunId) as TaskAgentExecution;
     expect(recorded.userLaunchSelection).toMatchObject(choice);
+    // The live view learns the committed choice like any other tree mutation (CR-002).
+    expect(events.filter((event) => event.eventSourceType === TeamRunEventSourceType.DELEGATED_LAUNCH_SELECTIONS)).toEqual([
+      { eventSourceType: TeamRunEventSourceType.DELEGATED_LAUNCH_SELECTIONS, selections: [{ reference: { agentRunId: copyRunId }, selection: recorded.userLaunchSelection }] },
+    ]);
     // The collaborator entry keeps its started launch; the selection is per instance.
     expect(durable.rootTeam.collaborators[0]).toEqual(reviewer);
 

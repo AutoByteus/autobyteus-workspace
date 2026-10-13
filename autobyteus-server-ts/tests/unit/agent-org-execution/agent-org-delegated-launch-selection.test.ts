@@ -48,12 +48,19 @@ describe("AgentOrg delegated copy Stop and model choice", () => {
     expect(f.owner.isActive()).toBe(true);
     await expect(f.owner.stopDelegatedExecution({ agentRunId: "task-agent-1" })).resolves.toMatchObject({ outcome: "ALREADY_STOPPED" });
 
+    const before = f.published.length;
     await expect(f.owner.updateDelegatedLaunchSelections([{ agentRunId: "task-agent-1", selection: choice }], acceptingValidator()))
       .resolves.toMatchObject({ outcome: "UPDATED" });
     const recorded = (await f.durable()).getTaskExecution({ agentRunId: "task-agent-1" })!.source as TaskAgentExecution;
     expect(recorded.userLaunchSelection).toMatchObject(choice);
+    // The live view learns the committed choice like any other tree mutation (CR-002).
+    expect(f.published.slice(before).filter((event) => event.kind === "delegated_launch_selections_changed")).toEqual([
+      { kind: "delegated_launch_selections_changed", selections: [{ reference: { agentRunId: "task-agent-1" }, selection: recorded.userLaunchSelection }] },
+    ]);
+    const afterSave = f.published.length;
     await expect(f.owner.updateDelegatedLaunchSelections([{ agentRunId: "task-agent-1", selection: choice }], acceptingValidator()))
       .resolves.toMatchObject({ outcome: "UNCHANGED" });
+    expect(f.published.slice(afterSave).some((event) => event.kind === "delegated_launch_selections_changed")).toBe(false);
 
     await expect(f.message("task-agent-1")).resolves.toMatchObject({ accepted: true });
     await f.drain();

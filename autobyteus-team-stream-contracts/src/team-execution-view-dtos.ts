@@ -243,13 +243,13 @@ const launchSourceSchema: z.ZodType<LaunchConfigurationSourceDto> = z.object({
   }).strict()),
 }).strict();
 const memberLaunchSchema = { launch_configuration: launchConfigurationSchema.optional(), launch_source: launchSourceSchema.optional() };
-const userLaunchSelectionSchema: z.ZodType<UserLaunchSelectionDto> = z.object({
+export const userLaunchSelectionDtoSchema: z.ZodType<UserLaunchSelectionDto> = z.object({
   llm_model_identifier: nonEmptyStringSchema,
   llm_config: z.record(z.string(), jsonValueSchema).nullable(),
   selected_at: nonEmptyStringSchema,
 }).strict();
-const agentSelectionSchema = { user_launch_selection: userLaunchSelectionSchema.optional() };
-const teamSelectionSchema = { user_team_launch_selection: userLaunchSelectionSchema.optional() };
+const agentSelectionSchema = { user_launch_selection: userLaunchSelectionDtoSchema.optional() };
+const teamSelectionSchema = { user_team_launch_selection: userLaunchSelectionDtoSchema.optional() };
 
 const handoffDtoSchema = z.object({ from: nonEmptyStringSchema, to: nonEmptyStringSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
 

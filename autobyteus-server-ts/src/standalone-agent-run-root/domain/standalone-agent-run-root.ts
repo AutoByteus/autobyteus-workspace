@@ -177,6 +177,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
         kind: "status_overlay",
         snapshot: createCollaborationAgentStatusSnapshot({ execution: identity, status: "offline" }),
       }),
+      publishSelectionsChanged: (selections) => options.publisher.publish({ kind: "delegated_launch_selections_changed", selections }),
     });
     const recipients: StandaloneRootRecipientResolver = new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators,
       taskScope: sender => taskScopedMessageRecipient({ sender, lifecycle: this.taskExecutions,

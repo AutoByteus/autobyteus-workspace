@@ -12,6 +12,7 @@ import {
 } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
+import type { DelegatedLaunchSelectionRecord } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { StandaloneRootTreeSnapshot } from "../../standalone-agent-run-root/domain/standalone-root-tree.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
@@ -51,6 +52,14 @@ const projectSelection = <K extends "userLaunchSelection" | "userTeamLaunchSelec
   (selection ? { [key]: userLaunchSelectionDtoSchema.parse({
     llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig, selectedAt: selection.selectedAt,
   }) } : {}) as Partial<Record<K, UserLaunchSelectionDto>>;
+
+/** A live Save's committed choices (DS-001): each record by its run ID, with its choice as now recorded. */
+export const projectCollaborationSelectionsChanged = (records: readonly DelegatedLaunchSelectionRecord[]) => ({
+  kind: "delegated_launch_selections_changed" as const,
+  selections: records.map(({ reference, selection }) => ({ ...reference, selection: userLaunchSelectionDtoSchema.parse({
+    llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig, selectedAt: selection.selectedAt,
+  }) })),
+});
 
 const projectTaskMember = (member: TaskTeamMemberExecution): TaskTeamDto["members"][number] =>
   "agentRunId" in member

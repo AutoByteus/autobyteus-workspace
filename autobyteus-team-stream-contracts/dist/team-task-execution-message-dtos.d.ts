@@ -77,4 +77,35 @@ export declare const teamCollaboratorAddedPayloadSchema: z.ZodObject<{
     collaborator: z.ZodType<import("./team-execution-view-dtos.js").CollaboratorEntryDto, unknown, z.core.$ZodTypeInternals<import("./team-execution-view-dtos.js").CollaboratorEntryDto, unknown>>;
 }, z.core.$strict>;
 export type TeamCollaboratorAddedPayload = Readonly<z.infer<typeof teamCollaboratorAddedPayloadSchema>>;
+/**
+ * The user's model choices of these delegated copies or collaborators were saved on the live run
+ * (DS-001). Each names one record by its run ID (unique in the tree) with its choice as now recorded.
+ */
+export declare const teamDelegatedLaunchSelectionsChangedPayloadSchema: z.ZodObject<{
+    change_sequence: z.ZodNumber;
+    selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agent_run_id: z.ZodString;
+        selection: z.ZodType<Readonly<{
+            llm_model_identifier: string;
+            llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
+            selected_at: string;
+        }>, unknown, z.core.$ZodTypeInternals<Readonly<{
+            llm_model_identifier: string;
+            llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
+            selected_at: string;
+        }>, unknown>>;
+    }, z.core.$strict>, z.ZodObject<{
+        team_run_id: z.ZodString;
+        selection: z.ZodType<Readonly<{
+            llm_model_identifier: string;
+            llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
+            selected_at: string;
+        }>, unknown, z.core.$ZodTypeInternals<Readonly<{
+            llm_model_identifier: string;
+            llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
+            selected_at: string;
+        }>, unknown>>;
+    }, z.core.$strict>]>>;
+}, z.core.$strict>;
+export type TeamDelegatedLaunchSelectionsChangedPayload = Readonly<z.infer<typeof teamDelegatedLaunchSelectionsChangedPayloadSchema>>;
 //# sourceMappingURL=team-task-execution-message-dtos.d.ts.map

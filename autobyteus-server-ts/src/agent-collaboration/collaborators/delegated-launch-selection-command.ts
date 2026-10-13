@@ -5,9 +5,11 @@ import {
   DelegatedLaunchTargetError,
   delegatedLaunchSelections,
   listDelegatedLaunchTargets,
+  recordedDelegatedLaunchSelections,
   resolveDelegatedLaunchTargets,
   type DelegatedLaunchChange,
   type DelegatedLaunchForest,
+  type DelegatedLaunchSelectionRecord,
   type DelegatedLaunchSelections,
   type DelegatedLaunchTarget,
   type DelegatedRunReference,
@@ -38,6 +40,8 @@ export type DelegatedStopResult = Readonly<{
   notStoppedUnattributed: number;
 }>;
 
+export type DelegatedLaunchSelectionPublisher = (records: readonly DelegatedLaunchSelectionRecord[]) => void;
+
 /** What a live root lends the command: its tree's lists, sources, task lifecycle, collaborator handles and persistence. */
 export type DelegatedLaunchRootPort = Readonly<{
   forest(): DelegatedLaunchForest;
@@ -58,6 +62,8 @@ export type DelegatedLaunchRootPort = Readonly<{
    */
   commitSelections(selections: DelegatedLaunchSelections, afterDurability: () => void): Promise<"committed" | "unchanged">;
   publishCollaboratorOffline(agentRunIds: readonly string[]): void;
+  /** Publishes the committed choices to the root's live views, as their other tree mutations are (DS-001). */
+  publishSelectionsChanged: DelegatedLaunchSelectionPublisher;
   now(): string;
 }>;
 
@@ -235,6 +241,8 @@ export class DelegatedLaunchSelectionCommand {
             const launch = launches.get(agentRunId);
             try { if (launch) control.replaceModelChoice(launch); } catch (error) { swapFailure ??= error; }
           }
+          const records = recordedDelegatedLaunchSelections(this.port.forest(), selections);
+          if (records.length) this.port.publishSelectionsChanged(records);
         });
         if (swapFailure) {
           // Durable; the next activation of a restored copy reads the committed tree anyway.

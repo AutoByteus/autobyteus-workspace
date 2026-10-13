@@ -106,6 +106,14 @@ export const projectSequencedTeamRunEvent = (
         change_sequence: changeSequence,
         collaborator: projectCollaboratorEntry(event.payload.collaborator),
       } });
+    case TeamRunEventSourceType.DELEGATED_LAUNCH_SELECTIONS:
+      return parseTeamStreamServerMessage({ type: "DELEGATED_LAUNCH_SELECTIONS_CHANGED", payload: {
+        change_sequence: changeSequence,
+        selections: event.selections.map(({ reference, selection }) => ({
+          ...projectTaskExecutionReference(reference),
+          ...optionalSelection("selection", selection),
+        })),
+      } });
   }
 };
 
@@ -172,7 +180,7 @@ const projectMemberLaunch = (member: RecordedMemberLaunch) => ({
   ...(member.launchSource ? { launch_source: projectLaunchSource(member.launchSource) } : {}),
 });
 /** A user model choice, emitted only when recorded. */
-const optionalSelection = <K extends "user_launch_selection" | "user_team_launch_selection">(key: K, selection: UserLaunchSelection | undefined) =>
+const optionalSelection = <K extends "user_launch_selection" | "user_team_launch_selection" | "selection">(key: K, selection: UserLaunchSelection | undefined) =>
   (selection ? { [key]: {
     llm_model_identifier: selection.llmModelIdentifier,
     llm_config: selection.llmConfig as Record<string, import("@autobyteus/team-stream-contracts").JsonValue> | null,

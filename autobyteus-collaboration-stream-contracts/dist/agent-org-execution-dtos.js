@@ -107,6 +107,17 @@ export const taskExecutionsClosedEventDtoSchema = z.object({
 export const taskExecutionsReopenedEventDtoSchema = z.object({
     kind: z.literal("task_executions_reopened"), task_executions: z.array(taskExecutionReferenceDtoSchema).min(1),
 }).strict();
+/**
+ * Live: the user's model choices of these delegated copies or collaborators were saved (DS-001).
+ * Each names one record by its run ID (unique in the tree) with its choice as now recorded.
+ */
+export const delegatedLaunchSelectionsChangedEventDtoSchema = z.object({
+    kind: z.literal("delegated_launch_selections_changed"),
+    selections: z.array(z.union([
+        z.object({ agentRunId: nonEmptyStringSchema, selection: userLaunchSelectionDtoSchema }).strict(),
+        z.object({ teamRunId: nonEmptyStringSchema, selection: userLaunchSelectionDtoSchema }).strict(),
+    ])).min(1),
+}).strict();
 const configuredTeam = z.object({
     address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
     role: z.string().nullable(), description: z.string().nullable(), teamRunId: nonEmptyStringSchema,
@@ -189,5 +200,6 @@ export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
     z.object({ kind: z.literal("collaborator_added"), collaborator: collaboratorEntryDtoSchema }).strict(),
     taskExecutionsClosedEventDtoSchema,
     taskExecutionsReopenedEventDtoSchema,
+    delegatedLaunchSelectionsChangedEventDtoSchema,
 ]);
 //# sourceMappingURL=agent-org-execution-dtos.js.map

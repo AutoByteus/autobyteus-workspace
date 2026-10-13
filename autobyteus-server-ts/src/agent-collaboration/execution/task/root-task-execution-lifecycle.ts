@@ -9,6 +9,7 @@ import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-cont
 import { resolveTaskExecutionIdleShutdownGraceMs } from "../../../config/task-execution-idle-shutdown-setting.js";
 import type { RootTaskExecutionAdapter, TaskExecutionTarget } from "./root-task-execution-adapter.js";
 import { RootTaskExecutionCommandQueue } from "./root-task-execution-command-queue.js";
+import { TaskExecutionLiveHolds } from "./task-execution-live-holds.js";
 import {
   TaskDelegationError,
   TaskDispatchIndeterminateError,
@@ -69,14 +70,11 @@ export type TaskHelperResult = Readonly<{ target: TaskExecutionTarget; launchNot
 export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaunchNotes> {
   private readonly queue = new RootTaskExecutionCommandQueue();
   private readonly schedule: TaskExecutionIdleShutdownSchedule;
-  private readonly leases = new Map<string, number>();
   private accepting = true;
   private readonly resourceScope: RootTaskExecutionResourceScope<TPlacement>;
   private readonly helperAttempts = new Map<string, Promise<TaskHelperResult>>();
-  /** Copies a user Stop is stopping, by key, with the attempt that marked them (SR-006). */
-  private readonly stopping = new Map<string, Promise<void>>();
-  /** Re-checked whenever a live lease is released (a Stop drains held leases outside the queue). */
-  private leaseWaiters: Array<() => void> = [];
+  /** Live leases and user Stops in progress (SR-006). */
+  private readonly holds = new TaskExecutionLiveHolds();
 
   constructor(
     private readonly adapter: RootTaskExecutionAdapter<TPlacement>,
@@ -404,20 +402,14 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
         { cause: error },
       );
     }
-    const keys = chain.map(taskExecutionReferenceKey);
-    keys.forEach((key) => this.leases.set(key, (this.leases.get(key) ?? 0) + 1));
+    const releaseHold = this.holds.lease(chain.map(taskExecutionReferenceKey));
     let released = false;
     return Object.freeze({
       assertOpen,
       release: () => {
         if (released) return;
         released = true;
-        for (const key of keys) {
-          const next = (this.leases.get(key) ?? 1) - 1;
-          if (next > 0) this.leases.set(key, next);
-          else this.leases.delete(key);
-        }
-        this.notifyLeaseWaiters();
+        releaseHold();
         if (this.accepting) this.armLive(chain);
       },
     });
@@ -436,8 +428,8 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
 
   private async shutdownAtHead(reference: TaskExecutionReference): Promise<void> {
     if (!this.accepting) return;
-    if (this.leases.has(taskExecutionReferenceKey(reference))) return;
-    if (this.stopping.has(taskExecutionReferenceKey(reference))) return;
+    const key = taskExecutionReferenceKey(reference);
+    if (this.holds.isLeased(key) || this.holds.isStopping(key)) return;
     if (!this.adapter.isLive(reference)) return;
     // Not quiet: a later idle/offline/error status or lease release re-arms.
     await this.adapter.tryShutDownIfQuiet(reference);
@@ -455,18 +447,10 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
    */
   async stopForUser(executions: readonly TaskExecutionReference[]): Promise<TaskExecutionUserStopResult> {
     if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting commands.");
-    const keys = [...new Set(executions.map(taskExecutionReferenceKey))];
-    for (;;) {
-      const overlapping = [...new Set(keys.flatMap((key) => this.stopping.get(key) ?? []))];
-      if (!overlapping.length) break;
-      await Promise.allSettled(overlapping);
-    }
-    let settle!: () => void;
-    const attempt = new Promise<void>((resolve) => { settle = resolve; });
-    keys.forEach((key) => this.stopping.set(key, attempt));
+    const stop = await this.holds.beginStop([...new Set(executions.map(taskExecutionReferenceKey))]);
     executions.forEach((reference) => this.schedule.cancel(reference));
     try {
-      await this.leasesReleased(keys);
+      await stop.drained;
       const stopped: TaskExecutionReference[] = [];
       const alreadyStopped: TaskExecutionReference[] = [];
       for (const reference of executions) {
@@ -475,8 +459,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       }
       return Object.freeze({ stopped: Object.freeze(stopped), alreadyStopped: Object.freeze(alreadyStopped) });
     } finally {
-      keys.forEach((key) => { if (this.stopping.get(key) === attempt) this.stopping.delete(key); });
-      settle();
+      stop.end();
       this.resourceScope.taskExecutionsStatusChanged(executions);
     }
   }
@@ -496,7 +479,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       executeAtQueueHead: async (): Promise<StoppedTaskExecutionsStep<T>> => {
         const running = references.filter((reference) => {
           const key = taskExecutionReferenceKey(reference);
-          return this.stopping.has(key) || this.leases.has(key) || this.adapter.isLive(reference);
+          return this.holds.isStopping(key) || this.holds.isLeased(key) || this.adapter.isLive(reference);
         });
         if (running.length) return Object.freeze({ ran: false, running: Object.freeze(running) });
         return Object.freeze({ ran: true, value: await operation() });
@@ -513,25 +496,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
   }
 
   private assertNotStopping(agentRunId: string): void {
-    if (!this.stopping.size) return;
-    if (this.adapter.taskExecutionChainFor(agentRunId).some((reference) => this.stopping.has(taskExecutionReferenceKey(reference)))) {
-      throw new TaskDelegationError("TASK_EXECUTION_STOPPING", "This copy is being stopped by the user.");
-    }
-  }
-
-  private leasesReleased(keys: readonly string[]): Promise<void> {
-    const held = () => keys.some((key) => this.leases.has(key));
-    if (!held()) return Promise.resolve();
-    return new Promise<void>((resolve) => {
-      const check = () => { if (held()) this.leaseWaiters.push(check); else resolve(); };
-      this.leaseWaiters.push(check);
-    });
-  }
-
-  private notifyLeaseWaiters(): void {
-    const waiters = this.leaseWaiters;
-    this.leaseWaiters = [];
-    waiters.forEach((check) => check());
+    this.holds.assertNotStopping(this.adapter.taskExecutionChainFor(agentRunId).map(taskExecutionReferenceKey));
   }
 
   private armLive(chain: readonly TaskExecutionReference[]): void {

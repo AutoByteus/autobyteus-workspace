@@ -318,6 +318,37 @@ const withSelection = <T extends object, K extends "userLaunchSelection" | "user
   return sameChoice(current, selection) ? record : { ...record, [key]: selection };
 };
 
+/** One saved choice as recorded on its copy or collaborator record, for the live view (DS-001). */
+export type DelegatedLaunchSelectionRecord = Readonly<{ reference: DelegatedRunReference; selection: UserLaunchSelection }>;
+
+/**
+ * The choices of these selections' run IDs as the forest now records them (a selection equal to
+ * the recorded one kept the earlier record), in collaborator-then-copy order.
+ */
+export const recordedDelegatedLaunchSelections = (
+  forest: DelegatedLaunchForest,
+  selections: DelegatedLaunchSelections,
+): readonly DelegatedLaunchSelectionRecord[] => {
+  const records: DelegatedLaunchSelectionRecord[] = [];
+  const agent = (agentRunId: string, selection: UserLaunchSelection | undefined): void => {
+    if (selection && selections.agents.has(agentRunId)) records.push({ reference: { agentRunId }, selection });
+  };
+  const team = (teamRunId: string, selection: UserLaunchSelection | undefined): void => {
+    if (selection && selections.teams.has(teamRunId)) records.push({ reference: { teamRunId }, selection });
+  };
+  for (const entry of forest.collaborators) {
+    if (entry.kind === "agent") { agent(entry.agentRunId, entry.userLaunchSelection); continue; }
+    team(entry.teamRunId, entry.userTeamLaunchSelection);
+    entry.members.forEach((member) => agent(member.agentRunId, member.userLaunchSelection));
+  }
+  visitTaskExecutions(forest, (task) => {
+    if ("agentRunId" in task) { agent(task.agentRunId, task.userLaunchSelection); return; }
+    team(task.teamRunId, task.userTeamLaunchSelection);
+    teamCopyAgents(task).forEach((member) => agent(member.agentRunId, member.userLaunchSelection));
+  });
+  return Object.freeze(records);
+};
+
 /**
  * Every editable copy or collaborator of the forest (agent-level and Team-level) with its current
  * effective launch, for the options query. Closed copies and records whose source cannot be read are left out.

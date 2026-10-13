@@ -26,6 +26,7 @@ export const createRootHostedDelegatedLaunchCommand = (options: Readonly<{
   readTaskSource: DelegatedLaunchRootPort["readTaskSource"];
   agentAddress(agentRunId: string): AgentTeamAddress | null;
   publishAgentOffline(identity: CollaborationMemberExecutionIdentity): void;
+  publishSelectionsChanged: DelegatedLaunchRootPort["publishSelectionsChanged"];
   /** Applies the selections to the current tree; equal to it when nothing changes. */
   isUnchanged(selections: DelegatedLaunchSelections): boolean;
   commitTree(selections: DelegatedLaunchSelections, afterDurability: () => void): Promise<void>;
@@ -55,5 +56,6 @@ export const createRootHostedDelegatedLaunchCommand = (options: Readonly<{
       if (memberAddress) options.publishAgentOffline(createCollaborationMemberExecutionIdentity({ root: options.root, memberAddress, agentRunId }));
     }
   },
+  publishSelectionsChanged: options.publishSelectionsChanged,
   now: () => new Date().toISOString(),
 });

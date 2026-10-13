@@ -1,5 +1,5 @@
 import { isDeepStrictEqual } from "node:util";
-import type { DelegatedLaunchSelectionCommand } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
+import type { DelegatedLaunchSelectionCommand, DelegatedLaunchSelectionPublisher } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import { createRootHostedDelegatedLaunchCommand } from "../../agent-collaboration/collaborators/root-hosted-delegated-launches.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
@@ -24,6 +24,7 @@ export const createStandaloneDelegatedLaunchCommand = (options: Readonly<{
   assertAdmitting(): void;
   replaceTree(tree: StandaloneRootTreeSnapshot): void;
   publishAgentOffline(identity: CollaborationMemberExecutionIdentity): void;
+  publishSelectionsChanged: DelegatedLaunchSelectionPublisher;
 }>): DelegatedLaunchSelectionCommand => {
   const sources = new StandaloneRootTaskSourceResolver(options.getIndex);
   return createRootHostedDelegatedLaunchCommand({
@@ -35,6 +36,7 @@ export const createStandaloneDelegatedLaunchCommand = (options: Readonly<{
     readTaskSource: (address, recorded) => sources.resolve(address, recorded ?? null),
     agentAddress: (agentRunId) => (options.getIndex().getAgent(agentRunId)?.address ?? null) as AgentTeamAddress | null,
     publishAgentOffline: options.publishAgentOffline,
+    publishSelectionsChanged: options.publishSelectionsChanged,
     isUnchanged: (selections) => isDeepStrictEqual(applyStandaloneDelegatedLaunchSelections(options.getTree(), selections), options.getTree()),
     commitTree: (selections, afterDurability) => options.persistence.commitTreeMutation({
       prepareAgainstCurrent: () => {

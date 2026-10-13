@@ -7,7 +7,7 @@ import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIden
 import { createTeamAgentStatusDetails, createTeamAgentStatusEvent, createTeamAgentStatusSnapshot } from "../domain/team-agent-status.js";
 import type { TeamRun } from "../domain/team-run.js";
 import type { TeamRunConfig } from "../domain/team-run-config.js";
-import type { TeamRunEvent } from "../domain/team-run-event.js";
+import { TeamRunEventSourceType, type TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import type { TeamTaskExecutionService } from "../task-delegation/team-task-execution-service.js";
 import { TeamTaskSourceResolver } from "../task-delegation/team-task-source-resolver.js";
@@ -81,6 +81,7 @@ export const createTeamDelegatedLaunchCommand = (options: Readonly<{
         })));
       }
     },
+    publishSelectionsChanged: (selections) => options.publish({ eventSourceType: TeamRunEventSourceType.DELEGATED_LAUNCH_SELECTIONS, selections }),
     now: () => new Date().toISOString(),
   });
 };

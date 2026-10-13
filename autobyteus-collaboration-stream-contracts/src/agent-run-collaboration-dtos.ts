@@ -12,6 +12,7 @@ import {
   collaboratorEntryDtoSchema,
   taskExecutionDtoSchema,
   taskExecutionsClosedEventDtoSchema,
+  delegatedLaunchSelectionsChangedEventDtoSchema,
   taskExecutionsReopenedEventDtoSchema,
 } from "./agent-org-execution-dtos.js";
 
@@ -61,6 +62,7 @@ export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", 
   z.object({ kind: z.literal("collaborator_added"), collaborator: collaboratorEntryDtoSchema }).strict(),
   taskExecutionsClosedEventDtoSchema,
   taskExecutionsReopenedEventDtoSchema,
+  delegatedLaunchSelectionsChangedEventDtoSchema,
 ]);
 
 export type AgentRunCollaborationTreeDto = Readonly<z.infer<typeof agentRunCollaborationTreeDtoSchema>>;

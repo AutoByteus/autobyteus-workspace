@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   collaboratorEntryDtoSchema,
+  parseTeamStreamServerMessage,
   taskAgentExecutionDtoSchema,
   taskTeamExecutionDtoSchema,
   teamCopyAgentLaunch,
@@ -37,4 +38,13 @@ test("the copy launch rule: own choice, else the followed Team's, else started; 
     { launch: { ...claude, llm_model_identifier: "haiku", llm_config: null }, selected: "agent" });
   assert.equal(teamMemberFollowsTeam({}), true);
   assert.equal(teamMemberFollowsTeam({ launch_configuration: claude }), false);
+});
+
+test("a live Save's DELEGATED_LAUNCH_SELECTIONS_CHANGED carries each saved choice by run ID", () => {
+  const message = { type: "DELEGATED_LAUNCH_SELECTIONS_CHANGED", payload: { change_sequence: 4,
+    selections: [{ agent_run_id: "ie", selection: haiku }, { team_run_id: "se", selection: sonnet }] } };
+  assert.deepEqual(parseTeamStreamServerMessage(message), message);
+  assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { ...message.payload, selections: [] } }));
+  assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { ...message.payload,
+    selections: [{ agent_run_id: "ie", team_run_id: "se", selection: haiku }] } }));
 });

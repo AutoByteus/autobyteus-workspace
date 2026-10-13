@@ -173,6 +173,29 @@ export declare const taskExecutionsReopenedEventDtoSchema: z.ZodObject<{
     }, z.core.$strict>]>>;
 }, z.core.$strict>;
 /**
+ * Live: the user's model choices of these delegated copies or collaborators were saved (DS-001).
+ * Each names one record by its run ID (unique in the tree) with its choice as now recorded.
+ */
+export declare const delegatedLaunchSelectionsChangedEventDtoSchema: z.ZodObject<{
+    kind: z.ZodLiteral<"delegated_launch_selections_changed">;
+    selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agentRunId: z.ZodString;
+        selection: z.ZodObject<{
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            selectedAt: z.ZodString;
+        }, z.core.$strict>;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+        selection: z.ZodObject<{
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            selectedAt: z.ZodString;
+        }, z.core.$strict>;
+    }, z.core.$strict>]>>;
+}, z.core.$strict>;
+export type DelegatedLaunchSelectionsChangedEventDto = Readonly<z.infer<typeof delegatedLaunchSelectionsChangedEventDtoSchema>>;
+/**
  * One collaborator of a run: one instance of a shared Agent or Agent Team definition brought in.
  * Its run IDs and resolved launches are recorded in the entry; it starts on its first message.
  */
@@ -1165,6 +1188,23 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
         agentRunId: z.ZodString;
     }, z.core.$strict>, z.ZodObject<{
         teamRunId: z.ZodString;
+    }, z.core.$strict>]>>;
+}, z.core.$strict>, z.ZodObject<{
+    kind: z.ZodLiteral<"delegated_launch_selections_changed">;
+    selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agentRunId: z.ZodString;
+        selection: z.ZodObject<{
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            selectedAt: z.ZodString;
+        }, z.core.$strict>;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+        selection: z.ZodObject<{
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            selectedAt: z.ZodString;
+        }, z.core.$strict>;
     }, z.core.$strict>]>>;
 }, z.core.$strict>], "kind">;
 export type AgentOrgExecutionTreeDto = Readonly<z.infer<typeof agentOrgExecutionTreeDtoSchema>>;

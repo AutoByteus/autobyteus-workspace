@@ -3,6 +3,7 @@ import {
   applyDelegatedLaunchSelectionsToCollaborators,
   applyDelegatedLaunchSelectionsToTaskExecutions,
   delegatedLaunchSelections,
+  recordedDelegatedLaunchSelections,
   resolveDelegatedLaunchTargets,
   type DelegatedLaunchForest,
   type DelegatedTaskSourceReader,
@@ -105,6 +106,25 @@ describe("applyDelegatedLaunchSelections", () => {
   it("keeps a record unchanged when the same model and settings are chosen again", () => {
     const same = delegatedLaunchSelections([{ scope: "agent", runId: "copy-ie", selection: { llmModelIdentifier: "sol-6.1-mini", llmConfig: null } }], "2026-10-14T00:00:00.000Z");
     expect(applyDelegatedLaunchSelectionsToTaskExecutions(rootTasks, same)).toStrictEqual(rootTasks);
+  });
+
+  it("reads the committed choices back for the live view: an equal choice keeps its earlier recorded time", () => {
+    const later = "2026-10-14T00:00:00.000Z";
+    const selections = delegatedLaunchSelections([
+      { scope: "team", runId: "se-copy", selection: choice },
+      { scope: "agent", runId: "copy-ie", selection: { llmModelIdentifier: "sol-6.1-mini", llmConfig: null } },
+      { scope: "agent", runId: "reviewer-run", selection: choice },
+    ], later);
+    const committed: DelegatedLaunchForest = {
+      collaborators: applyDelegatedLaunchSelectionsToCollaborators([reviewer], selections),
+      taskExecutionLists: [applyDelegatedLaunchSelectionsToTaskExecutions(rootTasks, selections)],
+    };
+    expect(recordedDelegatedLaunchSelections(committed, selections)).toEqual([
+      { reference: { agentRunId: "reviewer-run" }, selection: { ...choice, selectedAt: later } },
+      { reference: { teamRunId: "se-copy" }, selection: { ...choice, selectedAt: later } },
+      { reference: { agentRunId: "copy-ie" }, selection: { llmModelIdentifier: "sol-6.1-mini", llmConfig: null, selectedAt: at } },
+    ]);
+    expect(recordedDelegatedLaunchSelections(forest, delegatedLaunchSelections([], later))).toEqual([]);
   });
 });
 

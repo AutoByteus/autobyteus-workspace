@@ -33,6 +33,7 @@ import type {
   RetainedAgentExecutionControl,
 } from "../domain/configured-agent-execution.js";
 import { CollaborationAgentActivationError } from "../domain/configured-agent-execution.js";
+import { AgentActivationFence, completedLocalTermination, describeActivationFailure } from "./configured-agent-execution-support.js";
 import type {
   CollaborationAgentNoConversationBindingReplacement,
   CollaborationAgentPlatformBinding,
@@ -70,7 +71,7 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
   private readonly planner: ConfiguredAgentActivationPlanner;
   /** The spec the next activation uses; only its model choice changes, and only while stopped. */
   private execution: ConfiguredAgentExecutionSpec;
-  private activationFence: Promise<void> | null = null;
+  private readonly activationFence = new AgentActivationFence();
 
   constructor(private readonly options: {
     identity: CollaborationMemberExecutionIdentity;
@@ -191,24 +192,10 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     return !this.agentRun?.isActive() && !this.readinessAttempt && !this.activationOperation && !this.configurationPreparing;
   }
 
-  async withActivationFence<T>(operation: () => Promise<T> | T): Promise<T> {
-    // A pending activation is awaited once: a failed attempt that is kept for its retry never clears,
-    // so waiting on it again would spin. `operation` then reads `isStopped()` and decides itself.
-    let awaitedReadiness = false;
-    for (;;) {
-      if (this.activationFence) { await this.activationFence; continue; }
-      if (this.readinessAttempt && !awaitedReadiness) {
-        awaitedReadiness = true;
-        await this.readinessAttempt.then(() => undefined, () => undefined);
-        continue;
-      }
-      break;
-    }
-    let release!: () => void;
-    this.activationFence = new Promise<void>((resolve) => { release = resolve; });
-    try { return await operation(); }
-    finally { this.activationFence = null; release(); }
+  withActivationFence<T>(operation: () => Promise<T> | T): Promise<T> {
+    return this.activationFence.run(() => this.readinessAttempt, operation);
   }
+
 
   /** User Stop (DS-002): interrupt, then release the exact runtime with input left open (restorable). */
   async releaseRuntimeForUserStop(): Promise<AgentOperationResult> {
@@ -334,7 +321,8 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     if (this.agentRun?.isActive()) return Promise.resolve(this.agentRun);
     if (this.readinessAttempt) return this.readinessAttempt;
     // A user Stop or model change holds activation; this activation starts after it, on the new spec.
-    if (this.activationFence) return this.activationFence.then(() => this.ensureReady());
+    const fenced = this.activationFence.held;
+    if (fenced) return fenced.then(() => this.ensureReady());
     let retrySafe = false;
     const attempt = this.initializeReady(() => { retrySafe = true; });
     this.readinessAttempt = attempt;
@@ -523,24 +511,3 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     );
   }
 }
-
-/**
- * The cause of an activation failure: its own code when it carries one, its message, and the
- * `<code>: <message>` description callers receive (the code is not repeated if the message starts with it).
- */
-const describeActivationFailure = (error: unknown): Readonly<{ code: string | null; message: string; description: string }> => {
-  const message = error instanceof Error ? error.message : String(error);
-  const raw = error instanceof Error && "code" in error ? (error as { code?: unknown }).code : undefined;
-  const code = typeof raw === "string" && raw.trim() ? raw : null;
-  return { code, message, description: code && !message.startsWith(code) ? `${code}: ${message}` : message };
-};
-
-const completedLocalTermination = (
-  finish: () => void,
-): PreparedLocalExecutionTermination => Object.freeze({
-  cancel: () => undefined,
-  commit: () => Object.freeze({ finish: async () => {
-    finish();
-    return { accepted: true as const };
-  } }),
-});

@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import {
   collaborationCopyAgentLaunch,
   collaborationMemberFollowsTeam,
+  agentOrgExecutionEventDtoSchema,
+  agentRunCollaborationEventDtoSchema,
   collaboratorEntryDtoSchema,
   taskExecutionDtoSchema,
 } from "../dist/index.js";
@@ -32,4 +34,13 @@ test("the copy launch rule: own choice, else the followed Team's, else started",
     { launch: { ...claude, llmModelIdentifier: "haiku", llmConfig: null }, selected: "agent" });
   assert.equal(collaborationMemberFollowsTeam({}), true);
   assert.equal(collaborationMemberFollowsTeam({ launchConfiguration: claude }), false);
+});
+
+test("a live Save's event carries each saved choice by run ID, on Org and Agent streams", () => {
+  const event = { kind: "delegated_launch_selections_changed", selections: [{ agentRunId: "ie", selection: haiku }, { teamRunId: "se", selection: sonnet }] };
+  assert.deepEqual(agentOrgExecutionEventDtoSchema.parse(event), event);
+  assert.deepEqual(agentRunCollaborationEventDtoSchema.parse(event), event);
+  assert.throws(() => agentOrgExecutionEventDtoSchema.parse({ ...event, selections: [] }));
+  assert.throws(() => agentRunCollaborationEventDtoSchema.parse({ ...event, selections: [{ agentRunId: "ie", teamRunId: "se", selection: haiku }] }));
+  assert.throws(() => agentOrgExecutionEventDtoSchema.parse({ ...event, selections: [{ agentRunId: "ie", selection: { llmModelIdentifier: "x" } }] }));
 });

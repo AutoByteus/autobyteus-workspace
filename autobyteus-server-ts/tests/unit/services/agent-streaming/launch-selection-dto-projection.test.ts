@@ -8,12 +8,16 @@ import {
 import {
   collaborationCopyAgentLaunch,
   collaborationMemberFollowsTeam,
+  agentOrgExecutionEventDtoSchema,
+  agentRunCollaborationEventDtoSchema,
   collaboratorEntryDtoSchema,
   taskExecutionDtoSchema,
 } from "@autobyteus/collaboration-stream-contracts";
-import { projectCollaboratorEntry, projectExecutionTree } from "../../../../src/services/agent-streaming/team-execution-view-projector.js";
+import { projectCollaboratorEntry, projectExecutionTree, projectSequencedTeamRunEvent } from "../../../../src/services/agent-streaming/team-execution-view-projector.js";
+import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import {
   projectCollaborationCollaborator,
+  projectCollaborationSelectionsChanged,
   projectCollaborationTaskExecution,
 } from "../../../../src/services/agent-streaming/collaboration-execution-tree-dto-projection.js";
 import type { CollaboratorTeamEntry, TaskTeamExecution } from "../../../../src/run-history/domain/run-execution-tree-shared-records.js";
@@ -72,5 +76,22 @@ describe("user launch choices in run views", () => {
     const { userTeamLaunchSelection: _team, ...older } = copy;
     const olderDto = taskExecutionDtoSchema.parse(projectCollaborationTaskExecution({ ...older, members: [{ address: "/se/lead" as never, agentRunId: "copy-lead", platformAgentRunId: null }] }));
     expect(olderDto).not.toHaveProperty("userTeamLaunchSelection");
+  });
+
+  it("a live Save's committed choices project onto the Team stream and the Org/Agent collaboration streams", () => {
+    const selections = [{ reference: { agentRunId: "ie-run" }, selection: haiku }, { reference: { teamRunId: "se-run" }, selection: sonnet }];
+    const message = projectSequencedTeamRunEvent(null as never, {
+      changeSequence: 7, event: { eventSourceType: TeamRunEventSourceType.DELEGATED_LAUNCH_SELECTIONS, selections },
+    } as never);
+    expect(message).toEqual({ type: "DELEGATED_LAUNCH_SELECTIONS_CHANGED", payload: { change_sequence: 7, selections: [
+      { agent_run_id: "ie-run", selection: { llm_model_identifier: "haiku", llm_config: null, selected_at: at } },
+      { team_run_id: "se-run", selection: { llm_model_identifier: "sonnet", llm_config: { thinking: "low" }, selected_at: at } },
+    ] } });
+    const event = projectCollaborationSelectionsChanged(selections);
+    expect(event).toEqual({ kind: "delegated_launch_selections_changed", selections: [
+      { agentRunId: "ie-run", selection: haiku }, { teamRunId: "se-run", selection: sonnet },
+    ] });
+    expect(agentOrgExecutionEventDtoSchema.parse(event)).toEqual(event);
+    expect(agentRunCollaborationEventDtoSchema.parse(event)).toEqual(event);
   });
 });
