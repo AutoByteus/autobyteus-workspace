@@ -45,7 +45,7 @@ const chatMessages = {
   'chat.model.recommended': 'Recommended',
   'chat.model.search': 'Search models',
   'chat.model.runtimes': 'Runtimes',
-  'chat.model.notInstalled': 'Not installed',
+  'chat.model.unavailable': 'Unavailable',
   'chat.model.loading': 'Loading models…',
   'chat.model.loadError': 'Couldn’t load models',
   'chat.model.retry': 'Retry',

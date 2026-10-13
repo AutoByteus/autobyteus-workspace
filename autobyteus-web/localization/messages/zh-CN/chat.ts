@@ -44,7 +44,7 @@ const chatMessages = {
   'chat.model.recommended': '推荐',
   'chat.model.search': '搜索模型',
   'chat.model.runtimes': '运行时',
-  'chat.model.notInstalled': '未安装',
+  'chat.model.unavailable': '不可用',
   'chat.model.loading': '正在加载模型…',
   'chat.model.loadError': '无法加载模型',
   'chat.model.retry': '重试',

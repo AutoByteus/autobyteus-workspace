@@ -1,0 +1,13 @@
+[31m     [31m×[31m reports a signed-out CLI as not signed in, with the recovery step and no CLI output (AC-001, QR-001)[39m[33m 342[2mms[22m[39m
+     [32m✓[39m keeps the generic reason for a failure without sign-in wording (AC-001 alternate)[32m 68[2mms[22m[39m
+[31m     [31m×[31m reports the CLI enabled with its models once signed in, without a server restart (AC-004 server half)[39m[32m 141[2mms[22m[39m
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+[41m[1m FAIL [22m[49m tests/e2e/runtime/agy-runtime-availability-graphql.e2e.test.ts[2m > [22mAntigravity CLI availability GraphQL e2e[2m > [22mreports a signed-out CLI as not signed in, with the recovery step and no CLI output (AC-001, QR-001)
+[31m[1mAssertionError[22m: expected { Object (runtimeKind, enabled, ...) } to deeply equal { Object (runtimeKind, enabled, ...) }[39m
+[32m- Expected[39m
+[31m+ Received[39m
+[41m[1m FAIL [22m[49m tests/e2e/runtime/agy-runtime-availability-graphql.e2e.test.ts[2m > [22mAntigravity CLI availability GraphQL e2e[2m > [22mreports the CLI enabled with its models once signed in, without a server restart (AC-004 server half)
+[31m[1mAssertionError[22m: expected 'Antigravity model discovery failed; c…' to be 'Antigravity CLI is not signed in. Run…' // Object.is equality[39m
+Expected: [32m"Antigravity [7mCLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again[27m."[39m
+Received: [31m"Antigravity [7mmodel discovery failed; check authentication or network and retry[27m."[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (3)[39m
