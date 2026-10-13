@@ -1,0 +1,1949 @@
+{
+  "startedAt": "2026-10-13T06:55:51.921Z",
+  "executablePath": "/usr/bin/chromium",
+  "cases": {
+    "B-001": {
+      "result": "Fail",
+      "description": "Fresh stored manager: seven collapsed Teams, 42 hydrated child identities",
+      "message": "page.evaluate: TypeError: Cannot read properties of undefined (reading 'config')\n    at eval (eval at evaluate (:290:30), <anonymous>:1:54)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    }
+  },
+  "cleanup": {
+    "cdpDetached": true,
+    "lifecycle": "Outer isolated session owns canonical stop and auto-data-root removal"
+  },
+  "failures": [
+    {
+      "message": "page.evaluate: TypeError: Cannot read properties of undefined (reading 'config')\n    at eval (eval at evaluate (:290:30), <anonymous>:1:54)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+      "stack": "page.evaluate: TypeError: Cannot read properties of undefined (reading 'config')\n    at eval (eval at evaluate (:290:30), <anonymous>:1:54)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at push (/home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs:201:33)\n    at prepareTree (/home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs:246:11)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs:331:5\n    at async runCase (/home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs:224:25)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs:330:3"
+    }
+  ],
+  "startupRestart": {
+    "before": 74894,
+    "instanceId": "iso-43069-9154",
+    "pid": 75575,
+    "executablePath": "/home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus",
+    "backendUrl": "http://127.0.0.1:43449",
+    "graphqlUrl": "http://127.0.0.1:43449/graphql",
+    "controlEndpoint": "http://127.0.0.1:43069",
+    "controlPort": 43069,
+    "serverPort": 43449,
+    "dataRoot": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/server-data/db/production.db",
+    "logPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-app/iso-43069-9154.log"
+  },
+  "setup": {
+    "hostId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+    "otherHostId": "project_task_manager_probe_ae037894d5ed4964be7b5900b75064f7",
+    "projectId": "project_6557b0eb-7b76-47a5-8396-69ec2cc6b70f",
+    "managerId": "project-task-manager-probe",
+    "teamId": "software-engineering-team-probe",
+    "lateTeamId": "late-engineering-team-probe",
+    "taskIds": [
+      "project_task_2179fbef-a1c7-4cf9-b020-6b37481b2af5",
+      "project_task_4a76ce46-b716-483f-970d-6c824a23ba00",
+      "project_task_d0913db1-6f5b-4c50-97e9-2d8b3b6f01c4",
+      "project_task_8f165128-0f29-4f08-96dc-42ab94bba673",
+      "project_task_7225aad1-7852-489b-a171-1e0401b35c73",
+      "project_task_a2c2baf7-5c9d-4a9c-bce0-03cd19780472",
+      "project_task_f86dc90f-3dc7-4a3f-b3ad-269b7bf30b2b"
+    ],
+    "otherTaskId": "project_task_386bfecd-520a-4390-ae51-287f4051ec34",
+    "teams": [
+      {
+        "address": "/software_engineering_team_probe",
+        "teamRunId": "software_engineering_team_probe_72169b9d8f2e49ee86bbc0bdf167fcb3",
+        "members": [
+          {
+            "address": "/software_engineering_team_probe/solution_designer",
+            "agentRunId": "solution_designer_78a16b622018464ebc6856e068737a15",
+            "platformAgentRunId": "8dcc34ec-0d98-4122-8e1d-4fccd6fc59e0"
+          },
+          {
+            "address": "/software_engineering_team_probe/architecture_reviewer",
+            "agentRunId": "architecture_reviewer_9d94534e00e04eda9cfa19a43fed2607",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/implementation_engineer",
+            "agentRunId": "implementation_engineer_7750c97e75fb465884ca778afd7c3965",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/code_reviewer",
+            "agentRunId": "code_reviewer_59d367582bbd4dbc821dae54e7e84fdf",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/api_e2e_engineer",
+            "agentRunId": "api_e2e_engineer_c37cae05a595496cb86090c6be6d47ce",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/delivery_engineer",
+            "agentRunId": "delivery_engineer_c6437c24ba2146ce9b1a0bb50f836578",
+            "platformAgentRunId": null
+          }
+        ],
+        "taskExecutions": [],
+        "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+        "startedAt": "2026-10-13T06:55:52.714Z",
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "software-engineering-team-probe",
+          "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+          "members": [
+            {
+              "address": "/software_engineering_team_probe/solution_designer",
+              "agentDefinitionId": "solution-designer"
+            },
+            {
+              "address": "/software_engineering_team_probe/architecture_reviewer",
+              "agentDefinitionId": "architecture-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/implementation_engineer",
+              "agentDefinitionId": "implementation-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/code_reviewer",
+              "agentDefinitionId": "code-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/api_e2e_engineer",
+              "agentDefinitionId": "api-e2e-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/delivery_engineer",
+              "agentDefinitionId": "delivery-engineer"
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+          },
+          "defaultLaunchSource": {
+            "origin": "inherited",
+            "fallbacks": []
+          }
+        }
+      },
+      {
+        "address": "/software_engineering_team_probe",
+        "teamRunId": "software_engineering_team_probe_a572edbe53fe47a7a0e0b7a1023eb1f6",
+        "members": [
+          {
+            "address": "/software_engineering_team_probe/solution_designer",
+            "agentRunId": "solution_designer_f441af1f86ff4b32922eb7a34a79956c",
+            "platformAgentRunId": "0e6cde39-8b05-4cad-b9c0-e88bca0b3fc5"
+          },
+          {
+            "address": "/software_engineering_team_probe/architecture_reviewer",
+            "agentRunId": "architecture_reviewer_03b9b182a6554d8b9e1f75c5943b672d",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/implementation_engineer",
+            "agentRunId": "implementation_engineer_8d612b45b3614bdda9691c59d767277b",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/code_reviewer",
+            "agentRunId": "code_reviewer_d1d2362828e24524a37a0087cfeebf59",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/api_e2e_engineer",
+            "agentRunId": "api_e2e_engineer_dd4855a6f6494bdc8c91eb49500ad774",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/delivery_engineer",
+            "agentRunId": "delivery_engineer_354001a0b46242e3b620effd4ee69cf4",
+            "platformAgentRunId": null
+          }
+        ],
+        "taskExecutions": [],
+        "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+        "startedAt": "2026-10-13T06:55:53.026Z",
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "software-engineering-team-probe",
+          "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+          "members": [
+            {
+              "address": "/software_engineering_team_probe/solution_designer",
+              "agentDefinitionId": "solution-designer"
+            },
+            {
+              "address": "/software_engineering_team_probe/architecture_reviewer",
+              "agentDefinitionId": "architecture-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/implementation_engineer",
+              "agentDefinitionId": "implementation-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/code_reviewer",
+              "agentDefinitionId": "code-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/api_e2e_engineer",
+              "agentDefinitionId": "api-e2e-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/delivery_engineer",
+              "agentDefinitionId": "delivery-engineer"
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+          },
+          "defaultLaunchSource": {
+            "origin": "inherited",
+            "fallbacks": []
+          }
+        }
+      },
+      {
+        "address": "/software_engineering_team_probe",
+        "teamRunId": "software_engineering_team_probe_5191360213f24b71b0ffe6fa31cc2434",
+        "members": [
+          {
+            "address": "/software_engineering_team_probe/solution_designer",
+            "agentRunId": "solution_designer_7e69abe45f8d4c3d84a5abe6143547cb",
+            "platformAgentRunId": "82644138-4ebe-4f24-918b-938e63c02ff6"
+          },
+          {
+            "address": "/software_engineering_team_probe/architecture_reviewer",
+            "agentRunId": "architecture_reviewer_3de66cb51e454d8e86528c78967322c8",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/implementation_engineer",
+            "agentRunId": "implementation_engineer_5f071095102341a6af0de307cc53c1f5",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/code_reviewer",
+            "agentRunId": "code_reviewer_a0c6f16576b14edeae816214fb62c7b9",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/api_e2e_engineer",
+            "agentRunId": "api_e2e_engineer_cbbf20b3d3444039beaabe009f479c57",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/delivery_engineer",
+            "agentRunId": "delivery_engineer_c44344829f804f6998ffe2a0dfb4081b",
+            "platformAgentRunId": null
+          }
+        ],
+        "taskExecutions": [],
+        "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+        "startedAt": "2026-10-13T06:55:53.250Z",
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "software-engineering-team-probe",
+          "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+          "members": [
+            {
+              "address": "/software_engineering_team_probe/solution_designer",
+              "agentDefinitionId": "solution-designer"
+            },
+            {
+              "address": "/software_engineering_team_probe/architecture_reviewer",
+              "agentDefinitionId": "architecture-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/implementation_engineer",
+              "agentDefinitionId": "implementation-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/code_reviewer",
+              "agentDefinitionId": "code-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/api_e2e_engineer",
+              "agentDefinitionId": "api-e2e-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/delivery_engineer",
+              "agentDefinitionId": "delivery-engineer"
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+          },
+          "defaultLaunchSource": {
+            "origin": "inherited",
+            "fallbacks": []
+          }
+        }
+      },
+      {
+        "address": "/software_engineering_team_probe",
+        "teamRunId": "software_engineering_team_probe_17a5d03c9e9a4974a97b4099146ccbfc",
+        "members": [
+          {
+            "address": "/software_engineering_team_probe/solution_designer",
+            "agentRunId": "solution_designer_5f8b42c9e53e4b1b8d292fb30348805a",
+            "platformAgentRunId": "d8b70be2-f7b3-4ad1-81cf-d104de6a3139"
+          },
+          {
+            "address": "/software_engineering_team_probe/architecture_reviewer",
+            "agentRunId": "architecture_reviewer_df524842f3da4c3ca69f80079cccf3f4",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/implementation_engineer",
+            "agentRunId": "implementation_engineer_85e45c139f0e493aa14c4fa0b274bb84",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/code_reviewer",
+            "agentRunId": "code_reviewer_2095db79149843ee8c0f083d58e709ae",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/api_e2e_engineer",
+            "agentRunId": "api_e2e_engineer_6ff83387687a469f9a962f3420d2cc88",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/delivery_engineer",
+            "agentRunId": "delivery_engineer_0776e5851c9b450a9a5c2f35c3e91d6d",
+            "platformAgentRunId": null
+          }
+        ],
+        "taskExecutions": [],
+        "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+        "startedAt": "2026-10-13T06:55:53.465Z",
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "software-engineering-team-probe",
+          "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+          "members": [
+            {
+              "address": "/software_engineering_team_probe/solution_designer",
+              "agentDefinitionId": "solution-designer"
+            },
+            {
+              "address": "/software_engineering_team_probe/architecture_reviewer",
+              "agentDefinitionId": "architecture-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/implementation_engineer",
+              "agentDefinitionId": "implementation-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/code_reviewer",
+              "agentDefinitionId": "code-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/api_e2e_engineer",
+              "agentDefinitionId": "api-e2e-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/delivery_engineer",
+              "agentDefinitionId": "delivery-engineer"
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+          },
+          "defaultLaunchSource": {
+            "origin": "inherited",
+            "fallbacks": []
+          }
+        }
+      },
+      {
+        "address": "/software_engineering_team_probe",
+        "teamRunId": "software_engineering_team_probe_82f1caf80a214ca093d3222b79b345b9",
+        "members": [
+          {
+            "address": "/software_engineering_team_probe/solution_designer",
+            "agentRunId": "solution_designer_9d7cbc86ac0145a895beaa29c65cf46b",
+            "platformAgentRunId": "0cb4a977-4ba3-4838-a8ce-9c2721af80c9"
+          },
+          {
+            "address": "/software_engineering_team_probe/architecture_reviewer",
+            "agentRunId": "architecture_reviewer_4dc6c10bcf39461a8696c776fc734c16",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/implementation_engineer",
+            "agentRunId": "implementation_engineer_aed8cb3d18bb4df7852dedf5db2a67b3",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/code_reviewer",
+            "agentRunId": "code_reviewer_7882a39f6e9846e79da2479626088be1",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/api_e2e_engineer",
+            "agentRunId": "api_e2e_engineer_5c5a0f9ada4b42a0b4c1bea03f531e30",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/delivery_engineer",
+            "agentRunId": "delivery_engineer_72b54a83a0cd4bef99fda8bf7d3a0c80",
+            "platformAgentRunId": null
+          }
+        ],
+        "taskExecutions": [],
+        "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+        "startedAt": "2026-10-13T06:55:53.685Z",
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "software-engineering-team-probe",
+          "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+          "members": [
+            {
+              "address": "/software_engineering_team_probe/solution_designer",
+              "agentDefinitionId": "solution-designer"
+            },
+            {
+              "address": "/software_engineering_team_probe/architecture_reviewer",
+              "agentDefinitionId": "architecture-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/implementation_engineer",
+              "agentDefinitionId": "implementation-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/code_reviewer",
+              "agentDefinitionId": "code-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/api_e2e_engineer",
+              "agentDefinitionId": "api-e2e-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/delivery_engineer",
+              "agentDefinitionId": "delivery-engineer"
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+          },
+          "defaultLaunchSource": {
+            "origin": "inherited",
+            "fallbacks": []
+          }
+        }
+      },
+      {
+        "address": "/software_engineering_team_probe",
+        "teamRunId": "software_engineering_team_probe_11d9b38d96c54d8d8c082e249e995318",
+        "members": [
+          {
+            "address": "/software_engineering_team_probe/solution_designer",
+            "agentRunId": "solution_designer_059a61cd47c84946a40e1a08f87100c7",
+            "platformAgentRunId": "2ac81a1e-5f13-4edb-9536-36b776e2bb07"
+          },
+          {
+            "address": "/software_engineering_team_probe/architecture_reviewer",
+            "agentRunId": "architecture_reviewer_975eda86eeb84c72970f6e63c5354ff3",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/implementation_engineer",
+            "agentRunId": "implementation_engineer_0ec91d1f81544b6d8e2268cfc24e3dc4",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/code_reviewer",
+            "agentRunId": "code_reviewer_59fbdff70a3d4a8f9796b5f6ecb34470",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/api_e2e_engineer",
+            "agentRunId": "api_e2e_engineer_57016478c5e0453bbf27f3323f362116",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/delivery_engineer",
+            "agentRunId": "delivery_engineer_9acdbc4758c64d528a734d6613eb2524",
+            "platformAgentRunId": null
+          }
+        ],
+        "taskExecutions": [],
+        "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+        "startedAt": "2026-10-13T06:55:53.899Z",
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "software-engineering-team-probe",
+          "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+          "members": [
+            {
+              "address": "/software_engineering_team_probe/solution_designer",
+              "agentDefinitionId": "solution-designer"
+            },
+            {
+              "address": "/software_engineering_team_probe/architecture_reviewer",
+              "agentDefinitionId": "architecture-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/implementation_engineer",
+              "agentDefinitionId": "implementation-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/code_reviewer",
+              "agentDefinitionId": "code-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/api_e2e_engineer",
+              "agentDefinitionId": "api-e2e-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/delivery_engineer",
+              "agentDefinitionId": "delivery-engineer"
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+          },
+          "defaultLaunchSource": {
+            "origin": "inherited",
+            "fallbacks": []
+          }
+        }
+      },
+      {
+        "address": "/software_engineering_team_probe",
+        "teamRunId": "software_engineering_team_probe_308e7d73a59d464c826d0f4ad786d61a",
+        "members": [
+          {
+            "address": "/software_engineering_team_probe/solution_designer",
+            "agentRunId": "solution_designer_11edad810e824e41aa29d8728e070dc3",
+            "platformAgentRunId": "0cfd21e9-06bf-4401-9c38-fee386534f98"
+          },
+          {
+            "address": "/software_engineering_team_probe/architecture_reviewer",
+            "agentRunId": "architecture_reviewer_7bdae35d3f3d4ea096de29514f49bacf",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/implementation_engineer",
+            "agentRunId": "implementation_engineer_d248301bcc1f469fb42341ace8235766",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/code_reviewer",
+            "agentRunId": "code_reviewer_fb7af945626e4c3e99a7aa2e694f310d",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/api_e2e_engineer",
+            "agentRunId": "api_e2e_engineer_d433ce58464041768a9cb2e6380a73e5",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/software_engineering_team_probe/delivery_engineer",
+            "agentRunId": "delivery_engineer_32d40f6520084449800c8b311a7973cf",
+            "platformAgentRunId": null
+          }
+        ],
+        "taskExecutions": [],
+        "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+        "startedAt": "2026-10-13T06:55:54.127Z",
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "software-engineering-team-probe",
+          "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+          "members": [
+            {
+              "address": "/software_engineering_team_probe/solution_designer",
+              "agentDefinitionId": "solution-designer"
+            },
+            {
+              "address": "/software_engineering_team_probe/architecture_reviewer",
+              "agentDefinitionId": "architecture-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/implementation_engineer",
+              "agentDefinitionId": "implementation-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/code_reviewer",
+              "agentDefinitionId": "code-reviewer"
+            },
+            {
+              "address": "/software_engineering_team_probe/api_e2e_engineer",
+              "agentDefinitionId": "api-e2e-engineer"
+            },
+            {
+              "address": "/software_engineering_team_probe/delivery_engineer",
+              "agentDefinitionId": "delivery-engineer"
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+          },
+          "defaultLaunchSource": {
+            "origin": "inherited",
+            "fallbacks": []
+          }
+        }
+      }
+    ],
+    "initial": {
+      "base_change_sequence": 147,
+      "is_active": true,
+      "execution_tree": {
+        "subjectKind": "agent",
+        "createdAt": "2026-10-13T06:55:52.060Z",
+        "host": {
+          "address": "/project_task_manager_probe",
+          "agentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+          "agentDefinitionId": "project-task-manager-probe"
+        },
+        "collaborators": [],
+        "taskExecutions": [
+          {
+            "address": "/software_engineering_team_probe",
+            "teamRunId": "software_engineering_team_probe_72169b9d8f2e49ee86bbc0bdf167fcb3",
+            "members": [
+              {
+                "address": "/software_engineering_team_probe/solution_designer",
+                "agentRunId": "solution_designer_78a16b622018464ebc6856e068737a15",
+                "platformAgentRunId": "8dcc34ec-0d98-4122-8e1d-4fccd6fc59e0"
+              },
+              {
+                "address": "/software_engineering_team_probe/architecture_reviewer",
+                "agentRunId": "architecture_reviewer_9d94534e00e04eda9cfa19a43fed2607",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/implementation_engineer",
+                "agentRunId": "implementation_engineer_7750c97e75fb465884ca778afd7c3965",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/code_reviewer",
+                "agentRunId": "code_reviewer_59d367582bbd4dbc821dae54e7e84fdf",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/api_e2e_engineer",
+                "agentRunId": "api_e2e_engineer_c37cae05a595496cb86090c6be6d47ce",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/delivery_engineer",
+                "agentRunId": "delivery_engineer_c6437c24ba2146ce9b1a0bb50f836578",
+                "platformAgentRunId": null
+              }
+            ],
+            "taskExecutions": [],
+            "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+            "startedAt": "2026-10-13T06:55:52.714Z",
+            "source": {
+              "kind": "agent_team",
+              "teamDefinitionId": "software-engineering-team-probe",
+              "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+              "members": [
+                {
+                  "address": "/software_engineering_team_probe/solution_designer",
+                  "agentDefinitionId": "solution-designer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/architecture_reviewer",
+                  "agentDefinitionId": "architecture-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/implementation_engineer",
+                  "agentDefinitionId": "implementation-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/code_reviewer",
+                  "agentDefinitionId": "code-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/api_e2e_engineer",
+                  "agentDefinitionId": "api-e2e-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/delivery_engineer",
+                  "agentDefinitionId": "delivery-engineer"
+                }
+              ],
+              "handoffs": [],
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+              },
+              "defaultLaunchSource": {
+                "origin": "inherited",
+                "fallbacks": []
+              }
+            }
+          },
+          {
+            "address": "/software_engineering_team_probe",
+            "teamRunId": "software_engineering_team_probe_a572edbe53fe47a7a0e0b7a1023eb1f6",
+            "members": [
+              {
+                "address": "/software_engineering_team_probe/solution_designer",
+                "agentRunId": "solution_designer_f441af1f86ff4b32922eb7a34a79956c",
+                "platformAgentRunId": "0e6cde39-8b05-4cad-b9c0-e88bca0b3fc5"
+              },
+              {
+                "address": "/software_engineering_team_probe/architecture_reviewer",
+                "agentRunId": "architecture_reviewer_03b9b182a6554d8b9e1f75c5943b672d",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/implementation_engineer",
+                "agentRunId": "implementation_engineer_8d612b45b3614bdda9691c59d767277b",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/code_reviewer",
+                "agentRunId": "code_reviewer_d1d2362828e24524a37a0087cfeebf59",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/api_e2e_engineer",
+                "agentRunId": "api_e2e_engineer_dd4855a6f6494bdc8c91eb49500ad774",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/delivery_engineer",
+                "agentRunId": "delivery_engineer_354001a0b46242e3b620effd4ee69cf4",
+                "platformAgentRunId": null
+              }
+            ],
+            "taskExecutions": [],
+            "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+            "startedAt": "2026-10-13T06:55:53.026Z",
+            "source": {
+              "kind": "agent_team",
+              "teamDefinitionId": "software-engineering-team-probe",
+              "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+              "members": [
+                {
+                  "address": "/software_engineering_team_probe/solution_designer",
+                  "agentDefinitionId": "solution-designer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/architecture_reviewer",
+                  "agentDefinitionId": "architecture-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/implementation_engineer",
+                  "agentDefinitionId": "implementation-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/code_reviewer",
+                  "agentDefinitionId": "code-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/api_e2e_engineer",
+                  "agentDefinitionId": "api-e2e-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/delivery_engineer",
+                  "agentDefinitionId": "delivery-engineer"
+                }
+              ],
+              "handoffs": [],
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+              },
+              "defaultLaunchSource": {
+                "origin": "inherited",
+                "fallbacks": []
+              }
+            }
+          },
+          {
+            "address": "/software_engineering_team_probe",
+            "teamRunId": "software_engineering_team_probe_5191360213f24b71b0ffe6fa31cc2434",
+            "members": [
+              {
+                "address": "/software_engineering_team_probe/solution_designer",
+                "agentRunId": "solution_designer_7e69abe45f8d4c3d84a5abe6143547cb",
+                "platformAgentRunId": "82644138-4ebe-4f24-918b-938e63c02ff6"
+              },
+              {
+                "address": "/software_engineering_team_probe/architecture_reviewer",
+                "agentRunId": "architecture_reviewer_3de66cb51e454d8e86528c78967322c8",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/implementation_engineer",
+                "agentRunId": "implementation_engineer_5f071095102341a6af0de307cc53c1f5",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/code_reviewer",
+                "agentRunId": "code_reviewer_a0c6f16576b14edeae816214fb62c7b9",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/api_e2e_engineer",
+                "agentRunId": "api_e2e_engineer_cbbf20b3d3444039beaabe009f479c57",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/delivery_engineer",
+                "agentRunId": "delivery_engineer_c44344829f804f6998ffe2a0dfb4081b",
+                "platformAgentRunId": null
+              }
+            ],
+            "taskExecutions": [],
+            "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+            "startedAt": "2026-10-13T06:55:53.250Z",
+            "source": {
+              "kind": "agent_team",
+              "teamDefinitionId": "software-engineering-team-probe",
+              "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+              "members": [
+                {
+                  "address": "/software_engineering_team_probe/solution_designer",
+                  "agentDefinitionId": "solution-designer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/architecture_reviewer",
+                  "agentDefinitionId": "architecture-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/implementation_engineer",
+                  "agentDefinitionId": "implementation-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/code_reviewer",
+                  "agentDefinitionId": "code-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/api_e2e_engineer",
+                  "agentDefinitionId": "api-e2e-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/delivery_engineer",
+                  "agentDefinitionId": "delivery-engineer"
+                }
+              ],
+              "handoffs": [],
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+              },
+              "defaultLaunchSource": {
+                "origin": "inherited",
+                "fallbacks": []
+              }
+            }
+          },
+          {
+            "address": "/software_engineering_team_probe",
+            "teamRunId": "software_engineering_team_probe_17a5d03c9e9a4974a97b4099146ccbfc",
+            "members": [
+              {
+                "address": "/software_engineering_team_probe/solution_designer",
+                "agentRunId": "solution_designer_5f8b42c9e53e4b1b8d292fb30348805a",
+                "platformAgentRunId": "d8b70be2-f7b3-4ad1-81cf-d104de6a3139"
+              },
+              {
+                "address": "/software_engineering_team_probe/architecture_reviewer",
+                "agentRunId": "architecture_reviewer_df524842f3da4c3ca69f80079cccf3f4",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/implementation_engineer",
+                "agentRunId": "implementation_engineer_85e45c139f0e493aa14c4fa0b274bb84",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/code_reviewer",
+                "agentRunId": "code_reviewer_2095db79149843ee8c0f083d58e709ae",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/api_e2e_engineer",
+                "agentRunId": "api_e2e_engineer_6ff83387687a469f9a962f3420d2cc88",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/delivery_engineer",
+                "agentRunId": "delivery_engineer_0776e5851c9b450a9a5c2f35c3e91d6d",
+                "platformAgentRunId": null
+              }
+            ],
+            "taskExecutions": [],
+            "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+            "startedAt": "2026-10-13T06:55:53.465Z",
+            "source": {
+              "kind": "agent_team",
+              "teamDefinitionId": "software-engineering-team-probe",
+              "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+              "members": [
+                {
+                  "address": "/software_engineering_team_probe/solution_designer",
+                  "agentDefinitionId": "solution-designer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/architecture_reviewer",
+                  "agentDefinitionId": "architecture-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/implementation_engineer",
+                  "agentDefinitionId": "implementation-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/code_reviewer",
+                  "agentDefinitionId": "code-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/api_e2e_engineer",
+                  "agentDefinitionId": "api-e2e-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/delivery_engineer",
+                  "agentDefinitionId": "delivery-engineer"
+                }
+              ],
+              "handoffs": [],
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+              },
+              "defaultLaunchSource": {
+                "origin": "inherited",
+                "fallbacks": []
+              }
+            }
+          },
+          {
+            "address": "/software_engineering_team_probe",
+            "teamRunId": "software_engineering_team_probe_82f1caf80a214ca093d3222b79b345b9",
+            "members": [
+              {
+                "address": "/software_engineering_team_probe/solution_designer",
+                "agentRunId": "solution_designer_9d7cbc86ac0145a895beaa29c65cf46b",
+                "platformAgentRunId": "0cb4a977-4ba3-4838-a8ce-9c2721af80c9"
+              },
+              {
+                "address": "/software_engineering_team_probe/architecture_reviewer",
+                "agentRunId": "architecture_reviewer_4dc6c10bcf39461a8696c776fc734c16",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/implementation_engineer",
+                "agentRunId": "implementation_engineer_aed8cb3d18bb4df7852dedf5db2a67b3",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/code_reviewer",
+                "agentRunId": "code_reviewer_7882a39f6e9846e79da2479626088be1",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/api_e2e_engineer",
+                "agentRunId": "api_e2e_engineer_5c5a0f9ada4b42a0b4c1bea03f531e30",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/delivery_engineer",
+                "agentRunId": "delivery_engineer_72b54a83a0cd4bef99fda8bf7d3a0c80",
+                "platformAgentRunId": null
+              }
+            ],
+            "taskExecutions": [],
+            "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+            "startedAt": "2026-10-13T06:55:53.685Z",
+            "source": {
+              "kind": "agent_team",
+              "teamDefinitionId": "software-engineering-team-probe",
+              "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+              "members": [
+                {
+                  "address": "/software_engineering_team_probe/solution_designer",
+                  "agentDefinitionId": "solution-designer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/architecture_reviewer",
+                  "agentDefinitionId": "architecture-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/implementation_engineer",
+                  "agentDefinitionId": "implementation-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/code_reviewer",
+                  "agentDefinitionId": "code-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/api_e2e_engineer",
+                  "agentDefinitionId": "api-e2e-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/delivery_engineer",
+                  "agentDefinitionId": "delivery-engineer"
+                }
+              ],
+              "handoffs": [],
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+              },
+              "defaultLaunchSource": {
+                "origin": "inherited",
+                "fallbacks": []
+              }
+            }
+          },
+          {
+            "address": "/software_engineering_team_probe",
+            "teamRunId": "software_engineering_team_probe_11d9b38d96c54d8d8c082e249e995318",
+            "members": [
+              {
+                "address": "/software_engineering_team_probe/solution_designer",
+                "agentRunId": "solution_designer_059a61cd47c84946a40e1a08f87100c7",
+                "platformAgentRunId": "2ac81a1e-5f13-4edb-9536-36b776e2bb07"
+              },
+              {
+                "address": "/software_engineering_team_probe/architecture_reviewer",
+                "agentRunId": "architecture_reviewer_975eda86eeb84c72970f6e63c5354ff3",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/implementation_engineer",
+                "agentRunId": "implementation_engineer_0ec91d1f81544b6d8e2268cfc24e3dc4",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/code_reviewer",
+                "agentRunId": "code_reviewer_59fbdff70a3d4a8f9796b5f6ecb34470",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/api_e2e_engineer",
+                "agentRunId": "api_e2e_engineer_57016478c5e0453bbf27f3323f362116",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/delivery_engineer",
+                "agentRunId": "delivery_engineer_9acdbc4758c64d528a734d6613eb2524",
+                "platformAgentRunId": null
+              }
+            ],
+            "taskExecutions": [],
+            "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+            "startedAt": "2026-10-13T06:55:53.899Z",
+            "source": {
+              "kind": "agent_team",
+              "teamDefinitionId": "software-engineering-team-probe",
+              "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+              "members": [
+                {
+                  "address": "/software_engineering_team_probe/solution_designer",
+                  "agentDefinitionId": "solution-designer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/architecture_reviewer",
+                  "agentDefinitionId": "architecture-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/implementation_engineer",
+                  "agentDefinitionId": "implementation-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/code_reviewer",
+                  "agentDefinitionId": "code-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/api_e2e_engineer",
+                  "agentDefinitionId": "api-e2e-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/delivery_engineer",
+                  "agentDefinitionId": "delivery-engineer"
+                }
+              ],
+              "handoffs": [],
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+              },
+              "defaultLaunchSource": {
+                "origin": "inherited",
+                "fallbacks": []
+              }
+            }
+          },
+          {
+            "address": "/software_engineering_team_probe",
+            "teamRunId": "software_engineering_team_probe_308e7d73a59d464c826d0f4ad786d61a",
+            "members": [
+              {
+                "address": "/software_engineering_team_probe/solution_designer",
+                "agentRunId": "solution_designer_11edad810e824e41aa29d8728e070dc3",
+                "platformAgentRunId": "0cfd21e9-06bf-4401-9c38-fee386534f98"
+              },
+              {
+                "address": "/software_engineering_team_probe/architecture_reviewer",
+                "agentRunId": "architecture_reviewer_7bdae35d3f3d4ea096de29514f49bacf",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/implementation_engineer",
+                "agentRunId": "implementation_engineer_d248301bcc1f469fb42341ace8235766",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/code_reviewer",
+                "agentRunId": "code_reviewer_fb7af945626e4c3e99a7aa2e694f310d",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/api_e2e_engineer",
+                "agentRunId": "api_e2e_engineer_d433ce58464041768a9cb2e6380a73e5",
+                "platformAgentRunId": null
+              },
+              {
+                "address": "/software_engineering_team_probe/delivery_engineer",
+                "agentRunId": "delivery_engineer_32d40f6520084449800c8b311a7973cf",
+                "platformAgentRunId": null
+              }
+            ],
+            "taskExecutions": [],
+            "delegatorAgentRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+            "startedAt": "2026-10-13T06:55:54.127Z",
+            "source": {
+              "kind": "agent_team",
+              "teamDefinitionId": "software-engineering-team-probe",
+              "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+              "members": [
+                {
+                  "address": "/software_engineering_team_probe/solution_designer",
+                  "agentDefinitionId": "solution-designer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/architecture_reviewer",
+                  "agentDefinitionId": "architecture-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/implementation_engineer",
+                  "agentDefinitionId": "implementation-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/code_reviewer",
+                  "agentDefinitionId": "code-reviewer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/api_e2e_engineer",
+                  "agentDefinitionId": "api-e2e-engineer"
+                },
+                {
+                  "address": "/software_engineering_team_probe/delivery_engineer",
+                  "agentDefinitionId": "delivery-engineer"
+                }
+              ],
+              "handoffs": [],
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/workspace"
+              },
+              "defaultLaunchSource": {
+                "origin": "inherited",
+                "fallbacks": []
+              }
+            }
+          }
+        ]
+      },
+      "closed_task_executions": [],
+      "communication_messages": {
+        "schemaVersion": 1,
+        "subjectKind": "agent",
+        "hostRunId": "project_task_manager_probe_8ad92a02cafa490da102d2120971ad9a",
+        "messages": []
+      },
+      "agent_statuses": [
+        {
+          "member_address": "/software_engineering_team_probe/solution_designer",
+          "agent_run_id": "solution_designer_78a16b622018464ebc6856e068737a15",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/architecture_reviewer",
+          "agent_run_id": "architecture_reviewer_9d94534e00e04eda9cfa19a43fed2607",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/implementation_engineer",
+          "agent_run_id": "implementation_engineer_7750c97e75fb465884ca778afd7c3965",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/code_reviewer",
+          "agent_run_id": "code_reviewer_59d367582bbd4dbc821dae54e7e84fdf",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/api_e2e_engineer",
+          "agent_run_id": "api_e2e_engineer_c37cae05a595496cb86090c6be6d47ce",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/delivery_engineer",
+          "agent_run_id": "delivery_engineer_c6437c24ba2146ce9b1a0bb50f836578",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/solution_designer",
+          "agent_run_id": "solution_designer_f441af1f86ff4b32922eb7a34a79956c",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/architecture_reviewer",
+          "agent_run_id": "architecture_reviewer_03b9b182a6554d8b9e1f75c5943b672d",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/implementation_engineer",
+          "agent_run_id": "implementation_engineer_8d612b45b3614bdda9691c59d767277b",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/code_reviewer",
+          "agent_run_id": "code_reviewer_d1d2362828e24524a37a0087cfeebf59",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/api_e2e_engineer",
+          "agent_run_id": "api_e2e_engineer_dd4855a6f6494bdc8c91eb49500ad774",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/delivery_engineer",
+          "agent_run_id": "delivery_engineer_354001a0b46242e3b620effd4ee69cf4",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/solution_designer",
+          "agent_run_id": "solution_designer_7e69abe45f8d4c3d84a5abe6143547cb",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/architecture_reviewer",
+          "agent_run_id": "architecture_reviewer_3de66cb51e454d8e86528c78967322c8",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/implementation_engineer",
+          "agent_run_id": "implementation_engineer_5f071095102341a6af0de307cc53c1f5",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/code_reviewer",
+          "agent_run_id": "code_reviewer_a0c6f16576b14edeae816214fb62c7b9",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/api_e2e_engineer",
+          "agent_run_id": "api_e2e_engineer_cbbf20b3d3444039beaabe009f479c57",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/delivery_engineer",
+          "agent_run_id": "delivery_engineer_c44344829f804f6998ffe2a0dfb4081b",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/solution_designer",
+          "agent_run_id": "solution_designer_5f8b42c9e53e4b1b8d292fb30348805a",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/architecture_reviewer",
+          "agent_run_id": "architecture_reviewer_df524842f3da4c3ca69f80079cccf3f4",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/implementation_engineer",
+          "agent_run_id": "implementation_engineer_85e45c139f0e493aa14c4fa0b274bb84",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/code_reviewer",
+          "agent_run_id": "code_reviewer_2095db79149843ee8c0f083d58e709ae",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/api_e2e_engineer",
+          "agent_run_id": "api_e2e_engineer_6ff83387687a469f9a962f3420d2cc88",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/delivery_engineer",
+          "agent_run_id": "delivery_engineer_0776e5851c9b450a9a5c2f35c3e91d6d",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/solution_designer",
+          "agent_run_id": "solution_designer_9d7cbc86ac0145a895beaa29c65cf46b",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/architecture_reviewer",
+          "agent_run_id": "architecture_reviewer_4dc6c10bcf39461a8696c776fc734c16",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/implementation_engineer",
+          "agent_run_id": "implementation_engineer_aed8cb3d18bb4df7852dedf5db2a67b3",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/code_reviewer",
+          "agent_run_id": "code_reviewer_7882a39f6e9846e79da2479626088be1",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/api_e2e_engineer",
+          "agent_run_id": "api_e2e_engineer_5c5a0f9ada4b42a0b4c1bea03f531e30",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/delivery_engineer",
+          "agent_run_id": "delivery_engineer_72b54a83a0cd4bef99fda8bf7d3a0c80",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/solution_designer",
+          "agent_run_id": "solution_designer_059a61cd47c84946a40e1a08f87100c7",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/architecture_reviewer",
+          "agent_run_id": "architecture_reviewer_975eda86eeb84c72970f6e63c5354ff3",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/implementation_engineer",
+          "agent_run_id": "implementation_engineer_0ec91d1f81544b6d8e2268cfc24e3dc4",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/code_reviewer",
+          "agent_run_id": "code_reviewer_59fbdff70a3d4a8f9796b5f6ecb34470",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/api_e2e_engineer",
+          "agent_run_id": "api_e2e_engineer_57016478c5e0453bbf27f3323f362116",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/delivery_engineer",
+          "agent_run_id": "delivery_engineer_9acdbc4758c64d528a734d6613eb2524",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/solution_designer",
+          "agent_run_id": "solution_designer_11edad810e824e41aa29d8728e070dc3",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/architecture_reviewer",
+          "agent_run_id": "architecture_reviewer_7bdae35d3f3d4ea096de29514f49bacf",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/implementation_engineer",
+          "agent_run_id": "implementation_engineer_d248301bcc1f469fb42341ace8235766",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/code_reviewer",
+          "agent_run_id": "code_reviewer_fb7af945626e4c3e99a7aa2e694f310d",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/api_e2e_engineer",
+          "agent_run_id": "api_e2e_engineer_d433ce58464041768a9cb2e6380a73e5",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/software_engineering_team_probe/delivery_engineer",
+          "agent_run_id": "delivery_engineer_32d40f6520084449800c8b311a7973cf",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        }
+      ],
+      "agent_input_states": [
+        {
+          "agent_run_id": "solution_designer_78a16b622018464ebc6856e068737a15",
+          "state": {
+            "run_instance_id": "dec5f90d-61a0-4119-987c-c5efe776a99c",
+            "revision": 5,
+            "entries": [],
+            "recoverableBlock": null
+          }
+        },
+        {
+          "agent_run_id": "solution_designer_f441af1f86ff4b32922eb7a34a79956c",
+          "state": {
+            "run_instance_id": "d608da85-637a-41cc-b03c-0786c3123d0a",
+            "revision": 5,
+            "entries": [],
+            "recoverableBlock": null
+          }
+        },
+        {
+          "agent_run_id": "solution_designer_7e69abe45f8d4c3d84a5abe6143547cb",
+          "state": {
+            "run_instance_id": "28b8f699-e2ea-43e1-be89-b29599b6181b",
+            "revision": 5,
+            "entries": [],
+            "recoverableBlock": null
+          }
+        },
+        {
+          "agent_run_id": "solution_designer_5f8b42c9e53e4b1b8d292fb30348805a",
+          "state": {
+            "run_instance_id": "bc69daf5-a103-4f6a-bb2b-0eb4acace8e4",
+            "revision": 5,
+            "entries": [],
+            "recoverableBlock": null
+          }
+        },
+        {
+          "agent_run_id": "solution_designer_9d7cbc86ac0145a895beaa29c65cf46b",
+          "state": {
+            "run_instance_id": "78ca5003-4303-4316-8885-1f9a4fbb7b85",
+            "revision": 5,
+            "entries": [],
+            "recoverableBlock": null
+          }
+        },
+        {
+          "agent_run_id": "solution_designer_059a61cd47c84946a40e1a08f87100c7",
+          "state": {
+            "run_instance_id": "dda6d371-643e-4979-914b-e4c47283e524",
+            "revision": 5,
+            "entries": [],
+            "recoverableBlock": null
+          }
+        },
+        {
+          "agent_run_id": "solution_designer_11edad810e824e41aa29d8728e070dc3",
+          "state": {
+            "run_instance_id": "a752b285-3c19-40ff-86da-86b38cb90319",
+            "revision": 5,
+            "entries": [],
+            "recoverableBlock": null
+          }
+        }
+      ]
+    }
+  },
+  "mode": "isolated-electron",
+  "policy": "changed",
+  "platform": "linux-arm64",
+  "node": "v22.23.3",
+  "browser": "148.0.7778.265",
+  "desktopRestarts": [
+    {
+      "instanceId": "iso-43069-9154",
+      "pid": 75834,
+      "executablePath": "/home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus",
+      "backendUrl": "http://127.0.0.1:43449",
+      "graphqlUrl": "http://127.0.0.1:43449/graphql",
+      "controlEndpoint": "http://127.0.0.1:43069",
+      "controlPort": 43069,
+      "serverPort": 43449,
+      "dataRoot": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif",
+      "ownsDataRoot": true,
+      "keepDataRoot": false,
+      "databaseUrl": "file:/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-A5GMif/server-data/db/production.db",
+      "logPath": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-app/iso-43069-9154.log"
+    }
+  ],
+  "result": "Fail",
+  "failureState": {
+    "error": "page.evaluate: TypeError: Cannot read properties of undefined (reading 'config')\n    at eval (eval at evaluate (:290:30), <anonymous>:2:63)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+  },
+  "failureDom": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nLoading task history...\nTemp Workspace\nworkspace\nSettings\nDaily Assistant\n\nAll your skills are available. Type / to use a skill, or @ to delegate to an agent or team.\n\nContext Files (0)\n(drag, paste, or upload)\nTemp workspace\nAuto-approve\nChoose a model\nAutoByteus",
+  "failedRequests": [],
+  "errors": [],
+  "requests": [
+    {
+      "at": 1791874571545,
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874571562,
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssue {\n      code\n      reason\n      definitionPath\n      packageRoot\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "at": 1791874571566,
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "at": 1791874571569,
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874571571,
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "at": 1791874571571,
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874571572,
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "at": 1791874571573,
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "at": 1791874571585,
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {},
+      "query": "query GetRuntimeAvailabilityKinds {\n  runtimeAvailabilityKinds\n}"
+    },
+    {
+      "at": 1791874571754,
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874571754,
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874571755,
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874571755,
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874571756,
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874571862,
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "at": 1791874578913,
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874578935,
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssue {\n      code\n      reason\n      definitionPath\n      packageRoot\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "at": 1791874578936,
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "at": 1791874578939,
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874578941,
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "at": 1791874578950,
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874578951,
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "at": 1791874578952,
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "at": 1791874578974,
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {},
+      "query": "query GetRuntimeAvailabilityKinds {\n  runtimeAvailabilityKinds\n}"
+    },
+    {
+      "at": 1791874579211,
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874579213,
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874579214,
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "at": 1791874579216,
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    }
+  ],
+  "commands": [],
+  "frames": [
+    {
+      "url": "ws://127.0.0.1:43449/ws/agent-package-definitions",
+      "type": "connected"
+    },
+    {
+      "url": "ws://127.0.0.1:43449/ws/agent-package-definitions",
+      "type": "connected"
+    }
+  ]
+}

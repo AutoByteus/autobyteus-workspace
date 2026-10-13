@@ -1,0 +1,270 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-server-ts
+App data directory: /tmp/delegated-team-collapse-LHACkz
+Config file path: /tmp/delegated-team-collapse-LHACkz/.env
+Loading environment from: /tmp/delegated-team-collapse-LHACkz/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../tmp/delegated-team-collapse-LHACkz/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:45195
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:45195
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/delegated-team-collapse-LHACkz
+DB DIRECTORY: /tmp/delegated-team-collapse-LHACkz/db
+LOGS DIRECTORY: /tmp/delegated-team-collapse-LHACkz/logs
+DOWNLOAD DIRECTORY: /tmp/delegated-team-collapse-LHACkz/download
+MEMORY DIRECTORY: /tmp/delegated-team-collapse-LHACkz/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/tmp/delegated-team-collapse-LHACkz/db/development.db"
+
+SQLite database development.db created at file:/tmp/delegated-team-collapse-LHACkz/db/development.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:65649) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/delegated-team-collapse-LHACkz/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-LHACkz/temp_workspace.
+Initialized TempWorkspace at /tmp/delegated-team-collapse-LHACkz/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+{"level":30,"time":1791873577577,"pid":65649,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:40951"}
+{"level":30,"time":1791873577627,"pid":65649,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:45195"}
+[2026-10-13T06:39:37.627Z] [INFO] [server.runtime] Server listening on 127.0.0.1:45195
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: solution-designer
+Agent Definition created successfully with ID: architecture-reviewer
+Agent Definition created successfully with ID: implementation-engineer
+Agent Definition created successfully with ID: code-reviewer
+Agent Definition created successfully with ID: api-e2e-engineer
+Agent Definition created successfully with ID: delivery-engineer
+Agent Definition created successfully with ID: project-task-manager-probe
+Agent Team Definition created successfully with ID: software-engineering-team-probe
+Agent Team Definition created successfully with ID: late-engineering-team-probe
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-LHACkz/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-LHACkz/workspace.
+Created and registered workspace ID: agent_ws_789b4e9e91a18845fdece6c8666752bfb6bcd60c11120a8ee5af718bc0b1ae16
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-LHACkz/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-LHACkz/workspace.
+Reusing registered workspace ID: agent_ws_789b4e9e91a18845fdece6c8666752bfb6bcd60c11120a8ee5af718bc0b1ae16
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-LHACkz/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-LHACkz/workspace.
+Reusing registered workspace ID: agent_ws_789b4e9e91a18845fdece6c8666752bfb6bcd60c11120a8ee5af718bc0b1ae16
+AGY compaction detection off for run project_task_manager_probe_ee0ec24d374740f88e4517680bd4654f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-LHACkz/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-LHACkz/workspace.
+Reusing registered workspace ID: agent_ws_789b4e9e91a18845fdece6c8666752bfb6bcd60c11120a8ee5af718bc0b1ae16
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-LHACkz/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-LHACkz/workspace.
+Reusing registered workspace ID: agent_ws_789b4e9e91a18845fdece6c8666752bfb6bcd60c11120a8ee5af718bc0b1ae16
+AGY compaction detection off for run project_task_manager_probe_3a5da108526b42809065ec0a79c742f3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run project_task_manager_probe_ee0ec24d374740f88e4517680bd4654f
+Created agent session 5b4966d1-6b38-4237-a4e2-475bf4b1ceda for run project_task_manager_probe_ee0ec24d374740f88e4517680bd4654f
+Agent WebSocket connected: session=5b4966d1-6b38-4237-a4e2-475bf4b1ceda, run=project_task_manager_probe_ee0ec24d374740f88e4517680bd4654f
+Agent websocket attached for run project_task_manager_probe_3a5da108526b42809065ec0a79c742f3
+Created agent session 5fb595eb-d03d-4bb0-bcfc-8bc1793cfac2 for run project_task_manager_probe_3a5da108526b42809065ec0a79c742f3
+Agent WebSocket connected: session=5fb595eb-d03d-4bb0-bcfc-8bc1793cfac2, run=project_task_manager_probe_3a5da108526b42809065ec0a79c742f3
+{"level":40,"time":1791873597539,"pid":65649,"hostname":"74ff273d28fe","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_3R2Mr3YuidXttYLCYjMuO5k8EczxTUlu5SnUggSdjts","statusCode":405,"elapsedMs":0.4393330216407776,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-LHACkz/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-LHACkz/workspace.
+Reusing registered workspace ID: agent_ws_789b4e9e91a18845fdece6c8666752bfb6bcd60c11120a8ee5af718bc0b1ae16
+AGY compaction detection off for run solution_designer_e158ff6d7575402b93b210fc79f7255e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791873597899,"pid":65649,"hostname":"74ff273d28fe","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_3R2Mr3YuidXttYLCYjMuO5k8EczxTUlu5SnUggSdjts","statusCode":405,"elapsedMs":0.24629199504852295,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-LHACkz/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-LHACkz/workspace.
+Reusing registered workspace ID: agent_ws_789b4e9e91a18845fdece6c8666752bfb6bcd60c11120a8ee5af718bc0b1ae16
+AGY compaction detection off for run solution_designer_b36d4b5e94224452a984b04278c0a283: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791873598126,"pid":65649,"hostname":"74ff273d28fe","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_3R2Mr3YuidXttYLCYjMuO5k8EczxTUlu5SnUggSdjts","statusCode":405,"elapsedMs":0.2105410099029541,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-LHACkz/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-LHACkz/workspace.
+Reusing registered workspace ID: agent_ws_789b4e9e91a18845fdece6c8666752bfb6bcd60c11120a8ee5af718bc0b1ae16
+AGY compaction detection off for run solution_designer_bd913f8529c04a54aa44f6be8549665f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791873598352,"pid":65649,"hostname":"74ff273d28fe","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_3R2Mr3YuidXttYLCYjMuO5k8EczxTUlu5SnUggSdjts","statusCode":405,"elapsedMs":0.14283299446105957,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-LHACkz/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-LHACkz/workspace.
+Reusing registered workspace ID: agent_ws_789b4e9e91a18845fdece6c8666752bfb6bcd60c11120a8ee5af718bc0b1ae16
+AGY compaction detection off for run solution_designer_2f09d95ecfaf4c6cbec4ea8db054efaa: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791873598576,"pid":65649,"hostname":"74ff273d28fe","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_3R2Mr3YuidXttYLCYjMuO5k8EczxTUlu5SnUggSdjts","statusCode":405,"elapsedMs":0.1856669783592224,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-LHACkz/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-LHACkz/workspace.
+Reusing registered workspace ID: agent_ws_789b4e9e91a18845fdece6c8666752bfb6bcd60c11120a8ee5af718bc0b1ae16
+AGY compaction detection off for run solution_designer_4e16c76c81c84548bacf58031e24bc92: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791873598799,"pid":65649,"hostname":"74ff273d28fe","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_3R2Mr3YuidXttYLCYjMuO5k8EczxTUlu5SnUggSdjts","statusCode":405,"elapsedMs":0.18358302116394043,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-LHACkz/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-LHACkz/workspace.
+Reusing registered workspace ID: agent_ws_789b4e9e91a18845fdece6c8666752bfb6bcd60c11120a8ee5af718bc0b1ae16
+AGY compaction detection off for run solution_designer_29d6c028199d49edb4555fae5e0bdc5b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791873599383,"pid":65649,"hostname":"74ff273d28fe","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_S8fDuAEF7hHfKpyABne3h0q79gxLBEkf4Sss4uS5U-g","statusCode":405,"elapsedMs":0.2614169716835022,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-LHACkz/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-LHACkz/workspace.
+Reusing registered workspace ID: agent_ws_789b4e9e91a18845fdece6c8666752bfb6bcd60c11120a8ee5af718bc0b1ae16
+AGY compaction detection off for run solution_designer_e36265c4ae6d43c7a9ff1e97533176bf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 5b4966d1-6b38-4237-a4e2-475bf4b1ceda
+Agent WebSocket disconnected: 5b4966d1-6b38-4237-a4e2-475bf4b1ceda
+Closed agent session 5fb595eb-d03d-4bb0-bcfc-8bc1793cfac2
+Agent WebSocket disconnected: 5fb595eb-d03d-4bb0-bcfc-8bc1793cfac2
+[2026-10-13T06:39:59.787Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-13T06:39:59.840Z] [INFO] [server.runtime] Server closed cleanly.
