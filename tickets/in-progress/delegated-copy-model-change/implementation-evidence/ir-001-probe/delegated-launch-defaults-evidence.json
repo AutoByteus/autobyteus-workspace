@@ -1,0 +1,127 @@
+{
+  "startedAt": "2026-10-13T10:07:33.102Z",
+  "cases": {
+    "DCP-001": {
+      "title": "delegated-copy-model-change AC-001/002/004/011, DEC-010: a running copy is locked with a stop icon; Stop from the sidebar; its model changed in Settings and saved; the next message resumes it on that model",
+      "result": "Pass",
+      "ms": 22347,
+      "details": {
+        "runId": "manager_8628_fbfcc163341b4e08be6c121250be9a0c",
+        "copyCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"writer_53e1_14ce9437455a47c59e7ea86c18f2457b\",\\n \"task_id\": \"ad_hoc_task_34ece722-ff91-45ae-ba2f-39aa53ca3ffa\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"writer_53e1_14ce9437455a47c59e7ea86c18f2457b\",\"task_id\":\"ad_hoc_task_34ece722-ff91-45ae-ba2f-39aa53ca3ffa\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "copyRunId": "writer_53e1_14ce9437455a47c59e7ea86c18f2457b",
+        "firstModels": [
+          "dlc-alt-model"
+        ],
+        "runningLocked": true,
+        "runningHint": "Stop this copy to change its model.",
+        "rootStillRunning": "active",
+        "savedSummary": "Gemini test · Antigravity · Auto-approve",
+        "savedSource": null,
+        "stored": {
+          "address": "/writer_53e1",
+          "agentRunId": "writer_53e1_14ce9437455a47c59e7ea86c18f2457b",
+          "platformAgentRunId": "34ddb617-f79e-4532-afbb-fe49eba89ebe",
+          "delegatorAgentRunId": "manager_8628_fbfcc163341b4e08be6c121250be9a0c",
+          "startedAt": "2026-10-13T10:08:11.941Z",
+          "source": {
+            "kind": "agent",
+            "agentDefinitionId": "writer-53e1",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-alt-model",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-biMFrE/server-data/temp_workspace"
+            },
+            "launchSource": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          "userLaunchSelection": {
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "selectedAt": "2026-10-13T10:08:21.190Z"
+          }
+        },
+        "resumeCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_53e1_14ce9437455a47c59e7ea86c18f2457b\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_53e1_14ce9437455a47c59e7ea86c18f2457b\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 13, 12:08 PM\n\nto writer 53e1\n\nOne more paragraph.\n\nMessage\nwriter 53e1\nOct 13, 12:08 PM\n\nOne more paragraph.\nMessage\nwriter 53e1\nOct 13, 12:08 PM\n\nOne more paragraph.",
+        "resumedModels": [
+          "gemini-3.8-flash-low"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 34420
+    },
+    {
+      "label": "frontend",
+      "pid": 34760
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 34760,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 34420,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-biMFrE"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-biMFrE",
+  "backendUrl": "http://127.0.0.1:57589",
+  "frontUrl": "http://127.0.0.1:57590",
+  "definitions": {
+    "ids": {
+      "manager": "manager-8628",
+      "lead": "lead-bea4",
+      "worker": "worker-aa17",
+      "plain": "plain-ddf5",
+      "engineer": "engineer-1c5d",
+      "reviewer": "reviewer-60ac",
+      "writer": "writer-53e1",
+      "offline": "offline-31fb",
+      "unoffered": "unoffered-64be",
+      "badsettings": "badsettings-0ef2",
+      "incomplete": "incomplete-e6bc",
+      "build": "build-team-6416",
+      "pair": "pair-team-50c3",
+      "squad": "squad-team-7e47",
+      "home": "home-team-0b48",
+      "launchOrg": "launchorg-org-5c22",
+      "hostOrg": "hostorg-org-7fac"
+    },
+    "names": {
+      "manager": "Manager 8628",
+      "lead": "Lead bea4",
+      "worker": "Worker aa17",
+      "plain": "Plain ddf5",
+      "engineer": "Engineer 1c5d",
+      "reviewer": "Reviewer 60ac",
+      "writer": "Writer 53e1",
+      "offline": "Offline 31fb",
+      "unoffered": "Unoffered 64be",
+      "badsettings": "Badsettings 0ef2",
+      "incomplete": "Incomplete e6bc",
+      "build": "Build Team 6416",
+      "pair": "Pair Team 50c3",
+      "squad": "Squad Team 7e47",
+      "home": "Home Team 0b48",
+      "launchOrg": "LaunchOrg Org 5c22",
+      "hostOrg": "HostOrg Org 7fac"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 0
+  },
+  "completedAt": "2026-10-13T10:08:28.885Z"
+}

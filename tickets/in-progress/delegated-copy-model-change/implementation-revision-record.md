@@ -1,0 +1,8 @@
+# Implementation Revision Record — delegated-copy-model-change
+
+The current code and `implementation-handoff.md` are authoritative. This record indexes each completed
+implementation handoff.
+
+| IR | Date | Basis | Classification | Summary | Route |
+| --- | --- | --- | --- | --- | --- |
+| IR-001 | 2026-10-13 | Design `SR-007` (`design-spec.md` incl. Revision Notes SR-005, SR-006, SR-007), requirements `SR-004` (+ SR-005/SR-007 edits), ARCH-REV-003 `Pass` | `Large` / `High` (unchanged) | Initial baseline. Per-instance user model choice on copy and collaborator records (`userLaunchSelection`, `userTeamLaunchSelection`; no migration) with one launch rule (`effectiveCopyAgentLaunch` + `memberFollowsTeam`) used by hosting, restore and views; per-copy Stop (lineage Stop set; SR-006 stopping marks, `TASK_EXECUTION_STOPPING`, lease drain outside the queue, non-waiting `stop` steps; collaborators under activation fences) for Team, Org and Agent roots; Save on a live root (validate → `reconfigure` step / fences → re-check stopped → commit → collaborator model swap; `COPY_RUNNING`) and one all-or-nothing Save on a stopped root (AR-004); GraphQL `stopDelegatedExecution`, `updateDelegatedLaunchSelections` (optional `configuredPatches`), `delegatedLaunchModelOptions`; contract DTO fields and rule; web: editable copy rows when stopped (runtime/approval locked), the run's stop icon on copy rows in Settings and the sidebar, the existing Save bar (SR-007: no "Your choice", no Reset). Server unit/e2e (scripted AGY), contract, web unit and browser-probe evidence. | `get_handoff_rules` → Code Reviewer |
