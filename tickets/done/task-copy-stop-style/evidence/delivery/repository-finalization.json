@@ -1,0 +1,323 @@
+{
+  "startedAt": "2026-10-13T15:32:41.990253+00:00",
+  "target": "origin/personal",
+  "worktree": "/home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style",
+  "ticketBranch": "codex/task-copy-stop-style",
+  "finalizeBranch": "finalize/task-copy-stop-style",
+  "steps": [
+    {
+      "name": "ticket-sha",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:32:41.994754+00:00"
+    },
+    {
+      "name": "ticket-push",
+      "argv": [
+        "git",
+        "push",
+        "-u",
+        "origin",
+        "codex/task-copy-stop-style"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:32:46.602943+00:00"
+    },
+    {
+      "name": "ticket-remote",
+      "argv": [
+        "git",
+        "ls-remote",
+        "origin",
+        "refs/heads/codex/task-copy-stop-style"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:32:47.100775+00:00"
+    },
+    {
+      "name": "target-refresh",
+      "argv": [
+        "git",
+        "fetch",
+        "origin",
+        "personal"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:32:47.639137+00:00"
+    },
+    {
+      "name": "target-base",
+      "argv": [
+        "git",
+        "rev-parse",
+        "origin/personal"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:32:47.642971+00:00"
+    },
+    {
+      "name": "finalize-create",
+      "argv": [
+        "git",
+        "checkout",
+        "-b",
+        "finalize/task-copy-stop-style",
+        "origin/personal"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:32:47.893764+00:00"
+    },
+    {
+      "name": "source-merge",
+      "argv": [
+        "git",
+        "merge",
+        "--no-ff",
+        "codex/task-copy-stop-style",
+        "-m",
+        "Merge branch codex/task-copy-stop-style into personal"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:32:48.558343+00:00"
+    },
+    {
+      "name": "merge-sha",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:32:48.562411+00:00"
+    },
+    {
+      "name": "merge-tree-equals-ticket",
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "773dbda99fc7251c8fe6848b6c9a662f04d31362",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:32:48.572992+00:00"
+    },
+    {
+      "name": "merged-hygiene",
+      "argv": [
+        "python3",
+        "scripts/check_repository_artifact_hygiene.py"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:32:48.781327+00:00"
+    },
+    {
+      "name": "merged-licensing",
+      "argv": [
+        "python3",
+        "scripts/check_licensing.py"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:32:50.171997+00:00"
+    },
+    {
+      "name": "merged-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "99d5c2b03a1fbf97d598b33d0c4128ec7679b198",
+        "HEAD"
+      ],
+      "exitCode": 2,
+      "at": "2026-10-13T15:32:50.249701+00:00"
+    },
+    {
+      "name": "ticket-push-corrected",
+      "argv": [
+        "git",
+        "push",
+        "origin",
+        "codex/task-copy-stop-style"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:41.063262+00:00"
+    },
+    {
+      "name": "ticket-remote-corrected",
+      "argv": [
+        "git",
+        "ls-remote",
+        "origin",
+        "refs/heads/codex/task-copy-stop-style"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:41.558567+00:00"
+    },
+    {
+      "name": "target-refresh-corrected",
+      "argv": [
+        "git",
+        "fetch",
+        "origin",
+        "personal"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:42.133185+00:00"
+    },
+    {
+      "name": "target-base-corrected",
+      "argv": [
+        "git",
+        "rev-parse",
+        "origin/personal"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:42.137074+00:00"
+    },
+    {
+      "name": "finalize-create-corrected",
+      "argv": [
+        "git",
+        "checkout",
+        "-b",
+        "finalize/task-copy-stop-style",
+        "origin/personal"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:44.171550+00:00"
+    },
+    {
+      "name": "source-merge-corrected",
+      "argv": [
+        "git",
+        "merge",
+        "--no-ff",
+        "codex/task-copy-stop-style",
+        "-m",
+        "Merge branch codex/task-copy-stop-style into personal"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:44.827482+00:00"
+    },
+    {
+      "name": "merge-sha-corrected",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:44.831058+00:00"
+    },
+    {
+      "name": "merge-tree-equals-ticket-corrected",
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "3b34a9a2c78145e8e69a06b243bfcc8d8bad9947",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:44.838728+00:00"
+    },
+    {
+      "name": "merged-hygiene-corrected",
+      "argv": [
+        "python3",
+        "scripts/check_repository_artifact_hygiene.py"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:45.047093+00:00"
+    },
+    {
+      "name": "merged-licensing-corrected",
+      "argv": [
+        "python3",
+        "scripts/check_licensing.py"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:46.498573+00:00"
+    },
+    {
+      "name": "merged-whitespace-corrected",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "99d5c2b03a1fbf97d598b33d0c4128ec7679b198",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:46.581689+00:00"
+    },
+    {
+      "name": "pre-push-fetch",
+      "argv": [
+        "git",
+        "fetch",
+        "origin",
+        "personal"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:47.213192+00:00"
+    },
+    {
+      "name": "pre-push-target",
+      "argv": [
+        "git",
+        "rev-parse",
+        "origin/personal"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:47.216448+00:00"
+    },
+    {
+      "name": "target-push",
+      "argv": [
+        "git",
+        "push",
+        "origin",
+        "HEAD:personal"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:49.470190+00:00"
+    },
+    {
+      "name": "target-remote",
+      "argv": [
+        "git",
+        "ls-remote",
+        "origin",
+        "refs/heads/personal"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:49.942286+00:00"
+    },
+    {
+      "name": "source-ancestor",
+      "argv": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "3b34a9a2c78145e8e69a06b243bfcc8d8bad9947",
+        "origin/personal"
+      ],
+      "exitCode": 0,
+      "at": "2026-10-13T15:33:50.005712+00:00"
+    }
+  ],
+  "integratedBase": "99d5c2b03a1fbf97d598b33d0c4128ec7679b198",
+  "failedLocalMerge": "c1ba081a6032614960368f95357e135f864dba09",
+  "firstTicketCommit": "773dbda99fc7251c8fe6848b6c9a662f04d31362",
+  "recovery": "Merged cumulative whitespace gate found two upstream blank EOF log lines; failed local merge was never pushed and has identical tree to retained first ticket commit. Recreate only unpublished finalize branch after bounded log cleanup; no production/source change.",
+  "ticketCommit": "3b34a9a2c78145e8e69a06b243bfcc8d8bad9947",
+  "sourceMerge": "be4190e94b4fd715ae41951a0ff9648d4f65f5fa",
+  "result": "Completed",
+  "completedAt": "2026-10-13T15:33:50.006203+00:00"
+}
