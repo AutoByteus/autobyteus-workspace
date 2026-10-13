@@ -16,12 +16,12 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-003` (round 3: UI coverage extension of the browser probe at the user's request; round 2 was the CRR-003 TR-001 fix)
+- Current API/E2E Revision ID: `API-REV-004` (round 4: reopened round IR-003, SR-005 + SR-006, direct route)
 - API/E2E Test-Case Ledger: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-test-case-ledger.md`
-- Current Investigation Round: 3
+- Current Investigation Round: 4
 - Trigger: round 1 CRR-002 `Pass`; round 2 CRR-003 test-code review TR-001 (Local Fix)
 - Prior Investigation Reviewed: round 1
-- Latest Authoritative Investigation: this document, round 3 (browser probe extended to DLP-001..007; MOB-001 as in round 2)
+- Latest Authoritative Investigation: this document, round 4 — see "Round 4 (IR-003) Investigation" below; rounds 1–3 sections describe the released round-1 change and remain valid for it
 
 ## Routing Classification
 
@@ -257,3 +257,50 @@ None at investigation time.
 - Post-repository confidence: 85%
 - Broader validation decision: `Required` (executed: browser probe DLP-001..004; isolated desktop instance ISO-001 at the user's direction)
 - Reroute Required Before Validation Execution: `No`
+
+
+## Round 4 (IR-003) Investigation — SR-005 switcher seeding, SR-006 collapsible Settings rows
+
+### Meta and routing
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied`, branch `codex/delegated-launch-config-defaults-r2`, base `origin/personal` @ `2756d7b29` (round 1 released in `v1.5.3-beta.1`); round commits `0ac4e4b07` (web), `6cddfce4d`, `c7a443d8c` (tickets).
+- Trigger: implementation handoff IR-003 (`implementation-handoff.md` → "Reopened Round (IR-003)"), `handoff-sr-005-switcher-seeding.md`.
+- Classification: `task_size=Medium`, `architectural_risk=Low`; input route `Direct Low-Risk`; successful-output route `Delivery`; test-code review `Not Required — direct low-risk route`.
+- Architecture and code review this round: N/A — not applicable (direct route). Supplements / Product Design: N/A — not applicable.
+
+### Basis
+
+- SR-005 (bug, REQ-009/AC-011..AC-013 unchanged wording): every start that does not copy a run's member settings seeds members — New-chat heading switcher → Team (`retarget`), carried Team start from the Org launch page (`startForDefinition` carried), carried Org start from New chat (`agentOrgLaunchDraftStore.prepare`); "+" copies (Team `copied`, Org `sourceOrgRunId`) unchanged and unseeded.
+- SR-006 (REQ-007/AC-010 refined by the user): collaborators/copies in Settings use the read-only `RunMembersSection`/`RunMemberRow`, collapsed until opened, identical for running and stopped runs; collapsed Team shows "Notes: N"; an opened Team shows its own note once, its read-only card, then its Members with the Coordinator chip; summaries `model · runtime · approval · source`.
+
+### Changed surfaces
+
+| Surface | Affected | Evidence planned |
+| --- | --- | --- |
+| Web stores (launch drafts) | Yes | store specs (incl. bug-reproduction against round-1 stores); browser probe DLP-008, DLP-009 |
+| Web components (Settings rows) | Yes | component/projector specs; probe DLP-003/004/006/007 (opened and collapsed rows) |
+| Server / contracts / persistence | No (`git diff 2756d7b29..HEAD` is web + tickets only) | round-1 server evidence carries forward; server suites not rerun |
+| Desktop shell | No | isolated desktop instance of the worktree build for the user's journey (screenshot 37) with real catalogs |
+
+### Existing coverage decisions
+
+| Path / Test | Decision | Notes |
+| --- | --- | --- |
+| `autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs` DLP-001, 002, 005 | Still Valid | unchanged behavior |
+| DLP-003, 004, 006, 007 (implementer-updated for SR-006) | Still Valid (updated) | rows opened before reading; collapsed checks on running/stopped runs; Team note once |
+| DLP-008 (implementer-added) | Still Valid | the user's journey; fails against round-1 stores (implementer evidence) |
+| `RunDelegatedLaunchList.spec.ts` | Removed upstream with the component | replaced by `RunDelegatedLaunchSection.spec.ts` (SR-006 design) |
+| Server E2E `delegated-launch-config-defaults.e2e.test.ts`, mobile spec | Out Of Scope this round | no server or mobile change |
+
+### Durable coverage to add (this round)
+
+| Case ID | Behavior | Path | Why |
+| --- | --- | --- | --- |
+| DLP-009 | SR-005 carried starts through the UI: Team A → Team B (B's seeds only), New chat → Org (seeded; Run readback), Org launch page → Team (seeded) | probe | the implementer covered these two carried paths with store tests only |
+| DLP-010 | Preserved: "+" on a Team run copies recorded member settings, no re-seed | probe | SR-005 must not seed "+" copies |
+| SR-006 look | Coordinator chip on the copy's coordinator only; summaries carry approval and end with the source label; opened Team shows its card and Members; exact "Notes: 5" on the collapsed Squad | probe (DLP-003/004/006/007 via shared assertions) | asserted only in component specs so far |
+
+### Broader validation decision
+
+- `Required`: browser probe (owned stack, scripted runtimes) for all journeys; isolated desktop instance of this worktree's build for the user's reported journey with real runtime catalogs (no inference needed: the drawer is inspected before any send).
+- Not Tested: Org "+" copy re-seed in the UI (indistinguishable from a seed in the probe's fixtures; covered by the round-1 Org store test); mobile (unchanged).

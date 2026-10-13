@@ -3,6 +3,7 @@
   <div
     :data-test="`run-member-${node.key}`"
     :data-customized="customized ? 'true' : 'false'"
+    :data-source="node.sourceKey"
     class="rounded-xl border transition-[border-color,box-shadow]"
     :class="expanded ? 'border-gray-200 bg-white shadow-sm' : 'border-transparent'"
   >
@@ -32,6 +33,7 @@
           <span class="flex min-w-0 items-center gap-2">
             <span class="truncate text-sm font-medium text-gray-900">{{ node.name }}</span>
             <span v-if="node.isCoordinator" class="flex-shrink-0 rounded-full bg-gray-100 px-1.5 py-px text-[0.6875rem] font-medium text-gray-600">{{ $t('runSettings.members.coordinator') }}</span>
+            <span v-if="node.badge" class="flex-shrink-0 rounded-full bg-gray-100 px-1.5 py-px text-[0.6875rem] font-medium text-gray-600" data-test="run-member-badge">{{ t(BADGE_KEY[node.badge]) }}</span>
           </span>
           <span class="mt-0.5 flex min-w-0 items-center gap-1 text-xs" data-test="run-member-summary">
             <span v-if="node.modelRequired" class="truncate font-medium text-amber-700">{{ $t('chat.model.chooseModel') }}</span>
@@ -42,13 +44,24 @@
               <span class="truncate text-gray-600">{{ summary }}</span>
             </template>
           </span>
+          <template v-if="!notesInDetail">
+            <span
+              v-for="(note, index) in noteTexts"
+              :key="index"
+              class="mt-0.5 flex min-w-0 items-start gap-1 text-xs text-amber-700"
+              data-test="run-member-launch-note"
+            >
+              <Icon icon="heroicons:exclamation-triangle" class="mt-px h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+              <span class="min-w-0">{{ note }}</span>
+            </span>
+          </template>
           <span
-            v-if="launchNote"
-            class="mt-0.5 flex min-w-0 items-start gap-1 text-xs text-amber-700"
-            data-test="run-member-launch-note"
+            v-else-if="!expanded && noteCount"
+            class="mt-0.5 flex min-w-0 items-center gap-1 text-xs font-medium text-amber-700"
+            data-test="run-member-note-count"
           >
-            <Icon icon="heroicons:exclamation-triangle" class="mt-px h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-            <span class="min-w-0">{{ launchNote }}</span>
+            <Icon icon="heroicons:exclamation-triangle" class="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+            <span>{{ t('runSettings.members.noteCount', { count: noteCount }) }}</span>
           </span>
         </span>
       </button>
@@ -75,7 +88,18 @@
     </div>
 
     <div v-if="expanded" class="border-t border-gray-100 pb-2.5 pl-[3.25rem] pr-3 pt-1.5" data-test="run-member-detail">
+      <!-- A collaborator or copy Team: its own (Team-level) notes once, then its agents. -->
+      <p
+        v-for="(note, index) in notesInDetail ? noteTexts : []"
+        :key="index"
+        class="mt-1 flex min-w-0 items-start gap-1 text-xs text-amber-700"
+        data-test="run-member-launch-note"
+      >
+        <Icon icon="heroicons:exclamation-triangle" class="mt-px h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+        <span class="min-w-0">{{ note }}</span>
+      </p>
       <RunSettingsCard
+        v-if="node.fields.length"
         nested
         :values="node.values"
         :fields="node.fields"
@@ -118,7 +142,15 @@ import { initialsFor } from '~/components/chat/chatComposerMenus'
 import { setModelOptionLabels } from '~/utils/runSettings/modelOptions'
 import type { ChatModelOption } from '~/composables/chat/useChatModelCatalog'
 import type { RunMemberSettingChange, RunMemberSettingReset, RunSettingFlags } from '~/types/runSettings/RunSettings'
-import { countCustomizedMembers, isRunMemberCustomized, type RunMemberNode } from '~/utils/runSettings/runMemberTree'
+import {
+  countCustomizedMembers,
+  countRunMemberNotes,
+  isRunMemberCustomized,
+  type RunMemberLaunchFallback,
+  type RunMemberLaunchSource,
+  type RunMemberNode,
+  type RunMemberNote,
+} from '~/utils/runSettings/runMemberTree'
 import type { MemberLaunchNote } from '~/utils/runSettings/memberLaunchDefaults'
 import RunSettingsCard from './RunSettingsCard.vue'
 import { useRunSettingsPresentation } from './useRunSettingsPresentation'
@@ -149,19 +181,38 @@ const UNUSABLE_REASON_KEY: Readonly<Record<MemberLaunchNote['reason'], string>> 
   runtime_unavailable: 'runSettings.members.defaultUnusable.runtime_unavailable',
   model_unavailable: 'runSettings.members.defaultUnusable.model_unavailable',
 }
-/** A fresh start whose own default could not be used: what it named and why, and that it follows its parent. */
-const launchNote = computed(() => {
-  const note = props.node.launchNote
-  if (!note) return null
-  return t('runSettings.members.defaultUnusable', {
-    model: [note.runtimeKind ? presentation.runtimeShortLabel(note.runtimeKind) : null, note.llmModelIdentifier].filter(Boolean).join(' · ') || '—',
-    reason: t(UNUSABLE_REASON_KEY[note.reason]),
-  })
-})
+const BADGE_KEY: Readonly<Record<NonNullable<RunMemberNode['badge']>, string>> = {
+  delegated_copy: 'runSettings.delegated.copy',
+  collaborator: 'runSettings.delegated.collaborator',
+}
+const SOURCE_LABEL_KEY: Readonly<Record<RunMemberLaunchSource, string>> = {
+  agent_default: 'runSettings.delegated.source.agent_default',
+  team_default: 'runSettings.delegated.source.team_default',
+  inherited: 'runSettings.delegated.source.inherited',
+  configured: 'runSettings.delegated.source.configured',
+  not_recorded: 'runSettings.delegated.source.notRecorded',
+}
+const LAYER_LABEL_KEY: Readonly<Record<RunMemberLaunchFallback['layer'], string>> = {
+  agent_default: 'runSettings.delegated.layer.agent_default',
+  team_default: 'runSettings.delegated.layer.team_default',
+}
+const modelOf = (runtimeKind: string | null, llmModelIdentifier: string | null): string =>
+  [runtimeKind ? presentation.runtimeShortLabel(runtimeKind) : null, llmModelIdentifier].filter(Boolean).join(' · ') || '—'
+/** An own default a fresh start could not use (it follows its parent), or a recorded fallback of a collaborator or copy. */
+const noteText = (note: RunMemberNote): string => note.kind === 'unusable_default'
+  ? t('runSettings.members.defaultUnusable', { model: modelOf(note.runtimeKind, note.llmModelIdentifier), reason: t(UNUSABLE_REASON_KEY[note.reason]) })
+  : t('runSettings.delegated.fallback', { layer: t(LAYER_LABEL_KEY[note.layer]), model: modelOf(note.runtimeKind, note.llmModelIdentifier), detail: note.detail })
+const noteTexts = computed(() => props.node.launchNotes.map(noteText))
+/** A collaborator or copy Team: collapsed, it counts the notes below it; expanded, it shows its own notes once. */
+const notesInDetail = computed(() => props.node.kind === 'team' && Boolean(props.node.badge))
+const noteCount = computed(() => countRunMemberNotes(props.node))
 const expanded = computed(() => props.expandedKeys.has(props.node.key))
 const customized = computed(() => isRunMemberCustomized(props.node))
 const childCustomizedCount = computed(() => countCustomizedMembers(props.node.children))
-/** What this member runs with, in one line: workspace (teams), model · runtime, other settings on, approval. */
+/**
+ * What this member runs with, in one line: workspace (teams), model · runtime, other settings on, approval;
+ * a collaborator or copy then says where its launch came from.
+ */
 const summary = computed(() => {
   const values = props.node.values
   const parts: string[] = []
@@ -169,6 +220,7 @@ const summary = computed(() => {
   if (values.llmModelIdentifier) parts.push(`${presentation.modelLabel(values)} · ${presentation.runtimeShortLabel(values.runtimeKind)}`)
   parts.push(...setModelOptionLabels(presentation.modelOptions(values)))
   parts.push(presentation.approvalLabel(values))
+  if (props.node.sourceKey) parts.push(t(SOURCE_LABEL_KEY[props.node.sourceKey]))
   return parts.filter(Boolean).join(' · ')
 })
 </script>

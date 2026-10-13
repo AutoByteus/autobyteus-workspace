@@ -1,8 +1,70 @@
 # Implementation Handoff
 
-Commits: `55092536a` (server + contracts), `035b208d5` (web), `823237259` (ticket artifacts).
+**Current round: IR-003 (reopened; SR-005 + SR-006; `Medium` / `Low`, direct route).** Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied`, branch `codex/delegated-launch-config-defaults-r2` (base `origin/personal` @ `2756d7b29`, which contains round 1 as released in `v1.5.3-beta.1`). Round commits: `0ac4e4b07` (web), `6cddfce4d` (ticket reopen + artifacts). The section "Reopened Round (IR-003)" below is authoritative for this round; the rest of this document describes round 1 (IR-001/IR-002), which this round builds on unchanged except where IR-003 says so.
 
-Package: `delegated-launch-config-defaults` · Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults` · Branch `codex/delegated-launch-config-defaults` (base `origin/personal` @ `beb6b3b49`).
+Round 1 commits: `55092536a` (server + contracts), `035b208d5` (web), `823237259` (ticket artifacts); round 1 worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults`, branch `codex/delegated-launch-config-defaults` (base `origin/personal` @ `beb6b3b49`).
+
+## Reopened Round (IR-003): switcher starts seed members (SR-005); Settings uses the collapsible member rows (SR-006)
+
+### Upstream basis
+
+- Handoff: `handoff-sr-005-switcher-seeding.md` (updated for SR-006); authority `design-spec.md` → Revision Notes (SR-005) and (SR-006, incl. "Same look as the team's own Members list"); `solution-revision-record.md` SR-005, SR-006; `investigation-notes.md` → Reopen Investigation; `requirements-doc.md` (approved SR-002; SR-006 refines REQ-007/AC-010 at the user's request).
+- Independent architecture review: N/A — not applicable this round (direct route). Code review: N/A — not applicable this round (direct route). Supplements / Product Design: N/A — not applicable.
+
+### Routing classification
+
+- Task size: `Medium`; Architecture risk: `Low` (as designed for SR-005 + SR-006). Confirmed: web-only; two launch stores, the Settings projection and row component, one removed component, tests and probe; no server, contract, persistence, security or concurrency change; existing seeding function and pin rules reused.
+- Selected route: direct API/E2E (per `get_handoff_rules`). Lightweight implementation self-review: `Yes` (below). New design impact: `None`.
+
+### Behavior trace
+
+| Behavior ID | Change | Production path / key files | Result |
+| --- | --- | --- | --- |
+| BEH-005 (REQ-009, AC-011; SR-005) | Every start that does not copy a run's member settings seeds members | `stores/chatDraftStore.ts`: `retarget` (heading switcher → Team) and carried `startForDefinition` call `seedTeamMembers`, which now loads the target's definitions itself and swallows/logs its errors; the fresh path uses the same function. `stores/agentOrgLaunchDraftStore.ts` `prepare`: carried model and no copy → `loadCarriedRuntimes` + `seedMembers`. "+" copies (`copied`, Org `sourceOrgRunId`) unchanged and unseeded | Store tests (1)–(5) + Org carried test; the bug cases fail on the old stores and pass now; DLP-008 (user's journey) fails on the old stores and passes now |
+| BEH-008 (REQ-007, AC-010; SR-006) | Collaborators and copies shown with the read-only member rows, collapsed until opened, same look as Members | `utils/runSettings/delegatedLaunchRows.ts` projects `RunMemberNode[]` (`teamDelegatedLaunchNodes`, `collaborationDelegatedLaunchNodes`) via `runMemberTree.memberNode`; `RunMemberRow.vue` (badge, `model · runtime · approval · source`, notes, note count on a collapsed copy/collaborator Team, a Team's own note once in its detail, a card only for rows with fields); `RunMembersSection.vue` (`description`, `testId`); `ExistingRunSettings.vue` (second read-only section, all settings locked); `ExistingRunConfigEditor.vue` (nodes; launch and coordinator lookups for copies without a recorded source). Removed `RunDelegatedLaunchList.vue` + spec | Component spec (collapsed by default, toggle, Team → agents → card, coordinator chip, note count, Team note once, running = stopped) + projector spec; DLP-003/004/006/007 updated; collapsed checks on a running (DLP-003, DLP-007) and stopped (DLP-007) run |
+
+- Scope guardrail kept: `Yes`.
+
+### Implementation notes
+
+- `RunMemberNode.launchNote` (single unusable-default note) became `launchNotes: RunMemberNote[]`, a tagged union of `unusable_default` (launch forms) and `fallback` (recorded collaborator/copy fallbacks); no parallel fields. Optional `badge` and `sourceKey` mark collaborator/copy rows. Types `RunMemberLaunchSource` / `RunMemberLaunchFallback` live in `runMemberTree.ts` (the old `DelegatedLaunchRow`/`DelegatedLaunchSource`/`DelegatedLaunchFallback` are removed with the old component).
+- Node keys are `<address>@<run ID>` (one address can hold a collaborator and extra copies); probe and tests read rows by `data-test="run-member-<key>"` and `data-source`.
+- A Team row's team-level fallback is shown once on the Team (resolves round-1 follow-up O-2); a member shows only its own recorded fallbacks, and its source label is its effective source (its own, else its Team's).
+- A Team copy without a recorded source now shows the in-run Team's launch (previous residual: "Team row shows no model") and its coordinator chip (addendum).
+- Read-only rows report `modelRequired: false` (a recorded launch never asks for a model) and are never "customized" (parent values = own values), so no reset control appears.
+
+### Lightweight self-review (direct route)
+
+- Seeding races: retarget A → B, A → Agent, A → Agent → A: `seedTeamMembers` re-checks the draft, target kind and team ID after its await; already-set addresses are not overwritten or pinned twice; a quick Agent switch leaves no seeds (test 3). Org `prepare` edits cannot happen before `ready`, so assigning seeds wholesale is safe.
+- Copied starts: Team "+" (`copied`) and Org "+" (`sourceOrgRunId`) take no seeds (tests 5 + round-1 Org test).
+- Error handling: a failed definition load or catalog read during seeding logs and leaves the rows following the composer (no unhandled rejection; the fresh path no longer needs its own `catch`).
+- Size: `chatDraftStore.ts` is exactly 500 effective lines (was 492; a wrapper was folded into `seedTeamMembers` to stay within the limit). Other touched files are well under.
+- Dead code: `RunDelegatedLaunchList.vue`, its spec and the `DelegatedLaunchRow*` types removed; no other references remain (search).
+- Localization: one new key `runSettings.members.noteCount` (en, zh-CN); static key maps keep the literal audit passing.
+
+### Local checks (this round)
+
+- `pnpm -C autobyteus-web test:nuxt --run`: 610 files / 4243 tests passed, 5 skipped (exit 0).
+- Bug-reproduction check: the new store tests run against the round-1 stores → 4 failures (retarget seeding, Team A → B, carried Team start, carried Org start); with the fix all pass.
+- Web guards: `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` pass.
+- `tsc --noEmit -p autobyteus-web/tsconfig.json`: no errors in the touched TypeScript files (remaining errors are the repository's existing `.vue`-import/no-shim pattern and earlier test typing).
+- Server: no change this round; `pnpm -C autobyteus-server-ts build` run to serve the probe.
+
+### Rendered result (browser probe)
+
+- `pnpm -C autobyteus-web test:e2e:delegated-launch-defaults` (scripted AGY/Grok runtimes, test-owned backend and data root, Nuxt dev, headless Chrome). New case DLP-008: Chat nav → plain New chat → type "hell" → heading switcher → Build team → the drawer shows Engineer (Grok) and Reviewer (ALT) seeded and customized, Lead following the composer, the unusable default noted; text and root kept. DLP-008 fails against the round-1 stores (`Timed out waiting for engineer seeded`).
+- Settings: collapsed rows with badges, `model · runtime · approval · source`, "Notes: N" on collapsed Teams; an opened Team shows its note once, its read-only card and its Members with the Coordinator chip; every card's model is locked; no reset, model menu or input. Same collapsed rows for the stopped and running run (DLP-007).
+- Evidence: `implementation-evidence/sr-006-probe-final/` (evidence JSON, screenshots incl. `DLP-003-agent-run-settings-collapsed-880.png`, `DLP-003-agent-run-settings-880.png`, `DLP-007-settings-stopped-880.png`, `DLP-008-switcher-team-seeded-880.png`). Final result: 8 Pass, 0 Fail (DLP-001..DLP-008), cleanup receipt complete (owned processes stopped, temp root removed).
+- Observed, not changed: at 390 px a Team copy's opened member cards (nesting depth 2) clip setting values, the same as the existing Org placed-team members in saved-run Settings (shared `RunMemberRow` layout). Recorded as a follow-up candidate rather than a layout change in this round.
+
+### Known risks (this round)
+
+- The user's own verification on a build with the fix is still needed (repeat the screenshot-37 journey: plain New chat → "hell" → switch to Marketing Team).
+- Narrow-viewport nesting (above). `chatDraftStore.ts` sits at the 500-line limit; the next change there should split it.
+
+### Downstream coverage hints
+
+- Repeat DLP-001..DLP-008; add, if useful, a switcher journey from the Org launch page heading to a Team (carried `startForDefinition`) and from New chat to an Org (carried Org start) — both covered by store tests, not by the probe.
 
 ## Upstream Artifact Package
 
@@ -18,9 +80,9 @@ Package: `delegated-launch-config-defaults` · Worktree `/Users/normy/autobyteus
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002, Local Fix for CRR-001 / CR-001; IR-001 is the initial baseline)
+- Implementation cycle: `Rework` (current: IR-003, reopened round, see the section above; IR-002 Local Fix for CRR-001 / CR-001; IR-001 initial baseline)
 - Implementation revision record: `tickets/in-progress/delegated-launch-config-defaults/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
 - Related code-review revision IDs: `CRR-001` (`Fail`, Local Fix)

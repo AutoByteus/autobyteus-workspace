@@ -1,5 +1,104 @@
 # Handoff Summary — delegated-launch-config-defaults
 
+## Round 2 (reopened, DR-003/DR-004)
+
+### User Verification
+
+- 2026-10-13, the user wrote: "the task is done. verified. lets finalize and release a new beta version"
+- Decisions:
+  1. **Verified and accepted.** This is explicit verification of round 2.
+  2. **Release:** a new beta, `v1.5.3-beta.2`. See `release-deployment-report.md` → Round 2.
+  3. **O-6** (390 px clipping) and the open round-1 items were not decided. They go to the Solution Designer as follow-up candidates.
+
+### Status At The DR-003 Handoff
+
+- Status: waiting for verification at that time. Nothing had been pushed or merged.
+- Why it was reopened: in your screenshot 37, New chat switched to Marketing Team with the heading switcher, but no member was seeded from its default (SR-005). You also asked for collaborators and copies in Settings to look like Members (SR-006).
+- Classification: `task_size=Medium`, `architectural_risk=Low`, direct route.
+  - Architecture review, code review and test-code review: N/A — not applicable (direct route).
+  - API/E2E: API-REV-004 Pass, 95%.
+
+### State
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied`, branch `codex/delegated-launch-config-defaults-r2`, local only.
+  - `0ac4e4b07`: the web fix.
+  - `6cddfce4d`, `c7a443d8c`: the reopen and implementation records.
+  - `50cd035c5`: checkpoint of the probe (DLP-001..010) and the API/E2E round-4 records and evidence.
+  - `071033f95`: merge of `origin/personal` @ `32aca0818` (legacy Docker retirement: Docker files, scripts and Docker READMEs only). It merged without conflicts.
+  - Not committed yet: the web docs (`agent_teams.md`, `agent_orgs.md`, `settings.md`), the updated release notes and these delivery records.
+- Base and finalization target: `origin/personal`. Round 1 is already released in `v1.5.3-beta.1`.
+- Not to be committed: the untracked `*/dist/` folders.
+
+### What Changed
+
+- **Heading-switcher starts now seed members (SR-005).** Every Team or Org start that does not copy a run seeds each member from its own usable default and pins it. This covers:
+  - New chat → a Team;
+  - Team A → Team B, which gives only B's seeds;
+  - New chat → an Org;
+  - the Org page → a Team.
+
+  The composer's text and root settings are kept. **+** still copies the run's recorded member settings and seeds nothing.
+- **Settings looks like Members (SR-006).** "Collaborators and delegated copies" uses the same rows as Members:
+  - Each copy or collaborator is one row, collapsed by default, with its badge and "Notes: N" when it has notes.
+  - Opening a Team shows its settings card, then Members, with the Coordinator chip on the copy's coordinator.
+  - A team-level note appears once, which resolves O-2.
+  - Rows are read-only, and the same for running and stopped runs. The old flat list is removed.
+- No server, contract or persistence change.
+
+### Validation Evidence
+
+| Gate | Result |
+| --- | --- |
+| API/E2E (API-REV-004) | Pass, 95%. Probe DLP-001..010 passed 10/10 twice. A bug check shows the released stores fail DLP-008 and DLP-009. Web 4243 passed. ISO-002, an isolated app of this round with real catalogs, reproduced your screenshot-37 journey: the strategist was seeded and ran on Codex `gpt-5.6-luna` under a Claude haiku PM. Settings showed the collapsed row with "Notes: 1" |
+| Delivery checks on `071033f95` (`delivery-evidence/dr-003/`) | • `autobyteus-ts` build, server prebuild and build: pass.<br>• Probe: DLP-001..010, 10/10.<br>• Web `test:nuxt`: 610 files, 4245 passed, 3 skipped.<br>• Web guards: 3/3.<br>• Licensing and path hygiene: pass.<br>• Server suites were not rerun: no server source changed in this round or in the merged base. Round-1 server evidence carries forward. |
+
+### How To Verify
+
+1. Start an isolated app built from this worktree:
+
+   ```bash
+   cd /Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied
+   pnpm --silent isolated-app start --build
+   ```
+
+2. Import keys only if the PM's runtime needs them:
+
+   ```bash
+   script -q /dev/null pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url "<databaseUrl>"
+   pnpm --silent isolated-app restart <instanceId>
+   ```
+
+3. In **Settings → Agent Packages**, add the local path `/tmp/dlcd-r2-agents`. It is a disposable copy of `autobyteus-agents`, so your real repository is not changed.
+4. In **Agent Teams → Marketing Team**, give two members their own default, for example Codex and Claude. Give a third member a model its runtime does not offer.
+5. **Your journey (screenshot 37):**
+   1. Open a plain New chat and type some text.
+   2. Use the heading switcher to choose Marketing Team.
+   3. The members line reads "2 of 4 customized". The two members show their defaults, and the third shows the "can't be used" note. Your text and the composer's model are kept.
+6. **Delegation and Settings:**
+   1. Start the Project Task Manager on another runtime and have it delegate a small Task to `/marketing_team`.
+   2. Open the run's **Settings**. "Collaborators and delegated copies" shows one collapsed "Delegated copy" row with "Notes: 1".
+   3. Open it. The team card comes first, then Members with the Coordinator chip. Members show "Agent default" or "Inherited from the run".
+7. Optional, AC-015: repeat with the Software Engineering Team and Codex / Sol 6.1 on implementation-engineer and code-reviewer.
+8. Stop: `pnpm --silent isolated-app stop <instanceId>`.
+
+### Decisions Needed At Verification
+
+1. **Release:** finalize only, or a beta (next: `v1.5.3-beta.2`), or stable?
+2. **O-6, new follow-up candidate:** at 390 px, an opened copy's member cards clip their values (the same nested layout as Org placed-team members). Desktop (672 px section) and 880 px are fine. Should it be a separate ticket?
+3. Still open from round 1:
+   - the `RELEASE.md` `dist/` correction;
+   - follow-ups DEC-006, O-1, O-3;
+   - `chatDraftStore.ts` at the 500-line limit.
+
+### Residual Risks
+
+- An Org "+" re-seed and the fast Team → Agent switch race are covered by store tests only.
+- UNK-001 is unchanged.
+
+---
+
+# Round 1 (released in `v1.5.3-beta.1`)
+
 ## User Verification
 
 - 2026-10-12: the user replied "now finalize and release a new beta."

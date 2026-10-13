@@ -37,6 +37,7 @@ const runSettingsMessages = {
   'runSettings.inherited.resetAria': '将{{setting}}重置为默认值',
   'runSettings.members.title': '成员',
   'runSettings.members.customizedCount': '已自定义 {{count}} 个',
+  'runSettings.members.noteCount': '提示：{{count}} 条',
   'runSettings.members.resetAll': '全部重置',
   'runSettings.members.coordinator': '协调者',
   'runSettings.members.resetMemberAria': '将 {{name}} 重置为默认设置',
