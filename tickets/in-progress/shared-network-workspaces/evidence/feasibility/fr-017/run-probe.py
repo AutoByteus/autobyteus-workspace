@@ -195,4 +195,3 @@ finally:
 ok=all(c.get('rc',0)==0 and c.get('absent',True) for c in R['cleanup'])
 print(json.dumps({'run':S,'passes':sum(c['status']=='PASS' for c in R['cases']),'fatal':R.get('fatal'),'cleanup_ok':ok}),flush=True)
 sys.exit(1 if R.get('fatal') or not ok else 0)
-

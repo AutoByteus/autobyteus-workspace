@@ -13,4 +13,3 @@ def mount_mac():
     assert storage_id in output and ' on '+M+' (' in output and 'nfs' in output,output
     return {'node':VM,'path':M,'source':vm_gateway+':'+pseudo,'options':options,'mountAndIdentity':output,'guestAdminOnly':True,'samePhysicalHost':True}
 case('native macOS guest mounts the same Linux export and reads its independent storage identity',mount_mac)
-

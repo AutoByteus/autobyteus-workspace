@@ -82,5 +82,15 @@
     "trackedFilesScanned": 61665,
     "maxPathLength": 200
   },
-  "validationScope": "Feasibility sources/artifacts only. No current-source build/server suites/UI/review/final E2E claim."
+  "validationScope": "Feasibility sources/artifacts only. No current-source build/server suites/UI/review/final E2E claim.",
+  "sourceEofWhitespaceNormalized": [
+    "tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-016/run-probe.py",
+    "tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-017/run-probe.py",
+    "tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-018/run-probe.py",
+    "tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-023/mount-identity.py",
+    "tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-024/mount-identity.py",
+    "tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-025/mount-identity.py",
+    "tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-026/mount-identity.py"
+  ],
+  "gitWhitespaceCheckDisposition": "Initial full evidence diff check reported extra EOF blanks in prototype source plus whitespace in literal captured Tart help and native backend log. Normalize source EOF (no semantics changed); retain exact raw help/log captures. Repository artifact hygiene/syntax pass; not claiming unrestricted full raw-evidence diff-whitespace check passed."
 }
