@@ -1,0 +1,221 @@
+{
+  "result": "Sufficient \u2014 source verified",
+  "checkedAt": "2026-10-13T15:30:17.631274+00:00",
+  "approvedBasis": "R1 / SR-001+002; IR-001; API-REV-001",
+  "task_size": "Small",
+  "architectural_risk": "Low",
+  "route": "Direct Low-Risk",
+  "confidence": 95,
+  "allSevenCategories": 95,
+  "userCheckNeeded": false,
+  "integratedCommit": "edf5e434b40094b70effe4448e75465d8219e771",
+  "integratedBase": "99d5c2b03a1fbf97d598b33d0c4128ec7679b198",
+  "repository": "36/36 tests in 4 suites passed",
+  "browserSummary": {
+    "pass": 2,
+    "fail": 0
+  },
+  "browserErrors": [],
+  "criticalCriteria": {
+    "AC-001": "Direct computed parent/copy CSS and visually inspected rest/hover/leave PNGs",
+    "AC-002": "Same for actual whole Team copy; group expansion not selected=true",
+    "AC-003": "Native keyboard, visible focus, labelled disabled/pulse/reduced-motion, exact single request and unchanged row",
+    "AC-004": "Exact typed target, real STOPPED, open Task unchanged, parent active, saved-model resume; unit visibility exclusions",
+    "AC-005": "Evidence linked; source finalization and cleanup recorded by release-deployment-report and final repository receipt"
+  },
+  "evidenceOpened": [
+    "api-browser-1/delegated-launch-defaults-evidence.json",
+    "api-browser-1/DCP-{001,002}-copy-unselected-{rest,hover,leave}.png",
+    "api-browser-1/DCP-001-copy-keyboard-focus.png",
+    "api-browser-1/DCP-002-copy-pending.png",
+    "api-unit.log",
+    "api-row.log",
+    "api-build.log",
+    "api-cleanup.json",
+    "implementation-regression-old-token.log",
+    "local-rendered-check.md",
+    "delivery/unit.log",
+    "delivery/browser.log",
+    "delivery/browser-integrated/delegated-launch-defaults-evidence.json",
+    "delivery/browser-integrated/DCP-001-copy-unselected-hover.png",
+    "delivery/browser-integrated/DCP-001-copy-keyboard-focus.png",
+    "delivery/browser-integrated/DCP-002-copy-unselected-{hover,leave}.png"
+  ],
+  "cases": {
+    "DCP-001": {
+      "result": "Pass",
+      "ms": 27131,
+      "paint": {
+        "rest": {
+          "color": "rgb(153, 153, 153)",
+          "background": "rgba(0, 0, 0, 0)",
+          "transition": "0.15s",
+          "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+        },
+        "hover": {
+          "color": "rgb(220, 38, 38)",
+          "background": "rgb(254, 242, 242)",
+          "transition": "0.15s",
+          "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+        },
+        "leave": {
+          "color": "rgb(153, 153, 153)",
+          "background": "rgba(0, 0, 0, 0)",
+          "transition": "0.15s",
+          "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+        }
+      },
+      "selectedState": "true",
+      "input": {
+        "rootKind": "AGENT",
+        "rootRunId": "manager_6670_fa40940d37cf420f8aa86833ce90adc6",
+        "agentRunId": "writer_3d1f_1f03da8efbac47f28cfdca88afb63291"
+      },
+      "keyboard": "Enter",
+      "taskBefore": {
+        "taskId": "ad_hoc_task_bd64f5a2-14c2-4fe8-9623-977e123c3a66",
+        "status": "TODO",
+        "root": {
+          "ingressAgentRunId": "writer_3d1f_1f03da8efbac47f28cfdca88afb63291",
+          "teamRunId": null,
+          "closed": false,
+          "status": "idle"
+        }
+      },
+      "taskAfter": {
+        "taskId": "ad_hoc_task_bd64f5a2-14c2-4fe8-9623-977e123c3a66",
+        "status": "TODO",
+        "root": {
+          "ingressAgentRunId": "writer_3d1f_1f03da8efbac47f28cfdca88afb63291",
+          "teamRunId": null,
+          "closed": false,
+          "status": "offline"
+        }
+      },
+      "focus": {
+        "active": true,
+        "visible": true,
+        "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "label": "Stop writer 3d1f",
+        "title": "Stop writer 3d1f",
+        "type": "button"
+      },
+      "pending": {
+        "disabled": true,
+        "label": "Stopping writer 3d1f\u2026",
+        "opacity": "0.6",
+        "animation": "pulse"
+      },
+      "reducedMotion": "none",
+      "singleUnchangedRequest": true,
+      "rowUnchanged": true,
+      "response": {
+        "data": {
+          "stopDelegatedExecution": {
+            "success": true,
+            "outcome": "STOPPED",
+            "message": "Stopped. A new message resumes it with its conversation.",
+            "notStoppedUnattributed": 0,
+            "__typename": "StopDelegatedExecutionResult"
+          }
+        }
+      },
+      "resumedModels": [
+        "gemini-3.8-flash-low"
+      ],
+      "parentSurvival": "active"
+    },
+    "DCP-002": {
+      "result": "Pass",
+      "ms": 50892,
+      "paint": {
+        "rest": {
+          "color": "rgb(153, 153, 153)",
+          "background": "rgba(0, 0, 0, 0)",
+          "transition": "0.15s",
+          "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+        },
+        "hover": {
+          "color": "rgb(220, 38, 38)",
+          "background": "rgb(254, 242, 242)",
+          "transition": "0.15s",
+          "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+        },
+        "leave": {
+          "color": "rgb(153, 153, 153)",
+          "background": "rgba(0, 0, 0, 0)",
+          "transition": "0.15s",
+          "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+        }
+      },
+      "selectedState": "false",
+      "input": {
+        "rootKind": "AGENT_TEAM",
+        "rootRunId": "home_team_139b_1e5153aa45554d13ba54979c1bc14c9e",
+        "teamRunId": "pair_team_cd26_248dfab446d14718acbab8c6f03ebdda"
+      },
+      "keyboard": "Space",
+      "taskBefore": {
+        "taskId": "ad_hoc_task_617dab5d-56fc-44c1-b600-79d99604d311",
+        "status": "TODO",
+        "root": {
+          "ingressAgentRunId": "lead_68d9_8e683ccd8e27420680fac10b5a190776",
+          "teamRunId": "pair_team_cd26_248dfab446d14718acbab8c6f03ebdda",
+          "closed": false,
+          "status": "idle"
+        }
+      },
+      "taskAfter": {
+        "taskId": "ad_hoc_task_617dab5d-56fc-44c1-b600-79d99604d311",
+        "status": "TODO",
+        "root": {
+          "ingressAgentRunId": "lead_68d9_8e683ccd8e27420680fac10b5a190776",
+          "teamRunId": "pair_team_cd26_248dfab446d14718acbab8c6f03ebdda",
+          "closed": false,
+          "status": "offline"
+        }
+      },
+      "focus": {
+        "active": true,
+        "visible": true,
+        "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "label": "Stop pair team cd26",
+        "title": "Stop pair team cd26",
+        "type": "button"
+      },
+      "pending": {
+        "disabled": true,
+        "label": "Stopping pair team cd26\u2026",
+        "opacity": "0.6",
+        "animation": "pulse"
+      },
+      "reducedMotion": "none",
+      "singleUnchangedRequest": true,
+      "rowUnchanged": true,
+      "response": {
+        "data": {
+          "stopDelegatedExecution": {
+            "success": true,
+            "outcome": "STOPPED",
+            "message": "Stopped. A new message resumes it with its conversation.",
+            "notStoppedUnattributed": 0,
+            "__typename": "StopDelegatedExecutionResult"
+          }
+        }
+      },
+      "resumedModels": [
+        "gemini-3.8-flash-low"
+      ],
+      "parentSurvival": "asserted active in durable probe DCP-002; actual stored summary omitted"
+    }
+  },
+  "limits": [
+    "Current Linux Chromium web-equivalent renderer; no Electron packaging/full desktop or installed app validation",
+    "Scripted model runtimes only; no inference or credentials",
+    "Pending transport delayed then forwarded; no fake success",
+    "Team selected=true covered by upstream real CSS fixture and component tests, not actual group selection",
+    "Only scoped suites, not whole web/server suite"
+  ],
+  "regression": "Old token produced 4 expected failing style cases / 7 preserved cases; final source restored and positive checks pass",
+  "runtimeCleanup": "cleanup-runtime.json"
+}

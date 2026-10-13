@@ -1,0 +1,169 @@
+{
+  "layer": "Local implementation rendered self-check; fixture contexts and intercepted HTTP only",
+  "states": {
+    "agent-unselected": {
+      "rest": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "hover": {
+        "color": "rgb(220, 38, 38)",
+        "background": "rgb(254, 242, 242)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "leave": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      }
+    },
+    "agent-selected": {
+      "rest": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "hover": {
+        "color": "rgb(220, 38, 38)",
+        "background": "rgb(254, 242, 242)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "leave": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      }
+    },
+    "agent-focus": {
+      "color": "rgb(153, 153, 153)",
+      "background": "rgba(0, 0, 0, 0)",
+      "transition": "0.15s",
+      "focus": true,
+      "shadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+    },
+    "agent-pending": {
+      "label": "Stopping Writer copy…",
+      "disabled": true,
+      "iconClasses": "iconify iconify--heroicons h-3.5 w-3.5 animate-pulse motion-reduce:animate-none"
+    },
+    "team-unselected": {
+      "rest": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "hover": {
+        "color": "rgb(220, 38, 38)",
+        "background": "rgb(254, 242, 242)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "leave": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      }
+    },
+    "team-selected": {
+      "rest": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "hover": {
+        "color": "rgb(220, 38, 38)",
+        "background": "rgb(254, 242, 242)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "leave": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      }
+    },
+    "team-focus": {
+      "color": "rgb(153, 153, 153)",
+      "background": "rgba(0, 0, 0, 0)",
+      "transition": "0.15s",
+      "focus": true,
+      "shadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+    },
+    "team-pending": {
+      "label": "Stopping Review Team copy…",
+      "disabled": true,
+      "iconClasses": "iconify iconify--heroicons h-3.5 w-3.5 animate-pulse motion-reduce:animate-none"
+    }
+  },
+  "requests": [
+    {
+      "rootKind": "AGENT",
+      "rootRunId": "host-run",
+      "agentRunId": "writer-run"
+    },
+    {
+      "rootKind": "AGENT",
+      "rootRunId": "host-run",
+      "teamRunId": "review-team"
+    }
+  ],
+  "errors": [
+    "WebSocket connection to 'ws://127.0.0.1:43709/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "WebSocket connection to 'ws://127.0.0.1:43709/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "WebSocket connection to 'ws://127.0.0.1:43709/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "WebSocket connection to 'ws://127.0.0.1:43709/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+  ],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtStopped": true,
+    "routeRemoved": true,
+    "homeRemoved": true,
+    "portsReleased": true
+  },
+  "home": "/tmp/stop-style-preview-home-6vOyQg",
+  "ports": [
+    45533,
+    43709
+  ],
+  "nuxtPid": 7108,
+  "browser": "153.0.8010.52",
+  "referenceRest": {
+    "color": "rgb(153, 153, 153)",
+    "background": "rgba(0, 0, 0, 0)",
+    "transition": "0.15s",
+    "focus": false,
+    "shadow": "none"
+  },
+  "referenceHover": {
+    "color": "rgb(220, 38, 38)",
+    "background": "rgb(254, 242, 242)",
+    "transition": "0.15s",
+    "focus": false,
+    "shadow": "none"
+  },
+  "result": "FAIL",
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'ws://127.0.0.1:43709/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\",\n+   \"WebSocket connection to 'ws://127.0.0.1:43709/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\",\n+   \"WebSocket connection to 'ws://127.0.0.1:43709/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\",\n+   \"WebSocket connection to 'ws://127.0.0.1:43709/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+ ]\n- []\n\n    at file:///home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style/tickets/in-progress/task-copy-stop-style/evidence/local-preview/inspect.mjs:92:10"
+}
