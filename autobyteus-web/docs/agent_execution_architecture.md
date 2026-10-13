@@ -1243,6 +1243,24 @@ intents. `existingRunConfigStore.discardChanges()` backs Cancel, and
 history lifecycle state may conservatively relock the current target but cannot
 unlock it or supersede the Settings-owned read.
 
+For a stopped standalone Agent, `readAgentCanonical` reads resume metadata and
+`readAgentRunCollaboration` through the existing read-only network client. The
+Settings draft retains only `execution_tree` and `closed_task_executions` as its
+`delegatedSnapshot`; it does not hydrate child conversations or attach a runtime.
+`ExistingRunConfigEditor` builds stopped delegated rows from that snapshot,
+not the cached live collaboration view. Active Agent rows retain their live-view
+owner; Team/Org rows retain their existing canonical tree path. Root-only Agent
+results preserve the same-root snapshot, never another run's snapshot.
+
+Delegated Save waits for `reloadCanonical(true)` before announcing success.
+The save lock covers mutation and readback, and same-target refresh preserves
+the mounted editor/disclosures. Failed writes retain edits; accepted writes
+with failed readback clear committed drafts but require read-only Refresh before
+more editing. Retry uses the same complete canonical read, including when the
+initial draft is unavailable. Request IDs and window-node binding revisions
+reject stale completions after root/node changes. No persistence format,
+launch-default policy, conversation identity or stop/resume contract changes.
+
 Existing-run editing is intentionally narrow. Runtime kind,
 workspace, automatic-tool policy, definition/provider identity, concrete run
 IDs, Team topology, and addresses are fixed presentation (shown with a lock

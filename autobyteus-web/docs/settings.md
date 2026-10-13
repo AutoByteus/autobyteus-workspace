@@ -1088,11 +1088,22 @@ The saved-run view uses the start surfaces' visual language:
     `configuredPatches`); a workspace change is saved on its own. A copy woken
     before Save refuses the Save ("This copy is running. Stop it, then change its
     model."). Right after Save the rows show the saved choice: Settings reads the
-    run's settings again (Team and Org runs), and a live run publishes the choice
-    to its views (`DELEGATED_LAUNCH_SELECTIONS_CHANGED` on the Team stream,
+    run's canonical settings again. A stopped Agent also rereads its collaboration
+    tree and closed-task list into the Settings snapshot; it does not depend on
+    an old live collaboration view. The current editor and expanded rows stay
+    mounted while the accepted model/config and Team followers are refreshed.
+    Save remains pending until that readback completes. A live run also publishes
+    the choice to its views (`DELEGATED_LAUNCH_SELECTIONS_CHANGED` on the Team stream,
     `delegated_launch_selections_changed` on Org and Agent streams). The Team view
     records it in place; Org and Agent views reload. Member conversations then
     show the model the copy runs on.
+  - **Save recovery.** A rejected or failed write retains the edits for correction
+    or retry. If the write succeeds but canonical readback fails, Settings says
+    "Settings were saved, but could not be refreshed. Refresh before making more
+    changes." It locks editing and offers **Refresh** rather than showing stale
+    "Saved" or treating committed changes as unsaved. Refresh rereads the same
+    canonical snapshot without another Save or starting/resuming the run. Cancel
+    before Save writes nothing; repeated edits start from the accepted values.
   - **Closed copies.** Copies whose Task is DONE or CANCELLED, and everything
     under them, are left out.
   - **Refresh.** For a saved Team or Org run, a copy started while Settings is
