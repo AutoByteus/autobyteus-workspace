@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-35653-51e9",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}

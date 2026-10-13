@@ -1,0 +1,16 @@
+IR-002 current source/build identity (source unchanged since checks)
+7f321575058d744c8e635b3aff0a6d1f4557e2c4
+8e43f4b98bcf7d8aa02b535fa22ee503beafa399e5dd47b1c647f2a16e78bd4e  autobyteus-server-ts/src/file-explorer/file-explorer.ts
+90b6abe16699570f760c89a8b5d9d266e42344582f815b493a400a2e46abb308  autobyteus-server-ts/dist/file-explorer/file-explorer.js
+154:    async searchFiles(query, signal) {
+155-        const candidates = await this.searchSnapshotController.search(query, signal);
+156-        return candidates.map((candidate) => {
+157-            const relativePath = path.relative(this.workspaceRootPath, candidate);
+158-            this.getPath(relativePath);
+159-            return relativePath;
+160-        });
+161-    }
+162-    async acquireWatcherLease(reason) {
+Explorer getTree retained, explorer.toJson absent:
+123:    getTree() {
+Local worktree build only; not /app or deployed8001 identity.

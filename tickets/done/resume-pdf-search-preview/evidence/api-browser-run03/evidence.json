@@ -1,0 +1,565 @@
+{
+  "startedAt": "2026-10-12T16:29:23.377Z",
+  "node": "v22.23.3",
+  "cases": {
+    "API-002": {
+      "result": "Pass",
+      "details": {
+        "found": [
+          "resume-notes.md",
+          "applications/nested/resume sample.pdf"
+        ],
+        "pdfStatus": 200,
+        "pdfSha256": "999bd43e8b679a7f1b65482120948444dca47a1e541122cae3bb27862069e87d",
+        "denied": [
+          {
+            "locator": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/workspace/applications/nested/resume sample.pdf",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          },
+          {
+            "locator": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/outside.txt",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          },
+          {
+            "locator": "../outside.txt",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          },
+          {
+            "locator": "../workspace-sibling/leak.txt",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          }
+        ],
+        "textRead": true
+      }
+    },
+    "API-003": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [],
+          "preview": null,
+          "searchLoading": false,
+          "canvases": [],
+          "spinner": false,
+          "alerts": []
+        },
+        "searched": {
+          "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [
+            {
+              "path": "resume-notes.md",
+              "id": "3094e73e-b0d4-5bb6-aad1-da4398c4de88",
+              "reused": true
+            },
+            {
+              "path": "applications/nested/resume sample.pdf",
+              "id": "search-applications/nested/resume sample.pdf",
+              "reused": false
+            }
+          ],
+          "preview": null,
+          "searchLoading": false,
+          "canvases": [],
+          "spinner": false,
+          "alerts": []
+        },
+        "rendered": {
+          "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [
+            {
+              "path": "resume-notes.md",
+              "id": "3094e73e-b0d4-5bb6-aad1-da4398c4de88",
+              "reused": true
+            },
+            {
+              "path": "applications/nested/resume sample.pdf",
+              "id": "search-applications/nested/resume sample.pdf",
+              "reused": false
+            }
+          ],
+          "preview": {
+            "path": "applications/nested/resume sample.pdf",
+            "type": "PDF",
+            "mode": "preview",
+            "accessIntent": null,
+            "content": null,
+            "url": "http://127.0.0.1:42389/rest/workspaces/agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+            "relativeResourceContext": {
+              "kind": "workspace",
+              "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161"
+            },
+            "isLoading": false,
+            "error": null
+          },
+          "searchLoading": false,
+          "canvases": [
+            {
+              "width": 896,
+              "height": 1095,
+              "ink": 5665
+            },
+            {
+              "width": 896,
+              "height": 1095,
+              "ink": 5676
+            }
+          ],
+          "spinner": false,
+          "alerts": []
+        },
+        "searchedText": {
+          "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [
+            {
+              "path": "resume-notes.md",
+              "id": "3094e73e-b0d4-5bb6-aad1-da4398c4de88",
+              "reused": true
+            },
+            {
+              "path": "applications/nested/resume sample.pdf",
+              "id": "search-applications/nested/resume sample.pdf",
+              "reused": false
+            }
+          ],
+          "preview": {
+            "path": "resume-notes.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": null,
+            "content": "# SYNTHETIC RESUME NOTES\n\nSame workspace-relative text reader.\n",
+            "url": null,
+            "relativeResourceContext": {
+              "kind": "workspace",
+              "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161"
+            },
+            "isLoading": false,
+            "error": null
+          },
+          "searchLoading": false,
+          "canvases": [],
+          "spinner": false,
+          "alerts": []
+        },
+        "treeText": {
+          "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [
+            {
+              "path": "resume-notes.md",
+              "id": "3094e73e-b0d4-5bb6-aad1-da4398c4de88",
+              "reused": true
+            },
+            {
+              "path": "applications/nested/resume sample.pdf",
+              "id": "search-applications/nested/resume sample.pdf",
+              "reused": false
+            }
+          ],
+          "preview": {
+            "path": "resume-notes.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": null,
+            "content": "# SYNTHETIC RESUME NOTES\n\nSame workspace-relative text reader.\n",
+            "url": null,
+            "relativeResourceContext": {
+              "kind": "workspace",
+              "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161"
+            },
+            "isLoading": false,
+            "error": null
+          },
+          "searchLoading": false,
+          "canvases": [],
+          "spinner": false,
+          "alerts": []
+        },
+        "treePdf": {
+          "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+          "paths": [
+            "workspace",
+            "applications",
+            "applications/nested",
+            "applications/nested/resume sample.pdf",
+            "resume-notes.md"
+          ],
+          "openFolders": {
+            "applications": true,
+            "applications/nested": true
+          },
+          "results": [],
+          "preview": {
+            "path": "applications/nested/resume sample.pdf",
+            "type": "PDF",
+            "mode": "preview",
+            "accessIntent": null,
+            "content": null,
+            "url": "http://127.0.0.1:42389/rest/workspaces/agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+            "relativeResourceContext": {
+              "kind": "workspace",
+              "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161"
+            },
+            "isLoading": false,
+            "error": null
+          },
+          "searchLoading": false,
+          "canvases": [
+            {
+              "width": 896,
+              "height": 1095,
+              "ink": 5665
+            },
+            {
+              "width": 896,
+              "height": 1095,
+              "ink": 5676
+            }
+          ],
+          "spinner": false,
+          "alerts": []
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 24718
+    },
+    {
+      "label": "frontend",
+      "pid": 24840
+    }
+  ],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:42389/graphql",
+      "request": {
+        "operationName": "GetAllWorkspaces",
+        "variables": {},
+        "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+      },
+      "response": {
+        "data": {
+          "workspaces": [
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+              "name": "workspace",
+              "displayName": "workspace",
+              "config": {
+                "rootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/workspace",
+                "workspaceId": null
+              },
+              "workspaceRootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/workspace",
+              "absolutePath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/workspace",
+              "kind": "filesystem",
+              "isTemp": false
+            },
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "temp_ws_default",
+              "name": "Temp Workspace",
+              "displayName": "Temp Workspace",
+              "config": {
+                "rootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/data/temp_workspace",
+                "workspaceId": "temp_ws_default"
+              },
+              "workspaceRootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/data/temp_workspace",
+              "absolutePath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/data/temp_workspace",
+              "kind": "temp",
+              "isTemp": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:42389/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+          "folderPath": ""
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"c984eea4-c843-5816-b16c-42ccac7ac935\",\"name\":\"workspace\",\"path\":\"workspace\",\"is_file\":false,\"children\":[{\"id\":\"b300cdc4-3ae2-52f6-affe-1dc517c9b482\",\"name\":\"applications\",\"path\":\"applications\",\"is_file\":false,\"children\":[],\"children_loaded\":false},{\"id\":\"3094e73e-b0d4-5bb6-aad1-da4398c4de88\",\"name\":\"resume-notes.md\",\"path\":\"resume-notes.md\",\"is_file\":true,\"children\":[],\"children_loaded\":true}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:42389/graphql",
+      "request": {
+        "operationName": "GetAllWorkspaces",
+        "variables": {},
+        "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+      },
+      "response": {
+        "data": {
+          "workspaces": [
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+              "name": "workspace",
+              "displayName": "workspace",
+              "config": {
+                "rootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/workspace",
+                "workspaceId": null
+              },
+              "workspaceRootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/workspace",
+              "absolutePath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/workspace",
+              "kind": "filesystem",
+              "isTemp": false
+            },
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "temp_ws_default",
+              "name": "Temp Workspace",
+              "displayName": "Temp Workspace",
+              "config": {
+                "rootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/data/temp_workspace",
+                "workspaceId": "temp_ws_default"
+              },
+              "workspaceRootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/data/temp_workspace",
+              "absolutePath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/data/temp_workspace",
+              "kind": "temp",
+              "isTemp": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:42389/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+          "folderPath": ""
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"c984eea4-c843-5816-b16c-42ccac7ac935\",\"name\":\"workspace\",\"path\":\"workspace\",\"is_file\":false,\"children\":[{\"id\":\"b300cdc4-3ae2-52f6-affe-1dc517c9b482\",\"name\":\"applications\",\"path\":\"applications\",\"is_file\":false,\"children\":[],\"children_loaded\":false},{\"id\":\"3094e73e-b0d4-5bb6-aad1-da4398c4de88\",\"name\":\"resume-notes.md\",\"path\":\"resume-notes.md\",\"is_file\":true,\"children\":[],\"children_loaded\":true}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:42389/graphql",
+      "request": {
+        "operationName": "GetAllWorkspaces",
+        "variables": {},
+        "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+      },
+      "response": {
+        "data": {
+          "workspaces": [
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+              "name": "workspace",
+              "displayName": "workspace",
+              "config": {
+                "rootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/workspace",
+                "workspaceId": null
+              },
+              "workspaceRootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/workspace",
+              "absolutePath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/workspace",
+              "kind": "filesystem",
+              "isTemp": false
+            },
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "temp_ws_default",
+              "name": "Temp Workspace",
+              "displayName": "Temp Workspace",
+              "config": {
+                "rootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/data/temp_workspace",
+                "workspaceId": "temp_ws_default"
+              },
+              "workspaceRootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/data/temp_workspace",
+              "absolutePath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/data/temp_workspace",
+              "kind": "temp",
+              "isTemp": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:42389/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+          "folderPath": ""
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"c984eea4-c843-5816-b16c-42ccac7ac935\",\"name\":\"workspace\",\"path\":\"workspace\",\"is_file\":false,\"children\":[{\"id\":\"b300cdc4-3ae2-52f6-affe-1dc517c9b482\",\"name\":\"applications\",\"path\":\"applications\",\"is_file\":false,\"children\":[],\"children_loaded\":false},{\"id\":\"3094e73e-b0d4-5bb6-aad1-da4398c4de88\",\"name\":\"resume-notes.md\",\"path\":\"resume-notes.md\",\"is_file\":true,\"children\":[],\"children_loaded\":true}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:42389/graphql",
+      "request": {
+        "operationName": "SearchFiles",
+        "variables": {
+          "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+          "query": "resume"
+        },
+        "query": "query SearchFiles($workspaceId: String!, $query: String!) {\n  searchFiles(workspaceId: $workspaceId, query: $query)\n}"
+      },
+      "response": {
+        "data": {
+          "searchFiles": [
+            "resume-notes.md",
+            "applications/nested/resume sample.pdf"
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:42389/rest/workspaces/agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+      "status": 200,
+      "contentType": "application/pdf"
+    },
+    {
+      "url": "http://127.0.0.1:42389/graphql",
+      "request": {
+        "operationName": "GetFileContent",
+        "variables": {
+          "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+          "filePath": "resume-notes.md"
+        },
+        "query": "query GetFileContent($workspaceId: String!, $filePath: String!) {\n  fileContent(workspaceId: $workspaceId, filePath: $filePath)\n}"
+      },
+      "response": {
+        "data": {
+          "fileContent": "# SYNTHETIC RESUME NOTES\n\nSame workspace-relative text reader.\n"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:42389/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+          "folderPath": "applications"
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"b300cdc4-3ae2-52f6-affe-1dc517c9b482\",\"name\":\"applications\",\"path\":\"applications\",\"is_file\":false,\"children\":[{\"id\":\"2b387004-6df4-5b92-9101-58024b5de68d\",\"name\":\"nested\",\"path\":\"applications/nested\",\"is_file\":false,\"children\":[],\"children_loaded\":false}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:42389/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+          "folderPath": "applications/nested"
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"2b387004-6df4-5b92-9101-58024b5de68d\",\"name\":\"nested\",\"path\":\"applications/nested\",\"is_file\":false,\"children\":[{\"id\":\"e7ed1549-3298-5f08-88b5-efae4ef54b85\",\"name\":\"resume sample.pdf\",\"path\":\"applications/nested/resume sample.pdf\",\"is_file\":true,\"children\":[],\"children_loaded\":true}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:42389/rest/workspaces/agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+      "status": 200,
+      "contentType": "application/pdf"
+    }
+  ],
+  "browserErrors": [],
+  "cleanup": {
+    "browserClosed": true,
+    "processes": [
+      {
+        "pid": 24840,
+        "exitCode": null,
+        "signal": "SIGTERM",
+        "liveGroupMembers": 0
+      },
+      {
+        "pid": 24718,
+        "exitCode": 0,
+        "signal": null,
+        "liveGroupMembers": 0
+      }
+    ],
+    "fixturePageRemoved": true,
+    "ownedRootRemoved": true,
+    "baseClosed": true,
+    "frontClosed": true
+  },
+  "build": {
+    "source": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts/src/file-explorer/file-explorer.ts",
+    "sourceSha256": "8e43f4b98bcf7d8aa02b535fa22ee503beafa399e5dd47b1c647f2a16e78bd4e",
+    "dist": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts/dist/file-explorer/file-explorer.js",
+    "distSha256": "90b6abe16699570f760c89a8b5d9d266e42344582f815b493a400a2e46abb308",
+    "gitHead": "4c3734952c4e1219687b71df20ff4f4d00572958"
+  },
+  "fixture": {
+    "owned": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9",
+    "root": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-PflgX9/workspace",
+    "pdfPath": "applications/nested/resume sample.pdf",
+    "textPath": "resume-notes.md",
+    "pdfSha256": "999bd43e8b679a7f1b65482120948444dca47a1e541122cae3bb27862069e87d"
+  },
+  "endpoints": {
+    "base": "http://127.0.0.1:42389",
+    "front": "http://127.0.0.1:33211"
+  },
+  "workspaceId": "agent_ws_285fce22308b68500ff8f205e7ed7fd8e5197e53c0778ab0309864786adcb161",
+  "browser": "153.0.8010.52",
+  "warmupBrowserErrors": [],
+  "finishedAt": "2026-10-12T16:29:51.868Z"
+}

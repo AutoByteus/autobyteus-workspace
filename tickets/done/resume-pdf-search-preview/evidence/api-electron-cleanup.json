@@ -1,0 +1,33 @@
+{
+  "canonicalStop": {
+    "instanceId": "iso-41017-dbed",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-61ThXd",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  },
+  "remainingInstances": [],
+  "closedPorts": {
+    "control": true,
+    "backend": true
+  },
+  "manualDisplay100Removed": true,
+  "automaticDisplay101Removed": true,
+  "ownUid61193LiveProcesses": [],
+  "builderAndRuntimeHomesCachesFixturesRemoved": "/tmp/resume-electron-api.Kcl9Y8",
+  "sharedDisplay99Untouched": true,
+  "sharedVncPid35Untouched": true,
+  "liveServerPid61Untouched": true,
+  "originalReadOnlySha256": "7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5",
+  "retained": [
+    "installed xvfb/xauth/ffmpeg test prerequisites",
+    "worktree dependency/build outputs including current unpacked package/AppImage for review",
+    "evidence/screenshots",
+    "upstream-owned dirty docs/history/delivery artifacts"
+  ],
+  "globalSandboxPolicyOrUserAccountDatabaseChanges": false,
+  "live8001RequestsOrAppMutation": false
+}

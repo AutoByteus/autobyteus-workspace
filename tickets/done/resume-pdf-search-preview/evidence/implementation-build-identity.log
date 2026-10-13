@@ -1,0 +1,14 @@
+Current worktree source/build identity (source unchanged since checks/build)
+bc820093753dee510294b42879043daec243d4e8
+db9fc77d5b80a9e9cd6298c61a6f7d2bbe5f39fe685aba28e1b499d1195ba754  autobyteus-server-ts/src/file-explorer/file-explorer.ts
+5b0cb2e3f0f3f135418cd0cc9790f3ad6d66a5003177cafe42e68a3f5e9eeadb  autobyteus-server-ts/dist/file-explorer/file-explorer.js
+157:    async searchFiles(query, signal) {
+158-        const candidates = await this.searchSnapshotController.search(query, signal);
+159-        return candidates.map((candidate) => {
+160-            const relativePath = path.relative(this.workspaceRootPath, candidate);
+161-            this.getPath(relativePath);
+162-            return relativePath;
+163-        });
+164-    }
+165-    async acquireWatcherLease(reason) {
+This identifies local outputs, not the /app deployed runtime.

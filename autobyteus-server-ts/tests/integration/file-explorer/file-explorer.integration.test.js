@@ -3,28 +3,30 @@ import os from "node:os";
 import path from "node:path";
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
 import { ChangeType } from "../../../src/file-explorer/file-system-changes.js";
-import { FileExplorer } from "../../../src/file-explorer/file-explorer.js";
+import { WorkspaceFileExplorer } from "../../../src/file-explorer/file-explorer.js";
 const createTempWorkspace = async () => {
     const base = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-server-ts-"));
     await fs.mkdir(path.join(base, "subdir"), { recursive: true });
     await fs.writeFile(path.join(base, "subdir", "seed.txt"), "seed", { encoding: "utf-8" });
     return base;
 };
-describe("FileExplorer integration", () => {
+describe("WorkspaceFileExplorer integration", () => {
     let workspace;
     let explorer;
     beforeEach(async () => {
         workspace = await createTempWorkspace();
-        explorer = new FileExplorer(workspace);
+        explorer = new WorkspaceFileExplorer(workspace);
         await explorer.buildWorkspaceDirectoryTree();
     });
     afterEach(async () => {
         await explorer.close();
         await fs.rm(workspace, { recursive: true, force: true });
     });
-    it("builds tree and lists file paths", async () => {
-        const paths = await explorer.getAllFilePaths();
-        expect(paths).toContain(path.join("subdir", "seed.txt"));
+    it("builds a tree with workspace-relative file identity", () => {
+        const relativePath = path.join("subdir", "seed.txt");
+        const node = explorer.getTree()?.findNodeByPath(relativePath);
+        expect(node?.isFile).toBe(true);
+        expect(node?.getPath()).toBe(relativePath);
     });
     it("writes new file and emits ADD change", async () => {
         const event = await explorer.writeFileContent("notes.txt", "hello");
