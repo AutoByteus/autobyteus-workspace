@@ -1,0 +1,13 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus-server-ts@0.1.1 test:e2e:prisma-engine-discovery:docker /Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/autobyteus-server-ts
+> node tests/e2e/startup/prisma-engine-discovery.docker.mjs --image sha256:1779a6e136a2fcd48a3045687a88ded45628e306471f5fd9d3eb4321017b21fa --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1
+
+API002 Started current build and whole-dist audit
+API002 Pass 4559 dist entries audited; 2 allowed changes
+API003 Started official incompatible cache/native RPC
+API003 Pass original cache RPC -32601; current bundled native revision/RPC pass
+API004 Started normal no-pin backend startup
+API004 Pass HTTP200/statusok x3; representative definition created through GraphQL
+API005 Started actual removal and same-state recreation
+API005 Pass different container ID; same mounts/source; API data and wrong-cache bytes preserved; HTTP200/statusok x3

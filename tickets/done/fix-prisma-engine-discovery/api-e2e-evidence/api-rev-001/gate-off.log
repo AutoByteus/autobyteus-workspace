@@ -1,0 +1,1 @@
+SKIP: set RUN_PRISMA_ENGINE_DOCKER_E2E=1; native Docker cases not executed.

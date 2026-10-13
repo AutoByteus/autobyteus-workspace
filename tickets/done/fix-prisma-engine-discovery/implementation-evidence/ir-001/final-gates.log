@@ -1,0 +1,7 @@
+Licensing is consistent.
+Tracked files scanned: 6555
+Repository artifact hygiene check passed.
+Tracked files scanned: 62875
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+licensing_exit=0 hygiene_exit=0 staged_whitespace_exit=0

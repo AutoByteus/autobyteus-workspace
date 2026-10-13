@@ -1,0 +1,378 @@
+{
+  "checkedAt": "2026-10-13T16:38:31.692446+00:00",
+  "previousApiCommit": "dd7de6ed4607bfa43b830e5c80d291b5f41e0bdd",
+  "currentHead": "7ea1174ba328e757daf0ad090cec9fb3dc2f2031",
+  "changesSinceApiCommit": [
+    "tickets/in-progress/fix-prisma-engine-discovery/code-review-evidence/crr-002/failure-origin-audit.json",
+    "tickets/in-progress/fix-prisma-engine-discovery/code-review-report.md",
+    "tickets/in-progress/fix-prisma-engine-discovery/code-review-revision-record.md"
+  ],
+  "nonTicketDelta": [],
+  "inputsEqualPriorHashes": true,
+  "policiesUnchanged": [
+    "AGENTS.md",
+    "DESIGN.md",
+    "TESTING.md",
+    "autobyteus-server-ts/AGENTS.md"
+  ],
+  "distFiles": 4559,
+  "entireCurrentDistEqualsTestedManifest": true,
+  "retainedRawEvidence": [
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/cadence-diagnostic.json",
+      "sha256": "e8c3f1c94666e6af66644c7ac86a0e11398cf9efa5c226e8431f5d577f6518f2",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/cadence-diagnostic.log",
+      "sha256": "1a9ccd960c8d925187605e5566ea294818912fb351bb0d169a927bfd972c567e",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/diagnose-cadence.py",
+      "sha256": "d5f858de78eead7166c7c1b88111ef04c92b4a85ef25618b764dffaa5395b07e",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1.log",
+      "sha256": "cb15e6449f21e8e87e3462027433616b806dff6f2f64045cde04a5a10404bf6a",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/api-created.json",
+      "sha256": "cb045d9bb2fff3e93921b7aedfab9588af4a9905fb6c92e2c66eb8e7e0258000",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/api-prisma-90067e31-699-first.json",
+      "sha256": "817ecf27a54a48cf49c132b97ad7d02732a1f65af111d0731e15685933c9f29a",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/api-prisma-90067e31-699-recreated.json",
+      "sha256": "4894ab927de553dd472b92eccdf92d0a9939299aa3ec97d3276820dfbbed13c8",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/backend-first.json",
+      "sha256": "f9e1ef0e810926341010b698b01f02cb68b5d56b95dedfe12d449f0f79790eb6",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/backend-recreated.json",
+      "sha256": "10b4ac822f5bee3c8d54d1bac007cdd7e7d372572ca6244ec3a5dbbe5968daef",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/build-identity.json",
+      "sha256": "187d29f66a3b3c03568baba2b66288e4ba881e1180995e38855f2ee06ba8a430",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/cleanup.json",
+      "sha256": "2e0721f33e974d61692930b290285ca07ad3560b103cba20c95da72f2b6d4ce2",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-001.json",
+      "sha256": "6e12509326ba63ae23bf3e32c2a32aa3c3119e40258e4c00a7f7108103e97b8f",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-002.json",
+      "sha256": "0b4a632ee4adbb42d10dd074a8a93ffc5b2847b35b4a777e25793ab289dbf4c2",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-003.json",
+      "sha256": "38555fbd0272390edf8f7d02d842f36a859152ccf12354407c0bd3ed7aa696e1",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-004.json",
+      "sha256": "36208a7d32b35ba28c4682461044021965ee3bbd7b55fdb53473252bc0a62152",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-005.json",
+      "sha256": "2b3302e7fe5bfc5a1af77b1f25639c3c8b6dab905eb3b71c627186f1e8f357d3",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-006.json",
+      "sha256": "2bd80ecd0113989c17ac3ecad1024677c7e71c609531906aa52a727eaa8fde26",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-007.json",
+      "sha256": "d2ab4b70f4397c5a260a53f31ff6e7b957db44686fd1394ba02e8648041473e2",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-008.json",
+      "sha256": "485847629d424850894955af779407f12244a5e6a40fe159c0be6a073500ac62",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-009.json",
+      "sha256": "92e232f50df110bef0ed5d872cf1e4bfdb4b3bce94b5af44295b627373a2c231",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-010.json",
+      "sha256": "dfa1852fc1730c3897c28d3bde6abe005b49a2beaa4696de330912c83be62278",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-011.json",
+      "sha256": "06be2cacc5c78109d0671b5287d9cd484505bc8d173ec6dd10da9822ed1c2254",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-012.json",
+      "sha256": "812a5c7997fd1e7e93dae9d02f9bf0c0ae630833a7ad06c944bc71ae099c27e2",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-013.json",
+      "sha256": "8b110ce8fe39ffd251daa81d7cf791e677c04310eeaec5506978fe75b570513f",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-014.json",
+      "sha256": "1ba71960cef0c437da8ff2389f6945a366784d396bc1476f6f9336980c61e7e9",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-015.json",
+      "sha256": "8c6111169146deeceb3e5620ce928d75c3d3b9465eec13d73cd4c9ebc2f01ba1",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-016.json",
+      "sha256": "6c25748dcf7a4e09bcd8b4dd0e553b5582ca4bf8dbe2a5d67d35fac6778aadea",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-017.json",
+      "sha256": "7e237ad93e604674148b5f6d0b6c94628a6fa7e379b09c84680078a2658c1062",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-018.json",
+      "sha256": "1c120fa9f77288545e5b50a6c82c79992a117cc58188f3cd3b8fd73a40068908",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-019.json",
+      "sha256": "3df1712e661240b28e5796bbd3132e67feef58646ee38c13eaf2b8d80b6aa073",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-020.json",
+      "sha256": "45181d77efa2273756784e206279cced37a4a7ba8a9f35f309bd964a7827bc63",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-021.json",
+      "sha256": "b7b74fab8b9a3095d0c194babcef4bb8e8eb8f792bd1119fc286dfc59b7fb0d6",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-022.json",
+      "sha256": "4c495f95e319c3f9e1af7767e3e796a4c964125a2460ee06dda4a317b74289ab",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-023.json",
+      "sha256": "c8a44379f0bba40656eddcc155d860c9588efe68986e431f3c008322ae05cede",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-024.json",
+      "sha256": "6093e3e52d8cc56dd9c6259f0e4eebfb8ff099f6fbf19812324bd7bc00464855",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-025.json",
+      "sha256": "c44b5b4b5be332ace6c177f7b274f4ed7b11ece7ace1781de2bb1e7c0c8b8859",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-026.json",
+      "sha256": "445c05dad838cb08568935d0db2da6f81dd1e4150757c7d28be7f07341613a1a",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-027.json",
+      "sha256": "d83377bf2f1c577f00a9d4d24a0275ce4dd7fa90560b282c54d4085474a02c39",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-028.json",
+      "sha256": "1c49fcb0bdfe7f0dd0eb712f6b80df55055d90fe3a6caa0b5ee4d4c34bf8ab5d",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-029.json",
+      "sha256": "c284d6797d4fb279fd1867b2795bb01514bebc0d73169b2237cc511c43d6f9d7",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-030.json",
+      "sha256": "dd63ac42270ec25a5afa7add7f74075bc9e2e71d4a7fa355aeb50735ec9960aa",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-031.json",
+      "sha256": "5e65f9fe75be98b466f83162a2a36c821ec644115c69e0b36915b976f96185ed",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/dist-audit.json",
+      "sha256": "d205076669ed089b41cad7e2d9b42a10fdb23aea3e9e8038558ca00f396dff13",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/events.jsonl",
+      "sha256": "5bc16cc2e03d45141c32db16caf31d0b052b20bc8d24f8a315c6638a0a2dd748",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/health-first.json",
+      "sha256": "e44c706875b48608cb9805e53ee1b20f4d582695c6de3639cb75c2a7bf3027e9",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/health-recreated.json",
+      "sha256": "a977d34ecb7ae304ae96d9256cdbaecee5c61c06d321819fac79f9055ef1d822",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/native-fixture.json",
+      "sha256": "cbb8b0e321b85c98ef6652ce6e215008c671fcba7e47ebe8212884e611480301",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/native-proof.json",
+      "sha256": "5503529a5ad30dc580327c42926a15644a4c2bf91b3e33ad1839bd9cffd0ff3d",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/ownership.json",
+      "sha256": "1b83b2f85fb853087227571071fef51f30fa92685f7680de21ce758d9cb6f452",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/recreation-proof.json",
+      "sha256": "6a8865727a3527859e51a6c9e7242d93611c8d9b5cd0a639a5920ae7dc437b38",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/startup-first.log",
+      "sha256": "9fd51ce56906b402e172d02a1b4a5759662430d464f1b664ef2ef172350e9220",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/startup-recreated.log",
+      "sha256": "cada8043c81265e48b38bde77b5185e3d74e6e096478ea0af43f5d37bdde0d7f",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-command.json",
+      "sha256": "73817954eca277c4b7e5b2b880d1b30a37e90b32d01af894ed9d2e723ca49554",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/failure-origin-analysis.md",
+      "sha256": "7706e1a6f646bb3b57fd1b825eab3c389737cd34089dd903607ec510206fb5b5",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/final-gates.json",
+      "sha256": "1c3b46ae57650535df3f6423cfee567d6bf6628c7024c2e632ca2011399eec1c",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/finalize-evidence.py",
+      "sha256": "f12d46efb4243aaac8101d283850b923a438526dd7f4777c7ea063e31216742e",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/focused.log",
+      "sha256": "3c5870608ef0f1ec78bb8adf650a25e8d0cd7e49b8c3bfb5175f4e437d9ac28d",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/gate-off.log",
+      "sha256": "e2657c64f3f7e66e5eaa6c5e513c9e119058e36bba07e339cfb98fa81f409ce1",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/initial-image-dist-audit.json",
+      "sha256": "3a89b2f310f4eb2369b9b3b60a94d2e012f0b57c6aabbd75df59a5218d4fa499",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/input-audit.json",
+      "sha256": "035febfc65c9f8ebbe156216eb5a851b8b54ffacbed102464818930ee5f29d0a",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/integration-prepare.log",
+      "sha256": "8731e7cee54835a4c77134a9a2a626afe48170cebddcdb11104dcc0adfb28688",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/integration.log",
+      "sha256": "9067917e0dbb4f399cdb29f8ff8b730b2a9bd204b17a2f03f5f2c290d801f3c9",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/log-normalization.json",
+      "sha256": "25da0c4b065bea57ca360c1dc7db3e1970ac309ab5d8864ecd30255d1952d3ab",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/repository-cleanup.json",
+      "sha256": "701d7275f7cbd00d6aec8872be495d46c5ac7d2c6747069f1df8b3d8bbb95efe",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/repository-private-cleanup.json",
+      "sha256": "20e84c72b38c5252a993662502f257b7ce97f259e140e050186346e7b84af068",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/repository-results.json",
+      "sha256": "14584890fe9afbbfaf45f5c8090907931ad244d4c9c2b09eb2616bf5c69aa6db",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/run-repository.py",
+      "sha256": "29b76cb4d5dcfe13f4bbeafbf8b518e7efcd12023365b13ec960425776f48286",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/typecheck.log",
+      "sha256": "ddea330b0f838c1b6a28d03258a33f85d38dc444860179a2fafec3ddf1678c68",
+      "unchanged": true
+    },
+    {
+      "path": "tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/unit.log",
+      "sha256": "01e587137e491141d753a843f75b187b4662645f2f328dcde7ff768def18c2d7",
+      "unchanged": true
+    }
+  ],
+  "priorFailure": "API-F001 = PB-001; CRR-002 confirmed pre-existing unrelated product issue; Out Of Scope, assertions still Fail",
+  "followUp": "tickets/done/base-test-suite-green/handoff-summary.md PB-001; Code Reviewer DELIVERED custody to /project_task_manager, acceptingrun project_task_manager_a5f6d9d306e54970bafdad895bdf731d; Project Task ID not established",
+  "runtimeOrSuiteRerun": false,
+  "reason": "No changed executable input or evidence; disposition-only scope confidence reassessment",
+  "dockerOrUserNodeAction": false,
+  "managerCandidate": {
+    "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/task-plans/context/pb-001-agent-streaming-cadence-candidate.md",
+    "sha256": "9498c4a4ba78648b6160d9fb057cc37d66fdacedff1314aa91a857318ba40eac",
+    "status": "Existing candidate, awaiting user approval to create separate Project Task; no matching TODO/IN_PROGRESS, no Task ID/dispatch",
+    "custodyIndexCommit": "7ea1174ba328e757daf0ad090cec9fb3dc2f2031"
+  }
+}

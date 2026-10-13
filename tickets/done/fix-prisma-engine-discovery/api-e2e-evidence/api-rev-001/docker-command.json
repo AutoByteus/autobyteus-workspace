@@ -1,0 +1,14 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "test:e2e:prisma-engine-discovery:docker",
+    "--image",
+    "sha256:1779a6e136a2fcd48a3045687a88ded45628e306471f5fd9d3eb4321017b21fa",
+    "--output-dir",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/tickets/in-progress/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1"
+  ],
+  "exit": 0,
+  "cleanEnvironment": true
+}

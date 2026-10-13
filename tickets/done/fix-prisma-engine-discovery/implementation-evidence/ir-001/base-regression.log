@@ -1,0 +1,620 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ [31m❯[39m tests/unit/startup/migrations-prisma-engine-env.test.ts [2m([22m[2m30 tests[22m[2m | [22m[31m20 failed[39m[2m)[22m[32m 175[2mms[22m[39m
+[31m     [31m×[31m follows the real root-pnpm dependency graph, preferring its bundle over newer cache[39m[32m 13[2mms[22m[39m
+     [32m✓[39m follows the real package-pnpm dependency graph, preferring its bundle over newer cache[32m 14[2mms[22m[39m
+     [32m✓[39m follows the real flat dependency graph, preferring its bundle over newer cache[32m 5[2mms[22m[39m
+[31m     [31m×[31m ignores unrelated direct and virtual-store installations[39m[32m 8[2mms[22m[39m
+[31m     [31m×[31m uses only exact-revision cache when its bundle is incomplete[39m[32m 8[2mms[22m[39m
+[31m     [31m×[31m does not select a complete cache belonging to another revision[39m[32m 6[2mms[22m[39m
+     [32m✓[39m does not combine files across revisions or targets[32m 7[2mms[22m[39m
+[31m     [31m×[31m sorts equivalent targets stably, without file mtimes[39m[32m 8[2mms[22m[39m
+[31m     [31m×[31m declines automatic selection for invalid native revision undefined[39m[32m 7[2mms[22m[39m
+[31m     [31m×[31m declines automatic selection for invalid native revision [39m[32m 7[2mms[22m[39m
+[31m     [31m×[31m declines automatic selection for invalid native revision 5.22.0[39m[32m 6[2mms[22m[39m
+[31m     [31m×[31m declines automatic selection for invalid native revision ../other[39m[32m 7[2mms[22m[39m
+[31m     [31m×[31m declines automatic selection for invalid native revision aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa[39m[32m 8[2mms[22m[39m
+[31m     [31m×[31m declines automatic selection for invalid native revision gggggggggggggggggggggggggggggggggggggggg[39m[32m 7[2mms[22m[39m
+[31m     [31m×[31m declines automatic selection for invalid native revision 42[39m[32m 7[2mms[22m[39m
+[31m     [31m×[31m declines automatic selection for invalid native revision null[39m[32m 7[2mms[22m[39m
+[31m     [31m×[31m declines when cliPath is missing[39m[32m 6[2mms[22m[39m
+[31m     [31m×[31m declines when engineManifest is missing[39m[32m 7[2mms[22m[39m
+[31m     [31m×[31m declines when versionManifest is missing[39m[32m 6[2mms[22m[39m
+[31m     [31m×[31m declines malformed or unreadable revision JSON[39m[32m 6[2mms[22m[39m
+     [32m✓[39m keeps complete explicit overrides even without metadata or files[32m 5[2mms[22m[39m
+[31m     [31m×[31m replaces a partial PRISMA_QUERY_ENGINE_LIBRARY only when an automatic pair resolves[39m[32m 5[2mms[22m[39m
+[31m     [31m×[31m replaces a partial PRISMA_SCHEMA_ENGINE_BINARY only when an automatic pair resolves[39m[32m 5[2mms[22m[39m
+     [32m✓[39m retains linux/arm64 target preference[32m 0[2mms[22m[39m
+     [32m✓[39m retains linux/x64 target preference[32m 0[2mms[22m[39m
+     [32m✓[39m retains darwin/arm64 target preference[32m 0[2mms[22m[39m
+     [32m✓[39m retains darwin/x64 target preference[32m 0[2mms[22m[39m
+     [32m✓[39m retains win32/x64 target preference[32m 0[2mms[22m[39m
+     [32m✓[39m retains freebsd/x64 target preference[32m 0[2mms[22m[39m
+[31m     [31m×[31m prefers Linux ARM64 openssl3 over openssl1 and never selects Debian x64[39m[32m 6[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 20 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mfollows the real root-pnpm dependency graph, preferring its bundle over newer cache
+[31m[1mAssertionError[22m: expected { …(4) } to deeply equal { …(4) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-vTLdjX/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-darwin-arm64.dylib.node",[39m
+[32m-   "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-vTLdjX/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64",[39m
+[32m-   "source": "bundled",[39m
+[32m-   "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-vTLdjX/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines",[39m
+[31m+   "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-vTLdjX/cache/master/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/darwin-arm64/libquery-engine",[39m
+[31m+   "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-vTLdjX/cache/master/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/darwin-arm64/schema-engine",[39m
+[31m+   "source": "cache",[39m
+[31m+   "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-vTLdjX/cache/master/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/darwin-arm64",[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m93:65[22m[39m
+    [90m 91| [39m    [35mconst[39m wrong [33m=[39m [34mcachedPair[39m(f[33m.[39mcacheRoot[33m,[39m unrelatedRevision)[33m;[39m
+    [90m 92| [39m    for (const file of [wrong.queryEngineLibrary, wrong.schemaEngineBi…
+    [90m 93| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toEqua…
+    [90m   | [39m                                                                [31m^[39m
+    [90m 94| [39m    expect(fs.readFileSync(wrong.schemaEngineBinary, "utf8")).toBe("sc…
+    [90m 95| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mignores unrelated direct and virtual-store installations
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-qEsB0e/server/node_modules/@prisma/engines/libquery_engine-darwin-arm64.dylib.node",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-qEsB0e/server/node_modules/@prisma/engines/schema-engine-darwin-arm64",
+  "source": "bundled",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-qEsB0e/server/node_modules/@prisma/engines",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m101:65[22m[39m
+    [90m 99| [39m    bundledPair(path.join(f.appRoot, "node_modules", "@prisma", "engin…
+    [90m100| [39m    bundledPair(path.join(f.appRoot, "node_modules", ".pnpm", "@prisma…
+    [90m101| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m102| [39m    [35mconst[39m owned [33m=[39m [34mbundledPair[39m(f[33m.[39mengineDir)[33m;[39m
+    [90m103| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toEqua…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22muses only exact-revision cache when its bundle is incomplete
+[31m[1mAssertionError[22m: expected { …(4) } to deeply equal { …(4) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-tpQtmu/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/libquery-engine",[39m
+[32m-   "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-tpQtmu/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/schema-engine",[39m
+[31m+   "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-tpQtmu/cache/master/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/darwin-arm64/libquery-engine",[39m
+[31m+   "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-tpQtmu/cache/master/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/darwin-arm64/schema-engine",[39m
+[2m    "source": "cache",[22m
+[32m-   "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-tpQtmu/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64",[39m
+[31m+   "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-tpQtmu/cache/master/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/darwin-arm64",[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m113:65[22m[39m
+    [90m111| [39m    [35mconst[39m wrong [33m=[39m [34mcachedPair[39m(f[33m.[39mcacheRoot[33m,[39m unrelatedRevision)[33m;[39m
+    [90m112| [39m    fs.utimesSync(wrong.schemaEngineBinary, new Date(2100, 0, 1), new …
+    [90m113| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toEqua…
+    [90m   | [39m                                                                [31m^[39m
+    [90m114| [39m  })[33m;[39m
+    [90m115| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdoes not select a complete cache belonging to another revision
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-6zT4Zs/cache/master/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/darwin-arm64/libquery-engine",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-6zT4Zs/cache/master/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/darwin-arm64/schema-engine",
+  "source": "cache",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-6zT4Zs/cache/master/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/darwin-arm64",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m119:65[22m[39m
+    [90m117| [39m    [35mconst[39m f [33m=[39m [34mfixture[39m()[33m;[39m
+    [90m118| [39m    [34mcachedPair[39m(f[33m.[39mcacheRoot[33m,[39m unrelatedRevision)[33m;[39m
+    [90m119| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m120| [39m  })[33m;[39m
+    [90m121| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22msorts equivalent targets stably, without file mtimes
+[31m[1mAssertionError[22m: expected { …(4) } to deeply equal { …(4) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-LhLzsa/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64-a/libquery-engine",[39m
+[32m-   "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-LhLzsa/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64-a/schema-engine",[39m
+[31m+   "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-LhLzsa/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64-z/libquery-engine",[39m
+[31m+   "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-LhLzsa/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64-z/schema-engine",[39m
+[2m    "source": "cache",[22m
+[32m-   "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-LhLzsa/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64-a",[39m
+[31m+   "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-LhLzsa/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64-z",[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m140:65[22m[39m
+    [90m138| [39m    [35mconst[39m expected [33m=[39m [34mcachedPair[39m(f[33m.[39mcacheRoot[33m,[39m revision[33m,[39m [32m`[39m[36m${[39mtarget[36m}[39m[32m-a`[39m)[33m;[39m
+    [90m139| [39m    fs.utimesSync(newer.schemaEngineBinary, new Date(2100, 0, 1), new …
+    [90m140| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toEqua…
+    [90m   | [39m                                                                [31m^[39m
+    [90m141| [39m  })[33m;[39m
+    [90m142| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdeclines automatic selection for invalid native revision undefined
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-VYQzEV/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/libquery-engine",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-VYQzEV/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/schema-engine",
+  "source": "cache",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-VYQzEV/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m148:65[22m[39m
+    [90m146| [39m    [34mcachedPair[39m(f[33m.[39mcacheRoot)[33m;[39m
+    [90m147| [39m    write(f.versionManifest, JSON.stringify({ prisma: { enginesVersion…
+    [90m148| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m149| [39m  })[33m;[39m
+    [90m150| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdeclines automatic selection for invalid native revision
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-aSeqf4/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/libquery-engine",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-aSeqf4/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/schema-engine",
+  "source": "cache",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-aSeqf4/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m148:65[22m[39m
+    [90m146| [39m    [34mcachedPair[39m(f[33m.[39mcacheRoot)[33m;[39m
+    [90m147| [39m    write(f.versionManifest, JSON.stringify({ prisma: { enginesVersion…
+    [90m148| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m149| [39m  })[33m;[39m
+    [90m150| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdeclines automatic selection for invalid native revision 5.22.0
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-PTtggz/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/libquery-engine",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-PTtggz/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/schema-engine",
+  "source": "cache",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-PTtggz/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m148:65[22m[39m
+    [90m146| [39m    [34mcachedPair[39m(f[33m.[39mcacheRoot)[33m;[39m
+    [90m147| [39m    write(f.versionManifest, JSON.stringify({ prisma: { enginesVersion…
+    [90m148| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m149| [39m  })[33m;[39m
+    [90m150| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdeclines automatic selection for invalid native revision ../other
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-ZoLi1I/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/libquery-engine",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-ZoLi1I/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/schema-engine",
+  "source": "cache",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-ZoLi1I/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m148:65[22m[39m
+    [90m146| [39m    [34mcachedPair[39m(f[33m.[39mcacheRoot)[33m;[39m
+    [90m147| [39m    write(f.versionManifest, JSON.stringify({ prisma: { enginesVersion…
+    [90m148| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m149| [39m  })[33m;[39m
+    [90m150| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdeclines automatic selection for invalid native revision aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-r5IO3r/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/libquery-engine",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-r5IO3r/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/schema-engine",
+  "source": "cache",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-r5IO3r/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m148:65[22m[39m
+    [90m146| [39m    [34mcachedPair[39m(f[33m.[39mcacheRoot)[33m;[39m
+    [90m147| [39m    write(f.versionManifest, JSON.stringify({ prisma: { enginesVersion…
+    [90m148| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m149| [39m  })[33m;[39m
+    [90m150| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdeclines automatic selection for invalid native revision gggggggggggggggggggggggggggggggggggggggg
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-Gf3swE/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/libquery-engine",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-Gf3swE/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/schema-engine",
+  "source": "cache",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-Gf3swE/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m148:65[22m[39m
+    [90m146| [39m    [34mcachedPair[39m(f[33m.[39mcacheRoot)[33m;[39m
+    [90m147| [39m    write(f.versionManifest, JSON.stringify({ prisma: { enginesVersion…
+    [90m148| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m149| [39m  })[33m;[39m
+    [90m150| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdeclines automatic selection for invalid native revision 42
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-CewkQW/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/libquery-engine",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-CewkQW/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/schema-engine",
+  "source": "cache",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-CewkQW/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m148:65[22m[39m
+    [90m146| [39m    [34mcachedPair[39m(f[33m.[39mcacheRoot)[33m;[39m
+    [90m147| [39m    write(f.versionManifest, JSON.stringify({ prisma: { enginesVersion…
+    [90m148| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m149| [39m  })[33m;[39m
+    [90m150| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdeclines automatic selection for invalid native revision null
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-1Yh505/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/libquery-engine",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-1Yh505/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/schema-engine",
+  "source": "cache",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-1Yh505/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m148:65[22m[39m
+    [90m146| [39m    [34mcachedPair[39m(f[33m.[39mcacheRoot)[33m;[39m
+    [90m147| [39m    write(f.versionManifest, JSON.stringify({ prisma: { enginesVersion…
+    [90m148| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m149| [39m  })[33m;[39m
+    [90m150| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdeclines when cliPath is missing
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-Azodm6/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/libquery-engine",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-Azodm6/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/schema-engine",
+  "source": "cache",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-Azodm6/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m156:65[22m[39m
+    [90m154| [39m    [34mcachedPair[39m(f[33m.[39mcacheRoot)[33m;[39m
+    [90m155| [39m    fs[33m.[39m[34munlinkSync[39m(f[field])[33m;[39m
+    [90m156| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m157| [39m  })[33m;[39m
+    [90m158| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdeclines when engineManifest is missing
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-VvUCTR/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/libquery-engine",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-VvUCTR/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/schema-engine",
+  "source": "cache",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-VvUCTR/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m156:65[22m[39m
+    [90m154| [39m    [34mcachedPair[39m(f[33m.[39mcacheRoot)[33m;[39m
+    [90m155| [39m    fs[33m.[39m[34munlinkSync[39m(f[field])[33m;[39m
+    [90m156| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m157| [39m  })[33m;[39m
+    [90m158| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdeclines when versionManifest is missing
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-5ox7bB/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/libquery-engine",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-5ox7bB/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/schema-engine",
+  "source": "cache",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-5ox7bB/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m156:65[22m[39m
+    [90m154| [39m    [34mcachedPair[39m(f[33m.[39mcacheRoot)[33m;[39m
+    [90m155| [39m    fs[33m.[39m[34munlinkSync[39m(f[field])[33m;[39m
+    [90m156| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m157| [39m  })[33m;[39m
+    [90m158| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdeclines malformed or unreadable revision JSON
+[31m[1mAssertionError[22m: expected { …(4) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-WG4nkk/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/libquery-engine",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-WG4nkk/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64/schema-engine",
+  "source": "cache",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-WG4nkk/cache/master/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/darwin-arm64",
+}
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m164:65[22m[39m
+    [90m162| [39m    [34mcachedPair[39m(f[33m.[39mcacheRoot)[33m;[39m
+    [90m163| [39m    [34mwrite[39m(f[33m.[39mversionManifest[33m,[39m [32m"{"[39m)[33m;[39m
+    [90m164| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m165| [39m    fs[33m.[39m[34munlinkSync[39m(f[33m.[39mversionManifest)[33m;[39m
+    [90m166| [39m    fs[33m.[39m[34mmkdirSync[39m(f[33m.[39mversionManifest)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mreplaces a partial PRISMA_QUERY_ENGINE_LIBRARY only when an automatic pair resolves
+[31m[1mAssertionError[22m: expected { …(3) } to deeply equal { …(4) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "DATABASE_URL": "file:/canonical",[22m
+[2m    "KEEP": "value",[22m
+[32m-   "PRISMA_QUERY_ENGINE_LIBRARY": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-B48HXY/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-darwin-arm64.dylib.node",[39m
+[32m-   "PRISMA_SCHEMA_ENGINE_BINARY": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-B48HXY/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64",[39m
+[31m+   "PRISMA_QUERY_ENGINE_LIBRARY": "/partial",[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m187:42[22m[39m
+    [90m185| [39m    expect(buildPrismaCommandEnv(input)).toEqual({ ...baseEnv, DATABAS…
+    [90m186| [39m    [35mconst[39m pair [33m=[39m [34mbundledPair[39m(f[33m.[39mengineDir)[33m;[39m
+    [90m187| [39m    expect(buildPrismaCommandEnv(input)).toEqual({ ...baseEnv, DATABAS…
+    [90m   | [39m                                         [31m^[39m
+    [90m188| [39m      PRISMA_QUERY_ENGINE_LIBRARY: pair.queryEngineLibrary, PRISMA_SCH…
+    [90m189| [39m    [34mexpect[39m(baseEnv[33m.[39m[33mDATABASE_URL[39m)[33m.[39m[34mtoBe[39m([32m"file:/stale"[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mreplaces a partial PRISMA_SCHEMA_ENGINE_BINARY only when an automatic pair resolves
+[31m[1mAssertionError[22m: expected { …(3) } to deeply equal { …(4) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "DATABASE_URL": "file:/canonical",[22m
+[2m    "KEEP": "value",[22m
+[32m-   "PRISMA_QUERY_ENGINE_LIBRARY": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-qcoFdy/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-darwin-arm64.dylib.node",[39m
+[32m-   "PRISMA_SCHEMA_ENGINE_BINARY": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-qcoFdy/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64",[39m
+[31m+   "PRISMA_SCHEMA_ENGINE_BINARY": "/partial",[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m187:42[22m[39m
+    [90m185| [39m    expect(buildPrismaCommandEnv(input)).toEqual({ ...baseEnv, DATABAS…
+    [90m186| [39m    [35mconst[39m pair [33m=[39m [34mbundledPair[39m(f[33m.[39mengineDir)[33m;[39m
+    [90m187| [39m    expect(buildPrismaCommandEnv(input)).toEqual({ ...baseEnv, DATABAS…
+    [90m   | [39m                                         [31m^[39m
+    [90m188| [39m      PRISMA_QUERY_ENGINE_LIBRARY: pair.queryEngineLibrary, PRISMA_SCH…
+    [90m189| [39m    [34mexpect[39m(baseEnv[33m.[39m[33mDATABASE_URL[39m)[33m.[39m[34mtoBe[39m([32m"file:/stale"[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/20]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mprefers Linux ARM64 openssl3 over openssl1 and never selects Debian x64
+[31m[1mAssertionError[22m: expected null to deeply equal { …(4) }[39m
+
+[32m- Expected:[39m
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-KAWWUZ/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-1.1.x.so.node",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-KAWWUZ/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-linux-arm64-openssl-1.1.x",
+  "source": "bundled",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-KAWWUZ/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines",
+}
+
+[31m+ Received:[39m
+null
+
+[36m [2m❯[22m tests/unit/startup/migrations-prisma-engine-env.test.ts:[2m210:65[22m[39m
+    [90m208| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+    [90m209| [39m    const lower = bundledPair(f.engineDir, "linux-arm64-openssl-1.1.x"…
+    [90m210| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toEqua…
+    [90m   | [39m                                                                [31m^[39m
+    [90m211| [39m    const preferred = bundledPair(f.engineDir, "linux-arm64-openssl-3.…
+    [90m212| [39m    expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toEqua…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/20]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m20 failed[39m[22m[2m | [22m[1m[32m10 passed[39m[22m[90m (30)[39m
+[2m   Start at [22m 17:34:42
+[2m   Duration [22m 1.07s[2m (transform 35ms, setup 25ms, import 27ms, tests 175ms, environment 0ms)[22m

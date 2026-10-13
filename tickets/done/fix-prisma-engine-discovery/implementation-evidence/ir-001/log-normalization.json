@@ -1,0 +1,65 @@
+{
+  "reason": "Initial staged whitespace gate rejected generated stdout trailing spaces/blank EOF. Original exit/results retained; only own new logs normalized.",
+  "files": [
+    {
+      "path": "base-regression.log",
+      "rawSha256": "b7bf8b5190c18fd65d0d7da7605f310324fd4a53f48edf80b175c5982922d0ed",
+      "committedTextSha256": "b40ada3ce6b332523a7e76d27ca9630700c65fa3e03e174211d0998e49530626",
+      "change": "trailing line whitespace and EOF blank lines only; no result lines removed"
+    },
+    {
+      "path": "final-gates-initial.log",
+      "rawSha256": "b020c07a2243b8256cdd09173dc19ef7388dda2190bcc8774c21df78d88151ef",
+      "committedTextSha256": "9f3c71bf021bb62a1290f9287c3dd5a039d36d367bb826c1bdde247c9915293f",
+      "change": "trailing line whitespace and EOF blank lines only; no result lines removed"
+    },
+    {
+      "path": "focused-units.log",
+      "rawSha256": "6d300d4bfd2389676023864c08b2f9d9c6721b1bf06912e6ad9ae0b6f11abb01",
+      "committedTextSha256": "2642bd2d37e167a5b2572adb06a3d524930886ccd00e9d2e1aec1df56b21b972",
+      "change": "trailing line whitespace and EOF blank lines only; no result lines removed"
+    },
+    {
+      "path": "graph-regression.log",
+      "rawSha256": "9973f5100aec1cf57805a90329873919fc12b0bf8c9f94d2a43c4e233fc8315a",
+      "committedTextSha256": "d25c1700159404fe8c27cda8c642979e2ec2008be29228a5395626210f588080",
+      "change": "trailing line whitespace and EOF blank lines only; no result lines removed"
+    },
+    {
+      "path": "native-local.log",
+      "rawSha256": "9b2352db24922cad60befeb66bf40a2f9d20f6231c6ea68985d9d31a2c4659c1",
+      "committedTextSha256": "58292e9ee73589893f7cd9ab38b3917034219d4440e14b39a6c83e4e3cae0dc9",
+      "change": "trailing line whitespace and EOF blank lines only; no result lines removed"
+    },
+    {
+      "path": "prebuild-complete-deps.log",
+      "rawSha256": "fc9e8346ef071e5c4a82bdd1aa66b6198561c8b20cf89fce07e077d309b23b77",
+      "committedTextSha256": "225fc217eccb6978a7594afe4b9f6d15c4e2d9344e08fd23c68f2903d5cc2d5f",
+      "change": "trailing line whitespace and EOF blank lines only; no result lines removed"
+    },
+    {
+      "path": "server-units-complete-deps.log",
+      "rawSha256": "7ab4e54aafb72bf0e9cbd863325bb23f1937a36617583d6fcf7faba184f25fa6",
+      "committedTextSha256": "9afd18f0e60694b26aa2470efa27a98a79ff278a2cfb24aeaf3db13ea2196665",
+      "change": "trailing line whitespace and EOF blank lines only; no result lines removed"
+    },
+    {
+      "path": "server-units.log",
+      "rawSha256": "9e8b875da01a309ccf544dbffbd838f600732782dafc38a47fd02b0da50c57af",
+      "committedTextSha256": "37ef27d74cc21c7e9a8fbd86d3068de48fe8b458d650bcedef86b4ebc7dee5a8",
+      "change": "trailing line whitespace and EOF blank lines only; no result lines removed"
+    },
+    {
+      "path": "setup-corrected-units.log",
+      "rawSha256": "6c481cfd2688f89e1a69c920bf8a0ffb02146e7e4b6cd15f50570208c83a19df",
+      "committedTextSha256": "9466b4ac8fb3e162839197e3baa8ec7a3c09814c3dae4e15233ff90242f81697",
+      "change": "trailing line whitespace and EOF blank lines only; no result lines removed"
+    },
+    {
+      "path": "typecheck.log",
+      "rawSha256": "15a9ee80dbaf5fcc68c2b9864b1fd167df448a8ed772622c2b0339df58990741",
+      "committedTextSha256": "ddea330b0f838c1b6a28d03258a33f85d38dc444860179a2fafec3ddf1678c68",
+      "change": "trailing line whitespace and EOF blank lines only; no result lines removed"
+    }
+  ]
+}
