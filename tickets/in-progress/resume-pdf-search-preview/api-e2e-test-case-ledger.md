@@ -197,3 +197,9 @@ All4round2casesPass and finalcleanupPass; completed events recorded before furth
 - 2026-10-13T04:26:38.305308+00:00 API-008 Planned: remove named shared Electron PDF script/probe; check active references and generic recipe syntax; focused launcher regression checks only. Prior API-002/003/006/007 execution records preserved, not rerun claims.
 
 - 2026-10-13T04:28:48.781764+00:00 API-008 Pass: script/probe removed; no active non-ticket references;7recipe Bash syntax checks;51Node checksPass/0fail/0skip; privateHOME/TMPDIR removed. No Electron/PDF rerun; prior evidence retained.
+
+## API-REV-004 — Environment Applicability Clarification
+
+- 2026-10-13T05:15:55.555610+00:00 API-009 Planned: clarify host desktop vs headless Linux vs root-only container guidance; check text applicability, unchanged recipes and Bash syntax only. No application/suite run.
+
+- 2026-10-13T05:17:25.493979+00:00 API-009 Pass: environment applicability explicit;7unchanged recipes Bash syntaxPass; document diff/whitespace/scopePass; removedPDFentrypoint/probe still absent. No suite/build/application run or runtime resources.

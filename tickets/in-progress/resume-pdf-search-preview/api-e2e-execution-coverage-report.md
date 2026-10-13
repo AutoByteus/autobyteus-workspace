@@ -1,6 +1,16 @@
 # API/E2E Execution Coverage Report — resume-pdf-search-preview
 
-## Current Scope-Correction Round — API-REV-003
+## Current Environment-Applicability Clarification — API-REV-004
+- Owner/date:api_e2e_engineer/2026-10-13,round4; direct user request to distinguish the observed headless Linux/container setup from ordinary host-desktop testing. **Pass/95% documentation-scope confidence only**, not a newly executed application/test-suite pass.
+- Changed only shared guidance outside canonical API artifacts: TESTING.md now explicitly conditional on headless/root-container circumstances and uses the ordinary graphical host/non-root account otherwise; docs/isolated-app-instances.md adds environment selection and the observed Ubuntu24.04ARM64 scope. Xvfb is optional when a suitable graphical session exists; no automatic root/numericUID/container procedure imposed on host desktops.
+- Global test-layer/evidence/safety/isolation/current-build/cleanup obligations remain. No requirement/architecture/runtime behavior or suite/script/fixture changes. The previously deleted PDF Electron package command/probe stays absent. Small/High and R1/SR001–004/ARCH003/IR002/sourceCRR002/testCRR003–005 preserved; DeliveryDR003 external hold unchanged.
+- API009 checks: Python assertions for host/headless/root/other-platform scope; seven Bash blocks unchanged except an optional-Xvfb comment, checked with bash -n after documented placeholder substitution; git diff --check for two guidance files; tracked non-artifact diff scope restricted to them; dirty Delivery artifact SHA checks before/after equal. Evidence: evidence/api-linux-guidance-scope-check.json and api-linux-guidance-scope.diff.
+- No suite execution, native rebuild, Electron launch, new OS/user/display resources, live request, provider spend or new cross-platform runtime qualification. Earlier51checks/166checks/actualElectron runs retain their historical scope, not re-execution claims. No transient cleanup required for prose/static checks.
+- Broader validation **Not Required** for prose-only applicability clarification with executable recipes unchanged. Confidence95% applies to scope/relevance/readability of setup guidance; application confidence remains the pinned prior measurements. No universal Linux/Docker compatibility claim.
+- Test-code review **N/A—no durable test code changed**. Fresh handoff rules govern the completed result; this documentation clarification must not manufacture a source/failure-origin/retest assignment or reset the external Delivery hold. Intended product behavior and user acceptance remain distinct.
+
+
+## Retained Scope-Correction Round — API-REV-003
 - Owner/date: api_e2e_engineer /2026-10-13, round3. Trigger: direct user request to remove the PDF-specific Electron package command/probe and keep only the environment/build/isolation improvements global.
 - Result: **Pass for requested removal and guidance checks;95% scoped confidence**. This is not a newly executed PDF/application pass. Prior API-REV-002 actual Electron Pass95% remains pinned historical application evidence; CRR-004 reviewed that earlier scope. Current source CRR-002, CRR-003/004 and DR-002 cumulative chain retained. Small/High/Reviewed unchanged.
 - Removed: autobyteus-web/package.json entry test:e2e:search-pdf-electron and autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs (306lines). No replacement shared entrypoint, renamed suite or relocation. Deleted-file diff is evidence/api-electron-removal.diff.

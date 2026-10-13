@@ -6,6 +6,7 @@ Canonical investigation/report own current truth; missing history is not Pass.
 | API-REV-001 |CRR-002 source Pass; R1/SR-001–004,ARCH-REV-001–003,IR-001/002,CRR-001/002 |N/A |Pass AC-001–003/95%;AC-004 Delivery-owned |
 | API-REV-002 |Direct user full-Electron/Linux-guidance request; current sourceCRR-002/testCRR-003/DR-001 hold |API-REV-001 Pass95%(web-equivalent) |Pass95%(actual packaged Electron+Linux recipe) |
 | API-REV-003 |Direct user removal of redundant shared PDF Electron command/probe; CRR-004/DR-002 retained |API-REV-002 Pass95%(actual Electron) |Pass95%(removal/guidance checks only); prior application evidence retained |
+| API-REV-004 |Direct user request for headless/container vs host-desktop applicability; CRR005/DR003 retained |API-REV-003 removalPass95% |Pass95%(documentation scope only); no runtime/suite rerun |
 
 ## API-REV-001 — joined current-stack PDF and protected identity proven
 - Date/owner:2026-10-12/api_e2e_engineer, round1. Trigger /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/code-review-report.md CRR-002/round2 Pass, CR-F-001 closed independently upstream. Source7f321575058d744c8e635b3aff0a6d1f4557e2c4; base2756d7b298ca5b203ebd2310d172b37a5d381b5c.
@@ -57,3 +58,11 @@ None. No unresolved API failure; tool-rejected initial shell cleanup syntax occu
 - Cleanup: ownprivateHOME/tmp removed; no app/display/ports or userfile created; otherdirtyDeliveryartifact hashes unchanged, buildoutputs leftunstaged.
 
 - Scope commits: dbe37b66a (standalone globalTESTING policy clarification); cbb37464d (named script/probe removal, active module reference and genericguide). Reports/evidence committed separately; no merge/push/deploy by this round.
+
+## API-REV-004 — Make environment setup conditional, not a host-desktop mandate
+- Owner/date/round:api_e2e_engineer/2026-10-13/4; direct user environment-scope clarification. CRR005/DR003 cumulative chain retained; Small/High unchanged; no product requirement change.
+- Two guidance paths: TESTING.md explicitly headless/root-container-only recipe applicability, ordinaryhostexistingdisplay/nonrootaccount/platforminstructions, conditionalXvfb; docs/isolated-app-instances.md environmentselection plus observedUbuntu24.04ARM64 scope and optionalXvfbpreflight. No source/test/command/fixture changes or permanentPDFsuite restoration.
+- CaseAPI009 applicability/reference/scope/whitespace assertionsPass,7Bashblocks syntaxPass with executablecommandsunchanged; no test-suite/build/Electron/runtime requalification. Evidence api-linux-guidance-scope-check.json and api-linux-guidance-scope.diff. Canonical investigation/report/ledger/history updated in place; prior evidence untouched.
+- Prior failure resolution:None. PriorAPI003Pass95%removal scope; currentPass95%documentation scope only; no new application pass. BroaderNotRequired; test-code reviewN/A—no durable test code change.
+- Remaining risks/ownership: otherdistributions/architectures require their own safe preflight; ordinaryhosts must not inherit root-container/Xvfb instructions unnecessarily. DR003 external user/target/rollout/finalization hold unchanged; no user verification/deployment inference.
+- Cleanup: no new runtime resources; protecteddirtyDeliveryfiles unchanged/unstaged; no merge/push/deploy. Fresh rules/no-rule fallback govern result, not a duplicate failure/retry assignment.

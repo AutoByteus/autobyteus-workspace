@@ -303,6 +303,21 @@ An isolated instance starts empty.
 
 ## Linux
 
+### Choose setup for the environment
+
+| Environment | Setup to use |
+| --- | --- |
+| Normal Linux host desktop with a graphical session | Use the existing display and normal non-root account with an isolated current worktree build. Xvfb and a numeric UID/GID switch are not required. |
+| Headless Linux worker/container without a graphical session | Use the headless build/Xvfb recipe below; keep the display alive for the whole automation session. |
+| Root-only Linux container | Build as the owner, then use the root-container recipe to run Electron non-root. Add Xvfb only if there is no usable owned graphical session. |
+| Other supported host platforms | Use their platform-specific build/launch instructions, not these Linux apt/Xvfb/setpriv recipes. |
+
+The headless/root-container method was exercised in an Ubuntu 24.04 ARM64
+container. It is reusable setup guidance for matching environments, not a
+universal host-desktop procedure or proof for every distribution/architecture.
+All environments still need test-owned data/ports, current-build evidence,
+sandbox preservation and owned-instance cleanup.
+
 Use a native Linux build and an unprivileged runtime user. The unpacked worktree
 path supports a real graphical session or an owned Xvfb display; no installed app,
 Docker socket, FUSE mount or user-operated desktop is needed for that path.
@@ -334,6 +349,7 @@ Before building/launching, record platform/architecture and runtime identity:
 ~~~bash
 node -p 'process.platform + "-" + process.arch'
 id
+# Only when using the headless/Xvfb recipe:
 command -v Xvfb xvfb-run xauth
 # Run this as the intended NON-ROOT application user, not only as the builder:
 unshare --user --map-root-user true
