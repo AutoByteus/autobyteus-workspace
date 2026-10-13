@@ -1,9 +1,9 @@
-# Shared Workspaces — Interim Feasibility Blocker / SR-006
+# Shared Workspaces — Interim Feasibility Blocker / SR-007
 
 ## Classification And Exact Missing Prerequisites
 
 - Outcome: **Blocked — User/External Prerequisite**, for completing required native Mac and real multi-computer proof. NOT Architecture Design Complete, implementation-ready or Terminal.
-- Package: shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63; current evidence SR-006; Approved intended behavior SR-004.
+- Package: shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63; current clarification SR-007 (latest executed evidence SR-006); Approved intended behavior SR-004.
 - Owner: /software_engineering_team/solution_designer; original delegator /project_task_manager, AgentRun project_task_manager_a5f6d9d306e54970bafdad895bdf731d.
 - Missing1: explicit approval for a temporary native Mac NFS mount under /private/tmp/ab-shared-workspace-feasibility-* backed only by a disposable loopback Docker service, administrator approval via OS, cleanup afterwards. Native NoUI attempts return EPERM; no cached noninteractive sudo. No password requested in chat.
 - Missing2: a real separate Linux computer/private-network target, OS/version/access method and permission to use disposable test resources. Local Docker namespaces are not another physical machine.
@@ -49,10 +49,10 @@ All exact recorded task containers/volumes/networks removed and absence audited.
 
 ## Canonical Absolute Artifacts And Sources
 
-- /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/requirements-doc.md — Approved SR-004 behavior/ACs, evidence revision SR-006.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/requirements-doc.md — Approved SR-004 behavior/ACs, clarification SR-007; latest executed evidence SR-006.
 - /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/approval-record-sr004.md — exact within-direction approval/user informing message.
 - /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/investigation-notes.md — canonical factual evidence/authorities.
-- /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/solution-revision-record.md — cumulative SR-001–006 history.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/solution-revision-record.md — cumulative SR-001–007 history.
 - /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/feasibility-report.md — actual probe outcomes/limitations/failures.
 - /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/experiment-index.json — FR-001–007 index; each round's run-probe.py, configuration, result.json and console/build logs retained in that directory.
 - /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/cleanup-audit.json — exact resource absence/image/temp cleanup.
@@ -88,3 +88,16 @@ New full user-requested explanatory supplement: /Users/normy/autobyteus_org/auto
 Current result remains Blocked — User/External Prerequisite for complete native Mac/multi-machine proof. Questions already asked directly remain unanswered; do not substitute delegator permission. Next native platform/LAN testing needs scoped Mac administrator-test approval and separate Linux computer access. Then finish runtime/setup/security/identity investigation and formal design before any implementation-ready route; REQ-016/AC-016 still not met. No merged/delivered/DONE claim.
 
 SR-006 rule lookup/recipient decision (2026-10-13): current get_handoff_rules again returns only completed architecture -> architecture_reviewer or implementation_engineer based on final classification, and delivery receipt evidence-gap -> delivery_engineer. NONE applies to this evidence-only/Blocked external-prerequisite outcome. No downstream route taken. Return changed evidence and the precise unresolved prerequisite to the original requester using exact AgentRun project_task_manager_a5f6d9d306e54970bafdad895bdf731d with this same absolute file attached, per collaboration fallback; answer the current user's architecture/setup question directly. No duplicate review/implementation request and no delegate_task bypass. Stop after required message delivery.
+
+
+## SR-007 — Actual Agent Scenario Reconfirmed, Not Yet Tested
+
+User asks how tests were done and describes the complete journey: start/select shared workspace for agent A on one node, send a writing instruction; start/select the same mounted workspace for B on another node and send a reading instruction using the same path. This is exactly existing Approved SCN-002/REQ-003/012/AC-002. Evidence-only clarification, no changed requirement approval or inferred permission for live resources/credentials. Initial two-Docker-node experiment should use identical absolute roots; cross-host best-effort path convention remains unchanged.
+
+Truthful result: previous FR-007 used real application servers with workspace/file APIs and real PTY shells, NOT instructed agents/native Codex/Claude. No new experiment occurred in SR-007; AC-002 remains unproved. Explicit correction/explanation given directly to the user; no assertion that agents have already passed.
+
+Planned four checks in one agent round trip: actual selected registered workspace/production launch; A writes an unpredictable fixture; B reads using native tools without file content supplied in its prompt; B modifies; A freshly reads the change. Record tool traces, actual cwd/path, node/run/runtime IDs, common mount/export identity and independent exact-byte/hash assertions. Model prose alone, a scripted CLI or manually selected terminal cwd is not native agent proof. Full native CLI requirement remains Codex and Claude per AC-002; actual test-home auth/provider access/skill/sandbox behavior must be established safely.
+
+New supplement (Planned, not executed; owner Solution Designer): /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/agent-roundtrip-feasibility-plan.md. Canonical requirements evidence/investigation/history updated; original scope, sources, Approved SR-004 basis, prior experiments/cleanup, workspace/base/finalization and exact native Mac/real Linux prerequisites above still apply. No mounts, nodes, credentials, models, product code or live user data touched this round. No new pass count or implementation-ready claim.
+
+SR-007 rule lookup/recipient decision (2026-10-13): get_handoff_rules returns only completed architecture routes and a delivery-receipt evidence-gap route; NONE matches this evidence clarification/current external-prerequisite blocker. No downstream review/implementation handoff. Return the current coverage clarification and precise unchanged native Mac/separate Linux prerequisites to original requesting AgentRun project_task_manager_a5f6d9d306e54970bafdad895bdf731d with this same absolute file attached, per collaboration fallback, then stop. Answer current user directly; no duplicate collaborator route or delegate_task bypass.

@@ -3,7 +3,7 @@
 ## Investigation Meta
 
 - Package: `shared-network-workspaces` / Project Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.
-- Requirements owner/investigator: Solution Designer; date 2026-10-13; current evidence revision SR-006 / Approved requirements baseline SR-004 (designer within user direction; user informed).
+- Requirements owner/investigator: Solution Designer; date 2026-10-13; current clarification revision SR-007 (latest executed experiments SR-006) / Approved requirements baseline SR-004 (designer within user direction; user informed).
 - Repository mode: Git.
 - Isolated workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`.
 - Branch: `codex/shared-network-workspaces`.
@@ -198,3 +198,13 @@ Source recheck: official Docker volumes and Ganesha VFS documentation opened2026
 Architecture explanatory candidate: one storage service on a chosen persistent/available computer; Mac/Linux native mounted clients and Docker daemon NFS volumes connect to the same export. A packaged create/connect helper performs provisioning/mount/selected managed Docker integration/readiness/path output; not a public service, custom driver, per-file API or remote messaging system. Example command autobyteus shared setup is explicitly **proposed, not currently implemented or executable**. One invocation per participating computer/Docker host; not extra invocations inside each managed node. Root paths remain best-effort and are printed truthfully. Existing containers may need approved recreation, preserving their private volumes; no transparent hot-attach claim.
 
 Still missing: native Mac mount/desktop journey, actual separate LAN machine (including Linux for AC-001), live Codex/Claude/skills/sandbox compatibility, selected production security/deployment, real idempotent helper setup, no-fallback integration and final source-build validation/delivery. Local application-image success does not clear REQ-016/AC-016 or choose the final architecture. Approval unchanged; full context application-node-feasibility-context.md, current blocker feasibility-blocker-handoff.md.
+
+## SR-007 — User Reconfirms Actual Instructed-Agent Proof
+
+User asks how testing was performed and describes the actual agent journey: select the shared workspace at agent start, instruct A to write, instruct another node's B to read using the same path; both should experience one filesystem. This matches Approved SCN-002/REQ-003/012/AC-002. It does not introduce a new cross-node conversation/notification feature or authorize live credential/storage changes. Identical paths will be used for the initial two-Docker-node agent probe; the earlier best-effort path convention across host OSes remains unchanged.
+
+Explicit coverage correction in conversation: FR-007 created two real application servers and used their public file APIs plus actual PTY shells; it did NOT create instructed agents or run native Codex/Claude. Neither a model reply nor scripted transport is equivalent to actual native filesystem tool usage. AC-002 still unproved. No new test, provider call, credentials access or mount happened in SR-007.
+
+Supplement agent-roundtrip-feasibility-plan.md records four checks in one complete round trip: select actual registered workspace in each agent's production launch; A writes unpredictable fixture; B opens/reads without copied contents in its prompt; B modifies; A freshly reopens and independently confirms exact modified bytes/hash. Capture tool traces, actual cwd/paths/node/run IDs/mount identity, not only assistant assertions. Final runtime proof remains native Codex/Claude per AC-002 and must use isolated homes/credentials/sandbox policies. This is investigation planning, not final executable coverage owned by API/E2E.
+
+Approval/status unchanged; no new required-product decision. Current result still external-prerequisite Blocked for complete Mac/multi-machine feasibility; no completed design/classification/implementation route. Updated full context remains feasibility-blocker-handoff.md. Agent experiment requires actual runtime/model availability to be established rather than assumed from image/storage success.

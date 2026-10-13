@@ -10,6 +10,7 @@
 | SR-004 | Requirements | User reconfirms simple setup/shared-folder criteria and asks experiments before implementation | Current user message; environment/primary candidate docs | Draft SR-003 | Draft SR-004, core direction confirmed; feasibility active | REQ-002/006/016, AC-001/012/016, DEC-001/003/007; SCN-010 | Same path best-effort; no separate Docker setup; prove candidate before implementation |
 | SR-005 | Evidence | Requirements readiness approved within direction; six local feasibility rounds | FR-001–006 / native Mac EPERM / remote access pending | Draft SR-004 feasibility | Approved SR-004 intent; architecture completion Blocked — external evidence | Approved REQ-001–016; AC-016 incomplete; BEH-001–006 | Local Docker/NFS candidate demonstrated; native Mac/multi-machine proof missing |
 | SR-006 | Evidence | User asks about actual application Docker nodes and one-command architecture | FR-007, eight application-image checks passed and cleaned | Approved SR-004; SR-005 partial feasibility / Blocked | Unchanged intent; expanded local image evidence / Blocked | REQ-001/003/006/011/016; AC-001/002/012/016 incomplete | Two fresh application nodes share ordinary project through APIs and real PTYs; no Mac/LAN/helper proof |
+| SR-007 | Evidence clarification | User describes workspace-selected instructed A/B agent round trip | Existing SCN-002/AC-002; agent test plan, not executed | Approved SR-004 / SR-006 partial evidence / Blocked | Unchanged intent/evidence status / Blocked | REQ-003/012; AC-002 unproved | Terminal/API proof explicitly distinguished from actual instructed agents |
 
 ## SR-001 — Private-network ordinary shared workspaces
 
@@ -102,3 +103,13 @@
 - Design/review/classification: no completed design-spec, task_size or architectural_risk; review/implementation/E2E/delivery N/A — not yet applicable, not skipped/passed. No implementation-ready forwarding.
 - Remaining prerequisites: scoped native Mac mount authorization and real separate Linux access; complete current-source/runtime/security/idempotent setup evidence. Real second Mac additionally needs native client/LAN evidence, not substitution by Docker clones.
 - Routing: updated feasibility-blocker-handoff.md; look up current rules and return precise changed evidence/blocker to requesting workflow when none matches. Task unfinished, no Terminal/DONE/merge/release.
+
+## SR-007 — Distinguish Filesystem/Application Proof From Instructed Agents
+
+- Trigger: user asks how experiments were done and describes agents starting with the same selected workspace, writing/reading through the same path on separate nodes.
+- Phase/impact: evidence-only clarification of Approved SR-004 SCN-002/REQ-003/012/AC-002, not a changed scope or hard identical-host-path mandate. No renewed requirements approval needed.
+- Current proof unchanged: FR-007 application servers/APIs/real PTYs passed; no instructed/native Codex/Claude agent run. No new experiment/credentials/model call/host operation in SR-007.
+- Supplement: agent-roundtrip-feasibility-plan.md, designer-owned planned feasibility round, not executable final API/E2E result. Four observable checks: actual workspace-selected A writes; B reads without copied file contents; B modifies; A freshly reads B's change; actual tool traces/cwd/content/hash establish shared IO, not model assertions.
+- Canonical changes: evidence clarification in requirements/investigation/current full result and this history. Approved intended behavior remains SR-004; latest executed evidence remains SR-006. Earlier rounds preserved.
+- Design/review/classification/routing: no completed design or size/risk; review/implementation/final validation/delivery N/A — not yet applicable. Current external native-Mac/real-LAN prerequisites persist; runtime/model availability must be established honestly for the agent test. No implementation-ready/Terminal/DONE claim.
+- Next action and route: current feasibility-blocker-handoff.md carries complete result/context; evaluate current rules and return unchanged precise blocker plus coverage clarification to requesting workflow when no completed-design rule applies.
