@@ -135,6 +135,28 @@ not paid inference. Agent-run testing is not the user's verification.
   `tests/integration/agent/agent-status-websocket.integration.test.ts` fail because of a
   reported product defect. Remove this note when it is fixed.
 
+## Linux and container desktop validation
+
+- A full product journey still needs the **actual isolated Electron worktree build**.
+  A browser/component fixture is not a substitute for this layer.
+- The validation agent owns ordinary setup: dependencies, a private HOME/temp root,
+  an unprivileged runtime identity, and a real or owned virtual display. Do not
+  hand routine test setup to the user when it can safely be prepared locally.
+- Electron must not run as root. In a root-only container, build as the worktree
+  owner, then launch the current unpacked build as an unprivileged user with
+  isolated-app start --from-worktree. Preserve Chromium's sandbox; do not add
+  --no-sandbox or change host security settings to force a pass.
+- Keep the display alive for **start → automation → stop**. Wrap the complete
+  owning probe/session in xvfb-run, not just the short-lived start command.
+- Verify the reported instance/ports, packaged identity, renderer assertions and
+  cleanup. A launch, skipped case, or screenshot alone is not a journey pass.
+  If safe setup cannot work, report the precise missing dependency and attempted
+  diagnostics—never a desktop pass based only on browser evidence.
+
+The runnable preflight, root-container and virtual-display recipes are in
+[Isolated instances on Linux](docs/isolated-app-instances.md#linux). Keep
+suite-specific commands/cases in their test headers and package scripts.
+
 ## Browser probes
 
 - A probe owns its stack: free ports, a Nuxt dev server, fresh headless Chrome, and either
