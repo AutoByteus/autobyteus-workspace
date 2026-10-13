@@ -1,0 +1,9 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS isolated native CLI authentication and versions, source untouched
+START pair1 codex_app_server -> claude_agent_sdk skills=False
+PASS pair1 actual workspace-selected A native write
+FAIL pair1 B native read without copied content or attachments AssertionError('Agent error status: {"status":"error","recoverableBlock":null,"agent_id":"ab_sf_fr008_cda9b510_claude_agent_sdk_186ce_e09a4e64f3c2463ca2663b5dfb6561d1"}')
+PROBE FAILURE AssertionError('Agent error status: {"status":"error","recoverableBlock":null,"agent_id":"ab_sf_fr008_cda9b510_claude_agent_sdk_186ce_e09a4e64f3c2463ca2663b5dfb6561d1"}')
+{"run": "ab-sf-fr008-cda9b510", "passes": 5, "fatal": "AssertionError('Agent error status: {\"status\":\"error\",\"recoverableBlock\":null,\"agent_id\":\"ab_sf_fr008_cda9b510_claude_agent_sdk_186ce_e09a4e64f3c2463ca2663b5dfb6561d1\"}')", "cleanup_ok": true}

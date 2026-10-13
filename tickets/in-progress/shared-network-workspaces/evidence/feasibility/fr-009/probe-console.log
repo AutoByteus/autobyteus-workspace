@@ -1,0 +1,26 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS isolated native CLI authentication and versions, source untouched
+START pair1 codex_app_server -> claude_agent_sdk skills=False
+PASS pair1 actual workspace-selected A native write
+PASS pair1 B native read without copied content or attachments
+PASS pair1 B native modification preserves existing bytes
+PASS pair1 A fresh native read observes B modification
+START pair2 claude_agent_sdk -> codex_app_server skills=True
+PASS pair2 actual workspace-selected A native write
+PASS pair2 B native read without copied content or attachments
+PASS pair2 B native modification preserves existing bytes
+PASS pair2 A fresh native read observes B modification
+START pair3 codex_app_server -> codex_app_server skills=True
+PASS pair3 actual workspace-selected A native write
+PASS pair3 B native read without copied content or attachments
+PASS pair3 B native modification preserves existing bytes
+PASS pair3 A fresh native read observes B modification
+START pair4 claude_agent_sdk -> claude_agent_sdk skills=True
+PASS pair4 actual workspace-selected A native write
+PASS pair4 B native read without copied content or attachments
+PASS pair4 B native modification preserves existing bytes
+PASS pair4 A fresh native read observes B modification
+PROBE FAILURE AssertionError('TOOL_EXECUTION_FAILED: {"invocation_id":"toolu_01NanwUWsQCmDqCWXtr5UpaC","tool_name":"Read","turn_id":"ab_sf_fr009_e70d3907_claude_agent_sdk_957a3_1542b10f1624425983534decf02d1a31:turn:b76d6830-3cdb-40ad-960d-d017844faee9","arguments":{"file_path":"/home/autobyteus/shared/project/.claude/skills/shared-probe-e70d3907/SKILL.md"},"error":"File does not exist. Note: your current working directory is /home/autobyteus/shared/project."}')
+{"run": "ab-sf-fr009-e70d3907", "passes": 20, "fatal": "AssertionError('TOOL_EXECUTION_FAILED: {\"invocation_id\":\"toolu_01NanwUWsQCmDqCWXtr5UpaC\",\"tool_name\":\"Read\",\"turn_id\":\"ab_sf_fr009_e70d3907_claude_agent_sdk_957a3_1542b10f1624425983534decf02d1a31:turn:b76d6830-3cdb-40ad-960d-d017844faee9\",\"arguments\":{\"file_path\":\"/home/autobyteus/shared/project/.claude/skills/shared-probe-e70d3907/SKILL.md\"},\"error\":\"File does not exist. Note: your current working directory is /home/autobyteus/shared/project.\"}')", "cleanup_ok": true}

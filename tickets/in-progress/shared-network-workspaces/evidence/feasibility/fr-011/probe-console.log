@@ -1,0 +1,7 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+REPRODUCED 1 A cleanup removes B active shared skill link; B private source remains
+REPRODUCED 2 A cleanup removes B active shared skill link; B private source remains
+REPRODUCED 3 A cleanup removes B active shared skill link; B private source remains
+{"run": "ab-sf-fr011-7cacde65", "passes": 3, "fatal": null, "cleanup_ok": true}

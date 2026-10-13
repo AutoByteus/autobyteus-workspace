@@ -548,5 +548,669 @@
     "existing_application_image_retained": "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
     "no_native_mac_mount_attempt": true,
     "recorded_exact_resources_absent": true
-  }
+  },
+  "sr008_new_rounds": [
+    {
+      "round": "fr-008",
+      "run": "ab-sf-fr008-cda9b510",
+      "cleanup": [
+        {
+          "container": "ab-sf-fr008-cda9b510-app-b",
+          "rc": 0
+        },
+        {
+          "container": "ab-sf-fr008-cda9b510-app-a",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr008-cda9b510-nfs-b",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr008-cda9b510-nfs-a",
+          "rc": 0
+        },
+        {
+          "container": "ab-sf-fr008-cda9b510-storage-server",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr008-cda9b510-b-chromium",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr008-cda9b510-b-legacy-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr008-cda9b510-b-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr008-cda9b510-b-root-home",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr008-cda9b510-b-data",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr008-cda9b510-a-chromium",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr008-cda9b510-a-legacy-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr008-cda9b510-a-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr008-cda9b510-a-root-home",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr008-cda9b510-a-data",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr008-cda9b510-storage",
+          "rc": 0
+        },
+        {
+          "network": "ab-sf-fr008-cda9b510-net",
+          "rc": 0
+        },
+        {
+          "absence_kind": "container",
+          "name": "ab-sf-fr008-cda9b510-storage-server",
+          "absent": true
+        },
+        {
+          "absence_kind": "container",
+          "name": "ab-sf-fr008-cda9b510-app-a",
+          "absent": true
+        },
+        {
+          "absence_kind": "container",
+          "name": "ab-sf-fr008-cda9b510-app-b",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr008-cda9b510-storage",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr008-cda9b510-nfs-a",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr008-cda9b510-a-data",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr008-cda9b510-a-root-home",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr008-cda9b510-a-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr008-cda9b510-a-legacy-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr008-cda9b510-a-chromium",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr008-cda9b510-nfs-b",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr008-cda9b510-b-data",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr008-cda9b510-b-root-home",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr008-cda9b510-b-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr008-cda9b510-b-legacy-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr008-cda9b510-b-chromium",
+          "absent": true
+        },
+        {
+          "absence_kind": "network",
+          "name": "ab-sf-fr008-cda9b510-net",
+          "absent": true
+        },
+        {
+          "image_tag": "autobyteus-shared-feasibility:fr-008",
+          "expected_id": "sha256:21e214d9a71efb2cd3bea33c71e811079c3be7a4eb14dc6ebeee1c732e7b94c3",
+          "rc": 0
+        }
+      ],
+      "native_mac_mount_attempt": false
+    },
+    {
+      "round": "fr-009",
+      "run": "ab-sf-fr009-e70d3907",
+      "cleanup": [
+        {
+          "container": "ab-sf-fr009-e70d3907-app-b",
+          "rc": 0
+        },
+        {
+          "container": "ab-sf-fr009-e70d3907-app-a",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr009-e70d3907-nfs-b",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr009-e70d3907-nfs-a",
+          "rc": 0
+        },
+        {
+          "container": "ab-sf-fr009-e70d3907-storage-server",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr009-e70d3907-b-chromium",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr009-e70d3907-b-legacy-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr009-e70d3907-b-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr009-e70d3907-b-root-home",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr009-e70d3907-b-data",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr009-e70d3907-a-chromium",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr009-e70d3907-a-legacy-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr009-e70d3907-a-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr009-e70d3907-a-root-home",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr009-e70d3907-a-data",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr009-e70d3907-storage",
+          "rc": 0
+        },
+        {
+          "network": "ab-sf-fr009-e70d3907-net",
+          "rc": 0
+        },
+        {
+          "absence_kind": "container",
+          "name": "ab-sf-fr009-e70d3907-storage-server",
+          "absent": true
+        },
+        {
+          "absence_kind": "container",
+          "name": "ab-sf-fr009-e70d3907-app-a",
+          "absent": true
+        },
+        {
+          "absence_kind": "container",
+          "name": "ab-sf-fr009-e70d3907-app-b",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr009-e70d3907-storage",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr009-e70d3907-nfs-a",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr009-e70d3907-a-data",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr009-e70d3907-a-root-home",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr009-e70d3907-a-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr009-e70d3907-a-legacy-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr009-e70d3907-a-chromium",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr009-e70d3907-nfs-b",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr009-e70d3907-b-data",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr009-e70d3907-b-root-home",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr009-e70d3907-b-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr009-e70d3907-b-legacy-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr009-e70d3907-b-chromium",
+          "absent": true
+        },
+        {
+          "absence_kind": "network",
+          "name": "ab-sf-fr009-e70d3907-net",
+          "absent": true
+        },
+        {
+          "image_tag": "autobyteus-shared-feasibility:fr-009",
+          "expected_id": "sha256:87e38a1a76a1a1787e4e4d5ea30b2ea8c9f9c6233f86297b47d17aaad1b01681",
+          "rc": 0
+        }
+      ],
+      "native_mac_mount_attempt": false
+    },
+    {
+      "round": "fr-010",
+      "run": "ab-sf-fr010-b40c8537",
+      "cleanup": [
+        {
+          "container": "ab-sf-fr010-b40c8537-app-b",
+          "rc": 0
+        },
+        {
+          "container": "ab-sf-fr010-b40c8537-app-a",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr010-b40c8537-nfs-b",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr010-b40c8537-nfs-a",
+          "rc": 0
+        },
+        {
+          "container": "ab-sf-fr010-b40c8537-storage-server",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr010-b40c8537-b-chromium",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr010-b40c8537-b-legacy-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr010-b40c8537-b-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr010-b40c8537-b-root-home",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr010-b40c8537-b-data",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr010-b40c8537-a-chromium",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr010-b40c8537-a-legacy-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr010-b40c8537-a-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr010-b40c8537-a-root-home",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr010-b40c8537-a-data",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr010-b40c8537-storage",
+          "rc": 0
+        },
+        {
+          "network": "ab-sf-fr010-b40c8537-net",
+          "rc": 0
+        },
+        {
+          "absence_kind": "container",
+          "name": "ab-sf-fr010-b40c8537-storage-server",
+          "absent": true
+        },
+        {
+          "absence_kind": "container",
+          "name": "ab-sf-fr010-b40c8537-app-a",
+          "absent": true
+        },
+        {
+          "absence_kind": "container",
+          "name": "ab-sf-fr010-b40c8537-app-b",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr010-b40c8537-storage",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr010-b40c8537-nfs-a",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr010-b40c8537-a-data",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr010-b40c8537-a-root-home",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr010-b40c8537-a-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr010-b40c8537-a-legacy-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr010-b40c8537-a-chromium",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr010-b40c8537-nfs-b",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr010-b40c8537-b-data",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr010-b40c8537-b-root-home",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr010-b40c8537-b-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr010-b40c8537-b-legacy-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr010-b40c8537-b-chromium",
+          "absent": true
+        },
+        {
+          "absence_kind": "network",
+          "name": "ab-sf-fr010-b40c8537-net",
+          "absent": true
+        },
+        {
+          "image_tag": "autobyteus-shared-feasibility:fr-010",
+          "expected_id": "sha256:60958aa818801cc66414c22e5941d0c2129e9addcbf91fdcec62cf7409570175",
+          "rc": 0
+        }
+      ],
+      "native_mac_mount_attempt": false
+    },
+    {
+      "round": "fr-011",
+      "run": "ab-sf-fr011-7cacde65",
+      "cleanup": [
+        {
+          "container": "ab-sf-fr011-7cacde65-app-b",
+          "rc": 0
+        },
+        {
+          "container": "ab-sf-fr011-7cacde65-app-a",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr011-7cacde65-nfs-b",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr011-7cacde65-nfs-a",
+          "rc": 0
+        },
+        {
+          "container": "ab-sf-fr011-7cacde65-storage-server",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr011-7cacde65-b-chromium",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr011-7cacde65-b-legacy-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr011-7cacde65-b-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr011-7cacde65-b-root-home",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr011-7cacde65-b-data",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr011-7cacde65-a-chromium",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr011-7cacde65-a-legacy-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr011-7cacde65-a-workspace",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr011-7cacde65-a-root-home",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr011-7cacde65-a-data",
+          "rc": 0
+        },
+        {
+          "volume": "ab-sf-fr011-7cacde65-storage",
+          "rc": 0
+        },
+        {
+          "network": "ab-sf-fr011-7cacde65-net",
+          "rc": 0
+        },
+        {
+          "absence_kind": "container",
+          "name": "ab-sf-fr011-7cacde65-storage-server",
+          "absent": true
+        },
+        {
+          "absence_kind": "container",
+          "name": "ab-sf-fr011-7cacde65-app-a",
+          "absent": true
+        },
+        {
+          "absence_kind": "container",
+          "name": "ab-sf-fr011-7cacde65-app-b",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr011-7cacde65-storage",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr011-7cacde65-nfs-a",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr011-7cacde65-a-data",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr011-7cacde65-a-root-home",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr011-7cacde65-a-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr011-7cacde65-a-legacy-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr011-7cacde65-a-chromium",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr011-7cacde65-nfs-b",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr011-7cacde65-b-data",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr011-7cacde65-b-root-home",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr011-7cacde65-b-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr011-7cacde65-b-legacy-workspace",
+          "absent": true
+        },
+        {
+          "absence_kind": "volume",
+          "name": "ab-sf-fr011-7cacde65-b-chromium",
+          "absent": true
+        },
+        {
+          "absence_kind": "network",
+          "name": "ab-sf-fr011-7cacde65-net",
+          "absent": true
+        },
+        {
+          "image_tag": "autobyteus-shared-feasibility:fr-011",
+          "expected_id": "sha256:f8b7f1ae25b895152804e335191621ce7480414610202506b2a4d2ff587b5948",
+          "rc": 0
+        }
+      ],
+      "native_mac_mount_attempt": false
+    }
+  ],
+  "sr008_credential_values_not_retained": true,
+  "sr008_proof_audit_reference": "native-agent-proof-audit.json"
 }

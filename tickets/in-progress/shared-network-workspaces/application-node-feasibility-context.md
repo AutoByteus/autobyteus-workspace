@@ -1,5 +1,7 @@
 # Application Nodes And Easy Setup — SR-006
 
+> Historical SR-006 explanation. Actual native agents were subsequently exercised in SR-008: four core round trips pass, but a shared skill-cleanup gap is reproduced. See evidence/feasibility/real-agent-roundtrip-report.md. The proposed setup command remains unimplemented; native Mac/LAN/source-build/GUI claims remain unproved.
+
 ## Request, Authority And Status
 
 User asks whether the experiments cover an application on another node, suggests a fresh Docker node instead of unavailable physical LAN machines, and asks how the architecture works and whether setup is one command.

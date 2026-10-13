@@ -103,5 +103,64 @@
       "final permissions/security policy",
       "latest worktree build and final executable validation"
     ]
+  },
+  {
+    "round": "fr-008",
+    "run": "ab-sf-fr008-cda9b510",
+    "scope": "two fresh existing-image AutoByteus application nodes in one Mac Docker Desktop VM; real instructed native-runtime agents; NOT LAN/Mac-native/GUI/latest-source/setup proof",
+    "pass_count": 5,
+    "failed_cases": [
+      {
+        "name": "pair1 B native read without copied content or attachments",
+        "status": "FAIL",
+        "error": "AssertionError('Agent error status: {\"status\":\"error\",\"recoverableBlock\":null,\"agent_id\":\"ab_sf_fr008_cda9b510_claude_agent_sdk_186ce_e09a4e64f3c2463ca2663b5dfb6561d1\"}')",
+        "seconds": 1.22
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "AssertionError('Agent error status: {\"status\":\"error\",\"recoverableBlock\":null,\"agent_id\":\"ab_sf_fr008_cda9b510_claude_agent_sdk_186ce_e09a4e64f3c2463ca2663b5dfb6561d1\"}')",
+    "known_product_gap": null,
+    "causal_reproductions": 0,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1
+  },
+  {
+    "round": "fr-009",
+    "run": "ab-sf-fr009-e70d3907",
+    "scope": "two fresh existing-image AutoByteus application nodes in one Mac Docker Desktop VM; real instructed native-runtime agents; NOT LAN/Mac-native/GUI/latest-source/setup proof",
+    "pass_count": 20,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": "AssertionError('TOOL_EXECUTION_FAILED: {\"invocation_id\":\"toolu_01NanwUWsQCmDqCWXtr5UpaC\",\"tool_name\":\"Read\",\"turn_id\":\"ab_sf_fr009_e70d3907_claude_agent_sdk_957a3_1542b10f1624425983534decf02d1a31:turn:b76d6830-3cdb-40ad-960d-d017844faee9\",\"arguments\":{\"file_path\":\"/home/autobyteus/shared/project/.claude/skills/shared-probe-e70d3907/SKILL.md\"},\"error\":\"File does not exist. Note: your current working directory is /home/autobyteus/shared/project.\"}')",
+    "known_product_gap": null,
+    "causal_reproductions": 0,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1
+  },
+  {
+    "round": "fr-010",
+    "run": "ab-sf-fr010-b40c8537",
+    "scope": "two fresh existing-image AutoByteus application nodes in one Mac Docker Desktop VM; NOT real LAN/Mac-native or latest source proof",
+    "pass_count": 3,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": "AssertionError({'event': 'INSPECT', 'heldCount': 1, 'materializedRoot': '/home/autobyteus/shared/project/.claude/skills/causal-685052f', 'exists': True, 'sha256': '305904dd8e2dbaff7f803ace13aad5289ec2957098125186968e3f07388924fc', 'linkTarget': '/home/autobyteus/data/skills/causal-685052f', 'privateSourceExists': True})",
+    "known_product_gap": null,
+    "causal_reproductions": 0,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1
+  },
+  {
+    "round": "fr-011",
+    "run": "ab-sf-fr011-7cacde65",
+    "scope": "two fresh existing-image AutoByteus application nodes in one Mac Docker Desktop VM; NOT real LAN/Mac-native or latest source proof",
+    "pass_count": 3,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "known_product_gap": "process-local skill holder registry cannot authorize unlink across independent server processes on a shared project",
+    "causal_reproductions": 3,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 2
   }
 ]

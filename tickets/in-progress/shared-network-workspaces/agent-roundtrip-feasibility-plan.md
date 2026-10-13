@@ -1,10 +1,12 @@
 # Instructed Agents On Shared Storage — SR-007
 
+> Historical SR-007 plan. **Executed in SR-008:** FR-009 demonstrates all16 core stages across four real Codex/Claude pairs, but extra peer-stop skill access fails; FR-011 reproduces the ownership gap. See evidence/feasibility/real-agent-roundtrip-report.md. No full-task/GUI/LAN/setup or 100% claim.
+
 ## Authority And Honest Status
 
 Package: shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63. Owner: Solution Designer. User clarifies that proof must include selecting a workspace when starting an agent, instructing it to write, then instructing an agent on another node to read through the same path. This is the existing Approved SR-004 SCN-002 / REQ-003/012 / AC-002, not new product scope or proof that it already passed.
 
-**Planned, not executed.** FR-007 used real application workspace/file APIs and terminal PTY shells, but did not create instructed agents. Eight scoped passes do not establish agent-run/native-runtime compatibility. A terminal launched by the test is not a model-selected tool call; scripted runtimes would likewise prove only their own transport boundary, not native Codex/Claude behavior. No new experiment or credential access occurred in SR-007.
+**At SR-007: planned, not executed.** FR-007 used real application workspace/file APIs and terminal PTY shells, but did not create instructed agents. Eight scoped passes do not establish agent-run/native-runtime compatibility. A terminal launched by the test is not a model-selected tool call; scripted runtimes would likewise prove only their own transport boundary, not native Codex/Claude behavior. No new experiment or credential access occurred in SR-007. Current executed evidence is SR-008, linked above.
 
 ## Complete Agent Round Trip
 
