@@ -9,6 +9,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 handoff | N/A | Fail (Local Fix) | CR-001, CR-002, CR-003 |
 | CRR-002 | `code-review-report.md` | Implementation Review round 2 / IR-002 local fix | Fail (Local Fix) | Pass | CR-001..CR-003 (resolved) |
 | CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-001 pass | N/A (first test review) | Pass | None |
+| CRR-004 | `api-e2e-test-review-report.md` | Targeted proportional test-code review / API-REV-002 (per-member choice) | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -116,3 +117,35 @@ None.
   - Older unattributed copies are not stopped with their starter.
   - No dedicated idle-shutdown case (the shared restore path is covered).
   - The durable tests are uncommitted.
+
+### CRR-004 — Targeted test-code review of API-REV-002: per-member choice in a Team copy; Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change/tickets/in-progress/delegated-copy-model-change/api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 2 (targeted)
+- Review scope: `N/A` (test review). Commit `15cc9632d4`: DCM-008, DCP-005 with `agyLaunchDetailsOf`, and the `package.json` script.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-revision-record.md` (API-REV-002); DCM-008, DCP-005
+- Relevant solution revision IDs: SR-007
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001 (delivery checkpoint `1f3bd8ffde`; delivery re-evaluates after this review)
+- Prior authoritative result: `Pass` (CRR-003)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - The new cases prove REQ-001's "any member" and the AC-010 scenario end to end: the record lands on the member only, the member resumes its own conversation on its choice, and its teammates are unaffected. A member's own choice wins over a Team choice in the same Save.
+  - Reviewer checks: `node --check` OK; the probe evidence shows the full run 15/15 with 0 browser errors.
+  - The round 1 header note is addressed.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: None. Non-blocking: the DCP-005 coordinator check could pass vacuously (DCM-008 covers it exactly). O-4 is a UX follow-up candidate.
+- Material score or classification changes: N/A. Classification unchanged: `Large` / `High`.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - AC-010 user verification.
+  - O-1..O-4 product follow-up candidates.
+  - Another client's open Settings needs a Refresh.
+  - Stop interrupts work in progress.
