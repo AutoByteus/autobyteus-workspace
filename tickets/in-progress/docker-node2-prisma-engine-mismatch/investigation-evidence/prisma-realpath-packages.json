@@ -1,0 +1,158 @@
+{
+  "observedAt": "2026-10-13T12:34:14.156185+00:00",
+  "autobyteus-server-0": {
+    "exit": 0,
+    "result": {
+      "cliRealPath": "/app/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/build/index.js",
+      "engines": {
+        "path": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/package.json",
+        "version": "5.22.0",
+        "scripts": {
+          "dev": "DEV=true tsx helpers/build.ts",
+          "build": "tsx helpers/build.ts",
+          "test": "jest --passWithNoTests",
+          "postinstall": "node scripts/postinstall.js"
+        }
+      },
+      "enginesVersion": {
+        "path": "/app/node_modules/.pnpm/@prisma+engines-version@5.22.0-44.605197351a3c8bdd595af2d2a9bc3025bca48ea2/node_modules/@prisma/engines-version/index.js",
+        "value": {
+          "enginesVersion": "605197351a3c8bdd595af2d2a9bc3025bca48ea2"
+        }
+      },
+      "bundledFiles": [
+        "libquery_engine-linux-arm64-openssl-3.0.x.so.node",
+        "schema-engine-linux-arm64-openssl-3.0.x"
+      ],
+      "cacheFiles": [
+        {
+          "rev": "605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+          "targets": [
+            {
+              "target": "darwin",
+              "files": [
+                "libquery-engine",
+                "libquery-engine.gz.sha256",
+                "libquery-engine.sha256"
+              ]
+            },
+            {
+              "target": "darwin-arm64",
+              "files": [
+                "libquery-engine",
+                "libquery-engine.gz.sha256",
+                "libquery-engine.sha256"
+              ]
+            },
+            {
+              "target": "debian-openssl-1.1.x",
+              "files": [
+                "libquery-engine",
+                "libquery-engine.gz.sha256",
+                "libquery-engine.sha256",
+                "schema-engine",
+                "schema-engine.gz.sha256",
+                "schema-engine.sha256"
+              ]
+            },
+            {
+              "target": "debian-openssl-3.0.x",
+              "files": [
+                "libquery-engine",
+                "libquery-engine.gz.sha256",
+                "libquery-engine.sha256",
+                "schema-engine",
+                "schema-engine.gz.sha256",
+                "schema-engine.sha256"
+              ]
+            },
+            {
+              "target": "linux-arm64-openssl-3.0.x",
+              "files": [
+                "libquery-engine",
+                "libquery-engine.gz.sha256",
+                "libquery-engine.sha256",
+                "schema-engine",
+                "schema-engine.gz.sha256",
+                "schema-engine.sha256"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "autobyteus-server-2": {
+    "exit": 0,
+    "result": {
+      "cliRealPath": "/app/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/build/index.js",
+      "engines": {
+        "path": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/package.json",
+        "version": "5.22.0",
+        "scripts": {
+          "dev": "DEV=true tsx helpers/build.ts",
+          "build": "tsx helpers/build.ts",
+          "test": "jest --passWithNoTests",
+          "postinstall": "node scripts/postinstall.js"
+        }
+      },
+      "enginesVersion": {
+        "path": "/app/node_modules/.pnpm/@prisma+engines-version@5.22.0-44.605197351a3c8bdd595af2d2a9bc3025bca48ea2/node_modules/@prisma/engines-version/index.js",
+        "value": {
+          "enginesVersion": "605197351a3c8bdd595af2d2a9bc3025bca48ea2"
+        }
+      },
+      "bundledFiles": [
+        "libquery_engine-linux-arm64-openssl-3.0.x.so.node",
+        "schema-engine-linux-arm64-openssl-3.0.x"
+      ],
+      "cacheFiles": [
+        {
+          "rev": "605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+          "targets": [
+            {
+              "target": "linux-arm64-openssl-3.0.x",
+              "files": []
+            }
+          ]
+        },
+        {
+          "rev": "c2990dca591cba766e3b7ef5d9e8a84796e47ab7",
+          "targets": [
+            {
+              "target": "linux-arm64-openssl-3.0.x",
+              "files": [
+                "libquery-engine",
+                "libquery-engine.gz.sha256",
+                "libquery-engine.sha256",
+                "schema-engine",
+                "schema-engine.gz.sha256",
+                "schema-engine.sha256"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "volumes": [
+    {
+      "Name": "autobyteus-server-0-root-home",
+      "CreatedAt": "2026-05-13T16:18:05Z",
+      "Driver": "local",
+      "Mountpoint": "/var/lib/docker/volumes/autobyteus-server-0-root-home/_data"
+    },
+    {
+      "Name": "autobyteus-server-2-root-home",
+      "CreatedAt": "2026-05-12T16:28:29Z",
+      "Driver": "local",
+      "Mountpoint": "/var/lib/docker/volumes/autobyteus-server-2-root-home/_data"
+    }
+  ],
+  "image": {
+    "Id": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+    "Created": "2026-10-13T05:58:05.392997205Z",
+    "Architecture": "arm64",
+    "Os": "linux"
+  }
+}
