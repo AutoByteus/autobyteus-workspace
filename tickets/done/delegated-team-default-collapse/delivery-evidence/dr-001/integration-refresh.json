@@ -1,0 +1,76 @@
+{
+  "recordedAt": "2026-10-13T08:17:58.322104+00:00",
+  "package": "delegated-team-default-collapse",
+  "taskId": "project_task_394f7ced-6597-41e8-824a-e2140c35b743",
+  "task_size": "Small",
+  "architectural_risk": "Low",
+  "route": "Direct Low-Risk; recovery-specific proportional durable-test review passed CRR-002",
+  "bootstrapBase": "8d52dc4eb378609ae2dca6089eb62678eeafe803",
+  "receivedCandidate": "17d4cea37924fce2afbcd2a602faf19e00416c54",
+  "fetchCommand": "git fetch origin personal",
+  "lastFetchedBase": "a609de982a22925299d550bea4084e578cc5cd60",
+  "integrationCommand": "git merge --no-edit origin/personal",
+  "integratedCommit": "c0a4c04af3d5ae1c3b00175f0b96fc81506affff",
+  "integrationParents": [
+    "17d4cea37924fce2afbcd2a602faf19e00416c54",
+    "a609de982a22925299d550bea4084e578cc5cd60"
+  ],
+  "conflicts": false,
+  "checkpoint": "Not needed \u2014 committed tracked candidate; two untracked SDK dist directories retained/excluded",
+  "trackedDeliveryEditsStartedAfterIntegrationAndFocusedPass": true,
+  "incomingBaseProductionPaths": [
+    "autobyteus-web/graphql/mutations/agentDefinitionMutations.ts",
+    "autobyteus-web/graphql/mutations/agentOrgDefinitionMutations.ts",
+    "autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts"
+  ],
+  "unchangedCollapseBoundary": {
+    "autobyteus-web/stores/agentRunCollaborationStore.ts": {
+      "receivedSha256": "f2cf4d68dd2d4641d3a379d314753a527edd7d07369d800f61f50c2efc2696d0",
+      "integratedSha256": "f2cf4d68dd2d4641d3a379d314753a527edd7d07369d800f61f50c2efc2696d0"
+    },
+    "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts": {
+      "receivedSha256": "c6942f27487b87fec87062ce4f9a866d3a32633bf875b4daea9608a6cb8bccd6",
+      "integratedSha256": "c6942f27487b87fec87062ce4f9a866d3a32633bf875b4daea9608a6cb8bccd6"
+    },
+    "autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts": {
+      "receivedSha256": "534e52430ed72a106819524c395f383440d8593d220f00504cc73c3ff001a7b9",
+      "integratedSha256": "534e52430ed72a106819524c395f383440d8593d220f00504cc73c3ff001a7b9"
+    },
+    "autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs": {
+      "receivedSha256": "cd073545c7c28c7a72c3f9c3f719de174309068cb6d44eba56fb085da06baf2d",
+      "integratedSha256": "cd073545c7c28c7a72c3f9c3f719de174309068cb6d44eba56fb085da06baf2d"
+    }
+  },
+  "testCommand": "env -i PATH=\"/tmp/delegated-team-toolchain:$PATH\" HOME=<owned temporary HOME> TMPDIR=/tmp CI=1 pnpm -C autobyteus-web test:nuxt stores/__tests__/agentRunCollaborationStore.spec.ts stores/__tests__/agentRunCollaborationDisclosure.spec.ts stores/__tests__/agentRunCollaborationStoreClosure.spec.ts stores/__tests__/agentRootCompactionIntegration.spec.ts services/agentCollaboration/__tests__ components/workspace/history/__tests__/AgentRunTaskRows components/workspace/history/__tests__/TaskWorkerTaskSummaryHosts.spec.ts composables/projects/__tests__/useTaskRootNavigationDisclosure.spec.ts components/projects/__tests__/ProjectTaskWorkers.spec.ts stores/__tests__/definitionMutationCache.spec.ts --run --maxWorkers=2",
+  "tests": {
+    "filesPassed": 15,
+    "testsPassed": 89,
+    "exitCode": 0,
+    "unhandledErrors": 0,
+    "durationSeconds": 131.04,
+    "log": "/home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/delivery-evidence/dr-001/integrated-tests.log"
+  },
+  "guards": [
+    {
+      "command": "PATH=/tmp/delegated-team-toolchain:$PATH pnpm -C autobyteus-web guard:web-boundary",
+      "result": "Pass",
+      "exitCode": 0
+    },
+    {
+      "command": "PATH=/tmp/delegated-team-toolchain:$PATH pnpm -C autobyteus-web guard:localization-boundary",
+      "result": "Pass",
+      "exitCode": 0
+    },
+    {
+      "command": "PATH=/tmp/delegated-team-toolchain:$PATH pnpm -C autobyteus-web audit:localization-literals",
+      "result": "Pass",
+      "exitCode": 0
+    }
+  ],
+  "fullIntegratedNativeOrBrowserJourneyRerun": false,
+  "retainedNativeBinaryPredatesIntegratedDefinitionDiagnosticSelections": true,
+  "userRuntimeConfirmed": false,
+  "explicitUserVerificationReceived": false,
+  "archivePushTargetMergeReleaseDeploymentPerformed": false,
+  "deliveryResult": "Blocked \u2014 user-verification hold"
+}

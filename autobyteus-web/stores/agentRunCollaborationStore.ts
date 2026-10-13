@@ -38,7 +38,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   const errors = shallowReactive<Record<string, string | null>>({})
   const services = new Map<string, AgentRunCollaborationStreamingService>()
   const inspections = new Map<string, Promise<void>>()
-  const autoExpanded = new Set<string>()
   const terminations = new Map<string, object>()
   const binding = useWindowNodeContextStore()
   const activities = useAgentActivityStore()
@@ -53,17 +52,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     contexts.value = next
   }
 
-  /** A task Team opens once when it first appears, so its members are visible. */
-  const openNewTaskTeams = (hostRunId: string, context: AgentRunCollaborationContext) => {
-    const opened = [...(expandedTeams[hostRunId] ?? [])]
-    for (const teamRunId of context.index.teams.keys()) {
-      if (autoExpanded.has(teamRunId)) continue
-      autoExpanded.add(teamRunId)
-      if (!opened.includes(teamRunId)) opened.push(teamRunId)
-    }
-    expandedTeams[hostRunId] = Object.freeze(opened)
-  }
-
   const publish = (hostRunId: string, context: AgentRunCollaborationContext, commit: () => void) => {
     const previous = contexts.value[hostRunId]
     const adopt = previous ? context.prepareLocalContextAdoption(previous) : () => undefined
@@ -71,7 +59,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     adopt()
     setContext(hostRunId, context)
     errors[hostRunId] = null
-    openNewTaskTeams(hostRunId, context)
     returnToHostWhenUnlisted(hostRunId, context)
   }
 
@@ -97,7 +84,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       },
       onInactive: () => { if (isCurrent()) services.delete(hostRunId) },
       reportError: (message) => { if (isCurrent()) errors[hostRunId] = message },
-      onCollaboratorAdded: (context) => { if (isCurrent()) openNewTaskTeams(hostRunId, context) },
       onTaskExecutionsClosed: (context) => { if (isCurrent()) returnToHostWhenUnlisted(hostRunId, context) },
     })
     services.set(hostRunId, service)
@@ -208,6 +194,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   }
   const selectedChild = (hostRunId: string): string | null => selection[hostRunId] ?? null
 
+  // Publication never changes disclosure: new Teams are closed until explicitly revealed.
   const isTaskTeamExpanded = (hostRunId: string, teamRunId: string) => (expandedTeams[hostRunId] ?? []).includes(teamRunId)
   const toggleTaskTeam = (hostRunId: string, teamRunId: string) => {
     const current = expandedTeams[hostRunId] ?? []
@@ -303,7 +290,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   watch(() => binding.bindingRevision, () => {
     const ids = new Set([...Object.keys(contexts.value), ...services.keys(), ...inspections.keys(), ...terminations.keys()])
     ids.forEach(release)
-    autoExpanded.clear()
   }, { flush: 'sync' })
 
   return {

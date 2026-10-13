@@ -1,0 +1,3 @@
+Pass: canonical collect_violations; 62462 tracked + 13 prospective ticket paths.
+Current and hypothetical archived paths meet Windows naming/200-character rules; no raw xcresult/downloaded CI zip violations.
+Nothing staged; repeat archive/index before final commit and merged target checks before any tag.

@@ -1,0 +1,35 @@
+{
+  "label": "changed",
+  "runtime": "linux-arm64",
+  "browser": "153.0.8010.52",
+  "samples": [
+    {
+      "boundary": "fresh-store preview disclosure click to collaboration rows",
+      "ms": 336.39770899999985,
+      "rows": 7,
+      "requests": {
+        "GetAgentRunCollaboration": 1,
+        "GetAgentRunCollaborationMemberProjection": 42,
+        "GetRunFileChanges": 42
+      }
+    },
+    {
+      "boundary": "warm collaboration refresh to published rows",
+      "ms": 249.2825839999996,
+      "rows": 7,
+      "requests": {
+        "GetAgentRunCollaboration": 1,
+        "GetAgentRunCollaborationMemberProjection": 42,
+        "GetRunFileChanges": 42
+      }
+    }
+  ],
+  "errors": [],
+  "requests": {
+    "GetAgentRunCollaboration": 1,
+    "GetAgentRunCollaborationMemberProjection": 42,
+    "GetRunFileChanges": 42
+  },
+  "limitation": "Mock GraphQL/Projects feed; host button is preview-only, not actual role/run open; timings are collaboration inspection plus render, not real manager selection latency.",
+  "browserClosed": true
+}

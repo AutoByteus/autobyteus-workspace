@@ -1,0 +1,11 @@
+{
+  "recordedAt": "2026-10-13T08:17:58.432731+00:00",
+  "ownedTemporaryUnitHome": "/tmp/delegated-team-delivery-unit-4TdJCT",
+  "removed": true,
+  "deliveryStartedDesktopServerModel": false,
+  "upstreamNativeCleanupReceipt": "/home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-evidence/api-rev-002/cleanup-receipt.json",
+  "worktreeBuildDependenciesRetainedUntilVerificationFinalization": true,
+  "userAppDataCredentialsConfigTouched": false,
+  "postFinalizationWorktreeBranchCleanup": "Pending \u2014 not finalized",
+  "abandonedOwnRecursiveFindStopped": true
+}

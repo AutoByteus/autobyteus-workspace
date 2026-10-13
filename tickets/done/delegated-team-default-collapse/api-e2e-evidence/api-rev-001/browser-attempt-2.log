@@ -1,0 +1,13 @@
+
+> autobyteus@1.5.3-beta.3 test:e2e:delegated-team-default-collapse /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web
+> node tests/e2e/delegated-team-default-collapse-probe.mjs --output-dir /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-evidence/api-rev-001/browser-attempt-2 --ledger-file /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-test-case-ledger.md
+
+Seeding representative Task 1/7
+Seeding representative Task 2/7
+Seeding representative Task 3/7
+Seeding representative Task 4/7
+Seeding representative Task 5/7
+Seeding representative Task 6/7
+Seeding representative Task 7/7
+{"result":"Fail","cases":["B-001"],"errors":[],"cleanup":{"browserClosed":true,"frontend":{"pid":66456,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":66337,"status":"terminated","exit":0},"dataRootRemoved":true},"evidencePath":"/home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-evidence/api-rev-001/browser-attempt-2/evidence.json"}
+ ELIFECYCLE  Command failed with exit code 1.
