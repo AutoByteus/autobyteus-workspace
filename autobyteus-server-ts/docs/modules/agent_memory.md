@@ -61,6 +61,7 @@ Common files/directories:
 - `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them.
 - `compaction_lineage.jsonl` — historical append-only lineage, not current continuation authority and not a normal compaction/restore dependency.
 - `working_context_snapshot.json` — native continuation state: versionless `{agent_id, messages}` with finalized messages and provenance. The normal reader ignores obsolete root version/extras but requires current shapes, identity and repairable tool facts. Codex/Claude recording does not write it.
+- `seen_skill_versions.json` — the skill file versions this run was last given, used by [Skill Update Notices](./skill_update_notices.md) on every runtime. It is additive and disposable: missing or invalid means "nothing seen", and the root-package validators tolerate it.
 
 There is no current compacted-memory manifest or pointer. The destructive
 `20260730_reset_pre_lineage_memory` path is removed. Normal restore accepts

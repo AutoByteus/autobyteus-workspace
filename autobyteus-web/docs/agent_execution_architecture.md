@@ -1640,6 +1640,7 @@ for that evidence-free case.
 
 - **`handleSystemTaskNotification`**: Preserves backend-authored `SYSTEM_TASK_NOTIFICATION` payload content and sender identity by appending a `system_task_notification` segment to the current AI message. The frontend must not rewrite task-delegation display copy or convert these notifications into user/member input rows.
 - `AIMessage.vue` delegates `system_task_notification` segments to `SystemTaskNotificationSegment.vue`. That component renders the content through the normal markdown message renderer while retaining semantic hooks (`system-task-notification`, test id, `role="note"`, and an accessible label). The default presentation should read like ordinary chat content rather than a prominent alert card.
+- **Skill update notices** use the same segment. When the sender is `system.skill_update_notifier`, or the content starts with `[Platform notice — skill updated]` (replayed history), the segment shows the label and aria-label **Skill updated**. The key is `workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated` (en "Skill updated", zh-CN "技能已更新"). The user's message that carried the notice still renders as typed. See the server's [Skill Update Notices](../../autobyteus-server-ts/docs/modules/skill_update_notices.md).
 
 #### `toolLifecycleHandler.ts`
 
