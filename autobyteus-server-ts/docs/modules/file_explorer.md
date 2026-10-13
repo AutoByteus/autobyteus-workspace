@@ -106,3 +106,19 @@ The path-boundary E2E covers ignored-folder projection rejection, same-prefix
 sibling escape rejection for folder/read/write APIs, path-like rename
 rejection, and the invariant that those rejected snapshot operations do not
 start watcher leases or mutate cached tree state.
+
+### Search-to-content regression
+
+`tests/e2e/file-explorer/search-content-http.e2e.test.ts` joins real GraphQL
+search results to the protected REST content route using the actual workspace
+path owner. It checks relative PDF/text locators, exact PDF bytes and MIME,
+and the existing absolute, traversal, and sibling-escape denials. Its PDF
+fixture is shared with the browser probe at
+`test-support/file-explorer/resume-preview.pdf`.
+
+The browser journey is discoverable from the workspace root with
+`pnpm -C autobyteus-web test:e2e:search-pdf-preview --output-dir <fresh-directory>`.
+Read the probe header for build prerequisites and isolation. It owns a current
+backend, Nuxt host and browser; it searches, selects a previously unloaded PDF,
+asserts rendered pages, and checks tree/text identity and HTTP denials. This is
+web-equivalent Files coverage, not deployed-build or user-verification evidence.
