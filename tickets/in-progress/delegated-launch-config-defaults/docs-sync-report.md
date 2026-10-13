@@ -75,3 +75,23 @@
 - Result: `Pass`
 - Next delivery action: handoff summary and the AC-015 user-verification hold.
 - Notes: `RELEASE.md` needs the same correction as `TESTING.md`. It is a follow-up proposal for the user, not changed in this ticket.
+
+## Round 2 (DR-003, reopened: SR-005 + SR-006, IR-003, API-REV-004)
+
+- Trigger: the direct-route package from `api_e2e_engineer` (API-REV-004 Pass, 95%), `task_size=Medium`, `architectural_risk=Low`. Test-code review was not required on the direct low-risk route.
+- Integrated base used for docs sync: `origin/personal` @ `32aca0818` (legacy Docker retirement), merged into `codex/delegated-launch-config-defaults-r2` as `071033f95`. The round-4 checkpoint before it is `50cd035c5`.
+- Why docs changed: the round-1 docs said the heading switcher is never seeded (SR-005 corrects that defect). They also described the removed `RunDelegatedLaunchList.vue` flat list (SR-006 replaces it with collapsible member rows).
+
+| Doc Path | Result | What Changed |
+| --- | --- | --- |
+| `autobyteus-web/docs/agent_teams.md` | Updated | "Member Launch Defaults": a start table (fresh Run, New chat switcher, Org page switcher, "+"), `seedTeamMembers` guards and error handling, "+" keeps recorded member settings |
+| `autobyteus-web/docs/agent_orgs.md` | Updated | The heading switcher seeds placed teams and agents like Run; switching from the Org page to a Team seeds; a "+" copy is not seeded |
+| `autobyteus-web/docs/settings.md` | Updated | "Collaborators and delegated copies" rewritten. It is a second read-only `RunMembersSection` using `RunMemberRow`: collapsed by default, badge, `model · runtime · approval` plus source, "Notes: N", Team card then Members, Coordinator chip, a team note once, `<address>@<run ID>` keys, locked rows |
+| `autobyteus-web/docs/chat.md` | No change | Its switcher row describes root carry and member reset, which stay true. Seeding is owned by `agent_teams.md` |
+| Server module docs | No change | No server, contract or persistence change this round |
+
+- Removed or replaced and recorded:
+  - `components/run-settings/RunDelegatedLaunchList.vue` and the `DelegatedLaunchRow*` types are replaced by `RunMemberNode` rows in `RunMembersSection` / `RunMemberRow`.
+  - The new structure is documented in web `settings.md`.
+  - The internal `RunMemberNode.launchNote` → `launchNotes` type change is recorded in `implementation-handoff.md` only, because no long-lived doc named the field.
+- Result: `Pass`.
