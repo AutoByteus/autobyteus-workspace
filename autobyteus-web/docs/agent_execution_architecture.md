@@ -468,6 +468,15 @@ resolved through the tree) is kept in its aria-label only; a child without a
 recorded `delegatorAgentRunId` (created before the resource lifecycle) has no
 starter. Branch lines run straight through member and task rows.
 
+A delegated task-Agent or task-Team row in a live run has the run's small red
+stop icon (`DelegatedStopButton`) while the copy runs. This applies under Agent,
+Team and Org roots (`WorkspaceTransientExecutionRow`,
+`WorkspaceAgentOrgHistoryCollection`). It stops only that copy and the copies it
+started (`delegatedLaunchDraftStore.stop` → `stopDelegatedExecution`). The copy
+stays restorable and the run keeps running. Task-Team child rows have no icon,
+because a Team copy is stopped as a whole. Its Settings row has the same action.
+See [Settings → Existing Run Configuration](./settings.md#existing-run-configuration).
+
 In the AgentOrg Workspaces rows, a delegated task-Team row with children has the
 mounted-Team chevron and `aria-expanded`. It starts expanded, and a row click
 toggles it and inspects the coordinator. Its expansion state is keyed by

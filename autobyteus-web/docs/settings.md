@@ -1040,12 +1040,14 @@ The saved-run view uses the start surfaces' visual language:
     follows the Team) shows its model like any edited member, with no source label.
   - **Notes on a collapsed Team.** A collapsed Team copy or collaborator whose
     agents have fallback notes also shows "Notes: N".
-  - **Opening a Team** shows its read-only settings card, then its Members:
+  - **Opening a Team** shows its settings card, then its Members:
     - the copy's coordinator carries the Coordinator chip;
     - a team-level fallback note is shown once, on the Team;
     - each member shows only its own notes;
-    - each member opens to its read-only settings card.
-  - **Opening an Agent** shows its read-only settings card.
+    - each member opens to its settings card.
+  - **Opening an Agent** shows its settings card.
+  - These cards are locked while the copy runs and editable while it is stopped
+    (see Editing below).
   - **Keys and names.** Rows are keyed `<address>@<run ID>`, because one address
     can hold a collaborator and extra copies. Names follow Members: the role,
     else the last address segment.
