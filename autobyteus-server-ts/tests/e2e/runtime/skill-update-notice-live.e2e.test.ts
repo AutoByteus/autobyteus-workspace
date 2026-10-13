@@ -26,7 +26,7 @@ import { closeLiveRuntimeSecretVault, initializeLiveRuntimeSecretVaultFromEnviro
  *  5. The run's history shows both notices as system notices and the user's messages as typed.
  *
  * Gate: RUN_SKILL_NOTICE_E2E=1 and SKILL_NOTICE_E2E_RUNTIMES (comma list of codex_app_server,
- * claude_agent_sdk, autobyteus; default codex_app_server,claude_agent_sdk).
+ * claude_agent_sdk, autobyteus, grok_build; default codex_app_server,claude_agent_sdk).
  * - Codex runs with a temporary CODEX_HOME holding only a symlink to ~/.codex/auth.json; ~/.codex
  *   is never written. Model: CODEX_E2E_TOOL_MODEL (default gpt-5.6-luna).
  * - Claude uses the operator's Claude CLI login (as the other Claude E2E suites). Model:
@@ -34,9 +34,13 @@ import { closeLiveRuntimeSecretVault, initializeLiveRuntimeSecretVaultFromEnviro
  * - AutoByteus takes provider keys from credential aliases in the environment (OPENAI_API_KEY, …),
  *   saved into the test-owned vault; run it with a clean `env -i` as the other native live suites.
  *   Model: SKILL_NOTICE_E2E_NATIVE_MODEL (default gpt-5.5).
+ * - Grok (ACP backend, next-turn class like AutoByteus) runs with a temporary GROK_HOME holding only a symlink to the
+ *   user's auth.json and a config without auto-update; ~/.grok is never written. Model: GROK_E2E_MODEL (default grok-4.7).
  * Command: RUN_SKILL_NOTICE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/skill-update-notice-live.e2e.test.ts --no-watch
  */
-type RuntimeKind = "codex_app_server" | "claude_agent_sdk" | "autobyteus";
+type RuntimeKind = "codex_app_server" | "claude_agent_sdk" | "autobyteus" | "grok_build";
+/** Runtimes that append input to an active turn (the busy notice arrives inside the busy turn). */
+const APPEND_RUNTIMES: readonly RuntimeKind[] = ["codex_app_server", "claude_agent_sdk"];
 type Frame = { type: string; payload: Record<string, any> };
 
 const SENDER = "system.skill_update_notifier";
@@ -45,7 +49,8 @@ const requested = (process.env.SKILL_NOTICE_E2E_RUNTIMES ?? "codex_app_server,cl
 const cliReady = (command: string) => spawnSync(command, ["--version"], { stdio: "ignore" }).status === 0;
 const enabled = process.env.RUN_SKILL_NOTICE_E2E === "1";
 const runtimes = requested.filter((kind) =>
-  kind === "codex_app_server" ? cliReady("codex") : kind === "claude_agent_sdk" ? cliReady("claude") : kind === "autobyteus");
+  kind === "codex_app_server" ? cliReady("codex") : kind === "claude_agent_sdk" ? cliReady("claude")
+    : kind === "grok_build" ? cliReady(process.env.GROK_BUILD_COMMAND?.trim() || "grok") : kind === "autobyteus");
 const suite = enabled && runtimes.length > 0 ? describe : describe.skip;
 
 const skillMd = (codeword: string) => [
@@ -70,6 +75,13 @@ suite("active-run skill update notice (live E2E)", () => {
     await fs.mkdir(codexHome, { recursive: true });
     await fs.symlink(path.join(os.homedir(), ".codex", "auth.json"), path.join(codexHome, "auth.json"));
     vi.stubEnv("CODEX_HOME", codexHome);
+    if (runtimes.includes("grok_build")) {
+      const grokHome = path.join(root, "grok-home");
+      await fs.mkdir(grokHome, { recursive: true });
+      await fs.symlink(path.join(process.env.GROK_HOME?.trim() || path.join(os.homedir(), ".grok"), "auth.json"), path.join(grokHome, "auth.json"));
+      await fs.writeFile(path.join(grokHome, "config.toml"), "[cli]\nauto_update = false\n");
+      vi.stubEnv("GROK_HOME", grokHome);
+    }
     const appData = path.join(root, "app-data");
     await fs.mkdir(path.join(appData, "skills", "notice-probe"), { recursive: true });
     await fs.writeFile(path.join(appData, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
@@ -100,6 +112,7 @@ suite("active-run skill update notice (live E2E)", () => {
   const pickModel = (runtimeKind: RuntimeKind): string => {
     if (runtimeKind === "codex_app_server") return process.env.CODEX_E2E_TOOL_MODEL?.trim() || "gpt-5.6-luna";
     if (runtimeKind === "claude_agent_sdk") return process.env.CLAUDE_E2E_TOOL_MODEL?.trim() || "haiku";
+    if (runtimeKind === "grok_build") return process.env.GROK_E2E_MODEL?.trim() || "grok-4.7";
     return process.env.SKILL_NOTICE_E2E_NATIVE_MODEL?.trim() || "gpt-5.5";
   };
 
@@ -117,7 +130,8 @@ suite("active-run skill update notice (live E2E)", () => {
     const created = (await gql("mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }", {
       input: {
         agentDefinitionId: definitionId, workspaceRootPath, llmModelIdentifier: pickModel(runtimeKind),
-        autoExecuteTools: true, runtimeKind, llmConfig: runtimeKind === "codex_app_server" ? { reasoning_effort: "low" } : null,
+        autoExecuteTools: true, runtimeKind,
+        llmConfig: runtimeKind === "codex_app_server" || runtimeKind === "grok_build" ? { reasoning_effort: "low" } : null,
       },
     })).createAgentRun;
     expect(created.success, created.message).toBe(true);
@@ -171,7 +185,12 @@ suite("active-run skill update notice (live E2E)", () => {
       const busyNotice = notices()[0]!;
       expect(busyNotice.payload.content).toContain("[Platform notice — skill updated]");
       expect(busyNotice.payload.content).toContain(`- notice-probe (${skillMdPath}): SKILL.md`);
-      if (runtimeKind !== "autobyteus") expect(busyNotice.payload.turn_id).toBe(busyTurnId); // appended to the busy turn
+      if (APPEND_RUNTIMES.includes(runtimeKind)) expect(busyNotice.payload.turn_id).toBe(busyTurnId); // appended to the busy turn
+      // Next-turn runtimes with turn ids (ACP/Grok): the notice is its own turn right after the busy one.
+      if (runtimeKind === "grok_build") {
+        expect(busyNotice.payload.turn_id).toBeTruthy();
+        expect(busyNotice.payload.turn_id).not.toBe(busyTurnId);
+      }
       await until(() => count("TURN_COMPLETED") > busyCompleted && idle(), "the busy turn(s)");
       await new Promise((r) => setTimeout(r, 1500));
 

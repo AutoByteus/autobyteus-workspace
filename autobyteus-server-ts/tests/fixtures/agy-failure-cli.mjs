@@ -142,6 +142,9 @@ if (arg === "--version") {
       : content.includes("READ_SKILLS") ? `SKILLS:${JSON.stringify(readCapsuleSkills())}`
       : content.includes("READ_REFERENCE_FILES") ? `REFERENCES:${JSON.stringify(readReferenceFiles(content))}`
       : content.includes("READ_AGENT_PROMPT") ? `AGENT_PROMPT:${JSON.stringify(readAgentPrompt())}`
+      // `ECHO_INPUT` replies with the exact provider input of this turn (JSON string), so a test can see
+      // everything AGY received in one turn (for example a platform notice combined with the message).
+      : content.includes("ECHO_INPUT") ? `ECHO:${JSON.stringify(content)}`
       : delegation ? `DELEGATED:${JSON.stringify(await callAgentTool("delegate_task", JSON.parse(delegation[1])))}`
         : "OK";
     reply(turns * 10, text);
