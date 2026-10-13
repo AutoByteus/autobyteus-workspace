@@ -193,6 +193,18 @@ if (arg === "--version") {
       // HOLD opens a long tool step and leaves the turn running until the user stops it; any other
       // message is answered with REPLY:<content>, so a test can tell which message each turn served.
       const content = String(JSON.parse(line)?.message?.content ?? "");
+      // HOLD_MS:<n> keeps one tool step open for n ms, then ends the turn normally with REPLY:<content>.
+      const holdMs = /HOLD_MS:(\d+)/.exec(content);
+      if (holdMs) {
+        const step = { conversation_id, step_index: turns * 10, step_type: "tool", tool_name: "run_command" };
+        emit({ event: "step_update", step_update: { ...step, state: "ACTIVE", tool_info: { parameters: { CommandLine: "sleep" } } } });
+        setTimeout(() => {
+          emit({ event: "step_update", step_update: { ...step, state: "DONE", tool_info: { output: "done" } } });
+          reply(turns * 10 + 1, `REPLY:${content}`);
+          emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: `REPLY:${content}` } });
+        }, Number(holdMs[1]));
+        return;
+      }
       if (content.includes("HOLD")) {
         emit({ event: "step_update", step_update: { conversation_id, step_index: turns * 10, step_type: "tool",
           state: "ACTIVE", tool_name: "run_command", tool_info: { parameters: { CommandLine: "sleep 600" } } } });

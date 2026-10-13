@@ -69,6 +69,7 @@ import { getActiveCollaborationRootDirectory } from "../agent-collaboration/exec
 import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "./project-task-execution-resource-composition.js";
 import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } from "./agent-package-definition-feed-composition.js";
+import { createSkillUpdateNotices, type SkillUpdateNotices } from "../skill-update-notices/skill-update-notices.js";
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
@@ -85,10 +86,17 @@ const closeStudioProcessResources = async (input: {
   agentToolsMcpHost: AgentToolsMcpHost | null;
   generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null;
   generalProcessRunSupervisor: GeneralProcessRunSupervisor | null;
+  skillUpdateNotices: SkillUpdateNotices | null;
   taskExecutionResources: TaskExecutionResourcePort | null;
   studioApiHandle: StudioApiHandle | null;
 }): Promise<void> => {
   stopMemorySyncWorker();
+  try {
+    // Skill notices stop first (watcher, then service), so none go out while runs stop.
+    await input.skillUpdateNotices?.close();
+  } catch (error) {
+    console.warn("SKILL_UPDATE_NOTICES_CLOSE_FAILED", error);
+  }
   try {
     await input.generalProcessRunSupervisor?.close();
   } finally {
@@ -206,6 +214,7 @@ export const buildStudioServer = async (input: {
   let agentToolsMcpHost: AgentToolsMcpHost | null = null;
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor: GeneralProcessRunSupervisor | null = null;
+  let skillUpdateNotices: SkillUpdateNotices | null = null;
   let taskExecutionResources: TaskExecutionResourcePort | null = null;
   let studioApiHandle: StudioApiHandle | null = null;
   let applicationRuntime: ApplicationPlatformRuntime | null = null;
@@ -219,6 +228,7 @@ export const buildStudioServer = async (input: {
       agentToolsMcpHost,
       generalProcessAuthority,
       generalProcessRunSupervisor,
+      skillUpdateNotices,
       taskExecutionResources,
       studioApiHandle,
     });
@@ -250,6 +260,9 @@ export const buildStudioServer = async (input: {
     });
     taskExecutionResources = await composeProjectTaskExecutionResources({
       activeRootDirectory: getActiveCollaborationRootDirectory(), appDataDir: input.appConfig.getAppDataDir() });
+    skillUpdateNotices = createSkillUpdateNotices({
+      agentDefinitionService: hostDefinitionServices.agentDefinitionService,
+    });
     generalProcessRunSupervisor = createGeneralProcessRunSupervisor({
       memoryDir: input.appConfig.getMemoryDir(),
       contextFilePathEnvironment,
@@ -262,6 +275,7 @@ export const buildStudioServer = async (input: {
       agentToolMcpSessionAuthority: generalProcessAuthority,
       modelSelectionValidator,
       taskExecutionResources,
+      platformInputNotices: skillUpdateNotices.service,
     });
     generalProcessAuthority = null;
     const applicationServices = createStudioApplicationServices({

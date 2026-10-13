@@ -80,6 +80,7 @@ const createManagerFixture = (input: {
   publishedArtifactRelayService?: unknown;
   memoryRecorder?: unknown;
   agentToolMcpRunSessionDeactivator?: AgentToolMcpRunSessionDeactivator;
+  lifecycleObserver?: { runPublished: ReturnType<typeof vi.fn> };
 }) => {
   const runSessions = input.agentToolMcpRunSessionDeactivator
     ?? createRecordingAgentToolMcpRunSessionDeactivator().deactivator;
@@ -119,6 +120,7 @@ const createManagerFixture = (input: {
       memoryRecorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: runSessions,
+      lifecycleObserver: input.lifecycleObserver ?? null,
     }),
   };
 };
@@ -158,6 +160,25 @@ describe("AgentRunManager candidate lifecycle", () => {
     const published = candidate.commitPublication();
     expect(manager.getActiveRun("run-codex")).toBe(published);
     expect(published.runId).toBe("run-codex");
+  });
+
+  it("tells the lifecycle observer about a run only once it is published, with its activation kind", async () => {
+    const backend = createBackend({ runId: "run-observed", platformAgentRunId: "thread-observed" });
+    const lifecycleObserver = { runPublished: vi.fn(() => { throw new Error("observer failed"); }) };
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const manager = createManager({
+      codexBackendFactory: { createBackend: vi.fn(async () => backend), restoreBackend: vi.fn() },
+      lifecycleObserver,
+    });
+
+    const candidate = await manager.beginActivation({ kind: "new", runId: "run-observed", config: createConfig() }).prepare();
+    expect(lifecycleObserver.runPublished).not.toHaveBeenCalled();
+
+    // A failing observer never fails the publication.
+    const published = candidate.commitPublication();
+    expect(lifecycleObserver.runPublished).toHaveBeenCalledExactlyOnceWith(published, "new");
+    expect(manager.getActiveRun("run-observed")).toBe(published);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("run-observed"));
   });
 
   it("claims the run id before the first backend await and rejects overlapping preparation", async () => {
