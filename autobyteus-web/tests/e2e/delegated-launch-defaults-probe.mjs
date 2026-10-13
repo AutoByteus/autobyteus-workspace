@@ -1170,7 +1170,10 @@ defineCase('DCP-002', 'delegated-copy-model-change AC-002/003, IR-002 (Team root
   await waitFor('copy lead started on the Team default', async () => (await agyLaunchesOf(r.copyMembers.lead)).length > 0, 60000)
   assert(JSON.stringify(await agyLaunchesOf(r.copyMembers.lead)) === JSON.stringify([ALT]), 'copy lead did not start on the Team default (ALT)', await agyLaunchesOf(r.copyMembers.lead))
   await openTeamRun(page, r.teamRunId, ids.home)
-  const teamSidebarRow = page.locator(sel('workspace-team-transient-execution-row')).filter({ hasText: address('pair').slice(1).replace(/_/g, ' ') }).first()
+  // Earlier SSR cases retain stopped copies with the same label; bind to this root and Team address.
+  const teamSidebarRow = page.locator(`${sel('workspace-team-transient-execution-row')}[data-team-run-id="${r.teamRunId}"][data-transient-kind="task_team"][data-member-address="${address('pair')}"]`)
+  await waitFor('one exact Team copy sidebar row', async () => await teamSidebarRow.count() === 1, 60000)
+  r.sidebarTarget = await teamSidebarRow.evaluate(el => ({ rootRunId: el.dataset.teamRunId, address: el.dataset.memberAddress, kind: el.dataset.transientKind }))
   const parentStop = page.locator(sel(`workspace-team-row-${r.teamRunId}`)).locator('xpath=..').locator('button[aria-label]').first()
   r.paint = await sidebarPaint(page, 'DCP-002', teamSidebarRow, parentStop)
   await openTeamRun(page, r.teamRunId, ids.home)
@@ -1184,9 +1187,7 @@ defineCase('DCP-002', 'delegated-copy-model-change AC-002/003, IR-002 (Team root
   r.runningHint = await teamRow().locator(sel('run-member-stop-hint')).first().innerText().catch(() => null)
   assert(r.runningLocked && /Stop this copy to change its model/.test(r.runningHint ?? ''), 'running Team copy should be locked with the hint', r)
   // Stop from the copy's own sidebar row (the Team row, not one of its members).
-  // The copy's own row in the run tree (labelled like its address, e.g. "pair team 3b8c"), not one of its members.
-  const teamLabel = address('pair').slice(1).replace(/_/g, ' ')
-  const sidebarStop = page.locator(sel('workspace-team-transient-execution-row')).filter({ hasText: teamLabel }).locator(sel('workspace-delegated-stop')).first()
+  const sidebarStop = teamSidebarRow.locator(sel('workspace-delegated-stop'))
   await waitFor('sidebar Team copy row has the stop icon', async () => {
     if (await sidebarStop.isVisible().catch(() => false)) return true
     await expandWorkspaces(page)
