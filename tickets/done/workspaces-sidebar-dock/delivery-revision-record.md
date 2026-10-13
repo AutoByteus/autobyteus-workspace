@@ -6,7 +6,7 @@ Latest docs-sync, handoff-summary and release-deployment reports are authoritati
 | ID | Trigger | Prior result | Current result | Affected canonical artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API-REV-001 Pass / initial delivery | N/A | Blocked — integrated source verified/docs synced; affected-client user-only gate open | docs-sync-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/, workspace_layout.md |
-| DR-002 | R2/SR-003 explicit source-only continuation | DR-001 Blocked | Verification complete; finalization/cleanup in progress | current reports, verification-r2.json, archive/finalization/cleanup receipts |
+| DR-002 | R2/SR-003 explicit source-only continuation; power-loss resume | DR-001 Blocked | Delivery Completed — source-only; client/installed checks user-approved Deferred | current reports, verification-r2.json, verification-completed.json, archive/finalization/cleanup receipts |
 
 ## DR-001 — checked integration and truthful runtime boundary
 - Round/trigger: first Delivery round, API/E2E 95% Pass, Medium / Low Direct Low-Risk; R1/SR-001, SR-002, IR-001 unchanged. Independent reviews and Product supplements N/A — not applicable.
@@ -22,9 +22,16 @@ Latest docs-sync, handoff-summary and release-deployment reports are authoritati
 - Next: Solution Designer resolves affected-client/acceptance context with the user's reply; Delivery resumes remaining verification/finalization and any explicitly chosen release/runtime work, refreshing target again. No replay of completed integration/validation solely to resend a receipt.
 - Residual scope: unknown installed macOS client, unchanged native updater/OS-dialog paths not certified; compact-header polish remains separate. Rollback no deployed change yet; eventual release fix-forward policy applies.
 
-## DR-002 — R2 source-only acceptance continuation (round in progress)
-- Trigger: Solution Designer solution-delivery-continuation.md / SR-003, R2 Approved, exact user's “continue” in evidence/solution-acceptance-r2.md. Prior authoritative result DR-001 Blocked.
-- Source behavior/design/classification unchanged; existing source proof sufficiently verified. Affected client facts Unconfirmed and installed/macOS verification Deferred — user-approved source-only, never Passed/Updated. No release/install/update/restart authority.
-- Fresh target unchanged e22245f09; source/probe/fixture hashes and primary browser/native results rechecked. No acceptance-only test/implementation/review replay; no new product integration needed. Prior delivery edits preserved.
-- Docs-sync Pass/Updated, latest handoff-summary.md and release-deployment-report.md own gate state. User-only acceptance blocker resolved, repository/archive/push/cleanup unfinished at round start.
-- Current round result is not yet Delivery Completed; final index/entry will reflect actual completion or owning-gate blocker. DR-001 preserved without rewriting history.
+## DR-002 — R2 source-only finalization completed
+- Trigger: Solution Designer solution-delivery-continuation.md / SR-003, R2 Approved, exact user “continue” in evidence/solution-acceptance-r2.md. Prior authoritative result **DR-001 Blocked**. Current result **Delivery Completed — repository-only**.
+- Source behavior/design/classification unchanged: Medium/Low/Direct Low-Risk. Existing primary source proof sufficient; source/probe/fixture hashes/results rechecked. Affected client facts **Unconfirmed** and installed/macOS verification **Deferred — user-approved source-only**, never Passed/Updated. No release/install/update/restart authority.
+- Fresh target unchanged e22245f09; no acceptance-only test/implementation/review replay. Initial integrated4127815cd proof remains relevant146tests/browser4/4/95% API. Docs-sync Pass/Updated; latest handoff-summary.md and release-deployment-report.md authoritative.
+- Archive before final ticket commit **7db35db8d1455b81046933c6f2aea0b41e1b4c99**, ticket push/remote exact SHA completed. Isolated no-ff merge **1a2379c57088e8976aeb0f43e1e607e1acc103c6**, exact ticket-tree equality, merged licensing/hygiene/whitespace pass; immediate pre-push target equality and personal push/remote SHA/ancestry completed.
+- Initial staged EOF blank-tail failure in own log retained and corrected byte-preservingly before commit, all final guards pass. Supplemental metadata staging also normalized imported Git remote-output trailing spaces, with raw original and correction receipt retained. No source/test fix, misleading first-pass claim or re-review.
+- User-reported power loss resumed by inspecting exact remote/worktree state; completed merge/push not replayed. Only unfinished custody/cleanup/reporting resumed.
+- Complete public custody byte-verified before removing both owned worktrees/dependencies/build outputs and local ticket/finalize branches. Registrations/paths absent; prune Not required; remote ticket branch retained for provenance, cleanup Not required. User app/data/8001 untouched. Primary cleanup receipt persisted.
+- Release/deployment/rollout **Not required**, user-approved source-only/default no release. Inherited source beta.4 metadata is not an installed/shipped update.
+- Supplementary report-only publication after actual cleanup uses disposable index/object plumbing; exact final publication SHA, remote/custody/index-disposal confirmation outside self-referential commit in `/home/autobyteus/workspace/.codex/delivery-records/workspaces-sidebar-dock/final-repository-receipt.json`.
+- Terminal return: **Eligible after final report publication confirmation**; actual send only via rule-selected Solution Designer and external handoff-receipt.json. No successful send invented here. Solution Designer verifies package before parent Terminal; Tasks owner updates original Task.
+- Durable package: `/home/autobyteus/workspace/.codex/delivery-records/workspaces-sidebar-dock/package/tickets/done/workspaces-sidebar-dock/`. Historical path remap in artifact-location-map.md. DR-001 preserved, not rewritten as completed.
+- Remaining current-ticket blockers **None**. Deferred client/installed check and separate compact-header polish explicit. Rollback source merge/fix forward per RELEASE.md; no installed deployment to undo.

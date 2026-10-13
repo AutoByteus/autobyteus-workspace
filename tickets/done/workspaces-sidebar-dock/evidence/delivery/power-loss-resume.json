@@ -1,0 +1,10 @@
+{
+  "request": "user reports poweroff and asks continue",
+  "remotePersonalConfirmed": "1a2379c57088e8976aeb0f43e1e607e1acc103c6",
+  "remoteTicketConfirmed": "7db35db8d1455b81046933c6f2aea0b41e1b4c99",
+  "finalizeWorktreeClean": true,
+  "ticketOnlyUntracked": "three generated application SDK dist directories",
+  "replayedMergeOrPush": false,
+  "remaining": "custody, owned cleanup, supplemental completion report, terminal handoff",
+  "releaseAuthorityUnchanged": "source-only, no release/install/update/restart"
+}
