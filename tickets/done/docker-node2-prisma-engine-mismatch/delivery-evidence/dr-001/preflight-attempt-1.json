@@ -1,0 +1,7 @@
+{
+  "result": "Delivery metadata capture failed on nonexistent getVersion native export; installed API .version is correct",
+  "exit": 1,
+  "state": "Only private original supervisor file captured; no live config/data/engine install or startup action",
+  "privateDirectory": "/Users/normy/autobyteus_org/autobyteus-private-backups/docker-node2-prisma-o1-_p9x5ye3",
+  "correction": "Use installed native version() per reviewed API helper; reuse same private snapshot directory; all target/path/quiescence checks repeated"
+}

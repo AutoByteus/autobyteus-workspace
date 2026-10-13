@@ -1,0 +1,13 @@
+{
+  "status": "proposal only, not live node2 config or applied repair",
+  "runtime_image_for_API_owned_proof": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+  "target_file": "/etc/supervisor/conf.d/supervisor-autobyteus-server.conf",
+  "target_program": "autobyteus_server",
+  "PRISMA_QUERY_ENGINE_LIBRARY": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-3.0.x.so.node",
+  "PRISMA_SCHEMA_ENGINE_BINARY": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-linux-arm64-openssl-3.0.x",
+  "expected_native_revision": "605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+  "template_source": "autobyteus-server-ts/docker/supervisor-autobyteus-server.conf",
+  "template_sha256": "5ba101a84e2b1b181750d80a554a3c2cbdb12d0eb11eadd337c04d52fe91f95f",
+  "candidate_sha256": "430383692923193b4e4192809e3182859b727e544b39ea32cb70d3cfb4325af6",
+  "warning": "Template is not an actual live snapshot; Delivery must recheck target and preserve current entries/permissions after private affected-state backup. Never blindly overwrite using this example."
+}

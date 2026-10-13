@@ -1,0 +1,23 @@
+const fs=require('fs'),{createRequire}=require('module'),cp=require('child_process');
+(async()=>{
+ const root='/app/autobyteus-server-ts',q=process.env.PRISMA_QUERY_ENGINE_LIBRARY,s=process.env.PRISMA_SCHEMA_ENGINE_BINARY,expected='605197351a3c8bdd595af2d2a9bc3025bca48ea2';
+ const assert=require('assert');
+ const cli=fs.realpathSync(root+'/node_modules/prisma/build/index.js'),r=createRequire(cli);
+ assert.equal(r('prisma/package.json').version,'5.22.0');
+ assert.equal(r('@prisma/engines/package.json').version,'5.22.0');
+ const version=r('@prisma/engines-version').enginesVersion;assert.equal(version,expected);
+ assert(fs.statSync(q).isFile());assert(fs.statSync(s).isFile());
+ const schemaVersion=cp.execFileSync(s,['--version'],{encoding:'utf8'}).trim();assert(schemaVersion.includes(expected));
+ const queryVersion=require(q).version();assert.equal(queryVersion.commit,expected);
+ const m=await import(root+'/dist/startup/migrations.js');
+ const pair=m.resolvePrismaEnginePair(root,process.env,'/does-not-exist-api-fixture');
+ assert.equal(pair.source,'existing-env');assert.equal(pair.queryEngineLibrary,q);assert.equal(pair.schemaEngineBinary,s);
+ const env=m.buildPrismaCommandEnv({appRoot:root,databaseUrl:'file:/api-owned-canonical.db',baseEnv:{...process.env,DATABASE_URL:'file:/api-owned-stale.db',API_SENTINEL:'kept'},cacheRoot:'/does-not-exist-api-fixture'});
+ assert.equal(env.DATABASE_URL,'file:/api-owned-canonical.db');assert.equal(env.API_SENTINEL,'kept');assert.equal(env.PRISMA_QUERY_ENGINE_LIBRARY,q);assert.equal(env.PRISMA_SCHEMA_ENGINE_BINARY,s);
+ const engine=cp.spawn(s,[],{stdio:['pipe','pipe','pipe'],env:process.env});let buffer='',stderr='';
+ const response=await new Promise((resolve,reject)=>{const timer=setTimeout(()=>{engine.kill();reject(new Error('RPC timeout'));},10000);
+ engine.on('error',reject);engine.stderr.on('data',b=>stderr+=b.toString());engine.stdout.on('data',b=>{buffer+=b.toString();for(const line of buffer.split('\n')){try{const v=JSON.parse(line);if(v.id===1){clearTimeout(timer);resolve(v);return;}}catch{}}});
+ engine.stdin.write(JSON.stringify({jsonrpc:'2.0',id:1,method:'listMigrationDirectories',params:{migrationsDirectoryPath:root+'/prisma/migrations'}})+'\n');});
+ engine.kill('SIGTERM');assert(!response.error,JSON.stringify(response));assert(Array.isArray(response.result.migrations));
+ console.log(JSON.stringify({platform:process.platform,arch:process.arch,cliVersion:'5.22.0',expectedRevision:expected,schemaVersion,queryVersion,pair,canonicalDatabaseOverride:true,retainedSentinel:true,rpc:response},null,2));
+})().catch(e=>{console.error(e.stack);process.exitCode=1});

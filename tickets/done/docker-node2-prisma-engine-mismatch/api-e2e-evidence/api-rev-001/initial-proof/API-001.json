@@ -1,0 +1,27 @@
+[
+  {
+    "command": [
+      "git",
+      "diff",
+      "a609de982a22925299d550bea4084e578cc5cd60",
+      "HEAD",
+      "--",
+      ".",
+      ":!tickets"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+      "--format",
+      "{{json .}}"
+    ],
+    "exit": 0,
+    "output": "{\"Id\": \"sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1\", \"Architecture\": \"arm64\", \"user_mounts\": false}"
+  }
+]

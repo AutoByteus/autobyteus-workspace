@@ -1,0 +1,26 @@
+[
+  {
+    "utc": "2026-10-13T13:17:55.681360+00:00",
+    "status": 200,
+    "body": {
+      "status": "ok",
+      "message": "Server is running"
+    }
+  },
+  {
+    "utc": "2026-10-13T13:17:57.710019+00:00",
+    "status": 200,
+    "body": {
+      "status": "ok",
+      "message": "Server is running"
+    }
+  },
+  {
+    "utc": "2026-10-13T13:17:59.723536+00:00",
+    "status": 200,
+    "body": {
+      "status": "ok",
+      "message": "Server is running"
+    }
+  }
+]
