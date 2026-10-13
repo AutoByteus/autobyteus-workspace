@@ -8,6 +8,7 @@ The latest `design-review-report.md` is authoritative. This record indexes revie
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | 1 / Architecture Design Complete, Large/High | SR-017; retained SR009–016 evidence | N/A | **Fail — Design Impact** | D-001 |
 | ARCH-REV-002 | 2 / Approved working-first SR018 re-review | SR-018; SR-017 history | Fail | **Pass** | D-001 deferred by approved scope, not repaired |
+| ARCH-REV-003 | 3 / IR-001 IMP-D001 source-owner correction | SR-019 design; Approved SR-018 | Pass on SR018, then implementation Design Impact | **Pass on SR019** | IMP-D001 resolved in design; D-001 remains deferred |
 
 ## Revision Entries
 
@@ -59,3 +60,29 @@ On 2026-10-13 the user explicitly prioritizes a working normal-path v1 and defer
 - Material classification changes: Fail -> Pass because the approved behavior and design are now aligned, not because unavailable-storage parent IO was fixed. MP-001/002 remain Reachable but explicitly deferred; material-premise gate Pass.
 - Recommended recipients: fresh configured primary implementation recipient, then configured informational Solution Designer recipient after primary handoff succeeds. No duplicate forwarding request.
 - Remaining risks: accepted outage stalls; product/current-build/mode/native-runtime/source/node/OS-consent proof not yet complete; independent physical Mac/Linux/Docker, merge/user verification and release-policy gates retained. Pass authorizes implementation routing, not live operations or release.
+
+
+### ARCH-REV-003 — Pass On SR019 Source/Profile Ownership Correction
+
+- Canonical report: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/design-review-report.md`.
+- Round/trigger: 3, 2026-10-13; Implementation Engineer IR-001 / IMP-D001 found that source-byte leases required by SR018 do not exist; Solution Designer returned a technical correction for re-review.
+- Triggering role/report: `/software_engineering_team/solution_designer`, cumulative `solution-design-handoff.md`; active triggering evidence `implementation-handoff.md`, `implementation-revision-record.md`, `implementation-evidence/ir-001/source-lease-design-impact.md` and `source-audit.json`.
+- Relevant revisions: **SR-019** Ready design, **SR-018** approved requirements and approvals018/017 unchanged; **IR-001 / IMP-D001**. Prior ARCH-REV-002 Pass remains historical, not automatic approval of this correction.
+- Reviewed package commit: `4c28e7865bba16218c721c60874f774837283e54`, branch `codex/shared-network-workspaces`, base/finalization `origin/personal`.
+- Prior authoritative review decision: **Pass — ARCH-REV-002 on SR018**. That review incorrectly accepted source-lease reuse; the later implementation finding is confirmed, not dismissed because of the earlier Pass.
+- Current authoritative decision: **Pass — ARCH-REV-003 on Ready SR019 / Approved SR018**; task_size **Large**, architectural_risk **High** retained for the whole implementation package.
+- Review delta: re-established the affected behavior basis, independently traced supported source confirmation -> UI store -> GraphQL -> Update/Remove/source cleanup, current catalog lookup, path/link-holder release, AGY private linking/restore and current source policy. Verified exact profile/process cleanup is separate from source bytes. Current design consistently chooses links/current availability, no source leases/refcount/snapshot/copy fallback, unchanged deletion and AGY warn/skip restore. Rechecked all affected health/spine/interface/dependency/file/removal/persistence/validation maps. Unaffected service/hosting/client/guide/preview/data-preservation and DEC015 judgments retained from prior evidence.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| IMP-D001 | IR-001 Design Impact: source lookup/link holders falsely treated as reusable byte leases; not caught by ARCH-REV-002 | **Resolved in SR019 design only; implementation pending** | SR-019; IR-001; Approved SR018 unchanged | `skill-source-service.ts:154–219`, repository cleanup63–89, skill lookup170–173, materializer195–267/447–489, AGY linker38–109/restore85–110; design source/profile lifecycle, source interface, preserved files and transition/removal/test maps |
+| D-001 | Deferred by approved DEC015, not repaired | **Still deferred / non-blocking** | SR-018 DEC015; SR-019 retains scope | Unchanged requirements/approvals and normal preview path; no outage workers or old response guarantee restored |
+
+- Independent audit: all 11 IR001 source hashes match; requirements-doc.md and approval-record-sr018.md / sr017.md byte-identical to5251ab48bc; nine changed paths between ARCH-REV-002 commit and SR019 are ticket artifacts only. Raw FR014 line31 uses dereferenced copying and FR020 line13 copies fixtures; their proof cannot be extended to private linked discovery/retention. Existing source runtime E2E matrix was inspected, not executed.
+- Material-premise result: **Pass**. MP-003 changed-revision Update and MP-004 confirmed Remove each have supported UI/contract-forward witnesses; preserve their independent source deletion, do not introduce snapshots or transactional race machinery. MP-001/002 remain reachable deferred outage cases, not new v1 blockers.
+- New/remaining blocking findings: **None**. No new requirement or approval questionnaire, classification downgrade, source-retention guarantee or migration is introduced. The concrete implementation concern was resolved by correcting design, not claimed fixed in production.
+- Validation performed: static source/docs/test/fixture reads, independent hash and approved-basis comparisons, canonical report/template and artifact whitespace checks. No product build/test, provider, runtime/native mount, live data/node/OS changes or release. No test resources started.
+- Recommended recipients: fresh configured primary implementation recipient, then informational Solution Designer recipient after primary delivery succeeds. Cumulative handoff includes this result plus all active IR001 artifacts; no duplicate forwarding request.
+- Remaining risks: native Claude/Codex/Grok linked-skill discovery/canonical paths/unread support assets, normal peer-stop/restore and unchanged source/AGY/local behavior require current-build tests; confirmed source changes may remove bytes (no snapshot). All service/setup/runtime/preview and physical Mac/Linux/Docker/user-verification/release gates remain downstream. Pass permits implementation routing, not live operations or delivery claims.
