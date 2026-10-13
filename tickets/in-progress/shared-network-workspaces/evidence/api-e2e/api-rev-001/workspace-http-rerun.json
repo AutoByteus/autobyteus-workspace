@@ -1,0 +1,20 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+    "--no-watch"
+  ],
+  "rc": 0,
+  "environmentKeys": [
+    "PATH",
+    "HOME",
+    "TMPDIR",
+    "LANG",
+    "CI"
+  ]
+}

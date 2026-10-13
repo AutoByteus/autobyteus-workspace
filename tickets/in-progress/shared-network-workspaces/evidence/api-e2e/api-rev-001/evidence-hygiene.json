@@ -1,0 +1,50 @@
+[
+  {
+    "path": "go-race.log",
+    "action": "strip trailing horizontal whitespace only",
+    "beforeSHA256": "6d13b8644d88ccb1cc775eb6287548cb714b1666cba2ad9db9a74be8eb004977",
+    "afterSHA256": "342cd0dda1fd1ec08dc0bb00771d010d656ad84891950f4b7b7e8e66f2dcdb5c"
+  },
+  {
+    "path": "workspace-preview-test.diff",
+    "action": "render same committed test delta with zero context (avoid whitespace-only context lines); source delta unchanged",
+    "beforeSHA256": "198abe4f23832a1a3d96f38a17bcdc5f8207a5ec9f41391f29c427dde5b334ca",
+    "afterSHA256": "6286619fb54e184a8738c53b60815ef12045f92d6d010e6a05b44e8f0555ad45"
+  },
+  {
+    "path": "guide-unit.log",
+    "action": "remove excess empty EOF lines only; result/failure text unchanged",
+    "beforeSHA256": "672f4dfebe5227449b222807d8c6a0184c4937d83f991ca49affd6d32909dfc1",
+    "afterSHA256": "e22e70985b11569c25215b0f823b0bc24a2d8f4891dd4afa6da760846f0259c3"
+  },
+  {
+    "path": "server-targeted.log",
+    "action": "remove excess empty EOF lines only; result/failure text unchanged",
+    "beforeSHA256": "cd7c15285466e2a0b80224d34098616cea261f64570339e5560dcaea6a107fae",
+    "afterSHA256": "5751b322159f3e66709ce0ff67d391b1425157516d694f5e11b30885ec8845c1"
+  },
+  {
+    "path": "public-contracts.log",
+    "action": "remove excess empty EOF lines only; result/failure text unchanged",
+    "beforeSHA256": "60ed6d22d5ec90b92db502ccfba75c8ad0c0053020d19899e97b79107a34853c",
+    "afterSHA256": "de3397d5c788f80c5f64d6aababd0da9ac566f70789d45471ba5e0c07a205f57"
+  },
+  {
+    "path": "agy-scripted-linked-skills.log",
+    "action": "remove excess empty EOF lines only; result/failure text unchanged",
+    "beforeSHA256": "a2e8270e7e1730c21710ca415774e2e2681e4eeb53bc8838440347cc2019993e",
+    "afterSHA256": "6fb31af0ea8d24404d348f88550fd0d95d38a54440b3fdec11bb9d9700ddb9f8"
+  },
+  {
+    "path": "terminal-unit.log",
+    "action": "remove excess empty EOF lines only; result/failure text unchanged",
+    "beforeSHA256": "34e717d7ece96b579f1a1edd9619c788acc65eb74c91922182b827ddec985429",
+    "afterSHA256": "99e298fff7d2508a871867fada3d9ea0c97c9dc177f5b366e98b49cdc3d33089"
+  },
+  {
+    "path": "workspace-http-rerun.log",
+    "action": "remove excess empty EOF lines only; result/failure text unchanged",
+    "beforeSHA256": "a5a7b6187562a1968e5c9c03a660e55cd9c12f8d8d88248f9108d9a7420142d4",
+    "afterSHA256": "efacc990e448f862a2a30eaa4ee02ce3072d90035398f71a02c1c2d32bf2ff04"
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "hostOS": {
+    "rc": 0,
+    "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.5.2\nBuildVersion:\t\t25F84",
+    "stderr": ""
+  },
+  "hostArch": {
+    "rc": 0,
+    "stdout": "arm64",
+    "stderr": ""
+  },
+  "node": {
+    "rc": 0,
+    "stdout": "v22.23.1",
+    "stderr": ""
+  },
+  "pnpm": {
+    "rc": 0,
+    "stdout": "10.28.2",
+    "stderr": ""
+  },
+  "python": {
+    "rc": 0,
+    "stdout": "Python 3.9.6",
+    "stderr": ""
+  },
+  "tart": {
+    "rc": 0,
+    "stdout": "2.40.1",
+    "stderr": ""
+  }
+}

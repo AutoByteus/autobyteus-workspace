@@ -1,0 +1,109 @@
+# API/E2E Coverage Investigation — Shared Network Workspaces
+
+## Investigation meta and authority
+Round1, API-REV-001 complete (Fail), triggered by CRR002 source Pass / IR003. No prior API result.
+Assigned worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces. HEAD 3b7dd9a2895f4b8fedc5e1bcdd00c913d97fae2f. Task project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63.
+Complete cumulative authority/supplement index: [package-index.json](evidence/api-e2e/api-rev-001/package-index.json). Requirements Approved SR018, Ready SR019 design, ARCH-REV003 and CRR002 Pass. The IR003 handoff's CRR001 Fail is historical trigger wording, not the current source verdict. IR001/IMP-D001 and all feasibility/failed rounds remain retained at their original scope. DR: N/A—not yet performed. No Product-owned supplement applies.
+
+## Routing classification
+Large / High, Reviewed route; successful output requests proportional test review of any durable changes. No worker delegation. Validation is personal. No merge/push/release/Task closure.
+
+## Current requirement/design basis and scenarios
+BEH001–007 / SCN001–003,005–006,008–014 cover one guided service, same original nonempty source, Mac Apple/APFS and Ubuntu Ganesha/ext4 native/Docker-Linux hosts, native/managed Docker clients on both OSes, nonroot identity, exact node/private-state preservation, healthy repeat/restart, native runtime private links/peer close, scoped Git and healthy preview/Guide.
+SCN004 bounded outage isolation is deferred (DEC015, not fixed); SCN007 notifications is unsupported. Neither becomes a gate. Source Update/Remove remains independent; no snapshot/lease/copy/refcount expectation. Historical copied-skill probes and metadata-only native discovery do not prove native support-file reads.
+User interruption explicitly suggested using the Mac VM to complete testing. Use a fresh disposable clone of the retained public image, no host shares/clipboard/credentials. This authorizes the test VM path, not user-host root changes, user nodes or paid inference. The independent physical Linux/Mac pre-delivery gate remains unchanged.
+
+## Changed boundary and broader surface map
+| Boundary | Change / available evidence | Material residual / selected surface |
+| --- | --- | --- |
+| Privileged CLI/setup/OS jobs | Added Go service, installer077 exact new modes, typed config; unit/fake runner | Actual sudo install, different UID, mount/nfsd/job/restart in owned Mac VM; later native Linux |
+| Distributed storage/Docker | Added selected adapter, exact snapshot/rollback/launcher reference; fake HTTP | Actual kernel source/permissions/visibility and exact owned Docker recreation, not same-named folders |
+| Backend/run admission | New lazy shared binding, no shared local fallback; descriptor/mount fakes | Real mounted new standalone/Team/Org/restore; no per-action outage machinery |
+| Runtime processes/skills | Private links plus actual-close ownership; ordinary local/AGY preserved | Native linked support reads and peer close/restore; scripted suites prove transport only |
+| APIs/previews | Preserved REST readers; unit/in-process E2E | Actual HTTP media/static/artifact results, browser plus healthy mounted bytes |
+| Renderer/browser | New Nodes Guide, tab/clipboard/localization | Current-build journey unavailable release + fixture copy, no command execution |
+| Desktop shell | No new NFS Electron controller; packaged renderer/runtime integration relevant | Isolated worktree app where feasible; browser not shell proof |
+| Auth/permissions | Root trust/source nonroot mapall, user private state retained | Real different-UID install; unauthorized client/source tests |
+| Persisted state | Existing known-field registry/run/launcher Directly Usable; profiles Discard/Rebuild, new NFS subjects | Current readers/lifecycle; no schema migration/old-shape compatibility coverage |
+| Worker/queue | No new shared action worker, unchanged product runtime coordination | No outage pool/stream lease/trampoline validation required |
+
+## Execution discovery
+Read root AGENTS.md, DESIGN.md, TESTING.md; server/web AGENTS.md; autobyteus-nfs/README.md and packaging/RELEASE.md; server/web README test/setup sections; package scripts, server Vitest config; docs/isolated-app-instances.md. No closer TESTING file. Use pnpm package scripts, smallest suites first; normal integration preparation before integration. Existing pnpm dependencies/generated outputs belong to this worktree; do not stage or delete pre-existing dist. Builds/dev servers serialized.
+Root TESTING requires clean environment and test-owned HOME/data/db/ports; no inherited provider keys, no user CLI configs. Go README: go test -race ./..., go vet ./.... Go absent from PATH; use a task-private checksum-verified official pinned toolchain, remove afterwards. macOS26.5.2 arm64 host; retained Tart public macOS26.6.2 image/tool cache observed stopped. VM sudo is guest-only; it does not prove a physical user's password dialog. No Linux physical target/access provided.
+Instructions discrepancy: web config is not vitest.config.ts; use documented pnpm test:nuxt/test:electron instead. No policy conflict. FUP001 baseline updater failures already under PM custody; do not patch/suppress/re-notify.
+
+## Existing durable coverage validity
+All paths are worktree-relative. Full changed-file hash inventory: input-audit.json. Existing assertions checked against SR018/019, not assumed authority.
+| Paths / test group | Decision | Contract and limit / action |
+| --- | --- | --- |
+| autobyteus-nfs/internal/**/**_test.go (10 files) | Still Valid | Plan/config/parser/modes/fake Docker/probe; AC006–009/012–019. Run entire race suite; no actual OS proof |
+| scripts/tests/test_nfs_{packaging_and_launcher,installer_fixture}.py | Still Valid | Bootstrap archive/checksum/mask; child-only skip runs through Go parent |
+| scripts/tests/test_public_docker_launcher_shared_workspace.py | Still Valid | Opt-in/preserved local config; mocked Docker, PowerShell skips not passes |
+| server tests/unit/workspaces/shared-workspace-binding.test.ts; backends/shared/shared-workspace-resolvers.test.ts; agent-run-manager.test.ts | Still Valid | Known bad binding/no substitute/common admission; actual mount observation mocked |
+| server backends/shared/{runtime-skill-profile,prepare-private-runtime-skills,private-skill-discovery}.test.ts | Still Valid | Private profile cleanup/source/collision/discovery shapes; not native turns |
+| server claude-session-cleanup, codex-app-server-client-manager, scoped-project-git-environment tests | Still Valid | Exact close/client partition/environment; no provider inference |
+| server tests/unit/skills/github/private-profile-source-lifecycle.test.ts | Still Valid | Current-source Update/Remove independence, no retention |
+| server AGY capsule/linker and local materializer tests | Still Valid | Preserved capsule/missing-source/local collision policy |
+| server tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts | Still Valid | Actual GraphQL documents/source owner/archive with fake GitHub; runtime harness is controlled |
+| server tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts | Still Valid | Gated scripted CLI/real server transport; its delegation is product fixture behavior, not outsourcing this task |
+| server tests/unit/api/rest/{workspaces,run-file-changes}.test.ts; tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts; tests/integration/api/run-file-changes-api.integration.test.ts | Still Valid | Bytes/MIME/path/no-store/pending/historical; fastify inject not socket/browser/mount proof |
+| core tests/unit/tools/terminal; file-utils | Still Valid | Per-session Git env/cwd and corrected isolated traversal fixture |
+| web NodeManager/NfsGuideCard/nfsLauncherCommands specs | Still Valid | Guide navigation/copy/error/unavailable; fixture release not publication |
+| web/Electron updater classifier suites | Out Of Scope | FUP001 unchanged3-category failure; retain evidence, no NFS deduction |
+
+## Durable coverage decisions
+No removals/updates before initial execution. For missing actual platform boundaries use temporary executable VM probe first: real setup can expose a product issue before a maintainable gated regression is chosen. No public production bypass or release-lock edit. For healthy HTTP/preview gaps, reuse existing coverage; add a narrow socket regression only if useful after current suites. No lease-retention/outage-isolation tests.
+
+## Repository plan and ledger
+Ledger required: multi-case, long-running VM work with possible interruption. Canonical api-e2e-test-case-ledger.md initialized before execution. Exact commands/results/logs will be recorded per case in evidence/api-e2e/api-rev-001; append each completed case before the next.
+1. N01 packaging/launcher + full Go race/vet/build current unqualified binary.
+2. N02 narrow server binding/profile/source/close/REST/Git/AGY/local regression.
+3. N03 public schema/REST/integration/scripted runtime (prepare first, no real provider gate).
+4. N04 guide/terminal regressions and preserved updater failure observation if needed.
+5. V01 fresh owned Mac VM native first install/create/source/mount under077 and actual nonroot data identity; no Docker dependency. Execute unqualified worktree CLI, not a published installer claim.
+6. V02 only after V01 succeeds: ordinary filesystem/visibility/current binding/healthy API+UI, native Mac second client, test-owned Docker client preservation, normal reconnect/reboot/detach.
+7. V03 native Ubuntu + Docker-on-Linux and independent physical peers when available; never substitute Docker Desktop for physical proof.
+8. V04 current-build isolated desktop Guide/local previews as remaining web/shell gap requires.
+9. V05 actual Codex/Claude/Grok/native support-asset/peer/restore matrix only with isolated authorized credentials/cost; no inference from signed-out metadata.
+
+## Post-repository confidence / broader-validation decision
+Not scored before execution. Broader validation **Required**: privileged first-use and kernel/OS/process/source/node boundaries are largely mocked. Selected CLI/lifecycle/distributed VM surface materially improves the weakest boundary. VM is not independent hardware or release qualification. Browser later for Guide/previews; not first merely because browser tools exist.
+No critical full-matrix criterion currently directly proven by this role. Missing physical target/paid runtime authorization is explicit, not a user-only-check exemption. Delivery alone owns merge/release/explicit final user verification. Stop/reroute a demonstrated in-scope defect through failure-origin review instead of modifying production here.
+
+## Setup/cleanup and temporary probes
+Create a unique scratch HOME/toolchain and exact Tart clone, record PID/name/hash. Transfer only current binary/test fixtures into guest; no shared host directory or credential import. Use app/CLI public entrypoints and existing test fixture APIs, no production database edits. Capture commands, stdout/stderr, source hashes/modes/mount records, exit status, owned resource cleanup. Preserve original public VM/tool cache. Stop/delete only exact clone/owned child resources; never prune or touch running user app/nodes. Subsequent source corrections require new round and prior failing case first.
+
+## Initial decision (historical pre-execution checkpoint)
+Proceed to independent personal validation. No durable test change yet. Reroute before execution: No. Last state: plan initialized, no test Pass implied.
+
+## Execution update — N03 fixture validity before durable change
+N01 passes repository checks; N02 16files/133tests pass; N04 Guide21 and terminal109 pass. N03's source GraphQL and artifact integration pass35tests; workspace-content E2E's five cases fail in **afterEach**, not response assertions: WorkspaceRemovalGuard requires process AgentRunManager, but the file starts only an isolated Fastify route. The test calls normal removeRegisteredWorkspace without composing its required process authorities. This is a coverage-owned setup/lifecycle correction, not a permission/API-policy change. `public-contracts.log` retained as failed. Git inspection will preserve original/baseline hashes. No assertion is obsolete. Decision for workspace-content-rest.e2e.test.ts changes **Still Valid -> Needs Update**. Reuse the project's startStudioE2eRuntimeServer helper in a test-owned app root so public removal happens while real managers are alive; close stack after unregister. Keep the five path/byte assertions. Add one real loopback HTTP HTML/relative-media replacement/deletion case to close the injection gap at AC010's ordinary file boundary. This is not NFS/browser proof and does not replace V02/V04. No production source changes and no user registry/config touched.
+
+## Post-repository confidence gate — before V01
+N03 coverage-owned correction rerun: all6 workspace cases pass including real loopback HTTP via actual server composition; original5 teardown failures retained. Other public contracts35pass; scripted AGY8pass (transport/fixture scope only). These do not prove native model inference or mounted bytes. No product failure inferred from that repaired fixture.
+
+| Mandatory category | Post-repository | Evidence / remaining gap / next proof |
+| --- | ---: | --- |
+| Requirement/acceptance proof | 50% | Valid local contracts, critical install/mode/physical/native-agent proof missing; V01 then full matrix |
+| Changed-boundary directness | 50% | Real bootstrap-to-test child and HTTP; administrative OS changes fake; execute actual CLI in VM |
+| Cross-boundary realism/mock gap | 50% | Source GraphQL, composed HTTP and scripted CLI; no NFS/runtime turn; actual mounts/native clients needed |
+| Environment/config/identity/fixture fidelity | 25% | Clean isolated fixtures, modes asserted; no actual root/different-UID installation or physical peers yet |
+| Failure/edge/lifecycle/recovery | 50% | Valid refusal/close/source Update/Remove tests; actual normal service restart/Docker preservation absent; no outage-isolation deduction |
+| User-surface/browser/desktop | 75% | Guide21tests and prior rendered IR002 evidence, HTTP exact bytes; current full mounted desktop journey absent |
+| Durable regression quality/relevance | 75% | Relevant durable coverage and corrected cleanup; privileged integration/native gaps remain |
+
+Overall53.57% (375/7), no95% gate. No critical acceptance criterion is waived. Broader validation **Required**: V01 real Mac VM sudo/first create/source/mount, then remaining lifecycle/clients/desktop/runtime where prerequisites permit. VM can materially improve identity/OS evidence; it cannot close independent physical-LAN or paid runtime proof alone. No default-unqualified release change/public installer claim. User's VM hint resolves the safe native test-environment choice, not product scope.
+
+## V01/V02 evidence update — current native first-use failure
+V01 fresh Mac VM: unmodified development binary, real guest sudo/root install, nonroot501:20 source probe, Apple APFS/NFS3 loopback mount, hostReady=true and original bytes preserved. Root private/public/binary modes captured; exact clone retired. This closes the earlier mocked-only root traversal gap at native-Mac VM scope, not released bootstrap or physical/user-password proof.
+V02 broader fresh run: source-host create fails **before second client invocation** with mount_nfs exit74: `can't mount with remote locks when server (...) is not running rpc.statd: RPC prog. not avail`. Product requested locallocks in MountOptions; cause not established. Original V01 Pass retained, V02 Fail retained; do not average away a first-use failure or call it a deferred outage. No outage/fault injection occurred. Scope AC012/018/019 normal first setup. No Docker/client/reboot/detach case reached. Both V02 clones exited/deleted; public cache retained.
+Harness observation: `--net-host` assigns separate subnets per VM (192.168.128.2 and192.168.129.2), so later cross-client connectivity would need a shared test network. That unexecuted peer-network limitation does not explain the observed **server self-mount** failure to its own IP. Before failure-origin reroute, repeat focused single-Mac normal create with self+host private allowlist; capture nfsd/rpc/mount options and public reconnect if necessary. Do not patch production or manually supply an extra mount step to label one-command setup passed. Temporary probes only. Native Linux/desktop/runtime expansion pauses behind this in-scope finding.
+
+## Final execution / confidence / reroute decision
+V02-repro completed: a fresh single nativeMac VM repeats the normal first-create failure, mount_nfs exit74/rpc.statd RPC prog. not avail. This removes second-client routing from the reproducer, but does not establish root cause. Post-failure rpcinfo shows status/statd and lockd registered later; service readiness timing is a hypothesis only. No manual mount/config edits. Public reconnect then returns rc0/hostReady with the same UUID; this is one successful pending-plan retry, not first-use, reboot or postretry independent-byte proof. Diagnostics accidentally used unavailable /usr/sbin/nfsstat (future use /usr/bin/nfsstat); that probe limitation does not cause the preceding product invocation failure. Raw scripts/event text preserved with limits in the report.
+
+Final scorecard: requirement50, directness50, realism50, environment/identity50, lifecycle50, user-surface75, durable75. Average400/7 = **57.14%** versus postrepository53.57%; +3.57points from actual root/different-UID environment proof. All categories below90%; critical first-use fails, remaining critical modes/physical/native/product journeys unproven. Result **Fail**, preliminary **Unclear**, new **API-F001**. Broader validation **Required**, performed personally through actual native VM; reroute the reproduced failure before continuing the remainder of V02/V03/V04/V05. No inference from unexecuted script branches, metadata-only discovery, crosscompiles, copied skills or component tests.
+
+All four exact owned clones stopped/deleted, owned runners absent; private scratch/toolchain/binary/data removed. Public image/tool cache remains stopped, generated dist retained. Source-and-fixture audit and cleanup receipts retained. No production code fix, delegated work, user node/credential mutation, paid inference, merge/push/release or Task closure. D001/DEC015 and FUP001 dispositions unchanged.
+
+Canonical completed result: api-e2e-execution-coverage-report.md; history API-REV-001 in api-e2e-revision-record.md; ledger reconciled before handoff. Full authority and evidence paths remain in package-index.json and report acceptance-criteria proof table. Request focused failure-origin review under fresh handoff rules, not successful-test review or delivery.

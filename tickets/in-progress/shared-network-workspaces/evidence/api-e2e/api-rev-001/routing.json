@@ -1,0 +1,7 @@
+{
+  "result": "Fail",
+  "rule": "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer.",
+  "recipient_address": "/software_engineering_team/code_reviewer",
+  "selection": "single most specific matching rule",
+  "notificationState": "not yet sent; send tool receipt is authoritative"
+}
