@@ -40,10 +40,6 @@
           <p class="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-600">{{ teamDef.description }}</p>
         </section>
 
-        <ExpandableInstructionCard :content="teamDef.instructions" variant="slate" />
-
-        <HandoffManager :model-value="displayHandoffs" :from-options="handoffEndpoints" :to-options="handoffEndpoints" mode="view" scope="team" />
-
         <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <h2 class="text-xl font-semibold text-slate-900">{{ $t('agentTeams.components.agentTeams.AgentTeamDetail.membersHeading', { count: teamDef.nodes.length }) }}</h2>
           <div class="mt-4 grid gap-3 lg:grid-cols-2">
@@ -60,6 +56,10 @@
             </article>
           </div>
         </section>
+
+        <ExpandableInstructionCard :content="teamDef.instructions" variant="slate" />
+
+        <HandoffManager :model-value="displayHandoffs" :from-options="handoffEndpoints" :to-options="handoffEndpoints" mode="view" scope="team" />
       </div>
     </div>
 
@@ -77,7 +77,6 @@
 
 <script setup lang="ts">
 import { computed, watch, ref, toRefs } from 'vue'
-import { useRouter } from 'vue-router'
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue'
 import ExpandableInstructionCard from '~/components/common/ExpandableInstructionCard.vue'
 import HandoffManager from '~/components/collaboration/handoffs/HandoffManager.vue'
@@ -93,7 +92,6 @@ import { toEditableHandoffs, type HandoffEndpointOption } from '~/types/collabor
 const props = defineProps<{ teamDefinitionId: string; returnToOrgId?: string }>()
 const { teamDefinitionId, returnToOrgId } = toRefs(props)
 const emit = defineEmits(['navigate'])
-const router = useRouter()
 const teamStore = useAgentTeamDefinitionStore()
 const agentStore = useAgentDefinitionStore()
 const runStart = useRunStart()
