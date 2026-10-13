@@ -1,0 +1,425 @@
+{
+  "startedAt": "2026-10-13T15:20:01.063Z",
+  "cases": {
+    "DCP-001": {
+      "title": "delegated-copy-model-change AC-001/002/004/011, DEC-010: a running copy is locked with a stop icon; Stop from the sidebar; its model changed in Settings and saved; the next message resumes it on that model",
+      "result": "Pass",
+      "ms": 27275,
+      "details": {
+        "runId": "manager_9ac4_a013fb68007049a696314c4a8cd7a0fa",
+        "copyCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"writer_5cdd_3450e42b17ec4ff3a31afc3393864cdb\",\\n \"task_id\": \"ad_hoc_task_36bd5a34-f4c2-44cd-808c-b661661773dd\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"writer_5cdd_3450e42b17ec4ff3a31afc3393864cdb\",\"task_id\":\"ad_hoc_task_36bd5a34-f4c2-44cd-808c-b661661773dd\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "copyRunId": "writer_5cdd_3450e42b17ec4ff3a31afc3393864cdb",
+        "firstModels": [
+          "dlc-alt-model"
+        ],
+        "paint": {
+          "reference": {
+            "rest": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "unselected": {
+            "rest": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "selected": {
+            "rest": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "selectedState": "true",
+          "viewport": {
+            "width": 1512,
+            "height": 952
+          }
+        },
+        "runningLocked": true,
+        "runningHint": "Stop this copy to change its model.",
+        "stop": {
+          "input": {
+            "rootKind": "AGENT",
+            "rootRunId": "manager_9ac4_a013fb68007049a696314c4a8cd7a0fa",
+            "agentRunId": "writer_5cdd_3450e42b17ec4ff3a31afc3393864cdb"
+          },
+          "key": "Enter",
+          "requests": [
+            {
+              "rootKind": "AGENT",
+              "rootRunId": "manager_9ac4_a013fb68007049a696314c4a8cd7a0fa",
+              "agentRunId": "writer_5cdd_3450e42b17ec4ff3a31afc3393864cdb"
+            }
+          ],
+          "taskBefore": {
+            "taskId": "ad_hoc_task_36bd5a34-f4c2-44cd-808c-b661661773dd",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "writer_5cdd_3450e42b17ec4ff3a31afc3393864cdb",
+              "teamRunId": null,
+              "closed": false,
+              "status": "idle"
+            }
+          },
+          "rowBefore": {
+            "selected": "false",
+            "expanded": null,
+            "url": "http://127.0.0.1:34289/chat?id=manager_9ac4_a013fb68007049a696314c4a8cd7a0fa"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "label": "Stop writer 5cdd",
+            "title": "Stop writer 5cdd",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Stopping writer 5cdd…",
+            "opacity": "0.6",
+            "animation": "pulse"
+          },
+          "reducedMotion": "none",
+          "rowPending": {
+            "selected": "false",
+            "expanded": null,
+            "url": "http://127.0.0.1:34289/chat?id=manager_9ac4_a013fb68007049a696314c4a8cd7a0fa"
+          },
+          "response": {
+            "data": {
+              "stopDelegatedExecution": {
+                "success": true,
+                "outcome": "STOPPED",
+                "message": "Stopped. A new message resumes it with its conversation.",
+                "notStoppedUnattributed": 0,
+                "__typename": "StopDelegatedExecutionResult"
+              }
+            }
+          },
+          "taskAfter": {
+            "taskId": "ad_hoc_task_36bd5a34-f4c2-44cd-808c-b661661773dd",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "writer_5cdd_3450e42b17ec4ff3a31afc3393864cdb",
+              "teamRunId": null,
+              "closed": false,
+              "status": "offline"
+            }
+          }
+        },
+        "rootStillRunning": "active",
+        "savedSummary": "Gemini test · Antigravity · Auto-approve",
+        "savedSource": null,
+        "stored": {
+          "address": "/writer_5cdd",
+          "agentRunId": "writer_5cdd_3450e42b17ec4ff3a31afc3393864cdb",
+          "platformAgentRunId": "37dd8b89-fe9f-4cd7-8866-db48a95a09f5",
+          "delegatorAgentRunId": "manager_9ac4_a013fb68007049a696314c4a8cd7a0fa",
+          "startedAt": "2026-10-13T15:20:55.754Z",
+          "source": {
+            "kind": "agent",
+            "agentDefinitionId": "writer-5cdd",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-alt-model",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/delegated-launch-defaults-StCtwz/server-data/temp_workspace"
+            },
+            "launchSource": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          "userLaunchSelection": {
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "selectedAt": "2026-10-13T15:21:08.801Z"
+          }
+        },
+        "resumeCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_5cdd_3450e42b17ec4ff3a31afc3393864cdb\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_5cdd_3450e42b17ec4ff3a31afc3393864cdb\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 13, 03:21 PM\n\nto writer 5cdd\n\nOne more paragraph.\n\nMessage\nwriter 5cdd\nOct 13, 03:21 PM\n\nOne more paragraph.\nMessage\nwriter 5cdd\nOct 13, 03:21 PM\n\nOne more paragraph.",
+        "resumedModels": [
+          "gemini-3.8-flash-low"
+        ]
+      }
+    },
+    "DCP-002": {
+      "title": "delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a Team copy stopped from its sidebar row; its Team model changed and saved; the copy lead's \"+\" shows the choice without a reload; the next message resumes the lead on it",
+      "result": "Pass",
+      "ms": 50649,
+      "details": {
+        "teamRunId": "home_team_a3c4_681bcc90e3fe45d4a6ba683bba5da477",
+        "copyTeamRunId": "pair_team_019b_95334ceb00a74d6a816e16b14c5b5bca",
+        "copyMembers": {
+          "lead": "lead_8c06_9ad16913665141a1916b625b8143b72f",
+          "engineer": "engineer_9466_f07f1c03472344b58ddbced65a8d1c66",
+          "unoffered": "unoffered_d6d6_e815ee6e5c7743378da008155f6ffa83"
+        },
+        "paint": {
+          "reference": {
+            "rest": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "unselected": {
+            "rest": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "selected": {
+            "rest": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "selectedState": "false",
+          "viewport": {
+            "width": 1512,
+            "height": 952
+          }
+        },
+        "runningLocked": true,
+        "runningHint": "Stop this copy to change its model.",
+        "stop": {
+          "input": {
+            "rootKind": "AGENT_TEAM",
+            "rootRunId": "home_team_a3c4_681bcc90e3fe45d4a6ba683bba5da477",
+            "teamRunId": "pair_team_019b_95334ceb00a74d6a816e16b14c5b5bca"
+          },
+          "key": "Space",
+          "requests": [
+            {
+              "rootKind": "AGENT_TEAM",
+              "rootRunId": "home_team_a3c4_681bcc90e3fe45d4a6ba683bba5da477",
+              "teamRunId": "pair_team_019b_95334ceb00a74d6a816e16b14c5b5bca"
+            }
+          ],
+          "taskBefore": {
+            "taskId": "ad_hoc_task_929ff50a-5d39-4b3d-944a-996fe8a639db",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "lead_8c06_9ad16913665141a1916b625b8143b72f",
+              "teamRunId": "pair_team_019b_95334ceb00a74d6a816e16b14c5b5bca",
+              "closed": false,
+              "status": "idle"
+            }
+          },
+          "rowBefore": {
+            "selected": "false",
+            "expanded": "false",
+            "url": "http://127.0.0.1:34289/workspace"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "label": "Stop pair team 019b",
+            "title": "Stop pair team 019b",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Stopping pair team 019b…",
+            "opacity": "0.6",
+            "animation": "pulse"
+          },
+          "reducedMotion": "none",
+          "rowPending": {
+            "selected": "false",
+            "expanded": "false",
+            "url": "http://127.0.0.1:34289/workspace"
+          },
+          "response": {
+            "data": {
+              "stopDelegatedExecution": {
+                "success": true,
+                "outcome": "STOPPED",
+                "message": "Stopped. A new message resumes it with its conversation.",
+                "notStoppedUnattributed": 0,
+                "__typename": "StopDelegatedExecutionResult"
+              }
+            }
+          },
+          "taskAfter": {
+            "taskId": "ad_hoc_task_929ff50a-5d39-4b3d-944a-996fe8a639db",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "lead_8c06_9ad16913665141a1916b625b8143b72f",
+              "teamRunId": "pair_team_019b_95334ceb00a74d6a816e16b14c5b5bca",
+              "closed": false,
+              "status": "offline"
+            }
+          }
+        },
+        "savedTeamSummary": "Gemini test · Antigravity · Auto-approve",
+        "plusModel": "Gemini test Antigravity",
+        "resume": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"lead_8c06_9ad16913665141a1916b625b8143b72f\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"lead_8c06_9ad16913665141a1916b625b8143b72f\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 13, 03:22 PM\n\nto lead\n\nPlease continue.\n\nMessage\nlead\nOct 13, 03:22 PM\n\nPlease continue.\nMessage\nlead\nOct 13, 03:22 PM\n\nPlease continue.",
+        "resumedModels": [
+          "gemini-3.8-flash-low"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 10522
+    },
+    {
+      "label": "frontend",
+      "pid": 10661
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 10661,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 10522,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/tmp/delegated-launch-defaults-StCtwz"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/tmp/delegated-launch-defaults-StCtwz",
+  "backendUrl": "http://127.0.0.1:39187",
+  "frontUrl": "http://127.0.0.1:34289",
+  "definitions": {
+    "ids": {
+      "manager": "manager-9ac4",
+      "lead": "lead-8c06",
+      "worker": "worker-4dfa",
+      "plain": "plain-952d",
+      "engineer": "engineer-9466",
+      "reviewer": "reviewer-2562",
+      "writer": "writer-5cdd",
+      "offline": "offline-d0e0",
+      "unoffered": "unoffered-d6d6",
+      "badsettings": "badsettings-b825",
+      "incomplete": "incomplete-85ec",
+      "build": "build-team-e7a5",
+      "pair": "pair-team-019b",
+      "squad": "squad-team-63c1",
+      "home": "home-team-a3c4",
+      "launchOrg": "launchorg-org-9c54",
+      "hostOrg": "hostorg-org-34c3"
+    },
+    "names": {
+      "manager": "Manager 9ac4",
+      "lead": "Lead 8c06",
+      "worker": "Worker 4dfa",
+      "plain": "Plain 952d",
+      "engineer": "Engineer 9466",
+      "reviewer": "Reviewer 2562",
+      "writer": "Writer 5cdd",
+      "offline": "Offline d0e0",
+      "unoffered": "Unoffered d6d6",
+      "badsettings": "Badsettings b825",
+      "incomplete": "Incomplete 85ec",
+      "build": "Build Team e7a5",
+      "pair": "Pair Team 019b",
+      "squad": "Squad Team 63c1",
+      "home": "Home Team a3c4",
+      "launchOrg": "LaunchOrg Org 9c54",
+      "hostOrg": "HostOrg Org 34c3"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 2,
+    "fail": 0
+  },
+  "completedAt": "2026-10-13T15:22:04.385Z"
+}

@@ -59,6 +59,10 @@
 //           shows each copy's recorded values; the run is stopped and reopened from the UI; the first copy's engineer
 //           then starts on Grok (its recorded value). Runs last (it edits a definition).
 //
+// DCP-001/002 also cover task-copy-stop-style AC-001..004: actual parent/copy CSS rest/hover/leave,
+// selected Agent/Team row presentation, native keyboard focus and activation, held outgoing Stop pending
+// (forwarded unchanged to the real backend), exact target, Task-open readback and parent survival.
+// Optional --ledger-file <file> appends per-case checkpoints before the next journey starts.
 // Prerequisites: `pnpm -C autobyteus-server-ts build`, Google Chrome. No CLI logins.
 // Usage: pnpm -C autobyteus-web test:e2e:delegated-launch-defaults [--output-dir <fresh dir>] [--cases DLP-001,DLP-003] [--keep]
 import { spawn } from 'node:child_process'
@@ -85,6 +89,10 @@ const arg = (name, fallback) => {
 }
 const outDir = path.resolve(webDir, arg('output-dir', `test-results/delegated-launch-defaults-${Date.now()}`))
 const keep = process.argv.includes('--keep')
+const ledgerFile = arg('ledger-file', null)
+const checkpoint = async (id, event, detail = '') => {
+  if (ledgerFile) await fs.appendFile(path.resolve(ledgerFile), `\n- ${new Date().toISOString()} ${id} ${event} ${detail}\n`)
+}
 const onlyCases = arg('cases', null)?.split(',') ?? null
 const chrome = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH
   ?? ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find(existsSync))
@@ -929,6 +937,117 @@ defineCase('DLP-007', 'AC-008/DEC-008: copy A; the engineer\'s default edited in
   return r
 })
 
+/** Actual current-build sidebar reference, not a fixture copy of its classes. */
+const stopPaint = (button) => button.evaluate((el) => {
+  const css = getComputedStyle(el)
+  return { color: css.color, background: css.backgroundColor, transition: css.transitionDuration,
+    transitionProperty: css.transitionProperty }
+})
+const samePaint = (actual, expected, label) => assert(JSON.stringify(actual) === JSON.stringify(expected), label, { actual, expected })
+const sidebarPaint = async (page, id, copyRow, parentStop) => {
+  await waitFor(`${id} real sidebar controls`, async () => {
+    if (await copyRow.isVisible().catch(() => false) && await parentStop.isVisible().catch(() => false)) return true
+    await expandWorkspaces(page); return false
+  }, 60000)
+  const stop = copyRow.locator(sel('workspace-delegated-stop'))
+  const sample = async (button, name) => {
+    await page.mouse.move(1500, 940); await delay(250)
+    const rest = await stopPaint(button)
+    await shot(page, `${id}-${name}-rest`)
+    await button.hover(); await delay(250)
+    const hover = await stopPaint(button)
+    await shot(page, `${id}-${name}-hover`)
+    await page.mouse.move(1500, 940); await delay(250)
+    const leave = await stopPaint(button)
+    await shot(page, `${id}-${name}-leave`)
+    samePaint(leave, rest, `${id} ${name} must return to rest`)
+    return { rest, hover, leave }
+  }
+  const reference = await sample(parentStop, 'parent')
+  assert(reference.rest.color === 'rgb(153, 153, 153)' && reference.hover.color === 'rgb(220, 38, 38)'
+    && reference.hover.background === 'rgb(254, 242, 242)', 'normal sidebar reference changed', reference)
+  const unselected = await sample(stop, 'copy-unselected')
+  samePaint(unselected, reference, `${id} copy must match actual parent`)
+  assert(await copyRow.getAttribute('aria-selected') === 'false', 'copy must initially be unselected')
+  await copyRow.click(); await settle(page)
+  const selectedState = await copyRow.getAttribute('aria-selected')
+  const selected = await sample(stop, 'copy-after-row-selection')
+  samePaint(selected, reference, `${id} row selection must not change stop colors`)
+  // Team rows may select their coordinator rather than the group; record the actual product selection.
+  return { reference, unselected, selected, selectedState, viewport: page.viewportSize() }
+}
+const taskOfCopy = async (input) => {
+  const tasks = (await gql('query { tasksWithoutProject { taskId status root { ingressAgentRunId teamRunId closed status } } }')).tasksWithoutProject
+  return tasks.find((task) => input.agentRunId ? task.root?.ingressAgentRunId === input.agentRunId : task.root?.teamRunId === input.teamRunId)
+}
+/** Delay request arrival only; then forward to the real backend, never fabricate a Stop result. */
+const keyboardStopCopy = async (page, id, stop, input, key) => {
+  const r = { input, key, requests: [], taskBefore: await taskOfCopy(input) }
+  assert(r.taskBefore && !r.taskBefore.root.closed && !['DONE', 'CANCELLED'].includes(r.taskBefore.status), 'expected open Task before Stop', r)
+  const row = stop.locator('xpath=ancestor::*[@data-test="workspace-team-transient-execution-row"][1]')
+  const rowState = async () => ({ selected: await row.getAttribute('aria-selected'), expanded: await row.getAttribute('aria-expanded'), url: page.url() })
+  r.rowBefore = await rowState()
+  // Enter keyboard mode at the row, then traverse its real native tab order to the button.
+  await row.focus()
+  for (let i = 0; i < 4 && !(await stop.evaluate((el) => el === document.activeElement)); i++) await page.keyboard.press('Tab')
+  r.focus = await stop.evaluate((el) => ({ active: el === document.activeElement, visible: el.matches(':focus-visible'),
+    ring: getComputedStyle(el).boxShadow, label: el.getAttribute('aria-label'), title: el.title, type: el.type }))
+  assert(r.focus.active && r.focus.visible && r.focus.ring !== 'none' && r.focus.label?.startsWith('Stop ')
+    && r.focus.title === r.focus.label && r.focus.type === 'button', 'native focus/name/ring missing', r.focus)
+  await shot(page, `${id}-copy-keyboard-focus`)
+  let release
+  const gate = new Promise((resolve) => { release = resolve })
+  let response
+  const handler = async (route) => {
+    const body = route.request().postDataJSON()
+    if (body?.operationName !== 'StopDelegatedExecution') return route.continue()
+    r.requests.push(body.variables.input)
+    await gate
+    await route.continue()
+  }
+  const onResponse = async (res) => {
+    if (res.request().postDataJSON()?.operationName === 'StopDelegatedExecution') response = await res.json()
+  }
+  // Only GraphQL responses can have this JSON request shape (asset GETs cannot).
+  const listener = (res) => { if (res.url().includes('/graphql') && res.request().method() === 'POST') void onResponse(res) }
+  await page.route('**/graphql', handler)
+  page.on('response', listener)
+  try {
+    await page.keyboard.press(key)
+    await waitFor(`${id} pending Stop request`, () => r.requests.length === 1, 10000)
+    const target = r.requests[0]
+    assert(Object.keys(target).length === Object.keys(input).length && Object.entries(input).every(([k, v]) => target[k] === v), 'wrong Stop target', { input, target })
+    r.pending = await stop.evaluate((el) => ({ disabled: el.disabled, label: el.getAttribute('aria-label'),
+      opacity: getComputedStyle(el).opacity, animation: getComputedStyle(el.querySelector('svg')).animationName }))
+    assert(r.pending.disabled && r.pending.label.startsWith('Stopping ') && r.pending.opacity === '0.6'
+      && r.pending.animation === 'pulse', 'pending presentation missing', r.pending)
+    await shot(page, `${id}-copy-pending`)
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    r.reducedMotion = await stop.locator('svg').evaluate((el) => getComputedStyle(el).animationName)
+    assert(r.reducedMotion === 'none', 'reduced motion must suppress pulse', r)
+    await page.emulateMedia({ reducedMotion: 'no-preference' })
+    await page.keyboard.press(key)
+    const box = await stop.boundingBox()
+    await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2)
+    await delay(250)
+    assert(r.requests.length === 1, 'disabled Stop sent a duplicate', r.requests)
+    r.rowPending = await rowState()
+    samePaint(r.rowPending, r.rowBefore, 'Stop must not select or toggle its row')
+    release()
+    await waitFor(`${id} real Stop response`, () => response, 60000)
+    r.response = response
+    assert(response.data?.stopDelegatedExecution?.success && response.data.stopDelegatedExecution.outcome === 'STOPPED', 'real Stop failed', response)
+    r.taskAfter = await taskOfCopy(input)
+    assert(r.taskAfter?.taskId === r.taskBefore.taskId && r.taskAfter.status === r.taskBefore.status && !r.taskAfter.root.closed, 'Stop closed or changed the Task', r)
+    return r
+  } finally {
+    release()
+    await page.unroute('**/graphql', handler)
+    page.off('response', listener)
+    await page.emulateMedia({ reducedMotion: 'no-preference' })
+  }
+}
+
 defineCase('DCP-001', 'delegated-copy-model-change AC-001/002/004/011, DEC-010: a running copy is locked with a stop icon; Stop from the sidebar; its model changed in Settings and saved; the next message resumes it on that model', async (page) => {
   const r = {}
   r.runId = await startManagerChat(page, MODEL, 'Hello. Marker DCP-001.')
@@ -941,6 +1060,9 @@ defineCase('DCP-001', 'delegated-copy-model-change AC-001/002/004/011, DEC-010: 
   r.firstModels = await agyLaunchesOf(r.copyRunId)
   assert(r.firstModels.every((model) => model === ALT), 'copy did not start on its default (ALT)', r.firstModels)
 
+  const agentSidebarRow = page.locator(`${sel('workspace-team-transient-execution-row')}[data-agent-run-id="${r.copyRunId}"]`).first()
+  r.paint = await sidebarPaint(page, 'DCP-001', agentSidebarRow, page.locator(`${sel('terminate-agent-run')}[data-run-id="${r.runId}"]`))
+  await page.locator(`${sel('workspace-agent-run-row')}[data-run-id="${r.runId}"]`).click()
   // Settings: the running copy has the run's stop icon and its model is locked with the hint.
   await openSettings(page)
   const key = `${address('writer')}@${r.copyRunId}`
@@ -962,7 +1084,7 @@ defineCase('DCP-001', 'delegated-copy-model-change AC-001/002/004/011, DEC-010: 
     return false
   }, 60000, 1000)
   await shot(page, 'DCP-001-sidebar-stop-icon-1280', 1280)
-  await sidebarStop.click()
+  r.stop = await keyboardStopCopy(page, 'DCP-001', sidebarStop, { rootKind: 'AGENT', rootRunId: r.runId, agentRunId: r.copyRunId }, 'Enter')
   await waitFor('copy stopped (no stop icon, model unlocked)', async () => !(await sidebarStop.isVisible().catch(() => false))
     && (await copyRow().locator(`${sel('run-setting-model')} ${sel('run-setting-locked')}`).count()) === 0, 60000, 1000)
   r.rootStillRunning = await page.locator(sel('existing-run-settings')).getAttribute('data-state')
@@ -1038,6 +1160,10 @@ defineCase('DCP-002', 'delegated-copy-model-change AC-002/003, IR-002 (Team root
   await waitFor('copy lead started on the Team default', async () => (await agyLaunchesOf(r.copyMembers.lead)).length > 0, 60000)
   assert(JSON.stringify(await agyLaunchesOf(r.copyMembers.lead)) === JSON.stringify([ALT]), 'copy lead did not start on the Team default (ALT)', await agyLaunchesOf(r.copyMembers.lead))
   await openTeamRun(page, r.teamRunId, ids.home)
+  const teamSidebarRow = page.locator(sel('workspace-team-transient-execution-row')).filter({ hasText: address('pair').slice(1).replace(/_/g, ' ') }).first()
+  const parentStop = page.locator(sel(`workspace-team-row-${r.teamRunId}`)).locator('xpath=..').locator('button[aria-label]').first()
+  r.paint = await sidebarPaint(page, 'DCP-002', teamSidebarRow, parentStop)
+  await openTeamRun(page, r.teamRunId, ids.home)
   await openSettings(page)
   const section = page.locator(sel('run-delegated-launches'))
   const key = `${address('pair')}@${r.copyTeamRunId}`
@@ -1057,7 +1183,7 @@ defineCase('DCP-002', 'delegated-copy-model-change AC-002/003, IR-002 (Team root
     return false
   }, 60000, 1000)
   await shot(page, 'DCP-002-sidebar-team-copy-stop-1280', 1280)
-  await sidebarStop.click()
+  r.stop = await keyboardStopCopy(page, 'DCP-002', sidebarStop, { rootKind: 'AGENT_TEAM', rootRunId: r.teamRunId, teamRunId: r.copyTeamRunId }, 'Space')
   await waitFor('Team copy stopped (model unlocked)', async () => !(await sidebarStop.isVisible().catch(() => false)) && !(await modelLocked(teamRow())), 60000, 1000)
   assert(await page.locator(sel('existing-run-settings')).getAttribute('data-state') === 'active', 'the root should keep running')
   // The Team model: its followers take it (REQ-002).
@@ -1319,6 +1445,7 @@ try {
   browserErrors.length = 0
   for (const c of cases) {
     if (onlyCases && !onlyCases.includes(c.id)) continue
+    await checkpoint(c.id, 'Started', outDir)
     const started = Date.now()
     const errorsBefore = browserErrors.length
     try {
@@ -1332,6 +1459,7 @@ try {
       evidence.cases[c.id] = { title: c.title, result: 'Fail', ms: Date.now() - started, error: error.message, details: error.details ?? null }
     }
     const outcome = evidence.cases[c.id]
+    await checkpoint(c.id, 'Completed', `${outcome.result}; ${outcome.error ?? ''}; ${path.join(outDir, 'delegated-launch-defaults-evidence.json')}`)
     console.log(`${c.id} ${outcome.result} ${c.title}${outcome.error ? ` — ${outcome.error}` : ''}`)
     await fs.writeFile(path.join(outDir, 'delegated-launch-defaults-evidence.json'), JSON.stringify(evidence, null, 2))
   }
