@@ -1,38 +1,29 @@
 # Docs Sync Report — resume-pdf-search-preview
 
-## Scope / Integrated State
-- Date/owner: 2026-10-12 / delivery_engineer; initial round **DR-001**.
-- Trigger: CRR-003 successful API/E2E test-code review Pass; source CRR-002 Pass, API-REV-001 scoped AC-001–003 Pass/95%.
-- Approved requirements R1/SR-001; cumulative SR-001–004 / ARCH-REV-001–003 (current003Pass) / IR-001–002 / CRR-001–003 / API-REV-001. **Small / High; reviewed route**, unchanged.
-- Bootstrap and latest fetched `origin/personal`: `2756d7b298ca5b203ebd2310d172b37a5d381b5c`. Candidate HEAD `ea6c3235a332d225871d0081b11ba36f24500e4c`; latest base is ancestor (18 ahead/0 behind). `git fetch origin personal` and ancestry check completed before delivery edits. Already current; no merge/rebase/checkpoint required.
-- Integration evidence: `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr001-integration.log`. No new base commits/effective source behavior; no additional executable rerun necessary. Upstream final31files/166tests/no skips plus2browser/API cases apply to unchanged candidate. Delivery made only documentation/artifact edits.
+## Current Scope / Integration
+2026-10-13 / delivery_engineer / **DR-003**. Trigger CRR-005 successful coverage-removal/guidance review Pass on API-REV-003, direct user-approved tooling correction: retain reusable Linux build/environment/isolation improvements, remove the permanent ticket-specific Electron PDF command/probe. No product behavior/source change. **Small/High/reviewed**, ApprovedR1/SR-001 and SR-004 unchanged; SR001–004/ARCH001–003(current003Pass)/IR001–002/CRR001–005/API001–003/DR001–003 preserved.
 
-## Why Docs Were Updated
-The source already promotes the search identity contract in both area docs. Delivery corroborated it against the integrated public search owner and client/content consumers, then completed durable regression discoverability and corrected workspace examples that contradicted relative-only readers. Durable runtime knowledge belongs in the existing File Explorer chapters, not only ticket reports.
+Initial `git fetch origin personal` before delivery edits succeeded; latest base **dec0f562ce6f26a09d1e6f59d59e838142cb4865** unchanged and ancestor of intake **ba6cf714b10e4a441ff800f66dc95877185811ec** (31ahead/0behind). **Already current**; no checkpoint/merge/base integration or post-integration executable rerun needed. Evidence `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr003-integration.log`. Prior dirty Delivery artifacts matched all five API-protected hashes before own edits.
 
-## Long-Lived Docs Reviewed
-| Path (relative to worktree) | Result | Rationale |
+## Current Docs / Discovery Disposition
+| Canonical path relative to worktree | Result | Verified current contract |
 | --- | --- | --- |
-| autobyteus-server-ts/docs/modules/file_explorer.md | Updated | Existing public-relative/private-absolute conversion and snapshot/index/abort description accurate; add real-owner search-to-content and shared browser regression entrypoints. |
-| autobyteus-web/docs/file_explorer.md | Updated | Relative search contract already current; explain loaded/lazy node identity, stale-tab/query recovery after deployment; correct absolute-looking usage examples. Trusted local preview contract remains separate and untouched. |
-| autobyteus-web/docs/content_rendering.md | No change | Existing PDF viewer/content ownership still applies; no viewer or transport implementation change. |
-| TESTING.md and package AGENTS.md | No change | Global layer/isolation rules already govern this probe; ticket-specific results belong here, not in global strategy. |
-| RELEASE.md and autobyteus-server-ts/docker/README.md | No change | Default no public release and host Docker policy remain accurate; no executed rollout to document as supported success. Unknown host-specific deployment method is a delivery blocker, not an invented new guide. |
+| TESTING.md | Updated upstream / verified; no additional edit | Shared Linux preparation remains agent-owned; temporary ticket automation does not require a permanent global package command. Single-file policy commitdbe37b66a retained. |
+| docs/isolated-app-instances.md | Updated upstream / verified; no additional edit | Current native build/non-root/privateHOME/namespace+sandbox/full-sessionXvfb/returned instance ports/canonical stop+list remain. Generic Node automation placeholders, not a PDF suite; seven Bash blocks syntax-only tested by API, no new recipe runtime qualification. |
+| autobyteus-server-ts/docs/modules/file_explorer.md | Updated upstream / verified; no additional edit | Removed native command discovery, retains generic isolated-desktop guide plus real scenario assertions. Existing HTTP/browser regression and relative search contract remain. |
+| autobyteus-web/docs/file_explorer.md | No additional change | DR001 relative path examples/lazy/tree identity/query recovery remain accurate; no deleted native discovery link to restore. |
+| Delivery docs-sync/handoff/release reports and current manifest | Updated by Delivery | Remove active discovery/runnable-suite promises; distinguish current removal review/51checks from historical native application runs and deleted-source evidence. |
+| RELEASE.md / Docker guide / content rendering docs | No change | Release/hold and product viewer/path owners unchanged; no new deployment or product contract. |
 
-## Docs Updated / Knowledge Promoted
-- `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts/docs/modules/file_explorer.md`: real GraphQL→protected REST regression, exact bytes/MIME/denials, shared deterministic PDF, discoverable owned-stack browser command and web-equivalent evidence limit.
-- `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/docs/file_explorer.md`: paired workspaceId/relative-path identity for loaded/reused and lazy results; normal close-old-tab/re-search recovery, no absolute-reader/local-file bypass; relative workspace examples without leading slash.
-- Upstream source/docs already record public conversion once at WorkspaceFileExplorer, internal absolute strategies retained, index refresh via buildWorkspaceDirectoryTree/getTree and unchanged watcher/abort semantics. Delivery verified these against source rather than copying historical handoff statuses.
+## Durable Knowledge / Removed Coverage
+Reusable global setup is separate from scenario-specific automation. The removed package script and entire306-line shared Electron PDF probe have **no alias, relocation or replacement**. Deleted code exists only in `/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/api-electron-removal.diff` and git history; it is not a current attachable/runnable source file. Shared878-byte PDF and existing unit/integration/HTTP/browser/store tests remain. Do not restore removal as a supposed validation defect or advertise former native suite as current coverage.
 
-## Removed / Replaced Components
-| Old concept/component | Current truth | Documentation |
-| --- | --- | --- |
-| Public absolute search forwarding | Validated relative locators preserving order; protected readers unchanged | Both File Explorer area docs |
-| getAllFilePaths snapshot description | Snapshot controller builds tree; FileNameIndexer.refreshSnapshotIndex traverses getTree | Both File Explorer area docs (upstream update confirmed) |
-| Explorer toShallowJson/toJson facades | Removed; live TreeNode projection/serialization and explorer.getTree retained, no replacement wrapper | Current integrated source, SR-004/IR-002; area docs no longer describe removed traversal |
-| Absolute-looking workspace examples | Workspace-relative paths, distinct from trusted local host-file preview | Web File Explorer Usage Examples |
+Historical actual API-REV002 and DR002 native runs remain pinned real byte/page/security/restart/cleanup evidence at their exact tested builds. They are neither removed product behavior nor freshly executed/current runnable-suite proof. Raw evidence and DR001/002 entries remain unchanged; old manifests may contain historical removed-path strings, not current source references.
+
+## Validation / No-Additional-Long-Lived-Edit Decision
+Current upstream API-008: scoped removal/guidance Pass95%;51existing Node lifecycle checksPass/0fail/0skip, valid JSON/absence/reference checks and7generic Bash blocks syntax-only. CRR005Pass/no findings. Delivery checks only static scope/reference/history/hygiene consistency; no new app build/launch, PDF journey,55profile/166repository rerun, generic-recipe execution or confidence reassignment.
+
+No additional long-lived edit needed: approved upstream commits already implement the requested shared guidance/discovery changes truthfully. **Docs sync Updated/Pass** through current delivery-authority synchronization and confirmed upstream doc changes; this is not a whole-change no-impact claim.
 
 ## Continuation
-- Docs sync result: **Pass / Updated**; not a no-impact claim and not delivery success.
-- Delivery-owned docs and reports remain uncommitted while user verification is absent. Upstream solution-history receipt remains byte-identical and unstaged; do not overwrite it or claim whole-worktree cleanliness.
-- Next: obtain authorized host/candidate-testing path and explicit user verification; complete finalization/authorized rollout/target user confirmation and cleanup. No requirements/design change or code fix discovered during docs sync.
+Bounded scope sync complete; overall **Blocked—User/External Prerequisite** unchanged. No new acceptance/host/frontend/pin/timing facts and no repeated user/host questions, host retry, source work or review assignment. Current reports remain uncommitted; existing worktree/build outputs and all history retained. No Delivery Completed/Task close.

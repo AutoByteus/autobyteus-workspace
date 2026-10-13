@@ -39,3 +39,16 @@ exit=0
 $ git merge-base --is-ancestor origin/personal HEAD
 exit=1
 Expected ancestry guard rejected after concurrent remote advance: one unrelated delivery-receipt docs commitdec0f562ce6f26a09d1e6f59d59e838142cb4865 beyondb238. No runtime/source/test/policy delta. Initial guard invocation ended AssertionError before cleanup; raw native results untouched, no executable failure. Protect new evidence/docs before integrating this base-only receipt.
+$ git show --no-patch --format=%H%n%P%n%s HEAD
+e7a5c20c71220c346c45e465c3e91f97cc35937b
+c4a3ee23d33064e693bda58572f5c626d357e742 dec0f562ce6f26a09d1e6f59d59e838142cb4865
+Merge remote-tracking branch 'origin/personal' into codex/resume-pdf-search-preview
+exit=0
+$ git merge-base --is-ancestor origin/personal HEAD
+exit=0
+$ git rev-list --left-right --count HEAD...origin/personal
+27	0
+exit=0
+$ git diff 32cab9e3 HEAD -- . :!tickets/** :!autobyteus-server-ts/docs/modules/file_explorer.md
+exit=0
+Docs-only base integratede7a5c20c71220c346c45e465c3e91f97cc35937b after checkpointc4a3ee23d33064e693bda58572f5c626d357e742. Final-base51Node checksPass; all runtime/test/build inputs identical to native-tested32cab9e3. No second native rebuild necessary for unrelated ticket receipt-only delta. Current docs sync proceeds only after this integration/check.
