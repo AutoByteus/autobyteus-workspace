@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-003 Pass | N/A (note N-1 and residuals R-1, R-4, R-5 and compaction-recovery identification honored) | `Initial Baseline` | SR-004, ARCH-REV-003; CRR/API-REV/DR `N/A` | Implementation complete; ready for source review |
+| IR-002 | Code Reviewer / `code-review-report.md` / CRR-001 round 1 (Fail — Local Fix) | CR-001, CR-002, CR-003, CR-004 | `Local Fix` | SR-004, ARCH-REV-003, CRR-001; API-REV/DR `N/A` | All four fixed; ready for targeted source review, then API/E2E |
 
 ## Revision Entries
 
@@ -65,3 +66,31 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - AC-010 desktop journey with real models not run (needs a user-provided key file for an isolated instance);
   - no live team member or delegated-copy restore case (shared activation path covered);
   - ACP/Grok not run live.
+
+### IR-002 — CRR-001 local fixes: no tracking wait for new runs, activation-time skill source, size limit, dead branch
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/code-review-report.md`, CRR-001 (round 1).
+- Triggering finding IDs: CR-001 (Medium), CR-002 (Medium), CR-003 (Low), CR-004 (Low).
+- Classification: `Local Fix`
+- Prior authoritative result: IR-001 (`5718c1301`, `02c1d8b92`, `28fdf1d36`).
+- Current authoritative result: commit `d32e55270` on `codex/active-run-skill-update-notice`.
+- Related solution revision IDs: `SR-004`
+- Related architecture-review revision IDs: `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `N/A`
+- Related delivery revision IDs: `N/A`
+- Approved behavior or requirement IDs affected: BEH-001 (REQ-009, DEC-011: re-resolution by name independent of later definition edits), BEH-003 (REQ-005: a new run's input never waits), DESIGN.md Rule 3.
+- Implementation delta:
+  - **CR-001:** `SkillUpdateNoticeService.takePreface` waits for tracking only for a run published as `restore` / `platform_restore` (a `restoring` set keyed by the run object, cleared when its tracking settles and on close). Otherwise it reads the tracked run directly and returns any pending notice; a new run's first input is dispatched at once.
+  - **CR-002:** `RunUsedSkillsResolver` now returns a `RunSkillSource` bound at tracking (the definition read then, a copy); `TrackedRun.skillSource.resolve()` resolves it through the current catalog on every re-resolution (`refreshSkillDirs` is synchronous). `createSkillUpdateNotices` also returns `tracker`.
+  - **CR-003:** `MemoryManager.ingestSystemTaskNotification` removed; the ingest processor calls the public `appendRawTrace`. `memory-manager.ts`: 495 non-blank lines (494 at base).
+  - **CR-004:** the `settlePreface` call in `reconcileUncertainDispatch` and the in-flight comment removed.
+  - **Tests:** integration world split into definitions (names) and catalog (folders); new CR-002 case (definition edited, then deleted, during an active run); new CR-001 cases with a gated snapshotter and a real `AgentRun` (new run dispatched unchanged while scanning; restored run waits and carries the notice); the real-`AgentRun` test uses a shared helper. Both fixes mutation-checked: the tests fail with the old behavior.
+- Changed files or areas: `autobyteus-ts/src/memory/memory-manager.ts`, `autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts`, `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts`, `autobyteus-server-ts/src/skill-update-notices/{skill-update-notices.ts, services/run-skill-tracker.ts, services/skill-update-notice-service.ts}`, `autobyteus-server-ts/tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts`.
+- Local validation and result:
+  - autobyteus-ts: build typecheck clean; dist rebuilt; unit 299 files / 2023 tests pass.
+  - Server: typecheck clean; affected unit areas plus `tests/integration/{skill-update-notices,run-history}`: 176 files / 1908 tests pass (4 skipped).
+  - Scripted AGY E2E: 2/2 pass. Live Codex + Claude E2E (throwaway `CODEX_HOME`; operator's Claude login): 2/2 pass.
+- Next recipient or routing: targeted source review (Large/High) per `get_handoff_rules`, then API/E2E.
+- Remaining limitations or risks: unchanged from IR-001 (application execution scope runs not wired, recorded by the reviewer as a note for the Solution Designer; AC-010 desktop journey; live team-member/delegated-copy restore; ACP/Grok live).
+

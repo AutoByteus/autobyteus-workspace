@@ -11,17 +11,26 @@
 - Supplemental task artifacts: `follow-up-tasks.md` (FT-1…FT-3, user-requested); rendered-check screenshots in `implementation-evidence/`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/design-review-report.md` (ARCH-REV-003 Pass)
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: `N/A` (initial implementation)
+- Triggering rework report, revision record, or evidence: `code-review-report.md` and `code-review-revision-record.md` (CRR-001, Fail — Local Fix: CR-001…CR-004), resolved in IR-002.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Local Fix` (CRR-001)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001` (initial baseline)
+- Current implementation revision ID: `IR-002` (IR-001 baseline; IR-002 CRR-001 local fixes)
 - Related solution revision IDs: `SR-001`…`SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-001`…`ARCH-REV-003`
-- Related code-review / API/E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (review note N-1 and residuals R-1, R-4, R-5 honored)
+- Related code-review revision IDs: `CRR-001`; API/E2E / delivery: `N/A`
+- Triggering finding IDs: `CR-001`, `CR-002`, `CR-003`, `CR-004` (review note N-1 and residuals R-1, R-4, R-5 still honored)
+
+## CRR-001 Resolution (IR-002)
+
+| Finding | Fix | Test / evidence |
+| --- | --- | --- |
+| CR-001 (Medium) — a new run's first input waited for full skill tracking | `SkillUpdateNoticeService` waits for tracking only for a run published as `restore` / `platform_restore` (a `restoring` set keyed by the run object, cleared when its tracking settles). Any other input takes only a notice already pending, so a new run's first input never waits; its tracking finishes in the background | Integration, gated snapshotter + real `AgentRun`: a new run's first input is dispatched unchanged while its skills are still being scanned; a restored run's first input waits for its check and carries the notice. The new-run test fails when the unconditional wait is restored (checked) |
+| CR-002 (Medium) — re-resolution read the run's current agent definition | The tracker binds each run to a `RunSkillSource` when it is tracked: the agent definition read at tracking (a copy), resolved through the **current** catalog on every re-resolution. Editing or deleting the definition no longer changes what an active run uses; "removed" now means the name no longer resolves to an installed skill. A restored run is tracked with the definition it is restored with | Integration: drop a skill from the definition, then delete the definition, while the run is active → both later changes are reported as updated, never "no longer available", and both folders stay watched. Fails when re-resolution re-reads the definition (checked). The integration world now separates definitions (names) from the catalog (installed folders); AC-005 moves and uninstalls through the catalog |
+| CR-003 (Low) — `memory-manager.ts` over 500 effective lines | `ingestSystemTaskNotification` removed; the ingest processor uses the existing public `appendRawTrace`. `memory-manager.ts` is 495 non-blank lines (494 at base) | autobyteus-ts unit 299 files / 2023 tests pass |
+| CR-004 (Low) — dead preface settlement on the uncertain path | The `settlePreface` call in `reconcileUncertainDispatch` and the comment are removed (only recovery dispatches become uncertain, and they never carry a preface) | Preface and `AgentRun` unit tests pass |
 - Branch / commits: `codex/active-run-skill-update-notice` (worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice`) on `origin/personal@6473e2694`; commits listed in the revision record (IR-001).
 
 What exists now:
@@ -31,7 +40,7 @@ What exists now:
     - the `platform_input_preface {content, sender_id, original_content}` tag;
     - `readPlatformInputPreface`, which validates the tag;
     - `stripPlatformInputPreface`.
-  - `MemoryIngestInputProcessor`: for a tagged input it writes a separate `system_task_notification` trace (`MemoryManager.ingestSystemTaskNotification`), then the user trace with the original content.
+  - `MemoryIngestInputProcessor`: for a tagged input it writes a separate `system_task_notification` trace (through the public `MemoryManager.appendRawTrace`), then the user trace with the original content.
     - A notice-only input (`original_content: null`) writes only the system trace.
     - The trace IDs are recorded on the `AgentTurn` (`recordInputRawTraceIds`).
   - `llm-phase` passes `turn.inputRawTraceIds` to `LLMRequestAssembler.prepareRequest`. The working-context user entry keeps the combined content, linked to both traces through explicit `rawTraceIds` (N-1; not recomputed).
@@ -44,7 +53,7 @@ What exists now:
     - `combinePreface`: one provider message, the notice + `\n\n` + the input unchanged (sender, context files, recording attachments, metadata), tagged with `original_content`.
     - `AgentRunInputPrefaceDispatch`: take and settle; a failing port never affects the input; on delivery it publishes `SYSTEM_TASK_NOTIFICATION {sender_id, content, turn_id}`.
   - `domain/agent-run.ts`: in `executeInputDispatch`, after normalization, a preface is taken and combined into the same dispatch (one dispatch, one turn).
-    - It is settled delivered only when the dispatch is forwarded (also on reconciliation of an uncertain dispatch); any other outcome (not forwarded, failed, `undeliveredRetryAsStart`) returns it to pending.
+    - It is settled delivered only when the dispatch is forwarded; any other outcome (not forwarded, failed, uncertain, `undeliveredRetryAsStart`) returns it to pending. Recovery dispatches, the only ones reconciled after an uncertain result, never carry a preface.
     - Admission state and backend contract are unchanged.
   - `AgentRunManager`: options `inputPreface` and `lifecycleObserver`. `runPublished(run, request.kind)` is reported from the single activation point (`beginAgentRunActivation` `onPublished`, after `registry.publish`).
   - `AgentRunResourceManager`: `lifecycleObserver.runReleased(run)` after a successful release; every removal path goes through it.
@@ -58,13 +67,14 @@ What exists now:
   - `services/skill-update-notice-builder.ts`: text per REQ-008 (10 files, then "and N more"; the current SKILL.md path; re-read line; a removal line); the busy-run SYSTEM message; the event.
   - `monitor/skill-folder-watcher.ts`: chokidar, used folders only, 1000 ms quiet / 3000 ms cap, injectable; reports a deleted folder as that folder.
   - `services/run-skill-tracker.ts`: per-run used skills by name, resolved exactly as the runtimes resolve them (`getAgentDefinitionById(config.agentDefinitionId)` → `resolveConfiguredSkillsForAgent`, `ALL_INSTALLED` and application bundles included).
-    - Re-resolution when a folder changes covers a new GitHub source generation (moved) and uninstalled skills (no longer resolves).
+    - Each run is bound to a `RunSkillSource` when tracked: the definition read then, resolved through the current catalog (CR-002).
+    - Re-resolution when a folder changes covers a new GitHub source generation (moved) and uninstalled skills (no longer resolves); later definition edits do not affect an active run.
     - Seen versions: a new run records current files; a restore uses the stored record plus newly used names; a missing record is re-created without a retroactive notice.
   - `services/skill-update-notice-service.ts`: implements both ports.
     - **Busy** (`status === "running"`): one `postUserMessage(notice)` with agent-message semantics; forwarded → event + record seen; failed/cancelled/not accepted → pending again (REQ-013).
-    - **Idle/restored:** marked and handed to the next input through `takePreface`.
+    - **Idle/restored:** marked and handed to the next input through `takePreface`. Only a restored run's first input waits for its tracking; a new run's inputs never wait (CR-001).
     - **Restore:** all used names are checked against the stored record.
-  - `skill-update-notices.ts`: `createSkillUpdateNotices(...)`; `SkillService` is looked up lazily at first resolution.
+  - `skill-update-notices.ts`: `createSkillUpdateNotices(...)` → `{service, watcher, tracker, close}`; `SkillService` is looked up lazily at first resolution.
 - **Compositions:** `build-studio-server.ts` and `start-standalone-application-host.ts` create the subsystem and pass `platformInputNotices`. Close order: notices (watcher → service) before the run supervisor.
 - **History:** the `RuntimeMemoryEventAccumulator` records the skill sender's system notices (external runtimes). A forwarded notice-only input (`original_content: null`) is not recorded as a user message. The native runtime records its own traces (above).
 - **Web:**
@@ -85,7 +95,7 @@ What exists now:
     - no run metadata or execution-tree schema changed;
     - watch cost is within QR-002 (measured, see R-5).
   - Compaction-recovery inputs are distinguishable at dispatch (`ClaimedInputDispatch.recovery`), so no Design Impact.
-- Selected route: `Code Review` (Large/High). Exact recipient from `get_handoff_rules`.
+- Selected route: `Code Review` (Large/High; targeted delta for CRR-001), then API/E2E. Exact recipient from `get_handoff_rules`.
 - Lightweight implementation self-review completed for the direct route: `Not Applicable`
 - New design impact or escalation trigger: `None`. Two implementation decisions extend the approved mechanism without changing ownership or contracts; they are listed under Known Risks (items 1 and 2) for the reviewer.
 
@@ -170,9 +180,10 @@ What exists now:
 - Dead code in the touched files and modules removed: `Yes`; nothing became dead.
 - Shared structures remain tight: `Yes`. The preface tag is a small generic marker; the skill marker `skill_update_notice` is dedicated (task-delegation metadata not widened).
 - Canonical shared design guidance was reapplied during implementation: `Yes`
-- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`.
-  - The preface mechanics were moved out of `agent-run.ts` (451 lines; base 428).
-  - The largest new file is `skill-update-notice-service.ts` (253 lines).
+- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes` (IR-002, CR-003; IR-001 wrongly claimed this while `memory-manager.ts` had 512 effective lines).
+  - `memory-manager.ts`: 495 non-blank lines (494 at base).
+  - The preface mechanics were moved out of `agent-run.ts` (449 lines; base 428).
+  - The largest new file is `skill-update-notice-service.ts` (about 260 lines).
 
 ## Persisted Data Transition Check
 
@@ -191,6 +202,15 @@ What exists now:
 - The server resolves `autobyteus-ts` from its built `dist`: run `pnpm -C autobyteus-ts build` (or `pnpm -C autobyteus-server-ts prepare:shared`) before server tests.
 
 ## Local Implementation Checks Run
+
+IR-002 (CRR-001 fixes):
+
+- autobyteus-ts: build typecheck clean; `pnpm build` (dist rebuilt for the server); unit **299 files / 2023 tests pass**.
+- Server: typecheck clean; `tests/unit/{agent-execution,skill-update-notices,standalone-application-host,compositions,agent-memory,agent-collaboration}` plus `tests/integration/{skill-update-notices,run-history}`: **176 files / 1908 tests pass** (4 files skipped). New tests: CR-001 (2), CR-002 (1); both fixes mutation-checked.
+- Scripted AGY E2E: 2/2 pass (new run, busy, stop, idle, restore).
+- Live Codex + Claude E2E: see the revision record (IR-002).
+
+IR-001:
 
 - `autobyteus-ts`:
   - `tsc -p tsconfig.build.json` clean;
