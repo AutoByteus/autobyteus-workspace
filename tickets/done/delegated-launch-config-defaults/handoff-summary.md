@@ -7,7 +7,7 @@
 - 2026-10-13, the user wrote: "the task is done. verified. lets finalize and release a new beta version"
 - Decisions:
   1. **Verified and accepted.** This is explicit verification of round 2.
-  2. **Release:** a new beta, `v1.5.3-beta.2`. See `release-deployment-report.md` → Round 2.
+  2. **Release:** a new beta. It shipped as `v1.5.3-beta.2` and is complete: four of four workflows, 17 assets, Docker `:beta`. See `release-deployment-report.md` → Round 2.
   3. **O-6** (390 px clipping) and the open round-1 items were not decided. They go to the Solution Designer as follow-up candidates.
 
 ### Status At The DR-003 Handoff
