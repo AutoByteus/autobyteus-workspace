@@ -180,6 +180,8 @@ These do not fail this review, lower its score, or enlarge this ticket.
 
 - **Sent:** `/project_task_manager`, receipt `accepted:true / DELIVERED`, target AgentRun `project_task_manager_a5f6d9d306e54970bafdad895bdf731d`, 2026-10-13, message type `review_follow_up`. This is the requirements' Requested-by owner. No task/worker was created by this review.
 
+- **PM tracking receipt (2026-10-13, informational only):** `/project_task_manager` found no duplicate Task and retained FUP001 at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/task-plans/context/fup001-updater-stack-path-classification-candidate.md`, awaiting user approval to create a separate Task. Seven public artifacts are in originating Project context for durable custody. No Task, worker, dispatch, scope expansion, review waiver or duplicate technical handoff. CRR001 Fail/CR001 and its existing implementation route remain unchanged.
+
 ## Classification And Recommended Recipient
 
 **Fail — Local Fix -> implementation-owned bounded packaging/platform correction.** Fresh `get_handoff_rules` selected exactly: “When source review identifies an implementation-owned Local Fix or packaging defect that must be corrected before executable coverage.” Recipient `/software_engineering_team/implementation_engineer`. Other pass/test/failure-origin/upstream routes do not apply. No structural Design Impact, Requirement Gap or Unclear finding. Do not advance to API/E2E until CR001 is fixed and reviewed. Later rounds use the actual change breadth to select Targeted Delta Review versus Full Re-Audit.
