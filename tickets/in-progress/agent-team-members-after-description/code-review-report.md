@@ -1,5 +1,13 @@
 # Code Review Report
 
+## Current Scope Disposition — CRR-002
+- **Explicit user instruction, 2026-10-13:** “send a message to @Project Task Manager to create follow up ticket, instead of fixing in this ticket.”
+- This supersedes CRR-001's **in-ticket correction routing**, not its technical evidence: API-F001/API-F002 are pre-existing baseline defects outside R1's UI requirements. Request an accountable follow-up from `/project_task_manager`; no additional baseline fix/review/build is authorized in this UI ticket by the earlier handoff.
+- During this scope decision, an already-created local commit was observed: `d8bac598606001b702e300eeaeefe06c3caf0d3d` (two mutation files plus cache regression). It has **not been reviewed here**. Implementation Engineer must preserve/isolate that work for the follow-up and coordinate removal from the UI delivery package; reviewer does not revert others' changes or declare the prepared fix passed.
+- Small/Low and approved R1 are unchanged. Requested Team layout checks remain positively evidenced. API-REV-002's historical full-product Fail is not silently rewritten; responsible owners must separate baseline tracking/tests from current-ticket validation, with a new truthful scoped result before delivery.
+- Prior same-branch fix expectation under TESTING Rule 9 is overridden by this explicit user scope direction. Defects remain accountable, not ignored or claimed resolved. Delivery's human-verification/release/finalization gates remain.
+- This is a **failure-origin scope/routing update**, not a new source audit or successful-test review. CRR-001 below remains the last technical review result at its pinned source.
+
 ## Latest Authoritative Result
 - **Fail — Local Fix / Implementation Engineer; CRR-001**, 2026-10-13.
 - Entry point: **API/E2E Failure-Origin Review**, round 1. Review scope: **N/A — focused failure-origin only**.

@@ -6,6 +6,7 @@ Package: agent-team-members-after-description. The applicable canonical review r
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | code-review-report.md | API/E2E Failure-Origin Review / API-REV-002 E06 | N/A | Fail / Local Fix / Implementation Engineer | API-F001, API-F002 |
+| CRR-002 | code-review-report.md, Current Scope Disposition | Explicit user follow-up instruction / routing update only | CRR-001 in-ticket Local Fix | Follow-up requested; in-ticket correction superseded; no new technical Pass | API-F001, API-F002 |
 
 ## Revision Entries
 ### CRR-001 — Baseline creation-cache failure origin
@@ -28,3 +29,12 @@ None — CRR-001 initial baseline. API finding IDs are reused rather than duplic
 - Routing confirmation: get_handoff_rules selects the exact failure-origin implementation-defect condition and the recipient above; no duplicate outcome notification.
 - Required continuation: separately labelled bounded baseline-fix commit, relevant regressions, updated IR package → implementation-source review → API/E2E with new source-current desktop build/ordinary creation and cleanup. Do not suppress errors or extrapolate a Team mutation defect.
 - Remaining risks/hold: assigned iso-52535-8486 already stopped/cleaned (forced=true receipt retained); no live resource transferred. Preserve Delivery-owned uncommitted files and generated SDK outputs. DR-001 user/finalization/release hold remains; no Task DONE/Terminal claim.
+
+### CRR-002 — User directs baseline defects to separate follow-up
+- Date: 2026-10-13. Entry: failure-origin scope/routing update only; review scope N/A. Canonical report's Current Scope Disposition supersedes the earlier in-ticket correction instruction. No new source or test-code review performed.
+- Trigger: explicit user instruction to message `/project_task_manager` to create follow-up rather than fix this ticket. R1/SR-001/SR-002/IR-001/API-REV-001/002/DR-001 context retained; ARCH-REV N/A. No new intended UI behavior or architectural-risk change.
+- Prior/current result: CRR-001 confirmed baseline defects / Local Fix; now **separately accountable follow-up requested**, not current UI requirements and not a new technical Pass. No score change.
+- Prior finding resolution: API-F001/API-F002 **Open → deferred to requested follow-up**, not resolved. CRR-001 raw failure evidence remains valid at its pinned source; no new failure reproduction or fix verification claimed.
+- Already-prepared local fix observed: d8bac598606001b702e300eeaeefe06c3caf0d3d, three source/test paths. It is unreviewed here; Implementation Engineer receives the superseding instruction to preserve/isolate rather than continue in-ticket correction. No reviewer source/test revert.
+- Routing: get_handoff_rules still identifies Implementation Engineer as technical implementation-defect owner; user explicitly adds `/project_task_manager` for creation/coordination of separate follow-up. No new delegation or follow-up implementation dispatch authorized by this request.
+- Remaining obligations: accountable follow-up linkage, clean separation of baseline source/test work from UI delivery package and truthful current-ticket API report by responsible owners. Earlier full-product failure/cleanup history retained; Delivery's explicit human/release/finalization gates remain. Do not claim a follow-up exists until Task Manager confirms it.
