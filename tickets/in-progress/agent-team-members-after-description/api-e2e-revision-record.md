@@ -6,6 +6,7 @@ Package agent-team-members-after-description. Canonical investigation/report own
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Implementation Engineer / implementation-handoff.md / IR-001 / round 1 | R1; SR-001/SR-002; IR-001; ARCH/CRR/DR N/A | N/A | Pass / 95.71%; Small/Low direct Delivery |
 | API-REV-002 | Explicit user full-Electron request; DR-001 exclusive instance transfer / round2 | R1; SR-001/SR-002; IR-001; DR-001 | API-REV-001 Pass /95.71% scoped | Fail /91.43% expanded full-product; failure-origin review |
+| API-REV-003 | IR-004 / SR-003–004 scoped disposition and durable transfer | R1 unchanged; CRR-001/002; DR-001 | API-REV-002 Fail91.43% expanded (retained) | Pass95.71% R1-only; Small/Low direct Delivery |
 
 ## API-REV-001 — Independent renderer and parent-path coverage baseline
 - Date 2026-10-13; initial independent API/E2E result, no prior complete validation inferred from implementation checks.
@@ -42,3 +43,27 @@ Prior authoritative API/E2E failures: None (initial baseline).
 - Preliminary classification Local Fix / Implementation Engineer; Code Reviewer owns failure-origin confirmation and next route. Successful-test review not applicable to this failed round. Full cumulative package/original supplements/new durable test attached to failure handoff; Delivery remains on user/finalization/release hold.
 
 API-REV-002 routing confirmation: get_handoff_rules Fail/failure-origin condition selected exact /software_engineering_team/code_reviewer; not successful-test review.
+
+## API-REV-003 — New scoped UI acceptance after source/test separation
+- Trigger IR-004 / scope-separation-handoff.md / SR-003–004 / explicit user separate follow-up, R1 unchanged. Full package read; doc-only coordinator receipts37779bf701/051cbc06c2 consumed; no redundant implementation/review/follow-up creation/dispatch.
+- Prior/current: API-REV-002 expanded full-product Fail91.43% stays historical; NEW **Pass95.71% for R1 UI acceptance ONLY**, not whole-app clean or cache defect closure. API-REV-001 prior scoped result retained.
+
+### Prior Failure Resolution (before current outcomes)
+| Case / finding | Prior origin | Current disposition / evidence |
+| --- | --- | --- |
+| E06 / API-F001 | CRR-001 confirmed baseline Agent missing loadIssue | Open / user-deferred separate cache Task6b9ce371, TODO/not dispatched; source restored unchanged, no rerun/resolution. Six raw actual events retained. |
+| E06 / API-F002 | CRR-001 confirmed baseline Org missing loadIssues | Open / same follow-up; raw event/current source retained, no data-loss claim, no fix acceptance. |
+| Withdrawn original standalone cache regression | Valid current-contract reproduction, not R1 | Original two-case source retrievable atb6b514f230; full prepared spec/patch exact retainedd8 branch/export/manager durable-copy receipt. Active exclusioncf18b16f46 authorized SR-003 after preservation; not stale/deleted-to-green. |
+
+- Source identity: separated sourcecf18b16f46 / integratedbasef13bdd0eb7; current tested helpercommitcfcdaddab4e5f33eb2df7c1dc00628b8251ccc47. Team blob82982846da660d3bb9c8b9349589e14cc8b5de17; no production delta versus actual desktop-built59a5bd76de. Entire source before probe change equal prior build; test helper is the sole current test delta.
+- S01 source/transfer integrity Pass: empty GraphQL/store source/test net delta, exact retained d8/full-spec/patch/original retrieval; manager acknowledges six full copied attachments with exact hashes/format adaptations (receipt read, local originals independently checked; no API server-copy recheck). Ref untouched; baseline work unreviewed/not dispatched.
+- R01 9 tests / R02 four suites31 tests = current five suites/40 Pass; guards/localization zero unresolved/syntax/diff/artifact hygiene Pass. B01/B02/B03 final fresh replay Pass with zero browser events/real Iconify200 responses, source-current1440/600 DOM+geometry/cards/count/coordinator/content/shared-local emits/disclosure/actions/alternate/missing-state, inspected screenshots, independent own cleanup.
+- New API-owned scoped helper correction: first B03 strict gate failed aborted asynchronous alternate-Team icon request when immediately navigating away; raw attempt retained. Wait alternate-page network idle before missing-page navigation, add timestamped icon observations. Every R1/error assertion intact; final B03 Pass. This is test readiness, not baseline/source/icon repair. Both Nuxt attempts cleaned; no desktop/model launched.
+- Nuxt #app-manifest pre-transform startup diagnostics persisted even after documented prepare, raw logs retained; required browser modules/journeys loaded after Nitro readiness without errors. Repository KaTeX/Browserslist/Apollo104/localization module warnings retained; no whole-dev-stack clean claim or unrelated fix loop.
+- Confidence mandatory seven-category scorecard R1-only: post-repository93.57% → final95.71%, all final categories≥95, every critical AC directly proven. Broader Required Browser completed; historical actual desktop target paths are unchanged-code corroboration, not a new full-product execution.
+- Canonical investigation/report/ledger updated in place; current report supersedes presentation of current authority only. Historical API-REV-002 entry/raw failure logs/immutable expanded report atb6b514f230 retained, never relabeled Pass.
+- Coverage: only agent-team-detail-probe.mjs updated this API round; no source/fixture/query/schema/migration/compatibility changes, no R1 coverage removal. Retained original excluded path identified with diff/ref/exact exports instead of nonexistent attachment.
+- Remaining risks: known baseline API-F001/002 open in confirmed follow-up; no whole-app/corrected-build/platform certification. Explicit human acceptance/user-agreed release/finalization/cleanup remain Delivery gates; no Task DONE/Terminal. Delivery/protected source content preserved; SDK outputs never staged. API resources none live.
+- Classification Small/Low direct; proportional test review Not Required — direct low-risk route. Persist reports before get_handoff_rules; single most-specific scoped Pass rule recipient required. No follow-up dispatch or duplicate reviewer route.
+
+API-REV-003 routing decision: get_handoff_rules returned four conditions. Single most-specific match is scoped Pass on direct Small/Medium + Low with no proportional durable-test review required and ready for delivery. Exact recipient **/software_engineering_team/delivery_engineer**. Historical expanded Fail is separate retained context, not a new failure reroute or review request; no duplicate notification or follow-up dispatch.

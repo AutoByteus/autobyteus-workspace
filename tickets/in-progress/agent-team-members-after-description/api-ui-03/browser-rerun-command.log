@@ -1,0 +1,5 @@
+
+> autobyteus@1.5.3-beta.2 test:e2e:agent-team-detail /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web
+> node tests/e2e/agent-team-detail-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser-rerun --ledger-file /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-e2e-test-case-ledger.md
+
+{"result":"Pass","cleanup":{"browser":{"closed":true},"nuxt":{"pid":28779,"groupAbsent":true},"fixture":{"removed":true},"boundary":{"closed":true},"home":{"removed":true},"ports":{"rendererFree":true,"backendFree":true}},"evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser-rerun/evidence.json"}

@@ -129,3 +129,90 @@ E06 current committed-candidate rerun Completed — exit 1; cache-regression-ver
 E01/E02/E03/E04/E05 Pass for actual app target journeys/source/cleanup. E06 Fail (API-F001/API-F002) from seven observed creation console errors plus two valid durable cache regressions; existing store5/5 and focused current12/12 Pass. Harness assumptions/errors resolved, raw artifacts retained. All final cases terminal; no active instance/task case. Reconciled into /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-e2e-execution-coverage-report.md / API-REV-002: Fail91.43%, focused failure-origin review required. Original R1 behavior proof remains positive, no clean full-app Pass declared.
 
 Round2 staged artifact hygiene Pass (61364 index/tracked paths, then own receipt added); diff whitespace Pass. API-F001/API-F002 failure-origin rule selected Code Reviewer.
+
+## Round 3 — planned scoped UI disposition / API-REV-003 (before execution)
+IR-004/SR-003; input HEAD52a5a1ee4ca88f35d2ee21b472018bb32d481360. Only R1 AC-001–004; prior API-REV-002 Fail/E06 unresolved outside UI scope, not rerun. Confirmed cache follow-up6b9ce371 and process follow-up4c7b3e0e TODO/not dispatched. New S01 is a preservation/scope case; R01/R02/R03/B01–B03 IDs reused.
+| Case | Expected | Initial state |
+| --- | --- | --- |
+| S01 | Prior failure disposition, active source/test separation, preserved branch/patch/reproducer exact; current R1/runtime equality | Not Tested |
+| R01 | Focused component9 pass | Not Tested |
+| R02 | Actual-page/Org-owned/children31 pass | Not Tested |
+| R03 | Guards/audit/syntax/diff/hygiene pass | Not Tested |
+| B01 | Source-current long-content1440/600 order/geometry/cards pass | Not Tested |
+| B02 | Disclosure/shared-local emits/Back/Edit/Delete cancel pass | Not Tested |
+| B03 | Alternate ownership/empty handoffs/missing Team pass | Not Tested |
+S01 Started — verify source/transfer and read prior confirmed failures without executing follow-up work.
+
+S01 Checkpoint — receipt guard detected HEAD advanced from incoming52a5a1ee during coordination; no source assumption made and no new runtime/test launched. Read current commit/diff and pin before continuing. Initial read-only receipt attempt stopped at HEAD guard (AssertionError); not a product failure.
+
+S01 Completed Pass — source/transfer integrity only: current37779bf701 adds only Solution receipt/SR-004 docs; empty baseline delta; runtime/UI coverage equals desktop-built59a5bd76de; d8 retained ref/full test/patch hashes exact; original two-case reproducer retrievable; historical Fail91.43% and seven raw creation errors retained, NOT resolved. No follow-up tests/build/run performed. Evidence: api-ui-03/source-and-transfer.json.
+
+R01 Started — current source37779bf701 focused component rerun.
+
+R01 Completed — exit 0; api-ui-03/focused.log.
+
+R02 Started — actual pages/store scoped/shared/local routes and related preservation suites.
+
+R02 Completed — exit 0; api-ui-03/related.log.
+
+R03 Started — scoped guards/localization audit/syntax/diff.
+
+R03 Repository checkpoint — exit 0; api-ui-03/guards.log (index hygiene rerun at final own staging).
+
+R01/R02 reconciled Pass — current five suites/40 tests, 9 focused +31 related; both serialized commands exit0. R03 guards checkpoint Pass; final staged hygiene pending. Broader Required Browser with post-repository R1-only93.57%.
+
+2026-10-13T04:46:22.884Z B01 Started — Long-content production detail order, roster and responsive geometry. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser/evidence.json.
+
+2026-10-13T04:46:23.445Z B01 Completed Pass — Long-content production detail order, roster and responsive geometry. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser/evidence.json.
+
+2026-10-13T04:46:23.446Z B02 Started — Real controls: disclosure, shared/local View, Edit/Back and Delete cancel. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser/evidence.json.
+
+2026-10-13T04:46:23.934Z B02 Completed Pass — Real controls: disclosure, shared/local View, Edit/Back and Delete cancel. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser/evidence.json.
+
+2026-10-13T04:46:23.934Z B03 Started — Alternate Team ownership/empty rules and not-found state. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser/evidence.json.
+
+2026-10-13T04:46:24.381Z B03 Completed Fail — Browser errors
++ actual - expected
+
++ [
++   {
++     reason: {
++       errorText: 'net::ERR_ABORTED'
++     },
++     type: 'requestfailed',
++     url: 'https://api.iconify.design/heroicons.json?icons=arrows-right-left-20-solid%2Cchevron-down-20-solid'
++   }
++ ]
+- []
+. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser/evidence.json.
+
+Round3 B01–B03 probe process finished exit 1; api-ui-03/browser-command.log; check final evidence/events/cleanup before reconciliation.
+
+Round3 B03 attempt Fail preserved — Iconify external request aborted during rapid alternate→missing document navigation; B01/B02 Pass; cleanup Pass. API-owned readiness investigation/plan persisted before probe edit, no product or follow-up fix. B01–B03 fresh replay planned; all strict error and R1 assertions retained.
+
+Round3 documented Nuxt dev preparation — exit 0; api-ui-03/nuxt-prepare.log.
+
+2026-10-13T04:48:17.526Z B01 Started — Long-content production detail order, roster and responsive geometry. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser-rerun/evidence.json.
+
+2026-10-13T04:48:18.072Z B01 Completed Pass — Long-content production detail order, roster and responsive geometry. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser-rerun/evidence.json.
+
+2026-10-13T04:48:18.073Z B02 Started — Real controls: disclosure, shared/local View, Edit/Back and Delete cancel. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser-rerun/evidence.json.
+
+2026-10-13T04:48:18.578Z B02 Completed Pass — Real controls: disclosure, shared/local View, Edit/Back and Delete cancel. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser-rerun/evidence.json.
+
+2026-10-13T04:48:18.579Z B03 Started — Alternate Team ownership/empty rules and not-found state. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser-rerun/evidence.json.
+
+2026-10-13T04:48:19.682Z B03 Completed Pass — Alternate Team ownership/empty rules and not-found state. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-ui-03/browser-rerun/evidence.json.
+
+Round3 B01–B03 replay process finished exit 0; api-ui-03/browser-rerun-command.log; reconcile after events/cleanup inspection.
+
+R03 final source guards — exit 0; api-ui-03/guards-final.log; final artifact staging check pending.
+
+S01 transfer checkpoint — Task Manager durable-copy acknowledgment now received in Solution doc-only051cbc06c2: six byte-equality claims/full regression/exact base64 gzip hashes, no review acceptance or dispatch. Manager receipt read; local originals independently match hashes (no independent server-copy check claimed). Expected two Solution records changed by their owner; ALL Delivery/protected other files unchanged. api-ui-03/final-source-and-transfer.json. Retained ref untouched.
+
+B01/B02/B03 final replay Pass — api-ui-03/browser-rerun/evidence.json, zero browser events and only fixture health request; all Iconify requests response200 before next navigation, including previously aborted batch. Both widths inspected and failed initial missing-state screenshot inspected. First B03 remains Fail history, readiness correction resolved on current test helper. Independent cleanup-and-observations.json confirms Nuxt28779 group absent, renderer54528/boundary54527 ports released, fixture removed.
+
+## Round3 final reconciliation
+S01 Pass for preservation/source separation/confirmed transfer, NOT defect resolution. R01/R02 five suites40 Pass. R03 final guards Pass; staged artifact final checkpoint follows. B01/B02/B03 final browser-rerun Pass/zero events/200 icon responses after scoped readiness fix; initial B03 Fail retained/resolved as probe timing. Fresh widths/failure screenshot inspected, own both-attempt cleanup confirmed. No running/interrupted/unstarted final R1 case. Historical E06/API-F001/API-F002 remain Fail/Open deferred to confirmed cache follow-up, not rerun. Current canonical report/revision API-REV-003 scoped Pass95.71%, broader Required Browser completed; API-REV-002 expanded Fail91.43% unchanged. User acceptance/release/Delivery gates still open.
+
+R03 Completed Pass for executable/source/report/hygiene gates — artifact-final.log scans61407 index paths, source/report whitespace clean; full raw-log whitespace scan reports ONLY two terminal blank EOF lines in focused.log/related.log (whitespace-check.json), preserved rather than rewriting raw output. No material source/report finding.
