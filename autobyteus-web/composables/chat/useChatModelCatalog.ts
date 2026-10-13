@@ -86,7 +86,8 @@ export interface ChatModelGroup {
 }
 
 /**
- * Menu data for the Chat model menu: runtime availability (fetched once), per-runtime
+ * Menu data for the Chat model menu: runtime availability (loaded once; unavailable runtimes
+ * re-checked on each open), per-runtime
  * catalogs loaded on demand and cached by the provider store, and cross-runtime search
  * over enabled runtimes (catalogs load on the first search keystroke; RSK-001).
  */
@@ -104,7 +105,18 @@ export function useChatModelCatalog() {
 
   const enabledRuntimeKinds = computed(() => runtimes.value.filter((runtime) => runtime.enabled).map((runtime) => runtime.runtimeKind))
 
-  const ensureAvailability = () => availability.fetchRuntimeAvailabilities().catch(() => undefined)
+  /**
+   * Loads availability once; on later calls (each menu open) re-checks only the runtimes
+   * currently shown as unavailable, so a runtime fixed meanwhile (e.g. signed in) becomes usable
+   * without reloading. A row keeps its last state until its re-check answers.
+   */
+  const ensureAvailability = async (): Promise<void> => {
+    const recheck = availability.availabilities.filter((row) => !row.enabled).map((row) => row.runtimeKind)
+    await Promise.all([
+      availability.fetchRuntimeAvailabilities().catch(() => undefined),
+      ...recheck.map((runtimeKind) => availability.fetchRuntimeAvailability(runtimeKind, true).catch(() => undefined)),
+    ])
+  }
 
   const catalogState = (runtimeKind: string): ChatCatalogState => catalogs.catalogSnapshot(runtimeKind).state
 

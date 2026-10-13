@@ -20,8 +20,13 @@ vi.mock('~/stores/llmProviderConfig', () => ({
     modelConfigSchemaByIdentifier: () => null,
   }),
 }))
+const availability = vi.hoisted(() => ({
+  availabilities: [] as Array<{ runtimeKind: string; enabled: boolean; reason: string | null }>,
+  fetchRuntimeAvailabilities: vi.fn(async () => [] as unknown[]),
+  fetchRuntimeAvailability: vi.fn(async (_runtimeKind: string, _force?: boolean): Promise<unknown> => null),
+}))
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({
-  useRuntimeAvailabilityStore: () => ({ availabilities: [], fetchRuntimeAvailabilities: vi.fn(async () => undefined) }),
+  useRuntimeAvailabilityStore: () => availability,
 }))
 
 const withCatalog = () => {
@@ -88,5 +93,47 @@ describe('useChatModelCatalog labels (D-16)', () => {
     expect(row.get('[data-test="chat-model-option-secondary"]').text()).toBe('Opus 5.5')
     expect(row.attributes('title')).toBe('claude-opus-5-5 — Opus 5.5')
     expect(wrapper.find('[data-test="chat-model-option-haiku"] [data-test="chat-model-option-recommended"]').exists()).toBe(false)
+  })
+})
+
+describe('useChatModelCatalog availability re-check (REQ-004)', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    availability.availabilities = []
+    availability.fetchRuntimeAvailabilities.mockReset().mockResolvedValue([])
+    availability.fetchRuntimeAvailability.mockReset().mockResolvedValue(null)
+  })
+
+  it('loads availability on the first open without forcing any runtime (empty store)', async () => {
+    await withCatalog().ensureAvailability()
+    expect(availability.fetchRuntimeAvailabilities).toHaveBeenCalledTimes(1)
+    expect(availability.fetchRuntimeAvailabilities).toHaveBeenCalledWith()
+    expect(availability.fetchRuntimeAvailability).not.toHaveBeenCalled()
+  })
+
+  it('re-checks only the runtimes shown as unavailable on a later open (AC-004)', async () => {
+    availability.availabilities = [
+      { runtimeKind: 'codex_app_server', enabled: true, reason: null },
+      { runtimeKind: 'antigravity_cli', enabled: false, reason: 'Antigravity CLI is not signed in.' },
+    ]
+    await withCatalog().ensureAvailability()
+    expect(availability.fetchRuntimeAvailabilities).toHaveBeenCalledWith()
+    expect(availability.fetchRuntimeAvailability).toHaveBeenCalledTimes(1)
+    expect(availability.fetchRuntimeAvailability).toHaveBeenCalledWith('antigravity_cli', true)
+  })
+
+  it('sends no forced re-check when every runtime is available (AC-005)', async () => {
+    availability.availabilities = [
+      { runtimeKind: 'codex_app_server', enabled: true, reason: null },
+      { runtimeKind: 'antigravity_cli', enabled: true, reason: null },
+    ]
+    await withCatalog().ensureAvailability()
+    expect(availability.fetchRuntimeAvailability).not.toHaveBeenCalled()
+  })
+
+  it('swallows a failed re-check, leaving the store to keep the row unavailable', async () => {
+    availability.availabilities = [{ runtimeKind: 'antigravity_cli', enabled: false, reason: 'x' }]
+    availability.fetchRuntimeAvailability.mockRejectedValue(new Error('network'))
+    await expect(withCatalog().ensureAvailability()).resolves.toBeUndefined()
   })
 })
