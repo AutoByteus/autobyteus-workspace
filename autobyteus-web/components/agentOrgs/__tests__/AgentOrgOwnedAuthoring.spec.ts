@@ -57,13 +57,14 @@ describe('cold Org-owned authoring through real stores and Apollo', () => {
   let team: ReturnType<typeof makeTeam> | null
   let direct: ReturnType<typeof makeAgent> | null
   let exactError = false
+  let unexpectedIo: string[]
   let calls: Array<{ field: string; variables: any }>
   let heldTeamRead: (() => void) | null
   let holdTeam: boolean
   let holdCatalog: boolean
   let heldCatalog: (() => void) | null
   beforeEach(() => {
-    setActivePinia(createPinia()); org = original(); otherOrgs = []; team = makeTeam()
+    setActivePinia(createPinia()); unexpectedIo = []; org = original(); otherOrgs = []; team = makeTeam()
     io.route = reactive({ query: {} }); io.push.mockImplementation(async ({ query }) => { io.route.query = query })
     direct = makeAgent('owned-direct', 'Local direct', 'AGENT_ORG_OWNED', { ownerOrgId: org.id })
     calls = []; heldTeamRead = null; holdTeam = false; exactError = false; holdCatalog = false; heldCatalog = null
@@ -99,7 +100,7 @@ describe('cold Org-owned authoring through real stores and Apollo', () => {
           expect(Object.keys(input).sort()).toEqual(['description', 'handoffs', 'members', 'name'])
           input.members.forEach((m: any) => expect(Object.keys(m).sort()).toEqual(['memberName', 'ref', 'refScope', 'refType']))
           org = { ...org, ...input, revision: `org-rev-${Number(org.revision.slice(-1)) + 1}` }; value = org
-        } else throw new Error(`Unexpected I/O: ${field}`)
+        } else { unexpectedIo.push(field); throw new Error(`Unexpected I/O: ${field}`) }
         observer.next({ data: { [field]: structuredClone(value) } }); observer.complete()
       }
       if (holdCatalog && field === 'agentTeamDefinitions') heldCatalog = complete
@@ -107,7 +108,7 @@ describe('cold Org-owned authoring through real stores and Apollo', () => {
       else complete()
     })) })
   })
-  afterEach(() => { wrapper?.unmount(); wrapper = undefined; io.client.stop() })
+  afterEach(() => { wrapper?.unmount(); wrapper = undefined; io.client.stop(); expect(unexpectedIo).toEqual([]) })
   const open = async (view = 'org-detail') => {
     io.route.query = { view, id: org.id }
     wrapper = mount(AgentOrgExperience); await flushPromises()
