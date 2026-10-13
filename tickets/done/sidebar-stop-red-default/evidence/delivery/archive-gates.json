@@ -1,0 +1,11 @@
+{
+  "verificationBeforeArchive": true,
+  "archive": "tickets/done/sidebar-stop-red-default",
+  "crossPlatformHygiene": "Pass",
+  "licensing": "Pass",
+  "stagedWhitespace": "Pass",
+  "cumulativeWhitespace": "Pass after recorded EOF normalization",
+  "probeSyntax": "Pass",
+  "oldTaskArchiveUnchanged": true,
+  "generatedOutputsStaged": false
+}

@@ -16,39 +16,23 @@ Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitabl
 stderr | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
 Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
 
-stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
-serverStore: Initializing server config
-serverStore: Not in Electron environment. Skipping server initialization.
-
 stdout | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
 serverStore: Initializing server config
 serverStore: Not in Electron environment. Skipping server initialization.
 
- ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (17 tests) 349ms
- ✓ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts (6 tests) 842ms
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (17 tests) 311ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts (6 tests) 804ms
 stderr | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
-Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
-
-stderr | composables/__tests__/useWorkspaceHistoryMutations.spec.ts
-Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
-
-stdout | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
-serverStore: Initializing server config
-serverStore: Not in Electron environment. Skipping server initialization.
-
-stdout | composables/__tests__/useWorkspaceHistoryMutations.spec.ts
-serverStore: Initializing server config
-serverStore: Not in Electron environment. Skipping server initialization.
-
- ✓ composables/__tests__/useWorkspaceHistoryMutations.spec.ts (4 tests) 8ms
- ✓ components/workspace/history/__tests__/DelegatedStopButton.spec.ts (31 tests) 151ms
-stderr | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
 Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
 
 stderr | stores/__tests__/delegatedLaunchDraftStore.spec.ts
 Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
 
-stdout | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+stdout | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
 serverStore: Initializing server config
 serverStore: Not in Electron environment. Skipping server initialization.
 
@@ -56,11 +40,26 @@ stdout | stores/__tests__/delegatedLaunchDraftStore.spec.ts
 serverStore: Initializing server config
 serverStore: Not in Electron environment. Skipping server initialization.
 
- ✓ composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts (8 tests) 8ms
- ✓ stores/__tests__/delegatedLaunchDraftStore.spec.ts (5 tests) 10ms
+ ✓ components/workspace/history/__tests__/DelegatedStopButton.spec.ts (31 tests) 125ms
+ ✓ stores/__tests__/delegatedLaunchDraftStore.spec.ts (5 tests) 14ms
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistoryMutations.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistoryMutations.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts (8 tests) 7ms
+ ✓ composables/__tests__/useWorkspaceHistoryMutations.spec.ts (4 tests) 7ms
 
  Test Files  6 passed (6)
       Tests  71 passed (71)
-   Start at  16:09:00
-   Duration  31.32s (transform 8.09s, setup 49.55s, collect 2.17s, tests 1.37s, environment 5.46s, prepare 2.46s)
-
+   Start at  16:32:48
+   Duration  20.40s (transform 6.57s, setup 30.80s, collect 1.76s, tests 1.27s, environment 3.92s, prepare 1.70s)
