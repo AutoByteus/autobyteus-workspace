@@ -29,9 +29,17 @@ while (($#)); do case "$1" in -o) out="$2";shift 2;; https://*) url="$1";shift;;
 cp "$FIXTURE_DOWNLOADS/${url##*/}" "$out"
 ''')
             for f in bin_dir.iterdir():f.chmod(0o755)
+            binary=b'#!/bin/sh\nprintf "%s\\n" "$1" >> "$HOME/invocations"\n'
+            if variant=='permissions':
+                binary=b'''#!/bin/sh
+set -eu
+printf '%s\n' "$1" >> "$HOME/invocations"
+export NFS_PERMISSION_PHASE="$1"
+exec "$NFS_DIRECTORY_TEST_BINARY" -test.run '^TestInstallerDirectoryModeChild$' -test.v
+'''
             archive=downloads/'autobyteus-nfs-0.0.0-fixture-darwin-arm64.tar.gz'
             with tarfile.open(archive,'w:gz') as tar:
-                for name,content in [('LICENSE',b'fixture'),('THIRD_PARTY_NOTICES',b'fixture'),('release.json',b'{}'),('autobyteus-nfs',b'#!/bin/sh\nprintf "%s\\n" "$1" >> "$HOME/invocations"\n')]:
+                for name,content in [('LICENSE',b'fixture'),('THIRD_PARTY_NOTICES',b'fixture'),('release.json',b'{}'),('autobyteus-nfs',binary)]:
                     info=tarfile.TarInfo(name);info.size=len(content);info.mode=0o755 if name=='autobyteus-nfs' else 0o644
                     if variant=='symlink' and name=='autobyteus-nfs':info.type=tarfile.SYMTYPE;info.linkname='/bin/false';info.size=0
                     tar.addfile(info,io.BytesIO(content) if info.isreg() else None)
@@ -41,13 +49,20 @@ cp "$FIXTURE_DOWNLOADS/${url##*/}" "$out"
             (downloads/'SHA256SUMS-nfs').write_text(checksum+'  '+archive.name+'\n')
             (downloads/'autobyteus-nfs-manifest.json').write_text('{}')
             env={'PATH':str(bin_dir)+':/usr/bin:/bin','HOME':str(home),'TMPDIR':root,'FIXTURE_DOWNLOADS':str(downloads)}
-            result=subprocess.run(['/bin/bash',str(installer),'version'],env=env,text=True,capture_output=True)
+            if variant=='permissions':
+                env['NFS_DIRECTORY_TEST_BINARY']=os.environ['NFS_DIRECTORY_TEST_BINARY']
+            action='create' if variant=='permissions' else 'version'
+            result=subprocess.run(['/bin/bash',str(installer),action],env=env,text=True,capture_output=True)
             self.assertEqual(list(p.glob('autobyteus-nfs-install.*')),[], 'download scratch leaked')
             self.assertFalse((p/'outside').exists())
-            if variant=='valid':
-                self.assertEqual(result.returncode,0,result.stderr)
-                self.assertEqual((home/'invocations').read_text(),'verify-release\nversion\n')
+            if variant in ['valid','permissions']:
+                self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+                self.assertEqual((home/'invocations').read_text(),'verify-release\n'+action+'\n')
                 self.assertTrue((home/'.local/bin/autobyteus-nfs').is_symlink())
+                if variant=='permissions':
+                    self.assertIn('private=0700 public/exec/parents=0755 descriptor=0644',result.stdout)
+                    self.assertEqual((home/'.local/lib').stat().st_mode & 0o777,0o700)
+                    print(result.stdout)
             else:
                 self.assertNotEqual(result.returncode,0,result.stderr)
                 self.assertFalse((home/'invocations').exists())
@@ -58,5 +73,7 @@ cp "$FIXTURE_DOWNLOADS/${url##*/}" "$out"
     def test_corrupt_or_unsafe_archive_never_executes(self):
         for case in ['checksum','symlink','extra']:
             with self.subTest(case=case):self.run_fixture(case)
+    @unittest.skipUnless(os.environ.get('NFS_DIRECTORY_TEST_BINARY'), 'invoked by Go platform bootstrap regression')
+    def test_directory_modes_with_go_fixture(self):self.run_fixture('permissions')
 
 if __name__=='__main__':unittest.main()

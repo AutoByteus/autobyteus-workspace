@@ -69,15 +69,24 @@ func TrustedPath(p string, directory bool) error {
 
 // RootDirectory never chmods/adopts an existing unsafe directory.
 func RootDirectory(p string, mode os.FileMode) error {
+	return rootDirectory(p, mode, TrustedPath)
+}
+
+func rootDirectory(p string, mode os.FileMode, trusted func(string, bool) error) error {
 	if _, err := os.Lstat(p); os.IsNotExist(err) {
-		if err := RootDirectory(filepath.Dir(p), 0755); err != nil {
+		if err := rootDirectory(filepath.Dir(p), 0755, trusted); err != nil {
 			return err
 		}
 		if err := os.Mkdir(p, mode); err != nil {
 			return err
 		}
+		// mkdir honors the inherited installer/sudo umask. Set the intended
+		// final mode only on the directory we just created under a trusted parent.
+		if err := os.Chmod(p, mode); err != nil {
+			return err
+		}
 	} else if err != nil {
 		return err
 	}
-	return TrustedPath(p, true)
+	return trusted(p, true)
 }
