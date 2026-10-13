@@ -93,7 +93,7 @@ const mountShell = (pinia: any, width: number, height: number, realMonitor = fal
     viewportWidth: viewport.value.width, viewportHeight: viewport.value.height,
     leftPanelPreference: 'visible', leftPanelPreferredWidth: 320,
     rightPanelPreference: right.isRightPanelVisible.value ? 'visible' : 'hidden-by-user',
-    rightPanelPreferredWidth: right.rightPanelWidth.value, rightPanelResizeIntent: right.rightPanelResizeIntent.value,
+    rightPanelPreferredWidth: right.preferredRightPanelWidth.value, rightPanelResizeIntent: right.rightPanelResizeIntent.value,
   }));
   let reveal!: WorkspaceToolReveal;
   const result = ref('');
