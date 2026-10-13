@@ -1,0 +1,9 @@
+{
+  "initialCachedDiffCheck": "Fail before final commit; integrated-repository.log:577 new blank line at EOF",
+  "owner": "Delivery generated log only",
+  "correction": "EOF blank tail trimmed; all non-tail bytes/assertions/results preserved",
+  "path": "tickets/done/workspaces-sidebar-dock/evidence/delivery/integrated-repository.log",
+  "beforeSha256": "5a02cc59d179cc03df4f75263f0333954b8aa224f99b2dfafb087f87014a6829",
+  "afterSha256": "cfca53b18a85998513a8600cbc8e6002bca624ee6760d2cc5c87571197d5a600",
+  "sourceTestScreenshotChanges": false
+}

@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "1262714f6494a1292b69bda1f0cda02f2c2f1014",
+  "baseCommit": "d9bccf2550b918ab138e30486ef4dbf1d5e9d1ff",
+  "branch": "codex/workspaces-sidebar-dock",
+  "packageVersion": "1.5.3-beta.3",
+  "files": {
+    "autobyteus-web/utils/layout/responsiveLayoutPolicy.ts": {
+      "sha256": "2b1cda4cc457ca737ffe53ecd2e5a4d7f0fe1b0fb0c002b0690de6d6a76d242e",
+      "nonEmptyLines": 497
+    },
+    "autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts": {
+      "sha256": "13cffe24df25d19d50aaed06e4e89a3ddbfe0b5e071e7feb2aadc444ac0293e6",
+      "nonEmptyLines": 43
+    }
+  },
+  "nativeValidation": "not run",
+  "deployment": "none"
+}

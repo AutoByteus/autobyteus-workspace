@@ -1,0 +1,41 @@
+// Temporary implementation preview driver, not downstream E2E sign-off.
+import {createRequire} from 'node:module'; import fs from 'node:fs/promises';
+const require=createRequire(process.cwd()+'/autobyteus-web/package.json'); const {chromium}=require('playwright-core');
+const out=process.argv[2]; await fs.mkdir(out,{recursive:true}); const events=[],ops=[];
+const browser=await chromium.launch({headless:true,executablePath:'/usr/bin/chromium',chromiumSandbox:true});
+try {
+ const page=await browser.newPage({viewport:{width:1440,height:800}});
+ page.on('pageerror',e=>events.push({type:'pageerror',text:e.message})); page.on('console',m=>{if(m.type()==='error')events.push({type:'console',text:m.text()})});
+ await page.routeWebSocket(/\/ws\//, ws=>ws.send(JSON.stringify({type:'connected'})));
+ await page.route('**/rest/health',r=>r.fulfill({json:{status:'ok'}}));
+ await page.route('**/graphql',async r=>{const p=r.request().postDataJSON()??{}; ops.push(p.operationName);const q=p.query??'';let data;
+ if(p.operationName==='ListWorkspaceRunHistory')data={listWorkspaceRunHistory:[]};
+ else if(p.operationName==='ListCollaborationRootHistory')data={listCollaborationRootHistory:[]};
+ else if(p.operationName==='GetAgentOrgDefinitions')data={agentOrgDefinitions:[]};
+ else if(q.includes('agentDefinitions'))data={agentDefinitions:[]};
+ else if(q.includes('agentTeamDefinitions'))data={agentTeamDefinitions:[]};
+ else if(q.includes('applicationsCapability'))data={applicationsCapability:{enabled:false,scope:'BOUND_NODE',settingKey:'ENABLE_APPLICATIONS',source:'INITIALIZED_EMPTY_CATALOG'}};
+ else if(q.includes('skillImprovementCapability'))data={skillImprovementCapability:{enabled:false,settingKey:'ENABLE_SKILL_IMPROVEMENT',source:'INITIALIZED_EMPTY_CATALOG'}};
+ else if(q.includes('serverSettings'))data={serverSettings:[]};
+ else if(q.includes('workspaces'))data={workspaces:[]};
+ else if(q.includes('getRunFileChanges'))data={getRunFileChanges:[]};
+ else if(q.includes('runHistory'))data={runHistory:[]};
+ else data={};
+ await r.fulfill({json:{data}});
+ });
+ const port=(await fs.readFile('tickets/in-progress/workspaces-sidebar-dock/evidence/preview/port','utf8')).trim();
+ await page.goto(`http://127.0.0.1:${port}/implementation-shell-preview`);
+ await page.waitForFunction(()=>!!window.__layoutPreview); await page.waitForTimeout(10000);
+ await page.reload(); await page.waitForFunction(()=>!!window.__layoutPreview); await page.waitForTimeout(1500);
+ const warmupEvents=events.splice(0);
+ const capture=async name=>{const s=await page.evaluate(()=>{const rect=sel=>{const el=document.querySelector(sel);if(!el)return null;const r=el.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,right:r.right}};return {viewport:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio},state:window.__layoutPreview.state(),left:rect('[data-test="app-left-panel-shell"]'),drawer:rect('[data-test="app-left-navigation-drawer"]'),backdrop:rect('[data-test="app-left-drawer-backdrop"]'),center:rect('[data-test="workspace-center-pane"]'),right:rect('[data-test="workspace-right-panel"]')}});await fs.writeFile(`${out}/${name}.json`,JSON.stringify(s,null,2));await page.screenshot({path:`${out}/${name}.png`});return s};
+ await capture('initial');
+ await page.locator('[data-test="app-left-panel-collapse"]').click(); await page.waitForTimeout(350);
+ const h=await page.locator('[data-test="workspace-right-resize-handle"]').boundingBox();
+ await page.mouse.move(h.x+2,h.y+150);await page.mouse.down();await page.mouse.move(260,h.y+150,{steps:15});await page.mouse.up();await page.waitForTimeout(500);
+ await capture('collapsed-dragged');
+ await page.locator('[data-test="workspace-left-strip-workspaces"]').click(); await page.waitForTimeout(400);
+ await capture('workspaces-open');
+ console.log(JSON.stringify({browser:browser.version(),warmupEvents,events,ops}));
+ await fs.writeFile(`${out}/browser.json`,JSON.stringify({browser:browser.version(),warmupEvents,events,ops},null,2));
+} finally {await browser.close();}

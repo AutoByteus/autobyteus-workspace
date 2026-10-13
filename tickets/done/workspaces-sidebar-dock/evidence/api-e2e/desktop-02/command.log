@@ -1,0 +1,24 @@
+{
+  "result": "Fail",
+  "error": {
+    "message": "cdpSession.send: Protocol error (Browser.getWindowForTarget): 'Browser.getWindowForTarget' wasn't found",
+    "stack": "cdpSession.send: Protocol error (Browser.getWindowForTarget): 'Browser.getWindowForTarget' wasn't found\n    at /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/desktop-journey.mjs:63:28"
+  },
+  "cleanup": {
+    "stop": {
+      "instanceId": "iso-37305-b236",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-z8GcGn",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "list": {
+      "instances": []
+    },
+    "error": "Owned ports not free"
+  },
+  "evidence": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/desktop-02/evidence.json"
+}

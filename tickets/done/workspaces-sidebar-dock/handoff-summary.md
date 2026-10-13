@@ -1,0 +1,23 @@
+# Handoff Summary — workspaces-sidebar-dock
+
+## Current delivery / approval
+DR-002, **source-only verification complete; repository finalization/cleanup in progress**, not yet Delivery Completed or Terminal. R2 Approved / SR-003; technical design SR-002 unchanged. Medium / Low / Direct Low-Risk. R1/SR-001, IR-001, API-REV-001 (95%) and DR-001 history preserved. Independent architecture/source/test review and Product supplements **N/A — not applicable**.
+
+User replied **“continue”** immediately to Solution Designer's explicit repository-only/no release/update/restart proposal; exact authority [solution-acceptance-r2.md](evidence/solution-acceptance-r2.md), current requirements REQ-005/AC-007/ASM-001 and solution-delivery-continuation.md. Affected client/OS/version/backend8001 relationship remains **Unconfirmed**; installed/macOS verification **Deferred — user-approved source-only**, not Passed/Updated. No publication/install/restart authority. Default **No release**.
+
+## Cause / source result
+Old prospective fit held the previous measured right width immutable, producing an inappropriate Workspaces drawer/scrim. Existing policy now allocates candidate-relative right width for fit/redock/render, with provider raw preference. Temporary reallocation preserves width/intent; true capacity/narrow/short drawers and route/selection/data owners remain unchanged. Canonical layout docs updated: raw/effective/measurement owners and conditional930 user-sized/1210 automatic bounds. No cosmetic scrim suppression or forced-dock path.
+
+## Verification / integration
+Production/test1262714f6494a1292b69bda1f0cda02f2c2f1014; durable coverage6bb3c822c13a82815f70c279866ab5afbe959fbd. First Delivery integrated origin/personal e22245f097c208e66065302cfc30814cc5ffd14f at4127815cd5383e055ff430674691e59f47742238 before docs; no conflicts. Relevant15suites146tests and integrated browser4/4,85records/59screenshots,52hits/26focus/26tab effects pass with zero errors. Primary evidence directly opened/asserted, old-source negative/restoration verified. Current [verification-r2.json](evidence/delivery/verification-r2.json) rechecks primary results/source hashes and acceptance. Fresh target remains e22245f09; acceptance-only solution commit9e270f51f adds no product delta, so no source test/implementation/review replay needed.
+
+Native evidence is precisely actual changed-source Linux ARM64 beta.3/Electron42.4.1, not an integrated beta.4 package or user's installed binary. Real Alpha→Beta→Alpha exact conversations,3cycles and native700→1440 recovery; actual public API/WS/delegation/persistence and exact before/after documents/Task root/status/conversations/3runtime PID-start identities unchanged. External inference only scripted. Source AC-001–006 proven; R2 AC-007 accepts source-only completion once actual repository/cleanup gates pass.
+
+## Finalization / cleanup
+Target origin/personal, no-ff isolated finalization under RELEASE.md; never shared checkout. Archive/push/target merge/push/owned worktree and branch cleanup unfinished at this report state. No release/version bump/tag/deployment/install/update/8001 request or service restart. No persisted transition/reset/migration. All prior test-owned resources plus Delivery probe cleaned; generated application SDK dist excluded from staging and removed only with task-worktree cleanup.
+
+Durable post-cleanup package will be `/home/autobyteus/workspace/.codex/delivery-records/workspaces-sidebar-dock/package/tickets/done/workspaces-sidebar-dock`; canonical repository archive `tickets/done/workspaces-sidebar-dock/`. This future path is not yet a completed export. Current report/revision and actual receipts govern completion. Original absolute execution paths become historical after cleanup; artifact-location-map.md maps final custody.
+
+## Cumulative package and follow-up
+requirements-doc.md, investigation-notes.md, design-spec.md, solution-revision-record.md, solution-handoff.md (historical initial), solution-delivery-continuation.md, exact R2 acceptance, implementation-handoff.md, implementation-revision-record.md, api-e2e-coverage-investigation.md, api-e2e-execution-coverage-report.md (AC proof index), api-e2e-revision-record.md, api-e2e-test-case-ledger.md, complete evidence/, docs-sync-report.md, this summary, release-deployment-report.md, delivery-revision-record.md. Original screenshot references retained upstream.
+Compact-header crowding at approved200px center stays separate polish context for Tasks owner, not expanded source scope. Original Project Task Manager Terminal destination remains in solution package; Designer verifies completed Delivery receipt before forwarding. Do not mark Task DONE from resumed acceptance alone.

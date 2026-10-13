@@ -1,0 +1,19 @@
+{
+  "result": "Fail",
+  "cases": {
+    "BR-001": {
+      "result": "Fail",
+      "name": "Wide Team/Activity actual pointer drag, three cycles and meaningful controls",
+      "error": "1000-teamMembers-intermediate\n\n'strip' !== 'docked'\n",
+      "stack": "AssertionError [ERR_ASSERTION]: 1000-teamMembers-intermediate\n\n'strip' !== 'docked'\n\n    at docked (file:///home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/tests/e2e/workspaces-sidebar-dock-probe.mjs:149:12)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/tests/e2e/workspaces-sidebar-dock-probe.mjs:181:21\n    at async scenario (file:///home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/tests/e2e/workspaces-sidebar-dock-probe.mjs:59:5)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/tests/e2e/workspaces-sidebar-dock-probe.mjs:176:3"
+    }
+  },
+  "cleanup": {
+    "routeRemoved": true,
+    "privateHomeRemoved": true,
+    "nuxtExit": 0,
+    "portFree": true,
+    "browserClosed": true
+  },
+  "evidence": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/browser-old-source/evidence.json"
+}

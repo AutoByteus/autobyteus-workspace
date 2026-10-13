@@ -1,0 +1,111 @@
+{
+  "integrationSource": "4127815cd5383e055ff430674691e59f47742238",
+  "sourceBehaviorEvidence": "Sufficient",
+  "sourceBehaviorVerification": "Passed",
+  "fullDeliveryVerification": "Open — affected user client/platform/version/backend connection and user-only acceptance scope unresolved; direct question submitted",
+  "apiConfidence": 95,
+  "taskSize": "Medium",
+  "architecturalRisk": "Low",
+  "route": "Direct Low-Risk",
+  "recheckedBrowser": {
+    "result": "Pass",
+    "cases": 4,
+    "snapshotRecords": 85,
+    "screenshots": 59,
+    "hitAssertions": 52,
+    "composerFocusEffects": 26,
+    "tabClickEffects": 26,
+    "browserErrors": [],
+    "warmupErrors": [],
+    "cleanup": {
+      "routeRemoved": true,
+      "privateHomeRemoved": true,
+      "nuxtExit": 0,
+      "portFree": true,
+      "browserClosed": true
+    }
+  },
+  "negativeRegressionDiscriminator": {
+    "result": "Expected original-source failure; current restored",
+    "oldSource": "1000-teamMembers-intermediate\n\n'strip' !== 'docked'\n"
+  },
+  "nativeJourney": {
+    "source": "9848d80eec3f522e4a3b06d2a2834c294d023c1b",
+    "result": "Pass",
+    "beforeAfterEqual": true,
+    "ownedRuntimeIdentities": 3,
+    "nativeResizes": [
+      {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      {
+        "width": 700,
+        "height": 900,
+        "dpr": 1
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      }
+    ],
+    "build": {
+      "executableSha256": "23e010547985b386ee3fe4a311949a5dbecf5eeb41cbf8427b8a61cdf69840cb",
+      "serverEntrySha256": "e8229f8dcdd4d4109310653c20851ac9b293d42190efc9a7a949779a0c752fc4",
+      "currentServerEntrySha256": "e8229f8dcdd4d4109310653c20851ac9b293d42190efc9a7a949779a0c752fc4",
+      "appAsarSha256": "46c3448ee90bcaf6607ff6cd1bcdce99bb0bdb41c27dd08657af5ae5ec5119dd"
+    },
+    "version": "1.5.3-beta.3",
+    "embeddedServerCurrentEntryEqual": true,
+    "cleanup": {
+      "stop": {
+        "instanceId": "iso-33485-2309",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-ZYsZtc",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      },
+      "list": {
+        "instances": []
+      }
+    },
+    "limits": "Linux ARM64 current changed source, not affected macOS/installed binary; external inference scripted only"
+  },
+  "acceptance": {
+    "AC-001": "Source proven: actual policy + Team/Activity browser rectangles, dock/no scrim and real pointer effects",
+    "AC-002": "Source proven: exact930/1130 neighbors and1210 automatic floor, 260/320/520 unit bounds",
+    "AC-003": "Source proven:3cycles per width/tab, retained raw preference/intent/draft/context and settled shell, native3cycles",
+    "AC-004": "Source proven: narrow to wide removes drawer/backdrop and stale focus trap; native700 to1440",
+    "AC-005": "Source proven:767/768/700/short480 browser modal, forward/reverseTab/Escape/focus/backdrop checks and adjacent lifecycle tests",
+    "AC-006": "Source proven: real desktop Alpha→Beta→Alpha exact message feed, real stored conversations/documents/Task root/status/3runtime PID+start unchanged; no user data used",
+    "AC-007": "Partial: current source/build/execution/cleanup/durable evidence recorded, integrated source separately verified; affected client confirmation and delivery/finalization still open"
+  },
+  "readEvidence": [
+    "api-e2e-execution-coverage-report.md",
+    "evidence/api-e2e/browser-final/evidence.json",
+    "evidence/api-e2e/browser-old-source/evidence.json",
+    "evidence/api-e2e/desktop-06/evidence.json",
+    "evidence/api-e2e/build.log",
+    "evidence/api-e2e/source-identity.json",
+    "evidence/api-e2e/regression-restoration.json",
+    "evidence/api-e2e/environment-cleanup.json",
+    "evidence/api-e2e/isolated-list-final.json",
+    "evidence/preview/baseline-clean/browser.json",
+    "evidence/delivery/integrated-repository.log",
+    "evidence/delivery/browser-integrated/evidence.json"
+  ],
+  "screenshotsViewed": [
+    "evidence/api-e2e/browser-old-source/1000-teamMembers-intermediate.png",
+    "evidence/api-e2e/browser-final/1000-teamMembers-max-0.png",
+    "evidence/api-e2e/desktop-06/desktop-docked-0.png",
+    "evidence/api-e2e/desktop-06/desktop-narrow.png"
+  ],
+  "dataTransition": "Not affected; no reset/migration authorized",
+  "liveApp8001InstalledClientTouched": false,
+  "furtherApiEvidenceNeeded": false
+}
