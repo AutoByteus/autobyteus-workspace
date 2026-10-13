@@ -111,3 +111,8 @@ No user application/data/config/credentials touched, paid/local model inference,
 
 ## Historical API round-1 outcome
 API-REV-001 Fail84.29% and its evidence/112k-line raw logs remain immutable in api-e2e-evidence/api-rev-001 and revision history. Initial native errors were not filtered and were properly returned for origin review. Initial fixture/selector/readiness/field-name fixes are indexed in the prior ledger/history; CRR-001 narrowed the remaining capacity origin, this round corrected it. No historical failed case silently reclassified as a past Pass.
+
+## Completed rule evaluation / result return
+- Canonical round2 evidence/report/history committed37fc57a93. Reporting-only receipt index follows; source/probe/package and retained binary unchanged.
+- Post-completion get_handoff_rules returned4 conditions. Large/High successful-test route does not match retained Small/Low; failure and pre-execution upstream-gap routes do not match Pass. Direct-low-risk Delivery route requires no pending required durable review and a Delivery-ready package; CRR-001's explicit separate post-API-owned-fix cumulative test-review gate remains pending, so those prerequisites are not satisfied. No recovery-specific Pass rule returned.
+- Therefore no rule fully matches this returned recovery outcome. Apply no-matching-rule caller contract: return **Pass + requested separate proportional durable-test review** only to requesting exact caller **/software_engineering_team/code_reviewer**. Do not change classification or duplicate-forward to Delivery. Reviewer may produce the appropriate separate Pass/Fail/Not Applicable result under its workflow; no such result invented here. Tool receipt, not this prose, proves delivery.
