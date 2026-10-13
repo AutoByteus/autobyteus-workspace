@@ -231,6 +231,22 @@ conversation:
   board with its search kept, and **Open in Projects** opens the full Task page,
   where editing stays.
 
+### Delegated Team disclosure under Agent runs
+
+Teams beneath a standalone Agent run, including Project Task Manager, start
+collapsed. Startup/restart, selecting the host, collaboration refresh/reconnect,
+and newly appearing Teams do not automatically show their members. Team rows
+and Task summaries remain available while collapsed.
+
+The disclosure button opens or closes only that exact Team execution, without
+selecting it. Activating its row (click, Enter or Space) toggles that Team and
+selects its coordinator; member rows select the exact member conversation.
+Choices are independent across copies and hosts and survive same-session
+refresh/reselection, but reset after the frontend session restarts. Opening an
+explicit [Task root](#task-root-line) still reveals its target Team, not siblings.
+Collapsing is presentation only: it never stops workers or changes Task status.
+This default does not change Agent Team or Agent Org root disclosure policies.
+
 ### Task summaries in the Workspaces tree
 
 Under Agent runs (`AgentRunTaskRows`) and Team runs

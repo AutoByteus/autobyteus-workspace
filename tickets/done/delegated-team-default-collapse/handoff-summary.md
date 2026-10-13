@@ -1,0 +1,18 @@
+# Delivery Handoff Summary — DR-002 (verified, finalization in progress)
+
+Package delegated-team-default-collapse / project_task_394f7ced-6597-41e8-824a-e2140c35b743. Small / Low Direct Low-Risk retained. Approved REQ-B1/DS-B1 SR-001/002; IR-001; API-REV-002 Pass95.71%; CRR-002 proportional durable-test Pass. Initial architecture/source reviews N/A; CRR-001 remains historical failure-origin report.
+
+**Verified from evidence — source finalization in progress; NOT Delivery Completed yet.**
+User directed: “do you have enough evidence, if yes. then finalize no need to release a new version”. No release/version bump/tag/deploy. This is not a claimed user runtime/test receipt.
+
+Fix: remove implicit default Team opening in standalone Agent-run collaboration publication/new-team arrival. Explicit exact-host/team disclosure survives refresh/reselection; fresh frontend sessions start closed. Coordinator/member/Task-root target-only navigation, ongoing work, Tasks and conversations preserved. Team/Org root policies and complete child hydration unchanged.
+
+Critical AC-001..006 were judged directly in raw native/API/WS/DOM/conversation/preservation/restart evidence and screenshots, not just summary Pass. Seven six-member copies/second-host isolation/keyboard/draft/live/closure covered; final native restart8 Teams closed; zero failed requests/errors. 95.71% technical confidence and all category scores meet target. `verification-record.md` plus `delivery-evidence/dr-002/verification-judgement.json` closes the former workflow-only user hold under updated skill. No mandatory user recheck; exact user platform unconfirmed.
+
+Integrated c0a4c04af against a609de982;15 files/89 tests and all three guards Pass. Post-verification fetch unchanged: no rerun/reintegration needed. Native binary predates the independent incoming definition diagnostic selections; unchanged collapse hashes plus relevant integrated rerun used, not a fabricated new native-package run.
+
+Initial rows49→7;42 projections+42 artifacts per complete inspection unchanged, repeated inspection observed. Comparable browser baseline/changed3 cold/3 warm and separate native changed measurements retained. No speedup/user-wait cause/SLA/native baseline claim. Eager hydration remains an investigation candidate, not an authorized defect/refactor. Test-private512MiB capacity resolved canonical native worker exhaustion; normal native sandbox and parent security preserved, no global minimum inferred.
+
+Authoritative cumulative ticket package is being archived to tickets/done/delegated-team-default-collapse in the assigned worktree. It contains requirements/investigation/design/solution history/handoff; implementation handoff/history/checks; historical failure-origin report/reviewer history/separate successful durable-test review; coverage investigation/execution/history/ledger/raw evidence; docs-sync/handoff/release-deployment/delivery history/verification/release notes/delivery evidence. Product/UIUX and initial independent reviews N/A. Durable probe remains autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs, discoverable by package command.
+
+Finalization target origin/personal; ticket branch requirements/delegated-team-default-collapse. Await actual ticket push/--no-ff target merge/guarded push, then only owned worktree/branches/build-output cleanup. Shared main checkout, unrelated worktrees, user data/config/keys/runtime remain untouched. Durable final artifact location and actual terminal commits will be recorded after those actions, before successful rule-routed return to Solution Designer.
