@@ -1,3 +1,9 @@
+import { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext';
+import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture';
+import { AgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationContext';
+import { agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture';
+import { createAgentContext } from '~/services/agentOrgExecution/agentOrgMemberContextFactory';
+import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import type { TokenUsageRunSummaryDto } from '@autobyteus/team-stream-contracts';
@@ -707,5 +713,68 @@ describe('live-only exact AgentRun throughput admission', () => {
     expect(store.getRunThroughput('run-1')).toBeNull();
     expect(store.applyTeamTokenUsage('team', 'wrong', buildTeamPayload('member'))).toBe(false);
     expect(store.getRunThroughput('wrong')).toBeNull();
+  });
+});
+
+// TPS-ATTRIBUTION / AC-002: enter actual exact-identity context owners, not just projection helpers.
+describe('throughput through real Org and collaboration context admission', () => {
+  beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks(); });
+  const launch = { runtimeKind: 'codex_app_server' as const, llmModelIdentifier: 'configured-alias',
+    llmConfig: null, autoExecuteTools: false, workspaceRootPath: null };
+  const entries = (statuses: readonly { agent_run_id: string; member_address: string }[]) => statuses.map(row => ({
+    agentRunId: row.agent_run_id, memberAddress: parseAgentTeamAddress(row.member_address),
+    context: createAgentContext({ agentRunId: row.agent_run_id, address: parseAgentTeamAddress(row.member_address),
+      agentDefinitionId: 'test-definition', launch }, '2026-10-13T10:00:00Z', null),
+  }));
+  const event = (runId: string, address: string, revision: number, output: number) => {
+    const { agent_run_id, change_sequence, ...payload } = buildTeamPayload(runId, {
+      usage_event_id: `${runId}-${revision}`, idempotency_key: `${runId}-${revision}`, turn_id: 'turn',
+      model_identifier: `reported-${runId}`,
+      observed_at: `2026-10-13T10:00:${revision === 1 ? '00' : '10'}.000Z`,
+      meter_delta_output_tokens: output,
+      run_summary_after_event: buildSummaryDto({ run_id: runId, revision, usage_report_count: revision }),
+    });
+    return { kind: 'agent_presentation' as const, agent_run_id: runId, member_address: address,
+      message: { type: 'TOKEN_USAGE_UPDATED' as const, payload } };
+  };
+  it('keeps four Org target kinds and same-address task copies distinct through sequenced reports', () => {
+    const view = taskBearingView();
+    const org = new AgentOrgExecutionContext({ orgRunId: 'org-run', view, entries: entries(view.agent_statuses) });
+    const subjects = [
+      ['agent-director', '/director', 'agent_org_direct_agent'],
+      ['agent-lead-configured', '/team/lead', 'agent_org_team_member'],
+      ['agent-worker-task', '/worker', 'agent_org_task_agent'],
+      ['agent-task-lead', '/team/lead', 'agent_org_task_team_member'],
+    ];
+    let sequence = view.base_change_sequence;
+    for (const revision of [1, 2]) for (const [index, [id, address]] of subjects.entries()) {
+      expect(org.applyEvent(++sequence, event(id!, address!, revision, (index + 1) * 100))).toBe('applied');
+    }
+    const meter = useTokenUsageMeterStore();
+    for (const [index, [id, , kind]] of subjects.entries()) {
+      org.select({ kind: 'agent_execution', agentRunId: id! });
+      const selected = org.selectedTarget()!;
+      expect(selected.kind).toBe(kind);
+      expect(meter.getRunThroughput(selected.context.state.runId)).toMatchObject({ status: 'ready',
+        tokensPerSecond: (index + 1) * 10, identity: { runId: id, modelIdentifier: `reported-${id}`, runtimeKind: 'codex_app_server' } });
+    }
+    expect(meter.getRunThroughput('org-run')).toBeNull();
+    expect(() => org.applyEvent(++sequence, event('agent-task-lead', '/director', 3, 9999))).toThrow(/identity/);
+    expect(meter.getRunThroughput('agent-task-lead')).toMatchObject({ tokensPerSecond: 40 });
+  });
+  it('routes hosted Agent and Team calls without attributing children to their standalone host', () => {
+    const view = agentRootView();
+    const root = new AgentRunCollaborationContext({ hostRunId: 'host-run', view, entries: entries(view.agent_statuses) });
+    let sequence = view.base_change_sequence;
+    const subjects = [['cua-run', '/computer_use_agent'], ['pp-run', '/product_team/prototyper']];
+    for (const revision of [1, 2]) for (const [index, [id, address]] of subjects.entries()) {
+      expect(root.applyEvent(++sequence, event(id!, address!, revision, (index + 1) * 200))).toBe('applied');
+    }
+    const meter = useTokenUsageMeterStore();
+    for (const [index, [id]] of subjects.entries()) expect(meter.getRunThroughput(root.getAgentContext(id!)!.state.runId))
+      .toMatchObject({ tokensPerSecond: (index + 1) * 20, identity: { runId: id, modelIdentifier: `reported-${id}` } });
+    expect(meter.getRunThroughput('host-run')).toBeNull();
+    expect(() => root.applyEvent(++sequence, event('host-run', '/research_assistant', 1, 9999))).toThrow(/identity/);
+    expect(meter.getRunThroughput('host-run')).toBeNull();
   });
 });

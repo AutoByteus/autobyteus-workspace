@@ -87,7 +87,8 @@
     "test:e2e:workspace-folder-picker": "node tests/e2e/workspace-folder-picker-probe.mjs",
     "test:e2e:composer-context-file-removal": "node tests/e2e/composer-context-file-removal-probe.mjs",
     "test:e2e:delegated-team-default-collapse": "node tests/e2e/delegated-team-default-collapse-probe.mjs",
-    "test:e2e:workspaces-sidebar-dock": "node tests/e2e/workspaces-sidebar-dock-probe.mjs"
+    "test:e2e:workspaces-sidebar-dock": "node tests/e2e/workspaces-sidebar-dock-probe.mjs",
+    "test:e2e:token-meter-tps": "node tests/e2e/token-meter-tps-probe.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
