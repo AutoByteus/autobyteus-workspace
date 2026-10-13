@@ -22,7 +22,9 @@
           "run_bash"
         ]
       },
-      "same_three_hashes": true
+      "same_three_hashes": true,
+      "writer_node": "ab-sf-fr009-e70d3907-app-a",
+      "reader_editor_node": "ab-sf-fr009-e70d3907-app-b"
     },
     {
       "pair": "pair2",
@@ -48,7 +50,9 @@
           "Read"
         ]
       },
-      "same_three_hashes": true
+      "same_three_hashes": true,
+      "writer_node": "ab-sf-fr009-e70d3907-app-a",
+      "reader_editor_node": "ab-sf-fr009-e70d3907-app-b"
     },
     {
       "pair": "pair3",
@@ -70,7 +74,9 @@
           "run_bash"
         ]
       },
-      "same_three_hashes": true
+      "same_three_hashes": true,
+      "writer_node": "ab-sf-fr009-e70d3907-app-a",
+      "reader_editor_node": "ab-sf-fr009-e70d3907-app-b"
     },
     {
       "pair": "pair4",
@@ -99,7 +105,9 @@
           "Read"
         ]
       },
-      "same_three_hashes": true
+      "same_three_hashes": true,
+      "writer_node": "ab-sf-fr009-e70d3907-app-a",
+      "reader_editor_node": "ab-sf-fr009-e70d3907-app-b"
     }
   ],
   "core_stages_passed": 16,
@@ -112,5 +120,6 @@
     1.039
   ],
   "cleanup_all_rounds_verified": true,
-  "obvious_provider_secret_values_found": false
+  "obvious_provider_secret_values_found": false,
+  "physical_topology": "two distinct Docker application containers on one Mac Docker Desktop Linux VM; no separate physical LAN machine"
 }

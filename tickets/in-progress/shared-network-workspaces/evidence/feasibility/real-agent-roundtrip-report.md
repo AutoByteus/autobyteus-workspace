@@ -16,12 +16,14 @@ Do not call this full Task completion, GUI/Desktop/LAN/setup proof or a wholly g
 
 ## Four Core Experiments
 
-| Pair | Writer A / Reader B | Configured skill | A native writes | B native reads | B native modifies | A fresh native reopens |
+| Pair | Writer/origin node | Writer runtime | Reader/editor node | Reader runtime | Configured skill | Write / read / modify / reread |
 | --- | --- | --- | --- | --- | --- | --- |
-| pair1 | Codex / Claude | None | PASS | PASS | PASS | PASS |
-| pair2 | Claude / Codex | Same named fixture on both nodes | PASS | PASS | PASS | PASS |
-| pair3 | Codex / Codex | Same named fixture on both nodes | PASS | PASS | PASS | PASS |
-| pair4 | Claude / Claude | Same named fixture on both nodes | PASS | PASS | PASS | PASS |
+| pair1 | `ab-sf-fr009-e70d3907-app-a` | Codex | `ab-sf-fr009-e70d3907-app-b` | Claude | None | PASS / PASS / PASS / PASS |
+| pair2 | `ab-sf-fr009-e70d3907-app-a` | Claude | `ab-sf-fr009-e70d3907-app-b` | Codex | Same named fixture on both nodes | PASS / PASS / PASS / PASS |
+| pair3 | `ab-sf-fr009-e70d3907-app-a` | Codex | `ab-sf-fr009-e70d3907-app-b` | Codex | Same named fixture on both nodes | PASS / PASS / PASS / PASS |
+| pair4 | `ab-sf-fr009-e70d3907-app-a` | Claude | `ab-sf-fr009-e70d3907-app-b` | Claude | Same named fixture on both nodes | PASS / PASS / PASS / PASS |
+
+These are two distinct application containers in the **same Mac's Docker Desktop Linux VM**, not two physical computers. Both use `/home/autobyteus/shared/project`. During FR-009 their host-side API ports were60521 (node A) and60525 (node B). Containers/ports were test-owned and subsequently removed; these are evidence identifiers, not currently available connection addresses. Container names/ports and each pair's actual agent run IDs are in `fr-009/probe-result.json`; runtime names do not identify nodes by themselves.
 
 Each writer receives a fresh unpredictable value and writes/syncs/closes a uniquely named file using its actual native tools. B's read prompt contains the path, **not A's value**, no attachments and no copied transcript. B appends a different fresh marker while preserving the original bytes. A's reopen prompt does **not** supply B's new value. Successful native tool output reveals the exact values; independent assertions verify the complete two-line file in all three views.
 
