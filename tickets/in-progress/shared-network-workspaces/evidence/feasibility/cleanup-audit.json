@@ -382,5 +382,171 @@
     "stdout": "Untagged: autobyteus-shared-feasibility:fr-001\nDeleted: sha256:861ca956b975f4cb6cc296aed9ae080dd0c434c20d1e450bd75ffd5070d78bb9\n",
     "stderr": ""
   },
-  "shared_build_cache": "Not globally pruned; no user images/volumes/nodes removed."
+  "shared_build_cache": "Not globally pruned; no user images/volumes/nodes removed.",
+  "sr006_fr007": {
+    "run": "ab-sf-fr007-23556918",
+    "cleanup": [
+      {
+        "container": "ab-sf-fr007-23556918-app-b",
+        "rc": 0
+      },
+      {
+        "container": "ab-sf-fr007-23556918-app-a",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr007-23556918-nfs-b",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr007-23556918-nfs-a",
+        "rc": 0
+      },
+      {
+        "container": "ab-sf-fr007-23556918-storage-server",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr007-23556918-b-chromium",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr007-23556918-b-legacy-workspace",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr007-23556918-b-workspace",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr007-23556918-b-root-home",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr007-23556918-b-data",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr007-23556918-a-chromium",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr007-23556918-a-legacy-workspace",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr007-23556918-a-workspace",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr007-23556918-a-root-home",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr007-23556918-a-data",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr007-23556918-storage",
+        "rc": 0
+      },
+      {
+        "network": "ab-sf-fr007-23556918-net",
+        "rc": 0
+      },
+      {
+        "absence_kind": "container",
+        "name": "ab-sf-fr007-23556918-storage-server",
+        "absent": true
+      },
+      {
+        "absence_kind": "container",
+        "name": "ab-sf-fr007-23556918-app-a",
+        "absent": true
+      },
+      {
+        "absence_kind": "container",
+        "name": "ab-sf-fr007-23556918-app-b",
+        "absent": true
+      },
+      {
+        "absence_kind": "volume",
+        "name": "ab-sf-fr007-23556918-storage",
+        "absent": true
+      },
+      {
+        "absence_kind": "volume",
+        "name": "ab-sf-fr007-23556918-nfs-a",
+        "absent": true
+      },
+      {
+        "absence_kind": "volume",
+        "name": "ab-sf-fr007-23556918-a-data",
+        "absent": true
+      },
+      {
+        "absence_kind": "volume",
+        "name": "ab-sf-fr007-23556918-a-root-home",
+        "absent": true
+      },
+      {
+        "absence_kind": "volume",
+        "name": "ab-sf-fr007-23556918-a-workspace",
+        "absent": true
+      },
+      {
+        "absence_kind": "volume",
+        "name": "ab-sf-fr007-23556918-a-legacy-workspace",
+        "absent": true
+      },
+      {
+        "absence_kind": "volume",
+        "name": "ab-sf-fr007-23556918-a-chromium",
+        "absent": true
+      },
+      {
+        "absence_kind": "volume",
+        "name": "ab-sf-fr007-23556918-nfs-b",
+        "absent": true
+      },
+      {
+        "absence_kind": "volume",
+        "name": "ab-sf-fr007-23556918-b-data",
+        "absent": true
+      },
+      {
+        "absence_kind": "volume",
+        "name": "ab-sf-fr007-23556918-b-root-home",
+        "absent": true
+      },
+      {
+        "absence_kind": "volume",
+        "name": "ab-sf-fr007-23556918-b-workspace",
+        "absent": true
+      },
+      {
+        "absence_kind": "volume",
+        "name": "ab-sf-fr007-23556918-b-legacy-workspace",
+        "absent": true
+      },
+      {
+        "absence_kind": "volume",
+        "name": "ab-sf-fr007-23556918-b-chromium",
+        "absent": true
+      },
+      {
+        "absence_kind": "network",
+        "name": "ab-sf-fr007-23556918-net",
+        "absent": true
+      },
+      {
+        "image_tag": "autobyteus-shared-feasibility:fr-007",
+        "expected_id": "sha256:2e709e97637b24b5ff326bd423a52ea903bd6e13b7ac42b2802f63d4bb4ae552",
+        "rc": 0
+      }
+    ],
+    "existing_application_image_retained": "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+    "no_native_mac_mount_attempt": true,
+    "recorded_exact_resources_absent": true
+  }
 }

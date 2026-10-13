@@ -84,5 +84,24 @@
     ],
     "fatal": null,
     "cleanup_all_rc_zero": true
+  },
+  {
+    "round": "fr-007",
+    "run": "ab-sf-fr007-23556918",
+    "scope": "two fresh existing-image AutoByteus application nodes in one Mac Docker Desktop VM; NOT real LAN/Mac-native or latest source proof",
+    "pass_count": 8,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "uncovered": [
+      "native macOS mount/application",
+      "real separate LAN computer",
+      "one-command create/join setup",
+      "live Codex/Claude agents and skills",
+      "final permissions/security policy",
+      "latest worktree build and final executable validation"
+    ]
   }
 ]

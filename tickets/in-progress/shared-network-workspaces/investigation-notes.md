@@ -3,7 +3,7 @@
 ## Investigation Meta
 
 - Package: `shared-network-workspaces` / Project Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.
-- Requirements owner/investigator: Solution Designer; date 2026-10-13; current evidence revision SR-005 / Approved requirements baseline SR-004 (designer within user direction; user informed).
+- Requirements owner/investigator: Solution Designer; date 2026-10-13; current evidence revision SR-006 / Approved requirements baseline SR-004 (designer within user direction; user informed).
 - Repository mode: Git.
 - Isolated workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`.
 - Branch: `codex/shared-network-workspaces`.
@@ -11,7 +11,7 @@
 - Finalization target: `origin/personal`, inferred from tracked default; read current RELEASE.md before finalization.
 - Bootstrap: Complete; no blocker. Shared default checkout `personal` at `92de6460030480c33cef6481d2dd46d2fc9a34be` has unrelated modified/untracked artifacts and remains untouched.
 - Authorities read in full: solution-designer/SKILL.md; references/requirements-engineering.md; requirements-doc, investigation-notes and solution-revision-record templates; refreshed worktree AGENTS.md, DESIGN.md, TESTING.md, autobyteus-server-ts/AGENTS.md, autobyteus-web/AGENTS.md (2026-10-13).
-- Architecture-phase reading gate: Formal architecture phase not entered. Architecture-design.md and design-principles.md read in full on 2026-10-13 for the user-requested feasibility explanation; no approved-basis design authored. No approved requirements/design/implementation exists. Technical feasibility below is evidence, not selected target architecture.
+- Architecture-phase reading gate: Architecture-design.md and design-principles.md read in full on 2026-10-13; current SR-004 requirements are Approved as recorded in SR-005. Feasibility/architecture investigation is ongoing, but no complete approved-basis design-spec or implementation exists. Initial static findings below are historical inputs; SR-005/006 record current experiments. Technical feasibility is evidence, not a finalized target architecture.
 - Status: Approved SR-004 intended behavior; local feasibility experiments partially successful, architecture completion blocked by native Mac approval and real separate-machine access. Current user settles best-effort same paths and delegates finding the service solution; investigate feasibility before implementation. No repeated product-choice questionnaire needed. No live storage or mounts changed.
 
 ## Initial Request And Historical Context
@@ -87,7 +87,7 @@ Preliminary inference: for a simple trusted LAN and one storage host, native NFS
 
 ## Runtime, Probe, Or Reproduction Findings
 
-No file operations on shared storage, mounts, container mutations, paid inference, test runs or remote administration performed. Read-only local OS/tool existence checks are EV-013. Static code and current external documentation are feasibility evidence only. No claim of working multi-machine behavior, automatic watcher events or implemented safety checks.
+At initial SR-001 investigation, no file operations on shared storage, mounts, container mutations, paid inference, test runs or remote administration had been performed; read-only local OS/tool existence checks were EV-013. This initial static-evidence limitation is superseded for owned local experiments by SR-005/006 below, not for real Mac/LAN/runtime/setup proof. No claim of working multi-machine behavior, automatic watcher events or implemented safety checks.
 
 ## Stakeholder And User Evidence
 
@@ -127,7 +127,7 @@ Product Design request: Not stated. No external Product artifacts/specification/
 
 ## Architecture Investigation Findings
 
-N/A — requirements not approved. Current technical evidence identifies questions, not target module/file architecture. Before architecture work read its full references/architecture-design.md and references/design-principles.md reading gate; revisit current project DESIGN.md and applicable area contracts. Persisted configuration/data changes, if necessary, require mandatory migration-convention investigation rather than assuming a migration/startup gate.
+At SR-001, requirements were not approved. Currently SR-004 is Approved, phase authorities have been read and ongoing investigation includes the component and application-image findings in SR-005/006. Complete target module/file architecture is still unresolved, not N/A due to requirements approval. Revisit current project DESIGN.md and applicable area contracts. Persisted configuration/data changes, if necessary, require mandatory migration-convention investigation rather than assuming a migration/startup gate.
 
 ## Requirement Implications And Next Action
 
@@ -182,3 +182,19 @@ External prerequisites: NoUI NetFS native Mac mounts return EPERM, cached sudo u
 Safety cleanup: all recorded owned containers, networks and volumes removed; no owned Mac mount present; exact owned image removed after OCI digest/label verification; compiled temp probe removed. Shared build cache not pruned. Existing AutoByteus nodes, volumes/auth and live mounts never modified/tested. Worktree retained for continuation.
 
 Supplement inventory: approval-record-sr004.md (approval evidence); evidence/feasibility/feasibility-report.md, experiment-index.json, FR-001–006 source/config/logs/results/environment and cleanup-audit.json (designer-owned feasibility evidence, not final executable validation); feasibility-blocker-handoff.md (precise interim result/context). Current result classification Blocked — User/External Prerequisite for next native/multi-machine proof, not Terminal/Design Complete.
+
+## SR-006 — Real Application-Image Docker Nodes And Setup Explanation
+
+Trigger: user asks whether testing covered another application node, suggests a fresh Docker node, and asks how the solution works and whether setup is one command. Treat this as evidence-only clarification within Approved SR-004, not permission to change existing nodes or perform the pending native Mac privileged mount.
+
+FR-007 (evidence/feasibility/fr-007/): two fresh nodes from the existing immutable AutoByteus image sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a (created 2026-10-12T13:24:35Z), using its default entrypoint. Fresh private data, root-home, workspace and Chromium volumes; no user credentials/volumes or paid model. Only backend ports published, each on127.0.0.1. Existing-launcher SYS_ADMIN/seccomp flags used on owned nodes, NOT a claim that these application clients have zero capabilities; FR-006 separately proved zero-capability filesystem clients.
+
+Candidate service: owned Ganesha/VFS persistent volume, NFS4.1, gateway-only export allowlist, All_Squash10001, data0770, same experimental trusted-host sec=sys policy. Each node has a separate Docker daemon-managed NFS volume at existing container convention /home/autobyteus/shared; same export/address, nosharecache and actimeo1. No mount/dependency/configuration commands run inside either application node. Native OS operations still go directly to the filesystem, not through a sharing API.
+
+Eight checks passed, runner exit0 **for this scoped image experiment only**: independent live GraphQL endpoints; mounted topology/private CLI-home isolation; public workspace registration; native Node fs write A -> API B read/modify -> native A read; API A/B reciprocal edits; actual application terminal WebSocket -> real PTY shells in selected shared cwd, reciprocal writes/reads; explicit directory/content API reload of a remotely created file; private app-data marker remains node-local. API/PTY assertions use exact content and a completion token protected from echoed-input false positives. All exact owned containers/volumes/network and rebuilt service-image tag removed and absence checked. Original application image retained unchanged. Commands/result/config/console/build log and selected compiled-file hashes retained; no current-worktree source build was claimed or substituted with this image.
+
+Source recheck: official Docker volumes and Ganesha VFS documentation opened2026-10-13. Docker supports daemon-created NFS volumes; custom mounting inside each client container is not required for that route. Current launcher workspace paths/apply inspected: still only local binds, not network setup; existing apply can recreate/pull an image and cannot silently interrupt live runs. Pending setup must handle consent/pinning/private-state preservation rather than blindly invoke it.
+
+Architecture explanatory candidate: one storage service on a chosen persistent/available computer; Mac/Linux native mounted clients and Docker daemon NFS volumes connect to the same export. A packaged create/connect helper performs provisioning/mount/selected managed Docker integration/readiness/path output; not a public service, custom driver, per-file API or remote messaging system. Example command autobyteus shared setup is explicitly **proposed, not currently implemented or executable**. One invocation per participating computer/Docker host; not extra invocations inside each managed node. Root paths remain best-effort and are printed truthfully. Existing containers may need approved recreation, preserving their private volumes; no transparent hot-attach claim.
+
+Still missing: native Mac mount/desktop journey, actual separate LAN machine (including Linux for AC-001), live Codex/Claude/skills/sandbox compatibility, selected production security/deployment, real idempotent helper setup, no-fallback integration and final source-build validation/delivery. Local application-image success does not clear REQ-016/AC-016 or choose the final architecture. Approval unchanged; full context application-node-feasibility-context.md, current blocker feasibility-blocker-handoff.md.

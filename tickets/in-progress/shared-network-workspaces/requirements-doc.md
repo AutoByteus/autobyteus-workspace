@@ -4,7 +4,7 @@
 
 - Status: **Approved — SR-004 intended-behavior basis; feasibility/design not complete**.
 - Package identifier: `shared-network-workspaces` / `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.
-- Requirements baseline: SR-004; current solution evidence revision SR-005, 2026-10-13. User confirms the core automated shared-folder experience and authorizes feasibility experiments before implementation. Approved intended behavior stays within the user's clarified direction. Technical deployment/design and REQ-016 evidence remain incomplete; no implementation/live-operation approval implied.
+- Requirements baseline: SR-004; current solution evidence revision SR-006, 2026-10-13. User confirms the core automated shared-folder experience and authorizes feasibility experiments before implementation. Approved intended behavior stays within the user's clarified direction. Technical deployment/design and REQ-016 evidence remain incomplete; no implementation/live-operation approval implied.
 - Requirements owner: Solution Designer.
 - Approval record: **Solution Designer within the clarified user direction**, exact intended-behavior baseline SR-004 (REQ-001–016, AC-001–016, supported SCN-001–006/008–010; SCN-007 excluded), with user informed in this conversation on 2026-10-13. Reference: [approval-record-sr004.md](approval-record-sr004.md), which records the exact informing message and user-direction basis. This is not fabricated user approval of every technical detail, technology selection, acceptance evidence, or authorization to alter existing live resources.
 - Behavior-defining supplements: None. Investigation and the historical transcript are evidence, not intended-behavior authorities.
@@ -250,6 +250,8 @@ Supported intended behavior is approved by the Solution Designer within reconfir
 - Exact approved requirement/supplement basis: **SR-004** canonical requirements/AC/scenarios; no behavior-defining Product or other supplement. Approval record is approval evidence, not a second specification.
 - Ready for architecture investigation: **Yes**, reading gate already passed in this conversation. Complete feasibility/support evidence and authoritative design before design-complete/implementation routing; honor REQ-016. Current architecture completion is blocked on approved Mac native mount testing and separate-machine access, not on another generic product questionnaire.
 
-## Current Feasibility Evidence — SR-005
+## Current Feasibility Evidence — SR-006
 
 [Feasibility report](evidence/feasibility/feasibility-report.md) records local component success and retained failures. Architecture/design completion is blocked on specific external native-Mac-test approval and separate Linux-machine access. This does not revoke the Approved SR-004 intended behavior or satisfy its pre-implementation proof gate. No design-spec or implementation-ready handoff exists.
+
+SR-006 additionally demonstrates two fresh AutoByteus application-image Docker nodes using one mounted project through their public workspace/file APIs and real terminal shells (eight image-feasibility checks passed, resources cleaned). This is not current-worktree-build validation, live Codex/Claude agent proof, native Mac access, real LAN proof or an available one-command setup. See [application-node-feasibility-context.md](application-node-feasibility-context.md). Approved intended behavior is unchanged.

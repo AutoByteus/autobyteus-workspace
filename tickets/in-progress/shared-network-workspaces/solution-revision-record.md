@@ -9,6 +9,7 @@
 | SR-003 | Requirements | User explicitly requires one-command non-technical setup | EV-015–017 | Ready for Approval SR-001, SR-002 evidence; design N/A | Draft SR-003, no approval | REQ-006/013–015, AC-012–015, SCN-001/008/009, DEC-002/007/008 | Productized managed setup replaces documents-first; hosting clarification pending |
 | SR-004 | Requirements | User reconfirms simple setup/shared-folder criteria and asks experiments before implementation | Current user message; environment/primary candidate docs | Draft SR-003 | Draft SR-004, core direction confirmed; feasibility active | REQ-002/006/016, AC-001/012/016, DEC-001/003/007; SCN-010 | Same path best-effort; no separate Docker setup; prove candidate before implementation |
 | SR-005 | Evidence | Requirements readiness approved within direction; six local feasibility rounds | FR-001–006 / native Mac EPERM / remote access pending | Draft SR-004 feasibility | Approved SR-004 intent; architecture completion Blocked — external evidence | Approved REQ-001–016; AC-016 incomplete; BEH-001–006 | Local Docker/NFS candidate demonstrated; native Mac/multi-machine proof missing |
+| SR-006 | Evidence | User asks about actual application Docker nodes and one-command architecture | FR-007, eight application-image checks passed and cleaned | Approved SR-004; SR-005 partial feasibility / Blocked | Unchanged intent; expanded local image evidence / Blocked | REQ-001/003/006/011/016; AC-001/002/012/016 incomplete | Two fresh application nodes share ordinary project through APIs and real PTYs; no Mac/LAN/helper proof |
 
 ## SR-001 — Private-network ordinary shared workspaces
 
@@ -88,3 +89,16 @@
 - Result: Blocked — User/External Prerequisite for next required native Mac and real cross-computer experiments. Missing concrete resource/privileged-test approval, not another generic product approval.
 - Next: user supplies scoped Mac experiment approval and separate Linux test access; resume safe proof, resolve integration/identity/runtime gaps, complete design and classification, then apply appropriate review/implementation route. REQ-016 prohibits premature implementation.
 - Routing: see feasibility-blocker-handoff.md; no architecture/implementation-ready claim.
+
+## SR-006 — Application-Node Evidence And Clear Setup Boundary
+
+- Phase/classification: Evidence-only Refinement, 2026-10-13; overall result still Blocked — User/External Prerequisite.
+- Trigger: user asks whether experiments cover another real application node, suggests creating a fresh Docker node, and requests understandable architecture/one-command explanation.
+- Prior/current authorities: Approved SR-004 intended behavior unchanged; SR-005 component evidence extended by FR-007 image feasibility. No renewed requirements approval necessary; no permission inferred for pending Mac privileged test or existing node changes.
+- Findings: eight checks passed on two fresh default-entrypoint AutoByteus Docker application-image nodes in this Mac's one Docker Desktop VM. Workspace/file GraphQL, ordinary fs operations and real application PTY shells read/modify the same exported project. Explicit API refresh retrieves remote additions; private state stays separate. All exact owned resources cleaned. Image immutable digest/config/selected compiled-file hashes recorded, not a current-worktree build or live model/agent validation.
+- Affected rationale: REQ-001/003/006/011/016, AC-001/002/012/016 still incomplete. Common storage and container provisioning feasible at this layer; full runtime/setup/native-platform support remains open.
+- Artifacts changed: canonical investigation/evidence revision and requirements evidence section, report/index/cleanup supplement, current blocker and application-node-feasibility-context.md. FR-001–006 historical evidence/failures preserved.
+- Explanatory candidate: one persistent NFS service, native host mounts plus direct Docker-managed NFS volumes, productized create/connect helper. Proposed command is not implemented; one invocation per participating computer/Docker host, zero separate container setup commands. Existing node recreation requires explicit permission and preservation.
+- Design/review/classification: no completed design-spec, task_size or architectural_risk; review/implementation/E2E/delivery N/A — not yet applicable, not skipped/passed. No implementation-ready forwarding.
+- Remaining prerequisites: scoped native Mac mount authorization and real separate Linux access; complete current-source/runtime/security/idempotent setup evidence. Real second Mac additionally needs native client/LAN evidence, not substitution by Docker clones.
+- Routing: updated feasibility-blocker-handoff.md; look up current rules and return precise changed evidence/blocker to requesting workflow when none matches. Task unfinished, no Terminal/DONE/merge/release.
