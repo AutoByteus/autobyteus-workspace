@@ -33,8 +33,12 @@
 //           values; a copy member then starts on the Team value.
 //   DLP-008 (AC-011, SR-005) The user's journey: a plain New chat from the Chat nav, text typed, the heading switcher
 //           to the Build team: its members are seeded (and the unusable default noted); the text and the root are kept.
-// Settings rows (SR-006) are the read-only member rows, collapsed until opened; DLP-003 (running) and DLP-007 (stopped and
-// running again) also read them as Settings opens them.
+//   DLP-009 (AC-011, AC-012, SR-005) Carried starts seed members: New chat Team A → Team B (B's seeds only), New chat →
+//           an Org (placed team and agents seeded; Run launches what is shown), the Org launch page switcher → a Team.
+//   DLP-010 (DS-006 preserved) "+" on a Team run copies its recorded member settings and seeds nothing.
+// Settings rows (SR-006) are the read-only member rows, collapsed until opened, with the same look as the Members list
+// (`model · runtime · approval · source`, Coordinator chip, an opened Team's card then its Members, "Notes: N" on a
+// collapsed Team); DLP-003 (running) and DLP-007 (stopped and running again) also read them as Settings opens them.
 //   DLP-007 (AC-008, DEC-008) A copy started, the engineer's default edited in the Agents editor, a second copy: Settings
 //           shows each copy's recorded values; the run is stopped and reopened from the UI; the first copy's engineer
 //           then starts on Grok (its recorded value). Runs last (it edits a definition).
@@ -356,6 +360,9 @@ const delegatedRows = async (page, { expand = true } = {}) => {
       fallbacks: own('[data-test="run-member-launch-note"]').map((node) => node.textContent.replace(/\s+/g, ' ').trim()),
       noteCount: own('[data-test="run-member-note-count"]')[0]?.textContent?.replace(/\s+/g, ' ').trim() ?? null,
       expanded: own('[data-test="run-member-toggle"]')[0]?.getAttribute('aria-expanded') === 'true',
+      coordinator: own('span').some((node) => node.textContent.trim() === 'Coordinator'),
+      card: own('[data-test^="run-settings-card"]').length > 0,
+      membersHeading: own('[data-test="run-member-detail"] p').some((node) => /^members$/i.test(node.textContent.trim())),
     }
   }))
 }
@@ -371,6 +378,12 @@ const assertSquadRows = (rows, label) => {
   const member = (name) => rowsAt(rows, `${squad}/${name}`).find((row) => row.member)
   const m = Object.fromEntries(['lead', 'engineer', 'reviewer', 'offline', 'unoffered', 'badsettings', 'incomplete'].map((name) => [name, member(name)]))
   assert(Object.values(m).every(Boolean), `${label}: Squad member rows`, { m, rows })
+  // SR-006: the same look as the Members list: `model · runtime · approval · source`, the Coordinator chip on the copy's
+  // coordinator, an opened Team shows its read-only card and then its Members, and each opened agent its card.
+  assert(team.card && team.membersHeading, `${label}: opened Squad shows its card and its Members`, team)
+  assert(m.lead.coordinator && Object.entries(m).every(([name, row]) => name === 'lead' || !row.coordinator), `${label}: Coordinator chip on the copy's lead only`, m)
+  assert(Object.values(m).every((row) => /Auto-approve/.test(row.launch) && row.card), `${label}: member summaries carry the approval and open to a card`, m)
+  assert(/Agent default$/.test(m.engineer.launch) && /Inherited from the run$/.test(m.lead.launch), `${label}: summaries end with the source label`, { engineer: m.engineer.launch, lead: m.lead.launch })
   assert(m.engineer.source === 'agent_default' && /grok/i.test(m.engineer.launch) && m.engineer.fallbacks.length === 0, `${label}: engineer row (Grok, agent default)`, m.engineer)
   assert(m.reviewer.source === 'agent_default' && m.reviewer.launch.includes(ALT_LABEL) && m.reviewer.fallbacks.length === 0, `${label}: reviewer row (ALT, agent default)`, m.reviewer)
   // A member without its own default shows its Team's source (DS-005); the Team's skipped default is noted once, on the Team row (SR-006).
@@ -393,6 +406,8 @@ const assertPairCollaboratorRows = (rows, label) => {
 
 // ---------------------------------------------------------------------------------------------
 const cases = []
+/** Values one case leaves for a later one (`--cases` with a later case alone skips those checks). */
+const state = {}
 const defineCase = (id, title, fn) => cases.push({ id, title, fn })
 
 defineCase('DLP-001', 'AC-011/AC-013: New chat for a Team seeds members from their defaults; root changes keep seeded rows; member change and reset; Run launches what is shown', async (page) => {
@@ -428,6 +443,7 @@ defineCase('DLP-001', 'AC-011/AC-013: New chat for a Team seeds members from the
   await typeAndSend(page, 'Start the work.')
   await page.waitForURL(/\/workspace/, { timeout: 180000 })
   r.teamRunId = await waitFor('new team run', async () => (await teamRunIds(ids.build)).find((id) => !before.has(id)), 60000)
+  state.buildRunId = r.teamRunId
   const tree = await teamTree(r.teamRunId)
   r.members = Object.fromEntries((tree.root_team.members ?? []).map((m) => [m.address, lc(m.launch_configuration ?? m.launchConfiguration)]))
   const want = { '/lead': { runtime: AGY, model: ALT }, '/engineer': { runtime: GROK, model: GROK_MODEL }, '/reviewer': { runtime: AGY, model: MODEL }, '/unoffered': { runtime: AGY, model: MODEL } }
@@ -529,7 +545,9 @@ defineCase('DLP-003', 'AC-001/003/004/005/007/010: Manager chat from the UI; cop
   r.collapsed = await delegatedRows(page, { expand: false })
   assertCollapsed(r.collapsed, 'running Agent run')
   const squadCollapsed = r.collapsed.find((row) => row.test === address('squad') && row.badge === 'Delegated copy')
-  assert(squadCollapsed?.noteCount && /\d/.test(squadCollapsed.noteCount), 'collapsed Squad row shows its note count', squadCollapsed)
+  // The collapsed Squad counts its own note and its members' (team default + four reasons).
+  assert(squadCollapsed?.noteCount === 'Notes: 5', 'collapsed Squad row shows its note count', squadCollapsed)
+  assert(r.collapsed.every((row) => row.fallbacks.length === 0 || row.test !== address('squad')), 'a collapsed Team shows no notes inline', r.collapsed)
   await shot(page, 'DLP-003-agent-run-settings-collapsed-880', 880)
   r.rows = await delegatedRows(page)
   assert(r.rootEditable === 1, 'the run root card is still shown', r)
@@ -726,6 +744,109 @@ defineCase('DLP-008', 'SR-005 (AC-011): plain New chat → typed text → headin
   assert(r.rows.unoffered.customized === 'false' && r.rows.unoffered.note?.includes(NOT_OFFERED), 'unusable default: follows the root with a note', r.rows)
   await shot(page, 'DLP-008-switcher-team-seeded-880', 880)
   await shot(page, 'DLP-008-switcher-team-seeded-390', 390)
+  await closeDrawer(drawer)
+  return r
+})
+
+/** The heading switcher of the current start surface (New chat or the Org launch page) → the definition with `id`. */
+const switchTarget = async (page, id) => {
+  await page.locator(sel('run-target-switcher-trigger')).first().click()
+  await page.locator(sel('run-target-switcher-menu')).waitFor()
+  await page.locator(sel(`run-target-switcher-option-${id}`)).click(); await settle(page, 1500)
+}
+const plainNewChat = async (page) => {
+  await page.goto(`${frontUrl}/agent-teams`, { waitUntil: 'domcontentloaded' }); await settle(page, 1500)
+  await page.locator(sel('app-left-panel-primary-nav')).getByText('Chat', { exact: true }).click()
+  await page.waitForURL(/\/chat(\?|$)/, { timeout: 60000 }); await page.locator(sel('chat-new')).waitFor({ timeout: 60000 }); await settle(page, 2000)
+}
+
+defineCase('DLP-009', 'SR-005 (AC-011, AC-012): carried starts seed members: Team A → Team B (B\'s seeds only), New chat → Org (placed team and agents seeded; Run readback), Org launch page → Team (seeded)', async (page) => {
+  const r = {}
+  // New chat → Build team → Pair team: the Pair's seeds only, none of Build's (its reviewer row is gone).
+  await plainNewChat(page)
+  await chooseModel(page, page.locator(sel('chat-composer')), AGY, MODEL)
+  await switchTarget(page, ids.build)
+  let drawer = await openDrawer(page)
+  await waitFor('Build engineer seeded', async () => (await rowState(drawer, '/engineer')).customized === 'true', 60000)
+  await closeDrawer(drawer)
+  await switchTarget(page, ids.pair)
+  await waitFor('heading on the Pair team', async () => (await page.locator(sel('run-target-name')).innerText()) === names.pair, 30000)
+  drawer = await openDrawer(page)
+  await waitFor('Pair engineer seeded', async () => (await rowState(drawer, '/engineer')).customized === 'true', 60000)
+  r.pair = { lead: await rowState(drawer, '/lead'), engineer: await rowState(drawer, '/engineer'), unoffered: await rowState(drawer, '/unoffered'), reviewerRows: await memberRow(drawer, '/reviewer').count() }
+  assert(/grok/i.test(r.pair.engineer.summary) && r.pair.lead.customized === 'false' && r.pair.unoffered.customized === 'false'
+    && r.pair.unoffered.note?.includes(NOT_OFFERED) && r.pair.reviewerRows === 0, 'Team A → Team B: B seeded, nothing of A left', r.pair)
+  await shot(page, 'DLP-009-team-to-team-seeded-880', 880)
+  await closeDrawer(drawer)
+
+  // New chat → the Org: its placed team and direct agent are seeded on the Org launch page; Run launches what is shown.
+  await plainNewChat(page)
+  await chooseModel(page, page.locator(sel('chat-composer')), AGY, MODEL)
+  await switchTarget(page, ids.launchOrg)
+  await page.locator(sel('org-launch-page')).waitFor({ timeout: 120000 }); await settle(page, 2500)
+  r.orgRoot = (await page.locator(`${sel('org-launch-card')} ${sel('chat-model-trigger')}`).innerText()).replace(/\s+/g, ' ')
+  drawer = await openDrawer(page)
+  await waitFor('Org writer seeded after the switch', async () => (await rowState(drawer, '/writer')).customized === 'true', 60000)
+  const toggle = memberRow(drawer, '/pair').locator(sel('run-member-toggle')).first()
+  if (await toggle.getAttribute('aria-expanded') !== 'true') { await toggle.click(); await delay(600) }
+  r.org = { writer: await rowState(drawer, '/writer'), pair: await rowState(drawer, '/pair'), pairEngineer: await rowState(drawer, '/pair/engineer'), pairUnoffered: await rowState(drawer, '/pair/unoffered') }
+  assert(r.orgRoot.includes(MODEL_LABEL), 'carried Org start keeps the composer root', r.orgRoot)
+  assert(r.org.writer.summary.includes(ALT_LABEL) && r.org.pair.customized === 'true' && r.org.pair.summary.includes(ALT_LABEL)
+    && /grok/i.test(r.org.pairEngineer.summary) && r.org.pairUnoffered.note?.includes(NOT_OFFERED), 'carried Org start: placed team and agents seeded', r.org)
+  await shot(page, 'DLP-009-chat-to-org-seeded-1280', 1280)
+  await closeDrawer(drawer)
+  await page.locator(sel('org-launch-run')).click()
+  await page.waitForURL(/mode=active/, { timeout: 180000 }); await settle(page, 2500)
+  const params = new URL(page.url()).searchParams
+  r.orgRunId = params.get('runId') ?? params.get('rootRunId') ?? params.get('orgRunId')
+  const tree = (await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}', { id: r.orgRunId })).getAgentOrgRunConfig.executionTree
+  const root = tree.rootOrg ?? tree.root_org
+  const pair = root.members.find((m) => m.address === '/pair')
+  r.launched = { root: lc(pick(root, 'defaultLaunchConfiguration')), writer: lc(pick(root.members.find((m) => m.address === '/writer'), 'launchConfiguration')),
+    pair: lc(pick(pair, 'defaultLaunchConfiguration')), pairEngineer: lc(pick(pair.members.find((m) => m.address === '/pair/engineer'), 'launchConfiguration')) }
+  const alt = { runtime: AGY, model: ALT }
+  assert(JSON.stringify(r.launched) === JSON.stringify({ root: { runtime: AGY, model: MODEL }, writer: alt, pair: alt, pairEngineer: { runtime: GROK, model: GROK_MODEL } }),
+    'carried Org start did not launch what the form showed', r.launched)
+
+  // The Org launch page heading switcher → a Team (carried start): New chat for it with its members seeded.
+  await page.goto(`${frontUrl}/agent-orgs`, { waitUntil: 'domcontentloaded' }); await settle(page, 1500)
+  await page.locator(sel(`org-card-${ids.launchOrg}`)).getByRole('button', { name: 'Run', exact: true }).click()
+  await page.locator(sel('org-launch-page')).waitFor({ timeout: 120000 }); await settle(page, 2500)
+  await switchTarget(page, ids.build)
+  await page.locator(sel('chat-new')).waitFor({ timeout: 120000 }); await settle(page, 2000)
+  r.headingFromOrg = await page.locator(sel('run-target-name')).innerText()
+  drawer = await openDrawer(page)
+  await waitFor('Build engineer seeded after the Org page switch', async () => (await rowState(drawer, '/engineer')).customized === 'true', 60000)
+  r.fromOrg = { engineer: await rowState(drawer, '/engineer'), reviewer: await rowState(drawer, '/reviewer'), lead: await rowState(drawer, '/lead'), unoffered: await rowState(drawer, '/unoffered') }
+  assert(r.headingFromOrg === names.build && /grok/i.test(r.fromOrg.engineer.summary) && r.fromOrg.reviewer.summary.includes(ALT_LABEL)
+    && r.fromOrg.lead.customized === 'false' && r.fromOrg.unoffered.note?.includes(NOT_OFFERED), 'Org page → Team: members seeded', r.fromOrg)
+  await shot(page, 'DLP-009-org-page-to-team-seeded-880', 880)
+  await closeDrawer(drawer)
+  return r
+})
+
+defineCase('DLP-010', 'Preserved (DS-006): "+" on a Team run copies its recorded member settings and seeds nothing', async (page) => {
+  const r = {}
+  assert(state.buildRunId, 'needs DLP-001 (its Build team run)')
+  // DLP-001 launched: lead on ALT (the user's choice), engineer on Grok (seeded), reviewer reset to follow the root.
+  await page.goto(`${frontUrl}/workspace`, { waitUntil: 'domcontentloaded' }); await settle(page, 2500)
+  const teamRow = page.locator(sel(`workspace-team-row-${state.buildRunId}`))
+  await waitFor('Build team run row', async () => {
+    if (await teamRow.isVisible().catch(() => false)) return true
+    await expandWorkspaces(page)
+    const definitionRow = page.locator(sel(`workspace-team-definition-row-${ids.build}`)).first()
+    if (await definitionRow.isVisible().catch(() => false) && await definitionRow.getAttribute('aria-expanded') !== 'true') await definitionRow.click()
+    return false
+  }, 60000, 1500)
+  await teamRow.click(); await settle(page, 2500)
+  await page.locator(sel('workspace-header-new-run')).click()
+  await page.locator(sel('chat-new')).waitFor({ timeout: 60000 }); await settle(page, 2500)
+  const drawer = await openDrawer(page)
+  r.copy = { lead: await rowState(drawer, '/lead'), engineer: await rowState(drawer, '/engineer'), reviewer: await rowState(drawer, '/reviewer') }
+  // A re-seed would put the reviewer back on its ALT default; the copy keeps the run's value (the root model).
+  assert(r.copy.lead.summary.includes(ALT_LABEL) && /grok/i.test(r.copy.engineer.summary) && r.copy.reviewer.summary.includes(MODEL_LABEL)
+    && !r.copy.reviewer.summary.includes(ALT_LABEL), '"+" copy re-seeded or lost the run\'s member settings', r.copy)
+  await shot(page, 'DLP-010-plus-copy-not-seeded-880', 880)
   await closeDrawer(drawer)
   return r
 })

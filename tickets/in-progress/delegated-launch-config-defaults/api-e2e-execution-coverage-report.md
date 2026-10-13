@@ -18,11 +18,65 @@
 - Coverage Investigation: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-coverage-investigation.md`
 - API/E2E Test-Case Ledger: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-003`
-- Current Execution Round: 3
+- Current API/E2E Revision ID: `API-REV-004`
+- Current Execution Round: 4 (reopened round IR-003; see "Round 4 (IR-003) Execution" below — it is authoritative for this round)
 - Trigger: user request to cover every case through the real UI (round 2 was CRR-003 TR-001, Local Fix)
 - Prior Round Reviewed: 2 (API-REV-002, `Pass`)
 - Latest Authoritative Round: 3 (browser probe extended and rerun; all other evidence carries forward)
+
+## Round 4 (IR-003) Execution — authoritative for the reopened round
+
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied`, branch `codex/delegated-launch-config-defaults-r2` (`0ac4e4b07` web; base `2756d7b29` = round 1 as released in `v1.5.3-beta.1`). Diff vs base: web + tickets only.
+- Classification `task_size=Medium`, `architectural_risk=Low`; input route `Direct Low-Risk`; successful-output route `Delivery`; test-code review `Not Required — direct low-risk route`. Architecture review and code review this round: N/A — not applicable.
+- Basis: SR-005 (switcher and carried starts seed members; "+" copies unseeded), SR-006 (collapsible read-only member rows for collaborators and copies, same look as Members). Investigation: `api-e2e-coverage-investigation.md` → Round 4.
+
+### Round 4 evidence matrix
+
+| Case ID | Requirement / AC | Surface | Evidence Type | Result | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| DLP-008 | SR-005, AC-011 (the user's journey) | Browser probe | Durable | Pass | plain New chat → "hell" → switcher → Build: engineer Grok and reviewer ALT seeded/customized, lead follows, unusable default noted; text and root kept |
+| DLP-009 | SR-005, AC-011, AC-012 | Browser probe | Durable (added) | Pass | Team A → Team B: B's seeds only (no A rows); New chat → Org: writer and placed Pair seeded (ALT), Pair engineer Grok, unoffered noted, root carried; Run → readback equals the form; Org launch page → Build: seeded |
+| DLP-010 | DS-006 preserved ("+" unseeded) | Browser probe | Durable (added) | Pass | "+" from the DLP-001 run: lead ALT (user's choice), engineer Grok, reviewer on the root model as launched (not re-seeded to ALT) |
+| DLP-003/004/006/007 (SR-006) | AC-010 (REQ-007 as refined) | Browser probe | Durable (extended) | Pass | rows collapsed on open (running: DLP-003, DLP-007; stopped: DLP-007, same rows); collapsed Squad "Notes: 5"; opened Team shows its card then Members; Coordinator chip on the copy's lead only; summaries carry approval and end with the source label; Team note once (lead has none); all models locked, no reset/menu/input |
+| DLP-001/002/005 | AC-011..AC-013, AC-006 | Browser probe | Durable | Pass | unchanged behavior rechecked |
+| Bug check | SR-005 | Browser probe on the released stores | Temporary | Detects | released stores: DLP-008 and DLP-009 fail (no seeds after the switch), DLP-010 passes; Org store only: DLP-009 fails at New chat → Org after Team A → B passed; restored (no diff) |
+| ISO-002 | SR-005 (user's journey), SR-006, AC-010, AC-011 | Isolated desktop instance (round-4 build), real Claude/Codex | Desktop / Live | Pass | Marketing Team after the switcher: "2 of 4 customized" (strategist Codex Luna, copywriter Claude haiku), analyst follows, auditor note; real delegation: strategist ran on `codex_app_server/gpt-5.6-luna`, manager on `claude-haiku-5-5` (~$0.006); Settings: one collapsed copy row "Notes: 1"; opened: card, MEMBERS, Coordinator chip on strategist, auditor's note on its row only; stopped run: same collapsed row |
+| REPO-003 | all web | `test:nuxt --run`, guards | Durable | Pass | 610 files / 4243 tests; guards 0/0/0 |
+
+### Round 4 repository and broader commands
+
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `pnpm -C autobyteus-web test:nuxt --run`; `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | Pass | `api-e2e-evidence/r2-web-nuxt.log`, `r2-web-guards.log` |
+| `pnpm -C autobyteus-web test:e2e:delegated-launch-defaults --output-dir <fresh>` (×2) | Pass 10/10 | `api-e2e-evidence/r2-browser-probe-run-1/`, `r2-browser-probe-run-2/` |
+| Same with the released stores (`git show 2756d7b29:<store> > <store>`; restored with `git checkout`) | DLP-008/009 fail as expected | `api-e2e-evidence/r2-browser-probe-bug-check-round1-*/` |
+| `pnpm --silent isolated-app start --build` → `iso-60438-de06`; `iso2-setup.mjs`; browser-automation attach-only (control port 60438); `isolated-app stop` | Pass | `api-e2e-evidence/r2-isolated-instance/` |
+| Server suites | Not rerun | no server, contract or persistence change in `git diff 2756d7b29..HEAD`; round-1 evidence carries forward |
+
+### Round 4 confidence scorecard
+
+| Category | Score | Evidence | Residual |
+| --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 97% | Every SR-005 start kind and the preserved "+" proven in the UI; SR-006 design points asserted; the user's journey reproduced in the packaged app | user's own verification |
+| Changed-boundary execution directness | 97% | launch drawers, Org launch page, Settings rows read where the user sees them | — |
+| Cross-boundary integration realism and mock gap | 95% | real catalogs and runtimes in the packaged app; scripted runtimes in the probe | — |
+| Environment, configuration, identity, and fixture fidelity | 95% | worktree desktop build; probe-owned stack | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | bug reproduced on the released stores; stale-seed (A → B); running vs stopped Settings | quick Team → Agent switch race: store test only |
+| User-surface, browser, and desktop-shell confidence | 93% | probe 10 cases ×2; desktop journey | 390 px clipping of opened copy member cards (O-6); Org "+" re-seed not distinguishable in UI fixtures (store test) |
+| Durable regression coverage quality and relevance | 96% | probe DLP-008..010 detect the bug (verified on the released stores) | — |
+
+- Overall final confidence (round 4): 95% — simple average (97+97+95+95+95+93+96)/7 = 95.4%
+- Every critical acceptance criterion directly proven: `Yes`; no category below 90%; 95% target met.
+
+### Round 4 observations (non-blocking)
+
+- O-6: at 390 px, an opened Team copy's member cards (nesting depth 2) clip setting values (the model value disappears, "Auto-approve" is cut, names truncate to one letter). Same nested `RunMemberRow` layout as an Org placed team's members; saved-run Settings are specified at 880 px (no phone matrix), and at 880 px and in the desktop window (section 672 px wide) nothing clips. Follow-up candidate. Evidence: `r2-browser-probe-run-1/DLP-003-agent-run-settings-390.png`.
+- O-1 (note only inside the collapsed tool Result), O-3 (raw address names) unchanged; O-2 resolved by SR-006 (Team note shown once).
+
+### Round 4 result
+
+- Result: `Pass`; final confidence 95%; broader validation `Required` — executed (browser probe; isolated desktop instance).
+- Next recipient per `get_handoff_rules`: Delivery (direct route).
 
 ## Routing Classification
 
