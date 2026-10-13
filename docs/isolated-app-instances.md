@@ -381,8 +381,8 @@ launcher discovers the unpacked output with --from-worktree; extraction/FUSE is
 not needed for a worktree build. A build downloads native tooling and may take
 several minutes. It does not publish a release.
 
-For a non-root worker with write access to its own directories, put a complete
-Linux-capable packaged probe inside Xvfb:
+For a non-root worker with write access to its own directories, put the complete
+ticket-owned automation session inside Xvfb:
 
 ~~~bash
 OWN=$(mktemp -d)
@@ -392,15 +392,16 @@ env -i PATH="$PATH" HOME="$OWN/home" TMPDIR="$OWN/tmp" \
   XDG_RUNTIME_DIR="$OWN/runtime" LANG=C.UTF-8 \
   xvfb-run -a -e "$OWN/tmp/xvfb.log" \
     -s "-screen 0 1600x1100x24 -nolisten tcp" \
-    pnpm -C autobyteus-web test:e2e:<probe> --skip-build \
-      --output-dir <fresh-owned-output-directory>
+    node <ticket-owned-probe.mjs> <probe-specific-arguments>
 ~~~
 
-Replace placeholders using the probe's package script/header. The probe must own
-isolated start, actual UI assertions, canonical stop/list and its fixtures.
-Use --skip-build only after a current build of the **same worktree**. Confirm the
-cleanup receipt before removing $OWN; preserve evidence outside that temp root.
-A failed/partial run is not a pass.
+Replace placeholders with the ticket's automation file and its documented
+arguments, including a fresh owned evidence directory. This setup does not
+require adding a feature-specific package command or permanent shared probe.
+The automation must own isolated start, actual UI assertions, canonical stop/list
+and its fixtures. Use --from-worktree only after a current build of the **same
+worktree**. Confirm the cleanup receipt before removing $OWN; preserve evidence
+outside that temp root. A failed/partial run is not a pass.
 
 **Do not run xvfb-run around isolated-app start as a standalone command and then
 exit it.** The launcher returns once ready; that wrapper would stop Xvfb while the
@@ -440,7 +441,8 @@ OUT=$(mktemp -d "$PWD/autobyteus-web/test-results/linux-desktop.XXXXXX")
 chown "$TEST_UID:$TEST_GID" "$OUT"
 ~~~
 
-Then run the complete probe; use "$OUT" as its output directory:
+Then run the complete ticket-owned automation; supply "$OUT" through its
+documented output-directory argument:
 
 ~~~bash
 setpriv --reuid="$TEST_UID" --regid="$TEST_GID" --clear-groups \
@@ -448,8 +450,7 @@ setpriv --reuid="$TEST_UID" --regid="$TEST_GID" --clear-groups \
     XDG_RUNTIME_DIR="$OWN/runtime" LANG=C.UTF-8 \
     xvfb-run -a -e "$OWN/tmp/xvfb.log" \
       -s "-screen 0 1600x1100x24 -nolisten tcp" \
-      pnpm -C autobyteus-web test:e2e:<probe> --skip-build \
-        --output-dir "$OUT"
+      node <ticket-owned-probe.mjs> <probe-specific-arguments>
 ~~~
 
 The UID/GID and writable directories must be prepared first; the worktree's build
