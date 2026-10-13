@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63; current solution revision SR-013 (rough packaging/UX refinement; requirements remain Approved SR-012).
+- Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63; current solution revision SR-014 (user-directed naming refinement; requirements remain Approved SR-012).
 - Approved intent: requirements-doc.md SR-012, designer within explicit service-first/nativeMac/Linux/Docker user direction; approval-record-sr012.md contains exact informing message. No behavior-defining supplements or Product-owned UI package.
 - **Design status: Draft — NOT implementation-ready.** Concrete established boundaries below are design decisions; backend/platform qualification, proportionate trusted-LAN permission policy and runtime exposure remain incomplete and explicitly gated. Do not implement from this draft.
 - Canonical investigation: investigation-notes.md in this ticket; executed raw rounds at evidence/feasibility/fr-001–047. Actual physical gate REQ-016/AC-016 remains in force pending the separate async user sequencing answer.
@@ -17,13 +17,19 @@ Configured runtime skill materialization writes node-private absolute symlinks i
 
 Intended delta: one persistent shared-folder service owns first-use create/connect, qualified source folder, host-client mount, selected local managed Docker integration, verified location output and continued lifecycle. Existing workspace selection/native runtimes access normal mounted files. This is not a new filesystem engine, synchronization agent, public SDK or peer collaboration feature.
 
+## Product Naming — SR-014
+
+User rejects “share the folder” as the product name and suggests filesystem/NFS naming, explicitly offering “autobyteus nfs.” Use **AutoByteus NFS** as the product/service name and **autobyteus-nfs** as the planned command/package name. User-facing Create/Connect choices refer to a shared filesystem. “Source folder” remains the precise underlying storage term, not product branding.
+
+Naming-only refinement within explicit user direction: canonical ticket/package identity shared-network-workspaces, Project Task ID, evidence paths, approved behavior, mount convention and MVP/delivery gates stay unchanged. No source/package/command/release is created by this naming decision; the command is not available yet. This name does not approve an unqualified engine or claim a finished service.
+
 ## Rough V1 Service / Packaging Recommendation — SR-013
 
 **Requested recommendation, not a shipped feature or implementation-ready spec.** The user explicitly prioritizes a working first version without excessive security effort and asks whether this should be a separate project, how CI produces it and how the user obtains/runs it. No new experiment, installed command, release endpoint, CI execution or live change is represented.
 
 ### Standalone capability, same repository
 
-Choose one separately runnable package at `autobyteus-shared-folder/` in the current superrepo, not a new GitHub repository or separately managed Project. One product contains the interactive command and persistent service. It should run without opening AutoByteus desktop/server; ordinary apps may use the mounted folder. AutoByteus-specific support is a small opt-in adapter for selected local managed Docker nodes and existing workspace/runtime correctness, not the storage engine itself. A separate repository would add release/integration coordination without solving the demonstrated problem.
+Choose one separately runnable package at `autobyteus-nfs/` in the current superrepo, not a new GitHub repository or separately managed Project. One product contains the interactive command and persistent service. It should run without opening AutoByteus desktop/server; ordinary apps may use the mounted folder. AutoByteus-specific support is a small opt-in adapter for selected local managed Docker nodes and existing workspace/runtime correctness, not the storage engine itself. A separate repository would add release/integration coordination without solving the demonstrated problem.
 
 The exact implementation language and self-contained packaging technique are still design work; do not create a dependency on a user-installed Node/Python/compiler/toolchain. CI, not the user's computer, builds the package. Native modes remain Docker-independent. Docker server mode is a deployment choice inside the same flow; it is not permission to mount a Mac host or reconfigure an arbitrary existing unprivileged container from inside that container. Host-mediated managed-container integration remains automatic and consented.
 
@@ -37,12 +43,12 @@ Reuse the repository's GitHub-release/tag conventions (RELEASE.md and existing r
 
 Build for the selected supported OS/CPU matrix; include/bundle the user-space runtime/backend dependencies where applicable, honor vendor licenses/signing requirements and test clean installation. A target may be advertised only once validated. Docker image is a small service image, not the entire large agent/server prototype image. Primary capability references: https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases ; https://docs.docker.com/build/building/multi-platform/ .
 
-For a fresh computer, the public download page provides **one install-and-start invocation**. That invocation detects platform, downloads a versioned supported bundle, checks its release checksum, installs in an appropriate location, then directly runs the installed entrypoint by absolute path. It must not stop with “now edit PATH/source this file/run another command.” Future PATH integration is idempotent; it cannot change the caller's current shell, so initial configuration must not depend on it. No example URL is published in this draft. `autobyteus-share` is a proposed command name only, NOT callable today.
+For a fresh computer, the public download page provides **one install-and-start invocation**. That invocation detects platform, downloads a versioned supported bundle, checks its release checksum, installs in an appropriate location, then directly runs the installed entrypoint by absolute path. It must not stop with “now edit PATH/source this file/run another command.” Future PATH integration is idempotent; it cannot change the caller's current shell, so initial configuration must not depend on it. No example URL is published in this draft. `autobyteus-nfs` is a proposed command name only, NOT callable today.
 
 ### User journey
 
 1. Run the single install-and-start entry (or installed command on a configured computer).
-2. Choose **Create shared folder** or **Connect to existing shared folder**.
+2. Choose **Create shared filesystem** or **Connect to existing filesystem**.
 3. Create: choose existing/new supported source folder, select native/default or Docker deployment if desired, and review the approved trusted-private-network access policy. Connect: paste the displayed server connection information. No NFS/protocol/UID/fstab editing or command assembly.
 4. Request only necessary OS/password/privacy approvals and selected Docker-node disruption consent. Configure the supported backend, persistent native mount/reconnect and selected local Docker volumes at the common root where supported.
 5. Verify same storage and actual runtime-identity read/write, then print the usable root, server/source mapping and each participating node's result. Example path from experiments: `/Volumes/autobyteus-shared/project`; final source can be any qualified selected source, not an implicit copy.

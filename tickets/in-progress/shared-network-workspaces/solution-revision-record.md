@@ -199,3 +199,12 @@ SR-012 routing decision2026-10-13: fresh get_handoff_rules returned completed Ar
 - Routing: routine direct-user recommendation conversation, not a materially completed new feasibility handoff. Fresh rule lookup after persistence; no duplicate PM question or premature implementation route. Return rough solution to user when no rule applies.
 
 SR-013 route decision2026-10-13: fresh get_handoff_rules returned only completed-architecture size/risk and returned-delivery receipt-gap rules. NONE matches a requested rough packaging/MVP user conversation with Draft design. Return recommendation directly to user; no duplicate PM approval/blocker message, Product handoff, implementation route or delegate_task bypass. No approval of a concrete security policy, new scope, finished command or delivery inferred.
+
+## SR-014 — AutoByteus NFS Naming
+
+- Trigger: user rejects folder-sharing branding and suggests shared filesystem/NFS, expressly “autobyteus nfs.”
+- Decision: AutoByteus NFS product/service; autobyteus-nfs planned CLI/source package; Create/Connect shared-filesystem labels. Designer decides within explicit user direction, no repeated generic approval.
+- Impact: naming-only, canonical requirements/design/notes/full result aligned. Stable package shared-network-workspaces/Task/path IDs and Approved SR012 behavior/ACs retained. No mount-path rename, engine qualification, scope/security approval, implementation/release/command-availability claim.
+- Status: Draft design still incomplete/unclassified; prior feasibility/gates unchanged. No new experiments/source/CI/live actions. Routine direct-user naming result, fresh rules checked before disposition; no duplicate PM or implementation handoff.
+
+SR014 route decision: current rules cover completed architecture size/risk and delivery-receipt gaps only. None applies to naming-only user clarification with Draft design. Return directly to user; no duplicate PM, implementation forwarding or delegate_task.
