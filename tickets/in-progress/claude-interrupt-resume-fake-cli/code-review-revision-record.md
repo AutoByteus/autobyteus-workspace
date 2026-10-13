@@ -1,11 +1,12 @@
 # Code Review Revision Record
 
-The latest [code-review-report.md](code-review-report.md) is authoritative for this focused failure-origin result. No previous source-review or successful-test Pass is implied.
+Each canonical report remains authoritative for its entry point. [code-review-report.md](code-review-report.md) retains CRR-001's failure-origin result; the current repaired-package result is [api-e2e-test-review-report.md](api-e2e-test-review-report.md), CRR-002, with the verified closure below. No previous source-review Pass is implied.
 
 ## Revision Index
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | code-review-report.md | API/E2E Failure-Origin Review / API-REV-001 | N/A | Fail / Local Fix — test fixture | API-F001 |
+| CRR-002 | api-e2e-test-review-report.md | Proportional durable test-code repair review / API-REV-002 | CRR-001 Fail | Pass; API-F001 Resolved | API-F001 |
 
 ## Revision Entries
 
@@ -37,3 +38,26 @@ None — initial baseline.
 - Handoff rule: get_handoff_rules returned the specific API/E2E failure-origin coverage/test/fixture/environment/execution/reporting rule to that exact recipient; only that rule selected.
 - Return path: API-owned bounded baseline correction, cumulative API artifacts and serial executable revalidation; then separate proportional durable test-code review per failure-rework workflow before delivery.
 - Remaining limits: target acceptance not met; deferred regressions/typecheck/repeat/harness checks; scripted provider frames, no model/other OS proof; manager cleanup failure is not erased by sampled physical-process cleanup. Delivery gates remain later.
+
+
+### CRR-002 — Pass proportional MCP fixture repair review
+- Date: 2026-10-13; cumulative review round **2**, first proportional successful test-code review.
+- Canonical report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/api-e2e-test-review-report.md`. Original failure-origin report remains unchanged and entry-specific.
+- Review scope: **N/A — proportional test review**, only API-authored durable delta; no full source audit or source score.
+- Trigger: API/E2E Engineer, `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/api-e2e-execution-coverage-report.md`, **API-REV-002 Pass / 97.5%**, following CRR-001/API-F001.
+- Relevant revisions: solution **SR-001/SR-002**; architecture review **N/A — not applicable**; implementation **IR-001**; API/E2E **API-REV-001/API-REV-002**; delivery **N/A**.
+- Prior authoritative result: **CRR-001 Fail / Local Fix — test fixture**. Current: **CRR-002 Pass — proportional repair review**.
+- Reviewed source `eff597d4ce1f40f1fbe489a6b9a340d6623e2a77`; passed artifact checkpoint `16e4da6e0544950f0fc9c7f2b60db609b90577e7`.
+- Delta: current interface explicitly types local no-exposure authority; both required methods supplied, truthful no-entry deactivation count 0, dependency shape-hiding cast removed; 7 additions/1 deletion in one target test.
+- Scenario/material-premise basis changes: **None**; approved operational regression and resource-release contract retained; no new product behavior or production accommodation.
+- What changed and why: successful execution plus direct code/contract/preservation checks close API-F001 and satisfy required repair review; no prior source-review Pass invented.
+
+#### Prior Finding Resolution
+| Finding ID | Prior Status | Current Status | Related Revisions | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| API-F001 | Open — CRR-001 Local Fix/test fixture | **Resolved** | CRR-001/CRR-002, API-REV-001/API-REV-002, eff597d4ce | Typed complete no-exposure authority; unchanged real cleanup/assertions; raw target-3/4 all eight Pass/no errors, exact target-5 8 passed/1 skipped exit 0; source receipt evidence/code-review/crr-002-repair-review-check.json |
+
+- New/remaining findings: **None**.
+- Score/classification: source score **N/A**; review **Pass** (not a failure classification); Small/Low retained. Upstream API confidence 97.5% not rescored.
+- Recommended recipient: **/software_engineering_team/delivery_engineer**, confirmed by get_handoff_rules' post-API/E2E durable-test review Pass rule; only that specific rule selected.
+- Remaining limits: live/paid provider and other OS not certified, seven excluded baseline test-typing diagnostics; Delivery integrated verification/user verification/personal merge/push/cleanup remain later; no release requested.
