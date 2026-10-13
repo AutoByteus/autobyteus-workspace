@@ -20,6 +20,9 @@ index describes the initial round; no missing prior record is treated as a pass.
 - Docs **Updated** in four canonical web/server documents; report above.
 - Decision **No release**, guide default; no installed-app update, version/tag,
   deployment or persisted-data transition. Notes prepared for future release.
+- Second base refresh: sidebar change integrated at `5b7c1931` from
+  `4c77cec80`; expanded 13 files/207 tests and all 3 guards pass. Same DR-001
+  initial round, no previous delivery result.
 - Repository finalization/cleanup **Pending** at initial preparation. This same
   DR-001 round will record actual outcomes before its completion handoff.
 - Terminal return **Not yet eligible** until finalization and cleanup complete;

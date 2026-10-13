@@ -29,8 +29,8 @@ No force push, tag rewrite, user runtime update or global worktree prune.
   arithmetic, logs and rendered screenshots inspected against every critical
   AC, plus the integrated rerun. 95% all seven API/E2E confidence categories;
   no material gap. More evidence requested **None**. User check needed **No**.
-- Re-verification after later refresh: no new target change at pre-final check;
-  exact finalization receipts will record the last target check.
+- Re-verification after later refresh: target advanced after the first ticket
+  push; see the completed reintegration record below. No stale-state target push.
 
 ## Documentation, notes and release decision
 Docs sync **Updated / Pass**: `docs-sync-report.md`. Added web `docs/token_meter.md`,
@@ -106,3 +106,24 @@ Never move/delete published tags. No migration or deployed state to roll back.
 Finalization/cleanup failure blocks terminal return; completed pushes are not
 undone merely to correct a receipt. Current unresolved product/evidence blockers
 **None**; terminal eligibility still requires actual repository/cleanup receipts.
+
+## Pre-finalization target advance / re-verification
+After ticket commit/push `90624f77d706b48616b2458884113ccbc2eb6400`, the required
+fetch found origin/personal had advanced to
+`4c77cec80d965e0f96658cb2d2881fa6d6a39d96` (sidebar red Stop styling).
+The equality guard stopped finalization **before** target branch creation/merge.
+Delivery edits were already committed and protected. Merged the new base
+conflict-free at `5b7c1931cc98fab44776af239e5c18f146418e94` on the ticket branch.
+Shared execution-architecture edits are in disjoint sections; both retained.
+No TPS source, transport, contract, model/call semantics or API changed.
+
+Re-ran the entire 10-file TPS suite plus the three inherited sidebar suites:
+**13 files / 207 tests pass**, plus all three web/localization guards. Exact
+command is retained at the head of `evidence/delivery/web-reintegration.log`;
+added paths are `components/workspace/history/__tests__/DelegatedStopButton.spec.ts`,
+`components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts`,
+`composables/__tests__/useWorkspaceHistoryMutations.spec.ts`. All listed TPS
+source hashes remain equal to API/E2E evidence. Re-verification **Sufficient**,
+no user check; prior packaged evidence proves unchanged TPS source, not the
+newly inherited sidebar styling. No material handoff-behavior change. The
+latest integrated base for documentation/finalization is now `4c77cec80`.

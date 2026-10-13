@@ -62,3 +62,24 @@ Upstream cleanup receipts show browser/servers/desktop stopped, ports released,
 owned data/homes removed; no user app, data or CLI config modified. Repository
 cleanup and final push receipts are in the delivery report. Verification was
 completed before ticket archival, branch publication or target finalization.
+
+## Pre-finalization target advance / re-verification
+After ticket commit/push `90624f77d706b48616b2458884113ccbc2eb6400`, the required
+fetch found origin/personal had advanced to
+`4c77cec80d965e0f96658cb2d2881fa6d6a39d96` (sidebar red Stop styling).
+The equality guard stopped finalization **before** target branch creation/merge.
+Delivery edits were already committed and protected. Merged the new base
+conflict-free at `5b7c1931cc98fab44776af239e5c18f146418e94` on the ticket branch.
+Shared execution-architecture edits are in disjoint sections; both retained.
+No TPS source, transport, contract, model/call semantics or API changed.
+
+Re-ran the entire 10-file TPS suite plus the three inherited sidebar suites:
+**13 files / 207 tests pass**, plus all three web/localization guards. Exact
+command is retained at the head of `evidence/delivery/web-reintegration.log`;
+added paths are `components/workspace/history/__tests__/DelegatedStopButton.spec.ts`,
+`components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts`,
+`composables/__tests__/useWorkspaceHistoryMutations.spec.ts`. All listed TPS
+source hashes remain equal to API/E2E evidence. Re-verification **Sufficient**,
+no user check; prior packaged evidence proves unchanged TPS source, not the
+newly inherited sidebar styling. No material handoff-behavior change. The
+latest integrated base for documentation/finalization is now `4c77cec80`.
