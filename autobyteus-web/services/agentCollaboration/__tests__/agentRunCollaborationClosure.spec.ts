@@ -66,4 +66,19 @@ describe('Agent root closed task executions', () => {
     expect(() => context.applyEvent(5, { kind: 'task_executions_closed', task_executions: [{ agentRunId: 'ghost-run' }] })).toThrow()
     expect(context.phase).toBe('reopen_required')
   })
+
+  it('a live Save of a copy\'s model reloads the view; the reloaded index gives that copy the model it runs on (CR-001, CR-002)', () => {
+    const selection = { llmModelIdentifier: 'chosen', llmConfig: null, selectedAt: created }
+    expect(buildClosureContext().applyEvent(5, { kind: 'delegated_launch_selections_changed', selections: [{ agentRunId: 'writer-run', selection }] }))
+      .toBe('checkpoint_required')
+    const context = buildClosureContext()
+    expect(() => context.applyEvent(5, { kind: 'delegated_launch_selections_changed', selections: [{ agentRunId: 'ghost-run', selection }] })).toThrow()
+    expect(context.phase).toBe('reopen_required')
+    const view = closureView()
+    view.execution_tree = { ...view.execution_tree, taskExecutions: view.execution_tree.taskExecutions.map((task) =>
+      'agentRunId' in task && task.agentRunId === 'writer-run' ? { ...task, userLaunchSelection: selection } : task) }
+    const index = buildClosureContext(view).index
+    expect(index.requireAgent('writer-run').source.launchConfiguration.llmModelIdentifier).toBe('chosen')
+    expect(index.requireAgent('other-task-run').source.launchConfiguration.llmModelIdentifier).not.toBe('chosen')
+  })
 })

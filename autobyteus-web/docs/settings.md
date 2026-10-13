@@ -1082,8 +1082,12 @@ The saved-run view uses the start surfaces' visual language:
     own changed models in one request (`updateDelegatedLaunchSelections` with
     `configuredPatches`); a workspace change is saved on its own. A copy woken
     before Save refuses the Save ("This copy is running. Stop it, then change its
-    model."). Saved choices stay shown for the run even before its live view is
-    read again.
+    model."). Right after Save the rows show the saved choice: Settings reads the
+    run's settings again (Team and Org runs), and a live run publishes the choice
+    to its views (`DELEGATED_LAUNCH_SELECTIONS_CHANGED` on the Team stream,
+    `delegated_launch_selections_changed` on Org and Agent streams). The Team view
+    records it in place; Org and Agent views reload. Member conversations then
+    show the model the copy runs on.
   - **Closed copies.** Copies whose Task is DONE or CANCELLED, and everything
     under them, are left out.
   - **Refresh.** For a saved Team or Org run, a copy started while Settings is

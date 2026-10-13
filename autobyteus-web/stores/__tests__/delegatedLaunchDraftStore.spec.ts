@@ -55,7 +55,7 @@ describe('delegatedLaunchDraftStore', () => {
     expect(store.dirty).toBe(false)
   })
 
-  it('saves the changes with a stopped run\'s own settings, keeps them as recorded and clears the edit', async () => {
+  it('saves the changes with a stopped run\'s own settings and clears the edit; the run, not the store, records them', async () => {
     const store = useDelegatedLaunchDraftStore()
     store.bind(root)
     await flush()
@@ -66,13 +66,10 @@ describe('delegatedLaunchDraftStore', () => {
     expect(client.updateDelegatedLaunchSelections).toHaveBeenCalledWith({ ...root,
       changes: [{ key: 'agent:copy', selection: { llmModelIdentifier: 'sonnet', llmConfig: null } }], configuredPatches: [patch] })
     expect(store.dirty).toBe(false)
-    expect(store.saved['agent:copy']).toEqual({ llmModelIdentifier: 'sonnet', llmConfig: null })
     expect(store.feedback).toEqual({ kind: 'success', message: 'Saved.' })
-    // A live run's view carries no event for the choice: it stays recorded for this run across Settings visits.
-    store.bind({ rootKind: 'AGENT_ORG', rootRunId: 'org' })
-    expect(store.saved).toEqual({})
-    store.bind(root)
-    expect(store.saved['agent:copy']).toEqual({ llmModelIdentifier: 'sonnet', llmConfig: null })
+    // CR-002: no client copy of the saved choice; rows read it from the run's view or Settings' reload.
+    expect(store.$state).not.toHaveProperty('savedByRoot')
+    expect(store).not.toHaveProperty('saved')
   })
 
   it('keeps the edit and reports a refusal (a copy woken meanwhile, AC-011)', async () => {

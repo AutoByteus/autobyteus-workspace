@@ -96,4 +96,23 @@ describe('Agent Org closed task executions', () => {
       .toEqual([{ teamRunId: 'team-task' }])
     expect(() => parseAgentOrgHistoryItem(raw)).toThrow()
   })
+
+  it('a live Save of a copy\'s model reloads the view; the reloaded index gives copies the model they run on (CR-001, CR-002)', () => {
+    const selection = { llmModelIdentifier: 'chosen', llmConfig: null, selectedAt: '2026-10-13T00:00:00.000Z' }
+    const context = buildContext()
+    expect(context.applyEvent(9, { kind: 'delegated_launch_selections_changed', selections: [{ agentRunId: 'agent-worker-task', selection }] }))
+      .toBe('checkpoint_required')
+    expect(() => buildContext().applyEvent(9, { kind: 'delegated_launch_selections_changed', selections: [{ teamRunId: 'ghost', selection }] })).toThrow()
+    const view = structuredClone(taskBearingView())
+    const [worker, team] = view.execution_tree.rootOrg.taskExecutions as unknown as Record<string, unknown>[]
+    worker!.userLaunchSelection = selection
+    team!.userTeamLaunchSelection = { ...selection, llmModelIdentifier: 'team-choice' }
+    const index = new AgentOrgExecutionViewIndex(view)
+    const model = (agentRunId: string) => index.requireAgent(agentRunId).source.launchConfiguration.llmModelIdentifier
+    expect(model('agent-worker-task')).toBe('chosen')
+    // Members of a copy of a configured Team follow its choice when their launch equals the Team's (AR-003).
+    expect(model('agent-task-lead')).toBe('team-choice')
+    // The configured member at that address is no copy: it keeps its configured launch.
+    expect(model('agent-lead-configured')).toBe(new AgentOrgExecutionViewIndex(taskBearingView()).requireAgent('agent-lead-configured').source.launchConfiguration.llmModelIdentifier)
+  })
 })

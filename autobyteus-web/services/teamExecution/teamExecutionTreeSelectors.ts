@@ -11,6 +11,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName';
+import { agentRunKey, teamRunKey, type TaskExecutionTreeWalk } from '~/utils/collaboration/taskExecutionClosure';
 import type {
   TeamAgentExecutionLocation,
   TeamExecutionNavigationRow,
@@ -358,4 +359,25 @@ const configuredTeamAtAddress = (
     return null;
   };
   return visit(tree.root_team.members);
+};
+
+/** A node of the Team tree: Agents, and Teams with members, collaborators and task executions. */
+export type TeamTreeNode = Readonly<{ agent_run_id: string }> | Readonly<{
+  team_run_id: string; members?: readonly unknown[]; collaborators?: readonly unknown[]; task_executions?: readonly unknown[];
+  delegator_agent_run_id?: string | null;
+}>;
+export const teamTreeWalk: TaskExecutionTreeWalk<TeamTreeNode> = {
+  keyOf: (node) => 'agent_run_id' in node ? agentRunKey(node.agent_run_id) : teamRunKey(node.team_run_id),
+  childrenOf: (node) => 'agent_run_id' in node ? []
+    : [...(node.members ?? []), ...(node.collaborators ?? []), ...(node.task_executions ?? [])] as readonly TeamTreeNode[],
+};
+
+export const teamTreeRunKeys = (root: TeamTreeNode): ReadonlySet<string> => {
+  const keys = new Set<string>();
+  const visit = (node: TeamTreeNode): void => {
+    keys.add(teamTreeWalk.keyOf(node));
+    teamTreeWalk.childrenOf(node).forEach(visit);
+  };
+  visit(root);
+  return keys;
 };

@@ -33,11 +33,6 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
     /** This edit's choices and the model each target had when it was first edited. */
     edits: {} as Record<DelegatedTargetKey, ExistingRunModelSelection>,
     originals: {} as Record<DelegatedTargetKey, ExistingRunModelSelection>,
-    /**
-     * Choices saved in this app session, per run. A live run's streamed view carries no event for
-     * them, so rows read them as recorded (a later view of the run already includes them).
-     */
-    savedByRoot: {} as Record<string, Record<DelegatedTargetKey, ExistingRunModelSelection>>,
     optionsByKey: {} as Record<DelegatedTargetKey, ExistingRunModelOptionsState>,
     optionsStatus: 'idle' as 'idle' | 'loading' | 'ready' | 'unavailable',
     optionsRequestId: 0,
@@ -49,9 +44,6 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
     stopFeedback: null as { kind: 'info' | 'error'; message: string } | null,
   }),
   getters: {
-    saved(state): Record<DelegatedTargetKey, ExistingRunModelSelection> {
-      return state.root ? state.savedByRoot[rootKey(state.root)] ?? {} : {}
-    },
     changes(state): readonly Readonly<{ key: DelegatedTargetKey; selection: ExistingRunModelSelection }>[] {
       return (Object.entries(state.edits) as [DelegatedTargetKey, ExistingRunModelSelection][])
         .filter(([key, selection]) => !state.originals[key] || !existingRunSelectionsEqual(state.originals[key]!, selection))
@@ -64,7 +56,10 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
     },
   },
   actions: {
-    /** Settings opened another run (or closed): this edit and the options start over; saved choices stay per run. */
+    /**
+     * Settings opened another run (or closed): this edit and the options start over. Saved choices
+     * are the server's: rows read them from the run (its live view, or Settings' reload after Save).
+     */
     bind(root: DelegatedRoot | null): void {
       if (sameRoot(this.root, root)) return
       this.root = root ? { ...root } : null
@@ -123,8 +118,6 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
           this.fieldErrors = [...result.fieldErrors]
           return false
         }
-        const saved = Object.fromEntries(this.changes.map(({ key, selection }) => [key, selection]))
-        this.savedByRoot = { ...this.savedByRoot, [rootKey(root)]: { ...this.saved, ...saved } }
         this.discard()
         this.feedback = { kind: 'success', message: result.message }
         void this.loadOptions()

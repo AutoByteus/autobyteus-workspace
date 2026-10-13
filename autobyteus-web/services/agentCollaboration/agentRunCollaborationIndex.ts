@@ -7,6 +7,7 @@ import {
   collaboratorAgentSourceAt,
   collaboratorExecutionNodes,
   collaboratorTeamSourceAt,
+  collaborationInstanceSource,
   type CollaborationAgentSource,
 } from '~/services/collaborators/agentSourceSelectors'
 
@@ -98,8 +99,10 @@ export class AgentRunCollaborationIndex {
     const source = collaboratorAgentSourceAt(this.tree.collaborators, address)
       ?? catalogAgentSourceAt(collaborationTaskExecutionLists(this.tree), address)
     if (!source) throw new Error(`No collaborator or catalog source at '${address}'.`)
+    // What this agent runs with: its user choice, else its Team's when it follows, else the started source (DS-003).
+    const own = collaborationInstanceSource({ collaborators: this.tree.collaborators, taskExecutions: collaborationTaskExecutionLists(this.tree) }, agentRunId, source)
     this.agents.set(agentRunId, Object.freeze({
-      agentRunId, address: parseAgentTeamAddress(address), kind, source, teamRunId, delegatorAgentRunId,
+      agentRunId, address: parseAgentTeamAddress(address), kind, source: own, teamRunId, delegatorAgentRunId,
     }))
   }
 

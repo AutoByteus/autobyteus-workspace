@@ -71,8 +71,6 @@ export type DelegatedRowControl = Readonly<{
   isStopping(reference: StopReference): boolean
   /** This edit's choice for a target, if any. */
   draftOf(target: TargetKey): Selection | null
-  /** A choice saved since the run's tree was read (it counts as recorded). */
-  savedOf?(target: TargetKey): Selection | null
 }>
 const NO_CONTROL: DelegatedRowControl = { editable: false, isAgentLive: () => false, isStopping: () => false, draftOf: () => null }
 const LOCKED: RunSettingFlags = { workspace: true, model: true, thinking: true, approval: true }
@@ -152,9 +150,8 @@ type RowInput = Readonly<{
 /** Nodes from neutral facts (both DTO casings), shaped like the run's own Members: a Team shows its settings card, then its agents. */
 const builders = (deps: RunMemberTreeDeps, control: DelegatedRowControl, rule: LaunchRule) => {
   const rowFacts = (input: RowInput, isTeam: boolean) => {
-    const savedTeam = control.savedOf?.(isTeam ? input.target : input.teamTarget ?? input.target) ?? null
-    const recordedTeam = (isTeam || input.teamTarget ? savedTeam : null) ?? input.recorded.team ?? null
-    const recordedAgent = isTeam ? null : control.savedOf?.(input.target) ?? input.recorded.agent ?? null
+    const recordedTeam = input.recorded.team ?? null
+    const recordedAgent = isTeam ? null : input.recorded.agent ?? null
     // A Team row's card is the Team's choice; an agent follows the Team's choice only when it follows the Team.
     const followsTeam = isTeam || Boolean(input.followsTeam)
     const draftTeam = isTeam ? control.draftOf(input.target) : input.teamTarget ? control.draftOf(input.teamTarget) : null
