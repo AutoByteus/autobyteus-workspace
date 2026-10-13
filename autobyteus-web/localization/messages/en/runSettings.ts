@@ -53,6 +53,7 @@ const runSettingsMessages = {
   'runSettings.status.stopped': 'Stopped',
   'runSettings.existing.readOnlyNote': "This run's settings can't be changed.",
   'runSettings.existing.refreshNote': 'Saved settings need a refresh before you can change them.',
+  'runSettings.existing.savedRefreshFailed': 'Settings were saved, but could not be refreshed. Refresh before making more changes.',
   'runSettings.existing.refresh': 'Refresh',
   'runSettings.save.unsavedResumes': 'Unsaved changes · they apply when this run resumes',
   'runSettings.save.cancel': 'Cancel',

@@ -177,7 +177,7 @@ const memberLocked = computed<RunSettingFlags>(() => ({
 }))
 
 const note = computed(() => {
-  if (props.state === 'refresh_required') return { tone: 'warning', text: t('runSettings.existing.refreshNote'), refresh: true }
+  if (props.state === 'refresh_required') return { tone: 'warning', text: props.saveError ?? t('runSettings.existing.refreshNote'), refresh: true }
   if (props.stop.error) return { tone: 'error', text: props.stop.error, refresh: false }
   if (props.saveError) return { tone: 'error', text: props.saveError, refresh: false }
   if (props.delegatedNotice) return { ...props.delegatedNotice, refresh: false }

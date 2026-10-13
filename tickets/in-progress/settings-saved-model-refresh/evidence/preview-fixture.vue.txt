@@ -1,0 +1,37 @@
+<template><main class="min-h-screen bg-slate-100 p-4"><section class="mx-auto flex min-h-[780px] max-w-[760px] flex-col rounded-xl border bg-white"><header class="border-b p-4"><h1 class="font-semibold">Settings refresh — implementation preview</h1><p class="text-xs text-gray-500">Fixture data, simulated network. Not backend or desktop verification.</p><button class="mt-2 rounded border px-2 text-sm" @click="failNext = true">Fail next readback</button></header><ExistingRunConfigEditor /></section></main></template>
+<script setup lang="ts">
+import ExistingRunConfigEditor from '~/components/workspace/config/ExistingRunConfigEditor.vue'
+import { agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture'
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
+import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
+definePageMeta({ layout: false })
+let failNext = false
+const stored = agentRootView(); stored.is_active = false
+const choice = (id: string) => ({ llmModelIdentifier: id, providerName: 'Preview', displayName: id, canonicalName: id, description: null, configSchema: null, recommended: false })
+const options = { currentModelIdentifier: 'root-model', currentModel: choice('root-model'), replacements: [choice('root-model'), choice('saved-model')], unavailableReason: null }
+useLLMProviderConfigStore().fetchProvidersWithModels = async () => {}
+const nuxt = useNuxtApp() as any
+nuxt.__boundApolloClient = {
+ query: async ({ query }: any) => {
+  const name = query.definitions[0].name.value
+  if (name === 'GetAgentRunResumeConfig') return { data: { getAgentRunResumeConfig: { runId: 'host-run', isActive: false, modelConfigEditability: { editable: true, reason: null }, metadataConfig: { agentDefinitionId: 'research-assistant', runtimeKind: 'codex_app_server', llmModelIdentifier: 'root-model', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null } } } }
+  if (name === 'GetAgentRunCollaboration') {
+   if (failNext) { failNext = false; throw new Error('Preview readback failure') }
+   return { data: { agentRunCollaboration: { root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: structuredClone(stored) } } }
+  }
+  if (name === 'AgentRunModelOptions') return { data: { agentRunModelOptions: options } }
+  if (name === 'DelegatedLaunchModelOptions') return { data: { delegatedLaunchModelOptions: ['cua-run','pp-run','pb-run'].map(agentRunId => ({ scope: 'agent', agentRunId, teamRunId: null, ...options })).concat([{ scope: 'team', agentRunId: null, teamRunId: 'team-run', ...options }] as any) } }
+  return { data: {} }
+ },
+ mutate: async ({ variables }: any) => {
+  for (const c of variables.input.changes) {
+   const entry = stored.execution_tree.collaborators.find((e: any) => e.agentRunId === c.agentRunId || e.teamRunId === c.teamRunId) as any
+   if (entry) entry[c.teamRunId ? 'userTeamLaunchSelection' : 'userLaunchSelection'] = { ...c.selection, selectedAt: new Date().toISOString() }
+  }
+  return { data: { updateDelegatedLaunchSelections: { success: true, outcome: 'UPDATED', message: 'Saved.', fieldErrors: [] } } }
+ }
+}
+useAgentDefinitionStore().agentDefinitions = [{ id: 'research-assistant', name: 'Research assistant' } as any]
+useAgentSelectionStore().setRunSelection('host-run', 'agent')
+</script>

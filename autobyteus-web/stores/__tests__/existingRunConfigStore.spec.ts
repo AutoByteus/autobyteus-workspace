@@ -30,6 +30,7 @@ const mocks = vi.hoisted(() => ({
   updateAgent: vi.fn(),
   updateTeam: vi.fn(),
   refreshAgent: vi.fn(),
+  readCollaboration: vi.fn(async () => null as any),
   refreshTeam: vi.fn(),
   patchConfigOnly: vi.fn(),
   readOrg: vi.fn(),
@@ -37,6 +38,8 @@ const mocks = vi.hoisted(() => ({
   resumeConfigByRunId: {} as Record<string, unknown>,
   teamResumeConfigByTeamRunId: {} as Record<string, unknown>,
 }))
+
+vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({ readAgentRunCollaboration: mocks.readCollaboration }))
 
 vi.mock('~/services/runConfigEditing/existingRunModelOptionsClient', () => ({ loadExistingRunModelOptions: vi.fn().mockResolvedValue({}) }))
 
@@ -763,4 +766,90 @@ describe('Org destination request guards', () => {
     expect(store.draft).toBe(replacement); expect(store.feedback).toBeNull()
     store.clear()
   })
+})
+
+
+describe('stopped Agent canonical collaboration snapshot', () => {
+  const snapshot = () => ({ execution_tree: { collaborators: [], taskExecutions: [] }, closed_task_executions: [] })
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    mocks.readCollaboration.mockReset().mockResolvedValue(null)
+    mocks.refreshAgent.mockReset()
+  })
+  it('stages metadata and collaboration together, retains only the copied Settings slice and preserves it on root-only sync', async () => {
+    const store = useExistingRunConfigStore()
+    const pending = deferred<any>()
+    mocks.refreshAgent.mockResolvedValue(agentPayload())
+    mocks.readCollaboration.mockReturnValueOnce(pending.promise)
+    const loading = store.loadAgentCanonical('run-1')
+    await vi.waitFor(() => expect(mocks.readCollaboration).toHaveBeenCalledWith('run-1'))
+    expect(store.draft).toBeNull()
+    const source = { ...snapshot(), communication_messages: ['not Settings data'] }
+    pending.resolve(source)
+    expect(await loading).toBe(true)
+    expect(store.draft).toMatchObject({ delegatedSnapshot: snapshot() })
+    expect((store.draft as any).delegatedSnapshot).not.toHaveProperty('communication_messages')
+    source.closed_task_executions.push({ agentRunId: 'mutated' } as never)
+    expect((store.draft as any).delegatedSnapshot.closed_task_executions).toEqual([])
+    store.syncAgentCanonical(agentPayload({ llmConfig: { effort: 'high' } }))
+    expect((store.draft as any).delegatedSnapshot).toEqual(snapshot())
+    store.syncAgentCanonical(agentPayload({ runId: 'other' }))
+    expect((store.draft as any).delegatedSnapshot).toBeNull()
+  })
+  it('does not fetch collaboration for an active parent and establishes the snapshot when stopped', async () => {
+    const store = useExistingRunConfigStore()
+    mocks.refreshAgent.mockResolvedValueOnce(agentPayload({ isActive: true, modelConfigEditability: activeEditability() }))
+    expect(await store.loadAgentCanonical('run-1')).toBe(true)
+    expect(mocks.readCollaboration).not.toHaveBeenCalled()
+    mocks.refreshAgent.mockResolvedValueOnce(agentPayload())
+    mocks.readCollaboration.mockResolvedValueOnce(snapshot())
+    expect(await store.reloadCanonical()).toBe(true)
+    expect((store.draft as any).delegatedSnapshot).toEqual(snapshot())
+  })
+  it.each(['metadata', 'collaboration'])('ignores a response across a node rebind while awaiting %s', async phase => {
+    const store = useExistingRunConfigStore()
+    const pending = deferred<any>()
+    mocks.refreshAgent.mockReturnValueOnce(phase === 'metadata' ? pending.promise : Promise.resolve(agentPayload()))
+    if (phase === 'collaboration') mocks.readCollaboration.mockReturnValueOnce(pending.promise)
+    const loading = store.loadAgentCanonical('run-1')
+    if (phase === 'collaboration') await vi.waitFor(() => expect(mocks.readCollaboration).toHaveBeenCalledWith('run-1'))
+    useWindowNodeContextStore().bindingRevision += 1
+    pending.resolve(phase === 'metadata' ? agentPayload() : snapshot())
+    expect(await loading).toBe(false)
+    expect(store.draft).toBeNull()
+    if (phase === 'metadata') expect(mocks.readCollaboration).not.toHaveBeenCalled()
+  })
+  it('failed collaboration read is not a successful null snapshot; a complete retry reads it again', async () => {
+    const store = useExistingRunConfigStore()
+    mocks.refreshAgent.mockResolvedValue(agentPayload())
+    mocks.readCollaboration.mockRejectedValueOnce(new Error('network'))
+    expect(await store.loadAgentCanonical('run-1')).toBe(false)
+    expect(store.reconciliationRequired).toBe(true)
+    expect(store.draft).toBeNull()
+    mocks.readCollaboration.mockResolvedValueOnce(null)
+    await store.retryCanonicalRefresh()
+    expect(store.reconciliationRequired).toBe(false)
+    expect((store.draft as any).delegatedSnapshot).toBeNull()
+    expect(mocks.readCollaboration).toHaveBeenCalledTimes(2)
+  })
+})
+
+it.each(['agent', 'team'] as const)('ignores an old %s root-only Save after a node switch with the same run ID', async kind => {
+  setActivePinia(createPinia())
+  const store = useExistingRunConfigStore()
+  const pending = deferred<any>()
+  if (kind === 'agent') {
+    mocks.updateAgent.mockReturnValueOnce(pending.promise)
+    store.syncAgentCanonical(agentPayload())
+  } else {
+    mocks.updateTeam.mockReturnValueOnce(pending.promise)
+    store.syncTeamCanonical(teamPayload() as never)
+  }
+  const saving = kind === 'agent' ? store.saveAgent(store.draft as any) : store.saveTeam(store.draft as any)
+  useWindowNodeContextStore().bindingRevision += 1
+  const current = store.draft
+  pending.resolve({ success: true, message: 'Old node saved', canonicalSelection: { llmModelIdentifier: 'other', llmConfig: null }, canonicalExecutionTree: teamPayload().executionTree })
+  expect(await saving).toBe(false)
+  expect(store.draft).toBe(current)
+  expect(store.feedback?.kind).not.toBe('success')
 })
