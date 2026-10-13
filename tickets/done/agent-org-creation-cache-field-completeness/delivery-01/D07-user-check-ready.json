@@ -1,0 +1,811 @@
+{
+  "startedAt": "2026-10-13T06:45:56.988Z",
+  "label": "D07-user-check-ready",
+  "instanceId": "iso-61565-91a4",
+  "purpose": "Integrated delivery smoke and human-check setup; NOT human acceptance",
+  "events": [],
+  "operations": [],
+  "pages": {
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-edit&id=cache-fix-verification-org",
+    "headings": [
+      "Edit Cache Fix Verification Org Edited",
+      "Basics",
+      "Members",
+      "Handoffs"
+    ],
+    "buttons": [
+      "Chat",
+      "",
+      "",
+      "Agents",
+      "Agent Teams",
+      "Agent Orgs",
+      "Projects",
+      "Skills",
+      "Memory",
+      "Nodes",
+      "",
+      "Temp Workspace",
+      "Settings",
+      " Back to Agent Orgs",
+      "",
+      "Upload image",
+      " Add member",
+      "",
+      "",
+      " Add handoff",
+      "",
+      "",
+      "Edit",
+      "Delete",
+      "Cancel",
+      "Save changes"
+    ],
+    "links": [],
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nBack to Agent Orgs\nEdit Cache Fix Verification Org Edited\n\nAdd Agents and Teams, then configure handoffs.\n\nAvatar (optional)\n\nCF\nUpload image\n\nJPEG, PNG, GIF or WebP. Saved with the Org.\n\nBasics\nName\nDescription\nMembers\nAdd member\nAgents\nVC\n\nVerification Control Agent\n\nCF\n\nCache Fix Verification Agent Edited\n\nTeams\n\nNo Teams added.\n\nHandoffs\nAdd handoff\nEdit\nDelete\n\nFROM\n\nVerification Control Agent\n\nTO\n\nCache Fix Verification Agent Edited\n\nWHEN\n\nWhen this review is complete, hand the package to the next member.\nPreserve the original member identity and rules.\nAgent Org saved.\nCancel\nSave changes"
+  },
+  "details": {
+    "agents": {
+      "cached": {
+        "agentDefinitions": [
+          {
+            "__typename": "AgentDefinition",
+            "id": "autobyteus-daily-assistant",
+            "name": "Daily Assistant",
+            "role": "General Agent",
+            "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+            "instructions": "You are Daily Assistant, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+            "category": null,
+            "avatarUrl": null,
+            "toolNames": [
+              "run_bash",
+              "read_file",
+              "read_url",
+              "search_web",
+              "close_tab",
+              "dom_snapshot",
+              "list_tabs",
+              "navigate_to",
+              "open_tab",
+              "run_script",
+              "screenshot",
+              "get_process_output",
+              "start_background_process",
+              "stop_background_process",
+              "download_media",
+              "edit_image",
+              "generate_image",
+              "generate_speech",
+              "read_media_file",
+              "list_available_agents"
+            ],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [],
+            "skillScope": "ALL_INSTALLED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          },
+          {
+            "__typename": "AgentDefinition",
+            "id": "autobyteus-retrospective-skill-improver",
+            "name": "Retrospective Skill Improver",
+            "role": "retrospective skill improver",
+            "description": "Improves configured durable skill packages from target run work-trace evidence.",
+            "instructions": "You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\n\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\n\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\n\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\n\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\n\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\n",
+            "category": "skill-improvement",
+            "avatarUrl": null,
+            "toolNames": [
+              "run_bash",
+              "send_message_to"
+            ],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [
+              "retrospective-skill-improver"
+            ],
+            "skillScope": "CONFIGURED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          },
+          {
+            "__typename": "AgentDefinition",
+            "id": "verification-control-agent",
+            "name": "Verification Control Agent",
+            "role": "Cache validation observer",
+            "description": "Disposable definition for real catalog cache proof.",
+            "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+            "category": "Cache validation",
+            "avatarUrl": null,
+            "toolNames": [],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [],
+            "skillScope": "CONFIGURED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          },
+          {
+            "__typename": "AgentDefinition",
+            "id": "cache-fix-verification-agent",
+            "name": "Cache Fix Verification Agent Edited",
+            "role": "Cache validation observer",
+            "description": "User-check Agent: current cache fix, create/edit save and diagnostic response.",
+            "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+            "category": "Cache validation",
+            "avatarUrl": null,
+            "toolNames": [],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [],
+            "skillScope": "CONFIGURED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          }
+        ]
+      },
+      "cacheFirst": {
+        "agentDefinitions": [
+          {
+            "__typename": "AgentDefinition",
+            "id": "autobyteus-daily-assistant",
+            "name": "Daily Assistant",
+            "role": "General Agent",
+            "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+            "instructions": "You are Daily Assistant, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+            "category": null,
+            "avatarUrl": null,
+            "toolNames": [
+              "run_bash",
+              "read_file",
+              "read_url",
+              "search_web",
+              "close_tab",
+              "dom_snapshot",
+              "list_tabs",
+              "navigate_to",
+              "open_tab",
+              "run_script",
+              "screenshot",
+              "get_process_output",
+              "start_background_process",
+              "stop_background_process",
+              "download_media",
+              "edit_image",
+              "generate_image",
+              "generate_speech",
+              "read_media_file",
+              "list_available_agents"
+            ],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [],
+            "skillScope": "ALL_INSTALLED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          },
+          {
+            "__typename": "AgentDefinition",
+            "id": "autobyteus-retrospective-skill-improver",
+            "name": "Retrospective Skill Improver",
+            "role": "retrospective skill improver",
+            "description": "Improves configured durable skill packages from target run work-trace evidence.",
+            "instructions": "You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\n\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\n\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\n\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\n\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\n\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\n",
+            "category": "skill-improvement",
+            "avatarUrl": null,
+            "toolNames": [
+              "run_bash",
+              "send_message_to"
+            ],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [
+              "retrospective-skill-improver"
+            ],
+            "skillScope": "CONFIGURED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          },
+          {
+            "__typename": "AgentDefinition",
+            "id": "verification-control-agent",
+            "name": "Verification Control Agent",
+            "role": "Cache validation observer",
+            "description": "Disposable definition for real catalog cache proof.",
+            "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+            "category": "Cache validation",
+            "avatarUrl": null,
+            "toolNames": [],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [],
+            "skillScope": "CONFIGURED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          },
+          {
+            "__typename": "AgentDefinition",
+            "id": "cache-fix-verification-agent",
+            "name": "Cache Fix Verification Agent Edited",
+            "role": "Cache validation observer",
+            "description": "User-check Agent: current cache fix, create/edit save and diagnostic response.",
+            "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+            "category": "Cache validation",
+            "avatarUrl": null,
+            "toolNames": [],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [],
+            "skillScope": "CONFIGURED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          }
+        ]
+      },
+      "store": {
+        "agentDefinitions": [
+          {
+            "__typename": "AgentDefinition",
+            "id": "autobyteus-daily-assistant",
+            "name": "Daily Assistant",
+            "role": "General Agent",
+            "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+            "instructions": "You are Daily Assistant, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+            "category": null,
+            "avatarUrl": null,
+            "toolNames": [
+              "run_bash",
+              "read_file",
+              "read_url",
+              "search_web",
+              "close_tab",
+              "dom_snapshot",
+              "list_tabs",
+              "navigate_to",
+              "open_tab",
+              "run_script",
+              "screenshot",
+              "get_process_output",
+              "start_background_process",
+              "stop_background_process",
+              "download_media",
+              "edit_image",
+              "generate_image",
+              "generate_speech",
+              "read_media_file",
+              "list_available_agents"
+            ],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [],
+            "skillScope": "ALL_INSTALLED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          },
+          {
+            "__typename": "AgentDefinition",
+            "id": "autobyteus-retrospective-skill-improver",
+            "name": "Retrospective Skill Improver",
+            "role": "retrospective skill improver",
+            "description": "Improves configured durable skill packages from target run work-trace evidence.",
+            "instructions": "You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\n\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\n\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\n\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\n\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\n\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\n",
+            "category": "skill-improvement",
+            "avatarUrl": null,
+            "toolNames": [
+              "run_bash",
+              "send_message_to"
+            ],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [
+              "retrospective-skill-improver"
+            ],
+            "skillScope": "CONFIGURED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          },
+          {
+            "__typename": "AgentDefinition",
+            "id": "verification-control-agent",
+            "name": "Verification Control Agent",
+            "role": "Cache validation observer",
+            "description": "Disposable definition for real catalog cache proof.",
+            "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+            "category": "Cache validation",
+            "avatarUrl": null,
+            "toolNames": [],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [],
+            "skillScope": "CONFIGURED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          },
+          {
+            "__typename": "AgentDefinition",
+            "id": "cache-fix-verification-agent",
+            "name": "Cache Fix Verification Agent Edited",
+            "role": "Cache validation observer",
+            "description": "User-check Agent: current cache fix, create/edit save and diagnostic response.",
+            "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+            "category": "Cache validation",
+            "avatarUrl": null,
+            "toolNames": [],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [],
+            "skillScope": "CONFIGURED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          }
+        ],
+        "loading": false,
+        "error": null,
+        "deleteResult": null
+      },
+      "normalized": {
+        "AgentDefinition:autobyteus-daily-assistant": {
+          "__typename": "AgentDefinition",
+          "id": "autobyteus-daily-assistant",
+          "name": "Daily Assistant",
+          "role": "General Agent",
+          "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+          "instructions": "You are Daily Assistant, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+          "category": null,
+          "avatarUrl": null,
+          "toolNames": [
+            "run_bash",
+            "read_file",
+            "read_url",
+            "search_web",
+            "close_tab",
+            "dom_snapshot",
+            "list_tabs",
+            "navigate_to",
+            "open_tab",
+            "run_script",
+            "screenshot",
+            "get_process_output",
+            "start_background_process",
+            "stop_background_process",
+            "download_media",
+            "edit_image",
+            "generate_image",
+            "generate_speech",
+            "read_media_file",
+            "list_available_agents"
+          ],
+          "inputProcessorNames": [],
+          "llmResponseProcessorNames": [],
+          "toolExecutionResultProcessorNames": [],
+          "toolInvocationPreprocessorNames": [],
+          "lifecycleProcessorNames": [],
+          "skillNames": [],
+          "skillScope": "ALL_INSTALLED",
+          "ownershipScope": "SHARED",
+          "ownerTeamId": null,
+          "ownerTeamName": null,
+          "ownerApplicationId": null,
+          "ownerApplicationName": null,
+          "ownerPackageId": null,
+          "ownerLocalApplicationId": null,
+          "defaultLaunchConfig": null,
+          "loadIssue": null
+        },
+        "AgentDefinition:autobyteus-retrospective-skill-improver": {
+          "__typename": "AgentDefinition",
+          "id": "autobyteus-retrospective-skill-improver",
+          "name": "Retrospective Skill Improver",
+          "role": "retrospective skill improver",
+          "description": "Improves configured durable skill packages from target run work-trace evidence.",
+          "instructions": "You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\n\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\n\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\n\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\n\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\n\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\n",
+          "category": "skill-improvement",
+          "avatarUrl": null,
+          "toolNames": [
+            "run_bash",
+            "send_message_to"
+          ],
+          "inputProcessorNames": [],
+          "llmResponseProcessorNames": [],
+          "toolExecutionResultProcessorNames": [],
+          "toolInvocationPreprocessorNames": [],
+          "lifecycleProcessorNames": [],
+          "skillNames": [
+            "retrospective-skill-improver"
+          ],
+          "skillScope": "CONFIGURED",
+          "ownershipScope": "SHARED",
+          "ownerTeamId": null,
+          "ownerTeamName": null,
+          "ownerApplicationId": null,
+          "ownerApplicationName": null,
+          "ownerPackageId": null,
+          "ownerLocalApplicationId": null,
+          "defaultLaunchConfig": null,
+          "loadIssue": null
+        },
+        "AgentDefinition:verification-control-agent": {
+          "__typename": "AgentDefinition",
+          "id": "verification-control-agent",
+          "name": "Verification Control Agent",
+          "role": "Cache validation observer",
+          "description": "Disposable definition for real catalog cache proof.",
+          "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+          "category": "Cache validation",
+          "avatarUrl": null,
+          "toolNames": [],
+          "inputProcessorNames": [],
+          "llmResponseProcessorNames": [],
+          "toolExecutionResultProcessorNames": [],
+          "toolInvocationPreprocessorNames": [],
+          "lifecycleProcessorNames": [],
+          "skillNames": [],
+          "skillScope": "CONFIGURED",
+          "ownershipScope": "SHARED",
+          "ownerTeamId": null,
+          "ownerTeamName": null,
+          "ownerApplicationId": null,
+          "ownerApplicationName": null,
+          "ownerPackageId": null,
+          "ownerLocalApplicationId": null,
+          "defaultLaunchConfig": null,
+          "loadIssue": null
+        },
+        "AgentDefinition:cache-fix-verification-agent": {
+          "__typename": "AgentDefinition",
+          "id": "cache-fix-verification-agent",
+          "name": "Cache Fix Verification Agent Edited",
+          "role": "Cache validation observer",
+          "description": "User-check Agent: current cache fix, create/edit save and diagnostic response.",
+          "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+          "category": "Cache validation",
+          "avatarUrl": null,
+          "toolNames": [],
+          "inputProcessorNames": [],
+          "llmResponseProcessorNames": [],
+          "toolExecutionResultProcessorNames": [],
+          "toolInvocationPreprocessorNames": [],
+          "lifecycleProcessorNames": [],
+          "skillNames": [],
+          "skillScope": "CONFIGURED",
+          "ownershipScope": "SHARED",
+          "ownerTeamId": null,
+          "ownerTeamName": null,
+          "ownerApplicationId": null,
+          "ownerApplicationName": null,
+          "ownerPackageId": null,
+          "ownerLocalApplicationId": null,
+          "defaultLaunchConfig": null,
+          "loadIssue": null
+        }
+      }
+    },
+    "orgs": {
+      "cached": {
+        "agentOrgDefinitions": [
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-fix-verification-org",
+            "name": "Cache Fix Verification Org Edited",
+            "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "5f342d4d5fd59f331a93a3a8115b0c085c864168b422143254440882d7182866",
+            "handoffs": [
+              {
+                "__typename": "AgentOrgHandoff",
+                "from": "/verification_control_agent",
+                "to": "/cache_fix_verification_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "verification_control_agent",
+                "ref": "verification-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_fix_verification_agent_edited",
+                "ref": "cache-fix-verification-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          }
+        ]
+      },
+      "cacheFirst": {
+        "agentOrgDefinitions": [
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-fix-verification-org",
+            "name": "Cache Fix Verification Org Edited",
+            "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "5f342d4d5fd59f331a93a3a8115b0c085c864168b422143254440882d7182866",
+            "handoffs": [
+              {
+                "__typename": "AgentOrgHandoff",
+                "from": "/verification_control_agent",
+                "to": "/cache_fix_verification_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "verification_control_agent",
+                "ref": "verification-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_fix_verification_agent_edited",
+                "ref": "cache-fix-verification-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          }
+        ]
+      },
+      "store": {
+        "definitions": [
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-fix-verification-org",
+            "name": "Cache Fix Verification Org Edited",
+            "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "5f342d4d5fd59f331a93a3a8115b0c085c864168b422143254440882d7182866",
+            "handoffs": [
+              {
+                "__typename": "AgentOrgHandoff",
+                "from": "/verification_control_agent",
+                "to": "/cache_fix_verification_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "verification_control_agent",
+                "ref": "verification-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_fix_verification_agent_edited",
+                "ref": "cache-fix-verification-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          }
+        ],
+        "loading": false,
+        "error": null
+      },
+      "normalized": {
+        "AgentOrgDefinition:cache-fix-verification-org": {
+          "__typename": "AgentOrgDefinition",
+          "id": "cache-fix-verification-org",
+          "name": "Cache Fix Verification Org Edited",
+          "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+          "instructions": "",
+          "category": null,
+          "avatarUrl": null,
+          "revision": "5f342d4d5fd59f331a93a3a8115b0c085c864168b422143254440882d7182866",
+          "handoffs": [
+            {
+              "__typename": "AgentOrgHandoff",
+              "from": "/verification_control_agent",
+              "to": "/cache_fix_verification_agent_edited",
+              "rules": [
+                "When this review is complete, hand the package to the next member.",
+                "Preserve the original member identity and rules."
+              ]
+            }
+          ],
+          "members": [
+            {
+              "__typename": "AgentOrgMember",
+              "memberName": "verification_control_agent",
+              "ref": "verification-control-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            },
+            {
+              "__typename": "AgentOrgMember",
+              "memberName": "cache_fix_verification_agent_edited",
+              "ref": "cache-fix-verification-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "loadIssues": []
+        }
+      }
+    },
+    "page": {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-list",
+      "headings": [
+        "Agent Orgs",
+        "Featured organizations"
+      ],
+      "buttons": [
+        "Chat",
+        "",
+        "",
+        "Agents",
+        "Agent Teams",
+        "Agent Orgs",
+        "Projects",
+        "Skills",
+        "Memory",
+        "Nodes",
+        "",
+        "Temp Workspace",
+        "Settings",
+        " Reload",
+        "Create Agent Org",
+        "Run",
+        "View Details →"
+      ],
+      "links": [],
+      "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nAgent Orgs\nSearch Agent Orgs\nReload\nCreate Agent Org\nFeatured organizations\nCF\nCache Fix Verification Org Edited\n\nUser-check Org: two Agents and ordered handoff rules, current cache fix.\n\nRun\nView Details\n→\nverification control agent\ncache fix verification agent edited"
+    },
+    "userAcceptance": "Pending / NEW cache Task; old UI acceptance not inherited",
+    "modelExecution": "None"
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-13T06:45:57.832Z",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-list"
+}

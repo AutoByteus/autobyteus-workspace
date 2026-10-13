@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-13T06:39:07.779635+00:00",
+  "taskId": "project_task_6b9ce371-7593-42d7-9d20-3c637512830a",
+  "candidateHead": "c15c1ef2bfdd951c7b4a801effeaa860f55a5347",
+  "bootstrapBase": "dc2695cf968d15939b4b945a015fe465eb249605",
+  "integratedBase": "6473e269471cf5ad62abb4f70de63c47f48df485",
+  "integratedHead": "3ff08e15cd931dd778ba10d1d12f70b7bcaf16db",
+  "newBaseCommitsIntegrated": 40,
+  "method": "git fetch origin personal; git merge --no-edit origin/personal",
+  "checkpoint": "Not needed; candidate committed/clean tracked state; only generated SDK dist untracked",
+  "conflicts": false,
+  "postIntegrationTests": "7 suites/51 Pass; exact command in integrated-tests.log and handoff-summary.md",
+  "sourceBlobs": {
+    "autobyteus-web/graphql/mutations/agentDefinitionMutations.ts": "c655d8e3cdf76f04be74100196abafef302883f7",
+    "autobyteus-web/graphql/mutations/agentOrgDefinitionMutations.ts": "2817cb65d523a03c9a97d96b38415b5808d6e30f"
+  },
+  "baseRuntimeChanges": "File-explorer implementation + package version1.5.3-beta.3; fresh integrated rebuild required, not reusing API beta.2 binary",
+  "userVerification": "Pending / NEW Task; prior UI acceptance not inherited",
+  "releaseDecision": "Pending / NEW Task",
+  "retainedRef": "d8bac598606001b702e300eeaeefe06c3caf0d3d"
+}

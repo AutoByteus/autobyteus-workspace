@@ -1,0 +1,99 @@
+{
+  "queries": {
+    "GetAgentDefinitions": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssue {\n      code\n      reason\n      definitionPath\n      packageRoot\n      __typename\n    }\n  }\n}",
+    "GetAgentOrgDefinitions": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n    __typename\n  }\n}"
+  },
+  "controlAgent": {
+    "__typename": "AgentDefinition",
+    "id": "verification-control-agent",
+    "name": "Verification Control Agent",
+    "role": "Cache validation observer",
+    "description": "Disposable definition for real catalog cache proof.",
+    "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+    "category": "Cache validation",
+    "avatarUrl": null,
+    "toolNames": [],
+    "inputProcessorNames": [],
+    "llmResponseProcessorNames": [],
+    "toolExecutionResultProcessorNames": [],
+    "toolInvocationPreprocessorNames": [],
+    "lifecycleProcessorNames": [],
+    "skillNames": [],
+    "skillScope": "CONFIGURED",
+    "ownershipScope": "SHARED",
+    "ownerTeamId": null,
+    "ownerTeamName": null,
+    "ownerApplicationId": null,
+    "ownerApplicationName": null,
+    "ownerPackageId": null,
+    "ownerLocalApplicationId": null,
+    "defaultLaunchConfig": null,
+    "loadIssue": null
+  },
+  "primaryAgent": {
+    "__typename": "AgentDefinition",
+    "id": "cache-fix-verification-agent",
+    "name": "Cache Fix Verification Agent Edited",
+    "role": "Cache validation observer",
+    "description": "User-check Agent: current cache fix, create/edit save and diagnostic response.",
+    "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+    "category": "Cache validation",
+    "avatarUrl": null,
+    "toolNames": [],
+    "inputProcessorNames": [],
+    "llmResponseProcessorNames": [],
+    "toolExecutionResultProcessorNames": [],
+    "toolInvocationPreprocessorNames": [],
+    "lifecycleProcessorNames": [],
+    "skillNames": [],
+    "skillScope": "CONFIGURED",
+    "ownershipScope": "SHARED",
+    "ownerTeamId": null,
+    "ownerTeamName": null,
+    "ownerApplicationId": null,
+    "ownerApplicationName": null,
+    "ownerPackageId": null,
+    "ownerLocalApplicationId": null,
+    "defaultLaunchConfig": null,
+    "loadIssue": null
+  },
+  "primaryOrg": {
+    "id": "cache-fix-verification-org",
+    "name": "Cache Fix Verification Org Edited",
+    "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+    "instructions": "",
+    "category": null,
+    "avatarUrl": null,
+    "revision": "5f342d4d5fd59f331a93a3a8115b0c085c864168b422143254440882d7182866",
+    "handoffs": [
+      {
+        "from": "/verification_control_agent",
+        "to": "/cache_fix_verification_agent_edited",
+        "rules": [
+          "When this review is complete, hand the package to the next member.",
+          "Preserve the original member identity and rules."
+        ],
+        "__typename": "AgentOrgHandoff"
+      }
+    ],
+    "members": [
+      {
+        "memberName": "verification_control_agent",
+        "ref": "verification-control-agent",
+        "refType": "AGENT",
+        "refScope": "SHARED",
+        "__typename": "AgentOrgMember"
+      },
+      {
+        "memberName": "cache_fix_verification_agent_edited",
+        "ref": "cache-fix-verification-agent",
+        "refType": "AGENT",
+        "refScope": "SHARED",
+        "__typename": "AgentOrgMember"
+      }
+    ],
+    "defaultLaunchConfig": null,
+    "loadIssues": [],
+    "__typename": "AgentOrgDefinition"
+  }
+}

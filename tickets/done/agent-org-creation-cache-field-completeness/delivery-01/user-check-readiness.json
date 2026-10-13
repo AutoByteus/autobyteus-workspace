@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-13T06:46:59.709306+00:00",
+  "instanceId": "iso-61565-91a4",
+  "integratedSmoke": "Pass /7 steps; actual UI create2 Agents/create1 Org/edit1 each, raw response/current actual cache/cache-first-zero-HTTP/public readback",
+  "events": {
+    "D01-loaded-agent-catalog.json": 0,
+    "D02-control-agent-create.json": 0,
+    "D03-primary-agent-create.json": 0,
+    "D04-agent-edit.json": 0,
+    "D05-org-create.json": 0,
+    "D06-org-edit.json": 0,
+    "D07-user-check-ready.json": 0
+  },
+  "userAcceptance": "Pending /new cache task",
+  "currentData": "Verification Control Agent, Cache Fix Verification Agent Edited; Cache Fix Verification Org Edited with2 refs/2 handoff rules",
+  "modelRuns": "None",
+  "liveResource": "Only own isolated app/private root/embedded server; CDP clients disconnected, retained for explicit human check",
+  "diagnostics": "Healthy actual mutations null/[]; populated contracts independently proven upstream, no new malformed-save policy"
+}

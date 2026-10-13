@@ -142,6 +142,17 @@ resolves that from global Skill Improvement settings plus current target state.
 - cache invalidation via `invalidateAgentDefinitions()`, and
 - `reloadIfLoaded()`, the live-refresh entry: a network-only reload that runs only when the list was already loaded, de-duplicates in-flight reloads, and keeps the previous list while reloading and on error.
 
+### Mutation Response And Catalog Cache Contract
+
+Create and update share `AgentDefinitionMutationFields`, which selects
+`loadIssue { code reason definitionPath packageRoot }` alongside the definition
+fields. The response must satisfy the full catalog query when the existing
+store publishes it into Apollo's cache; normalization of an older row must not
+mask an incomplete update response. Healthy saves return the server's explicit
+`loadIssue: null`. Returned issue values remain authoritative—this is response
+completeness, not warning suppression, fabricated defaults, or a cache-refetch
+workaround. Existing diagnostic badges and save/navigation behavior are unchanged.
+
 ## Live Agent Package Definition Refresh
 
 `app.vue` retains the node's `/ws/agent-package-definitions` feed
