@@ -1,0 +1,38 @@
+$ /usr/bin/python3 -m unittest scripts.tests.test_docker_build_context_sources scripts.tests.test_server_docker_browser_bridge scripts.tests.test_server_docker_cli_install_failures scripts.tests.test_server_docker_cli_latest_defaults -v
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds
+Clean env PATH=/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin; HOME/TMPDIR owner-created; no inherited application/provider variables
+test_current_guides_keep_supported_paths_and_no_retired_instructions (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_direct_copy_sources_exist_in_repository_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_entrypath_guard_rejects_broken_build_fixture (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_ignore_guard_rejects_saved_state_protection_loss_fixtures (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retained_entrypaths_use_monorepo_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retired_assets_are_absent (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retirement_guard_rejects_reintroduced_asset_fixture (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_saved_state_exclusions_remain_effective (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_workspace_contracts_are_built_and_materialized_in_monorepo (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_already_vncuser_opener_branch_skips_runuser_and_clears_browser (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_dockerfile_installs_bridge_scripts_and_browser_env_for_all_base_variants (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_opener_source_uses_uid_aware_sanitized_system_xdg_open (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_root_and_non_root_wrappers_remain_thin_facades (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_root_opener_branch_switches_once_to_sanitized_vncuser_command (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_unsupported_uid_fails_without_runuser_or_opener_dispatch (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_executable_with_empty_successful_version_fails_layer (scripts.tests.test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest) ... ok
+test_failed_official_download_fails_layer (scripts.tests.test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest) ... ok
+test_successful_installer_without_payload_fails_layer (scripts.tests.test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest) ... ok
+test_agy_installer_is_decoded_and_checked_before_it_runs (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_cleaned_install_must_resolve_native_grok_not_home_fallback (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_dockerfile_defaults_cli_versions_to_npm_latest (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_dockerfile_keeps_explicit_version_override_path (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_final_probes_require_successful_meaningful_versions_in_empty_home (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_installers_use_disposable_state_and_publish_outside_home (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_new_clis_use_official_latest_in_the_cache_busted_layer (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_no_runtime_installer_or_home_override_is_added (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_scripted_and_release_builds_bust_cli_install_cache (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 3.985s
+
+OK
+
+Exit: 0
+Owned HOME/TMPDIR and nested fixture cleanup completed.

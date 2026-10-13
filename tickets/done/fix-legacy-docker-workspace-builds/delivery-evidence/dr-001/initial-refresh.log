@@ -1,0 +1,14 @@
+Delivery initial refresh (2026-10-12)
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds
+Reviewed HEAD d4e9cab32a3bd48d9d043c702a54ebc895ea16e4
+Latest fetched origin/personal 2756d7b298ca5b203ebd2310d172b37a5d381b5c
+Bootstrap 2756d7b298ca5b203ebd2310d172b37a5d381b5c
+Release guide blob 66c54a9a4be8a385ca00bd63d1ddeb0a8ac6245a
+ancestry_exit=0
+integration command: git merge origin/personal
+Already up to date.
+Coordinator receipt sha256 (untracked-by-delivery ownership)
+2888611b3942f7fc7484179c3b8fb8f62fed619b4459bfcd7c2671ce6a57c58b  tickets/in-progress/fix-legacy-docker-workspace-builds/solution-revision-record.md
+working/index changes
+ M tickets/in-progress/fix-legacy-docker-workspace-builds/solution-revision-record.md
+?? tickets/in-progress/fix-legacy-docker-workspace-builds/delivery-evidence/

@@ -1,0 +1,15 @@
+$ /usr/bin/python3 -m unittest scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_new_containers_prefer_sequential_friendly_ports scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_controlled_busy_preferred_port_uses_real_random_fallback scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_port_probe_double_delegates_python_and_rejects_probe_drift -v
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds
+Clean env PATH=/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin; HOME/TMPDIR owner-created; no inherited application/provider variables
+test_new_containers_prefer_sequential_friendly_ports (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_controlled_busy_preferred_port_uses_real_random_fallback (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_port_probe_double_delegates_python_and_rejects_probe_drift (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 5.668s
+
+OK
+
+Exit: 0
+Owned HOME/TMPDIR and nested fixture cleanup completed.

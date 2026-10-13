@@ -1,0 +1,242 @@
+$ /usr/bin/python3 -m unittest scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_new_containers_prefer_sequential_friendly_ports scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_controlled_busy_preferred_port_uses_real_random_fallback scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_port_probe_double_delegates_python_and_rejects_probe_drift -v
+Clean HOME/TMPDIR; no inherited app/provider env.
+test_new_containers_prefer_sequential_friendly_ports (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_controlled_busy_preferred_port_uses_real_random_fallback (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_port_probe_double_delegates_python_and_rejects_probe_drift (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 4.652s
+
+OK
+Exit: 0
+Expected exit: 0 (broad suite retains open IMPL-BASE-001)
+
+$ /usr/bin/python3 -m unittest discover -s scripts/tests -p test_*docker*.py -v
+Clean HOME/TMPDIR; no inherited app/provider env.
+test_current_guides_keep_supported_paths_and_no_retired_instructions (test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_direct_copy_sources_exist_in_repository_root_context (test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_entrypath_guard_rejects_broken_build_fixture (test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_ignore_guard_rejects_saved_state_protection_loss_fixtures (test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retained_entrypaths_use_monorepo_root_context (test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retired_assets_are_absent (test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retirement_guard_rejects_reintroduced_asset_fixture (test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_saved_state_exclusions_remain_effective (test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_workspace_contracts_are_built_and_materialized_in_monorepo (test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_bash_curl_pipe_mode_resolves_modules_from_source_base (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bash_install_no_update_path_skips_profile_write (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... FAIL
+test_bash_install_path_profile_update_is_idempotent (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bash_install_when_path_missing_updates_profile_and_prints_current_shell_guidance (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bash_install_writes_entry_and_modules_for_installed_cli (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_controlled_busy_preferred_port_uses_real_random_fallback (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_destroy_all_remains_explicit_and_volume_safe (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_destroy_selector_preflight_happens_before_state_or_docker_setup (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_label_only_targeted_destroy_allows_one_exact_managed_candidate (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_mutating_commands_do_not_default_to_all_nodes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_new_container_adds_bind_mounts_without_removing_named_volumes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_new_containers_prefer_sequential_friendly_ports (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_port_probe_double_delegates_python_and_rejects_probe_drift (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_matches_the_shared_workspace_cli_contract (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_parses_when_pwsh_is_available (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... skipped 'pwsh is not installed'
+test_preferred_port_collision_falls_back_for_that_service (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... skipped 'port 8001 is not available for collision test setup'
+test_profile_option_is_rejected_as_unknown (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_public_docker_docs_keep_targeted_destroy_and_buildx_ownership_boundary (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_public_launcher_source_files_stay_within_reviewable_size_guard (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_read_only_discovery_commands_default_to_all_nodes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_read_only_discovery_commands_keep_explicit_single_node_output (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_read_only_discovery_commands_reject_all_with_name (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_stale_targeted_destroy_forgets_state_and_reuses_lowest_free_slot (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_refuses_duplicate_candidates_and_state_label_disagreement (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_refuses_malformed_and_mismatched_state (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_refuses_unknown_buildx_and_unmanaged_name_collisions (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_removes_only_selected_node_and_keeps_workspaces (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_reports_partial_cleanup_when_state_delete_fails (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_all_follows_the_beta_track_after_a_one_time_switch (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_all_preserves_each_node_saved_image_ref_by_default (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_all_with_explicit_image_retargets_all_nodes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_all_with_explicit_tag_retargets_all_nodes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_workspace_apply_all_recreates_stale_containers_with_current_bind_mounts (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_workspace_paths_and_storage_commands_report_the_launcher_owned_mapping (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_already_vncuser_opener_branch_skips_runuser_and_clears_browser (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_dockerfile_installs_bridge_scripts_and_browser_env_for_all_base_variants (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_opener_source_uses_uid_aware_sanitized_system_xdg_open (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_root_and_non_root_wrappers_remain_thin_facades (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_root_opener_branch_switches_once_to_sanitized_vncuser_command (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_unsupported_uid_fails_without_runuser_or_opener_dispatch (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_executable_with_empty_successful_version_fails_layer (test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest) ... ok
+test_failed_official_download_fails_layer (test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest) ... ok
+test_successful_installer_without_payload_fails_layer (test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest) ... ok
+test_agy_installer_is_decoded_and_checked_before_it_runs (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_cleaned_install_must_resolve_native_grok_not_home_fallback (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_dockerfile_defaults_cli_versions_to_npm_latest (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_dockerfile_keeps_explicit_version_override_path (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_final_probes_require_successful_meaningful_versions_in_empty_home (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_installers_use_disposable_state_and_publish_outside_home (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_new_clis_use_official_latest_in_the_cache_busted_layer (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_no_runtime_installer_or_home_override_is_added (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_scripted_and_release_builds_bust_cli_install_cache (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+
+======================================================================
+FAIL: test_bash_install_no_update_path_skips_profile_write (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 534, in test_bash_install_no_update_path_skips_profile_write
+    self.assertIn(export_line, install.stdout)
+AssertionError: 'export PATH=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-86qfgm4v/install bin\'\\\'\'s\':"$PATH"' not found in '[AutoByteus Docker] Installed AutoByteus Docker launcher: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-86qfgm4v/install bin\'s/autobyteus-docker\n[AutoByteus Docker] Install directory is not on this shell\'s PATH: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-86qfgm4v/install bin\'s\n[AutoByteus Docker] Persistent PATH update skipped by request; add the export command below to your shell profile if you want persistence.\nRun now:\n  Direct path: \'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-86qfgm4v/install bin\\\'\\\\\'\\\'s/autobyteus-docker\' new-container\n  Or update this shell first: export PATH=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-86qfgm4v/install bin\\\'\\\\\'\\\'s\':"$PATH"\nCurrent-shell note: this installer process cannot change the PATH of the terminal that launched it.\nPersistent PATH setup (copy/paste for future shells):\n  autobyteus_docker_profile=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-86qfgm4v/home/.bashrc\'\n  autobyteus_docker_path_line=\'export PATH=\\\'\\\\\'\\\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-86qfgm4v/install bin\\\\\'\\\\\'\\\'\\\\\\\'\\\\\'\\\'\\\\\'\\\\\'\\\'s\\\'\\\\\'\\\':"$PATH"\'\n  touch "$autobyteus_docker_profile"\n  grep -qxF "$autobyteus_docker_path_line" "$autobyteus_docker_profile" || printf \'%s\\n\' "$autobyteus_docker_path_line" >> "$autobyteus_docker_profile"\n  source "$autobyteus_docker_profile"\n  unset autobyteus_docker_profile autobyteus_docker_path_line\nAfter applying the export above, or after opening a new terminal if the persistent profile update above succeeded, you can run:\n  autobyteus-docker new-container\n  autobyteus-docker workspace paths\n  autobyteus-docker storage\n  autobyteus-docker urls\n'
+
+----------------------------------------------------------------------
+Ran 62 tests in 36.365s
+
+FAILED (failures=1, skipped=2)
+Exit: 1
+Expected exit: 1 (broad suite retains open IMPL-BASE-001)
+
+$ /opt/homebrew/bin/python3.11 -m unittest scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_new_containers_prefer_sequential_friendly_ports scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_controlled_busy_preferred_port_uses_real_random_fallback scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_port_probe_double_delegates_python_and_rejects_probe_drift -v
+Clean HOME/TMPDIR; no inherited app/provider env.
+test_new_containers_prefer_sequential_friendly_ports (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_new_containers_prefer_sequential_friendly_ports) ... ok
+test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt) ... ok
+test_controlled_busy_preferred_port_uses_real_random_fallback (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_controlled_busy_preferred_port_uses_real_random_fallback) ... ok
+test_port_probe_double_delegates_python_and_rejects_probe_drift (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_port_probe_double_delegates_python_and_rejects_probe_drift) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 4.167s
+
+OK
+Exit: 0
+Expected exit: 0 (broad suite retains open IMPL-BASE-001)
+
+$ /opt/homebrew/bin/python3.11 -m unittest discover -s scripts/tests -p test_*docker*.py -v
+Clean HOME/TMPDIR; no inherited app/provider env.
+test_current_guides_keep_supported_paths_and_no_retired_instructions (test_docker_build_context_sources.DockerBuildContextSourcesTest.test_current_guides_keep_supported_paths_and_no_retired_instructions) ... ok
+test_direct_copy_sources_exist_in_repository_root_context (test_docker_build_context_sources.DockerBuildContextSourcesTest.test_direct_copy_sources_exist_in_repository_root_context) ... ok
+test_entrypath_guard_rejects_broken_build_fixture (test_docker_build_context_sources.DockerBuildContextSourcesTest.test_entrypath_guard_rejects_broken_build_fixture) ... ok
+test_ignore_guard_rejects_saved_state_protection_loss_fixtures (test_docker_build_context_sources.DockerBuildContextSourcesTest.test_ignore_guard_rejects_saved_state_protection_loss_fixtures) ... ok
+test_retained_entrypaths_use_monorepo_root_context (test_docker_build_context_sources.DockerBuildContextSourcesTest.test_retained_entrypaths_use_monorepo_root_context) ... ok
+test_retired_assets_are_absent (test_docker_build_context_sources.DockerBuildContextSourcesTest.test_retired_assets_are_absent) ... ok
+test_retirement_guard_rejects_reintroduced_asset_fixture (test_docker_build_context_sources.DockerBuildContextSourcesTest.test_retirement_guard_rejects_reintroduced_asset_fixture) ... ok
+test_saved_state_exclusions_remain_effective (test_docker_build_context_sources.DockerBuildContextSourcesTest.test_saved_state_exclusions_remain_effective) ... ok
+test_workspace_contracts_are_built_and_materialized_in_monorepo (test_docker_build_context_sources.DockerBuildContextSourcesTest.test_workspace_contracts_are_built_and_materialized_in_monorepo) ... ok
+test_bash_curl_pipe_mode_resolves_modules_from_source_base (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bash_curl_pipe_mode_resolves_modules_from_source_base) ... ok
+test_bash_install_no_update_path_skips_profile_write (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bash_install_no_update_path_skips_profile_write) ... FAIL
+test_bash_install_path_profile_update_is_idempotent (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bash_install_path_profile_update_is_idempotent) ... ok
+test_bash_install_when_path_missing_updates_profile_and_prints_current_shell_guidance (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bash_install_when_path_missing_updates_profile_and_prints_current_shell_guidance) ... ok
+test_bash_install_writes_entry_and_modules_for_installed_cli (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bash_install_writes_entry_and_modules_for_installed_cli) ... ok
+test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt) ... ok
+test_controlled_busy_preferred_port_uses_real_random_fallback (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_controlled_busy_preferred_port_uses_real_random_fallback) ... ok
+test_destroy_all_remains_explicit_and_volume_safe (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_destroy_all_remains_explicit_and_volume_safe) ... ok
+test_destroy_selector_preflight_happens_before_state_or_docker_setup (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_destroy_selector_preflight_happens_before_state_or_docker_setup) ... ok
+test_label_only_targeted_destroy_allows_one_exact_managed_candidate (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_label_only_targeted_destroy_allows_one_exact_managed_candidate) ... ok
+test_mutating_commands_do_not_default_to_all_nodes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_mutating_commands_do_not_default_to_all_nodes) ... ok
+test_new_container_adds_bind_mounts_without_removing_named_volumes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_new_container_adds_bind_mounts_without_removing_named_volumes) ... ok
+test_new_containers_prefer_sequential_friendly_ports (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_new_containers_prefer_sequential_friendly_ports) ... ok
+test_port_probe_double_delegates_python_and_rejects_probe_drift (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_port_probe_double_delegates_python_and_rejects_probe_drift) ... ok
+test_powershell_launcher_matches_the_shared_workspace_cli_contract (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_powershell_launcher_matches_the_shared_workspace_cli_contract) ... ok
+test_powershell_launcher_parses_when_pwsh_is_available (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_powershell_launcher_parses_when_pwsh_is_available) ... skipped 'pwsh is not installed'
+test_preferred_port_collision_falls_back_for_that_service (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_preferred_port_collision_falls_back_for_that_service) ... skipped 'port 8001 is not available for collision test setup'
+test_profile_option_is_rejected_as_unknown (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_profile_option_is_rejected_as_unknown) ... ok
+test_public_docker_docs_keep_targeted_destroy_and_buildx_ownership_boundary (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_public_docker_docs_keep_targeted_destroy_and_buildx_ownership_boundary) ... ok
+test_public_launcher_source_files_stay_within_reviewable_size_guard (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_public_launcher_source_files_stay_within_reviewable_size_guard) ... ok
+test_read_only_discovery_commands_default_to_all_nodes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_read_only_discovery_commands_default_to_all_nodes) ... ok
+test_read_only_discovery_commands_keep_explicit_single_node_output (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_read_only_discovery_commands_keep_explicit_single_node_output) ... ok
+test_read_only_discovery_commands_reject_all_with_name (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_read_only_discovery_commands_reject_all_with_name) ... ok
+test_stale_targeted_destroy_forgets_state_and_reuses_lowest_free_slot (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_stale_targeted_destroy_forgets_state_and_reuses_lowest_free_slot) ... ok
+test_targeted_destroy_refuses_duplicate_candidates_and_state_label_disagreement (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_targeted_destroy_refuses_duplicate_candidates_and_state_label_disagreement) ... ok
+test_targeted_destroy_refuses_malformed_and_mismatched_state (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_targeted_destroy_refuses_malformed_and_mismatched_state) ... ok
+test_targeted_destroy_refuses_unknown_buildx_and_unmanaged_name_collisions (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_targeted_destroy_refuses_unknown_buildx_and_unmanaged_name_collisions) ... ok
+test_targeted_destroy_removes_only_selected_node_and_keeps_workspaces (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_targeted_destroy_removes_only_selected_node_and_keeps_workspaces) ... ok
+test_targeted_destroy_reports_partial_cleanup_when_state_delete_fails (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_targeted_destroy_reports_partial_cleanup_when_state_delete_fails) ... ok
+test_upgrade_all_follows_the_beta_track_after_a_one_time_switch (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_follows_the_beta_track_after_a_one_time_switch) ... ok
+test_upgrade_all_preserves_each_node_saved_image_ref_by_default (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_preserves_each_node_saved_image_ref_by_default) ... ok
+test_upgrade_all_with_explicit_image_retargets_all_nodes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_with_explicit_image_retargets_all_nodes) ... ok
+test_upgrade_all_with_explicit_tag_retargets_all_nodes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_with_explicit_tag_retargets_all_nodes) ... ok
+test_workspace_apply_all_recreates_stale_containers_with_current_bind_mounts (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_workspace_apply_all_recreates_stale_containers_with_current_bind_mounts) ... ok
+test_workspace_paths_and_storage_commands_report_the_launcher_owned_mapping (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_workspace_paths_and_storage_commands_report_the_launcher_owned_mapping) ... ok
+test_already_vncuser_opener_branch_skips_runuser_and_clears_browser (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest.test_already_vncuser_opener_branch_skips_runuser_and_clears_browser) ... ok
+test_dockerfile_installs_bridge_scripts_and_browser_env_for_all_base_variants (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest.test_dockerfile_installs_bridge_scripts_and_browser_env_for_all_base_variants) ... ok
+test_opener_source_uses_uid_aware_sanitized_system_xdg_open (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest.test_opener_source_uses_uid_aware_sanitized_system_xdg_open) ... ok
+test_root_and_non_root_wrappers_remain_thin_facades (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest.test_root_and_non_root_wrappers_remain_thin_facades) ... ok
+test_root_opener_branch_switches_once_to_sanitized_vncuser_command (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest.test_root_opener_branch_switches_once_to_sanitized_vncuser_command) ... ok
+test_unsupported_uid_fails_without_runuser_or_opener_dispatch (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest.test_unsupported_uid_fails_without_runuser_or_opener_dispatch) ... ok
+test_executable_with_empty_successful_version_fails_layer (test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest.test_executable_with_empty_successful_version_fails_layer) ... ok
+test_failed_official_download_fails_layer (test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest.test_failed_official_download_fails_layer) ... ok
+test_successful_installer_without_payload_fails_layer (test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest.test_successful_installer_without_payload_fails_layer) ... ok
+test_agy_installer_is_decoded_and_checked_before_it_runs (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest.test_agy_installer_is_decoded_and_checked_before_it_runs) ... ok
+test_cleaned_install_must_resolve_native_grok_not_home_fallback (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest.test_cleaned_install_must_resolve_native_grok_not_home_fallback) ... ok
+test_dockerfile_defaults_cli_versions_to_npm_latest (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest.test_dockerfile_defaults_cli_versions_to_npm_latest) ... ok
+test_dockerfile_keeps_explicit_version_override_path (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest.test_dockerfile_keeps_explicit_version_override_path) ... ok
+test_final_probes_require_successful_meaningful_versions_in_empty_home (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest.test_final_probes_require_successful_meaningful_versions_in_empty_home) ... ok
+test_installers_use_disposable_state_and_publish_outside_home (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest.test_installers_use_disposable_state_and_publish_outside_home) ... ok
+test_new_clis_use_official_latest_in_the_cache_busted_layer (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest.test_new_clis_use_official_latest_in_the_cache_busted_layer) ... ok
+test_no_runtime_installer_or_home_override_is_added (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest.test_no_runtime_installer_or_home_override_is_added) ... ok
+test_scripted_and_release_builds_bust_cli_install_cache (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest.test_scripted_and_release_builds_bust_cli_install_cache) ... ok
+
+======================================================================
+FAIL: test_bash_install_no_update_path_skips_profile_write (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bash_install_no_update_path_skips_profile_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 534, in test_bash_install_no_update_path_skips_profile_write
+    self.assertIn(export_line, install.stdout)
+AssertionError: 'export PATH=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-6l4jsi8b/install bin\'\\\'\'s\':"$PATH"' not found in '[AutoByteus Docker] Installed AutoByteus Docker launcher: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-6l4jsi8b/install bin\'s/autobyteus-docker\n[AutoByteus Docker] Install directory is not on this shell\'s PATH: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-6l4jsi8b/install bin\'s\n[AutoByteus Docker] Persistent PATH update skipped by request; add the export command below to your shell profile if you want persistence.\nRun now:\n  Direct path: \'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-6l4jsi8b/install bin\\\'\\\\\'\\\'s/autobyteus-docker\' new-container\n  Or update this shell first: export PATH=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-6l4jsi8b/install bin\\\'\\\\\'\\\'s\':"$PATH"\nCurrent-shell note: this installer process cannot change the PATH of the terminal that launched it.\nPersistent PATH setup (copy/paste for future shells):\n  autobyteus_docker_profile=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-6l4jsi8b/home/.bashrc\'\n  autobyteus_docker_path_line=\'export PATH=\\\'\\\\\'\\\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retirement-d3-checks-cql821c0/autobyteus-launcher-test-6l4jsi8b/install bin\\\\\'\\\\\'\\\'\\\\\\\'\\\\\'\\\'\\\\\'\\\\\'\\\'s\\\'\\\\\'\\\':"$PATH"\'\n  touch "$autobyteus_docker_profile"\n  grep -qxF "$autobyteus_docker_path_line" "$autobyteus_docker_profile" || printf \'%s\\n\' "$autobyteus_docker_path_line" >> "$autobyteus_docker_profile"\n  source "$autobyteus_docker_profile"\n  unset autobyteus_docker_profile autobyteus_docker_path_line\nAfter applying the export above, or after opening a new terminal if the persistent profile update above succeeded, you can run:\n  autobyteus-docker new-container\n  autobyteus-docker workspace paths\n  autobyteus-docker storage\n  autobyteus-docker urls\n'
+
+----------------------------------------------------------------------
+Ran 62 tests in 37.499s
+
+FAILED (failures=1, skipped=2)
+Exit: 1
+Expected exit: 1 (broad suite retains open IMPL-BASE-001)
+
+$ python3 -m unittest scripts.tests.test_docker_build_context_sources scripts.tests.test_server_docker_browser_bridge scripts.tests.test_server_docker_cli_install_failures scripts.tests.test_server_docker_cli_latest_defaults -v
+Clean HOME/TMPDIR; no inherited app/provider env.
+test_current_guides_keep_supported_paths_and_no_retired_instructions (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_direct_copy_sources_exist_in_repository_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_entrypath_guard_rejects_broken_build_fixture (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_ignore_guard_rejects_saved_state_protection_loss_fixtures (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retained_entrypaths_use_monorepo_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retired_assets_are_absent (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retirement_guard_rejects_reintroduced_asset_fixture (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_saved_state_exclusions_remain_effective (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_workspace_contracts_are_built_and_materialized_in_monorepo (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_already_vncuser_opener_branch_skips_runuser_and_clears_browser (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_dockerfile_installs_bridge_scripts_and_browser_env_for_all_base_variants (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_opener_source_uses_uid_aware_sanitized_system_xdg_open (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_root_and_non_root_wrappers_remain_thin_facades (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_root_opener_branch_switches_once_to_sanitized_vncuser_command (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_unsupported_uid_fails_without_runuser_or_opener_dispatch (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_executable_with_empty_successful_version_fails_layer (scripts.tests.test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest) ... ok
+test_failed_official_download_fails_layer (scripts.tests.test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest) ... ok
+test_successful_installer_without_payload_fails_layer (scripts.tests.test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest) ... ok
+test_agy_installer_is_decoded_and_checked_before_it_runs (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_cleaned_install_must_resolve_native_grok_not_home_fallback (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_dockerfile_defaults_cli_versions_to_npm_latest (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_dockerfile_keeps_explicit_version_override_path (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_final_probes_require_successful_meaningful_versions_in_empty_home (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_installers_use_disposable_state_and_publish_outside_home (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_new_clis_use_official_latest_in_the_cache_busted_layer (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_no_runtime_installer_or_home_override_is_added (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_scripted_and_release_builds_bust_cli_install_cache (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 3.548s
+
+OK
+Exit: 0
+Expected exit: 0 (broad suite retains open IMPL-BASE-001)
+
+$ python3 scripts/check_licensing.py
+Clean HOME/TMPDIR; no inherited app/provider env.
+Licensing is consistent.
+Tracked files scanned: 6508
+Exit: 0
+Expected exit: 0 (broad suite retains open IMPL-BASE-001)
+
+$ python3 scripts/check_repository_artifact_hygiene.py
+Clean HOME/TMPDIR; no inherited app/provider env.
+Repository artifact hygiene check passed.
+Tracked files scanned: 60960
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+Exit: 0
+Expected exit: 0 (broad suite retains open IMPL-BASE-001)
+
+Owner-created HOME/TMPDIR and nested fixtures cleaned. No live Docker/node/provider operations.
