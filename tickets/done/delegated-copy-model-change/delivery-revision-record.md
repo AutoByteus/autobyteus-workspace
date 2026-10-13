@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery package from `code_reviewer` after CRR-003 Pass | N/A | Checkpointed, base current, docs synced; evidence gap (per-member Team-copy choice) sent to API/E2E | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
+| DR-002 | API-REV-002 / CRR-004 closed the evidence gap | DR-001, evidence gap | Verified from evidence; re-integrated and checked; finalized without a release | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-002/` |
 
 ## Revision Entries
 
@@ -27,3 +28,19 @@
 - Terminal return to `/solution_designer`: `Not yet eligible`
 - Next recipient/action: `/software_engineering_team/api_e2e_engineer` adds the per-member Team-copy journey. Delivery then judges again.
 - Remaining blockers, rollback concerns, or untested scope: AC-010 with the user's own runs; the residual risks in `handoff-summary.md`.
+
+### DR-002 — Verified from evidence; finalization without release
+
+- Delivery round and trigger: `code_reviewer` reported CRR-004 Pass for API-REV-002 (DCM-008, DCP-005, ISO-002), closing the DR-001 gap.
+- Prior authoritative result: DR-001, evidence gap sent to API/E2E.
+- Current authoritative result:
+  - Verified from evidence; see `handoff-summary.md` → Verification → DR-002.
+  - `origin/personal` @ `e3a6772951` merged cleanly as `e0a0ef9482`, and all 13 checks passed.
+  - Finalization into `personal` with no release: the user did not ask for one, and `RELEASE.md` defaults to no release.
+- Docs sync: no further change. Round 2 added tests only, and the base's docs edit is in another section.
+- Terminal return to `/solution_designer`: sent after finalization and cleanup.
+- Follow-up candidates:
+  - O-4 (new, from CRR-004): a member's started-default fallback note still shows next to a user-chosen model.
+  - O-1..O-3.
+  - The code naming and file-size items.
+  - The `RELEASE.md` `dist/` correction.

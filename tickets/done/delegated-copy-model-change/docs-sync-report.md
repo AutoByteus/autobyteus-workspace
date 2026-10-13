@@ -54,3 +54,8 @@
 
 - Result: `Pass`
 - Next delivery action: handoff summary and the AC-010 user-verification hold.
+
+## DR-002 Addendum
+
+- Round 2 (API-REV-002) changed tests and ticket evidence only. The probe header now lists DCP-002..005. No long-lived doc changes.
+- Re-integrated base `e3a6772951`: its `agent_execution_architecture.md` section on `agentRunCollaborationStore` disclosure merged beside this ticket's sidebar stop-icon paragraph. Both stay accurate.

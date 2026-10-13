@@ -1,6 +1,6 @@
 # Release Notes — Stop A Delegated Copy And Change Its Model
 
-Status: prepared before user verification. Whether this ships in a release, and with which version, is decided at finalization.
+Status: finalized into `personal` without a release (none requested). These notes are for the next release that includes this change.
 
 ## What's New
 - **Stop one delegated copy without stopping the run.** A copy of an agent or team that another agent started, or a collaborator it brought in, now has its own stop button while it runs. The button is on its row in the sidebar and in the run's Settings. Stopping it also stops the copies it started. The rest of the run keeps working.

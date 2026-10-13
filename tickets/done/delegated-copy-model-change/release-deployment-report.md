@@ -4,7 +4,8 @@
 
 - Ticket `delegated-copy-model-change`: `task_size=Large`, `architectural_risk=High`, reviewed route.
 - Scope: finalize into `personal`. The release (none, beta or stable) is the user's decision at verification.
-- Current state: **verification blocked on an evidence gap**, sent back to API/E2E. No push, merge, tag or release yet.
+- DR-001 state: verification was blocked on an evidence gap and sent back to API/E2E.
+- DR-002 state: **verified from evidence**, then finalized into `personal` without a release.
 - Release decision: none requested; `RELEASE.md` defaults to no release. The ticket will be finalized without a release unless the user asks for one.
 
 ## Project Release Guide
@@ -33,9 +34,28 @@
 - Delivery edits started only after the integrated state was current: `Yes`
 - Handoff state current with the latest tracked remote base: `Yes`
 
+## DR-002 Re-integration (After API-REV-002 / CRR-004)
+
+- Inputs:
+  - `15cc9632d4` (DCM-008, DCP-005, ISO-002; by API/E2E).
+  - `8d0c82c3fe` (CRR-004 records, committed by delivery with explicit paths).
+- Latest base checked: `origin/personal` @ `e3a6772951`. It advanced with "delegated Team default collapse": web history and disclosure, `agentRunCollaborationStore`, and a new probe.
+  - Overlapping files: `autobyteus-web/docs/agent_execution_architecture.md` (separate sections) and `autobyteus-web/package.json` (both scripts kept).
+- Integration method: `Merge` (`e0a0ef9482`), no conflicts.
+- Post-integration checks: all 13 passed (`delivery-evidence/dr-002/`):
+  - `autobyteus-ts` build;
+  - server prebuild, typecheck and build;
+  - server E2E `delegated-copy-model-change`: 6/6;
+  - probe `test:e2e:delegated-launch-defaults`: 15/15, including DCP-001..005;
+  - the base's `test:e2e:delegated-team-default-collapse`: Pass (B-001..006, P-001);
+  - web `test:nuxt`: 618 files, 4302 passed;
+  - the three web guards;
+  - licensing and hygiene.
+
 ## User Verification
 
-- Verification from evidence: `Not yet proven`.
+- DR-002 verification from evidence: `Verified` (2026-10-13). The judgement and the evidence are in `handoff-summary.md` → Verification → DR-002. The user was not asked: nothing needs the user's own accounts or nodes.
+- DR-001 verification from evidence: `Not yet proven`.
   - Classification: evidence too weak to verify.
   - Recommended recipient: `/software_engineering_team/api_e2e_engineer`.
   - Gap: a per-member choice inside a Team copy (REQ-001, AC-010) has no end-to-end, UI or desktop proof.

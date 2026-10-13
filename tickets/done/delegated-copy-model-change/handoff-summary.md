@@ -2,6 +2,26 @@
 
 ## Verification (Delivery Judgement From Evidence)
 
+### DR-002: Verified From Evidence
+
+- Status: **verified from evidence** (2026-10-13). The user was not asked, because nothing needs the user's own accounts or nodes.
+- API-REV-002 Pass and CRR-004 Pass (test-code review, no findings) closed the DR-001 gap. Evidence opened and judged by delivery:
+  - **DCM-008**, server E2E, 6/6 ×2 (`api-e2e-evidence/server-e2e/r2-dcm-run-{1,2}.log`). The reviewer of a Team copy ran once, then got its own choice:
+    - the record is on that member only (team and other members `null`);
+    - it resumed on the choice with its own `--conversation`, and its first turn is still in the conversation;
+    - the coordinator relaunched on its own model, and a never-started member started on the started model;
+    - in a combined Team + member Save, the coordinator and the follower take the Team choice and the reviewer keeps its own and its conversation.
+  - **DCP-005**, browser probe (`r2-browser-probe-run-2/DCP-005-*.png`): only the member changed; the other rows are identical; the member shows the new model with no source label; its next turn resumed on it. Full probe 15/15, 0 browser errors.
+  - **ISO-002**, packaged app with real runtimes (`r2-isolated-instance/`). This is the AC-010 scenario:
+    - A PM on Claude haiku delegated a review team.
+    - Settings shows only `code_reviewer` changed, to GPT-6-Luna on Codex, with no source label; lead and writer stay on claude-haiku-5-5 "Inherited from the run".
+    - The code reviewer's conversation holds the turn before and the turn after the change.
+    - The usage ledger shows `/review_team/code_reviewer` on `codex_app_server/gpt-6-luna` and `/review_team/lead` on `claude-haiku-5-5`.
+- Together with the round-1 evidence (agent copies, Team choices, collaborators, refusals, restart), every critical acceptance criterion is directly proven. Final confidence is 95% (round 1) and was reconfirmed by API-REV-002.
+- Release decision: no release. The user did not ask for one on this ticket, and `RELEASE.md` defaults to no release. A release is available on request.
+
+### DR-001: Evidence Gap (Resolved In DR-002)
+
 - Status: **evidence gap sent back to API/E2E** (DR-001). Nothing has been pushed or merged. The user is not asked to verify (updated delivery skill: delivery verifies from evidence).
 - Proven by evidence:
   - Agent copies: stop, choice, resume and restart (DCM-001/004/005, DCP-001/003/004), including a real Codex resume in the same thread (ISO-001).
