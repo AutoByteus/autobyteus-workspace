@@ -1,0 +1,30 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 ~/autobyteus_org/autobyteus-worktrees/agy-docker-node-availability-diagnostics/autobyteus-web
+
+stderr | composables/chat/__tests__/useChatModelCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatModelMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/chat/__tests__/useChatModelCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatModelMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/chat/__tests__/useChatModelCatalog.spec.ts (9 tests) 26ms
+ ✓ components/chat/__tests__/ChatModelMenu.spec.ts (8 tests) 68ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  04:56:38
+   Duration  6.55s (transform 3.67s, setup 11.55s, collect 141ms, tests 94ms, environment 465ms, prepare 311ms)
+
