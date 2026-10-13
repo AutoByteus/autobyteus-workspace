@@ -150,7 +150,15 @@ not paid inference. Agent-run testing is not the user's verification.
   `tests/integration/agent/agent-status-websocket.integration.test.ts` fail because of a
   reported product defect. Remove this note when it is fixed.
 
-## Linux and container desktop validation
+## Environment-specific setup: headless Linux and containers
+
+The virtual-display and root-container recipes below apply **only when those
+environment conditions exist**, such as a headless Linux testing container.
+They are not the setup procedure for every developer's host desktop. On a normal
+host desktop, use its existing graphical session and normal non-root account;
+do not install Xvfb or switch numeric UID/GID just because you are running tests.
+Use the supported platform's isolated-instance instructions. The global
+test-layer, evidence, isolation and safety rules above still apply.
 
 - A full product journey still needs the **actual isolated Electron worktree build**.
   A browser/component fixture is not a substitute for this layer.
@@ -161,8 +169,8 @@ not paid inference. Agent-run testing is not the user's verification.
   owner, then launch the current unpacked build as an unprivileged user with
   isolated-app start --from-worktree. Preserve Chromium's sandbox; do not add
   --no-sandbox or change host security settings to force a pass.
-- Keep the display alive for **start → automation → stop**. Wrap the complete
-  owning probe/session in xvfb-run, not just the short-lived start command.
+- When Xvfb is needed, keep it alive for **start → automation → stop**. Wrap the
+  complete owning probe/session in xvfb-run, not just the short-lived start command.
 - Verify the reported instance/ports, packaged identity, renderer assertions and
   cleanup. A launch, skipped case, or screenshot alone is not a journey pass.
   If safe setup cannot work, report the precise missing dependency and attempted
