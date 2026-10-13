@@ -1,3 +1,5 @@
+import { checkSharedWorkspaceForRun } from "../../workspaces/shared-workspace-binding.js";
+import { scopedProjectGitEnvironment } from "../../runtime-management/shared/scoped-project-git-environment.js";
 import { getDefaultSessionFactory } from "autobyteus-ts";
 import type { TerminalSession, TerminalSessionFactory } from "autobyteus-ts";
 export type { TerminalSession, TerminalSessionFactory };
@@ -61,7 +63,9 @@ export class PtySessionManager {
     options.signal?.addEventListener("abort", abortListener, { once: true });
 
     try {
-      await session.start(cwd);
+      const shared = await checkSharedWorkspaceForRun(cwd);
+      if (options.signal?.aborted) throw new TerminalSessionStartupAbortedError(sessionId);
+      await session.start(cwd, shared ? scopedProjectGitEnvironment(process.env, cwd) : undefined);
       if (
         options.signal?.aborted ||
         this.sessions.get(sessionId)?.session !== session

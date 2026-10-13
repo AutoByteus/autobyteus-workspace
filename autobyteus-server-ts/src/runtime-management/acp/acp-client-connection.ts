@@ -135,6 +135,10 @@ export class AcpClientConnection {
     }), INITIALIZE_TIMEOUT_MS, "initialize"));
   }
 
+  extension(method: string, params: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return this.guard(method, withTimeout(this.sdk.extMethod(method, params), INITIALIZE_TIMEOUT_MS, method));
+  }
+
   newSession(request: NewSessionRequest): Promise<NewSessionResponse> {
     return this.guard("session/new",
       withTimeout(this.sdk.newSession(request), SESSION_OPEN_TIMEOUT_MS, "session/new"));

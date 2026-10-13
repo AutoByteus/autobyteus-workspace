@@ -176,7 +176,8 @@ describe("AgentRunManager candidate lifecycle", () => {
     const first = manager.beginActivation({ kind: "new", ...({ runId: "run-overlap", config }) }).prepare();
     await expect(Promise.resolve().then(() => manager.beginActivation({ kind: "new", ...({ runId: "run-overlap", config }) }).prepare()))
       .rejects.toMatchObject({ code: "AGENT_RUN_ACTIVATION_IN_PROGRESS_CONFLICT" });
-    expect(codexBackendFactory.createBackend).toHaveBeenCalledOnce();
+    // Shared-workspace admission may await its local descriptor before native preparation.
+    await vi.waitFor(() => expect(codexBackendFactory.createBackend).toHaveBeenCalledOnce());
 
     release();
     const candidate = await first;

@@ -6,10 +6,11 @@ describe('independent concrete Claude component cleanup receipts', () => {
     let failProcess = true;
     const owned = [{ ownerRunId: 'A', holderToken: 'same-owned-holder' }];
     const protectedRun = { closeProcess: vi.fn() };
+    const privateSkillProfile = { release: vi.fn(async () => undefined) };
     const session = { closeProcess: vi.fn(async () => { if (failProcess) throw new Error('physical exit unavailable'); }),
       closeTurnForTermination: vi.fn(async () => undefined),
       clearRuntimeListeners: vi.fn(), releaseAgentToolsMcp: vi.fn(),
-      runContext: { runtimeContext: { materializedConfiguredSkills: owned } } };
+      runContext: { runtimeContext: { materializedConfiguredSkills: owned, privateSkillProfile } } };
     const skills = { cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined) };
     const cleanup = new ClaudeSessionCleanup(skills as never);
     await expect(cleanup.cleanupSessionResources({ session: session as never })).rejects.toThrow('exact component cleanup failed');
@@ -17,6 +18,7 @@ describe('independent concrete Claude component cleanup receipts', () => {
     expect(session.closeTurnForTermination).toHaveBeenCalledOnce();
     expect(skills.cleanupMaterializedWorkspaceSkills).toHaveBeenCalledExactlyOnceWith(owned);
     expect(session.releaseAgentToolsMcp).toHaveBeenCalledOnce();
+    expect(privateSkillProfile.release).not.toHaveBeenCalled();
     failProcess = false;
     await cleanup.cleanupSessionResources({ session: session as never });
     await cleanup.cleanupSessionResources({ session: session as never });
@@ -24,6 +26,7 @@ describe('independent concrete Claude component cleanup receipts', () => {
     expect(session.clearRuntimeListeners).toHaveBeenCalledOnce();
     expect(session.releaseAgentToolsMcp).toHaveBeenCalledOnce();
     expect(skills.cleanupMaterializedWorkspaceSkills).toHaveBeenCalledOnce();
+    expect(privateSkillProfile.release).toHaveBeenCalledOnce();
     expect(protectedRun.closeProcess).not.toHaveBeenCalled();
   });
 });

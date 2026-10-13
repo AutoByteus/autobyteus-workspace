@@ -36,6 +36,12 @@ export class ClaudeSessionCleanup {
       await release();
       proof.add(stage);
     }));
+    // Unlike ordinary workspace links, private profile exposure remains needed by
+    // this exact native process until close is proven, including failed close retry.
+    if (proof.has("process") && !proof.has("profile")) {
+      try { await input.session.runContext.runtimeContext.privateSkillProfile?.release(); proof.add("profile"); }
+      catch (reason) { results.push({ status: "rejected", reason }); }
+    }
     const errors = results.flatMap(result => result.status === "rejected" ? [result.reason] : []);
     if (errors.length) throw new AggregateError(errors, "Claude exact component cleanup failed.");
     this.proofs.delete(input.session);

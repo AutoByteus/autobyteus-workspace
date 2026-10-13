@@ -108,3 +108,40 @@ describe("REST workspaces routes", () => {
     });
   });
 });
+
+// Healthy mounted files use these same ordinary streams. Local fixtures prove
+// byte/MIME/path preservation, not NFS or browser qualification.
+it("preserves healthy media bytes, encoded paths, HTML and relative static assets", async () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "workspace-healthy-preview-"));
+  const app = fastify();
+  const files = new Map<string, { bytes: Buffer; mime: string }>([
+    ["assets/image space.png", { bytes: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0, 0xff]), mime: "image/png" }],
+    ["assets/icon.svg", { bytes: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><rect width="2" height="2"/></svg>'), mime: "image/svg+xml" }],
+    ["page.html", { bytes: Buffer.from('<!doctype html><img src="assets/image%20space.png"><script src="assets/app.js"></script>'), mime: "text/html" }],
+    ["assets/app.js", { bytes: Buffer.from('document.body.dataset.loaded="yes"'), mime: "javascript" }],
+  ]);
+  try {
+    for (const [relative, fixture] of files) {
+      fs.mkdirSync(path.dirname(path.join(root, relative)), { recursive: true });
+      fs.writeFileSync(path.join(root, relative), fixture.bytes);
+    }
+    mockWorkspaceManager.getWorkspaceById.mockReturnValue({ getAbsolutePath: (relative: string) => path.join(root, relative) });
+    await registerWorkspaceRoutes(app);
+    for (const [relative, fixture] of files) {
+      for (const url of [
+        `/workspaces/ws1/content?path=${encodeURIComponent(relative)}`,
+        `/workspaces/ws1/static/${relative.split('/').map(encodeURIComponent).join('/')}`,
+      ]) {
+        const response = await app.inject({ method: "GET", url });
+        expect(response.statusCode).toBe(200);
+        expect(response.rawPayload.equals(fixture.bytes)).toBe(true);
+        expect(String(response.headers["content-type"])).toContain(fixture.mime);
+      }
+    }
+    const missing = await app.inject({ method: "GET", url: "/workspaces/ws1/static/deleted.png" });
+    expect(missing.statusCode).toBe(404);
+  } finally {
+    await app.close();
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});

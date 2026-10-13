@@ -57,3 +57,31 @@ describe("CodexAppServerClientManager", () => {
     expect(createClient).toHaveBeenCalledOnce(); expect(client.start).toHaveBeenCalledOnce();
   });
 });
+
+describe("private Codex process roots", () => {
+  it("separates profiles at identical cwd and sets roots before exposing each client", async () => {
+    const clients: ReturnType<typeof createFakeClient>[] = [];
+    const manager = new CodexAppServerClientManager({ createClient: (cwd) => {
+      const client = createFakeClient(cwd); clients.push(client); return client as never;
+    } });
+    const a = manager.beginAcquire("/project", {id: "a", skillsRoot: "/private/a/skills"});
+    const b = manager.beginAcquire("/project", {id: "b", skillsRoot: "/private/b/skills"});
+    expect(await a.acquire()).not.toBe(await b.acquire());
+    expect(clients.map(client => client.cwd)).toEqual(["/project", "/project"]);
+    expect(clients[0]!.request.mock.calls).toEqual([
+      ["initialize", {clientInfo: {name: "autobyteus-server-ts", version: "0.1.1"}, capabilities: {experimentalApi: true}}],
+      ["skills/extraRoots/set", {extraRoots: ["/private/a/skills"]}],
+    ]);
+    expect(() => manager.beginAcquire("/project", {id: "a", skillsRoot: "/changed"})).toThrow("layout cannot change");
+    await a.release(); expect(clients[0]!.close).toHaveBeenCalledOnce(); expect(clients[1]!.close).not.toHaveBeenCalled();
+    await b.release();
+  });
+  it("keeps exact failed-capability process owned until explicit close, without a shared fallback", async () => {
+    const client = createFakeClient("/project");
+    client.request.mockImplementation(async (method?: string) => { if (method === "skills/extraRoots/set") throw Error("unsupported"); return {}; });
+    const manager = new CodexAppServerClientManager({createClient: () => client as never});
+    const lease = manager.beginAcquire("/project", {id: "a", skillsRoot: "/private/a/skills"});
+    await expect(lease.acquire()).rejects.toThrow("unsupported");
+    expect(client.close).not.toHaveBeenCalled(); await lease.release(); expect(client.close).toHaveBeenCalledOnce();
+  });
+});

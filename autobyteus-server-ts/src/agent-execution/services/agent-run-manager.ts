@@ -1,3 +1,4 @@
+import { admitSharedRunWorkspace } from "./shared-run-workspace-admission.js";
 import type { AgentRunBackendFactory } from "../backends/agent-run-backend-factory.js";
 import { AgentRun } from "../domain/agent-run.js";
 import type {
@@ -140,7 +141,12 @@ export class AgentRunManager {
       const preparation = factory.beginPreparation(context ? { kind: "restore", context } : { kind: "new", runId, config });
       let operation!: AgentRunActivationOperation;
       operation = beginAgentRunActivation({
-        claim, registry: this.activationRegistry, preparation,
+        claim, registry: this.activationRegistry,
+        preparation: {
+          prepare: async () => { await admitSharedRunWorkspace(config.workspaceId); return preparation.prepare(); },
+          cancel: () => preparation.cancel(),
+          release: () => preparation.release(),
+        },
         constructRun: (backend) => {
           const run = new AgentRun({ context: backend.getContext(), backend,
             commandObservers: [this.memoryRecorder], providerInputNormalizer: this.providerInputNormalizer });

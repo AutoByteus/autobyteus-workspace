@@ -1,0 +1,21 @@
+AutoByteus NFS control/service source: AGPL-3.0-only, or commercial licensing
+from AutoByteus. See LICENSE and the repository LICENSING.md.
+
+Go runtime and standard library: BSD-3-Clause. Copyright The Go Authors.
+The Go distribution license is https://go.dev/LICENSE. Release packaging
+includes that license alongside this notice.
+
+Native macOS uses the operating system's Apple NFS client/server; they are not
+redistributed inside the control binary.
+
+Linux uses the distribution's NFS-Ganesha and VFS packages (LGPL-3.0-or-later
+and their component licenses), and nfs-common (GPL-2.0-or-later and component
+licenses). They are not statically linked into the control binary. The Linux
+engine image retains package copyright/license records in /usr/share/doc and
+copies engine notices to /usr/share/autobyteus-nfs/licenses. Its full package
+inventory is /usr/share/autobyteus-nfs/packages.txt. Source packages are available
+from the configured Ubuntu archive using the recorded exact package versions.
+
+The Ubuntu base image and package dependencies retain their respective
+licenses and notices. Release evidence records its immutable digest; do not
+represent AutoByteus's license as relicensing those operating-system packages.

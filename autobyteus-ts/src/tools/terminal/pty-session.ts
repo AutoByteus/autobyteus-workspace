@@ -50,7 +50,7 @@ export class PtySession {
     return this.alive && !this.closed;
   }
 
-  async start(cwd: string): Promise<void> {
+  async start(cwd: string, environment?: NodeJS.ProcessEnv): Promise<void> {
     if (this.pty) {
       throw new Error('Session already started');
     }
@@ -60,7 +60,7 @@ export class PtySession {
     this.alive = true;
 
     const env = {
-      ...process.env,
+      ...(environment ?? process.env),
       TERM: 'xterm-256color',
       PS1: '\\w $ '
     };
