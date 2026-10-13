@@ -1,9 +1,11 @@
+import "reflect-metadata";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import fastify, { type FastifyInstance } from "fastify";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { registerWorkspaceRoutes } from "../../../src/api/rest/workspaces.js";
+import type { FastifyInstance } from "fastify";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 
 const workspaceManager = getWorkspaceManager();
@@ -20,6 +22,27 @@ describe("workspace content REST boundary e2e", () => {
   let workspaceRoot: string;
   let siblingRoot: string;
   let initialIds: Set<string>;
+  let dataRoot: string;
+  let baseUrl: URL;
+
+  // Compose the real process authorities used by public workspace removal. A
+  // route-only Fastify fixture cannot run that lifecycle's cleanup safely.
+  beforeAll(async () => {
+    dataRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workspace-rest-appdata-"));
+    fs.writeFileSync(path.join(dataRoot, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
+    appConfigProvider.config.setCustomAppDataDir(dataRoot);
+    const started = await startStudioE2eRuntimeServer();
+    app = started.fastify;
+    baseUrl = started.mainUrl;
+  }, 60_000);
+
+  afterAll(async () => {
+    try {
+      if (app) await app.close();
+    } finally {
+      if (dataRoot) fs.rmSync(dataRoot, { recursive: true, force: true });
+    }
+  }, 60_000);
 
   beforeEach(async () => {
     initialIds = new Set(workspaceManager.getAllWorkspaces().map((workspace) => workspace.workspaceId));
@@ -29,24 +52,66 @@ describe("workspace content REST boundary e2e", () => {
     fs.mkdirSync(workspaceRoot, { recursive: true });
     fs.mkdirSync(siblingRoot, { recursive: true });
 
-    app = fastify();
-    await app.register(registerWorkspaceRoutes, { prefix: "/rest" });
-    await app.ready();
   });
 
   afterEach(async () => {
-    await app.close();
-    for (const workspace of workspaceManager.getAllWorkspaces()) {
-      if (!initialIds.has(workspace.workspaceId)) {
-        const removal = await workspaceManager.removeRegisteredWorkspace(workspace.workspaceId);
-        expect(removal).toMatchObject({
-          success: true,
-          workspaceId: workspace.workspaceId,
-          workspaceRootPath: workspace.getBasePath(),
-        });
+    try {
+      for (const workspace of workspaceManager.getAllWorkspaces()) {
+        if (!initialIds.has(workspace.workspaceId)) {
+          const removal = await workspaceManager.removeRegisteredWorkspace(workspace.workspaceId);
+          expect(removal).toMatchObject({
+            success: true,
+            workspaceId: workspace.workspaceId,
+            workspaceRootPath: workspace.getBasePath(),
+          });
+        }
       }
+    } finally {
+      fs.rmSync(tempRoot, { recursive: true, force: true });
     }
-    fs.rmSync(tempRoot, { recursive: true, force: true });
+  });
+
+  it("reopens HTML and relative media over HTTP after external replacement and deletion", async () => {
+    // Local ordinary filesystem contract, not NFS visibility or browser rendering.
+    const html = '<html><body><img src="assets/diagram%20one.png"></body></html>';
+    const docs = path.join(workspaceRoot, "docs");
+    fs.mkdirSync(path.join(docs, "assets"), { recursive: true });
+    fs.writeFileSync(path.join(docs, "index.html"), html);
+    const imagePath = path.join(docs, "assets", "diagram one.png");
+    fs.writeFileSync(imagePath, PNG_BYTES);
+    const creation = await fetch(new URL("/graphql", baseUrl), {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        query: "mutation($input: CreateWorkspaceInput!) { createWorkspace(input: $input) { workspaceId } }",
+        variables: { input: { rootPath: workspaceRoot } },
+      }),
+    });
+    expect(creation.status).toBe(200);
+    const created = await creation.json();
+    expect(created.errors).toBeUndefined();
+    const id = encodeURIComponent(created.data.createWorkspace.workspaceId);
+    const pageUrl = new URL(`/rest/workspaces/${id}/static/docs/index.html`, baseUrl);
+    const page = await fetch(pageUrl);
+    expect(page.status).toBe(200);
+    expect(page.headers.get("content-type")).toContain("text/html");
+    expect(await page.text()).toBe(html);
+    const assetUrl = new URL("assets/diagram%20one.png", pageUrl);
+    const asset = await fetch(assetUrl);
+    expect(asset.status).toBe(200);
+    expect(asset.headers.get("content-type")).toContain("image/png");
+    expect(Buffer.from(await asset.arrayBuffer())).toEqual(PNG_BYTES);
+
+    const updated = html.replace("<body>", "<body><p>remote edit</p>");
+    fs.writeFileSync(path.join(docs, "replacement.html"), updated);
+    fs.renameSync(path.join(docs, "replacement.html"), path.join(docs, "index.html"));
+    const reopened = await fetch(pageUrl);
+    expect(reopened.status).toBe(200);
+    expect(await reopened.text()).toBe(updated);
+    fs.unlinkSync(imagePath);
+    const deleted = await fetch(assetUrl);
+    expect(deleted.status).toBe(404);
+    expect(await deleted.json()).toEqual({ detail: "File not found in workspace" });
   });
 
   it("serves encoded image paths through a real FileSystemWorkspace", async () => {
