@@ -1,5 +1,10 @@
 # Handoff Summary — delegated-copy-model-change
 
+## Final: User Verification And Release (DR-003)
+
+- User verification: the user replied on 2026-10-13, "anyway, its done. my answer is yes". This accepts the ISO-002 / DCP-005 evidence images, whose paths were given to the user, as their check.
+- Release: beta `v1.5.3-beta.4`, at the user's request ("so all working right? then release beta"). It is complete: four of four workflows, 17 assets, Docker `:beta`. See `release-deployment-report.md` → DR-003.
+
 ## Verification (Delivery Judgement From Evidence)
 
 ### DR-002: Verified From Evidence

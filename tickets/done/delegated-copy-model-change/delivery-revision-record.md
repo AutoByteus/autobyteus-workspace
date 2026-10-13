@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery package from `code_reviewer` after CRR-003 Pass | N/A | Checkpointed, base current, docs synced; evidence gap (per-member Team-copy choice) sent to API/E2E | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
 | DR-002 | API-REV-002 / CRR-004 closed the evidence gap | DR-001, evidence gap | Verified from evidence; re-integrated and checked; finalized without a release | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-002/` |
+| DR-003 | Solution Designer receipt check: Blocked, missing user check and release | DR-002, finalized, no release, verified from evidence | Beta `v1.5.3-beta.4` released; the user verified ("yes") | `release-deployment-report.md` (DR-003), `handoff-summary.md` |
 
 ## Revision Entries
 
@@ -45,3 +46,13 @@
   - O-1..O-3.
   - The code naming and file-size items.
   - The `RELEASE.md` `dist/` correction.
+
+### DR-003 — Receipt correction: user verification and beta release
+
+- Trigger: the Solution Designer's receipt check was Blocked. The Task's "Done when" ("Released, and the user checks it in the app") was not met. DR-002 was wrong to record "no release requested".
+- Corrected:
+  - The user chose a beta ("so all working right? then release beta"). It was released as `v1.5.3-beta.4` and is complete: four of four workflows, 17 assets, Docker `:beta`. Release commit `e9adde57ab` on `personal`.
+  - The user was given the full paths of the AC-010 evidence images and answered "anyway, its done. my answer is yes". This is recorded as the user's explicit verification, accepting the evidence as their check.
+- Not replayed: merge, docs, checks and the earlier cleanup.
+- Note: the running team's terminal rule text was older than the current `autobyteus-agents` `team-config.json` (`3b4a16a`, 2026-10-13), which already accepts verification from evidence.
+- Terminal return to `/solution_designer`: `Sent` after this record commit is pushed.
