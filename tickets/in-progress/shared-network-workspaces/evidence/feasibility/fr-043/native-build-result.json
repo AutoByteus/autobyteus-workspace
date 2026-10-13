@@ -1,0 +1,217 @@
+{
+  "scope": "native Mac build prerequisite in fresh no-auth/no-share guest, no host dependency installs",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-sf-fr043-macos",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "seconds": 0.021,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 2,
+      "seconds": 0.024,
+      "stdout": "",
+      "stderr": "VM \"ab-sf-fr043-macos\" is not running\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 0.181,
+      "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "ip",
+        "ab-sf-fr043-macos"
+      ],
+      "rc": 0,
+      "seconds": 0.024,
+      "stdout": "192.168.64.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/ipconfig getifaddr en0"
+      ],
+      "rc": 0,
+      "seconds": 0.776,
+      "stdout": "192.168.64.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/sbin/route",
+        "-n",
+        "get",
+        "192.168.64.2"
+      ],
+      "rc": 0,
+      "stdout": "   route to: 192.168.64.2\ndestination: 192.168.64.2\n  interface: bridge100\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500      1167 \n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/sbin/ifconfig",
+        "bridge100"
+      ],
+      "rc": 0,
+      "stdout": "bridge100: flags=8a63<UP,BROADCAST,SMART,RUNNING,ALLMULTI,SIMPLEX,MULTICAST> mtu 1500\n\toptions=63<RXCSUM,TXCSUM,TSO4,TSO6>\n\tether be:d0:74:32:81:64\n\tinet 192.168.64.1 netmask 0xffffff00 broadcast 192.168.64.255\n\tinet6 fe80::bcd0:74ff:fe32:8164%bridge100 prefixlen 64 scopeid 0x1a \n\tinet6 fd91:5d53:a507:b06c:1096:b061:6f6e:31ac prefixlen 64 autoconf secured \n\tConfiguration:\n\t\tid 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0\n\t\tmaxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200\n\t\troot id 0:0:0:0:0:0 priority 0 ifcost 0 port 0\n\t\tipfilter disabled flags 0x0\n\tmember: vmenet0 flags=20803<LEARNING,DISCOVER,PRIVATE,VIRTIO>\n\t        ifmaxaddr 0 port 25 priority 0 path cost 0\n\tAddress cache:\n\t\t72:76:f4:5e:d8:14 Vlan1 vmenet0 1200 flags=0<>\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect\n\tstatus: active\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "uname -sm; id; sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 1.106,
+      "stdout": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "command -v /opt/homebrew/bin/brew; /usr/bin/xcrun --find clang; test -d /opt/homebrew; ls /opt/homebrew/opt/libtirpc 2>/dev/null"
+      ],
+      "rc": 1,
+      "seconds": 0.831,
+      "stdout": "/opt/homebrew/bin/brew\n/Library/Developer/CommandLineTools/usr/bin/clang\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "HOMEBREW_NO_AUTO_UPDATE=1 /opt/homebrew/bin/brew install autoconf automake bison flex libtirpc"
+      ],
+      "rc": 0,
+      "seconds": 23.886,
+      "stdout": "==> Would install 4 formulae:\nautomake  1.19\nbison     3.8.2\nflex      2.6.4_2\nlibtirpc  1.3.8\n==> Would install 1 dependency for libtirpc:\nkrb5\n==> Pouring automake--1.19.arm64_tahoe.bottle.tar.gz\n\ud83c\udf7a  /opt/homebrew/Cellar/automake/1.19: 135 files, 3.6MB\n==> Pouring bison--3.8.2.arm64_tahoe.bottle.tar.gz\n\ud83c\udf7a  /opt/homebrew/Cellar/bison/3.8.2: 100 files, 3.9MB\n==> Pouring flex--2.6.4_2.arm64_tahoe.bottle.tar.gz\n\ud83c\udf7a  /opt/homebrew/Cellar/flex/2.6.4_2: 47 files, 1.6MB\n==> Installing libtirpc dependency: krb5\n==> Pouring krb5--1.22.2.arm64_tahoe.bottle.tar.gz\n\ud83c\udf7a  /opt/homebrew/Cellar/krb5/1.22.2: 163 files, 5.2MB\n==> Installing libtirpc\n==> Pouring libtirpc--1.3.8.arm64_tahoe.bottle.tar.gz\n\ud83c\udf7a  /opt/homebrew/Cellar/libtirpc/1.3.8: 85 files, 872KB\n==> Caveats\n==> bison\nbison is keg-only, which means it was not symlinked into /opt/homebrew,\nbecause macOS already provides this software and installing another version in\nparallel can cause all kinds of trouble.\n\nIf you need to have bison first in your PATH, run:\n  echo 'export PATH=/opt/homebrew/opt/bison/bin:$PATH' >> ~/.zshrc\n\nFor compilers to find bison you may need to set:\n  export LDFLAGS=-L/opt/homebrew/opt/bison/lib\n==> flex\nflex is keg-only, which means it was not symlinked into /opt/homebrew,\nbecause macOS already provides this software and installing another version in\nparallel can cause all kinds of trouble.\n\nIf you need to have flex first in your PATH, run:\n  echo 'export PATH=/opt/homebrew/opt/flex/bin:$PATH' >> ~/.zshrc\n\nFor compilers to find flex you may need to set:\n  export LDFLAGS=-L/opt/homebrew/opt/flex/lib\n  export CPPFLAGS=-I/opt/homebrew/opt/flex/include\n",
+      "stderr": "Warning: autoconf 2.73 is already installed and up-to-date.\nTo reinstall 2.73, run:\n  brew reinstall autoconf\n==> Downloading bottle manifests\n\u2714\ufe0e Bottle Manifest libtirpc (1.3.8)\n\u2714\ufe0e Bottle Manifest automake (1.19)\n\u2714\ufe0e Bottle Manifest bison (3.8.2)\n\u2714\ufe0e Bottle Manifest flex (2.6.4_2)\n==> Fetching downloads for: automake, bison, flex and libtirpc\n\u2714\ufe0e Bottle automake (1.19)\n\u2714\ufe0e Bottle Manifest krb5 (1.22.2)\n\u2714\ufe0e Bottle flex (2.6.4_2)\n\u2714\ufe0e Bottle bison (3.8.2)\n\u2714\ufe0e Bottle libtirpc (1.3.8)\n\u2714\ufe0e Bottle krb5 (1.22.2)\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "set -e; mkdir /Users/admin/.ab-sf-unfs-build; cd /Users/admin/.ab-sf-unfs-build; /usr/bin/curl -fL --retry 2 https://github.com/unfs3/unfs3/archive/ec1660ba33c80d5c67131e163e68834c1a10e243.tar.gz -o source.tar.gz; /usr/bin/shasum -a 256 source.tar.gz; tar -xzf source.tar.gz; cd unfs3-*; export PATH=/opt/homebrew/opt/bison/bin:/opt/homebrew/opt/flex/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin; export PKG_CONFIG_PATH=/opt/homebrew/opt/libtirpc/lib/pkgconfig; autoreconf -fi; ./configure --prefix=/Users/admin/.ab-sf-unfs-install; make -j2; make install; /Users/admin/.ab-sf-unfs-install/sbin/unfsd -h"
+      ],
+      "rc": 0,
+      "seconds": 10.106,
+      "stdout": "1fb13de8a15f535c3fea92cc6aaa731b42936a3a29839ec9db4d2833b216ecb5  source.tar.gz\nchecking build system type... aarch64-apple-darwin25.6.0\nchecking host system type... aarch64-apple-darwin25.6.0\nchecking for a BSD-compatible install... /usr/bin/install -c\nchecking for gcc... gcc\nchecking whether the C compiler works... yes\nchecking for C compiler default output file name... a.out\nchecking for suffix of executables... \nchecking whether we are cross compiling... no\nchecking for suffix of object files... o\nchecking whether the compiler supports GNU C... yes\nchecking whether gcc accepts -g... yes\nchecking for gcc option to enable C23 features... -std=gnu23\nchecking for ar... ar\nchecking for flex... flex\nchecking for lex output file root... lex.yy\nchecking for lex library... none needed\nchecking whether yytext is a pointer... yes\nchecking for bison... bison -y\nchecking for gcc -std=gnu23 option to support large files... none needed\nchecking for library containing xdr_int... none required\nchecking for library containing socket... none required\nchecking for libproc.h... yes\nchecking for mntent.h... no\nchecking for stdint.h... yes\nchecking for sys/mnttab.h... no\nchecking for sys/mount.h... yes\nchecking for sys/vmount.h... no\nchecking for rpc/svc_soc.h... no\nchecking for linux/ext2_fs.h... no\nchecking for int32... no\nchecking for uint32... no\nchecking for int64... no\nchecking for uint64... no\nchecking for struct rpcent... yes\nchecking for struct stat.st_gen... yes\nchecking for statvfs... yes\nchecking for seteuid... yes\nchecking for setegid... yes\nchecking for setresuid... no\nchecking for setresgid... no\nchecking for vsyslog... yes\nchecking for lchown... yes\nchecking for setgroups... yes\nchecking for lutimes... yes\nchecking for pkg-config... /opt/homebrew/bin/pkg-config\nchecking pkg-config is at least version 0.9.0... yes\nchecking for libtirpc... yes\nchecking for svc_getreq_poll... yes\nchecking for gcc -std=gnu23 options to detect undeclared functions... none needed\nchecking for gcc -std=gnu23 options to ignore future-version functions... -Werror=unguarded-availability-new\nchecking whether svc_pollfd is declared... yes\nconfigure: creating ./config.status\nconfig.status: creating Makefile\nconfig.status: creating Config/Makefile\nconfig.status: creating Extras/Makefile\nconfig.status: creating config.h\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o afsgettimes.o afsgettimes.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o afssupport.o afssupport.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o attr.o attr.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o daemon.o daemon.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o error.o error.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o fd_cache.o fd_cache.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o fh.o fh.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o fh_cache.o fh_cache.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o locate.o locate.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o md5.o md5.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o mount.o mount.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o nfs.o nfs.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o password.o password.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o readdir.o readdir.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o user.o user.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o xdr.o xdr.c\ngcc -std=gnu23 -g -O2 -Wall -W  -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -D_GNU_SOURCE -I.   -c -o winsupport.o winsupport.c\nmake -C Config\nflex ./exports.l\nbison -y -d ./exports.y\ngcc -std=gnu23 -g -O2 -Wall -W -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -I.. -I. -I..   -c -o lex.yy.o lex.yy.c\ngcc -std=gnu23 -g -O2 -Wall -W -I/opt/homebrew/Cellar/libtirpc/1.3.8/include/tirpc -I.. -I. -I..   -c -o y.tab.o y.tab.c\nar crs lib.a lex.yy.o y.tab.o\ngcc -std=gnu23 -o unfsd afsgettimes.o afssupport.o attr.o daemon.o error.o fd_cache.o fh.o fh_cache.o locate.o md5.o mount.o nfs.o password.o readdir.o user.o xdr.o winsupport.o Config/lib.a  -L/opt/homebrew/Cellar/libtirpc/1.3.8/lib -ltirpc\n/usr/bin/install -c -d /Users/admin/.ab-sf-unfs-install/sbin\n/usr/bin/install -c -d /Users/admin/.ab-sf-unfs-install/share/man/man7\n/usr/bin/install -c -d /Users/admin/.ab-sf-unfs-install/share/man/man8\n/usr/bin/install -c unfsd /Users/admin/.ab-sf-unfs-install/sbin/unfsd\n/usr/bin/install -c -m 644 ./Extras/tags.7 /Users/admin/.ab-sf-unfs-install/share/man/man7/tags.7\n/usr/bin/install -c -m 644 ./unfsd.8       /Users/admin/.ab-sf-unfs-install/share/man/man8/unfsd.8\nUNFS3 unfsd 0.11.0 (C) 2003-2025, various authors\nUsage: /Users/admin/.ab-sf-unfs-install/sbin/unfsd [options]\n\t-h          display this short option summary\n\t-u          use unprivileged port for services\n\t-d          do not detach from terminal\n\t-e <file>   file to use instead of /etc/exports\n\t-i <file>   write daemon pid to given file\n\t-n <port>   port to use for NFS service\n\t-m <port>   port to use for MOUNT service\n\t-t          TCP only, do not listen on UDP ports\n\t-p          do not register with portmap/rpcbind\n\t-s          single user mode\n\t-b          enable brute force file searching\n\t-l <addr>   bind to interface with specified address\n\t-r          report unreadable executables as readable\n\t-3          truncate fileid and cookie to 32 bits\n\t-T          test exports file and exit\n",
+      "stderr": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n\n100  2151    0  2151    0     0   3547      0 --:--:-- --:--:-- --:--:--  3547\n100  108k    0  108k    0     0   162k      0 --:--:-- --:--:-- --:--:-- 1796k\nattr.c:241:13: warning: comparison of integers of different signs: 'uint32' (aka 'unsigned int') and 'dev_t' (aka 'int') [-Wsign-compare]\n  241 |     if (dev != buf.st_dev || ino != buf.st_ino)\n      |         ~~~ ^  ~~~~~~~~~~\nattr.c:345:20: warning: comparison of integers of different signs: 'dev_t' (aka 'int') and 'uint32' (aka 'unsigned int') [-Wsign-compare]\n  345 |     if (buf.st_dev != fh.dev || buf.st_ino != fh.ino)\n      |         ~~~~~~~~~~ ^  ~~~~~~\nattr.c:432:16: warning: comparison of integers of different signs: 'uint32' (aka 'unsigned int') and 'dev_t' (aka 'int') [-Wsign-compare]\n  432 |     if (fh.dev != buf.st_dev || fh.ino != buf.st_ino ||\n      |         ~~~~~~ ^  ~~~~~~~~~~\ndaemon.c:457:29: warning: cast from 'bool_t (*)(void)' (aka 'int (*)(void)') to 'xdrproc_t' (aka 'int (*)(struct __rpc_xdr *, ...)') converts to incompatible function type [-Wcast-function-type-mismatch]\n  457 |             _xdr_argument = (xdrproc_t) xdr_void;\n      |                             ^~~~~~~~~~~~~~~~~~~~\ndaemon.c:458:27: warning: cast from 'bool_t (*)(void)' (aka 'int (*)(void)') to 'xdrproc_t' (aka 'int (*)(struct __rpc_xdr *, ...)') converts to incompatible function type [-Wcast-function-type-mismatch]\n  458 |             _xdr_result = (xdrproc_t) xdr_void;\n      |                           ^~~~~~~~~~~~~~~~~~~~\ndaemon.c:645:29: warning: cast from 'bool_t (*)(void)' (aka 'int (*)(void)') to 'xdrproc_t' (aka 'int (*)(struct __rpc_xdr *, ...)') converts to incompatible function type [-Wcast-function-type-mismatch]\n  645 |             _xdr_argument = (xdrproc_t) xdr_void;\n      |                             ^~~~~~~~~~~~~~~~~~~~\ndaemon.c:646:27: warning: cast from 'bool_t (*)(void)' (aka 'int (*)(void)') to 'xdrproc_t' (aka 'int (*)(struct __rpc_xdr *, ...)') converts to incompatible function type [-Wcast-function-type-mismatch]\n  646 |             _xdr_result = (xdrproc_t) xdr_void;\n      |                           ^~~~~~~~~~~~~~~~~~~~\ndaemon.c:658:29: warning: cast from 'bool_t (*)(void)' (aka 'int (*)(void)') to 'xdrproc_t' (aka 'int (*)(struct __rpc_xdr *, ...)') converts to incompatible function type [-Wcast-function-type-mismatch]\n  658 |             _xdr_argument = (xdrproc_t) xdr_void;\n      |                             ^~~~~~~~~~~~~~~~~~~~\ndaemon.c:666:27: warning: cast from 'bool_t (*)(void)' (aka 'int (*)(void)') to 'xdrproc_t' (aka 'int (*)(struct __rpc_xdr *, ...)') converts to incompatible function type [-Wcast-function-type-mismatch]\n  666 |             _xdr_result = (xdrproc_t) xdr_void;\n      |                           ^~~~~~~~~~~~~~~~~~~~\ndaemon.c:672:29: warning: cast from 'bool_t (*)(void)' (aka 'int (*)(void)') to 'xdrproc_t' (aka 'int (*)(struct __rpc_xdr *, ...)') converts to incompatible function type [-Wcast-function-type-mismatch]\n  672 |             _xdr_argument = (xdrproc_t) xdr_void;\n      |                             ^~~~~~~~~~~~~~~~~~~~\ndaemon.c:673:27: warning: cast from 'bool_t (*)(void)' (aka 'int (*)(void)') to 'xdrproc_t' (aka 'int (*)(struct __rpc_xdr *, ...)') converts to incompatible function type [-Wcast-function-type-mismatch]\n  673 |             _xdr_result = (xdrproc_t) xdr_void;\n      |                           ^~~~~~~~~~~~~~~~~~~~\ndaemon.c:679:29: warning: cast from 'bool_t (*)(void)' (aka 'int (*)(void)') to 'xdrproc_t' (aka 'int (*)(struct __rpc_xdr *, ...)') converts to incompatible function type [-Wcast-function-type-mismatch]\n  679 |             _xdr_argument = (xdrproc_t) xdr_void;\n      |                             ^~~~~~~~~~~~~~~~~~~~\n3 warnings generated.\n9 warnings generated.\nfd_cache.c:267:21: warning: comparison of integers of different signs: 'uint32' (aka 'unsigned int') and 'dev_t' (aka 'int') [-Wsign-compare]\n  267 |             (fh.dev != buf.st_dev || fh.ino != buf.st_ino ||\n      |              ~~~~~~ ^  ~~~~~~~~~~\n1 warning generated.\nfh.c:409:28: warning: comparison of integers of different signs: 'dev_t' (aka 'int') and 'const uint32' (aka 'const unsigned int') [-Wsign-compare]\n  409 |             if (buf.st_dev == fh->dev && buf.st_ino == fh->ino) {\n      |                 ~~~~~~~~~~ ^  ~~~~~~~\n1 warning generated.\nfh_cache.c:178:24: warning: comparison of integers of different signs: 'dev_t' (aka 'int') and 'uint32' (aka 'unsigned int') [-Wsign-compare]\n  178 |         if (buf.st_dev == dev && buf.st_ino == ino) {\n      |             ~~~~~~~~~~ ^  ~~~\n1 warning generated.\nmd5.c:165:25: warning: performing pointer subtraction with a null pointer has undefined behavior [-Wnull-pointer-subtraction]\n  165 |             if (!((data - (const md5_byte_t *) 0) & 3)) {\n      |                         ^ ~~~~~~~~~~~~~~~~~~~~~~\n1 warning generated.\nnfs.c:240:12: warning: variable 'mode' set but not used [-Wunused-but-set-variable]\n  240 |     mode_t mode;\n      |            ^\n1 warning generated.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-sf-fr043-macos",
+        "--timeout",
+        "10"
+      ],
+      "rc": 0,
+      "seconds": 0.335,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "cases": [],
+  "cleanup": [
+    {
+      "exactVmStopRc": 0
+    },
+    {
+      "exactOwnedVmProcessExited": true
+    }
+  ],
+  "nativeMacVm": {
+    "node": "ab-sf-fr043-macos",
+    "hostUid": 501,
+    "runArgv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "run",
+      "ab-sf-fr043-macos",
+      "--no-graphics",
+      "--no-audio",
+      "--no-clipboard",
+      "--no-usb-accessories"
+    ],
+    "hostProcessPid": 65555,
+    "hostShares": false,
+    "guestProviderCredentials": false,
+    "ip": "192.168.64.2",
+    "gateway": "192.168.64.1",
+    "identity": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n"
+  },
+  "vmHostOnlyRoute": {
+    "ownedGuestIp": "192.168.64.2",
+    "hostInterface": "bridge100",
+    "hostAddress": "192.168.64.1",
+    "noDefaultGatewayRequired": true,
+    "hostRoute": "   route to: 192.168.64.2\ndestination: 192.168.64.2\n  interface: bridge100\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500      1167 \n",
+    "hostInterfaceInfo": "bridge100: flags=8a63<UP,BROADCAST,SMART,RUNNING,ALLMULTI,SIMPLEX,MULTICAST> mtu 1500\n\toptions=63<RXCSUM,TXCSUM,TSO4,TSO6>\n\tether be:d0:74:32:81:64\n\tinet 192.168.64.1 netmask 0xffffff00 broadcast 192.168.64.255\n\tinet6 fe80::bcd0:74ff:fe32:8164%bridge100 prefixlen 64 scopeid 0x1a \n\tinet6 fd91:5d53:a507:b06c:1096:b061:6f6e:31ac prefixlen 64 autoconf secured \n\tConfiguration:\n\t\tid 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0\n\t\tmaxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200\n\t\troot id 0:0:0:0:0:0 priority 0 ifcost 0 port 0\n\t\tipfilter disabled flags 0x0\n\tmember: vmenet0 flags=20803<LEARNING,DISCOVER,PRIVATE,VIRTIO>\n\t        ifmaxaddr 0 port 25 priority 0 path cost 0\n\tAddress cache:\n\t\t72:76:f4:5e:d8:14 Vlan1 vmenet0 1200 flags=0<>\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect\n\tstatus: active\n"
+  },
+  "prerequisite": "/opt/homebrew/bin/brew\n/Library/Developer/CommandLineTools/usr/bin/clang\n",
+  "nativeBuildPassed": true,
+  "retainedStoppedCredentialFreeVm": "ab-sf-fr043-macos"
+}

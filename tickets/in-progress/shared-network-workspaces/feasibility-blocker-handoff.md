@@ -1,3 +1,30 @@
+# Current Shared Network Workspace Result — SR-012 Ongoing Design/Feasibility
+
+## Current Status And Authority
+
+Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63. Owner /software_engineering_team/solution_designer; original delegator /project_task_manager AgentRun project_task_manager_a5f6d9d306e54970bafdad895bdf731d. Latest user explicitly requires a persistent simple shared-folder service working on native Mac/Linux/Docker, with selected source folder, and requests design/implementation now. This resolves the earlier staging question. Requirements Approved SR-012 within direction, exact record approval-record-sr012.md. Service first use configures as part of the persistent lifecycle, not a separate setup product; ordinary command interface allowed.
+
+No completed design/implementation-ready claim. Real physical Mac+independentLinux preimplementation proof in REQ-016/AC-016 remains unmet. A separate async question proposes moving it to mandatory predelivery; reply not yet received, gate unchanged. Other owned proof/integration work continues rather than waiting idly. No user command is ready or required now. Full original request/artifacts/safety/resources/history retained below.
+
+## Current Executed Work And Limits
+
+Completed FR034–047 hosting investigation. FR0398pass native Apple nfsd selected nonempty APFS source + nativeMac/twoDocker same mounted path; FR038 measured Linux file handles unavailable on selected Mac bind. FR0405pass LinuxUNFS directly serves that Mac source; FR0428pass adds nativeMac mount and ordinary coordinated Mac/Linux Git commits, no global safe.directory/ownership rewrite. Previous actual agent proof FR026 remains true for its original release/Ganesha topology; no new agents/auth/models here.
+
+Native Mac UNFS0.11.0/ec166 +guestlibtirpc1.3.8 compile/help passed FR043, but actual serving remains unqualified: FR046 raw RPC assertion then FR047 actual native mount RPC struct is bad/72. Other environment/harness failures retained/indexed, no all-green/100% claim. Native Apple route still works; recommend platform-specific mature backend integration under the SAME service UX, not a new filesystem or invisible folder substitute. Full table/source/commands/limitations at evidence/feasibility/native-folder-hosting-report.md.
+
+Draft design-spec.md now records approved-basis spines/owners, removal boundaries and state transition decisions. It is explicitly not completed/implementation-ready; no final size/risk or route eligibility. Complete service distribution/secured control/data authorization/platform qualification/lifecycle/defaultGit/configured private runtime skill/cwd/action boundaries still require Solution Designer work. Existing watcher is not action owner, and synchronous core/Claude cwd paths cannot be left as a shared-path bypass. No global startup gate or invented historical migration.
+
+All exact new Docker attempts/resources absent; every changed no-auth VM clone34/35/36/37/39/41/42/43 fully retired/deleted. Guest jobs/source/mounts never host/user changes. Owned host scratch removed; public pinned cache/private Tart and public-source-only task-built ab-sf-fr040-unfs:probe retained for bounded continuation. No active experiment remains. Exact audit sr012-resource-audit.json; raw failed receipts preserved. No new/live credentials, user node/data/mount/export/admin changes.
+
+## Workspace And Next Action
+
+Canonical artifacts all in /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces: requirements-doc.md (ApprovedSR012), approval-record-sr012.md, investigation-notes.md, solution-revision-record.md, requirements-approval-request.md and this feasibility-blocker-handoff.md. Worktree/branch/base/finalization unchanged; shared integration checkout untouched. No production source/merge/release/task closure. Reviews/implementation/E2E/delivery N/A — not completed/not bypassed. No live mount/storage/node mutation approval inferred.
+
+Next: continue owned definitive backend/platform, secured service and runtime/action design against SR012; resolve the specific physical-test sequencing decision or authorized independent Linux target. A reply changing sequencing does not itself make Draft design complete. No architecture/implementation handoff until applicable gates pass. Fresh rules at actual completed outcome; This materially completed evidence/design checkpoint is an interim result, not an implementation handoff. Fresh routing follows persistence; if no rule applies, return to original requesting run, not premature architecture/implementation routing.
+
+---
+## Historical SR-011 Context (Superseded Current Header)
+
 # Current Shared Network Workspace Result — SR-011 Ready For Approval
 
 ## Current Status And Decision
@@ -131,3 +158,13 @@ Evidence checkpoint ba5fbdb83f2b164dec7d85355311040d13b5cdbc; final audit/style 
 Direct-user feasibility clarification (sameSR010): physical Mac can host the Linux container as already exercised locally; Docker Desktop's Linux VM is the service OS boundary. Read-only local binary/manual plus Apple primary manual confirm native macOS nfsd also exists, but not executed/configured/tested here and not a change to Approved Linux service scope. No exports/service/mount/admin modification. User asks possibility, not authority to expand native-server setup. Primary sources and exact read-only check recorded in investigation-notes.md. Answer both meanings directly; existing actual-LAN/setup/design blockers unchanged, no duplicate PM/implementation handoff for this clarification.
 
 SR-011 route decision2026-10-13: fresh get_handoff_rules returned only completed architecture size/risk and returned delivery-receipt gap routes; NONE applies to this Ready for Approval user scope conversation. Return recommendation/current proposed requirements directly to user; no PM approval request, implementation/architecture forwarding, duplicate collaborators or delegate_task. No new approval recorded.
+
+SR-012 artifact/resource checkpoint: sr012-resource-audit.json confirms25exact new Docker absences and full changed no-auth clone retirement throughMac43, all experiment execution complete. Public-source task-built UNFS image/private Tart/public pinned OS cache retained intentionally for bounded continuation, not final deployment/cleanup completion. sr012-artifact-audit.json records new JSON/Python syntax and strict-value-pattern scan; no comprehensive security/product validation claimed. Repository artifact hygiene checked after explicit ticket staging; literal logs retain original whitespace.
+
+SR-012 routing decision2026-10-13: fresh get_handoff_rules returned completed Architecture Design Complete size/risk routes and DeliveryCompleted receipt-gap route. NONE applies: design is Draft/incomplete, physical preimplementation gate remains unmet, no finalized delivery. Return this materially completed feasibility/requirements-recovery checkpoint to original requesting AgentRun project_task_manager_a5f6d9d306e54970bafdad895bdf731d, with the SAME absolute full-context file attached. No additional recipients, duplicate approval substitution, architecture/implementation forwarding, task closure or delegate_task bypass. Expected caller state: Task remains unfinished; user directly answers sequencing/authorized target, Solution Designer continues owned backend/security/runtime/action design. Stop after confirmed fallback delivery.
+
+Current additional canonical paths (not represented in historicalSR010 path lists):
+- /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/approval-record-sr012.md — current within-direction approval.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/design-spec.md — Draft, NOT forward-ready; no final classification.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/native-folder-hosting-report.md — executed mode/node/source/mount table, retained failures and next proof.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/sr012-resource-audit.json and sr012-artifact-audit.json — exact cleanup and scoped artifact checks, not final product verification.

@@ -1,3 +1,12 @@
+# Current Approval And Pending Sequencing — SR-012
+
+The previous SR-011 staging question is resolved by the user's latest explicit service-first/nativeMac/Linux/Docker implementation direction. Approved requirements-doc.md SR-012 and approval-record-sr012.md are authoritative. One persistent service owns first-run configuration and continued lifecycle; selected source files are served directly, selected managed Docker nodes require no separate in-container commands. Existing filesystem/preservation/approval boundaries retained.
+
+Separate direct async question (pending): “Your earlier criteria required a real two-computer LAN test before implementation, but no remote test computer is available yet. To start implementation now, may I move that test to a mandatory pre-delivery gate? I will still validate the native server modes locally first, and will not claim the LAN test passed.” Recommended yes/localproof first + physical proof before delivery; no keeps original gate. No response/waiver inferred. No technical setup command requested from user now; finished supported command supplied only after implementation/validation.
+
+---
+## Historical SR-011 Approval Request (Superseded, Not Retroactively Approved)
+
 # Current Requirements Approval Conversation — SR-011
 
 - Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63; owner Solution Designer,2026-10-13.

@@ -1,0 +1,320 @@
+{
+  "run": "ab-sf-fr044-4d455b07",
+  "scope": "native Mac kernel NFSv3 server selected APFS source and two real Linux kernel Docker-client mounts on one physical Mac; component capability only, not final service/source/UI/LAN/agents",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-sf-fr043-macos",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 2,
+      "seconds": 0.02,
+      "stdout": "",
+      "stderr": "VM \"ab-sf-fr043-macos\" is not running\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 2.914,
+      "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "ip",
+        "ab-sf-fr043-macos"
+      ],
+      "rc": 0,
+      "seconds": 0.041,
+      "stdout": "192.168.64.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/ipconfig getifaddr en0"
+      ],
+      "rc": 0,
+      "seconds": 0.979,
+      "stdout": "192.168.64.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/sbin/route",
+        "-n",
+        "get",
+        "192.168.64.2"
+      ],
+      "rc": 0,
+      "stdout": "   route to: 192.168.64.2\ndestination: 192.168.64.2\n  interface: bridge100\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500      1165 \n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/sbin/ifconfig",
+        "bridge100"
+      ],
+      "rc": 0,
+      "stdout": "bridge100: flags=8a63<UP,BROADCAST,SMART,RUNNING,ALLMULTI,SIMPLEX,MULTICAST> mtu 1500\n\toptions=63<RXCSUM,TXCSUM,TSO4,TSO6>\n\tether be:d0:74:32:81:64\n\tinet 192.168.64.1 netmask 0xffffff00 broadcast 192.168.64.255\n\tinet6 fe80::bcd0:74ff:fe32:8164%bridge100 prefixlen 64 scopeid 0x1a \n\tinet6 fd91:5d53:a507:b06c:1096:b061:6f6e:31ac prefixlen 64 autoconf secured \n\tConfiguration:\n\t\tid 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0\n\t\tmaxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200\n\t\troot id 0:0:0:0:0:0 priority 0 ifcost 0 port 0\n\t\tipfilter disabled flags 0x0\n\tmember: vmenet0 flags=20803<LEARNING,DISCOVER,PRIVATE,VIRTIO>\n\t        ifmaxaddr 0 port 25 priority 0 path cost 0\n\tAddress cache:\n\t\t72:76:f4:5e:d8:14 Vlan1 vmenet0 1200 flags=0<>\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect\n\tstatus: active\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "uname -sm; id; sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 0.638,
+      "stdout": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "test ! -e /etc/exports; test ! -e /Users/admin/.ab-sf-native-source-ab-sf-fr044-4d455b07; mkdir /Users/admin/.ab-sf-native-source-ab-sf-fr044-4d455b07; mkdir /Users/admin/.ab-sf-native-source-ab-sf-fr044-4d455b07/project /Users/admin/.ab-sf-native-source-ab-sf-fr044-4d455b07/.owned-identity"
+      ],
+      "rc": 0,
+      "seconds": 0.72,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/python3",
+        "-c",
+        "import json;open('/Users/admin/.ab-sf-native-source-ab-sf-fr044-4d455b07/.owned-identity/storage.json','w').write('{\"storageId\": \"e782d3a4426f428a84887c5962b6fe32\"}');open('/Users/admin/.ab-sf-native-source-ab-sf-fr044-4d455b07/project/preexisting.txt','w').write('KEEP_NATIVE_SOURCE')"
+      ],
+      "rc": 0,
+      "seconds": 0.842,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "mkdir /Users/admin/.ab-sf-native-config-ab-sf-fr044-4d455b07"
+      ],
+      "rc": 0,
+      "seconds": 0.58,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/usr/bin/printf %s '/Users/admin/.ab-sf-native-source-ab-sf-fr044-4d455b07 192.168.64.1(rw,all_squash,anonuid=501,anongid=20,insecure) 192.168.64.2(rw,all_squash,anonuid=501,anongid=20,insecure)\n' > /Users/admin/.ab-sf-native-config-ab-sf-fr044-4d455b07/exports"
+      ],
+      "rc": 0,
+      "seconds": 0.189,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "nohup /Users/admin/.ab-sf-unfs-install/sbin/unfsd -d -s -p -t -n 12049 -m 12049 -l 192.168.64.2 -e /Users/admin/.ab-sf-native-config-ab-sf-fr044-4d455b07/exports > /Users/admin/.ab-sf-native-config-ab-sf-fr044-4d455b07/server.log 2>&1 < /dev/null & echo $!"
+      ],
+      "rc": 0,
+      "seconds": 0.098,
+      "stdout": "691\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/bin/ps -p 691 -o uid=,command="
+      ],
+      "rc": 1,
+      "seconds": 0.097,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/bin/kill -TERM 691"
+      ],
+      "rc": 1,
+      "seconds": 0.067,
+      "stdout": "",
+      "stderr": "kill: 691: No such process\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr043-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/bin/ps -p 691 -o pid=,stat=,command="
+      ],
+      "rc": 1,
+      "seconds": 0.122,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-sf-fr043-macos",
+        "--timeout",
+        "10"
+      ],
+      "rc": 0,
+      "seconds": 0.334,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "native nonroot pinned UNFS3 server uses chosen APFS folder without Docker or OS nfsd changes",
+      "status": "FAIL",
+      "error": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): \")",
+      "seconds": 2.532
+    }
+  ],
+  "cleanup": [
+    {
+      "nativeUnfsExactPidTermRc": 1
+    },
+    {
+      "nativeUnfsExitObservation": ""
+    },
+    {
+      "exactVmStopRc": 0
+    },
+    {
+      "exactOwnedVmProcessExited": true
+    }
+  ],
+  "nativeMacVm": {
+    "node": "ab-sf-fr043-macos",
+    "hostUid": 501,
+    "runArgv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "run",
+      "ab-sf-fr043-macos",
+      "--no-graphics",
+      "--no-audio",
+      "--no-clipboard",
+      "--no-usb-accessories"
+    ],
+    "hostProcessPid": 74338,
+    "hostShares": false,
+    "guestProviderCredentials": false,
+    "ip": "192.168.64.2",
+    "gateway": "192.168.64.1",
+    "identity": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n"
+  },
+  "vmHostOnlyRoute": {
+    "ownedGuestIp": "192.168.64.2",
+    "hostInterface": "bridge100",
+    "hostAddress": "192.168.64.1",
+    "noDefaultGatewayRequired": true,
+    "hostRoute": "   route to: 192.168.64.2\ndestination: 192.168.64.2\n  interface: bridge100\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500      1165 \n",
+    "hostInterfaceInfo": "bridge100: flags=8a63<UP,BROADCAST,SMART,RUNNING,ALLMULTI,SIMPLEX,MULTICAST> mtu 1500\n\toptions=63<RXCSUM,TXCSUM,TSO4,TSO6>\n\tether be:d0:74:32:81:64\n\tinet 192.168.64.1 netmask 0xffffff00 broadcast 192.168.64.255\n\tinet6 fe80::bcd0:74ff:fe32:8164%bridge100 prefixlen 64 scopeid 0x1a \n\tinet6 fd91:5d53:a507:b06c:1096:b061:6f6e:31ac prefixlen 64 autoconf secured \n\tConfiguration:\n\t\tid 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0\n\t\tmaxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200\n\t\troot id 0:0:0:0:0:0 priority 0 ifcost 0 port 0\n\t\tipfilter disabled flags 0x0\n\tmember: vmenet0 flags=20803<LEARNING,DISCOVER,PRIVATE,VIRTIO>\n\t        ifmaxaddr 0 port 25 priority 0 path cost 0\n\tAddress cache:\n\t\t72:76:f4:5e:d8:14 Vlan1 vmenet0 1200 flags=0<>\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect\n\tstatus: active\n"
+  },
+  "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): \")",
+  "retainedStoppedCredentialFreeVm": "ab-sf-fr043-macos"
+}

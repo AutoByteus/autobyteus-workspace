@@ -1,0 +1,228 @@
+{
+  "scope": "exact SR012 owned-resource cleanup, no global prune/user resources",
+  "vmCommands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-sf-fr042-macos"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "list",
+        "--format",
+        "json"
+      ],
+      "rc": 0,
+      "stdout": "[\n  {\n    \"State\" : \"stopped\",\n    \"Name\" : \"ghcr.io\\/cirruslabs\\/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377\",\n    \"Accessed\" : \"2026-10-13T12:25:03Z\",\n    \"Disk\" : 50,\n    \"Size\" : 33,\n    \"Source\" : \"OCI\",\n    \"Running\" : false\n  }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-sf-fr043-macos"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "list",
+        "--format",
+        "json"
+      ],
+      "rc": 0,
+      "stdout": "[\n  {\n    \"Source\" : \"OCI\",\n    \"Name\" : \"ghcr.io\\/cirruslabs\\/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377\",\n    \"Disk\" : 50,\n    \"Running\" : false,\n    \"Size\" : 33,\n    \"Accessed\" : \"2026-10-13T12:32:18Z\",\n    \"State\" : \"stopped\"\n  }\n]\n",
+      "stderr": ""
+    }
+  ],
+  "dockerAbsences": [
+    {
+      "kind": "container",
+      "name": "ab-sf-fr034-20a4e882-route-check",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr034-20a4e882-route-check\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr035-0a3142a1-client-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr035-0a3142a1-client-a\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr035-0a3142a1-route-check",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr035-0a3142a1-route-check\n"
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr035-0a3142a1-nfs-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr035-0a3142a1-nfs-a: no such volume\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr038-bind-capability",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr038-bind-capability\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr039-e703370a-client-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr039-e703370a-client-a\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr039-e703370a-client-b",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr039-e703370a-client-b\n"
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr039-e703370a-nfs-b",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr039-e703370a-nfs-b: no such volume\n"
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr039-e703370a-nfs-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr039-e703370a-nfs-a: no such volume\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr039-e703370a-route-check",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr039-e703370a-route-check\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr040-9d5e9ba0-client-b",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr040-9d5e9ba0-client-b\n"
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr040-9d5e9ba0-nfs-b",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr040-9d5e9ba0-nfs-b: no such volume\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr040-9d5e9ba0-server",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr040-9d5e9ba0-server\n"
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr040-9d5e9ba0-nfs-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr040-9d5e9ba0-nfs-a: no such volume\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr040-9d5e9ba0-client-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr040-9d5e9ba0-client-a\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr041-18457f7a-client-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr041-18457f7a-client-a\n"
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr041-18457f7a-nfs-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr041-18457f7a-nfs-a: no such volume\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr041-18457f7a-client-b",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr041-18457f7a-client-b\n"
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr041-18457f7a-nfs-b",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr041-18457f7a-nfs-b: no such volume\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr041-18457f7a-server",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr041-18457f7a-server\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr042-29c3794a-server",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr042-29c3794a-server\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr042-29c3794a-client-b",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr042-29c3794a-client-b\n"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr042-29c3794a-client-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr042-29c3794a-client-a\n"
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr042-29c3794a-nfs-b",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr042-29c3794a-nfs-b: no such volume\n"
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr042-29c3794a-nfs-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr042-29c3794a-nfs-a: no such volume\n"
+    }
+  ],
+  "retainedPublicTestEngineImage": "ab-sf-fr040-unfs:probe",
+  "publicBaselineCacheRetained": true,
+  "changedVmClonesAbsent": true,
+  "allOwnedExperimentExecutionComplete": true
+}

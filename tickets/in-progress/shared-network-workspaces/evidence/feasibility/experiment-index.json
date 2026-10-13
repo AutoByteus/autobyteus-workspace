@@ -507,5 +507,230 @@
     "scoped_runner_exit": 0,
     "production_patch": false,
     "cleanup_limitations": null
+  },
+  {
+    "round": "fr-034",
+    "run": "ab-sf-fr034-20a4e882",
+    "scope": "native Mac kernel NFSv3 server selected APFS source and two real Linux kernel Docker-client mounts on one physical Mac; component capability only, not final service/source/UI/LAN/agents",
+    "pass_count": 1,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": "RuntimeError(\"('docker', 'run', '-d', '--name'): docker: Error response from daemon: No such image: sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a\\n\\nRun 'docker run --help' for more information\\n\")",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_limitations": "Changed credential-free VM fully retired after stop/guest cleanup; public immutable cache/test engine image retained only"
+  },
+  {
+    "round": "fr-035",
+    "run": "ab-sf-fr035-0a3142a1",
+    "scope": "native Mac kernel NFSv3 server selected APFS source and two real Linux kernel Docker-client mounts on one physical Mac; component capability only, not final service/source/UI/LAN/agents",
+    "pass_count": 2,
+    "failed_cases": [
+      {
+        "name": "native Mac and two unprivileged Docker clients mount same Mac-served storage at identical root",
+        "status": "FAIL",
+        "error": "RuntimeError(\"('docker', 'run', '-d', '--name'): docker: Error response from daemon: error while mounting volume '/var/lib/docker/volumes/ab-sf-fr035-0a3142a1-nfs-a/_data': failed to mount local volume: mount :/Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1:/var/lib/docker/volumes/ab-sf-fr035-0a3142a1-nfs-a/_data, data: addr=192.168.128.2,vers=3,proto=tcp,mountport=20048,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache: operation not supported\\n\\nRun 'docker run --help' for more information\\n\")",
+        "seconds": 9.869
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "RuntimeError(\"('docker', 'run', '-d', '--name'): docker: Error response from daemon: error while mounting volume '/var/lib/docker/volumes/ab-sf-fr035-0a3142a1-nfs-a/_data': failed to mount local volume: mount :/Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1:/var/lib/docker/volumes/ab-sf-fr035-0a3142a1-nfs-a/_data, data: addr=192.168.128.2,vers=3,proto=tcp,mountport=20048,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache: operation not supported\\n\\nRun 'docker run --help' for more information\\n\")",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_limitations": "Changed credential-free VM fully retired after stop/guest cleanup; public immutable cache/test engine image retained only"
+  },
+  {
+    "round": "fr-036",
+    "run": "ab-sf-fr036-b1038a88",
+    "scope": "native Mac kernel NFSv3 server selected APFS source and two real Linux kernel Docker-client mounts on one physical Mac; component capability only, not final service/source/UI/LAN/agents",
+    "pass_count": 1,
+    "failed_cases": [
+      {
+        "name": "native Mac mounts its selected APFS source through actual NFSv3 before Linux-client negotiation",
+        "status": "FAIL",
+        "error": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr036-macos', '/usr/bin/sudo'): sudo: mount: command not found\\n\")",
+        "seconds": 10.451
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr036-macos', '/usr/bin/sudo'): sudo: mount: command not found\\n\")",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_limitations": "Changed credential-free VM fully retired after stop/guest cleanup; public immutable cache/test engine image retained only"
+  },
+  {
+    "round": "fr-037",
+    "run": "ab-sf-fr037-a54f2fa1",
+    "scope": "native Mac kernel NFSv3 server selected APFS source and two real Linux kernel Docker-client mounts on one physical Mac; component capability only, not final service/source/UI/LAN/agents",
+    "pass_count": 1,
+    "failed_cases": [
+      {
+        "name": "native Mac mounts its selected APFS source through actual NFSv3 before Linux-client negotiation",
+        "status": "FAIL",
+        "error": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr037-macos', '/usr/bin/sudo'): rpcinfo: can't contact portmapper: rpcinfo: RPC: Timed out\\n\")",
+        "seconds": 12.041
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr037-macos', '/usr/bin/sudo'): rpcinfo: can't contact portmapper: rpcinfo: RPC: Timed out\\n\")",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_limitations": "Changed credential-free VM fully retired after stop/guest cleanup; public immutable cache/test engine image retained only"
+  },
+  {
+    "round": "fr-038",
+    "run": "ab-sf-fr038-bind-capability",
+    "scope": "owned Mac host scratch bind file-handle prerequisite, not filesystem export or final Docker-server proof",
+    "pass_count": 1,
+    "failed_cases": [],
+    "fatal": null,
+    "observation": "name_to_handle_at returns EOPNOTSUPP95 on chosen Mac scratch bind; prerequisite limitation, not export support",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "production_patch": false
+  },
+  {
+    "round": "fr-039",
+    "run": "ab-sf-fr039-e703370a",
+    "scope": "native Mac kernel NFSv3 server selected APFS source and two real Linux kernel Docker-client mounts on one physical Mac; component capability only, not final service/source/UI/LAN/agents",
+    "pass_count": 8,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "production_patch": false,
+    "cleanup_limitations": "Changed credential-free VM fully retired after stop/guest cleanup; public immutable cache/test engine image retained only"
+  },
+  {
+    "round": "fr-040",
+    "run": "ab-sf-fr040-9d5e9ba0",
+    "scope": "UNFS3 Linux Docker server directly serves selected Mac host scratch bind; two UID10001 Docker NFSv3 clients; one physical Mac only; no agents/NLM/final product proof",
+    "pass_count": 5,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "production_patch": false,
+    "cleanup_limitations": null
+  },
+  {
+    "round": "fr-041",
+    "run": "ab-sf-fr041-18457f7a",
+    "scope": "UNFS3 Linux Docker server directly serves selected Mac host scratch bind; two UID10001 Docker NFSv3 clients; one physical Mac only; no agents/NLM/final product proof",
+    "pass_count": 7,
+    "failed_cases": [
+      {
+        "name": "single-user UID presentation permits coordinated native Mac and Linux Git without safe.directory override",
+        "status": "FAIL",
+        "error": "AssertionError('?? exclusive\\n?? exec.sh\\n?? link\\n?? renamed\\n?? roundtrip.txt\\n2dec84099dcd3dc8c87bf473aa95b49597d51af6')",
+        "seconds": 0.992
+      }
+    ],
+    "blocked_cases": [],
+    "fatal": "AssertionError('?? exclusive\\n?? exec.sh\\n?? link\\n?? renamed\\n?? roundtrip.txt\\n2dec84099dcd3dc8c87bf473aa95b49597d51af6')",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_limitations": "Changed credential-free VM fully retired after stop/guest cleanup; public immutable cache/test engine image retained only"
+  },
+  {
+    "round": "fr-042",
+    "run": "ab-sf-fr042-29c3794a",
+    "scope": "UNFS3 Linux Docker server directly serves selected Mac host scratch bind; two UID10001 Docker NFSv3 clients; one physical Mac only; no agents/NLM/final product proof",
+    "pass_count": 8,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "production_patch": false,
+    "cleanup_limitations": "Changed credential-free VM fully retired after stop/guest cleanup; public immutable cache/test engine image retained only"
+  },
+  {
+    "round": "fr-043",
+    "run": "ab-sf-fr043-macos-native-build",
+    "scope": "native Mac build prerequisite in fresh no-auth/no-share guest, no host dependency installs",
+    "pass_count": 1,
+    "failed_cases": [],
+    "fatal": null,
+    "scoped_runner_exit": 0,
+    "production_patch": false,
+    "cleanup_all_rc_zero": true,
+    "cleanup_limitations": "Native no-auth VM fully retired after exact job/mount stop. Build-only success not serving proof. FR044 stale/missing private binary/log and FR046/047 bad RPC retained, not hidden."
+  },
+  {
+    "round": "fr-044",
+    "run": "ab-sf-fr044-4d455b07",
+    "scope": "native Mac kernel NFSv3 server selected APFS source and two real Linux kernel Docker-client mounts on one physical Mac; component capability only, not final service/source/UI/LAN/agents",
+    "pass_count": 0,
+    "failed_cases": [
+      {
+        "name": "native nonroot pinned UNFS3 server uses chosen APFS folder without Docker or OS nfsd changes",
+        "status": "FAIL",
+        "error": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): \")",
+        "seconds": 2.532
+      }
+    ],
+    "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): \")",
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_all_rc_zero": false,
+    "cleanup_limitations": "Native no-auth VM fully retired after exact job/mount stop. Build-only success not serving proof. FR044 stale/missing private binary/log and FR046/047 bad RPC retained, not hidden."
+  },
+  {
+    "round": "fr-045",
+    "run": "ab-sf-fr045-f02e7571",
+    "scope": "native Mac userspace nonroot pinned UNFS3 server selected APFS source and native Mac/two Linux Docker-client NFS3 mounts on one physical Mac; component only, no final service/source/UI/LAN/agents",
+    "pass_count": 0,
+    "failed_cases": [],
+    "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): cat: /Users/admin/.ab-sf-native-config-ab-sf-fr044-4d455b07/server.log: No such file or directory\\n\")",
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_all_rc_zero": true,
+    "cleanup_limitations": "Native no-auth VM fully retired after exact job/mount stop. Build-only success not serving proof. FR044 stale/missing private binary/log and FR046/047 bad RPC retained, not hidden."
+  },
+  {
+    "round": "fr-046",
+    "run": "ab-sf-fr046-b97880d7",
+    "scope": "native Mac userspace nonroot pinned UNFS3 server selected APFS source and native Mac/two Linux Docker-client NFS3 mounts on one physical Mac; component only, no final service/source/UI/LAN/agents",
+    "pass_count": 1,
+    "failed_cases": [
+      {
+        "name": "actual native Mac NFSv3 RPC NULL accepted after native nonroot daemon start",
+        "status": "FAIL",
+        "error": "AssertionError([[77177956, 1, 0, 0, 1863920776], [1256781845, 1, 0, 0, 1863920776], [361305327, 1, 0, 0, 1863920776], [3045113484, 1, 0, 0, 1863920776], [40191060, 1, 0, 0, 1863920776], [2557508128, 1, 0, 0, 1863920776], [372490506, 1, 0, 0, 1863920776], [1886087351, 1, 0, 0, 1863920776], [434959371, 1, 0, 0, 1863920776], [704896977, 1, 0, 0, 1863920776], [2309742934, 1, 0, 0, 1863920776], [859194660, 1, 0, 0, 1863920776], [2161690824, 1, 0, 0, 1863920776], [627457721, 1, 0, 0, 1863920776], [3148080650, 1, 0, 0, 1863920776], [1242007041, 1, 0, 0, 1863920776], [3533798450, 1, 0, 0, 1863920776], [3153984458, 1, 0, 0, 1863920776], [912487811, 1, 0, 0, 1863920776], [3662679587, 1, 0, 0, 1863920776], [1339185161, 1, 0, 0, 1863920776], [2182142058, 1, 0, 0, 1863920776], [490865963, 1, 0, 0, 1863920776], [811056990, 1, 0, 0, 1863920776], [2735381689, 1, 0, 0, 1863920776], [3133660643, 1, 0, 0, 1863920776], [3439656202, 1, 0, 0, 1863920776], [2021969279, 1, 0, 0, 1863920776], [62033859, 1, 0, 0, 1863920776], [2598057153, 1, 0, 0, 1863920776], [4222170119, 1, 0, 0, 1863920776], [402987154, 1, 0, 0, 1863920776], [3160513297, 1, 0, 0, 1863920776], [299957687, 1, 0, 0, 1863920776], [232470257, 1, 0, 0, 1863920776], [1353250231, 1, 0, 0, 1863920776], [602681941, 1, 0, 0, 1863920776], [2766448777, 1, 0, 0, 1863920776], [2112460662, 1, 0, 0, 1863920776], [1485184436, 1, 0, 0, 1863920776], [158667783, 1, 0, 0, 1863920776], [1135177170, 1, 0, 0, 1863920776], [297837877, 1, 0, 0, 1863920776], [1326719427, 1, 0, 0, 1863920776], [336335723, 1, 0, 0, 1863920776], [438545822, 1, 0, 0, 1863920776], [2055655746, 1, 0, 0, 1863920776], [22499293, 1, 0, 0, 1863920776], [2585847456, 1, 0, 0, 1863920776], [547935576, 1, 0, 0, 1863920776], [462020335, 1, 0, 0, 1863920776], [468796351, 1, 0, 0, 1863920776], [2874661101, 1, 0, 0, 1863920776], [911840654, 1, 0, 0, 1863920776], [1007357196, 1, 0, 0, 1863920776], [4289867349, 1, 0, 0, 1863920776], [1839856749, 1, 0, 0, 1863920776], [2198243655, 1, 0, 0, 1863920776], [3351560281, 1, 0, 0, 1863920776], [4238826105, 1, 0, 0, 1863920776], [1250937629, 1, 0, 0, 1863920776], [1423656994, 1, 0, 0, 1863920776], [986178173, 1, 0, 0, 1863920776], [3268490213, 1, 0, 0, 1863920776], [2624048457, 1, 0, 0, 1863920776], [2505654263, 1, 0, 0, 1863920776]])",
+        "seconds": 20.141
+      }
+    ],
+    "fatal": "AssertionError([[77177956, 1, 0, 0, 1863920776], [1256781845, 1, 0, 0, 1863920776], [361305327, 1, 0, 0, 1863920776], [3045113484, 1, 0, 0, 1863920776], [40191060, 1, 0, 0, 1863920776], [2557508128, 1, 0, 0, 1863920776], [372490506, 1, 0, 0, 1863920776], [1886087351, 1, 0, 0, 1863920776], [434959371, 1, 0, 0, 1863920776], [704896977, 1, 0, 0, 1863920776], [2309742934, 1, 0, 0, 1863920776], [859194660, 1, 0, 0, 1863920776], [2161690824, 1, 0, 0, 1863920776], [627457721, 1, 0, 0, 1863920776], [3148080650, 1, 0, 0, 1863920776], [1242007041, 1, 0, 0, 1863920776], [3533798450, 1, 0, 0, 1863920776], [3153984458, 1, 0, 0, 1863920776], [912487811, 1, 0, 0, 1863920776], [3662679587, 1, 0, 0, 1863920776], [1339185161, 1, 0, 0, 1863920776], [2182142058, 1, 0, 0, 1863920776], [490865963, 1, 0, 0, 1863920776], [811056990, 1, 0, 0, 1863920776], [2735381689, 1, 0, 0, 1863920776], [3133660643, 1, 0, 0, 1863920776], [3439656202, 1, 0, 0, 1863920776], [2021969279, 1, 0, 0, 1863920776], [62033859, 1, 0, 0, 1863920776], [2598057153, 1, 0, 0, 1863920776], [4222170119, 1, 0, 0, 1863920776], [402987154, 1, 0, 0, 1863920776], [3160513297, 1, 0, 0, 1863920776], [299957687, 1, 0, 0, 1863920776], [232470257, 1, 0, 0, 1863920776], [1353250231, 1, 0, 0, 1863920776], [602681941, 1, 0, 0, 1863920776], [2766448777, 1, 0, 0, 1863920776], [2112460662, 1, 0, 0, 1863920776], [1485184436, 1, 0, 0, 1863920776], [158667783, 1, 0, 0, 1863920776], [1135177170, 1, 0, 0, 1863920776], [297837877, 1, 0, 0, 1863920776], [1326719427, 1, 0, 0, 1863920776], [336335723, 1, 0, 0, 1863920776], [438545822, 1, 0, 0, 1863920776], [2055655746, 1, 0, 0, 1863920776], [22499293, 1, 0, 0, 1863920776], [2585847456, 1, 0, 0, 1863920776], [547935576, 1, 0, 0, 1863920776], [462020335, 1, 0, 0, 1863920776], [468796351, 1, 0, 0, 1863920776], [2874661101, 1, 0, 0, 1863920776], [911840654, 1, 0, 0, 1863920776], [1007357196, 1, 0, 0, 1863920776], [4289867349, 1, 0, 0, 1863920776], [1839856749, 1, 0, 0, 1863920776], [2198243655, 1, 0, 0, 1863920776], [3351560281, 1, 0, 0, 1863920776], [4238826105, 1, 0, 0, 1863920776], [1250937629, 1, 0, 0, 1863920776], [1423656994, 1, 0, 0, 1863920776], [986178173, 1, 0, 0, 1863920776], [3268490213, 1, 0, 0, 1863920776], [2624048457, 1, 0, 0, 1863920776], [2505654263, 1, 0, 0, 1863920776]])",
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_all_rc_zero": true,
+    "cleanup_limitations": "Native no-auth VM fully retired after exact job/mount stop. Build-only success not serving proof. FR044 stale/missing private binary/log and FR046/047 bad RPC retained, not hidden."
+  },
+  {
+    "round": "fr-047",
+    "run": "ab-sf-fr047-094d2e1c",
+    "scope": "native Mac userspace nonroot pinned UNFS3 server selected APFS source and native Mac/two Linux Docker-client NFS3 mounts on one physical Mac; component only, no final service/source/UI/LAN/agents",
+    "pass_count": 1,
+    "failed_cases": [
+      {
+        "name": "native Mac mounts its selected APFS source through actual NFSv3 before Linux-client negotiation",
+        "status": "FAIL",
+        "error": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): mount_nfs: can't mount /Users/admin/.ab-sf-native-source-ab-sf-fr047-094d2e1c from 192.168.64.2 onto /Volumes/autobyteus-shared: RPC struct is bad\\nmount: /Volumes/autobyteus-shared failed with 72\\n\")",
+        "seconds": 1.077
+      }
+    ],
+    "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): mount_nfs: can't mount /Users/admin/.ab-sf-native-source-ab-sf-fr047-094d2e1c from 192.168.64.2 onto /Volumes/autobyteus-shared: RPC struct is bad\\nmount: /Volumes/autobyteus-shared failed with 72\\n\")",
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_all_rc_zero": true,
+    "cleanup_limitations": "Native no-auth VM fully retired after exact job/mount stop. Build-only success not serving proof. FR044 stale/missing private binary/log and FR046/047 bad RPC retained, not hidden."
   }
 ]
