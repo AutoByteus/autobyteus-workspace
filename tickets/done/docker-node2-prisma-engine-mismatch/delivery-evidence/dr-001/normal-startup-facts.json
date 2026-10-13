@@ -1,0 +1,31 @@
+{
+  "backendPid": "2002",
+  "effectivePair": {
+    "PRISMA_QUERY_ENGINE_LIBRARY": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-3.0.x.so.node",
+    "PRISMA_SCHEMA_ENGINE_BINARY": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-linux-arm64-openssl-3.0.x"
+  },
+  "normalStartupSelectedLines": [
+    "MEMORY DIRECTORY: /home/autobyteus/data/memory",
+    "Running Prisma migrations...",
+    "APP DATA DIRECTORY: /home/autobyteus/data",
+    "DB DIRECTORY: /home/autobyteus/data/db",
+    "MEMORY DIRECTORY: /home/autobyteus/data/memory",
+    "Running Prisma migrations...",
+    "APP DATA DIRECTORY: /home/autobyteus/data",
+    "DB DIRECTORY: /home/autobyteus/data/db",
+    "MEMORY DIRECTORY: /home/autobyteus/data/memory",
+    "Running Prisma migrations...",
+    "APP DATA DIRECTORY: /home/autobyteus/data",
+    "DB DIRECTORY: /home/autobyteus/data/db",
+    "MEMORY DIRECTORY: /home/autobyteus/data/memory",
+    "Running Prisma migrations...",
+    "APP DATA DIRECTORY: /home/autobyteus/data",
+    "DB DIRECTORY: /home/autobyteus/data/db",
+    "MEMORY DIRECTORY: /home/autobyteus/data/memory",
+    "Running Prisma migrations...",
+    "Using Prisma engine overrides from existing-env: process.env (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)",
+    "Database migrations completed successfully."
+  ],
+  "privateFullLogRetention": "/Users/normy/autobyteus_org/autobyteus-private-backups/docker-node2-prisma-o1-_p9x5ye3",
+  "HTTPProvesNormalLifecycleNotOnlySchema": true
+}
