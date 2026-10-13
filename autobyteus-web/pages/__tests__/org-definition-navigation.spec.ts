@@ -29,12 +29,12 @@ const agent = {
   role: null, instructions: 'Actual shared Agent instructions', category: null, avatarUrl: null,
   toolNames: [], inputProcessorNames: [], llmResponseProcessorNames: [], toolExecutionResultProcessorNames: [],
   toolInvocationPreprocessorNames: [], lifecycleProcessorNames: [], skillNames: [], defaultLaunchConfig: null,
-  ownershipScope: 'SHARED', ownerOrgId: null, ownerOrgName: null, ownerTeamId: null, ownerTeamName: null,
+  skillScope: 'CONFIGURED', loadIssue: null, ownershipScope: 'SHARED', ownerOrgId: null, ownerOrgName: null, ownerTeamId: null, ownerTeamName: null,
   ownerApplicationId: null, ownerApplicationName: null, ownerPackageId: null, ownerLocalApplicationId: null,
 }
 const team = {
   __typename: 'AgentTeamDefinition', id: ownedTeamId, name: 'Research Team', description: 'Exact bundled Team',
-  instructions: 'Team instructions', category: null, avatarUrl: null, revision: 'team-rev', handoffs: [],
+  instructions: 'Team instructions', category: null, avatarUrl: null, revision: 'team-rev', handoffs: [], loadIssues: [],
   coordinatorMemberName: 'worker', nodes: [{ __typename: 'TeamMember', memberName: 'worker', ref: workerId, refScope: 'SHARED' }],
   ownershipScope: 'AGENT_ORG_OWNED', ownerOrgId: orgId, ownerOrgName: 'Research Org',
   ownerTeamId: null, ownerTeamName: null, ownerApplicationId: null, ownerApplicationName: null,
@@ -42,7 +42,7 @@ const team = {
 }
 const org = {
   __typename: 'AgentOrgDefinition', id: orgId, name: 'Research Org', description: 'Org description',
-  instructions: 'Org instructions', category: null, avatarUrl: null, revision: 'org-rev', defaultLaunchConfig: null,
+  instructions: 'Org instructions', category: null, avatarUrl: null, revision: 'org-rev', defaultLaunchConfig: null, loadIssues: [],
   members: [{ __typename: 'AgentOrgMember', memberName: 'research', ref: ownedTeamId, refType: 'AGENT_TEAM', refScope: 'AGENT_ORG_OWNED' }],
   handoffs: [],
 }
@@ -76,7 +76,8 @@ describe('definition inspection return through actual pages and stores', () => {
         observer.complete(); return
       }
       let value: unknown
-      if (field === 'agentOrgDefinitions') value = [org]
+      if (field === 'definitionProblems') value = []
+      else if (field === 'agentOrgDefinitions') value = [org]
       else if (field === 'agentDefinitions') value = [agent]
       else if (field === 'agentTeamDefinitions') value = [{ ...team, id: sharedTeamId, ownershipScope: 'SHARED', ownerOrgId: null, ownerOrgName: null }]
       else if (field === 'agentTeamDefinition' && operation.variables.id === ownedTeamId) value = team
