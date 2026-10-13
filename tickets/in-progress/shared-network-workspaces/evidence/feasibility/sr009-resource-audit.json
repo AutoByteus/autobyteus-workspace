@@ -1,0 +1,388 @@
+{
+  "scope": "exact owned FR-012/013/014 recheck; no global prune, original image unchanged",
+  "checks": [
+    {
+      "round": "fr-012",
+      "type": "container",
+      "name": "ab-sf-fr012-dcf60c7d-storage-server",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "container",
+      "name": "ab-sf-fr012-dcf60c7d-app-a",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "container",
+      "name": "ab-sf-fr012-dcf60c7d-app-b",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-storage",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-nfs-a",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-a-data",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-a-root-home",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-a-workspace",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-a-legacy-workspace",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-a-chromium",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-nfs-b",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-b-data",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-b-root-home",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-b-workspace",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-b-legacy-workspace",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-b-chromium",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "network",
+      "name": "ab-sf-fr012-dcf60c7d-net",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-012",
+      "type": "image-tag",
+      "name": "autobyteus-shared-feasibility:fr-012",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "container",
+      "name": "ab-sf-fr013-2842d860-storage-server",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "container",
+      "name": "ab-sf-fr013-2842d860-app-a",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "container",
+      "name": "ab-sf-fr013-2842d860-app-b",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "volume",
+      "name": "ab-sf-fr013-2842d860-storage",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "volume",
+      "name": "ab-sf-fr013-2842d860-nfs-a",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "volume",
+      "name": "ab-sf-fr013-2842d860-a-data",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "volume",
+      "name": "ab-sf-fr013-2842d860-a-root-home",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "volume",
+      "name": "ab-sf-fr013-2842d860-a-workspace",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "volume",
+      "name": "ab-sf-fr013-2842d860-a-legacy-workspace",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "volume",
+      "name": "ab-sf-fr013-2842d860-a-chromium",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "volume",
+      "name": "ab-sf-fr013-2842d860-nfs-b",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "volume",
+      "name": "ab-sf-fr013-2842d860-b-data",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "volume",
+      "name": "ab-sf-fr013-2842d860-b-root-home",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "volume",
+      "name": "ab-sf-fr013-2842d860-b-workspace",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "volume",
+      "name": "ab-sf-fr013-2842d860-b-legacy-workspace",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "volume",
+      "name": "ab-sf-fr013-2842d860-b-chromium",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "network",
+      "name": "ab-sf-fr013-2842d860-net",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-013",
+      "type": "image-tag",
+      "name": "autobyteus-shared-feasibility:fr-013",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "container",
+      "name": "ab-sf-fr014-c4570f6f-storage-server",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "container",
+      "name": "ab-sf-fr014-c4570f6f-app-a",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "container",
+      "name": "ab-sf-fr014-c4570f6f-app-b",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "volume",
+      "name": "ab-sf-fr014-c4570f6f-storage",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "volume",
+      "name": "ab-sf-fr014-c4570f6f-nfs-a",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "volume",
+      "name": "ab-sf-fr014-c4570f6f-a-data",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "volume",
+      "name": "ab-sf-fr014-c4570f6f-a-root-home",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "volume",
+      "name": "ab-sf-fr014-c4570f6f-a-workspace",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "volume",
+      "name": "ab-sf-fr014-c4570f6f-a-legacy-workspace",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "volume",
+      "name": "ab-sf-fr014-c4570f6f-a-chromium",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "volume",
+      "name": "ab-sf-fr014-c4570f6f-nfs-b",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "volume",
+      "name": "ab-sf-fr014-c4570f6f-b-data",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "volume",
+      "name": "ab-sf-fr014-c4570f6f-b-root-home",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "volume",
+      "name": "ab-sf-fr014-c4570f6f-b-workspace",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "volume",
+      "name": "ab-sf-fr014-c4570f6f-b-legacy-workspace",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "volume",
+      "name": "ab-sf-fr014-c4570f6f-b-chromium",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "network",
+      "name": "ab-sf-fr014-c4570f6f-net",
+      "absent": true,
+      "exit": 1
+    },
+    {
+      "round": "fr-014",
+      "type": "image-tag",
+      "name": "autobyteus-shared-feasibility:fr-014",
+      "absent": true,
+      "exit": 1
+    }
+  ],
+  "allAbsent": true,
+  "originalApplicationImage": "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+  "originalApplicationImageRetainedUnchanged": true,
+  "nativeMacMountCreated": false,
+  "liveUserNodeUsedAsTestTarget": false
+}

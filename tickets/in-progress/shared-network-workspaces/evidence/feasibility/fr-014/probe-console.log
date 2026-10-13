@@ -1,0 +1,13 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS native Claude login streamed only into fresh private homes, no source edit
+PASS both native sessions discover different private plugin paths and preserved workspace skill
+PASS A invokes private native Skill and publishes actual helper content to common project
+PASS B reads A output through independent mount without prompt copying
+PASS B uses own private Skill source and preserves A bytes while modifying
+PASS A fresh reopen obtains B modification
+PASS A close/private-bundle cleanup cannot delete B Skill or workspace-owned project files
+PASS B active session invokes Skill/reads previously unread private asset after A cleanup
+PASS native SDK resume loads replacement private bundle, no retained shared/old private path
+{"run": "ab-sf-fr014-c4570f6f", "passes": 12, "fatal": null, "cleanup_ok": true}

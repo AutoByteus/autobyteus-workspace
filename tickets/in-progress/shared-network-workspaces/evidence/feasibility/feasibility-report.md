@@ -1,3 +1,7 @@
+# Current SR-009 Update
+
+Service-host direction is now Linux (Docker eligible), approval-record-sr009.md. [Private runtime skill report](private-runtime-skill-report.md) records three additional rounds: FR-012/013 retained failures, FR-01412 scoped native-SDK capability passes including peer cleanup/resume. No production fix, Mac/LAN/source/UI/setup proof or completion. Approved basis/current evidence SR-009; historical SR-008/component results below remain unchanged.
+
 # Feasibility Experiments — SR-008
 
 ## Result And Scope

@@ -162,5 +162,45 @@
     "causal_reproductions": 3,
     "cleanup_all_rc_zero": true,
     "scoped_runner_exit": 2
+  },
+  {
+    "round": "fr-012",
+    "run": "ab-sf-fr012-dcf60c7d",
+    "scope": "task-owned unmodified Claude SDK/private-plugin capability, two fresh image nodes; NOT integrated AutoByteus agent/current source/UI/Mac/LAN/setup proof",
+    "pass_count": 4,
+    "failed_cases": [
+      "both native sessions discover different private plugin paths and preserved workspace skill"
+    ],
+    "blocked_cases": [],
+    "fatal": "AssertionError('native SDK response timeout')",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false
+  },
+  {
+    "round": "fr-013",
+    "run": "ab-sf-fr013-2842d860",
+    "scope": "task-owned unmodified Claude SDK/private-plugin capability, two fresh image nodes; NOT integrated AutoByteus agent/current source/UI/Mac/LAN/setup proof",
+    "pass_count": 5,
+    "failed_cases": [
+      "A invokes private native Skill and publishes actual helper content to common project"
+    ],
+    "blocked_cases": [],
+    "fatal": "AssertionError(('ab-sf-fr013-2842d860-app-a', 'PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7', 'PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7\\n'))",
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 1,
+    "production_patch": false
+  },
+  {
+    "round": "fr-014",
+    "run": "ab-sf-fr014-c4570f6f",
+    "scope": "task-owned unmodified Claude SDK/private-plugin capability, two fresh image nodes; NOT integrated AutoByteus agent/current source/UI/Mac/LAN/setup proof",
+    "pass_count": 12,
+    "failed_cases": [],
+    "blocked_cases": [],
+    "fatal": null,
+    "cleanup_all_rc_zero": true,
+    "scoped_runner_exit": 0,
+    "production_patch": false
   }
 ]

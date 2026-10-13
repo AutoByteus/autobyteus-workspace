@@ -1,0 +1,1642 @@
+{
+  "run": "ab-sf-fr012-dcf60c7d",
+  "scope": "task-owned unmodified Claude SDK/private-plugin capability, two fresh image nodes; NOT integrated AutoByteus agent/current source/UI/Mac/LAN/setup proof",
+  "application_image": "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+        "--format",
+        "{\"id\":{{json .Id}},\"repo_digests\":{{json .RepoDigests}},\"created\":{{json .Created}},\"entrypoint\":{{json .Config.Entrypoint}}}"
+      ],
+      "rc": 0,
+      "seconds": 0.073,
+      "stdout": "{\"id\":\"sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a\",\"repo_digests\":[\"autobyteus/autobyteus-server@sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a\"],\"created\":\"2026-10-12T13:24:35.302109183Z\",\"entrypoint\":[\"/usr/local/bin/entrypoint.sh\"]}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "build",
+        "--pull=false",
+        "-t",
+        "autobyteus-shared-feasibility:fr-012",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-012"
+      ],
+      "rc": 0,
+      "seconds": 3.618,
+      "stdout": "",
+      "stderr": "#0 building with \"desktop-linux\" instance using docker driver\n\n#1 [internal] load build definition from Dockerfile\n#1 transferring dockerfile: 522B done\n#1 DONE 0.1s\n\n#2 [internal] load metadata for docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\n#2 ...\n\n#3 [auth] library/ubuntu:pull token for registry-1.docker.io\n#3 DONE 0.0s\n\n#2 [internal] load metadata for docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\n#2 DONE 1.9s\n\n#4 [internal] load .dockerignore\n#4 transferring context: 2B done\n#4 DONE 0.0s\n\n#5 [1/2] FROM docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\n#5 resolve docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55 0.0s done\n#5 DONE 0.0s\n\n#6 [2/2] RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nfs-ganesha nfs-ganesha-vfs nfs-common rpcbind python3 git procps iproute2 ca-certificates && rm -rf /var/lib/apt/lists/*\n#6 CACHED\n\n#7 exporting to image\n#7 exporting layers done\n#7 exporting manifest sha256:69fdf6c3ce0fa750a8037599579ac6fa94a1bb2702714815943431b52c7a5e75 0.0s done\n#7 exporting config sha256:8cb8a12409a9cb458b65c3da914ba713ff6f62e1c0192b0f8326acadc93f5135 done\n#7 exporting attestation manifest sha256:b8674e1098017084c2b66f989dd189aa017f3f46de2c48f0d08685c1eeaafcb8 done\n#7 exporting manifest list sha256:c0e2601b457a6140b9b1a1eed08cb8a876b7f099e262cf91032ac6e2e56c11c5 done\n#7 naming to docker.io/library/autobyteus-shared-feasibility:fr-012 done\n#7 unpacking to docker.io/library/autobyteus-shared-feasibility:fr-012\n#7 unpacking to docker.io/library/autobyteus-shared-feasibility:fr-012 0.8s done\n#7 DONE 0.9s\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "autobyteus-shared-feasibility:fr-012"
+      ],
+      "rc": 0,
+      "seconds": 0.059,
+      "stdout": "[\n    {\n        \"Id\": \"sha256:c0e2601b457a6140b9b1a1eed08cb8a876b7f099e262cf91032ac6e2e56c11c5\",\n        \"RepoTags\": [\n            \"autobyteus-shared-feasibility:fr-012\"\n        ],\n        \"RepoDigests\": [\n            \"autobyteus-shared-feasibility@sha256:c0e2601b457a6140b9b1a1eed08cb8a876b7f099e262cf91032ac6e2e56c11c5\"\n        ],\n        \"Comment\": \"buildkit.dockerfile.v0\",\n        \"Created\": \"2026-10-13T04:11:06.431830875Z\",\n        \"Config\": {\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"Cmd\": [\n                \"sleep\",\n                \"infinity\"\n            ],\n            \"Labels\": {\n                \"org.autobyteus.probe\": \"fr-012\",\n                \"org.autobyteus.task\": \"shared-network-workspaces\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            },\n            \"ArgsEscaped\": true\n        },\n        \"Architecture\": \"arm64\",\n        \"Os\": \"linux\",\n        \"Size\": 71450870,\n        \"RootFS\": {\n            \"Type\": \"layers\",\n            \"Layers\": [\n                \"sha256:1e9178dc90058fa454a60803300219ee8c17e515be8718817ed824b96fa1207b\",\n                \"sha256:4b7b4f4b9f12ef90a8ac84b36ab00f9fea058f64c04ff2ac84a499f86f2ff408\"\n            ]\n        },\n        \"Metadata\": {\n            \"LastTagTime\": \"2026-10-13T05:52:42.954837753Z\"\n        },\n        \"Descriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.index.v1+json\",\n            \"digest\": \"sha256:c0e2601b457a6140b9b1a1eed08cb8a876b7f099e262cf91032ac6e2e56c11c5\",\n            \"size\": 855\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "ab-sf-fr012-dcf60c7d-net"
+      ],
+      "rc": 0,
+      "seconds": 0.095,
+      "stdout": "f8678b4aa7ad42f63b5bbdbbc729815b46eef28345b2de7d947a4bf941a1412e\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-net"
+      ],
+      "rc": 0,
+      "seconds": 0.029,
+      "stdout": "[\n    {\n        \"Name\": \"ab-sf-fr012-dcf60c7d-net\",\n        \"Id\": \"f8678b4aa7ad42f63b5bbdbbc729815b46eef28345b2de7d947a4bf941a1412e\",\n        \"Created\": \"2026-10-13T05:52:44.041152587Z\",\n        \"Scope\": \"local\",\n        \"Driver\": \"bridge\",\n        \"EnableIPv4\": true,\n        \"EnableIPv6\": false,\n        \"IPAM\": {\n            \"Driver\": \"default\",\n            \"Options\": {},\n            \"Config\": [\n                {\n                    \"Subnet\": \"172.29.0.0/16\",\n                    \"IPRange\": \"\",\n                    \"Gateway\": \"172.29.0.1\"\n                }\n            ]\n        },\n        \"Internal\": false,\n        \"Attachable\": false,\n        \"Ingress\": false,\n        \"ConfigFrom\": {\n            \"Network\": \"\"\n        },\n        \"ConfigOnly\": false,\n        \"Options\": {\n            \"com.docker.network.enable_ipv4\": \"true\",\n            \"com.docker.network.enable_ipv6\": \"false\"\n        },\n        \"Labels\": {\n            \"org.autobyteus.probe\": \"fr-012\"\n        },\n        \"Containers\": {},\n        \"Status\": {\n            \"IPAM\": {\n                \"Subnets\": {\n                    \"172.29.0.0/16\": {\n                        \"IPsInUse\": 3,\n                        \"DynamicIPsAvailable\": 65533\n                    }\n                }\n            }\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "ab-sf-fr012-dcf60c7d-storage"
+      ],
+      "rc": 0,
+      "seconds": 0.037,
+      "stdout": "ab-sf-fr012-dcf60c7d-storage\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr012-dcf60c7d-storage-server",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "--network",
+        "ab-sf-fr012-dcf60c7d-net",
+        "--cap-add",
+        "DAC_READ_SEARCH",
+        "--mount",
+        "type=volume,src=ab-sf-fr012-dcf60c7d-storage,dst=/export",
+        "--mount",
+        "type=bind,src=/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-012/ganesha.conf,dst=/etc/ganesha/ganesha.conf,readonly",
+        "sha256:c0e2601b457a6140b9b1a1eed08cb8a876b7f099e262cf91032ac6e2e56c11c5"
+      ],
+      "rc": 0,
+      "seconds": 0.632,
+      "stdout": "04c83183ba6fbb0286bd8c3031e4b3eefb56c7388e1068abd7cd8614ed471dcb\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr012-dcf60c7d-storage-server",
+        "sh",
+        "-c",
+        "chown 10001:10001 /export; chmod 0770 /export; mkdir -p /run/ganesha /var/lib/nfs/ganesha /run/dbus; rpcbind -w; dbus-daemon --system --fork; ganesha.nfsd -F -L /tmp/ganesha.log -f /etc/ganesha/ganesha.conf >/tmp/ganesha-console.log 2>&1 &"
+      ],
+      "rc": 0,
+      "seconds": 0.12,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-storage-server"
+      ],
+      "rc": 0,
+      "seconds": 0.04,
+      "stdout": "[\n    {\n        \"Id\": \"04c83183ba6fbb0286bd8c3031e4b3eefb56c7388e1068abd7cd8614ed471dcb\",\n        \"Created\": \"2026-10-13T05:52:44.216318712Z\",\n        \"Path\": \"sleep\",\n        \"Args\": [\n            \"infinity\"\n        ],\n        \"State\": {\n            \"Status\": \"running\",\n            \"Running\": true,\n            \"Paused\": false,\n            \"Restarting\": false,\n            \"OOMKilled\": false,\n            \"Dead\": false,\n            \"Pid\": 37562,\n            \"ExitCode\": 0,\n            \"Error\": \"\",\n            \"StartedAt\": \"2026-10-13T05:52:44.550025837Z\",\n            \"FinishedAt\": \"0001-01-01T00:00:00Z\"\n        },\n        \"Image\": \"sha256:c0e2601b457a6140b9b1a1eed08cb8a876b7f099e262cf91032ac6e2e56c11c5\",\n        \"ResolvConfPath\": \"/var/lib/docker/containers/04c83183ba6fbb0286bd8c3031e4b3eefb56c7388e1068abd7cd8614ed471dcb/resolv.conf\",\n        \"HostnamePath\": \"/var/lib/docker/containers/04c83183ba6fbb0286bd8c3031e4b3eefb56c7388e1068abd7cd8614ed471dcb/hostname\",\n        \"HostsPath\": \"/var/lib/docker/containers/04c83183ba6fbb0286bd8c3031e4b3eefb56c7388e1068abd7cd8614ed471dcb/hosts\",\n        \"LogPath\": \"/var/lib/docker/containers/04c83183ba6fbb0286bd8c3031e4b3eefb56c7388e1068abd7cd8614ed471dcb/04c83183ba6fbb0286bd8c3031e4b3eefb56c7388e1068abd7cd8614ed471dcb-json.log\",\n        \"Name\": \"/ab-sf-fr012-dcf60c7d-storage-server\",\n        \"RestartCount\": 0,\n        \"Driver\": \"overlayfs\",\n        \"Platform\": \"linux\",\n        \"MountLabel\": \"\",\n        \"ProcessLabel\": \"\",\n        \"AppArmorProfile\": \"\",\n        \"ExecIDs\": null,\n        \"HostConfig\": {\n            \"Binds\": null,\n            \"ContainerIDFile\": \"\",\n            \"LogConfig\": {\n                \"Type\": \"json-file\",\n                \"Config\": {}\n            },\n            \"NetworkMode\": \"ab-sf-fr012-dcf60c7d-net\",\n            \"PortBindings\": {},\n            \"RestartPolicy\": {\n                \"Name\": \"no\",\n                \"MaximumRetryCount\": 0\n            },\n            \"AutoRemove\": false,\n            \"VolumeDriver\": \"\",\n            \"VolumesFrom\": null,\n            \"ConsoleSize\": [\n                0,\n                0\n            ],\n            \"CapAdd\": [\n                \"CAP_DAC_READ_SEARCH\"\n            ],\n            \"CapDrop\": null,\n            \"CgroupnsMode\": \"private\",\n            \"Dns\": null,\n            \"DnsOptions\": [],\n            \"DnsSearch\": [],\n            \"ExtraHosts\": null,\n            \"GroupAdd\": null,\n            \"IpcMode\": \"private\",\n            \"Cgroup\": \"\",\n            \"Links\": null,\n            \"OomScoreAdj\": 0,\n            \"PidMode\": \"\",\n            \"Privileged\": false,\n            \"PublishAllPorts\": false,\n            \"ReadonlyRootfs\": false,\n            \"SecurityOpt\": null,\n            \"UTSMode\": \"\",\n            \"UsernsMode\": \"\",\n            \"ShmSize\": 67108864,\n            \"Runtime\": \"runc\",\n            \"Isolation\": \"\",\n            \"CpuShares\": 0,\n            \"Memory\": 0,\n            \"NanoCpus\": 0,\n            \"CgroupParent\": \"\",\n            \"BlkioWeight\": 0,\n            \"BlkioWeightDevice\": [],\n            \"BlkioDeviceReadBps\": [],\n            \"BlkioDeviceWriteBps\": [],\n            \"BlkioDeviceReadIOps\": [],\n            \"BlkioDeviceWriteIOps\": [],\n            \"CpuPeriod\": 0,\n            \"CpuQuota\": 0,\n            \"CpuRealtimePeriod\": 0,\n            \"CpuRealtimeRuntime\": 0,\n            \"CpusetCpus\": \"\",\n            \"CpusetMems\": \"\",\n            \"Devices\": [],\n            \"DeviceCgroupRules\": null,\n            \"DeviceRequests\": null,\n            \"MemoryReservation\": 0,\n            \"MemorySwap\": 0,\n            \"MemorySwappiness\": null,\n            \"OomKillDisable\": null,\n            \"PidsLimit\": null,\n            \"Ulimits\": [],\n            \"CpuCount\": 0,\n            \"CpuPercent\": 0,\n            \"IOMaximumIOps\": 0,\n            \"IOMaximumBandwidth\": 0,\n            \"Mounts\": [\n                {\n                    \"Type\": \"volume\",\n                    \"Source\": \"ab-sf-fr012-dcf60c7d-storage\",\n                    \"Target\": \"/export\"\n                },\n                {\n                    \"Type\": \"bind\",\n                    \"Source\": \"/host_mnt/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-012/ganesha.conf\",\n                    \"Target\": \"/etc/ganesha/ganesha.conf\",\n                    \"ReadOnly\": true\n                }\n            ],\n            \"MaskedPaths\": [\n                \"/proc/acpi\",\n                \"/proc/asound\",\n                \"/proc/interrupts\",\n                \"/proc/kcore\",\n                \"/proc/keys\",\n                \"/proc/latency_stats\",\n                \"/proc/sched_debug\",\n                \"/proc/scsi\",\n                \"/proc/timer_list\",\n                \"/proc/timer_stats\",\n                \"/sys/devices/virtual/powercap\",\n                \"/sys/firmware\"\n            ],\n            \"ReadonlyPaths\": [\n                \"/proc/bus\",\n                \"/proc/fs\",\n                \"/proc/irq\",\n                \"/proc/sys\",\n                \"/proc/sysrq-trigger\"\n            ]\n        },\n        \"GraphDriver\": {\n            \"Data\": null,\n            \"Name\": \"\"\n        },\n        \"Mounts\": [\n            {\n                \"Type\": \"volume\",\n                \"Name\": \"ab-sf-fr012-dcf60c7d-storage\",\n                \"Source\": \"/var/lib/docker/volumes/ab-sf-fr012-dcf60c7d-storage/_data\",\n                \"Destination\": \"/export\",\n                \"Driver\": \"local\",\n                \"Mode\": \"z\",\n                \"RW\": true,\n                \"Propagation\": \"\"\n            },\n            {\n                \"Type\": \"bind\",\n                \"Source\": \"/host_mnt/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-012/ganesha.conf\",\n                \"Destination\": \"/etc/ganesha/ganesha.conf\",\n                \"Mode\": \"\",\n                \"RW\": false,\n                \"Propagation\": \"rprivate\"\n            }\n        ],\n        \"Config\": {\n            \"Hostname\": \"04c83183ba6f\",\n            \"Domainname\": \"\",\n            \"User\": \"\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": false,\n            \"AttachStderr\": false,\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"Cmd\": [\n                \"sleep\",\n                \"infinity\"\n            ],\n            \"Image\": \"sha256:c0e2601b457a6140b9b1a1eed08cb8a876b7f099e262cf91032ac6e2e56c11c5\",\n            \"Volumes\": null,\n            \"WorkingDir\": \"\",\n            \"Entrypoint\": null,\n            \"OnBuild\": null,\n            \"Labels\": {\n                \"org.autobyteus.probe\": \"fr-012\",\n                \"org.autobyteus.task\": \"shared-network-workspaces\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            },\n            \"StopTimeout\": 1\n        },\n        \"NetworkSettings\": {\n            \"Bridge\": \"\",\n            \"SandboxID\": \"05024e80c921f229033707d3f7bbb44f68b8dcf6c42325784d7e8df856c1bf0d\",\n            \"SandboxKey\": \"/var/run/docker/netns/05024e80c921\",\n            \"Ports\": {},\n            \"HairpinMode\": false,\n            \"LinkLocalIPv6Address\": \"\",\n            \"LinkLocalIPv6PrefixLen\": 0,\n            \"SecondaryIPAddresses\": null,\n            \"SecondaryIPv6Addresses\": null,\n            \"EndpointID\": \"\",\n            \"Gateway\": \"\",\n            \"GlobalIPv6Address\": \"\",\n            \"GlobalIPv6PrefixLen\": 0,\n            \"IPAddress\": \"\",\n            \"IPPrefixLen\": 0,\n            \"IPv6Gateway\": \"\",\n            \"MacAddress\": \"\",\n            \"Networks\": {\n                \"ab-sf-fr012-dcf60c7d-net\": {\n                    \"IPAMConfig\": null,\n                    \"Links\": null,\n                    \"Aliases\": null,\n                    \"MacAddress\": \"36:a0:85:87:08:d3\",\n                    \"DriverOpts\": null,\n                    \"GwPriority\": 0,\n                    \"NetworkID\": \"f8678b4aa7ad42f63b5bbdbbc729815b46eef28345b2de7d947a4bf941a1412e\",\n                    \"EndpointID\": \"30a00ee99420011c90819125cb65a0e2094f215209f32db8ecbe15c81879bf47\",\n                    \"Gateway\": \"172.29.0.1\",\n                    \"IPAddress\": \"172.29.0.2\",\n                    \"IPPrefixLen\": 16,\n                    \"IPv6Gateway\": \"\",\n                    \"GlobalIPv6Address\": \"\",\n                    \"GlobalIPv6PrefixLen\": 0,\n                    \"DNSNames\": [\n                        \"ab-sf-fr012-dcf60c7d-storage-server\",\n                        \"04c83183ba6f\"\n                    ]\n                }\n            }\n        },\n        \"ImageManifestDescriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n            \"digest\": \"sha256:69fdf6c3ce0fa750a8037599579ac6fa94a1bb2702714815943431b52c7a5e75\",\n            \"size\": 675,\n            \"platform\": {\n                \"architecture\": \"arm64\",\n                \"os\": \"linux\"\n            }\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/ab-sf-fr012-dcf60c7d",
+        "--opt",
+        "o=addr=172.29.0.2,rw,nfsvers=4.1,proto=tcp,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr012-dcf60c7d-nfs-a"
+      ],
+      "rc": 0,
+      "seconds": 0.026,
+      "stdout": "ab-sf-fr012-dcf60c7d-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "ab-sf-fr012-dcf60c7d-a-data"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "ab-sf-fr012-dcf60c7d-a-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "ab-sf-fr012-dcf60c7d-a-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.028,
+      "stdout": "ab-sf-fr012-dcf60c7d-a-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "ab-sf-fr012-dcf60c7d-a-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.021,
+      "stdout": "ab-sf-fr012-dcf60c7d-a-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "ab-sf-fr012-dcf60c7d-a-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "ab-sf-fr012-dcf60c7d-a-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "ab-sf-fr012-dcf60c7d-a-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "ab-sf-fr012-dcf60c7d-a-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr012-dcf60c7d-app-a",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "--network",
+        "ab-sf-fr012-dcf60c7d-net",
+        "--cap-add",
+        "SYS_ADMIN",
+        "--security-opt",
+        "seccomp=unconfined",
+        "-p",
+        "127.0.0.1:56452:8000",
+        "-e",
+        "AUTOBYTEUS_WORKSPACE_ROOT=/app",
+        "-e",
+        "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data",
+        "-e",
+        "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+        "-e",
+        "AUTOBYTEUS_SERVER_PORT=8000",
+        "-e",
+        "APP_ENV=production",
+        "-e",
+        "DB_TYPE=sqlite",
+        "-e",
+        "LOG_LEVEL=INFO",
+        "-e",
+        "AUTOBYTEUS_SKIP_SYNC=1",
+        "-e",
+        "AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr012-dcf60c7d-nfs-a,dst=/home/autobyteus/shared,volume-nocopy",
+        "--mount",
+        "type=volume,src=ab-sf-fr012-dcf60c7d-a-data,dst=/home/autobyteus/data",
+        "--mount",
+        "type=volume,src=ab-sf-fr012-dcf60c7d-a-root-home,dst=/root",
+        "--mount",
+        "type=volume,src=ab-sf-fr012-dcf60c7d-a-workspace,dst=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr012-dcf60c7d-a-legacy-workspace,dst=/app/autobyteus-server-ts/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr012-dcf60c7d-a-chromium,dst=/home/autobyteus/.config/chromium",
+        "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a"
+      ],
+      "rc": 0,
+      "seconds": 1.345,
+      "stdout": "a9fa23d3ec4d445ae0f1560479f3d349b663385c159cdaa7eca91646e23386d4\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/ab-sf-fr012-dcf60c7d",
+        "--opt",
+        "o=addr=172.29.0.2,rw,nfsvers=4.1,proto=tcp,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr012-dcf60c7d-nfs-b"
+      ],
+      "rc": 0,
+      "seconds": 0.048,
+      "stdout": "ab-sf-fr012-dcf60c7d-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "ab-sf-fr012-dcf60c7d-b-data"
+      ],
+      "rc": 0,
+      "seconds": 0.028,
+      "stdout": "ab-sf-fr012-dcf60c7d-b-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "ab-sf-fr012-dcf60c7d-b-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "ab-sf-fr012-dcf60c7d-b-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "ab-sf-fr012-dcf60c7d-b-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr012-dcf60c7d-b-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "ab-sf-fr012-dcf60c7d-b-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.024,
+      "stdout": "ab-sf-fr012-dcf60c7d-b-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "ab-sf-fr012-dcf60c7d-b-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.038,
+      "stdout": "ab-sf-fr012-dcf60c7d-b-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr012-dcf60c7d-app-b",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-012",
+        "--network",
+        "ab-sf-fr012-dcf60c7d-net",
+        "--cap-add",
+        "SYS_ADMIN",
+        "--security-opt",
+        "seccomp=unconfined",
+        "-p",
+        "127.0.0.1:56454:8000",
+        "-e",
+        "AUTOBYTEUS_WORKSPACE_ROOT=/app",
+        "-e",
+        "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data",
+        "-e",
+        "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+        "-e",
+        "AUTOBYTEUS_SERVER_PORT=8000",
+        "-e",
+        "APP_ENV=production",
+        "-e",
+        "DB_TYPE=sqlite",
+        "-e",
+        "LOG_LEVEL=INFO",
+        "-e",
+        "AUTOBYTEUS_SKIP_SYNC=1",
+        "-e",
+        "AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr012-dcf60c7d-nfs-b,dst=/home/autobyteus/shared,volume-nocopy",
+        "--mount",
+        "type=volume,src=ab-sf-fr012-dcf60c7d-b-data,dst=/home/autobyteus/data",
+        "--mount",
+        "type=volume,src=ab-sf-fr012-dcf60c7d-b-root-home,dst=/root",
+        "--mount",
+        "type=volume,src=ab-sf-fr012-dcf60c7d-b-workspace,dst=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr012-dcf60c7d-b-legacy-workspace,dst=/app/autobyteus-server-ts/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr012-dcf60c7d-b-chromium,dst=/home/autobyteus/.config/chromium",
+        "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a"
+      ],
+      "rc": 0,
+      "seconds": 1.153,
+      "stdout": "ae08dbdf1c638077ef72189f5be50f13b93a65e34f54b19c20544458d4ff8532\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr012-dcf60c7d-app-a",
+        "sh",
+        "-c",
+        "grep \" /home/autobyteus/shared \" /proc/mounts; id; grep CapEff /proc/self/status"
+      ],
+      "rc": 0,
+      "seconds": 0.081,
+      "stdout": ":/ab-sf-fr012-dcf60c7d /home/autobyteus/shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr012-dcf60c7d-app-a",
+        "node",
+        "-e",
+        "console.log(require('./package.json').version)"
+      ],
+      "rc": 0,
+      "seconds": 0.09,
+      "stdout": "0.1.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr012-dcf60c7d-app-a",
+        "sh",
+        "-c",
+        "for f in /root/.codex/auth.json /root/.claude/.credentials.json; do test ! -f \"$f\" || exit 1; done; echo no-user-cli-credentials"
+      ],
+      "rc": 0,
+      "seconds": 0.063,
+      "stdout": "no-user-cli-credentials\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr012-dcf60c7d-app-b",
+        "sh",
+        "-c",
+        "grep \" /home/autobyteus/shared \" /proc/mounts; id; grep CapEff /proc/self/status"
+      ],
+      "rc": 0,
+      "seconds": 0.063,
+      "stdout": ":/ab-sf-fr012-dcf60c7d /home/autobyteus/shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr012-dcf60c7d-app-b",
+        "node",
+        "-e",
+        "console.log(require('./package.json').version)"
+      ],
+      "rc": 0,
+      "seconds": 0.076,
+      "stdout": "0.1.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr012-dcf60c7d-app-b",
+        "sh",
+        "-c",
+        "for f in /root/.codex/auth.json /root/.claude/.credentials.json; do test ! -f \"$f\" || exit 1; done; echo no-user-cli-credentials"
+      ],
+      "rc": 0,
+      "seconds": 0.064,
+      "stdout": "no-user-cli-credentials\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr012-dcf60c7d-app-a",
+        "node",
+        "-e",
+        "const f=require('fs');f.mkdirSync(\"/home/autobyteus/shared/project\",{recursive:true})"
+      ],
+      "rc": 0,
+      "seconds": 0.079,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr012-dcf60c7d-app-a",
+        "node",
+        "-e",
+        "const f=require('fs'),p=require('path');f.mkdirSync(p.dirname(\"/home/autobyteus/shared/project/.claude/skills/workspace-owned/SKILL.md\"),{recursive:true});f.writeFileSync(\"/home/autobyteus/shared/project/.claude/skills/workspace-owned/SKILL.md\",\"---\\nname: workspace-owned\\ndescription: Task-owned stand-in for a user project skill. Do not alter it.\\n---\\nOWNED_0097ab14faff4a7cb293003c047ecc8d\\n\")"
+      ],
+      "rc": 0,
+      "seconds": 0.085,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr012-dcf60c7d-app-a",
+        "node",
+        "-e",
+        "const f=require('fs'),p=require('path');\nconst source=\"/home/autobyteus/data/skills/read-proof\",target=\"/home/autobyteus/data/feasibility-runtime/a\";\nf.writeFileSync(p.join(source,'proof.txt'),\"PRIVATE_ab-sf-fr012-dcf60c7d-app-a_0312112b79c146d7a172157dcf5fae11\"+'\\n');\nf.writeFileSync(p.join(source,'after-stop.txt'),\"AFTER_STOP_eac4f77ebae2443c890f6f666dd7ce4b\"+'\\n');\nf.mkdirSync(p.join(target,'.claude-plugin'),{recursive:true});\nf.writeFileSync(p.join(target,'.claude-plugin/plugin.json'),JSON.stringify({name:\"autobyteus-fixture\",version:'0.0.1'}));\nf.mkdirSync(p.join(target,'skills'),{recursive:true});\nf.cpSync(source,p.join(target,'skills',\"read-proof\"),{recursive:true,dereference:true});\nconsole.log(JSON.stringify({privatePlugin:target,sourceRoot:source,sharedRoot:\"/home/autobyteus/shared/project\",sourceManifestExists:f.existsSync(p.join(source,'SKILL.md'))}));"
+      ],
+      "rc": 0,
+      "seconds": 0.077,
+      "stdout": "{\"privatePlugin\":\"/home/autobyteus/data/feasibility-runtime/a\",\"sourceRoot\":\"/home/autobyteus/data/skills/read-proof\",\"sharedRoot\":\"/home/autobyteus/shared/project\",\"sourceManifestExists\":true}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "cp",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-012/private-plugin-worker.mjs",
+        "ab-sf-fr012-dcf60c7d-app-a:/app/autobyteus-server-ts/private-plugin-worker.mjs"
+      ],
+      "rc": 0,
+      "seconds": 0.044,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr012-dcf60c7d-app-a",
+        "sh",
+        "-c",
+        "command -v claude"
+      ],
+      "rc": 0,
+      "seconds": 0.075,
+      "stdout": "/usr/bin/claude\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr012-dcf60c7d-app-a",
+        "node",
+        "-e",
+        "const f=require('fs'),p=require('path'),c=require('crypto'); const d=p.dirname(require.resolve('@anthropic-ai/claude-agent-sdk'));console.log(JSON.stringify({version:JSON.parse(f.readFileSync(p.join(d,'package.json'))).version,typesHash:c.createHash('sha256').update(f.readFileSync(p.join(d,'sdk.d.ts'))).digest('hex')}))"
+      ],
+      "rc": 0,
+      "seconds": 0.104,
+      "stdout": "{\"version\":\"0.3.280\",\"typesHash\":\"b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr012-dcf60c7d-app-b",
+        "node",
+        "-e",
+        "const f=require('fs'),p=require('path');\nconst source=\"/home/autobyteus/data/skills/read-proof\",target=\"/root/.claude/task-fixtures/b\";\nf.writeFileSync(p.join(source,'proof.txt'),\"PRIVATE_ab-sf-fr012-dcf60c7d-app-b_1cb3ad258f0d46c0970c05d6a2831992\"+'\\n');\nf.writeFileSync(p.join(source,'after-stop.txt'),\"AFTER_STOP_4d73ae8138f742f29027cfd6ba7e8137\"+'\\n');\nf.mkdirSync(p.join(target,'.claude-plugin'),{recursive:true});\nf.writeFileSync(p.join(target,'.claude-plugin/plugin.json'),JSON.stringify({name:\"autobyteus-fixture\",version:'0.0.1'}));\nf.mkdirSync(p.join(target,'skills'),{recursive:true});\nf.cpSync(source,p.join(target,'skills',\"read-proof\"),{recursive:true,dereference:true});\nconsole.log(JSON.stringify({privatePlugin:target,sourceRoot:source,sharedRoot:\"/home/autobyteus/shared/project\",sourceManifestExists:f.existsSync(p.join(source,'SKILL.md'))}));"
+      ],
+      "rc": 0,
+      "seconds": 0.089,
+      "stdout": "{\"privatePlugin\":\"/root/.claude/task-fixtures/b\",\"sourceRoot\":\"/home/autobyteus/data/skills/read-proof\",\"sharedRoot\":\"/home/autobyteus/shared/project\",\"sourceManifestExists\":true}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "cp",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-012/private-plugin-worker.mjs",
+        "ab-sf-fr012-dcf60c7d-app-b:/app/autobyteus-server-ts/private-plugin-worker.mjs"
+      ],
+      "rc": 0,
+      "seconds": 0.062,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr012-dcf60c7d-app-b",
+        "sh",
+        "-c",
+        "command -v claude"
+      ],
+      "rc": 0,
+      "seconds": 0.062,
+      "stdout": "/usr/bin/claude\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr012-dcf60c7d-app-b",
+        "node",
+        "-e",
+        "const f=require('fs'),p=require('path'),c=require('crypto'); const d=p.dirname(require.resolve('@anthropic-ai/claude-agent-sdk'));console.log(JSON.stringify({version:JSON.parse(f.readFileSync(p.join(d,'package.json'))).version,typesHash:c.createHash('sha256').update(f.readFileSync(p.join(d,'sdk.d.ts'))).digest('hex')}))"
+      ],
+      "rc": 0,
+      "seconds": 0.082,
+      "stdout": "{\"version\":\"0.3.280\",\"typesHash\":\"b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "logs",
+        "--tail",
+        "160",
+        "ab-sf-fr012-dcf60c7d-app-a"
+      ],
+      "rc": 0,
+      "seconds": 0.028,
+      "stdout": "Successfully registered tool definition: 'read_file'\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'write_file'\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'edit_file'\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'run_bash'\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'start_background_process'\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'get_background_processes'\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'get_process_output'\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'stop_background_process'\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\n\n2026-10-13 05:53:01,592 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'read_media_file'\nSuccessfully registered tool definition: 'download_media'\nSuccessfully registered tool definition: 'read_url'\n\n2026-10-13 05:53:01,592 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Core Tools\n\n2026-10-13 05:53:01,600 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'delegate_task'\n\n2026-10-13 05:53:01,600 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'list_available_agents'\n\n2026-10-13 05:53:01,600 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_image'\n\n2026-10-13 05:53:01,601 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'edit_image'\nSuccessfully registered tool definition: 'generate_speech'\n\n2026-10-13 05:53:01,601 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_video'\n\n2026-10-13 05:53:01,601 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Task Delegation Tools\n\n2026-10-13 05:53:01,601 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Agent Discovery Tools\n\n2026-10-13 05:53:01,601 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Media Tools\n\n2026-10-13 05:53:01,616 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Browser Tools\nSuccessfully registered tool definition: 'publish_artifacts'\nRegistered required tool unit: Published Artifact Tools\n\n2026-10-13 05:53:01,617 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'send_message_to'\n\n2026-10-13 05:53:01,617 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'get_handoff_rules'\nRegistered required tool unit: Agent Communication Tools\n\n2026-10-13 05:53:01,617 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'list_projects'\nSuccessfully registered tool definition: 'list_project_tasks'\n\n2026-10-13 05:53:01,617 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'create_or_update_project'\n\n2026-10-13 05:53:01,617 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'create_or_update_task'\nRegistered required tool unit: Project Task Tools\n\n2026-10-13 05:53:01,621 DEBG 'autobyteus_server' stderr output:\nOverwriting existing tool definition for name: 'search_web'\n\n2026-10-13 05:53:01,621 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\nRegistered required tool unit: Search Tools\n\n2026-10-13 05:53:01,641 DEBG 'autobyteus_server' stdout output:\nServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated\nInitialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.\n\n2026-10-13 05:53:01,648 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791870781648,\"pid\":48,\"hostname\":\"a9fa23d3ec4d\",\"msg\":\"Server listening at http://127.0.0.1:40465\"}\n\n2026-10-13 05:53:01,687 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791870781687,\"pid\":48,\"hostname\":\"a9fa23d3ec4d\",\"msg\":\"Server listening at http://0.0.0.0:8000\"}\n\n2026-10-13 05:53:01,687 DEBG 'autobyteus_server' stdout output:\n[2026-10-13T05:53:01.687Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000\n\n2026-10-13 05:53:01,688 DEBG 'autobyteus_server' stdout output:\nScheduling Studio-only non-critical startup tasks...\n\n2026-10-13 05:53:01,694 DEBG 'autobyteus_server' stdout output:\nBackground cache pre-loading process has started.\n\n2026-10-13 05:53:01,694 DEBG 'autobyteus_server' stdout output:\nCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.\nPopulating MCP server config cache for the first time...\n\n2026-10-13 05:53:01,694 DEBG 'autobyteus_server' stdout output:\nRunning MCP tool registration background task...\nLoading and registering all MCP server configurations from file...\nBackground task 'Memory Sync Worker' completed successfully.\n\n2026-10-13 05:53:01,694 DEBG 'autobyteus_server' stdout output:\nMCP server config cache populated with 0 items.\nFound 0 total MCP server configs.\nSynchronized cached configurations with the core MCP config service.\n\n2026-10-13 05:53:01,695 DEBG 'autobyteus_server' stdout output:\nPre-loaded 0 MCP server configs into cache.\n\n2026-10-13 05:53:01,695 DEBG 'autobyteus_server' stdout output:\nFinished loading and registering all MCP server configurations.\n\n2026-10-13 05:53:01,696 DEBG 'autobyteus_server' stdout output:\nBackground task 'MCP Tool Registration' completed successfully.\n\n2026-10-13 05:53:01,696 DEBG 'autobyteus_server' stdout output:\nPre-loaded 35 LLM models into cache.\nPre-loaded 7 image models into cache.\n\n2026-10-13 05:53:01,696 DEBG 'autobyteus_server' stdout output:\nPre-loaded 3 audio models into cache.\nBackground application cache pre-loading completed.\nBackground task 'Cache Pre-loading' completed successfully.\n\n2026-10-13 05:53:02,434 DEBG 'autobyteus_server' stdout output:\nGraphQL mutation to create workspace metadata\n\n2026-10-13 05:53:02,434 INFO reaped unknown pid 599 (exit status 0)\n2026-10-13 05:53:02,434 DEBG received SIGCHLD indicating a child quit\n2026-10-13 05:53:02,434 DEBG 'autobyteus_server' stdout output:\nCreating new workspace for rootPath: /home/autobyteus/shared/project\n\n2026-10-13 05:53:02,434 DEBG 'autobyteus_server' stdout output:\nCreated metadata-only FileSystemWorkspace at /home/autobyteus/shared/project.\n\n2026-10-13 05:53:02,436 DEBG 'autobyteus_server' stdout output:\nCreated and registered workspace ID: agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c\n\n2026-10-13 05:53:25,993 DEBG 'chrome' stderr output:\n[44:114:1013/055325.993133:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT\n\n2026-10-13 05:54:19,872 DEBG 'chrome' stderr output:\n[44:114:1013/055419.871639:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT\n\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr012-dcf60c7d-app-a",
+        "sh",
+        "-c",
+        "tail -120 /var/log/supervisor/autobyteus_server.log /var/log/supervisor/autobyteus_server.err.log 2>/dev/null"
+      ],
+      "rc": 1,
+      "seconds": 0.073,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "logs",
+        "--tail",
+        "160",
+        "ab-sf-fr012-dcf60c7d-app-b"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "2026-10-13 05:53:01,590 DEBG 'autobyteus_server' stdout output:\nLLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.\nRegistered LLM response processor 'MediaUrlTransformerProcessor'.\nAgent customization processor registration complete.\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'read_file'\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'write_file'\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'edit_file'\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'run_bash'\nSuccessfully registered tool definition: 'start_background_process'\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'get_background_processes'\nSuccessfully registered tool definition: 'get_process_output'\n\n2026-10-13 05:53:01,591 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'stop_background_process'\n\n2026-10-13 05:53:01,592 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\n\n2026-10-13 05:53:01,592 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'read_media_file'\nSuccessfully registered tool definition: 'download_media'\nSuccessfully registered tool definition: 'read_url'\n\n2026-10-13 05:53:01,592 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Core Tools\n\n2026-10-13 05:53:01,600 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'delegate_task'\n\n2026-10-13 05:53:01,600 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'list_available_agents'\n\n2026-10-13 05:53:01,600 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_image'\n\n2026-10-13 05:53:01,600 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'edit_image'\n\n2026-10-13 05:53:01,601 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_speech'\n\n2026-10-13 05:53:01,601 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_video'\n\n2026-10-13 05:53:01,601 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Task Delegation Tools\nRegistered required tool unit: Agent Discovery Tools\n\n2026-10-13 05:53:01,601 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Media Tools\n\n2026-10-13 05:53:01,616 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Browser Tools\nSuccessfully registered tool definition: 'publish_artifacts'\n\n2026-10-13 05:53:01,617 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Published Artifact Tools\n\n2026-10-13 05:53:01,617 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'send_message_to'\nSuccessfully registered tool definition: 'get_handoff_rules'\nRegistered required tool unit: Agent Communication Tools\nSuccessfully registered tool definition: 'list_projects'\nSuccessfully registered tool definition: 'list_project_tasks'\nSuccessfully registered tool definition: 'create_or_update_project'\nSuccessfully registered tool definition: 'create_or_update_task'\nRegistered required tool unit: Project Task Tools\n\n2026-10-13 05:53:01,623 DEBG 'autobyteus_server' stderr output:\nOverwriting existing tool definition for name: 'search_web'\n\n2026-10-13 05:53:01,623 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\nRegistered required tool unit: Search Tools\n\n2026-10-13 05:53:01,641 DEBG 'autobyteus_server' stdout output:\nServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated\nInitialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.\n\n2026-10-13 05:53:01,648 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791870781648,\"pid\":57,\"hostname\":\"ae08dbdf1c63\",\"msg\":\"Server listening at http://127.0.0.1:38049\"}\n\n2026-10-13 05:53:01,687 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791870781687,\"pid\":57,\"hostname\":\"ae08dbdf1c63\",\"msg\":\"Server listening at http://0.0.0.0:8000\"}\n\n2026-10-13 05:53:01,687 DEBG 'autobyteus_server' stdout output:\n[2026-10-13T05:53:01.687Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000\n\n2026-10-13 05:53:01,688 DEBG 'autobyteus_server' stdout output:\nScheduling Studio-only non-critical startup tasks...\n\n2026-10-13 05:53:01,694 DEBG 'autobyteus_server' stdout output:\nBackground cache pre-loading process has started.\n\n2026-10-13 05:53:01,694 DEBG 'autobyteus_server' stdout output:\nCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.\nPopulating MCP server config cache for the first time...\n\n2026-10-13 05:53:01,694 DEBG 'autobyteus_server' stdout output:\nRunning MCP tool registration background task...\n\n2026-10-13 05:53:01,694 DEBG 'autobyteus_server' stdout output:\nLoading and registering all MCP server configurations from file...\n\n2026-10-13 05:53:01,695 DEBG 'autobyteus_server' stdout output:\nBackground task 'Memory Sync Worker' completed successfully.\n\n2026-10-13 05:53:01,696 DEBG 'autobyteus_server' stdout output:\nMCP server config cache populated with 0 items.\n\n2026-10-13 05:53:01,696 DEBG 'autobyteus_server' stdout output:\nFound 0 total MCP server configs.\nSynchronized cached configurations with the core MCP config service.\n\n2026-10-13 05:53:01,696 DEBG 'autobyteus_server' stdout output:\nPre-loaded 0 MCP server configs into cache.\n\n2026-10-13 05:53:01,697 DEBG 'autobyteus_server' stdout output:\nFinished loading and registering all MCP server configurations.\n\n2026-10-13 05:53:01,697 DEBG 'autobyteus_server' stdout output:\nBackground task 'MCP Tool Registration' completed successfully.\n\n2026-10-13 05:53:01,698 DEBG 'autobyteus_server' stdout output:\nPre-loaded 35 LLM models into cache.\n\n2026-10-13 05:53:01,698 DEBG 'autobyteus_server' stdout output:\nPre-loaded 7 image models into cache.\nPre-loaded 3 audio models into cache.\nBackground application cache pre-loading completed.\nBackground task 'Cache Pre-loading' completed successfully.\n\n2026-10-13 05:53:02,442 DEBG 'autobyteus_server' stdout output:\nGraphQL mutation to create workspace metadata\n\n2026-10-13 05:53:02,442 INFO reaped unknown pid 593 (exit status 0)\n2026-10-13 05:53:02,442 DEBG received SIGCHLD indicating a child quit\n2026-10-13 05:53:02,442 DEBG 'autobyteus_server' stdout output:\nCreating new workspace for rootPath: /home/autobyteus/shared/project\nCreated metadata-only FileSystemWorkspace at /home/autobyteus/shared/project.\n\n2026-10-13 05:53:02,443 DEBG 'autobyteus_server' stdout output:\nCreated and registered workspace ID: agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c\n\n2026-10-13 05:53:22,355 DEBG 'chrome' stderr output:\n[48:134:1013/055322.355153:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT\n\n2026-10-13 05:54:17,137 DEBG 'chrome' stderr output:\n[48:134:1013/055417.137243:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT\n\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr012-dcf60c7d-app-b",
+        "sh",
+        "-c",
+        "tail -120 /var/log/supervisor/autobyteus_server.log /var/log/supervisor/autobyteus_server.err.log 2>/dev/null"
+      ],
+      "rc": 1,
+      "seconds": 0.07,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr012-dcf60c7d-storage-server",
+        "cat",
+        "/tmp/ganesha.log"
+      ],
+      "rc": 0,
+      "seconds": 0.069,
+      "stdout": "13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] main :MAIN :EVENT :nfs-ganesha Starting: Ganesha Version 4.3\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] load_rados_config :CONFIG :WARN :Missing RADOS URLs backend library\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_set_param_from_conf :NFS STARTUP :EVENT :Configuration file successfully parsed\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] init_fds_limit :INODE LRU :EVENT :Setting the system-imposed limit on FDs to 1048576.\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] init_server_pkgs :NFS STARTUP :EVENT :Initializing ID Mapper.\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] init_server_pkgs :NFS STARTUP :EVENT :ID Mapper successfully initialized.\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_start_grace :STATE :EVENT :NFS Server Now IN GRACE, duration 30\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_start_grace :STATE :EVENT :grace reload client info completed from backend\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_try_lift_grace :STATE :EVENT :check grace:reclaim complete(0) clid count(0)\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_lift_grace_locked :STATE :EVENT :NFS Server Now NOT IN GRACE\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] lower_my_caps :NFS STARTUP :EVENT :CAP_SYS_RESOURCE was successfully removed for proper quota management in FSAL\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] lower_my_caps :NFS STARTUP :EVENT :currently set capabilities are: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap=ep\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_Init_svc :DISP :CRIT :Cannot acquire credentials for principal nfs\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_Init_admin_thread :NFS CB :EVENT :Admin thread initialized\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_rpc_cb_init_ccache :NFS STARTUP :EVENT :Callback creds directory (/var/run/ganesha) already exists\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] find_keytab_entry :NFS CB :WARN :Configuration file does not specify default realm while getting default realm name\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] gssd_refresh_krb5_machine_credential :NFS CB :CRIT :ERROR: gssd_refresh_krb5_machine_credential: no usable keytab entry found in keytab /etc/krb5.keytab for connection with host localhost\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_rpc_cb_init_ccache :NFS STARTUP :WARN :gssd_refresh_krb5_machine_credential failed (-1765328160:2)\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_Start_threads :THREAD :EVENT :Starting delayed executor.\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_Start_threads :THREAD :EVENT :gsh_dbusthread was started successfully\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_Start_threads :THREAD :EVENT :admin thread was started successfully\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_Start_threads :THREAD :EVENT :reaper thread was started successfully\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_Start_threads :THREAD :EVENT :General fridge was started successfully\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_start :NFS STARTUP :EVENT :             NFS SERVER INITIALIZED\n13/10/2026 05:52:44 : epoch 6acdc72c : 04c83183ba6f : nfs-ganesha-21[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr012-dcf60c7d-app-b"
+      ],
+      "rc": 0,
+      "seconds": 0.42,
+      "stdout": "ab-sf-fr012-dcf60c7d-app-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr012-dcf60c7d-app-a"
+      ],
+      "rc": 0,
+      "seconds": 0.451,
+      "stdout": "ab-sf-fr012-dcf60c7d-app-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-nfs-b"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "ab-sf-fr012-dcf60c7d-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-nfs-a"
+      ],
+      "rc": 0,
+      "seconds": 0.029,
+      "stdout": "ab-sf-fr012-dcf60c7d-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr012-dcf60c7d-storage-server"
+      ],
+      "rc": 0,
+      "seconds": 0.214,
+      "stdout": "ab-sf-fr012-dcf60c7d-storage-server\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-b-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.045,
+      "stdout": "ab-sf-fr012-dcf60c7d-b-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-b-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.121,
+      "stdout": "ab-sf-fr012-dcf60c7d-b-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-b-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.058,
+      "stdout": "ab-sf-fr012-dcf60c7d-b-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-b-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.128,
+      "stdout": "ab-sf-fr012-dcf60c7d-b-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-b-data"
+      ],
+      "rc": 0,
+      "seconds": 0.104,
+      "stdout": "ab-sf-fr012-dcf60c7d-b-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-a-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.062,
+      "stdout": "ab-sf-fr012-dcf60c7d-a-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-a-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.065,
+      "stdout": "ab-sf-fr012-dcf60c7d-a-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-a-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "ab-sf-fr012-dcf60c7d-a-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-a-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.05,
+      "stdout": "ab-sf-fr012-dcf60c7d-a-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-a-data"
+      ],
+      "rc": 0,
+      "seconds": 0.036,
+      "stdout": "ab-sf-fr012-dcf60c7d-a-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-storage"
+      ],
+      "rc": 0,
+      "seconds": 0.026,
+      "stdout": "ab-sf-fr012-dcf60c7d-storage\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "rm",
+        "ab-sf-fr012-dcf60c7d-net"
+      ],
+      "rc": 0,
+      "seconds": 0.244,
+      "stdout": "ab-sf-fr012-dcf60c7d-net\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-storage-server"
+      ],
+      "rc": 1,
+      "seconds": 0.026,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr012-dcf60c7d-storage-server\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-app-a"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr012-dcf60c7d-app-a\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-app-b"
+      ],
+      "rc": 1,
+      "seconds": 0.02,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr012-dcf60c7d-app-b\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-storage"
+      ],
+      "rc": 1,
+      "seconds": 0.02,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr012-dcf60c7d-storage: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-nfs-a"
+      ],
+      "rc": 1,
+      "seconds": 0.023,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr012-dcf60c7d-nfs-a: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-a-data"
+      ],
+      "rc": 1,
+      "seconds": 0.02,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr012-dcf60c7d-a-data: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-a-root-home"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr012-dcf60c7d-a-root-home: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-a-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr012-dcf60c7d-a-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-a-legacy-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.031,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr012-dcf60c7d-a-legacy-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-a-chromium"
+      ],
+      "rc": 1,
+      "seconds": 0.023,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr012-dcf60c7d-a-chromium: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-nfs-b"
+      ],
+      "rc": 1,
+      "seconds": 0.027,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr012-dcf60c7d-nfs-b: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-b-data"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr012-dcf60c7d-b-data: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-b-root-home"
+      ],
+      "rc": 1,
+      "seconds": 0.025,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr012-dcf60c7d-b-root-home: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-b-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.022,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr012-dcf60c7d-b-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-b-legacy-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.024,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr012-dcf60c7d-b-legacy-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-b-chromium"
+      ],
+      "rc": 1,
+      "seconds": 0.024,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr012-dcf60c7d-b-chromium: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr012-dcf60c7d-net"
+      ],
+      "rc": 1,
+      "seconds": 0.026,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: network ab-sf-fr012-dcf60c7d-net not found\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "autobyteus-shared-feasibility:fr-012",
+        "--format",
+        "{{.Id}}"
+      ],
+      "rc": 0,
+      "seconds": 0.037,
+      "stdout": "sha256:c0e2601b457a6140b9b1a1eed08cb8a876b7f099e262cf91032ac6e2e56c11c5\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "rm",
+        "autobyteus-shared-feasibility:fr-012"
+      ],
+      "rc": 0,
+      "seconds": 0.117,
+      "stdout": "Untagged: autobyteus-shared-feasibility:fr-012\nDeleted: sha256:c0e2601b457a6140b9b1a1eed08cb8a876b7f099e262cf91032ac6e2e56c11c5\n",
+      "stderr": ""
+    }
+  ],
+  "api": [
+    {
+      "port": 56452,
+      "query": "{__typename}",
+      "variables": null,
+      "result": {
+        "data": {
+          "__typename": "Query"
+        }
+      },
+      "seconds": 0.011
+    },
+    {
+      "port": 56454,
+      "query": "{__typename}",
+      "variables": null,
+      "result": {
+        "data": {
+          "__typename": "Query"
+        }
+      },
+      "seconds": 0.01
+    },
+    {
+      "port": 56452,
+      "query": "mutation($root:String!){createWorkspace(input:{rootPath:$root}){workspaceId workspaceRootPath kind isTemp}}",
+      "variables": {
+        "root": "/home/autobyteus/shared/project"
+      },
+      "result": {
+        "data": {
+          "createWorkspace": {
+            "workspaceId": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+            "workspaceRootPath": "/home/autobyteus/shared/project",
+            "kind": "filesystem",
+            "isTemp": false
+          }
+        }
+      },
+      "seconds": 0.008
+    },
+    {
+      "port": 56454,
+      "query": "mutation($root:String!){createWorkspace(input:{rootPath:$root}){workspaceId workspaceRootPath kind isTemp}}",
+      "variables": {
+        "root": "/home/autobyteus/shared/project"
+      },
+      "result": {
+        "data": {
+          "createWorkspace": {
+            "workspaceId": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+            "workspaceRootPath": "/home/autobyteus/shared/project",
+            "kind": "filesystem",
+            "isTemp": false
+          }
+        }
+      },
+      "seconds": 0.007
+    },
+    {
+      "port": 56452,
+      "query": "mutation($i:CreateSkillInput!){createSkill(input:$i){name rootPath content}}",
+      "variables": {
+        "i": {
+          "name": "read-proof",
+          "description": "Use this private fixture skill only for the shared-filesystem capability experiment.",
+          "content": "# Private proof skill\nUse native Read to freshly read proof.txt in ${CLAUDE_SKILL_DIR}, not a shared link.\nWhen asked for the after-stop proof, freshly read after-stop.txt instead.\nUse native Write/Edit to publish the exact requested proof text to the requested file inside the selected working directory.\nDo not read other home files or run commands. Preserve existing project content unless explicitly asked to append.\n"
+        }
+      },
+      "result": {
+        "data": {
+          "createSkill": {
+            "name": "read-proof",
+            "rootPath": "/home/autobyteus/data/skills/read-proof",
+            "content": "# Private proof skill\nUse native Read to freshly read proof.txt in ${CLAUDE_SKILL_DIR}, not a shared link.\nWhen asked for the after-stop proof, freshly read after-stop.txt instead.\nUse native Write/Edit to publish the exact requested proof text to the requested file inside the selected working directory.\nDo not read other home files or run commands. Preserve existing project content unless explicitly asked to append."
+          }
+        }
+      },
+      "seconds": 0.007
+    },
+    {
+      "port": 56454,
+      "query": "mutation($i:CreateSkillInput!){createSkill(input:$i){name rootPath content}}",
+      "variables": {
+        "i": {
+          "name": "read-proof",
+          "description": "Use this private fixture skill only for the shared-filesystem capability experiment.",
+          "content": "# Private proof skill\nUse native Read to freshly read proof.txt in ${CLAUDE_SKILL_DIR}, not a shared link.\nWhen asked for the after-stop proof, freshly read after-stop.txt instead.\nUse native Write/Edit to publish the exact requested proof text to the requested file inside the selected working directory.\nDo not read other home files or run commands. Preserve existing project content unless explicitly asked to append.\n"
+        }
+      },
+      "result": {
+        "data": {
+          "createSkill": {
+            "name": "read-proof",
+            "rootPath": "/home/autobyteus/data/skills/read-proof",
+            "content": "# Private proof skill\nUse native Read to freshly read proof.txt in ${CLAUDE_SKILL_DIR}, not a shared link.\nWhen asked for the after-stop proof, freshly read after-stop.txt instead.\nUse native Write/Edit to publish the exact requested proof text to the requested file inside the selected working directory.\nDo not read other home files or run commands. Preserve existing project content unless explicitly asked to append."
+          }
+        }
+      },
+      "seconds": 0.007
+    }
+  ],
+  "cases": [
+    {
+      "name": "two fresh real application-image nodes serve independent GraphQL endpoints",
+      "status": "PASS",
+      "result": [
+        {
+          "name": "ab-sf-fr012-dcf60c7d-app-a",
+          "seconds": 7.069,
+          "graphql": {
+            "__typename": "Query"
+          }
+        },
+        {
+          "name": "ab-sf-fr012-dcf60c7d-app-b",
+          "seconds": 0.011,
+          "graphql": {
+            "__typename": "Query"
+          }
+        }
+      ],
+      "seconds": 7.079
+    },
+    {
+      "name": "daemon mounts one export into both application nodes; private state and credentials isolated",
+      "status": "PASS",
+      "result": [
+        {
+          "node": "ab-sf-fr012-dcf60c7d-app-a",
+          "mount": ":/ab-sf-fr012-dcf60c7d /home/autobyteus/shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+          "image_version": "0.1.1",
+          "cli_home": "no-user-cli-credentials\n"
+        },
+        {
+          "node": "ab-sf-fr012-dcf60c7d-app-b",
+          "mount": ":/ab-sf-fr012-dcf60c7d /home/autobyteus/shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+          "image_version": "0.1.1",
+          "cli_home": "no-user-cli-credentials\n"
+        }
+      ],
+      "seconds": 0.442
+    },
+    {
+      "name": "each application registers the ordinary mounted project through its public workspace API",
+      "status": "PASS",
+      "result": [
+        {
+          "name": "ab-sf-fr012-dcf60c7d-app-a",
+          "port": 56452,
+          "nfs_volume": "ab-sf-fr012-dcf60c7d-nfs-a",
+          "workspace": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+          "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+          "proof": "PRIVATE_ab-sf-fr012-dcf60c7d-app-a_0312112b79c146d7a172157dcf5fae11",
+          "afterStop": "AFTER_STOP_eac4f77ebae2443c890f6f666dd7ce4b",
+          "pluginRoot": "/home/autobyteus/data/feasibility-runtime/a",
+          "publication": {
+            "privatePlugin": "/home/autobyteus/data/feasibility-runtime/a",
+            "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+            "sharedRoot": "/home/autobyteus/shared/project",
+            "sourceManifestExists": true
+          },
+          "executable": "/usr/bin/claude",
+          "sdk_metadata": {
+            "version": "0.3.280",
+            "typesHash": "b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76"
+          }
+        },
+        {
+          "name": "ab-sf-fr012-dcf60c7d-app-b",
+          "port": 56454,
+          "nfs_volume": "ab-sf-fr012-dcf60c7d-nfs-b",
+          "workspace": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+          "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+          "proof": "PRIVATE_ab-sf-fr012-dcf60c7d-app-b_1cb3ad258f0d46c0970c05d6a2831992",
+          "afterStop": "AFTER_STOP_4d73ae8138f742f29027cfd6ba7e8137",
+          "pluginRoot": "/root/.claude/task-fixtures/b",
+          "publication": {
+            "privatePlugin": "/root/.claude/task-fixtures/b",
+            "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+            "sharedRoot": "/home/autobyteus/shared/project",
+            "sourceManifestExists": true
+          },
+          "executable": "/usr/bin/claude",
+          "sdk_metadata": {
+            "version": "0.3.280",
+            "typesHash": "b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76"
+          }
+        }
+      ],
+      "seconds": 0.016
+    },
+    {
+      "name": "native Claude login streamed only into fresh private homes, no source edit",
+      "status": "PASS",
+      "result": [
+        {
+          "node": "ab-sf-fr012-dcf60c7d-app-a",
+          "source": "exact Mac Claude Code-credentials Keychain item, read-only",
+          "expiresAt": 1791889403417,
+          "tokens_logged": false,
+          "host_secret_file_created": false
+        },
+        {
+          "node": "ab-sf-fr012-dcf60c7d-app-b",
+          "source": "exact Mac Claude Code-credentials Keychain item, read-only",
+          "expiresAt": 1791889403417,
+          "tokens_logged": false,
+          "host_secret_file_created": false
+        }
+      ],
+      "seconds": 0.186
+    },
+    {
+      "name": "both native sessions discover different private plugin paths and preserved workspace skill",
+      "status": "FAIL",
+      "error": "AssertionError('native SDK response timeout')",
+      "seconds": 160.012
+    }
+  ],
+  "cleanup": [
+    {
+      "container": "ab-sf-fr012-dcf60c7d-app-b",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr012-dcf60c7d-app-a",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr012-dcf60c7d-nfs-b",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr012-dcf60c7d-nfs-a",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr012-dcf60c7d-storage-server",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr012-dcf60c7d-b-chromium",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr012-dcf60c7d-b-legacy-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr012-dcf60c7d-b-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr012-dcf60c7d-b-root-home",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr012-dcf60c7d-b-data",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr012-dcf60c7d-a-chromium",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr012-dcf60c7d-a-legacy-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr012-dcf60c7d-a-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr012-dcf60c7d-a-root-home",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr012-dcf60c7d-a-data",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr012-dcf60c7d-storage",
+      "rc": 0
+    },
+    {
+      "network": "ab-sf-fr012-dcf60c7d-net",
+      "rc": 0
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr012-dcf60c7d-storage-server",
+      "absent": true
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr012-dcf60c7d-app-a",
+      "absent": true
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr012-dcf60c7d-app-b",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-storage",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-nfs-a",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-a-data",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-a-root-home",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-a-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-a-legacy-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-a-chromium",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-nfs-b",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-b-data",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-b-root-home",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-b-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-b-legacy-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr012-dcf60c7d-b-chromium",
+      "absent": true
+    },
+    {
+      "absence_kind": "network",
+      "name": "ab-sf-fr012-dcf60c7d-net",
+      "absent": true
+    },
+    {
+      "image_tag": "autobyteus-shared-feasibility:fr-012",
+      "expected_id": "sha256:c0e2601b457a6140b9b1a1eed08cb8a876b7f099e262cf91032ac6e2e56c11c5",
+      "rc": 0
+    }
+  ],
+  "application_metadata": {
+    "id": "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+    "repo_digests": [
+      "autobyteus/autobyteus-server@sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a"
+    ],
+    "created": "2026-10-12T13:24:35.302109183Z",
+    "entrypoint": [
+      "/usr/local/bin/entrypoint.sh"
+    ]
+  },
+  "service_image": "sha256:c0e2601b457a6140b9b1a1eed08cb8a876b7f099e262cf91032ac6e2e56c11c5",
+  "network": {
+    "Subnet": "172.29.0.0/16",
+    "IPRange": "",
+    "Gateway": "172.29.0.1"
+  },
+  "storage_server_ip": "172.29.0.2",
+  "nodes": [
+    {
+      "name": "ab-sf-fr012-dcf60c7d-app-a",
+      "port": 56452,
+      "nfs_volume": "ab-sf-fr012-dcf60c7d-nfs-a",
+      "workspace": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+      "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+      "proof": "PRIVATE_ab-sf-fr012-dcf60c7d-app-a_0312112b79c146d7a172157dcf5fae11",
+      "afterStop": "AFTER_STOP_eac4f77ebae2443c890f6f666dd7ce4b",
+      "pluginRoot": "/home/autobyteus/data/feasibility-runtime/a",
+      "publication": {
+        "privatePlugin": "/home/autobyteus/data/feasibility-runtime/a",
+        "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+        "sharedRoot": "/home/autobyteus/shared/project",
+        "sourceManifestExists": true
+      },
+      "executable": "/usr/bin/claude",
+      "sdk_metadata": {
+        "version": "0.3.280",
+        "typesHash": "b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76"
+      }
+    },
+    {
+      "name": "ab-sf-fr012-dcf60c7d-app-b",
+      "port": 56454,
+      "nfs_volume": "ab-sf-fr012-dcf60c7d-nfs-b",
+      "workspace": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+      "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+      "proof": "PRIVATE_ab-sf-fr012-dcf60c7d-app-b_1cb3ad258f0d46c0970c05d6a2831992",
+      "afterStop": "AFTER_STOP_4d73ae8138f742f29027cfd6ba7e8137",
+      "pluginRoot": "/root/.claude/task-fixtures/b",
+      "publication": {
+        "privatePlugin": "/root/.claude/task-fixtures/b",
+        "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+        "sharedRoot": "/home/autobyteus/shared/project",
+        "sourceManifestExists": true
+      },
+      "executable": "/usr/bin/claude",
+      "sdk_metadata": {
+        "version": "0.3.280",
+        "typesHash": "b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76"
+      }
+    }
+  ],
+  "fatal": "AssertionError('native SDK response timeout')"
+}
