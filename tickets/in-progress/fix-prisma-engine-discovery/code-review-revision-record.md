@@ -6,6 +6,7 @@ The applicable canonical review report is authoritative. This permanent-source p
 | Revision ID | Canonical report | Entry point / trigger | Prior result | Current result | Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | code-review-report.md | Initial implementation-source review / IR-001 | N/A | Pass — selected source stage only | None |
+| CRR-002 | code-review-report.md | API-REV-001 / API-F001 focused failure origin | Source Pass; API Fail | Existing PB-001 confirmed Out Of Scope; source Pass unchanged | API-F001 → follow-up PB-001 |
 
 ## CRR-001 — CLI-owned automatic selection; source review ready for native validation
 - Completed 2026-10-13; canonical report [code-review-report.md](code-review-report.md), round1, **Full Review**.
@@ -26,3 +27,20 @@ None — initial baseline.
 - Material score/classification changes: N/A, initial baseline. Score is not executable confidence or delivery approval.
 - Recommended recipient: current source-Pass rule's API/E2E Engineer; single most-specific routing, no operational or duplicate forwarding.
 - Remaining obligations: broader integration preparation/checks; one durable Docker harness/script; actual current-source image/dist boundary; original-resolver native mismatch control; no-pin normal startup/HTTP and public-API data; actual recreation over same owned HOME/data with incompatible cache retained; cleanup/platform limits. Delivery docs/cause status, moving-base integration/source-only finalization remain pending. No user-node/pin change, publication/rollout, historical Task reopening or permanent Task closure.
+
+## CRR-002 — Existing cadence issue PB-001, not a Prisma regression
+- Completed2026-10-13; canonical `code-review-report.md` updated; entry point API/E2E Failure-Origin Review, round2; Review Scope **N/A — focused**, not source re-audit or successful-test review.
+- Trigger: API/E2E Engineer, `api-e2e-execution-coverage-report.md` API-REV-001 Fail92.1%, scenario API001/findingAPI-F001, commit `dd7de6ed4607bfa43b830e5c80d291b5f41e0bdd`.
+- Related: R3/D1/SR004 (001–003 history), ARCH-REV001, IR001, CRR001, API-REV001; DR N/A. Medium/High unchanged.
+- Prior source result Pass; API Fail retained. Current failure-origin result: **confirmed pre-existing out-of-scope product defect, same existing PB-001; no current source finding or reviewer gap**. No rescoring; full source baseline carried forward.
+- Evidence: current raw failures/diagnostic plus read-only nine-path equality/production trace audit in `code-review-evidence/crr-002/failure-origin-audit.json`; existing `tickets/done/base-test-suite-green/handoff-summary.md` PB-001 and API V-13/DR002. Ordinary content batch unconditionally publishes input-state companion; scheduler flushes it as an unknown boundary immediately. Real protocol requires cadence for normal content; tests remain valid. No new unsupported scenario or mutation experiment.
+- New scenario/candidate records FO-SCN001, FO-CAND001(Promote/Follow-up) and FO-CAND002(Reject Prisma attribution) clarify origin only; R3/D1 intended behavior unchanged.
+
+### Prior Finding Resolution
+| Finding | Prior status | Current status | References | Evidence |
+| --- | --- | --- | --- | --- |
+| API-F001 (incoming API finding; no prior CR finding) | Origin/accountable disposition pending | Existing product issue PB-001; Out Of Scope for Prisma, not fixed/waived | API-REV001 / CRR002; historical baseline PB-001 | Unchanged source/test/protocol, immediate raw socket trace and existing issue records |
+
+- New/remaining in-scope CR findings: None. Follow-up PB-001 to `/project_task_manager` for existing-task linkage/deduplication or separately accountable registration; no product patch or automatic dispatch requested. Transport receipt recorded in canonical report.
+- Return package to API to record disposition and its own scoped result/confidence, retaining371Pass/2Fail/68Skip full integration and diagnostic2Fail/5notselected. No invented full base rerun or overall-green declaration. Current native casesAPI002–005 remain reported Pass, not re-executed here.
+- New durable Docker harness/package script now exist, but proportional test-code review is explicitly pending until API's successful scoped package returns. No source/test/Docker/live operation by reviewer in this round. Preserve generated build prerequisites and all prior evidence. Delivery/sourceTask completion/publication remain pending.

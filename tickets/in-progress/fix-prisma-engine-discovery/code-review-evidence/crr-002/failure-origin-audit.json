@@ -1,0 +1,60 @@
+{
+  "base": "e22245f097c208e66065302cfc30814cc5ffd14f",
+  "reviewedHead": "dd7de6ed4607bfa43b830e5c80d291b5f41e0bdd",
+  "priorSourceReview": "277c0c33d3671ce7aeedf2e8e30a4fb1baa94e0c",
+  "sameAsBase": [
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts",
+      "baseEqualsCurrent": true,
+      "sha256": "f49c643385cf59d91a39f29cf7da75c4e6087c6fdbf99df1428b85751b8d3208"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "baseEqualsCurrent": true,
+      "sha256": "53d0f3e045090df1834bdf79418e81e964bec4c6b7e2dcf9ae30b52083724826"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+      "baseEqualsCurrent": true,
+      "sha256": "4abf0cd924cca1082e7c5b0692a9d6044f93f390e020accc48be068320be2d65"
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts",
+      "baseEqualsCurrent": true,
+      "sha256": "b868c637d8dbcd70049d34568ecf91f4ca1d1908af4214cb116b6bc37c8b8771"
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts",
+      "baseEqualsCurrent": true,
+      "sha256": "4279bb1eb76b688985afddd413f88d4259c8049af9625d4953e7c184d3bb5952"
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-content-cadence-scheduler.ts",
+      "baseEqualsCurrent": true,
+      "sha256": "e00bbb3d894472aea87977e610f90962bf9c00f104ee08ad70e7da19c3f6ea51"
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-egress-control-composition.ts",
+      "baseEqualsCurrent": true,
+      "sha256": "06a795cd071e929991f93026d121e8ecacc4926e6004a4c2b438bb881f2a363a"
+    },
+    {
+      "path": "autobyteus-server-ts/src/config/streaming-content-flush-interval-setting.ts",
+      "baseEqualsCurrent": true,
+      "sha256": "93f1c0a2f3647e6946bb6cae3b01adaf9de182828fe0e5eb14f4d504dc01c312"
+    },
+    {
+      "path": "autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md",
+      "baseEqualsCurrent": true,
+      "sha256": "79025cc370da62ad9b58be3f7711586f7b6ce8ece4cd2caeffa0818b82a6b0a8"
+    }
+  ],
+  "apiNonTicketDelta": [
+    "autobyteus-server-ts/package.json",
+    "autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs"
+  ],
+  "reviewedPrismaProductionUnchanged": true,
+  "canonicalDiagnosticTestCopyAbsent": true,
+  "existingIssueReference": "tickets/done/base-test-suite-green/handoff-summary.md#-reported-product-defect--pb-001-ac-007-req-005-documented-exception",
+  "scope": "Focused failure-origin static/evidence audit. No test rerun, product/test change, Docker or user node action. Existing API logs and prior PB-001 counterfactual evidence inspected."
+}

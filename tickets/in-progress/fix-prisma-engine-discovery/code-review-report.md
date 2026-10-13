@@ -1,6 +1,57 @@
 # Code Review Report — Permanent Prisma Engine Discovery
 
-## Review Round Meta
+## Latest Review — CRR-002 Focused API/E2E Failure-Origin Review
+- Completed 2026-10-13; round2; Review Scope **N/A — focused failure-origin**, not a full re-audit or successful-test review.
+- Trigger: API-REV-001 **Fail pending API-F001 disposition**, confidence92.1%, at `dd7de6ed4607bfa43b830e5c80d291b5f41e0bdd`. Read canonical API investigation, execution report, revision record/ledger and bounded failure evidence. Related R3/D1/SR-004/ARCH-REV-001/IR-001/CRR-001 unchanged; Delivery revision N/A.
+- Decision: **Failure origin confirmed: pre-existing out-of-scope product cadence defect, existing issue PB-001; no Prisma regression or current source-review gap.** API-F001 remains a real failing product observation, not a passing assertion. CRR-001 source Pass and scoped score carry forward without deduction.
+- Task size/risk **Medium/High** unchanged. Current production resolver is byte-identical to CRR-001. API added only the designed Docker harness and package script outside ticket artifacts. This round does not proportionately review that new test code; that gate is still required after a successful scoped API result.
+- Independent reads: current TESTING baseline/isolation/Rule9, R3 Scope Guardrail/AC003–004, D1 Change Scope, failing canonical tests, AgentRun/backend publication, mapper/handler/egress scheduler/composition/interval contract; current protocol and existing PB-001 record. No changed source, test, exception note, expectation or API result was edited by reviewer.
+
+### Failure Evidence / Supported Scenario
+**FO-SCN-001 — Supported Normal Scenario / Use.** A user views an active Agent's streamed answer over its normal WebSocket while the runtime publishes ordinary content batches. The governing client-bound cadence contract opens a fixed window (default500ms), keeps ordinary companions from sealing it, and still flushes true lifecycle/tool/error/terminal boundaries. The independent basis is the product's streaming protocol, `docs/design/agent_websocket_streaming_protocol.md:265–279`, normal backend/AgentRun subscribers, and previously reported PB-001—not merely the failing synthetic backend.
+
+Forward production path: runtime content event → Codex backend `handleAppServerMessage` converts and sends its batch to source listeners (`codex-agent-run-backend.ts:222–232`) → AgentRun source subscription (`agent-run.ts:117–120`) → canonical dispatch, then unconditional `publishInputState` (`265–278,406–408`) → subscribed stream handler and event mapper (`agent-stream-handler.ts:277–285,309–323`; mapper `:101–102`) → connection egress/default scheduler → WebSocket client. `AgentRun.inputStateEvent` increments revision only if its signature changes, but `publishInputState` still emits after every batch. A normal content-only batch therefore carries an input-state companion even with no queue transition, not a lifecycle/error/segment-end barrier.
+
+The scheduler's safe-companion list omits `AGENT_INPUT_STATE`; `classifyMessage` falls through to `FLUSH_THEN_FORWARD`, and `accept` synchronously releases content and cancels its timer before forwarding the companion (`agent-stream-content-cadence-scheduler.ts:15–29,44–54`). Thus consecutive ordinary runtime messages cannot reliably share the advertised cadence window. This is an existing producer/egress integration defect; the separately owned fix must preserve real ordering barriers and immediate input projection. This review does not prescribe whether its correction belongs in publication deduplication, classification, or both.
+
+| Evidence | Observation / limitation |
+| --- | --- |
+| `api-e2e-evidence/api-rev-001/integration.log`; exact clean command `pnpm -C autobyteus-server-ts test:integration` after prepare | Exit1; **371 pass / 2 fail / 68 skip**, 72files pass / 1fail / 18skip. Cases at canonical test lines357/409 expected0 content at350ms of500ms window, observed1. These remain Fail, not globally green. |
+| `failure-origin-analysis.md`, `diagnose-cadence.py`, `cadence-diagnostic.log/json` | Only raw socket type/time/delta logging was inserted into a temporary test copy before its existing input-state trace filter; original assertions preserved. Both failures repeat. First start/content/input-state all at1791908485919ms; second all at1791908486284ms. Not a500ms timer firing under slow CI. Temporary copy removed. |
+| Canonical test `:315–439` | Scripted backend feeds real AgentRun, handler, Fastify/WebSocket and production cadence. No Prisma resolver intervention. Excluding input-state from captured status/content assertions does not suppress it on the real socket or cause flush. The second test fails before it can prove later next-window timing; do not claim that later assertion ran. |
+| Existing `tickets/done/base-test-suite-green/handoff-summary.md` PB-001; its API report V-13 and Delivery DR-002 | Same two names and same producer/companion cause were already reported. Prior V-13's temporary safe-companion experiment passed7/7; stale double could falsely hide failure by crashing publication. Old Delivery records user acknowledgement for THAT package only—not a waiver or repair here. |
+| [Independent bounded audit](code-review-evidence/crr-002/failure-origin-audit.json) | Nine relevant test/production/protocol paths byte-identical to basee22245f; Prisma owner unchanged since CRR001; only API durable harness/script added. No fresh complete base-suite run claimed. |
+
+**Test validity:** confirmed for the established ordinary content-cadence behavior. No stale assertion or test-environment defect explains these observed immediate flushes. All unknown message types flushing by default remains a legitimate boundary; the integration defect is treating routinely emitted known input-state projection as such a boundary. Prior PB-001 and unchanged source corroborate the current trace independently. A test double alone was not used to invent a product scenario.
+
+### Candidate / Scope / Origin Decision
+| Candidate | Independent contract/trigger | Evidence and consequence | Disposition / scope | Proportionate result |
+| --- | --- | --- | --- | --- |
+| FO-CAND-001 / API-F001 = PB-001 | FO-SCN-001; normal active response stream under configured cadence | Unconditional companion → immediate content flush; same-millisecond raw socket trace, actual source path, existing reported PB-001 | **Promote / Follow-up** | Real pre-existing product defect, not current Prisma finding; report/reconcile with Task manager and retain failures |
+| FO-CAND-002 / Prisma regression attribution | R3 AC003 requires preserved DB/env/deploy/errors/callers | No source change in failed path; resolver unchanged since review; native schema/startup/recreation results pass. Failure occurs in already-connected streaming fixture, not startup selection | **Reject** | No implementation-owned correction, source deduction or earlier-review-gap attribution in this ticket |
+
+The correction is not inherent to UC001–003/REQ001–007: all changed native selection behavior can work without changing content publication/cadence. D1 explicitly excludes unrelated transport policy. Under Ticket Scope and TESTING Rule9's product-change branch, track it separately rather than silently change cadence, suppress tests, or grow this ticket. Do not call the product issue an API-owned test Local Fix. The origin is an existing implementation defect; its **current-ticket disposition is Out Of Scope**, not a failure classification that dispatches this Prisma implementation back for repair.
+
+### Accountable Follow-up
+Stable existing issue reference: **PB-001**, `tickets/done/base-test-suite-green/handoff-summary.md` (reported product defect section), corroborated by that ticket's API V-13 and Delivery DR-002. No Project Task ID is established in available evidence; do not invent one or presume a TODO exists.
+
+Follow-up owner: `/project_task_manager`, the current requirements' Requested-by agent. Request deduplication/linkage to any existing PB-001 Project Task, otherwise retain/register a separately accountable product candidate: “Restore ordinary Agent stream cadence across input-state publication; preserve immediate queue projection and true boundary ordering, with the two existing integration cases green.” No automatic repair dispatch or live-node operation requested. Delivery status of the old Task does not close the product defect.
+
+Follow-up transport: **DELIVERED** to `/project_task_manager`, confirmed accepting run `project_task_manager_a5f6d9d306e54970bafdad895bdf731d`. Existing PB-001 plus this current evidence is durably referenced; Project Task linkage/registration is manager-owned, not preclaimed.
+
+### Effect On Current API Package / Continuation
+- API-REV-001's **Fail/92.1% remains historical and canonical until API owner updates it**. Reviewer does not overwrite its result/confidence. Return this confirmed unrelated disposition so API can record API-F001/PB-001 Out Of Scope with accountable reference and issue its own scoped result.
+- Keep full integration371/2/68 and diagnostic2Fail/5notselected, unit5455Pass/7Skip, and original raw failure/setup logs. No skips or failed assertions become Pass. No full-suite rerun is required solely for this unchanged-code disposition; additional execution remains API-owned if evidence changes.
+- API002–005 now report actual current-dist native control, normal no-pin startup and distinct-container same-owned-state recreation Pass. Native/recreation/cleanup receipts inspected for attribution boundary only; no rerun, new native certification, or test-code approval in this review.
+- D1 harness/script now authored. A successful scoped API package must return for the **separate proportional durable-test review**, not direct Delivery. No source-score re-audit or review of unrelated tests is warranted here.
+- No live probes/repair/pin removal, model/provider execution, user-data/private-backup access, source finalization or publication authorized. SourceTask6b8 remains active; old recovery/canceled operation statuses unchanged.
+
+
+## Retained CRR-001 Implementation-Source Basis
+
+The following source checks/score are carried forward, not rerun or rescored in CRR-002. Statements about stage readiness describe the initial source review; the current API status and continuation above supersede that stage state.
+
+### Source Baseline Meta
 - Review entry point: Implementation Review; round 1; **CRR-001 / Full Review**, completed 2026-10-13.
 - Task: `project_task_6b8c9612-c94b-4d62-8053-00ef94bd94df`; package `fix-prisma-engine-discovery`. This is not either operational-repair package.
 - Requirements/investigation/design: [R3 Approved](requirements-doc.md), [investigation E001–008](investigation-notes.md), [D1 Ready](design-spec.md), [solution history](solution-revision-record.md) SR-004 (SR-001–003 retained).
@@ -8,8 +59,8 @@
 - Implementation: [handoff](implementation-handoff.md), [history](implementation-revision-record.md), IR-001 initial baseline. Source `dd7be60ff6c732e0ddf6d9ac97a822bda8a85869`; reviewed HEAD `fec5a7b41aae7caf2246621348e843c3da509412`.
 - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery`; branch `codex/fix-prisma-engine-discovery`; source base `e22245f097c208e66065302cfc30814cc5ffd14f`; eventual target `origin/personal`, integration owned by Delivery.
 - Trigger: Implementation Engineer's cumulative source/local-check completion; no triggering finding IDs or prior current-package source review.
-- Revision record: [code-review-revision-record.md](code-review-revision-record.md). Prior authoritative result N/A; latest authoritative round 1.
-- Current-package API/E2E and Delivery revisions/reports: N/A — not yet performed, required future gates, not inapplicable. Failure-origin inputs/commands: N/A for this entry point.
+- Revision record: [code-review-revision-record.md](code-review-revision-record.md). Prior source authoritative result N/A; source baseline round 1. Current failure-origin result is CRR-002 above.
+- At CRR-001, API/E2E and Delivery revisions were not yet performed. API-REV-001 now exists; Delivery remains pending. Failure-origin inputs/commands: N/A for this entry point.
 - Supplemental context: current solution handoff, cause brief, owned metadata attempts, recurrence snapshot, superseded R2 and custody/relay records; external finalized cause/investigation and recurrence receipt under `/Users/normy/autobyteus_org/autobyteus-delivery-records/docker-node2-prisma-engine-mismatch/`. These establish historical facts only, never source approval or authorization to repeat a live action. No normative or Product/UI supplement.
 - Authorities: code-reviewer skill, shared design principles and Example 9, report/history templates; current root/server AGENTS, DESIGN, TESTING, startup initialization and data migration guidelines. No closer startup/test policy found. Implementation skill's API/E2E ownership rule independently checked.
 
@@ -140,23 +191,15 @@ ARCH-REV-001 recorded **no additional** material premise IDs; supported startup,
 None. No unresolved candidate or prior finding.
 
 ## Follow-ups
-None discovered; no Task-manager message required. Unknown historical cache writer is an explicit evidence limit, not a new investigation Task or blocker.
+CRR-002 identifies existing PB-001 as the same defect as API-F001; see current disposition above. No other follow-up found. Unknown historical cache writer remains an evidence limit, not a new investigation Task.
 
 ## Classification / Recommended Recipient
 Failure classification N/A — **Pass**, not a failure classification. Recommended next owner is API/E2E via the current rule lookup, with the complete cumulative package. No live operator, duplicate manager dispatch or direct Delivery acceptance.
 
-## Required Next Gate / Residual Risks
-1. API/E2E must author the single D1 durable `autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs` and `test:e2e:prisma-engine-discovery:docker` script. Neither exists yet. Keep gate `RUN_PRISMA_ENGINE_DOCKER_E2E=1`, prerequisites/cases/owned cleanup in its header; no alternate duplicate probe or dependency/recipe change.
-2. Run prescribed broader integration preparation/validation, then actual current-built Linux native proof. Audit whole image dist equality allowing only changed outputs before read-only worktree dist injection, or build an owned current monorepo image. Record source/build/image identity; old configuration-only b141/1779 proof is insufficient.
-3. Required baseline native mismatch/control uses official version-pinned/checksummed incompatible binaries in owned state; demonstrate original resolver selection plus real DB-free RPC mismatch or actual baseline startup failure. Fake-file base failures are not that proof.
-4. No-pin corrected normal startup with retained incompatible cache, actual matching native RPC, schema deployment and repeated HTTP200/status ok; create representative data through supported API; **recreate container over the same owned HOME/data** and verify readiness/data continuity plus wrong-cache preservation. Restart alone, wiped state, or permissive fake success does not satisfy AC004.
-5. Isolated signed-out HOME/data, free loopback port, no user mounts/ports8001/8003/credentials/models/build-container actions or prune; clean only owned resources. Genuine new failures require accountable classification under TESTING Rule9, not suppression.
-6. Package/export changes or an unprovable current-source image boundary route to the appropriate owner, not a broader scanner or inferred Pass. Unit target fixtures are not multi-platform native/desktop certification.
-7. Delivery owns docs, moving-base material-source/build audit, applicable user verification and isolated source-only merge/push. No tag/image publication/rollout or pin removal authorized. Existing old-image container-local workarounds remain recreation-unsafe until separately deployed corrected source. Historical closed recovery Tasks and canceled unused06f7 stay closed; permanent6b8 stays active.
-
 ## Latest Authoritative Result
-- Decision: **Pass**, CRR-001, round 1 / Full Implementation Review.
-- Supported Product Scenario Gate: Pass. Material-Premise Gate: Pass.
-- Score: 10.0/10, 100/100 scoped source quality; no findings.
-- Failure origin: N/A. No source/API/live/Delivery overall acceptance inferred.
-- Next: independent API/E2E, including required durable harness and current-source retained-state recreation proof. Transport is confirmed only by the subsequent messaging-tool receipt.
+- Review entry point: **API/E2E Failure-Origin Review**, CRR-002, round2; scope N/A (focused).
+- Result: **Confirmed pre-existing out-of-scope product defect API-F001 = PB-001; no current-ticket source failure.**
+- Supported Scenario / Material-Premise Gate: Pass. New in-scope findings: None. Follow-up: PB-001, accountable manager as above.
+- CRR-001 implementation-source Pass and score unchanged; no new scorecard computed. API-REV001 Fail retained until API's disposition/result update. Successful test-code review not performed.
+- Route lookup completed. No current-ticket implementation/test/design correction or successful-test outcome matches the returned rules: the product defect is a separate follow-up, not implementation rework for this ticket. Apply requester fallback and the skill’s explicit pre-existing-unrelated-failure continuation to `/software_engineering_team/api_e2e_engineer` for scoped disposition/report reconciliation. The manager follow-up is separate custody, not duplicate engineering outcome forwarding.
+- Remaining gates: API scoped result; proportional review of the new durable harness/script; Delivery cause-status/docs, moving-base audit, applicable verification and source-only finalization. Public image/live rollout remains a separate decision.
