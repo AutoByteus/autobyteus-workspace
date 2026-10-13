@@ -28,7 +28,26 @@ This section is authoritative for round 2. The round-1 sections below describe t
   - the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied`;
   - the local branch `codex/delegated-launch-config-defaults-r2`;
   - `/tmp/dlcd-r2-agents`.
-- Final Status (round 2): user verification `No`; finalization `No`; terminal package eligible `No`.
+- DR-003 status: waiting for verification.
+
+### DR-004 — Verification, Re-integration And Finalization (Round 2)
+
+- User verification: `Yes`. On 2026-10-13 the user wrote: "the task is done. verified. lets finalize and release a new beta version".
+- Release decision: beta `v1.5.3-beta.2`.
+- Target advanced after verification: `Yes`. `origin/personal` @ `73f743211c` brought `agy-docker-node-availability-diagnostics`: server AGY availability, the web model menu "Unavailable" state, `useChatModelCatalog` and `TESTING.md`.
+  - None of these files is a file of this round.
+- Delivery-owned edits protected: `Completed`.
+  - `4ac1bd3ecc`: docs(web).
+  - `9af5a622e5`: DR-003 records.
+- Re-integration: `Merge` (`7b0c755221`), no conflicts.
+- Post-integration checks: all 11 passed (`delivery-evidence/dr-004/`):
+  - `autobyteus-ts` build;
+  - server prebuild, typecheck and build;
+  - probe DLP-001..010: 10/10;
+  - web `test:nuxt`: 610 files, 4252 passed, 3 skipped;
+  - the three web guards;
+  - licensing and hygiene.
+- Renewed verification: `Not needed`. The base touched only the model menu's runtime-availability display, and the probe, which covers the launch forms that use it, passes.
 ## Release / Publication / Deployment Scope
 
 - Ticket `delegated-launch-config-defaults`: `task_size=Large`, `architectural_risk=High`, reviewed route.
