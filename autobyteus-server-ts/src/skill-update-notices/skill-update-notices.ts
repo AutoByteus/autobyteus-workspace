@@ -11,13 +11,15 @@ export type SkillUpdateNotices = Readonly<{
   /** The input-preface port and the run lifecycle observer for the run manager. */
   service: SkillUpdateNoticeService;
   watcher: SkillFolderWatcher;
+  tracker: RunSkillTracker;
   close(): Promise<void>;
 }>;
 
 /**
  * Builds the subsystem. A run's used skills are resolved exactly as its runtime resolves them at
  * activation (its agent definition through the skill catalog, `ALL_INSTALLED` and application
- * bundles included), and re-resolved the same way when one of its skill folders changes.
+ * bundles included). When one of its skill folders changes they are re-resolved with the same
+ * definition (the one the run was activated with) through the current catalog.
  */
 export const createSkillUpdateNotices = (input: Readonly<{
   agentDefinitionService: Pick<AgentDefinitionService, "getAgentDefinitionById">;
@@ -37,10 +39,13 @@ export const createSkillUpdateNotices = (input: Readonly<{
     snapshotter,
     store: new SeenSkillVersionsStore(),
     resolveUsedSkills: async (run) => {
+      // The definition the run was activated with (read once, when the run is tracked).
       const definition = await input.agentDefinitionService.getAgentDefinitionById(run.config.agentDefinitionId);
       const skillService = input.skillService ?? SkillService.getInstance();
-      return skillService.resolveConfiguredSkillsForAgent(definition)
-        .map((skill) => ({ name: skill.name, rootPath: skill.rootPath }));
+      return Object.freeze({
+        resolve: () => skillService.resolveConfiguredSkillsForAgent(definition)
+          .map((skill) => ({ name: skill.name, rootPath: skill.rootPath })),
+      });
     },
   });
   const service = new SkillUpdateNoticeService({ tracker, watcher, snapshotter });
@@ -48,6 +53,7 @@ export const createSkillUpdateNotices = (input: Readonly<{
   return Object.freeze({
     service,
     watcher,
+    tracker,
     close: () => {
       closing ??= (async () => {
         await watcher.close();

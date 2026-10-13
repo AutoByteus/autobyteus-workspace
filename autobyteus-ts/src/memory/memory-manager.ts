@@ -198,31 +198,13 @@ export class MemoryManager {
     return current;
   }
 
-  /**
-   * `senderId`: the sender AgentRun of an agent-to-agent delivery (null for user input).
-   * Returns the trace id, so a caller can link the working-context entry to it explicitly.
-   */
+  /** `senderId`: the sender AgentRun of an agent-to-agent delivery (null for user input). Returns the trace id. */
   ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[], senderId: string | null = null, identity: Pick<RawTraceItemOptions, 'messageId' | 'dedupeKey'> = {}): string {
     const trace = buildNativeUserMessageTrace(llmUserMessage, {
       turnId, seq: this.nextSeq(turnId), sourceEvent, fileAttachments, senderId, ...identity,
     });
     this.store.add([trace]);
     return trace.id;
-  }
-
-  /**
-   * Records a platform system notice the model received in this turn (for example, a notice
-   * combined into an input). History replays it as a system notice, not as a user message.
-   * Returns the trace id.
-   */
-  ingestSystemTaskNotification(content: string, turnId: string, senderId: string, sourceEvent: string): string {
-    return this.appendRawTrace({
-      turnId,
-      traceType: 'system_task_notification',
-      content,
-      senderId,
-      sourceEvent,
-    }).id;
   }
 
   ensureWorkingContextSystemMessage(content: string, options: WorkingContextAppendOptions = {}): boolean {

@@ -10,10 +10,14 @@ import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-c
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentRunActivationKind } from "../../../src/agent-execution/domain/agent-run-lifecycle-observer.js";
+import type { AgentRunInputPreface } from "../../../src/agent-execution/domain/agent-run-input-preface.js";
 import type { AgentRunBackendInputDispatch, AgentRunInputLifecycle } from "../../../src/agent-execution/input/agent-run-input-contract.js";
 import { SKILL_UPDATE_NOTICE_SENDER_ID } from "../../../src/agent-execution/domain/system-task-notification-senders.js";
-import type { SkillFolderWatchFactory } from "../../../src/skill-update-notices/monitor/skill-folder-watcher.js";
-import { SEEN_SKILL_VERSIONS_FILE_NAME } from "../../../src/skill-update-notices/providers/seen-skill-versions-store.js";
+import { SkillFolderWatcher, type SkillFolderWatchFactory } from "../../../src/skill-update-notices/monitor/skill-folder-watcher.js";
+import { SEEN_SKILL_VERSIONS_FILE_NAME, SeenSkillVersionsStore } from "../../../src/skill-update-notices/providers/seen-skill-versions-store.js";
+import { SkillFolderSnapshotter } from "../../../src/skill-update-notices/providers/skill-folder-snapshotter.js";
+import { RunSkillTracker } from "../../../src/skill-update-notices/services/run-skill-tracker.js";
+import { SkillUpdateNoticeService } from "../../../src/skill-update-notices/services/skill-update-notice-service.js";
 import { createSkillUpdateNotices, type SkillUpdateNotices } from "../../../src/skill-update-notices/skill-update-notices.js";
 
 // DS-002 / DS-003 with real skill folders, the real snapshotter, tracker and seen-versions store,
@@ -38,15 +42,22 @@ const createWorld = async () => {
   const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "skill-notice-int-")));
   tempDirs.push(root);
   const skillsRoot = path.join(root, "skills");
-  /** agent definition id → the skills it resolves to now (name → folder). */
-  const definitions = new Map<string, Map<string, string>>();
+  /** Agent definitions (id → configured skill names) and the installed skills catalog (name → folder). */
+  const definitions = new Map<string, readonly string[]>();
+  const catalog = new Map<string, string>();
   const createSkill = async (name: string, files: Record<string, string> = { "SKILL.md": `# ${name} v1` }, base = skillsRoot) => {
     const dir = path.join(base, name);
     for (const [file, content] of Object.entries(files)) await write(path.join(dir, file), content);
     return dir;
   };
+  const install = (name: string, dir: string) => { catalog.set(name, dir); };
+  const uninstall = (name: string) => { catalog.delete(name); };
+  const defineAgent = (definitionId: string, skillNames: readonly string[]) => { definitions.set(definitionId, [...skillNames]); };
+  const deleteAgent = (definitionId: string) => { definitions.delete(definitionId); };
+  /** Defines the agent with these skills and installs them. */
   const useSkills = (definitionId: string, skills: Record<string, string>) => {
-    definitions.set(definitionId, new Map(Object.entries(skills)));
+    defineAgent(definitionId, Object.keys(skills));
+    for (const [name, dir] of Object.entries(skills)) install(name, dir);
   };
   const watches = { created: 0 };
   const createWatch: SkillFolderWatchFactory = () => {
@@ -54,16 +65,26 @@ const createWorld = async () => {
     return { on: () => undefined, add: () => undefined, unwatch: () => undefined, close: async () => undefined };
   };
   const subsystem = createSkillUpdateNotices({
-    agentDefinitionService: { getAgentDefinitionById: async (id: string) => ({ id }) as never },
+    // A copy of the definition as it is now (null once deleted), as the definition service returns.
+    agentDefinitionService: { getAgentDefinitionById: async (id: string) => {
+      const skillNames = definitions.get(id);
+      return (skillNames ? { id, skillNames: [...skillNames] } : null) as never;
+    } },
+    // Resolves a definition's configured names through the catalog as it is now.
     skillService: {
-      resolveConfiguredSkillsForAgent: (definition: { id: string }) =>
-        [...(definitions.get(definition.id) ?? new Map()).entries()]
-          .map(([name, rootPath]) => ({ name, rootPath })) as never,
+      resolveConfiguredSkillsForAgent: (definition: { skillNames: string[] } | null) =>
+        (definition?.skillNames ?? []).flatMap((name) => {
+          const rootPath = catalog.get(name);
+          return rootPath ? [{ name, rootPath }] : [];
+        }) as never,
     },
     createWatch,
   });
   subsystems.push(subsystem);
-  return { root, skillsRoot, createSkill, useSkills, subsystem, service: subsystem.service, watches };
+  return {
+    root, skillsRoot, createSkill, useSkills, install, uninstall, defineAgent, deleteAgent,
+    subsystem, service: subsystem.service, watches,
+  };
 };
 
 /** A fake run: status, agent-message posting with a chosen outcome, and published events. */
@@ -97,14 +118,54 @@ const createRun = (world: Awaited<ReturnType<typeof createWorld>>, options: {
   return { run: run as unknown as AgentRun, state, posted, published };
 };
 
+/** A real AgentRun over a fake idle backend (start_turn and append supported) with this input preface port. */
+const createAgentRun = (input: { runId: string; agentDefinitionId: string; memoryDir: string; inputPreface: AgentRunInputPreface }) => {
+  const context = new AgentRunContext({
+    runId: input.runId,
+    config: new AgentRunConfig({
+      runtimeKind: "claude_agent_sdk", agentDefinitionId: input.agentDefinitionId, llmModelIdentifier: "sonnet",
+      autoExecuteTools: false, workspaceId: null, llmConfig: null, memoryDir: input.memoryDir,
+    }),
+    runtimeContext: null,
+  });
+  let turns = 0;
+  const dispatchUserInput = vi.fn(async () => ({ forwarded: true, turnId: `turn-${++turns}` }));
+  const backend = {
+    runId: input.runId,
+    runtimeKind: context.config.runtimeKind,
+    compactionRecovery: { kind: "unsupported" } as const,
+    inputCapabilities: { activeTurnAppend: "supported" },
+    getContext: () => context,
+    getPlatformAgentRunId: () => `platform-${input.runId}`,
+    isActive: () => true,
+    getLifecycleSnapshot: () => ({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } }),
+    hasRunningBackgroundTasks: () => false,
+    subscribeToSourceEventBatches: () => () => undefined,
+    dispatchUserInput,
+    approveToolInvocation: vi.fn(),
+    interrupt: vi.fn(),
+    terminate: vi.fn(),
+  };
+  const run = new AgentRun({
+    providerInputNormalizer: { normalizeForProvider: (dispatch: AgentRunBackendInputDispatch) => dispatch },
+    context,
+    backend: backend as never,
+    commandObservers: [],
+    inputPreface: input.inputPreface,
+  });
+  const published: AgentRunEvent[] = [];
+  run.subscribeToEvents((value) => { published.push(value); });
+  const dispatched = (call: number) => (dispatchUserInput.mock.calls[call] as unknown as [AgentRunBackendInputDispatch])[0].message;
+  return { run, dispatchUserInput, published, dispatched };
+};
+
 const publish = async (
   world: Awaited<ReturnType<typeof createWorld>>,
   fake: ReturnType<typeof createRun>,
   kind: AgentRunActivationKind = "new",
 ) => {
   world.service.runPublished(fake.run, kind);
-  // takePreface waits for the run's tracking; a new run has nothing to hear yet.
-  expect(await world.service.takePreface(fake.run)).toBeNull();
+  await world.subsystem.tracker.whenTracked(fake.run.runId);
   await settle();
 };
 
@@ -257,7 +318,7 @@ describe("SkillUpdateNoticeService (integration)", () => {
 
     // A new GitHub source generation: same name, new folder, same files; the old one is deleted.
     const generation2 = await world.createSkill("code-review", { "SKILL.md": "v1" }, path.join(world.root, "gen-2"));
-    world.useSkills("def-a", { "code-review": generation2 });
+    world.install("code-review", generation2);
     await fs.rm(generation1, { recursive: true, force: true });
     await world.service.onSkillFoldersChanged([generation1]);
     await settle();
@@ -271,13 +332,40 @@ describe("SkillUpdateNoticeService (integration)", () => {
     expect(fake.posted[0]!.content).toContain(`- code-review (${path.join(generation2, "SKILL.md")}): SKILL.md`);
 
     // The skill is uninstalled: it no longer resolves for the run.
-    world.useSkills("def-a", {});
+    world.uninstall("code-review");
     await fs.rm(generation2, { recursive: true, force: true });
     await world.service.onSkillFoldersChanged([generation2]);
     await vi.waitFor(() => expect(fake.published).toHaveLength(2));
     expect(fake.posted[1]!.content).toContain("- code-review: no longer available");
     expect(fake.posted[1]!.content).not.toContain("Re-read");
     await vi.waitFor(() => expect(world.subsystem.watcher.watchedFolders()).toEqual([]));
+  });
+
+  it("CR-002: an active run keeps the definition it was activated with; editing or deleting it never reports a still-installed skill as removed", async () => {
+    const world = await createWorld();
+    const review = await world.createSkill("code-review");
+    const research = await world.createSkill("deep-research");
+    world.useSkills("def-a", { "code-review": review, "deep-research": research });
+    const fake = createRun(world, { runId: "run-a", definitionId: "def-a" });
+    await publish(world, fake);
+    fake.state.status = "running";
+
+    // The definition drops deep-research while the run is active; the run still uses it.
+    world.defineAgent("def-a", ["code-review"]);
+    await write(path.join(research, "SKILL.md"), "v2");
+    await world.service.onSkillFoldersChanged([research]);
+    await vi.waitFor(() => expect(fake.published).toHaveLength(1));
+    expect(fake.posted[0]!.content).toContain(`- deep-research (${path.join(research, "SKILL.md")}): SKILL.md`);
+    expect(fake.posted[0]!.content).not.toContain("no longer available");
+
+    // The definition is deleted while the run is active; its skills are still installed.
+    world.deleteAgent("def-a");
+    await write(path.join(review, "SKILL.md"), "v2");
+    await world.service.onSkillFoldersChanged([review]);
+    await vi.waitFor(() => expect(fake.published).toHaveLength(2));
+    expect(fake.posted[1]!.content).toContain(`- code-review (${path.join(review, "SKILL.md")}): SKILL.md`);
+    expect(fake.posted[1]!.content).not.toContain("no longer available");
+    expect(world.subsystem.watcher.watchedFolders()).toEqual([review, research].sort());
   });
 
   it("AC-006: noise inside a skill folder never produces a notice", async () => {
@@ -327,6 +415,7 @@ describe("SkillUpdateNoticeService (integration)", () => {
 
     // While stopped: one skill changes, one is uninstalled, a new one is configured.
     await write(path.join(skillDir, "SKILL.md"), "v2");
+    world.uninstall("deep-research");
     world.useSkills("def-a", { "code-review": skillDir, "brand-new": await world.createSkill("brand-new") });
     const restored = createRun(world, { runId: "run-a", definitionId: "def-a" });
     world.service.runPublished(restored.run, "restore");
@@ -364,40 +453,9 @@ describe("SkillUpdateNoticeService (integration)", () => {
     const world = await createWorld();
     const skillDir = await world.createSkill("code-review");
     world.useSkills("def-a", { "code-review": skillDir });
-    const context = new AgentRunContext({
-      runId: "run-real",
-      config: new AgentRunConfig({
-        runtimeKind: "claude_agent_sdk", agentDefinitionId: "def-a", llmModelIdentifier: "sonnet",
-        autoExecuteTools: false, workspaceId: null, llmConfig: null, memoryDir: path.join(world.root, "memory", "run-real"),
-      }),
-      runtimeContext: null,
+    const { run, dispatchUserInput, published } = createAgentRun({
+      runId: "run-real", agentDefinitionId: "def-a", memoryDir: path.join(world.root, "memory", "run-real"), inputPreface: world.service,
     });
-    const dispatchUserInput = vi.fn().mockResolvedValue({ forwarded: true, turnId: "turn-7" });
-    const backend = {
-      runId: "run-real",
-      runtimeKind: context.config.runtimeKind,
-      compactionRecovery: { kind: "unsupported" } as const,
-      inputCapabilities: { activeTurnAppend: "supported" },
-      getContext: () => context,
-      getPlatformAgentRunId: () => "platform-run-real",
-      isActive: () => true,
-      getLifecycleSnapshot: () => ({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } }),
-      hasRunningBackgroundTasks: () => false,
-      subscribeToSourceEventBatches: () => () => undefined,
-      dispatchUserInput,
-      approveToolInvocation: vi.fn(),
-      interrupt: vi.fn(),
-      terminate: vi.fn(),
-    };
-    const run = new AgentRun({
-      providerInputNormalizer: { normalizeForProvider: (dispatch: AgentRunBackendInputDispatch) => dispatch },
-      context,
-      backend: backend as never,
-      commandObservers: [],
-      inputPreface: world.service,
-    });
-    const published: AgentRunEvent[] = [];
-    run.subscribeToEvents((value) => { published.push(value); });
     world.service.runPublished(run, "new");
     await vi.waitFor(() => expect(world.subsystem.watcher.watchedFolders()).toEqual([skillDir]));
 
@@ -411,7 +469,7 @@ describe("SkillUpdateNoticeService (integration)", () => {
     expect(message.content.endsWith("\n\nReview PR 12.")).toBe(true);
     expect(readPlatformInputPreface(message.metadata)?.originalContent).toBe("Review PR 12.");
     expect(published.find((value) => value.eventType === AgentRunEventType.SYSTEM_TASK_NOTIFICATION)?.payload)
-      .toMatchObject({ sender_id: SKILL_UPDATE_NOTICE_SENDER_ID, turn_id: "turn-7" });
+      .toMatchObject({ sender_id: SKILL_UPDATE_NOTICE_SENDER_ID, turn_id: "turn-1" });
 
     // Delivered: the next input goes out unchanged.
     await vi.waitFor(async () => expect(await world.service.takePreface(run)).toBeNull());
@@ -454,5 +512,70 @@ describe("SkillUpdateNoticeService with the real folder watcher", () => {
 
     await vi.waitFor(() => expect(posted).toHaveLength(1), { timeout: 5000 });
     expect(posted[0]).toContain(`- code-review (${path.join(skillDir, "SKILL.md")}): SKILL.md`);
+  });
+});
+
+describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => {
+  /** A service whose tracking snapshots wait for `open()` (a slow first scan of many skill files). */
+  const createGatedService = async () => {
+    const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "skill-notice-gated-")));
+    tempDirs.push(root);
+    const skillDir = path.join(root, "skills", "code-review");
+    await write(path.join(skillDir, "SKILL.md"), "v1");
+    let open!: () => void;
+    const gate = new Promise<void>((resolve) => { open = resolve; });
+    const real = new SkillFolderSnapshotter();
+    const tracker = new RunSkillTracker({
+      resolveUsedSkills: async () => ({ resolve: () => [{ name: "code-review", rootPath: skillDir }] }),
+      snapshotter: { snapshot: async (skill) => { await gate; return real.snapshot(skill); } },
+      store: new SeenSkillVersionsStore(),
+    });
+    const watcher = new SkillFolderWatcher({
+      createWatch: () => ({ on: () => undefined, add: () => undefined, unwatch: () => undefined, close: async () => undefined }),
+    });
+    const service = new SkillUpdateNoticeService({ tracker, watcher, snapshotter: real });
+    return { root, skillDir, service, tracker, watcher, open };
+  };
+
+  it("a new run's first input is dispatched at once, while its skills are still being scanned", async () => {
+    const { root, service, tracker, watcher, open } = await createGatedService();
+    const { run, dispatchUserInput, dispatched } = createAgentRun({
+      runId: "run-new", agentDefinitionId: "def-a", memoryDir: path.join(root, "memory", "run-new"), inputPreface: service,
+    });
+    service.runPublished(run, "new");
+
+    await run.postUserMessage(new AgentInputUserMessage("Review PR 12.", SenderType.USER, null, {}));
+
+    await vi.waitFor(() => expect(dispatchUserInput).toHaveBeenCalledOnce(), { timeout: 1000 });
+    expect(dispatched(0).content).toBe("Review PR 12.");
+    expect(tracker.getTrackedRun("run-new")).toBeNull(); // still scanning
+    open();
+    await vi.waitFor(() => expect(tracker.getTrackedRun("run-new")).not.toBeNull());
+    service.close();
+    await watcher.close();
+  });
+
+  it("a restored run's first input waits for its check and carries the notice for changes made while it was stopped", async () => {
+    const { root, skillDir, service, watcher, open } = await createGatedService();
+    const memoryDir = path.join(root, "memory", "run-restored");
+    await new SeenSkillVersionsStore().write({ runId: "run-restored", memoryDir }, new Map([["code-review", {
+      skillName: "code-review", skillDir, skillMdPath: path.join(skillDir, "SKILL.md"), files: { "SKILL.md": "digest-of-v0" },
+    }]]));
+    const { run, dispatchUserInput, dispatched } = createAgentRun({
+      runId: "run-restored", agentDefinitionId: "def-a", memoryDir, inputPreface: service,
+    });
+    service.runPublished(run, "restore");
+
+    await run.postUserMessage(new AgentInputUserMessage("continue", SenderType.USER, null, {}));
+    await settle();
+    expect(dispatchUserInput).not.toHaveBeenCalled(); // waits for the restore check
+    open();
+
+    await vi.waitFor(() => expect(dispatchUserInput).toHaveBeenCalledOnce());
+    expect(dispatched(0).content.startsWith("[Platform notice — skill updated]")).toBe(true);
+    expect(dispatched(0).content).toContain(`- code-review (${path.join(skillDir, "SKILL.md")}): SKILL.md`);
+    expect(dispatched(0).content.endsWith("\n\ncontinue")).toBe(true);
+    service.close();
+    await watcher.close();
   });
 });

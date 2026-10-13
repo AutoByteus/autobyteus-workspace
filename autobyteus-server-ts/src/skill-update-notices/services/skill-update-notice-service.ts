@@ -51,6 +51,8 @@ const logger = { warn: (...args: unknown[]) => console.warn(...args) };
  */
 export class SkillUpdateNoticeService implements AgentRunInputPreface, AgentRunLifecycleObserver {
   private readonly states = new Map<string, RunNoticeState>();
+  /** Restored runs whose check against what they saw before is still being prepared. */
+  private readonly restoring = new Set<AgentRun>();
   private readonly unsubscribeWatcher: () => void;
   private closed = false;
 
@@ -66,12 +68,15 @@ export class SkillUpdateNoticeService implements AgentRunInputPreface, AgentRunL
 
   runPublished(run: AgentRun, activationKind: AgentRunActivationKind): void {
     if (this.closed) return;
+    // Only a restored run can have a notice waiting for its first input; a new run was just given
+    // the current skills, so its inputs never wait for its tracking.
+    if (activationKind !== "new") this.restoring.add(run);
     void this.deps.tracker.trackRun(run, activationKind).then((tracked) => {
       if (!tracked || this.closed) return;
       // A restored run is checked against what it saw before (changes made while it was stopped).
       if (activationKind !== "new") for (const name of tracked.skillDirs.keys()) this.stateOf(run.runId).dirty.add(name);
       this.syncWatchSet();
-    });
+    }).finally(() => { this.restoring.delete(run); });
   }
 
   runReleased(run: AgentRun): void {
@@ -89,8 +94,10 @@ export class SkillUpdateNoticeService implements AgentRunInputPreface, AgentRunL
 
   async takePreface(run: AgentRun): Promise<AgentRunPreface | null> {
     if (this.closed) return null;
-    // A restored run's first input waits for its check against what it saw before.
-    const tracked = await this.deps.tracker.whenTracked(run.runId);
+    // A restored run's first input waits for its check against what it saw before; any other
+    // input is only carried a notice that is already pending.
+    if (this.restoring.has(run)) await this.deps.tracker.whenTracked(run.runId);
+    const tracked = this.deps.tracker.getTrackedRun(run.runId);
     if (!tracked || tracked.run !== run) return null;
     const state = this.states.get(run.runId);
     if (!state || state.dirty.size === 0 || state.inFlight) return null;
@@ -137,7 +144,7 @@ export class SkillUpdateNoticeService implements AgentRunInputPreface, AgentRunL
       // the same skill with a new path; a name that no longer resolves is gone.
       let moved: string[] = [];
       try {
-        moved = await this.deps.tracker.refreshSkillDirs(runId);
+        moved = this.deps.tracker.refreshSkillDirs(runId);
       } catch (error) {
         logger.warn(`SKILL_UPDATE_RESOLVE_FAILED:${runId}: ${String(error)}`);
       }
@@ -154,6 +161,7 @@ export class SkillUpdateNoticeService implements AgentRunInputPreface, AgentRunL
     this.closed = true;
     this.unsubscribeWatcher();
     this.states.clear();
+    this.restoring.clear();
   }
 
   /** Sends a busy run its notice now through the agent-message path; an idle run stays marked. */

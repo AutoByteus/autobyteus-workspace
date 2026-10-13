@@ -351,7 +351,6 @@ export class AgentRun {
       await this.compactionRecovery.revokeUndelivered(input.recovery);
     } else if (input.recovery && (!result || !result.forwarded)) {
       // Reconcile only positive canonical start evidence. No resend or inherited permission.
-      // A preface stays in flight until reconciliation proves the dispatch forwarded.
       await this.dispatchQueue.enqueue(this.runId, () => {
         this.uncertainInputDispatch = input; this.reconcileUncertainDispatch(); this.publishInputState();
       });
@@ -398,7 +397,6 @@ export class AgentRun {
     this.uncertainInputDispatch = null;
     const result = this.inputAdmissionState.applyDispatchResult(input.claim, { forwarded: true, turnId });
     if (input.commandToken !== null && result.forwarded) this.lifecycleState.acceptCommand(input.commandToken, turnId);
-    this.settlePreface(input, turnId);
   }
 
   /** Settles the notice combined into a dispatch (undefined turn: not forwarded). */

@@ -56,7 +56,9 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
       // The model sees the notice and the input together; history keeps them apart: one system
       // notice, then the input as it was sent (when there is one). The working-context entry is
       // linked to both traces explicitly, because its content matches neither.
-      const traceIds = [memoryManager.ingestSystemTaskNotification(preface.content, turnId, preface.senderId, SOURCE_EVENT)];
+      const traceIds = [memoryManager.appendRawTrace({
+        turnId, traceType: 'system_task_notification', content: preface.content, senderId: preface.senderId, sourceEvent: SOURCE_EVENT,
+      }).id];
       const inputContent = stripPlatformInputPreface(llmUserMessage.content, preface);
       if (inputContent !== null) {
         traceIds.push(memoryManager.ingestUserMessage(

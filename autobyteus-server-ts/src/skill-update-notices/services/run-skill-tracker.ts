@@ -6,15 +6,21 @@ import type { SeenSkillVersionsStore } from "../providers/seen-skill-versions-st
 import type { SkillFolderSnapshotter } from "../providers/skill-folder-snapshotter.js";
 
 /**
- * Resolves the skills a run uses, exactly as its runtime resolved them at activation (from its
- * agent definition through the skill catalog, `ALL_INSTALLED` and application bundles included).
+ * The skills of one run, bound when the run is tracked to the agent definition its runtime was
+ * activated with. `resolve()` resolves that definition's skills through the current catalog
+ * (`ALL_INSTALLED` and application bundles included), so a later edit or deletion of the
+ * definition never changes what the active run uses; only the catalog does.
  */
-export type RunUsedSkillsResolver = (run: AgentRun) => Promise<readonly ResolvedSkill[]>;
+export type RunSkillSource = Readonly<{ resolve(): readonly ResolvedSkill[] }>;
+
+/** Binds a run to its skill source (reads its agent definition once). */
+export type RunUsedSkillsResolver = (run: AgentRun) => Promise<RunSkillSource>;
 
 /** One tracked run: the skill names it uses, the folder each resolves to now, and what it has seen. */
 export type TrackedRun = {
   readonly run: AgentRun;
   readonly activationKind: AgentRunActivationKind;
+  readonly skillSource: RunSkillSource;
   /** Skill name → the folder it resolves to now for this run (null: it no longer resolves). */
   readonly skillDirs: Map<string, string | null>;
   readonly seen: Map<string, SkillFolderSnapshot>;
@@ -80,13 +86,14 @@ export class RunSkillTracker {
   }
 
   /**
-   * Re-resolves a run's used skill names (a name may now resolve to a new folder, such as a new
-   * GitHub source generation, or not at all). Returns the names whose folder changed.
+   * Re-resolves a run's used skill names through its skill source (a name may now resolve to a
+   * new folder, such as a new GitHub source generation, or not at all: no longer installed).
+   * Returns the names whose folder changed.
    */
-  async refreshSkillDirs(runId: string): Promise<string[]> {
+  refreshSkillDirs(runId: string): string[] {
     const tracked = this.runs.get(runId);
     if (!tracked) return [];
-    const resolved = new Map((await this.deps.resolveUsedSkills(tracked.run))
+    const resolved = new Map(tracked.skillSource.resolve()
       .map((skill) => [skill.name, path.resolve(skill.rootPath)] as const));
     const moved: string[] = [];
     for (const [name, dir] of tracked.skillDirs) {
@@ -118,7 +125,8 @@ export class RunSkillTracker {
   }
 
   private async loadRun(run: AgentRun, activationKind: AgentRunActivationKind): Promise<TrackedRun | null> {
-    const used = await this.deps.resolveUsedSkills(run);
+    const skillSource = await this.deps.resolveUsedSkills(run);
+    const used = skillSource.resolve();
     const current = new Map<string, SkillFolderSnapshot>();
     for (const skill of used) {
       const snapshot = await this.deps.snapshotter.snapshot(skill);
@@ -133,7 +141,7 @@ export class RunSkillTracker {
       skillDirs.set(name, current.get(name)?.skillDir ?? null);
     }
     if (!this.tracking.has(run.runId)) return null; // released meanwhile
-    const tracked: TrackedRun = { run, activationKind, skillDirs, seen };
+    const tracked: TrackedRun = { run, activationKind, skillSource, skillDirs, seen };
     this.runs.set(run.runId, tracked);
     await this.persist(tracked);
     return tracked;
