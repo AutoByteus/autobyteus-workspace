@@ -7,6 +7,7 @@ Current code and `implementation-handoff.md` are authoritative; this record inde
 |---|---|---|---|---|---|
 | IR-001 | Solution Designer / handoff-architecture-design-complete.md / initial | N/A | Initial Baseline | SR-001, SR-002; ARCH-REV/CRR/API-REV/DR N/A | Implementation Complete — Direct API/E2E |
 | IR-002 | Delivery / release-deployment-report.md / DR-001 | Initial integration: shared probe ledger conflict (no separate ID) | Local Fix | SR-001/002; ARCH-REV/CRR N/A; API-REV-001; DR-001 | Implementation Complete — Direct API/E2E revalidation |
+| IR-003 | Delivery / release-deployment-report.md / DR-002 | New DCP-002 locator conflict (no separate ID) | Local Fix | SR-001/002; ARCH-REV/CRR N/A; API-REV-002; DR-002 | Implementation Complete — Direct API/E2E revalidation |
 
 ## IR-001 — Canonical stopped Settings saved snapshot
 - Date: 2026-10-13; prior authoritative implementation result **N/A**.
@@ -32,3 +33,16 @@ Current code and `implementation-handoff.md` are authoritative; this record inde
 
 ### IR-002 routing
 2026-10-13 `get_handoff_rules` selected the most-specific matching Delivery-requested direct-route Local Fix rule: `/software_engineering_team/api_e2e_engineer`. Only that recipient receives this completed outcome. No independent source review or extra Delivery forwarding.
+
+## IR-003 — Exact Settings target plus current red-default sidebar coverage
+- Date 2026-10-13; prior authoritative implementation **IR-002 Implementation Complete**, downstream **API-REV-002 Pass/95%** at target 0c37f58d88; current trigger **DR-002 Blocked — new Local Fix** after target advanced to 7170fd755d0dd5e806371dd4594eb4a9bf3e2682. DR-001 ledger issue is resolved, not reopened.
+- Trigger artifacts: `release-deployment-report.md`, `delivery-revision-record.md` DR-002, `evidence/delivery/dr-002-integration.json`, `dr-002-integration-conflict.patch`, `dr-002-merge.log`; no separate finding ID. Related **SR-001/002 unchanged; ARCH-REV/CRR N/A; API-REV-002; DR-002**. Seven Delivery artifacts preserved unchanged in bd0fb189e6c6d19f99b11ee1216177acd2767aa4.
+- Source merge **21bab56a2785f32e137dc54cbb62af43cbd157dc**: shared `delegated-launch-defaults-probe.mjs` combines exact-root/kind/address Team row + uniqueness/receipt from e00d34ffdd with incoming named `Terminate team` parent. Preserves current target's red-enabled/gray-disabled Stop coverage and expanded DCP-001..003 root-history actions. New Org-history assertion uses existing hash-aware URL parsing so it also supports desktop. No Settings product source or original tests changed.
+- Coverage for **BEH-001..003 / REQ-001..005 / AC-001..006** preserved. Incoming sidebar-stop-red-default has its own approved R1 superseding prior gray-enabled style; not a requirements revision for Settings. Target TPS/Prisma source/tests remain byte-identical; package scripts are a clean union. 61 static preservation checks passed.
+- Actual-helper local regression: desktop history URL failed incoming assertion before correction; six browser/desktop/history/active-rejection/root-kind variants pass after. No synthetic result presented as real lifecycle proof. Prior actual-source runner checks still pass all five variants; ledger ordering unchanged, incoming subcase Checkpoint events preserved.
+- Focused checks: 33 files/330 web tests; 2 files/38 Prisma unit tests; server typecheck; final serialized web build and web/localization guards; 3 MJS syntax checks and staged merge whitespace all pass. Exact evidence `implementation-ir-003-evidence.md`, `evidence/implementation-ir-003/`. An initial successful web build overlapped automatic shared preparation from server typecheck; final web build repeated after preparation completed, per serialization rule.
+- Classification **Medium/Low confirmed**, lightweight semantic self-review complete, no design gap/escalation. Current result **Implementation Complete — latest integrated API/E2E revalidation required**.
+- Limits: no new rendered/API/E2E/desktop pass claimed; rebuild backend and desktop because target now includes red Stop/TPS/Prisma. API-REV-003 and Delivery DR-003 required via normal route. Original historical proofs/DR raw evidence untouched. Standard unit global setup used only worktree test SQLite DB; no user data, product server/app, paid inference, push/archive/release/finalization. Untracked SDK dist excluded; dirty main untouched.
+
+### IR-003 routing
+2026-10-13 `get_handoff_rules` selected the most-specific Delivery-requested direct-route Local Fix complete / Medium-Low condition → `/software_engineering_team/api_e2e_engineer`. Only this recipient receives the completed outcome; no duplicate Delivery forwarding or independent source-review route.
