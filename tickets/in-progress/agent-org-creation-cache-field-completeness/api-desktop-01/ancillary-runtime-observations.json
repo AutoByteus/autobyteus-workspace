@@ -1,0 +1,30 @@
+{
+  "recordedAt": "2026-10-13T06:28:02.196823+00:00",
+  "instanceId": "iso-55097-2f31",
+  "source": "desktop-runtime.log",
+  "browserEvents": 0,
+  "targetedCode13Errors": 0,
+  "wholeAppCleanClaim": false,
+  "observations": [
+    {
+      "line": 203,
+      "logger": "electron.embedded-server.stderr ERROR",
+      "actualSourceLevel": "console.warn",
+      "message": "Overwriting existing tool definition for name: 'search_web'",
+      "owner": "autobyteus-ts/src/tools/registry/tool-registry.ts:25",
+      "currentBehavior": "warn on duplicate name then set map/log successful registration",
+      "scope": "Ancillary registration observation; search runtime not exercised or changed; no Agent/Org acceptance impact observed. Not asserted a diagnosed product defect or repaired."
+    },
+    {
+      "line": 360,
+      "logger": "electron.embedded-server.stderr ERROR",
+      "actualSourceLevel": "console.warn",
+      "message": "Could not connect to Ollama server at http://localhost:11434. Ensure it is running. fetch failed",
+      "owner": "autobyteus-ts/src/llm/ollama-provider.ts:156",
+      "currentBehavior": "optional model discovery list fails, warns/increments failedHostCount/continues",
+      "scope": "Environment limitation outside cache contract. No Ollama service required, started, stopped or changed; no inference/provider proof claimed."
+    }
+  ],
+  "causeOwnerFilesUnchangedVersusBase": "git diff dc2695cf968d15939b4b945a015fe465eb249605 -- both paths EMPTY",
+  "disposition": "Retained and reported separately to Delivery with cumulative evidence; no repair/scope extension/process Task dispatch"
+}

@@ -1,0 +1,1384 @@
+{
+  "startedAt": "2026-10-13T06:01:59.746Z",
+  "label": "e05-org-edit",
+  "instanceId": "iso-55097-2f31",
+  "purpose": "Current task live boundary proof, not user verification",
+  "events": [],
+  "operations": [
+    {
+      "at": "2026-10-13T06:01:59.983Z",
+      "request": {
+        "operationName": "GetAgentOrgDefinitions",
+        "variables": {},
+        "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n    __typename\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "agentOrgDefinitions": [
+            {
+              "id": "cache-control-org",
+              "name": "Cache Control Org",
+              "description": "Disposable Org with real referenced Agents and preserved routing.",
+              "instructions": "",
+              "category": null,
+              "avatarUrl": null,
+              "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+              "handoffs": [],
+              "members": [
+                {
+                  "memberName": "cache_control_agent",
+                  "ref": "cache-control-agent",
+                  "refType": "AGENT",
+                  "refScope": "SHARED",
+                  "__typename": "AgentOrgMember"
+                }
+              ],
+              "defaultLaunchConfig": null,
+              "loadIssues": [],
+              "__typename": "AgentOrgDefinition"
+            },
+            {
+              "id": "cache-validation-org",
+              "name": "Cache Validation Org",
+              "description": "Disposable Org with real referenced Agents and preserved routing.",
+              "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+              "category": "Preserved category",
+              "avatarUrl": null,
+              "revision": "e4e960cbcc3d2030048ad95dc48586680b2ac2afe42458cca900acba54d6ca02",
+              "handoffs": [
+                {
+                  "from": "/cache_control_agent",
+                  "to": "/cache_validation_agent_edited",
+                  "rules": [
+                    "When this review is complete, hand the package to the next member.",
+                    "Preserve the original member identity and rules."
+                  ],
+                  "__typename": "AgentOrgHandoff"
+                }
+              ],
+              "members": [
+                {
+                  "memberName": "cache_control_agent",
+                  "ref": "cache-control-agent",
+                  "refType": "AGENT",
+                  "refScope": "SHARED",
+                  "__typename": "AgentOrgMember"
+                },
+                {
+                  "memberName": "cache_validation_agent_edited",
+                  "ref": "cache-validation-agent",
+                  "refType": "AGENT",
+                  "refScope": "SHARED",
+                  "__typename": "AgentOrgMember"
+                }
+              ],
+              "defaultLaunchConfig": null,
+              "loadIssues": [],
+              "__typename": "AgentOrgDefinition"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:01:59.985Z",
+      "request": {
+        "operationName": "GetDefinitionProblems",
+        "variables": {
+          "kind": "AGENT_ORG"
+        },
+        "query": "query GetDefinitionProblems($kind: DefinitionKind!) {\n  definitionProblems(kind: $kind) {\n    kind\n    definitionId\n    code\n    reason\n    definitionPath\n    packageRoot\n    usingLastGood\n    dependencyChain\n    __typename\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "definitionProblems": []
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:02:00.656Z",
+      "request": {
+        "operationName": "GetAgentDefinitions",
+        "variables": {},
+        "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssue {\n      code\n      reason\n      definitionPath\n      packageRoot\n      __typename\n    }\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "agentDefinitions": [
+            {
+              "__typename": "AgentDefinition",
+              "id": "autobyteus-daily-assistant",
+              "name": "Daily Assistant",
+              "role": "General Agent",
+              "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+              "instructions": "You are Daily Assistant, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+              "category": null,
+              "avatarUrl": null,
+              "toolNames": [
+                "run_bash",
+                "read_file",
+                "read_url",
+                "search_web",
+                "close_tab",
+                "dom_snapshot",
+                "list_tabs",
+                "navigate_to",
+                "open_tab",
+                "run_script",
+                "screenshot",
+                "get_process_output",
+                "start_background_process",
+                "stop_background_process",
+                "download_media",
+                "edit_image",
+                "generate_image",
+                "generate_speech",
+                "read_media_file",
+                "list_available_agents"
+              ],
+              "inputProcessorNames": [],
+              "llmResponseProcessorNames": [],
+              "toolExecutionResultProcessorNames": [],
+              "toolInvocationPreprocessorNames": [],
+              "lifecycleProcessorNames": [],
+              "skillNames": [],
+              "skillScope": "ALL_INSTALLED",
+              "ownershipScope": "SHARED",
+              "ownerTeamId": null,
+              "ownerTeamName": null,
+              "ownerApplicationId": null,
+              "ownerApplicationName": null,
+              "ownerPackageId": null,
+              "ownerLocalApplicationId": null,
+              "defaultLaunchConfig": null,
+              "loadIssue": null
+            },
+            {
+              "__typename": "AgentDefinition",
+              "id": "autobyteus-retrospective-skill-improver",
+              "name": "Retrospective Skill Improver",
+              "role": "retrospective skill improver",
+              "description": "Improves configured durable skill packages from target run work-trace evidence.",
+              "instructions": "You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\n\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\n\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\n\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\n\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\n\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\n",
+              "category": "skill-improvement",
+              "avatarUrl": null,
+              "toolNames": [
+                "run_bash",
+                "send_message_to"
+              ],
+              "inputProcessorNames": [],
+              "llmResponseProcessorNames": [],
+              "toolExecutionResultProcessorNames": [],
+              "toolInvocationPreprocessorNames": [],
+              "lifecycleProcessorNames": [],
+              "skillNames": [
+                "retrospective-skill-improver"
+              ],
+              "skillScope": "CONFIGURED",
+              "ownershipScope": "SHARED",
+              "ownerTeamId": null,
+              "ownerTeamName": null,
+              "ownerApplicationId": null,
+              "ownerApplicationName": null,
+              "ownerPackageId": null,
+              "ownerLocalApplicationId": null,
+              "defaultLaunchConfig": null,
+              "loadIssue": null
+            },
+            {
+              "__typename": "AgentDefinition",
+              "id": "cache-control-agent",
+              "name": "Cache Control Agent",
+              "role": "Cache validation observer",
+              "description": "Disposable definition for real catalog cache proof.",
+              "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+              "category": "Cache validation",
+              "avatarUrl": null,
+              "toolNames": [],
+              "inputProcessorNames": [],
+              "llmResponseProcessorNames": [],
+              "toolExecutionResultProcessorNames": [],
+              "toolInvocationPreprocessorNames": [],
+              "lifecycleProcessorNames": [],
+              "skillNames": [],
+              "skillScope": "CONFIGURED",
+              "ownershipScope": "SHARED",
+              "ownerTeamId": null,
+              "ownerTeamName": null,
+              "ownerApplicationId": null,
+              "ownerApplicationName": null,
+              "ownerPackageId": null,
+              "ownerLocalApplicationId": null,
+              "defaultLaunchConfig": null,
+              "loadIssue": null
+            },
+            {
+              "__typename": "AgentDefinition",
+              "id": "cache-validation-agent",
+              "name": "Cache Validation Agent Edited",
+              "role": "Cache validation observer",
+              "description": "Description updated through the ordinary Agent edit form.",
+              "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+              "category": "Cache validation",
+              "avatarUrl": null,
+              "toolNames": [],
+              "inputProcessorNames": [],
+              "llmResponseProcessorNames": [],
+              "toolExecutionResultProcessorNames": [],
+              "toolInvocationPreprocessorNames": [],
+              "lifecycleProcessorNames": [],
+              "skillNames": [],
+              "skillScope": "CONFIGURED",
+              "ownershipScope": "SHARED",
+              "ownerTeamId": null,
+              "ownerTeamName": null,
+              "ownerApplicationId": null,
+              "ownerApplicationName": null,
+              "ownerPackageId": null,
+              "ownerLocalApplicationId": null,
+              "defaultLaunchConfig": null,
+              "loadIssue": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:02:00.656Z",
+      "request": {
+        "operationName": "GetAgentTeamDefinitions",
+        "variables": {},
+        "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "agentTeamDefinitions": []
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:02:00.656Z",
+      "request": {
+        "operationName": "GetAgentOrgDefinitions",
+        "variables": {},
+        "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n    __typename\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "agentOrgDefinitions": [
+            {
+              "id": "cache-control-org",
+              "name": "Cache Control Org",
+              "description": "Disposable Org with real referenced Agents and preserved routing.",
+              "instructions": "",
+              "category": null,
+              "avatarUrl": null,
+              "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+              "handoffs": [],
+              "members": [
+                {
+                  "memberName": "cache_control_agent",
+                  "ref": "cache-control-agent",
+                  "refType": "AGENT",
+                  "refScope": "SHARED",
+                  "__typename": "AgentOrgMember"
+                }
+              ],
+              "defaultLaunchConfig": null,
+              "loadIssues": [],
+              "__typename": "AgentOrgDefinition"
+            },
+            {
+              "id": "cache-validation-org",
+              "name": "Cache Validation Org",
+              "description": "Disposable Org with real referenced Agents and preserved routing.",
+              "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+              "category": "Preserved category",
+              "avatarUrl": null,
+              "revision": "e4e960cbcc3d2030048ad95dc48586680b2ac2afe42458cca900acba54d6ca02",
+              "handoffs": [
+                {
+                  "from": "/cache_control_agent",
+                  "to": "/cache_validation_agent_edited",
+                  "rules": [
+                    "When this review is complete, hand the package to the next member.",
+                    "Preserve the original member identity and rules."
+                  ],
+                  "__typename": "AgentOrgHandoff"
+                }
+              ],
+              "members": [
+                {
+                  "memberName": "cache_control_agent",
+                  "ref": "cache-control-agent",
+                  "refType": "AGENT",
+                  "refScope": "SHARED",
+                  "__typename": "AgentOrgMember"
+                },
+                {
+                  "memberName": "cache_validation_agent_edited",
+                  "ref": "cache-validation-agent",
+                  "refType": "AGENT",
+                  "refScope": "SHARED",
+                  "__typename": "AgentOrgMember"
+                }
+              ],
+              "defaultLaunchConfig": null,
+              "loadIssues": [],
+              "__typename": "AgentOrgDefinition"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:02:00.657Z",
+      "request": {
+        "operationName": "GetAllWorkspaces",
+        "variables": {},
+        "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "workspaces": [
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "temp_ws_default",
+              "name": "Temp Workspace",
+              "displayName": "Temp Workspace",
+              "config": {
+                "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-P0m63x/server-data/temp_workspace",
+                "workspaceId": "temp_ws_default"
+              },
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-P0m63x/server-data/temp_workspace",
+              "absolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-P0m63x/server-data/temp_workspace",
+              "kind": "temp",
+              "isTemp": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:02:00.657Z",
+      "request": {
+        "operationName": "ListWorkspaceRunHistory",
+        "variables": {
+          "limitPerAgent": 6
+        },
+        "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "listWorkspaceRunHistory": []
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:02:00.657Z",
+      "request": {
+        "operationName": "ListCollaborationRootHistory",
+        "variables": {},
+        "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "listCollaborationRootHistory": []
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:02:00.657Z",
+      "request": {
+        "operationName": "GetApplicationsCapability",
+        "variables": {},
+        "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "applicationsCapability": {
+            "enabled": false,
+            "scope": "BOUND_NODE",
+            "settingKey": "ENABLE_APPLICATIONS",
+            "source": "SERVER_SETTING",
+            "__typename": "ApplicationsCapability"
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:02:01.418Z",
+      "request": {
+        "operationName": "UpdateAgentOrgDefinition",
+        "variables": {
+          "input": {
+            "id": "cache-validation-org",
+            "expectedRevision": "e4e960cbcc3d2030048ad95dc48586680b2ac2afe42458cca900acba54d6ca02",
+            "name": "Cache Validation Org Edited",
+            "description": "Description edited through the ordinary Org edit form.",
+            "members": [
+              {
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "memberName": "cache_validation_agent_edited",
+                "ref": "cache-validation-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "handoffs": [
+              {
+                "from": "/cache_control_agent",
+                "to": "/cache_validation_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ]
+          }
+        },
+        "query": "mutation UpdateAgentOrgDefinition($input: UpdateAgentOrgDefinitionInput!) {\n  updateAgentOrgDefinition(input: $input) {\n    ...AgentOrgDefinitionFields\n    __typename\n  }\n}\n\nfragment AgentOrgDefinitionFields on AgentOrgDefinition {\n  id\n  name\n  description\n  instructions\n  category\n  avatarUrl\n  revision\n  handoffs {\n    from\n    to\n    rules\n    __typename\n  }\n  members {\n    memberName\n    ref\n    refType\n    refScope\n    __typename\n  }\n  defaultLaunchConfig {\n    llmModelIdentifier\n    runtimeKind\n    llmConfig\n    __typename\n  }\n  loadIssues {\n    kind\n    definitionId\n    name\n    code\n    reason\n    definitionPath\n    packageRoot\n    usingLastGood\n    __typename\n  }\n  __typename\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "updateAgentOrgDefinition": {
+            "id": "cache-validation-org",
+            "name": "Cache Validation Org Edited",
+            "description": "Description edited through the ordinary Org edit form.",
+            "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+            "category": "Preserved category",
+            "avatarUrl": null,
+            "revision": "9b7b80ce9fb93e382c3273b78087a73e76f63d1a23aa256e112d66c478a4c8e5",
+            "handoffs": [
+              {
+                "from": "/cache_control_agent",
+                "to": "/cache_validation_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cache_validation_agent_edited",
+                "ref": "cache-validation-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": [],
+            "__typename": "AgentOrgDefinition"
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:02:01.437Z",
+      "request": {
+        "operationName": "GetAgentOrgDefinitions",
+        "variables": {},
+        "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n    __typename\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "agentOrgDefinitions": [
+            {
+              "id": "cache-control-org",
+              "name": "Cache Control Org",
+              "description": "Disposable Org with real referenced Agents and preserved routing.",
+              "instructions": "",
+              "category": null,
+              "avatarUrl": null,
+              "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+              "handoffs": [],
+              "members": [
+                {
+                  "memberName": "cache_control_agent",
+                  "ref": "cache-control-agent",
+                  "refType": "AGENT",
+                  "refScope": "SHARED",
+                  "__typename": "AgentOrgMember"
+                }
+              ],
+              "defaultLaunchConfig": null,
+              "loadIssues": [],
+              "__typename": "AgentOrgDefinition"
+            },
+            {
+              "id": "cache-validation-org",
+              "name": "Cache Validation Org Edited",
+              "description": "Description edited through the ordinary Org edit form.",
+              "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+              "category": "Preserved category",
+              "avatarUrl": null,
+              "revision": "9b7b80ce9fb93e382c3273b78087a73e76f63d1a23aa256e112d66c478a4c8e5",
+              "handoffs": [
+                {
+                  "from": "/cache_control_agent",
+                  "to": "/cache_validation_agent_edited",
+                  "rules": [
+                    "When this review is complete, hand the package to the next member.",
+                    "Preserve the original member identity and rules."
+                  ],
+                  "__typename": "AgentOrgHandoff"
+                }
+              ],
+              "members": [
+                {
+                  "memberName": "cache_control_agent",
+                  "ref": "cache-control-agent",
+                  "refType": "AGENT",
+                  "refScope": "SHARED",
+                  "__typename": "AgentOrgMember"
+                },
+                {
+                  "memberName": "cache_validation_agent_edited",
+                  "ref": "cache-validation-agent",
+                  "refType": "AGENT",
+                  "refScope": "SHARED",
+                  "__typename": "AgentOrgMember"
+                }
+              ],
+              "defaultLaunchConfig": null,
+              "loadIssues": [],
+              "__typename": "AgentOrgDefinition"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "pages": {
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-edit&id=cache-validation-org",
+    "headings": [
+      "Edit Cache Validation Org",
+      "Basics",
+      "Members",
+      "Handoffs"
+    ],
+    "buttons": [
+      "Chat",
+      "",
+      "",
+      "Agents",
+      "Agent Teams",
+      "Agent Orgs",
+      "Projects",
+      "Skills",
+      "Memory",
+      "Nodes",
+      "",
+      "Temp Workspace",
+      "Settings",
+      " Back to Agent Orgs",
+      "",
+      "Upload image",
+      " Add member",
+      "",
+      "",
+      " Add handoff",
+      "",
+      "",
+      "Edit",
+      "Delete",
+      "Cancel",
+      "Save changes"
+    ],
+    "links": [],
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nBack to Agent Orgs\nEdit Cache Validation Org\n\nAdd Agents and Teams, then configure handoffs.\n\nAvatar (optional)\n\nCV\nUpload image\n\nJPEG, PNG, GIF or WebP. Saved with the Org.\n\nBasics\nName\nDescription\nMembers\nAdd member\nAgents\nCC\n\nCache Control Agent\n\nCV\n\nCache Validation Agent Edited\n\nTeams\n\nNo Teams added.\n\nHandoffs\nAdd handoff\nEdit\nDelete\n\nFROM\n\nCache Control Agent\n\nTO\n\nCache Validation Agent Edited\n\nWHEN\n\nWhen this review is complete, hand the package to the next member.\nPreserve the original member identity and rules.\nAgent Org saved.\nCancel\nSave changes"
+  },
+  "details": {
+    "created": {
+      "id": "cache-validation-org",
+      "name": "Cache Validation Org",
+      "description": "Disposable Org with real referenced Agents and preserved routing.",
+      "instructions": "",
+      "category": null,
+      "avatarUrl": null,
+      "revision": "7e0c9acfaa14d2bfe9decac6e201ddd57fdded3732fed69cc723b2e196868669",
+      "handoffs": [
+        {
+          "from": "/cache_control_agent",
+          "to": "/cache_validation_agent_edited",
+          "rules": [
+            "When this review is complete, hand the package to the next member.",
+            "Preserve the original member identity and rules."
+          ],
+          "__typename": "AgentOrgHandoff"
+        }
+      ],
+      "members": [
+        {
+          "memberName": "cache_control_agent",
+          "ref": "cache-control-agent",
+          "refType": "AGENT",
+          "refScope": "SHARED",
+          "__typename": "AgentOrgMember"
+        },
+        {
+          "memberName": "cache_validation_agent_edited",
+          "ref": "cache-validation-agent",
+          "refType": "AGENT",
+          "refScope": "SHARED",
+          "__typename": "AgentOrgMember"
+        }
+      ],
+      "defaultLaunchConfig": null,
+      "loadIssues": [],
+      "__typename": "AgentOrgDefinition"
+    },
+    "setup": {
+      "purpose": "Existing healthy nonempty hidden metadata fixture only; not diagnostic generation or required UI mutation bypass",
+      "query": "mutation PrepareOwnedOrgFixture($input:UpdateAgentOrgDefinitionInput!){updateAgentOrgDefinition(input:$input){__typename id name description instructions category avatarUrl revision members{memberName ref refType refScope __typename} handoffs{from to rules __typename} defaultLaunchConfig{llmModelIdentifier runtimeKind llmConfig __typename} loadIssues{kind definitionId name code reason definitionPath packageRoot usingLastGood __typename}}}",
+      "input": {
+        "id": "cache-validation-org",
+        "expectedRevision": "7e0c9acfaa14d2bfe9decac6e201ddd57fdded3732fed69cc723b2e196868669",
+        "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+        "category": "Preserved category"
+      },
+      "response": {
+        "__typename": "AgentOrgDefinition",
+        "id": "cache-validation-org",
+        "name": "Cache Validation Org",
+        "description": "Disposable Org with real referenced Agents and preserved routing.",
+        "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+        "category": "Preserved category",
+        "avatarUrl": null,
+        "revision": "e4e960cbcc3d2030048ad95dc48586680b2ac2afe42458cca900acba54d6ca02",
+        "members": [
+          {
+            "memberName": "cache_control_agent",
+            "ref": "cache-control-agent",
+            "refType": "AGENT",
+            "refScope": "SHARED",
+            "__typename": "AgentOrgMember"
+          },
+          {
+            "memberName": "cache_validation_agent_edited",
+            "ref": "cache-validation-agent",
+            "refType": "AGENT",
+            "refScope": "SHARED",
+            "__typename": "AgentOrgMember"
+          }
+        ],
+        "handoffs": [
+          {
+            "from": "/cache_control_agent",
+            "to": "/cache_validation_agent_edited",
+            "rules": [
+              "When this review is complete, hand the package to the next member.",
+              "Preserve the original member identity and rules."
+            ],
+            "__typename": "AgentOrgHandoff"
+          }
+        ],
+        "defaultLaunchConfig": null,
+        "loadIssues": []
+      }
+    },
+    "before": {
+      "cached": {
+        "agentOrgDefinitions": [
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-control-org",
+            "name": "Cache Control Org",
+            "description": "Disposable Org with real referenced Agents and preserved routing.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+            "handoffs": [],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          },
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-validation-org",
+            "name": "Cache Validation Org",
+            "description": "Disposable Org with real referenced Agents and preserved routing.",
+            "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+            "category": "Preserved category",
+            "avatarUrl": null,
+            "revision": "e4e960cbcc3d2030048ad95dc48586680b2ac2afe42458cca900acba54d6ca02",
+            "handoffs": [
+              {
+                "__typename": "AgentOrgHandoff",
+                "from": "/cache_control_agent",
+                "to": "/cache_validation_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_validation_agent_edited",
+                "ref": "cache-validation-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          }
+        ]
+      },
+      "cacheFirst": {
+        "agentOrgDefinitions": [
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-control-org",
+            "name": "Cache Control Org",
+            "description": "Disposable Org with real referenced Agents and preserved routing.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+            "handoffs": [],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          },
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-validation-org",
+            "name": "Cache Validation Org",
+            "description": "Disposable Org with real referenced Agents and preserved routing.",
+            "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+            "category": "Preserved category",
+            "avatarUrl": null,
+            "revision": "e4e960cbcc3d2030048ad95dc48586680b2ac2afe42458cca900acba54d6ca02",
+            "handoffs": [
+              {
+                "__typename": "AgentOrgHandoff",
+                "from": "/cache_control_agent",
+                "to": "/cache_validation_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_validation_agent_edited",
+                "ref": "cache-validation-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          }
+        ]
+      },
+      "store": {
+        "definitions": [
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-control-org",
+            "name": "Cache Control Org",
+            "description": "Disposable Org with real referenced Agents and preserved routing.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+            "handoffs": [],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          },
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-validation-org",
+            "name": "Cache Validation Org",
+            "description": "Disposable Org with real referenced Agents and preserved routing.",
+            "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+            "category": "Preserved category",
+            "avatarUrl": null,
+            "revision": "e4e960cbcc3d2030048ad95dc48586680b2ac2afe42458cca900acba54d6ca02",
+            "handoffs": [
+              {
+                "__typename": "AgentOrgHandoff",
+                "from": "/cache_control_agent",
+                "to": "/cache_validation_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_validation_agent_edited",
+                "ref": "cache-validation-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          }
+        ],
+        "loading": false,
+        "error": null
+      },
+      "normalized": {
+        "AgentOrgDefinition:cache-control-org": {
+          "__typename": "AgentOrgDefinition",
+          "id": "cache-control-org",
+          "name": "Cache Control Org",
+          "description": "Disposable Org with real referenced Agents and preserved routing.",
+          "instructions": "",
+          "category": null,
+          "avatarUrl": null,
+          "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+          "handoffs": [],
+          "members": [
+            {
+              "__typename": "AgentOrgMember",
+              "memberName": "cache_control_agent",
+              "ref": "cache-control-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "loadIssues": []
+        },
+        "AgentOrgDefinition:cache-validation-org": {
+          "__typename": "AgentOrgDefinition",
+          "id": "cache-validation-org",
+          "name": "Cache Validation Org",
+          "description": "Disposable Org with real referenced Agents and preserved routing.",
+          "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+          "category": "Preserved category",
+          "avatarUrl": null,
+          "revision": "e4e960cbcc3d2030048ad95dc48586680b2ac2afe42458cca900acba54d6ca02",
+          "handoffs": [
+            {
+              "__typename": "AgentOrgHandoff",
+              "from": "/cache_control_agent",
+              "to": "/cache_validation_agent_edited",
+              "rules": [
+                "When this review is complete, hand the package to the next member.",
+                "Preserve the original member identity and rules."
+              ]
+            }
+          ],
+          "members": [
+            {
+              "__typename": "AgentOrgMember",
+              "memberName": "cache_control_agent",
+              "ref": "cache-control-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            },
+            {
+              "__typename": "AgentOrgMember",
+              "memberName": "cache_validation_agent_edited",
+              "ref": "cache-validation-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "loadIssues": []
+        }
+      }
+    },
+    "mutation": {
+      "at": "2026-10-13T06:02:01.418Z",
+      "request": {
+        "operationName": "UpdateAgentOrgDefinition",
+        "variables": {
+          "input": {
+            "id": "cache-validation-org",
+            "expectedRevision": "e4e960cbcc3d2030048ad95dc48586680b2ac2afe42458cca900acba54d6ca02",
+            "name": "Cache Validation Org Edited",
+            "description": "Description edited through the ordinary Org edit form.",
+            "members": [
+              {
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "memberName": "cache_validation_agent_edited",
+                "ref": "cache-validation-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "handoffs": [
+              {
+                "from": "/cache_control_agent",
+                "to": "/cache_validation_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ]
+          }
+        },
+        "query": "mutation UpdateAgentOrgDefinition($input: UpdateAgentOrgDefinitionInput!) {\n  updateAgentOrgDefinition(input: $input) {\n    ...AgentOrgDefinitionFields\n    __typename\n  }\n}\n\nfragment AgentOrgDefinitionFields on AgentOrgDefinition {\n  id\n  name\n  description\n  instructions\n  category\n  avatarUrl\n  revision\n  handoffs {\n    from\n    to\n    rules\n    __typename\n  }\n  members {\n    memberName\n    ref\n    refType\n    refScope\n    __typename\n  }\n  defaultLaunchConfig {\n    llmModelIdentifier\n    runtimeKind\n    llmConfig\n    __typename\n  }\n  loadIssues {\n    kind\n    definitionId\n    name\n    code\n    reason\n    definitionPath\n    packageRoot\n    usingLastGood\n    __typename\n  }\n  __typename\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "updateAgentOrgDefinition": {
+            "id": "cache-validation-org",
+            "name": "Cache Validation Org Edited",
+            "description": "Description edited through the ordinary Org edit form.",
+            "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+            "category": "Preserved category",
+            "avatarUrl": null,
+            "revision": "9b7b80ce9fb93e382c3273b78087a73e76f63d1a23aa256e112d66c478a4c8e5",
+            "handoffs": [
+              {
+                "from": "/cache_control_agent",
+                "to": "/cache_validation_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cache_validation_agent_edited",
+                "ref": "cache-validation-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": [],
+            "__typename": "AgentOrgDefinition"
+          }
+        }
+      }
+    },
+    "liveCache": {
+      "cached": {
+        "agentOrgDefinitions": [
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-control-org",
+            "name": "Cache Control Org",
+            "description": "Disposable Org with real referenced Agents and preserved routing.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+            "handoffs": [],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          },
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-validation-org",
+            "name": "Cache Validation Org Edited",
+            "description": "Description edited through the ordinary Org edit form.",
+            "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+            "category": "Preserved category",
+            "avatarUrl": null,
+            "revision": "9b7b80ce9fb93e382c3273b78087a73e76f63d1a23aa256e112d66c478a4c8e5",
+            "handoffs": [
+              {
+                "__typename": "AgentOrgHandoff",
+                "from": "/cache_control_agent",
+                "to": "/cache_validation_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_validation_agent_edited",
+                "ref": "cache-validation-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          }
+        ]
+      },
+      "cacheFirst": {
+        "agentOrgDefinitions": [
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-control-org",
+            "name": "Cache Control Org",
+            "description": "Disposable Org with real referenced Agents and preserved routing.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+            "handoffs": [],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          },
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-validation-org",
+            "name": "Cache Validation Org Edited",
+            "description": "Description edited through the ordinary Org edit form.",
+            "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+            "category": "Preserved category",
+            "avatarUrl": null,
+            "revision": "9b7b80ce9fb93e382c3273b78087a73e76f63d1a23aa256e112d66c478a4c8e5",
+            "handoffs": [
+              {
+                "__typename": "AgentOrgHandoff",
+                "from": "/cache_control_agent",
+                "to": "/cache_validation_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_validation_agent_edited",
+                "ref": "cache-validation-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          }
+        ]
+      },
+      "store": {
+        "definitions": [
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-control-org",
+            "name": "Cache Control Org",
+            "description": "Disposable Org with real referenced Agents and preserved routing.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+            "handoffs": [],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          },
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-validation-org",
+            "name": "Cache Validation Org Edited",
+            "description": "Description edited through the ordinary Org edit form.",
+            "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+            "category": "Preserved category",
+            "avatarUrl": null,
+            "revision": "9b7b80ce9fb93e382c3273b78087a73e76f63d1a23aa256e112d66c478a4c8e5",
+            "handoffs": [
+              {
+                "__typename": "AgentOrgHandoff",
+                "from": "/cache_control_agent",
+                "to": "/cache_validation_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_control_agent",
+                "ref": "cache-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_validation_agent_edited",
+                "ref": "cache-validation-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          }
+        ],
+        "loading": false,
+        "error": null
+      },
+      "normalized": {
+        "AgentOrgDefinition:cache-control-org": {
+          "__typename": "AgentOrgDefinition",
+          "id": "cache-control-org",
+          "name": "Cache Control Org",
+          "description": "Disposable Org with real referenced Agents and preserved routing.",
+          "instructions": "",
+          "category": null,
+          "avatarUrl": null,
+          "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+          "handoffs": [],
+          "members": [
+            {
+              "__typename": "AgentOrgMember",
+              "memberName": "cache_control_agent",
+              "ref": "cache-control-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "loadIssues": []
+        },
+        "AgentOrgDefinition:cache-validation-org": {
+          "__typename": "AgentOrgDefinition",
+          "id": "cache-validation-org",
+          "name": "Cache Validation Org Edited",
+          "description": "Description edited through the ordinary Org edit form.",
+          "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+          "category": "Preserved category",
+          "avatarUrl": null,
+          "revision": "9b7b80ce9fb93e382c3273b78087a73e76f63d1a23aa256e112d66c478a4c8e5",
+          "handoffs": [
+            {
+              "__typename": "AgentOrgHandoff",
+              "from": "/cache_control_agent",
+              "to": "/cache_validation_agent_edited",
+              "rules": [
+                "When this review is complete, hand the package to the next member.",
+                "Preserve the original member identity and rules."
+              ]
+            }
+          ],
+          "members": [
+            {
+              "__typename": "AgentOrgMember",
+              "memberName": "cache_control_agent",
+              "ref": "cache-control-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            },
+            {
+              "__typename": "AgentOrgMember",
+              "memberName": "cache_validation_agent_edited",
+              "ref": "cache-validation-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "loadIssues": []
+        }
+      }
+    },
+    "persisted": {
+      "agentOrgDefinitions": [
+        {
+          "id": "cache-control-org",
+          "name": "Cache Control Org",
+          "description": "Disposable Org with real referenced Agents and preserved routing.",
+          "instructions": "",
+          "category": null,
+          "avatarUrl": null,
+          "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+          "handoffs": [],
+          "members": [
+            {
+              "memberName": "cache_control_agent",
+              "ref": "cache-control-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "loadIssues": [],
+          "__typename": "AgentOrgDefinition"
+        },
+        {
+          "id": "cache-validation-org",
+          "name": "Cache Validation Org Edited",
+          "description": "Description edited through the ordinary Org edit form.",
+          "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+          "category": "Preserved category",
+          "avatarUrl": null,
+          "revision": "9b7b80ce9fb93e382c3273b78087a73e76f63d1a23aa256e112d66c478a4c8e5",
+          "handoffs": [
+            {
+              "from": "/cache_control_agent",
+              "to": "/cache_validation_agent_edited",
+              "rules": [
+                "When this review is complete, hand the package to the next member.",
+                "Preserve the original member identity and rules."
+              ],
+              "__typename": "AgentOrgHandoff"
+            }
+          ],
+          "members": [
+            {
+              "memberName": "cache_control_agent",
+              "ref": "cache-control-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "cache_validation_agent_edited",
+              "ref": "cache-validation-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "loadIssues": [],
+          "__typename": "AgentOrgDefinition"
+        }
+      ]
+    },
+    "successStatus": true,
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-edit&id=cache-validation-org"
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-13T06:02:02.150Z",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-edit&id=cache-validation-org"
+}
