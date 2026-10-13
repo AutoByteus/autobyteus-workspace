@@ -1,0 +1,709 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:1879) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mAgent Definition created successfully with ID: dcm-manager-ddaef3
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mAgent Definition created successfully with ID: dcm-worker-138074
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mAgent Definition created successfully with ID: dcm-writer-c5d7d3
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mAgent Team Definition created successfully with ID: dcm-duo-4b0900
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mAgent Team Definition created successfully with ID: dcm-home-c5ec65
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mAgent Definition created successfully with ID: dcm-scribe-09b9d8
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mAgent Definition created successfully with ID: dcm-grokker-d8e5fc
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mAgent Definition created successfully with ID: dcm-specialist-d6c30d
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mAgent Definition created successfully with ID: dcm-fresh-d7e4a5
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mAgent Team Definition created successfully with ID: dcm-crew-8674ce
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mCreated and registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mAgent team websocket attached for team run dcm_home_c5ec65_3f364df235c840b8aa4425d1f605b9a4
+Created agent session 5e748300-0b2b-40b5-86fb-8211fb8293bc for run dcm_home_c5ec65_3f364df235c840b8aa4425d1f605b9a4
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mAgent Team WebSocket connected: session=5e748300-0b2b-40b5-86fb-8211fb8293bc, run=dcm_home_c5ec65_3f364df235c840b8aa4425d1f605b9a4
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_teams/dcm_home_c5ec65_3f364df235c840b8aa4425d1f605b9a4/dcm_manager_ddaef3_8d48fb757c6948acaab604afa7077ef7/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_teams/dcm_home_c5ec65_3f364df235c840b8aa4425d1f605b9a4/dcm_manager_ddaef3_8d48fb757c6948acaab604afa7077ef7/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_teams/dcm_home_c5ec65_3f364df235c840b8aa4425d1f605b9a4/dcm_manager_ddaef3_8d48fb757c6948acaab604afa7077ef7/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_teams/dcm_home_c5ec65_3f364df235c840b8aa4425d1f605b9a4/dcm_manager_ddaef3_8d48fb757c6948acaab604afa7077ef7/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mAGY compaction detection off for run dcm_manager_ddaef3_8d48fb757c6948acaab604afa7077ef7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_teams/dcm_home_c5ec65_3f364df235c840b8aa4425d1f605b9a4/dcm_manager_ddaef3_8d48fb757c6948acaab604afa7077ef7/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mAGY compaction detection off for run dcm_writer_c5d7d3_941a4c4a5a7943e3a8287044fd3f2af1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mAGY compaction detection off for run dcm_writer_c5d7d3_941a4c4a5a7943e3a8287044fd3f2af1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mAGY compaction detection off for run dcm_worker_138074_4b8d8cb029ae404799ffa9944b8ea274: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mAGY compaction detection off for run dcm_worker_138074_4b8d8cb029ae404799ffa9944b8ea274: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mAgent team websocket attached for team run dcm_home_c5ec65_3f364df235c840b8aa4425d1f605b9a4
+Created agent session 3c045567-4397-4a87-b701-2af68f6078a0 for run dcm_home_c5ec65_3f364df235c840b8aa4425d1f605b9a4
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mAgent Team WebSocket connected: session=3c045567-4397-4a87-b701-2af68f6078a0, run=dcm_home_c5ec65_3f364df235c840b8aa4425d1f605b9a4
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mAGY compaction detection off for run dcm_manager_ddaef3_8d48fb757c6948acaab604afa7077ef7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+[22m[39mAGY compaction detection off for run dcm_writer_c5d7d3_941a4c4a5a7943e3a8287044fd3f2af1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model
+[22m[39mAGY compaction detection off for run dcm_manager_ddaef3_67ee012362dc4dc8b806b8acb5a144dc: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model
+[22m[39mAgent websocket attached for run dcm_manager_ddaef3_67ee012362dc4dc8b806b8acb5a144dc
+Created agent session 68bd67c7-7747-42ca-ab05-fffd6c9cc4ed for run dcm_manager_ddaef3_67ee012362dc4dc8b806b8acb5a144dc
+Agent WebSocket connected: session=68bd67c7-7747-42ca-ab05-fffd6c9cc4ed, run=dcm_manager_ddaef3_67ee012362dc4dc8b806b8acb5a144dc
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agents/dcm_manager_ddaef3_67ee012362dc4dc8b806b8acb5a144dc/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model
+[22m[39mAGY compaction detection off for run dcm_writer_c5d7d3_06834ae6acad43a5a4773200cdb7ac6f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model
+[22m[39mAGY compaction detection off for run dcm_writer_c5d7d3_06834ae6acad43a5a4773200cdb7ac6f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_orgs/dcm_org_7237f8_27d9262585ab46d3ae85c36f7ce3c57e/dcm_manager_ddaef3_2fa445ed28674fd9beb633b2f3f7f829/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_orgs/dcm_org_7237f8_27d9262585ab46d3ae85c36f7ce3c57e/dcm_manager_ddaef3_2fa445ed28674fd9beb633b2f3f7f829/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_orgs/dcm_org_7237f8_27d9262585ab46d3ae85c36f7ce3c57e/dcm_manager_ddaef3_2fa445ed28674fd9beb633b2f3f7f829/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mAGY compaction detection off for run dcm_manager_ddaef3_2fa445ed28674fd9beb633b2f3f7f829: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_orgs/dcm_org_7237f8_27d9262585ab46d3ae85c36f7ce3c57e/dcm_manager_ddaef3_2fa445ed28674fd9beb633b2f3f7f829/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mAGY compaction detection off for run dcm_writer_c5d7d3_1566840712cf420ebb9722265da56eec: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mAGY compaction detection off for run dcm_writer_c5d7d3_1566840712cf420ebb9722265da56eec: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mAGY compaction detection off for run dcm_writer_c5d7d3_654a0863dafe475daca6c0266f640e3b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mAGY compaction detection off for run dcm_worker_138074_0d898faefff847a9b1b4a438bbe595d1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mAGY compaction detection off for run dcm_worker_138074_0d898faefff847a9b1b4a438bbe595d1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mAGY compaction detection off for run dcm_scribe_09b9d8_9ff9f12558174004a91a9e05da722024: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution
+[22m[39mAGY compaction detection off for run dcm_scribe_09b9d8_9ff9f12558174004a91a9e05da722024: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mAgent team websocket attached for team run dcm_home_c5ec65_838458ef864e4f189d96b697211f34a2
+Created agent session 837300ea-173b-4cdc-a2e8-57318f239995 for run dcm_home_c5ec65_838458ef864e4f189d96b697211f34a2
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mAgent Team WebSocket connected: session=837300ea-173b-4cdc-a2e8-57318f239995, run=dcm_home_c5ec65_838458ef864e4f189d96b697211f34a2
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_teams/dcm_home_c5ec65_838458ef864e4f189d96b697211f34a2/dcm_manager_ddaef3_08e96c5d2a094707837fb839bdbdcf21/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_teams/dcm_home_c5ec65_838458ef864e4f189d96b697211f34a2/dcm_manager_ddaef3_08e96c5d2a094707837fb839bdbdcf21/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_teams/dcm_home_c5ec65_838458ef864e4f189d96b697211f34a2/dcm_manager_ddaef3_08e96c5d2a094707837fb839bdbdcf21/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mAGY compaction detection off for run dcm_manager_ddaef3_08e96c5d2a094707837fb839bdbdcf21: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_teams/dcm_home_c5ec65_838458ef864e4f189d96b697211f34a2/dcm_manager_ddaef3_08e96c5d2a094707837fb839bdbdcf21/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mAGY compaction detection off for run dcm_writer_c5d7d3_59eb610b8d054ac2ad0868a6c0d3ef1d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mAGY compaction detection off for run dcm_worker_138074_2cc144f6d88a4b338e3b4e01cd5029b1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mAGY compaction detection off for run dcm_scribe_09b9d8_1426ff43880d409cb417551605752c1b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mAGY compaction detection off for run dcm_worker_138074_2cc144f6d88a4b338e3b4e01cd5029b1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mAGY compaction detection off for run dcm_fresh_d7e4a5_55866fd04f1745089c1e1544d65dfef7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mAGY compaction detection off for run dcm_specialist_d6c30d_51f7b0c95628434d9f9b39e56b723e4b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model
+[22m[39mAGY compaction detection off for run dcm_scribe_09b9d8_1426ff43880d409cb417551605752c1b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mAgent team websocket attached for team run dcm_home_c5ec65_da0c9118dd4d40b28f942d10c1cb1839
+Created agent session 641f0a9b-ea7a-492f-8cb8-812fed3f927d for run dcm_home_c5ec65_da0c9118dd4d40b28f942d10c1cb1839
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mAgent Team WebSocket connected: session=641f0a9b-ea7a-492f-8cb8-812fed3f927d, run=dcm_home_c5ec65_da0c9118dd4d40b28f942d10c1cb1839
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_teams/dcm_home_c5ec65_da0c9118dd4d40b28f942d10c1cb1839/dcm_manager_ddaef3_d130cc163191408898ef7484be50f6a3/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_teams/dcm_home_c5ec65_da0c9118dd4d40b28f942d10c1cb1839/dcm_manager_ddaef3_d130cc163191408898ef7484be50f6a3/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_teams/dcm_home_c5ec65_da0c9118dd4d40b28f942d10c1cb1839/dcm_manager_ddaef3_d130cc163191408898ef7484be50f6a3/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mAGY compaction detection off for run dcm_manager_ddaef3_d130cc163191408898ef7484be50f6a3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/memory/agent_teams/dcm_home_c5ec65_da0c9118dd4d40b28f942d10c1cb1839/dcm_manager_ddaef3_d130cc163191408898ef7484be50f6a3/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mAGY compaction detection off for run dcm_writer_c5d7d3_2902bfcd07914c2a8902dafda95e0f4f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mAGY compaction detection off for run dcm_writer_c5d7d3_2902bfcd07914c2a8902dafda95e0f4f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-TSM6D3/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mReusing registered workspace ID: agent_ws_89e7e15edbfd34145306e09b9e24a4d4a85f61b83b4a9b10a1e453bb28832a3b
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)[2m > [22m[2mDCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation
+[22m[39mAGY compaction detection off for run dcm_writer_c5d7d3_2902bfcd07914c2a8902dafda95e0f4f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mClosed agent session 641f0a9b-ea7a-492f-8cb8-812fed3f927d
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mClosed agent session 837300ea-173b-4cdc-a2e8-57318f239995
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mClosed agent session 68bd67c7-7747-42ca-ab05-fffd6c9cc4ed
+Agent WebSocket disconnected: 68bd67c7-7747-42ca-ab05-fffd6c9cc4ed
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mClosed agent session 3c045567-4397-4a87-b701-2af68f6078a0
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts[2m > [22m[2mA delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY)
+[22m[39mClosed agent session 5e748300-0b2b-40b5-86fb-8211fb8293bc
+
+ [32m✓[39m tests/e2e/projects/delegated-copy-model-change.e2e.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 17023[2mms[22m[39m
+     [33m[2m✓[22m[39m DCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save [33m 2556[2mms[22m[39m
+     [33m[2m✓[22m[39m DCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model [33m 1071[2mms[22m[39m
+     [33m[2m✓[22m[39m DCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution [33m 3034[2mms[22m[39m
+     [33m[2m✓[22m[39m DCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model [33m 7136[2mms[22m[39m
+     [33m[2m✓[22m[39m DCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation [33m 1545[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+[2m   Start at [22m 13:27:36
+[2m   Duration [22m 23.59s[2m (transform 4.54s, setup 22ms, import 6.11s, tests 17.02s, environment 0ms)[22m
+
+exit 0

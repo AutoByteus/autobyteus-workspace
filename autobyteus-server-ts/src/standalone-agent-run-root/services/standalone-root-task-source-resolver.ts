@@ -16,15 +16,19 @@ export type StandaloneRootTaskSource = CollaboratorCopySource;
 export class StandaloneRootTaskSourceResolver {
   constructor(private readonly getIndex: () => StandaloneRootExecutionIndex) {}
 
+  resolve(address: AgentTeamAddress | string, recorded?: TaskExecutionSource | null): StandaloneRootTaskSource | null {
+    return recorded
+      ? projectTaskExecutionSource(address as AgentTeamAddress, recorded)
+      : resolveCollaboratorCopySource(this.getIndex().listCollaborators(), address);
+  }
+
   require<TKind extends StandaloneRootTaskSource["kind"]>(
     address: AgentTeamAddress | string,
     kind: TKind,
     recorded?: TaskExecutionSource | null,
     unavailable: (message: string) => Error = (message) => new Error(message),
   ): Extract<StandaloneRootTaskSource, { kind: TKind }> {
-    const source = recorded
-      ? projectTaskExecutionSource(address as AgentTeamAddress, recorded)
-      : resolveCollaboratorCopySource(this.getIndex().listCollaborators(), address);
+    const source = this.resolve(address, recorded);
     if (!source || source.kind !== kind) {
       throw unavailable(`${kind === "agent" ? "Agent" : "AgentTeam"} '${address}' is not a collaborator of this Agent run.`);
     }

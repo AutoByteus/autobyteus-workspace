@@ -7,7 +7,9 @@ import {
   collaboratorAgentSourceAt,
   collaboratorExecutionNodes,
   collaboratorTeamSourceAt,
+  collaborationInstanceSource,
   type CollaborationAgentSource,
+  type CollaborationInstances,
   type CollaborationTeamSource,
 } from '~/services/collaborators/agentSourceSelectors'
 
@@ -125,6 +127,17 @@ export class AgentOrgExecutionViewIndex {
   private catalogTasks() {
     return collaborationTaskExecutionLists(this.view.execution_tree.rootOrg)
   }
+  /** The root's copies and collaborators: what each of their agents runs with (its user choice, DS-003). */
+  private instances(): CollaborationInstances {
+    return {
+      collaborators: this.view.execution_tree.rootOrg.collaborators ?? [],
+      taskExecutions: this.catalogTasks(),
+      configuredTeamLaunchAt: (address) => {
+        const team = this.configured.get(address as AgentTeamAddress)
+        return team && 'teamRunId' in team ? team.defaultLaunchConfiguration : null
+      },
+    }
+  }
   private register(runId: string): void {
     if (this.allRunIds.has(runId)) throw new Error(`Duplicate Org execution '${runId}'.`)
     this.allRunIds.add(runId)
@@ -139,7 +152,8 @@ export class AgentOrgExecutionViewIndex {
         ?? catalogAgentSourceAt(this.catalogTasks(), execution.address)
     if (!source) throw new Error(`No captured Agent source at '${execution.address}'.`)
     this.agentsById.set(execution.agentRunId, Object.freeze({ agentRunId: execution.agentRunId,
-      address: parseAgentTeamAddress(execution.address), source, execution, host, delegation, kind, live }))
+      address: parseAgentTeamAddress(execution.address), source: collaborationInstanceSource(this.instances(), execution.agentRunId, source),
+      execution, host, delegation, kind, live }))
   }
   private addTeam(execution: OrgTeamNode, delegation: OrgDelegationBinding | null, live: boolean): void {
     this.register(execution.teamRunId)

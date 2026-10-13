@@ -1,0 +1,11 @@
+
+> autobyteus@1.5.3-beta.3 test:e2e:delegated-copy-model-change /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change/autobyteus-web
+> node tests/e2e/delegated-launch-defaults-probe.mjs --cases DCP-001,DCP-002,DCP-003,DCP-004 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change/tickets/in-progress/delegated-copy-model-change/api-e2e-evidence/browser-probe-run-1
+
+DCP-001 Pass delegated-copy-model-change AC-001/002/004/011, DEC-010: a running copy is locked with a stop icon; Stop from the sidebar; its model changed in Settings and saved; the next message resumes it on that model
+DCP-002 Fail delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a Team copy stopped from its sidebar row; its Team model changed and saved; the copy lead's "+" shows the choice without a reload; the next message resumes the lead on it — Timed out waiting for sidebar Team copy row has the stop icon
+DCP-003 Pass delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model
+DCP-004 Fail delegated-copy-model-change AC-011, AC-005 (UI): the delegating agent wakes the copy while the user edits: Save is refused and records nothing; after a Save and an app (backend) restart the choice is shown and the copy resumes on it — Timed out waiting for the Save is refused
+Summary: 2 Pass, 2 Fail
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

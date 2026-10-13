@@ -562,6 +562,46 @@ Team copy or collaborator Team:
   have their own rules. An installed but unauthenticated runtime passes these
   checks and fails at its first turn as a run error, not as a fallback.
 
+### User Model Choice And Stop Of Copies And Collaborators
+
+The user can stop one delegated copy or collaborator of a running run and change
+its model while it is stopped (`run-history/services/delegated-launch-selection-service.ts`,
+GraphQL `stopDelegatedExecution`, `updateDelegatedLaunchSelections`,
+`delegatedLaunchModelOptions`).
+
+- **Stop.** `stopDelegatedExecution({rootKind, rootRunId, agentRunId | teamRunId})`
+  stops the copy or collaborator and the copies it started (`delegatedStopSet`: by
+  recorded delegator, including Task helpers, and the copies a stopped Team copy
+  hosts), innermost first. It interrupts the turn and releases the runtime into the
+  same state as idle shutdown: the copy stays indexed and offline, its Task stays
+  open, and its next message restores it with its conversation. Task copies are
+  stopped through the root's task lifecycle (`RootTaskExecutionLifecycle.stopForUser`):
+  while a copy is being stopped, a live lease on it is refused with
+  `TASK_EXECUTION_STOPPING` (a `send_message_to` or `delegate_task` into, from or by
+  it returns `accepted: false`), leases already held are drained outside the queue,
+  and the `stop` steps never wait at the queue head. A collaborator is stopped under
+  its handles' activation fences. Copies recorded before delegators were stored
+  cannot be attributed and keep running (`notStoppedUnattributed`).
+- **Choice.** `updateDelegatedLaunchSelections` records a choice per agent
+  (`agentRunId`) or per Team (`teamRunId`): only the model and its settings; the
+  runtime, tool approval and workspace stay. It is validated like stopped-run model
+  switching (`RunModelSelectionValidator.validateMany`, the copy's current model for
+  the capacity rule), all or nothing. On a running run, it is saved only while every
+  named copy is stopped: the root re-checks this at one serialization point (the task
+  queue's `reconfigure` step and the collaborators' activation fences), commits the
+  tree, then gives retained collaborator handles the new model and publishes the
+  committed choices to the root's live views like its other tree mutations (Team
+  `DELEGATED_LAUNCH_SELECTIONS_CHANGED`, Org and Agent
+  `delegated_launch_selections_changed`; each names a record by run ID with its
+  choice as now recorded). A copy woken meanwhile refuses the whole Save with
+  `COPY_RUNNING`. On a stopped run, the run's
+  own changed settings and the copies' choices are saved in one write
+  (`updateStoppedRunLaunchChanges` / `updateStoppedRunConfig`; an Agent run's own
+  model is in its metadata and is written after the collaboration tree).
+- **Per instance.** The choice belongs to that instance only: extra copies at a
+  collaborator address and teammates delegated inside a copy start on the recorded
+  started values (`projectCollaboratorCopySource`, `projectTaskSourceMember`).
+
 The shared policy, admission, launch resolver, identity allocator, entry
 builder, catalog address map, message-recipient resolution, catalog delegation
 and source projection live in

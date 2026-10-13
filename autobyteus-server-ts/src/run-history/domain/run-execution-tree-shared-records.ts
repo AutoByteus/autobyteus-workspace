@@ -1,9 +1,28 @@
+import { isDeepStrictEqual } from "node:util";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 
 export type IsoTimestamp = string;
+
+/**
+ * The user's model choice for one delegated copy or collaborator instance (DEC-005): it replaces
+ * only the model and its settings; the runtime, tool approval and workspace stay as started.
+ * Recorded beside the started values, never over them, so extra and teammate copies still start
+ * on the started values (AR-005).
+ */
+export type UserLaunchSelection = Readonly<{
+  llmModelIdentifier: string;
+  llmConfig: Readonly<Record<string, unknown>> | null;
+  selectedAt: IsoTimestamp;
+}>;
+
+/** Optional on an agent-level copy or collaborator record; absent truthfully means no user choice. */
+export type RecordedUserLaunchSelection = Readonly<{ userLaunchSelection?: UserLaunchSelection }>;
+
+/** Optional on a team-level copy or collaborator record; followers of the team resolve to it. */
+export type RecordedUserTeamLaunchSelection = Readonly<{ userTeamLaunchSelection?: UserLaunchSelection }>;
 
 export type ConfiguredAgentExecutionNode = Readonly<{
   address: AgentTeamAddress;
@@ -85,13 +104,13 @@ export type TaskAgentExecution = Readonly<{
   delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
   source?: TaskAgentExecutionSource;
-}>;
+}> & RecordedUserLaunchSelection;
 
 export type TaskTeamAgentExecution = Readonly<{
   address: AgentTeamAddress;
   agentRunId: string;
   platformAgentRunId: string | null;
-}>;
+}> & RecordedUserLaunchSelection;
 
 export type TaskTeamNestedTeamExecution = Readonly<{
   address: AgentTeamAddress;
@@ -111,7 +130,7 @@ export type TaskTeamExecution = Readonly<{
   delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
   source?: TaskTeamExecutionSource;
-}>;
+}> & RecordedUserTeamLaunchSelection;
 
 export type TaskExecution = TaskAgentExecution | TaskTeamExecution;
 
@@ -132,7 +151,7 @@ export type CollaboratorAgentEntry = Readonly<{
   launchSource?: LaunchConfigurationSource;
   addedAt: IsoTimestamp;
   addedViaAgentRunId: string;
-}>;
+}> & RecordedUserLaunchSelection;
 
 /** A collaborator Team member: its layout, identity and own launch (see `RecordedMemberLaunch`). */
 export type CollaboratorTeamMember = Readonly<{
@@ -140,7 +159,7 @@ export type CollaboratorTeamMember = Readonly<{
   agentDefinitionId: string;
   agentRunId: string;
   platformAgentRunId: string | null;
-}> & RecordedMemberLaunch;
+}> & RecordedMemberLaunch & RecordedUserLaunchSelection;
 
 /**
  * A collaborator Agent Team: one TeamRun with one run per member, its layout and rebased
@@ -157,7 +176,7 @@ export type CollaboratorTeamEntry = Readonly<{
   taskExecutions: readonly TaskExecution[];
   addedAt: IsoTimestamp;
   addedViaAgentRunId: string;
-}> & RecordedTeamLaunch;
+}> & RecordedTeamLaunch & RecordedUserTeamLaunchSelection;
 
 export type CollaboratorEntry = CollaboratorAgentEntry | CollaboratorTeamEntry;
 
@@ -206,6 +225,55 @@ export const effectiveMemberLaunchConfiguration = (
   team: Pick<RecordedTeamLaunch, "defaultLaunchConfiguration">,
   member: RecordedMemberLaunch,
 ): AgentLaunchConfiguration => member.launchConfiguration ?? team.defaultLaunchConfiguration;
+
+/**
+ * Whether a copy or collaborator Team member follows its Team's launch, so a Team-level user
+ * selection applies to it (AR-003):
+ * - `recorded` (collaborator Teams, catalog Team copies): iff the member records no own launch;
+ * - `configured` (copies of configured Team placements, which record no own-default fact): iff the
+ *   member's configured launch equals the Team's (runtime, model and settings), the same equality
+ *   the configured-Team editor uses.
+ * A member's own user selection always wins over the Team's (see `effectiveCopyAgentLaunch`).
+ */
+export const memberFollowsTeam = (input:
+  | Readonly<{ kind: "recorded"; member: RecordedMemberLaunch }>
+  | Readonly<{ kind: "configured"; team: AgentLaunchConfiguration; member: AgentLaunchConfiguration }>,
+): boolean => input.kind === "recorded"
+  ? input.member.launchConfiguration === undefined
+  : input.member.runtimeKind === input.team.runtimeKind
+    && input.member.llmModelIdentifier === input.team.llmModelIdentifier
+    && isDeepStrictEqual(input.member.llmConfig ?? null, input.team.llmConfig ?? null);
+
+export type EffectiveCopyAgentLaunch = Readonly<{
+  launch: AgentLaunchConfiguration;
+  /** Which user selection decided the model: the agent's own, its Team's, or none (started value). */
+  selected: "agent" | "team" | null;
+}>;
+
+/**
+ * The single launch rule of a delegated copy or collaborator agent (DS-003): its own user
+ * selection, else (when it follows its Team) the Team's user selection, else its started launch.
+ * A selection replaces only the model and its settings. Every restore, hosting and view site uses
+ * this; none combines selections and started values inline.
+ */
+export const effectiveCopyAgentLaunch = (input: Readonly<{
+  started: AgentLaunchConfiguration;
+  followsTeam?: boolean;
+  teamSelection?: UserLaunchSelection | null;
+  agentSelection?: UserLaunchSelection | null;
+}>): EffectiveCopyAgentLaunch => {
+  const team = input.followsTeam && input.teamSelection ? input.teamSelection : null;
+  const selection = input.agentSelection ?? team;
+  if (!selection) return Object.freeze({ launch: input.started, selected: null });
+  return Object.freeze({
+    launch: Object.freeze({
+      ...input.started,
+      llmModelIdentifier: selection.llmModelIdentifier,
+      llmConfig: selection.llmConfig === null ? null : structuredClone(selection.llmConfig),
+    }),
+    selected: input.agentSelection ? "agent" : "team",
+  });
+};
 
 /** The recorded source of a Team member's launch: its own, else the Team's; null when not recorded. */
 export const effectiveMemberLaunchSource = (

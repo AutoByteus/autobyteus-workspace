@@ -56,6 +56,32 @@ type TeamLaunchDto = Readonly<{
 export declare const collaborationMemberLaunchConfiguration: (team: Pick<TeamLaunchDto, "defaultLaunchConfiguration">, member: MemberLaunchDto) => LaunchConfigurationDto;
 /** The recorded source of such a member's launch: its own, else its Team's; null when not recorded. */
 export declare const collaborationMemberLaunchSource: (team: Pick<TeamLaunchDto, "defaultLaunchSource">, member: MemberLaunchDto) => CollaborationLaunchConfigurationSourceDto | null;
+/**
+ * The user's model choice for one delegated copy or collaborator instance: it replaces only the
+ * model and its settings. Absent when the user made no choice (every older record).
+ */
+export declare const userLaunchSelectionDtoSchema: z.ZodObject<{
+    llmModelIdentifier: z.ZodString;
+    llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+    selectedAt: z.ZodString;
+}, z.core.$strict>;
+export type UserLaunchSelectionDto = Readonly<z.infer<typeof userLaunchSelectionDtoSchema>>;
+/**
+ * The single launch rule of a copy or collaborator agent (mirrors the server's
+ * `effectiveCopyAgentLaunch`): its own choice, else (when it follows its Team) the Team's choice,
+ * else its started launch. `selected` tells which choice applied.
+ */
+export declare const collaborationCopyAgentLaunch: (input: Readonly<{
+    started: LaunchConfigurationDto;
+    followsTeam?: boolean;
+    teamSelection?: UserLaunchSelectionDto | null;
+    agentSelection?: UserLaunchSelectionDto | null;
+}>) => Readonly<{
+    launch: LaunchConfigurationDto;
+    selected: "agent" | "team" | null;
+}>;
+/** A recorded Team member follows its Team's launch (and choice) iff it records no own launch. */
+export declare const collaborationMemberFollowsTeam: (member: MemberLaunchDto) => boolean;
 /** The definition snapshot of a task copy started from the catalog (absent for every other copy). */
 export type TaskAgentExecutionSourceDto = Readonly<{
     kind: "agent";
@@ -85,11 +111,13 @@ type TaskAgentExecutionDto = Readonly<{
     delegatorAgentRunId?: string;
     startedAt: string;
     source?: TaskAgentExecutionSourceDto;
+    userLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskTeamAgentExecutionDto = Readonly<{
     address: string;
     agentRunId: string;
     platformAgentRunId: string | null;
+    userLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskTeamNestedExecutionDto = Readonly<{
     address: string;
@@ -107,6 +135,7 @@ type TaskTeamExecutionDto = Readonly<{
     delegatorAgentRunId?: string;
     startedAt: string;
     source?: TaskTeamExecutionSourceDto;
+    userTeamLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 /** Shared by every collaboration root view (Org and Agent roots). */
@@ -144,10 +173,38 @@ export declare const taskExecutionsReopenedEventDtoSchema: z.ZodObject<{
     }, z.core.$strict>]>>;
 }, z.core.$strict>;
 /**
+ * Live: the user's model choices of these delegated copies or collaborators were saved (DS-001).
+ * Each names one record by its run ID (unique in the tree) with its choice as now recorded.
+ */
+export declare const delegatedLaunchSelectionsChangedEventDtoSchema: z.ZodObject<{
+    kind: z.ZodLiteral<"delegated_launch_selections_changed">;
+    selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agentRunId: z.ZodString;
+        selection: z.ZodObject<{
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            selectedAt: z.ZodString;
+        }, z.core.$strict>;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+        selection: z.ZodObject<{
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            selectedAt: z.ZodString;
+        }, z.core.$strict>;
+    }, z.core.$strict>]>>;
+}, z.core.$strict>;
+export type DelegatedLaunchSelectionsChangedEventDto = Readonly<z.infer<typeof delegatedLaunchSelectionsChangedEventDtoSchema>>;
+/**
  * One collaborator of a run: one instance of a shared Agent or Agent Team definition brought in.
  * Its run IDs and resolved launches are recorded in the entry; it starts on its first message.
  */
 export declare const collaboratorEntryDtoSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
+    userLaunchSelection: z.ZodOptional<z.ZodObject<{
+        llmModelIdentifier: z.ZodString;
+        llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+        selectedAt: z.ZodString;
+    }, z.core.$strict>>;
     kind: z.ZodLiteral<"agent">;
     address: z.ZodString;
     agentDefinitionId: z.ZodString;
@@ -191,12 +248,22 @@ export declare const collaboratorEntryDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
     addedAt: z.ZodString;
     addedViaAgentRunId: z.ZodString;
 }, z.core.$strict>, z.ZodObject<{
+    userTeamLaunchSelection: z.ZodOptional<z.ZodObject<{
+        llmModelIdentifier: z.ZodString;
+        llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+        selectedAt: z.ZodString;
+    }, z.core.$strict>>;
     kind: z.ZodLiteral<"agent_team">;
     address: z.ZodString;
     teamDefinitionId: z.ZodString;
     teamRunId: z.ZodString;
     coordinatorAddress: z.ZodString;
     members: z.ZodArray<z.ZodObject<{
+        userLaunchSelection: z.ZodOptional<z.ZodObject<{
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            selectedAt: z.ZodString;
+        }, z.core.$strict>>;
         launchConfiguration: z.ZodOptional<z.ZodObject<{
             runtimeKind: z.ZodEnum<{
                 autobyteus: "autobyteus";
@@ -377,6 +444,11 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
             taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
         }, z.core.$strict>]>>;
         collaborators: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
+            userLaunchSelection: z.ZodOptional<z.ZodObject<{
+                llmModelIdentifier: z.ZodString;
+                llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                selectedAt: z.ZodString;
+            }, z.core.$strict>>;
             kind: z.ZodLiteral<"agent">;
             address: z.ZodString;
             agentDefinitionId: z.ZodString;
@@ -420,12 +492,22 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
             addedAt: z.ZodString;
             addedViaAgentRunId: z.ZodString;
         }, z.core.$strict>, z.ZodObject<{
+            userTeamLaunchSelection: z.ZodOptional<z.ZodObject<{
+                llmModelIdentifier: z.ZodString;
+                llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                selectedAt: z.ZodString;
+            }, z.core.$strict>>;
             kind: z.ZodLiteral<"agent_team">;
             address: z.ZodString;
             teamDefinitionId: z.ZodString;
             teamRunId: z.ZodString;
             coordinatorAddress: z.ZodString;
             members: z.ZodArray<z.ZodObject<{
+                userLaunchSelection: z.ZodOptional<z.ZodObject<{
+                    llmModelIdentifier: z.ZodString;
+                    llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                    selectedAt: z.ZodString;
+                }, z.core.$strict>>;
                 launchConfiguration: z.ZodOptional<z.ZodObject<{
                     runtimeKind: z.ZodEnum<{
                         autobyteus: "autobyteus";
@@ -667,6 +749,11 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                 taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
             }, z.core.$strict>]>>;
             collaborators: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
+                userLaunchSelection: z.ZodOptional<z.ZodObject<{
+                    llmModelIdentifier: z.ZodString;
+                    llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                    selectedAt: z.ZodString;
+                }, z.core.$strict>>;
                 kind: z.ZodLiteral<"agent">;
                 address: z.ZodString;
                 agentDefinitionId: z.ZodString;
@@ -710,12 +797,22 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                 addedAt: z.ZodString;
                 addedViaAgentRunId: z.ZodString;
             }, z.core.$strict>, z.ZodObject<{
+                userTeamLaunchSelection: z.ZodOptional<z.ZodObject<{
+                    llmModelIdentifier: z.ZodString;
+                    llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                    selectedAt: z.ZodString;
+                }, z.core.$strict>>;
                 kind: z.ZodLiteral<"agent_team">;
                 address: z.ZodString;
                 teamDefinitionId: z.ZodString;
                 teamRunId: z.ZodString;
                 coordinatorAddress: z.ZodString;
                 members: z.ZodArray<z.ZodObject<{
+                    userLaunchSelection: z.ZodOptional<z.ZodObject<{
+                        llmModelIdentifier: z.ZodString;
+                        llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                        selectedAt: z.ZodString;
+                    }, z.core.$strict>>;
                     launchConfiguration: z.ZodOptional<z.ZodObject<{
                         runtimeKind: z.ZodEnum<{
                             autobyteus: "autobyteus";
@@ -911,8 +1008,8 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
 }, z.core.$strict>, z.ZodObject<{
     kind: z.ZodLiteral<"task_execution_started">;
     host_kind: z.ZodEnum<{
-        root: "root";
         team: "team";
+        root: "root";
     }>;
     host_run_id: z.ZodString;
     execution: z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>;
@@ -930,6 +1027,11 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
 }, z.core.$strict>, z.ZodObject<{
     kind: z.ZodLiteral<"collaborator_added">;
     collaborator: z.ZodDiscriminatedUnion<[z.ZodObject<{
+        userLaunchSelection: z.ZodOptional<z.ZodObject<{
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            selectedAt: z.ZodString;
+        }, z.core.$strict>>;
         kind: z.ZodLiteral<"agent">;
         address: z.ZodString;
         agentDefinitionId: z.ZodString;
@@ -973,12 +1075,22 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
         addedAt: z.ZodString;
         addedViaAgentRunId: z.ZodString;
     }, z.core.$strict>, z.ZodObject<{
+        userTeamLaunchSelection: z.ZodOptional<z.ZodObject<{
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            selectedAt: z.ZodString;
+        }, z.core.$strict>>;
         kind: z.ZodLiteral<"agent_team">;
         address: z.ZodString;
         teamDefinitionId: z.ZodString;
         teamRunId: z.ZodString;
         coordinatorAddress: z.ZodString;
         members: z.ZodArray<z.ZodObject<{
+            userLaunchSelection: z.ZodOptional<z.ZodObject<{
+                llmModelIdentifier: z.ZodString;
+                llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                selectedAt: z.ZodString;
+            }, z.core.$strict>>;
             launchConfiguration: z.ZodOptional<z.ZodObject<{
                 runtimeKind: z.ZodEnum<{
                     autobyteus: "autobyteus";
@@ -1076,6 +1188,23 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
         agentRunId: z.ZodString;
     }, z.core.$strict>, z.ZodObject<{
         teamRunId: z.ZodString;
+    }, z.core.$strict>]>>;
+}, z.core.$strict>, z.ZodObject<{
+    kind: z.ZodLiteral<"delegated_launch_selections_changed">;
+    selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agentRunId: z.ZodString;
+        selection: z.ZodObject<{
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            selectedAt: z.ZodString;
+        }, z.core.$strict>;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+        selection: z.ZodObject<{
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            selectedAt: z.ZodString;
+        }, z.core.$strict>;
     }, z.core.$strict>]>>;
 }, z.core.$strict>], "kind">;
 export type AgentOrgExecutionTreeDto = Readonly<z.infer<typeof agentOrgExecutionTreeDtoSchema>>;

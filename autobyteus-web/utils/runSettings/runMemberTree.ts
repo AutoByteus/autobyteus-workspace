@@ -46,10 +46,28 @@ export interface RunMemberNode {
   launchNotes: readonly RunMemberNote[]
   /** A collaborator or delegated copy (read-only Settings rows): how it joined the run. */
   badge?: 'delegated_copy' | 'collaborator'
-  /** A collaborator or delegated copy: where its launch came from. */
+  /** A collaborator or delegated copy: where its launch came from (absent once the user chose its model). */
   sourceKey?: RunMemberLaunchSource
+  /** A collaborator or delegated copy row: what the user can stop and change on it (SR-007). */
+  delegated?: RunMemberDelegatedFacts
+  /** This row's own locks; when set they replace its section's. */
+  locked?: RunSettingFlags
   children: readonly RunMemberNode[]
 }
+
+/**
+ * The user's control of a collaborator or delegated copy row: where its model choice is recorded
+ * (`agent:<run ID>` or `team:<run ID>`), the model it runs with before this edit, what its stop
+ * icon stops (only the copy or collaborator itself, never one member of a Team), and whether its
+ * copy is running (its model is locked until it is stopped).
+ */
+export type RunMemberDelegatedFacts = Readonly<{
+  target: `agent:${string}` | `team:${string}`
+  original: Readonly<{ llmModelIdentifier: string; llmConfig: Record<string, unknown> | null }>
+  stop: Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }> | null
+  running: boolean
+  stopping: boolean
+}>
 
 /** Where a collaborator's or delegated copy's launch came from (`configured`: a copy of an in-run placement). */
 export type RunMemberLaunchSource = 'agent_default' | 'team_default' | 'inherited' | 'configured' | 'not_recorded'
@@ -132,7 +150,8 @@ const customization = (
 /** A collaborator's or copy's read-only row facts (DS-007): badge, launch source and recorded fallbacks. */
 export type RunMemberLaunchFacts = Readonly<{
   badge?: RunMemberNode['badge']
-  sourceKey: RunMemberLaunchSource
+  /** Absent: the user chose this row's model, so no origin is shown (SR-007). */
+  sourceKey?: RunMemberLaunchSource
   notes: readonly RunMemberNote[]
 }>
 
@@ -147,6 +166,8 @@ export const memberNode = (input: Readonly<{
   children?: readonly RunMemberNode[]
   marks?: RunMemberSeedMarks
   launch?: RunMemberLaunchFacts
+  delegated?: RunMemberDelegatedFacts
+  locked?: RunSettingFlags
 }>, deps: RunMemberTreeDeps): RunMemberNode => Object.freeze({
   key: input.key,
   kind: input.kind,
@@ -160,7 +181,9 @@ export const memberNode = (input: Readonly<{
   modelRequired: !input.launch && !input.values.llmModelIdentifier.trim(),
   launchNotes: Object.freeze(input.launch?.notes ?? seededNotes(input.marks, input.key)),
   ...(input.launch?.badge ? { badge: input.launch.badge } : {}),
-  ...(input.launch ? { sourceKey: input.launch.sourceKey } : {}),
+  ...(input.launch?.sourceKey ? { sourceKey: input.launch.sourceKey } : {}),
+  ...(input.delegated ? { delegated: input.delegated } : {}),
+  ...(input.locked ? { locked: input.locked } : {}),
   children: Object.freeze([...(input.children ?? [])]),
 })
 

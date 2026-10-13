@@ -1,3 +1,11 @@
+import type {
+  DelegatedLaunchSelectionCommand,
+  DelegatedLaunchUpdateResult,
+  DelegatedStopResult,
+} from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
+import type { DelegatedLaunchChange, DelegatedRunReference } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import { createAgentOrgDelegatedLaunchCommand } from "../services/agent-org-run-delegated-launches.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import type { TaskExecutionResourcePort, TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { taskScopedMessageRecipient } from "../../agent-collaboration/collaborators/task-scoped-message-recipient.js";
@@ -73,6 +81,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   private readonly delivery: AgentOrgRunMessageDelivery;
   private readonly collaborators: AgentOrgRunCollaborators;
   private readonly eventRetirement: AgentOrgTaskEventRetirement;
+  private readonly delegatedLaunches: DelegatedLaunchSelectionCommand;
   private termination: Promise<AgentOperationResult> | null = null;
   /** Fail-stop origin outlives a failed termination attempt, so a retry keeps the fail-stop settlement. */
   private failStopped = false;
@@ -129,6 +138,22 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       replaceTree: (tree) => this.replaceTree(tree),
       publish: (event) => options.publisher.publish(event),
     });
+    this.delegatedLaunches = createAgentOrgDelegatedLaunchCommand({
+      root: options.root,
+      rootAgents: options.rootAgents,
+      teams: options.teams,
+      taskExecutions: this.taskExecutions,
+      persistence: options.persistence,
+      getTree: () => this.tree,
+      getIndex: () => this.index,
+      assertAdmitting: () => this.assertAdmitting(),
+      replaceTree: (tree) => this.replaceTree(tree),
+      publishAgentOffline: (identity) => this.onAgentExecutionEvent(identity, {
+        kind: "status_overlay",
+        snapshot: createCollaborationAgentStatusSnapshot({ execution: identity, status: "offline" }),
+      }),
+      publishSelectionsChanged: (selections) => options.publisher.publish({ kind: "delegated_launch_selections_changed", selections }),
+    });
     const recipients: AgentOrgRecipientResolver = new AgentOrgRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators,
       taskScope: sender => taskScopedMessageRecipient({ sender, lifecycle: this.taskExecutions,
         resolvePlacement: address => recipients.resolveDelegationPlacement(sender, address),
@@ -172,6 +197,18 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   /** A task execution's own live status for the Task side (`offline` once this root stops admitting). */
   taskExecutionStatus(execution: TaskExecutionReference): AgentExecutionStatus {
     return this.taskExecutions.taskExecutionStatus(execution);
+  }
+
+  /** DS-002: the user's Stop of one delegated copy or collaborator and the copies it started. */
+  stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
+    return this.operationGate.run(() => this.delegatedLaunches.stop(target));
+  }
+  /** DS-001: the user's model choice for stopped delegated copies or collaborators of this live run. */
+  updateDelegatedLaunchSelections(
+    changes: readonly DelegatedLaunchChange[],
+    validator: RunModelSelectionValidator,
+  ): Promise<DelegatedLaunchUpdateResult> {
+    return this.operationGate.run(() => this.delegatedLaunches.update(changes, validator));
   }
 
   get orgRunId(): string { return this.tree.rootOrg.orgRunId; }

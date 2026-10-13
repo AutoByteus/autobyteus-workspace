@@ -117,6 +117,7 @@ class TestTeamBackend implements TeamRunBackend {
   readonly commands: Array<{ agentRunId: string; command: TeamMemberExecutionCommand }> = [];
   readonly liveTaskAgents = new Set<string>();
   readonly shutDownAgents: string[] = [];
+  readonly userStoppedAgents: string[] = [];
   /** Agents whose runtime reports a running background task: AgentRunTermination's quiet check refuses them. */
   readonly backgroundBusyAgents = new Set<string>();
   readonly children = new Map<string, TestTeamBackend>();
@@ -236,6 +237,13 @@ class TestTeamBackend implements TeamRunBackend {
     this.shutDownAgents.push(reference.agentRunId);
     return true;
   }
+  async shutDownDirectTaskExecutionForUser(reference: TaskExecutionReference): Promise<boolean> {
+    if (!("agentRunId" in reference) || !this.liveTaskAgents.has(reference.agentRunId)) return false;
+    this.liveTaskAgents.delete(reference.agentRunId);
+    this.userStoppedAgents.push(reference.agentRunId);
+    return true;
+  }
+  getRetainedAgentControl(): null { return null; }
   async prepareTermination(): Promise<PreparedLocalExecutionTermination> {
     return Object.freeze({
       cancel: () => undefined,

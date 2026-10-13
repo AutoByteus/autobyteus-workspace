@@ -65,6 +65,19 @@
           </span>
         </span>
       </button>
+      <!-- SR-007: a running copy or collaborator has the same small red stop icon as a running run. -->
+      <button
+        v-if="stopVisible"
+        type="button"
+        class="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 disabled:cursor-default disabled:opacity-60"
+        :disabled="node.delegated?.stopping"
+        :title="stopLabel"
+        :aria-label="stopLabel"
+        data-test="run-member-stop"
+        @click.stop="node.delegated?.stop && emit('stop', node.delegated.stop)"
+      >
+        <Icon icon="heroicons:stop-20-solid" class="h-4 w-4" :class="node.delegated?.stopping ? 'animate-pulse motion-reduce:animate-none' : ''" aria-hidden="true" />
+      </button>
       <button
         v-if="customized && !readOnly"
         type="button"
@@ -104,7 +117,7 @@
         :values="node.values"
         :fields="node.fields"
         :member="node"
-        :locked="locked"
+        :locked="node.locked ?? locked"
         :runtime-locked="runtimeLocked"
         :locked-models="lockedModelsFor?.(node.key) ?? null"
         :resettable="!readOnly"
@@ -112,6 +125,16 @@
         @change="emit('change', node.key, $event)"
         @reset="emit('reset', node.key, $event)"
       />
+      <!-- A running copy's model is locked until it is stopped. -->
+      <p
+        v-if="node.delegated?.running"
+        class="mt-1 flex items-center gap-1.5 text-xs text-gray-500"
+        role="status"
+        data-test="run-member-stop-hint"
+      >
+        <Icon icon="heroicons:lock-closed" class="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+        <span>{{ $t('runSettings.delegated.stopToChange') }}</span>
+      </p>
       <template v-if="node.children.length">
         <p class="mb-1 mt-3 text-[0.6875rem] font-medium uppercase tracking-wide text-gray-400">{{ $t('runSettings.members.title') }}</p>
         <div class="-ml-2 space-y-0.5">
@@ -127,6 +150,7 @@
             @toggle="emit('toggle', $event)"
             @change="(key, change) => emit('change', key, change)"
             @reset="(key, reset) => emit('reset', key, reset)"
+            @stop="emit('stop', $event)"
           />
         </div>
       </template>
@@ -150,6 +174,7 @@ import {
   type RunMemberLaunchSource,
   type RunMemberNode,
   type RunMemberNote,
+  type RunMemberDelegatedFacts,
 } from '~/utils/runSettings/runMemberTree'
 import type { MemberLaunchNote } from '~/utils/runSettings/memberLaunchDefaults'
 import RunSettingsCard from './RunSettingsCard.vue'
@@ -172,6 +197,7 @@ const emit = defineEmits<{
   (event: 'toggle', key: string): void
   (event: 'change', key: string, change: RunMemberSettingChange): void
   (event: 'reset', key: string, reset: RunMemberSettingReset): void
+  (event: 'stop', reference: NonNullable<RunMemberDelegatedFacts['stop']>): void
 }>()
 
 const presentation = useRunSettingsPresentation()
@@ -207,6 +233,10 @@ const noteTexts = computed(() => props.node.launchNotes.map(noteText))
 const notesInDetail = computed(() => props.node.kind === 'team' && Boolean(props.node.badge))
 const noteCount = computed(() => countRunMemberNotes(props.node))
 const expanded = computed(() => props.expandedKeys.has(props.node.key))
+/** The copy or collaborator itself (not one member of a Team) while it runs or is being stopped. */
+const stopVisible = computed(() => Boolean(props.node.delegated?.stop && (props.node.delegated.running || props.node.delegated.stopping)))
+const STOP_LABEL_KEY = { idle: 'runSettings.delegated.stop', stopping: 'runSettings.delegated.stopping' } as const
+const stopLabel = computed(() => t(STOP_LABEL_KEY[props.node.delegated?.stopping ? 'stopping' : 'idle'], { name: props.node.name }))
 const customized = computed(() => isRunMemberCustomized(props.node))
 const childCustomizedCount = computed(() => countCustomizedMembers(props.node.children))
 /**

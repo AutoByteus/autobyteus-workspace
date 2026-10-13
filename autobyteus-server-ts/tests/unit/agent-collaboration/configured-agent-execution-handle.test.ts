@@ -439,3 +439,60 @@ describe("re-activation after the member's runtime died", () => {
     expect(f.prepareRestoreAgentRun).not.toHaveBeenCalled();
   });
 });
+
+describe("ConfiguredAgentExecutionHandle user Stop and model choice (DS-001, DS-002, AR-001)", () => {
+  it("interrupts and releases with input open; the next activation restores on the replaced model", async () => {
+    const fixture = build("agent_team", RuntimeKind.AUTOBYTEUS);
+    await fixture.handle.getOrCreateAgentRun();
+    expect(fixture.handle.isStopped()).toBe(false);
+    expect(() => fixture.handle.replaceModelChoice({ llmModelIdentifier: "bigger", llmConfig: null })).toThrow(/running/);
+
+    await expect(fixture.handle.releaseRuntimeForUserStop()).resolves.toMatchObject({ accepted: true });
+    expect(fixture.fakeRun.interrupt).toHaveBeenCalledOnce();
+    expect(fixture.releaseExactRun).toHaveBeenCalledOnce();
+    expect(fixture.handle.isStopped()).toBe(true);
+
+    fixture.handle.replaceModelChoice({ llmModelIdentifier: "bigger", llmConfig: { effort: "high" } });
+    fixture.activity.kind = "present";
+    await fixture.handle.getOrCreateAgentRun();
+    const restored = JSON.stringify(fixture.prepareRestoreAgentRun.mock.calls.at(-1) ?? fixture.prepareRestoreAgentRunFromPlatformState.mock.calls.at(-1));
+    expect(restored).toContain("bigger");
+    expect(restored).not.toContain("\"model\"");
+  });
+
+  it("holds an activation behind the fence and runs it afterwards on the new model", async () => {
+    const fixture = build("agent_team", RuntimeKind.AUTOBYTEUS);
+    let release!: () => void;
+    const order: string[] = [];
+    const fenced = fixture.handle.withActivationFence(async () => {
+      order.push("fence");
+      await new Promise<void>((resolve) => { release = resolve; });
+      fixture.handle.replaceModelChoice({ llmModelIdentifier: "bigger", llmConfig: null });
+      order.push("swap");
+    });
+    await Promise.resolve();
+    const activation = fixture.handle.getOrCreateAgentRun().then(() => order.push("activated"));
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    expect(fixture.prepareNewAgentRun).not.toHaveBeenCalled();
+    release();
+    await fenced;
+    await activation;
+    expect(order).toEqual(["fence", "swap", "activated"]);
+    expect(fixture.prepareNewAgentRun.mock.calls[0]![0].config.llmModelIdentifier).toBe("bigger");
+  });
+});
+
+describe("ConfiguredAgentExecutionHandle activation fence with a failed activation", () => {
+  it("runs the fenced operation after awaiting a failed, retained activation once (no spin)", async () => {
+    const fixture = build("agent_team", RuntimeKind.AUTOBYTEUS)
+    // A failed attempt that is not retry-safe stays as the handle's readiness attempt.
+    const retained = Promise.reject(new Error("provider binding indeterminate"))
+    retained.catch(() => undefined)
+    ;(fixture.handle as unknown as { readinessAttempt: Promise<unknown> }).readinessAttempt = retained
+    const ran = await Promise.race([
+      fixture.handle.withActivationFence(() => "ran"),
+      new Promise((resolve) => setTimeout(() => resolve("timed out"), 500)),
+    ])
+    expect(ran).toBe("ran")
+  })
+})

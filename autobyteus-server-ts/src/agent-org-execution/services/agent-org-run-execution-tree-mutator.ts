@@ -1,3 +1,11 @@
+import {
+  applyDelegatedLaunchSelectionsToCollaborators,
+  applyDelegatedLaunchSelectionsToTaskExecutions,
+  type DelegatedLaunchForest,
+  type DelegatedLaunchSelections,
+} from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import { taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
+import { isConfiguredTeamExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type {
   CollaborationAgentNoConversationBindingReplacement,
   CollaborationAgentPlatformBinding,
@@ -185,3 +193,29 @@ export const replaceAgentOrgPlatformBindingWithoutConversation = (input: {
   if (matches !== 1) throw new Error("Platform binding replacement target was not found exactly once in AgentOrg tree.");
   return validateAgentOrgRunExecutionTreePayload(next, input.tree.rootOrg.orgRunId);
 };
+
+/** The tree's delegated copies and collaborators, for the user model choice and Stop (DS-001, DS-002). */
+export const agentOrgDelegatedLaunchForest = (tree: AgentOrgRunExecutionTreeSnapshot): DelegatedLaunchForest => Object.freeze({
+  collaborators: tree.rootOrg.collaborators,
+  taskExecutionLists: taskExecutionListsOf({
+    taskExecutions: tree.rootOrg.taskExecutions,
+    teams: tree.rootOrg.members.filter(isConfiguredTeamExecution),
+    collaborators: tree.rootOrg.collaborators,
+  }),
+});
+
+/** Records user model choices on the tree's copies and collaborators; started values are untouched. */
+export const applyAgentOrgDelegatedLaunchSelections = (
+  tree: AgentOrgRunExecutionTreeSnapshot,
+  selections: DelegatedLaunchSelections,
+): AgentOrgRunExecutionTreeSnapshot => validateAgentOrgRunExecutionTreePayload({
+  ...tree,
+  rootOrg: {
+    ...tree.rootOrg,
+    members: tree.rootOrg.members.map((member) => isConfiguredTeamExecution(member)
+      ? { ...member, taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(member.taskExecutions, selections) }
+      : member),
+    collaborators: applyDelegatedLaunchSelectionsToCollaborators(tree.rootOrg.collaborators, selections),
+    taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(tree.rootOrg.taskExecutions, selections),
+  },
+}, tree.rootOrg.orgRunId);

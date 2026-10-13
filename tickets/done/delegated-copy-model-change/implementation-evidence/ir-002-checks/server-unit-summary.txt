@@ -1,0 +1,5 @@
+TSC_EXIT 0
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact SR-011 host definition and public/general run authority
+ Test Files  1 failed | 309 passed | 4 skipped (314)
+      Tests  1 failed | 2604 passed | 6 skipped (2611)
