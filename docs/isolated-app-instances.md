@@ -303,7 +303,12 @@ An isolated instance starts empty.
 
 ## Linux
 
-Validation of this workflow is macOS-only; Linux is supported on a best-effort basis.
+Use a native Linux build and an unprivileged runtime user. The unpacked worktree
+path supports a real graphical session or an owned Xvfb display; no installed app,
+Docker socket, FUSE mount or user-operated desktop is needed for that path.
+Distribution/kernel/container policies still determine whether Chromium's sandbox
+can start. Validate the actual environment rather than inferring Linux success
+from macOS or a browser probe.
 
 - Release builds ship as an AppImage, which must be extracted before an isolated launch:
   `./AutoByteus_linux-x64-<version>.AppImage --appimage-extract` creates `squashfs-root/`. Then
@@ -321,6 +326,142 @@ Validation of this workflow is macOS-only; Linux is supported on a best-effort b
   - make the bundled sandbox helper setuid root:
     `sudo chown root:root <dir>/chrome-sandbox && sudo chmod 4755 <dir>/chrome-sandbox`
     (`<dir>` is the directory containing the executable).
+
+### Linux preflight and dependencies
+
+Before building/launching, record platform/architecture and runtime identity:
+
+~~~bash
+node -p 'process.platform + "-" + process.arch'
+id
+command -v Xvfb xvfb-run xauth
+# Run this as the intended NON-ROOT application user, not only as the builder:
+unshare --user --map-root-user true
+~~~
+
+The namespace probe is a diagnostic, not a sandbox override or a complete launch
+test. Inspect the actual isolated launch log on failure. Do not change sysctls,
+AppArmor/container security policy or sandbox-helper privileges automatically.
+
+For Ubuntu 24.04 containers, an authorized environment owner can install the
+virtual-display tools with:
+
+~~~bash
+apt-get update
+apt-get install -y --no-install-recommends xvfb xauth
+# Optional, only when recording is needed:
+apt-get install -y --no-install-recommends ffmpeg
+~~~
+
+The Electron binary must also have its shared-library dependencies. If launch
+reports a missing library, run ldd on the unpacked executable and install the
+matching distribution package; do not replace the app with headless Chrome.
+Node 22/pnpm 10 and native-architecture workspace dependencies are required.
+When pnpm is not on PATH, a test-owned Corepack shim is sufficient:
+
+~~~bash
+test -n "$OWN" || OWN=$(mktemp -d)
+mkdir -p "$OWN/bin"
+corepack enable --install-directory "$OWN/bin"
+export PATH="$OWN/bin:$PATH"
+~~~
+
+### Build and run in a headless Linux session
+
+Run from the assigned worktree. Build once before launching, serially with any
+other build/dev server in that worktree:
+
+~~~bash
+pnpm install --frozen-lockfile
+pnpm -C autobyteus-web build:electron:linux
+~~~
+
+This produces both the AppImage and the unpacked native package. The isolated
+launcher discovers the unpacked output with --from-worktree; extraction/FUSE is
+not needed for a worktree build. A build downloads native tooling and may take
+several minutes. It does not publish a release.
+
+For a non-root worker with write access to its own directories, put a complete
+Linux-capable packaged probe inside Xvfb:
+
+~~~bash
+OWN=$(mktemp -d)
+mkdir -p "$OWN/home" "$OWN/tmp" "$OWN/runtime"
+chmod 700 "$OWN/home" "$OWN/tmp" "$OWN/runtime"
+env -i PATH="$PATH" HOME="$OWN/home" TMPDIR="$OWN/tmp" \
+  XDG_RUNTIME_DIR="$OWN/runtime" LANG=C.UTF-8 \
+  xvfb-run -a -e "$OWN/tmp/xvfb.log" \
+    -s "-screen 0 1600x1100x24 -nolisten tcp" \
+    pnpm -C autobyteus-web test:e2e:<probe> --skip-build \
+      --output-dir <fresh-owned-output-directory>
+~~~
+
+Replace placeholders using the probe's package script/header. The probe must own
+isolated start, actual UI assertions, canonical stop/list and its fixtures.
+Use --skip-build only after a current build of the **same worktree**. Confirm the
+cleanup receipt before removing $OWN; preserve evidence outside that temp root.
+A failed/partial run is not a pass.
+
+**Do not run xvfb-run around isolated-app start as a standalone command and then
+exit it.** The launcher returns once ready; that wrapper would stop Xvfb while the
+detached app still needs its display. Keep manual start/control/stop in one
+long-lived Xvfb session, or wrap the entire owning probe as above.
+
+### Root-only containers
+
+Do not launch Electron as uid 0, and do not add sandbox-disabling flags.
+
+1. Build as the worktree owner (root may build).
+2. Allocate a test-owned unprivileged UID/GID, private HOME/TMPDIR/runtime and
+   evidence directory. Give that identity read/execute access to the current
+   package and write access only to its owned runtime/output directories.
+   Never reuse the user's home or change shared/production directory permissions.
+3. Launch the complete Xvfb/probe session under that identity. An existing
+   unprivileged worker account is suitable with a fresh private home. A root
+   container with setpriv can use a dedicated numeric UID/GID without modifying
+   account databases:
+
+Prepare only test-owned directories first (choose an unused numeric UID/GID, or
+an existing dedicated worker identity):
+
+~~~bash
+test -n "$TEST_UID" || { echo "Set the dedicated unprivileged runtime UID"; exit 1; }
+test "$TEST_UID" -gt 0 || { echo "Electron runtime UID must not be root"; exit 1; }
+test -n "$TEST_GID" || TEST_GID="$TEST_UID"
+OWN=$(mktemp -d)
+mkdir -p "$OWN/bin" "$OWN/home" "$OWN/tmp" "$OWN/runtime"
+chmod 711 "$OWN"
+corepack enable --install-directory "$OWN/bin"
+export PATH="$OWN/bin:$PATH"
+chown "$TEST_UID:$TEST_GID" "$OWN/home" "$OWN/tmp" "$OWN/runtime"
+chmod 700 "$OWN/home" "$OWN/tmp" "$OWN/runtime"
+mkdir -p autobyteus-web/test-results
+OUT=$(mktemp -d "$PWD/autobyteus-web/test-results/linux-desktop.XXXXXX")
+chown "$TEST_UID:$TEST_GID" "$OUT"
+~~~
+
+Then run the complete probe; use "$OUT" as its output directory:
+
+~~~bash
+setpriv --reuid="$TEST_UID" --regid="$TEST_GID" --clear-groups \
+  env -i PATH="$PATH" HOME="$OWN/home" TMPDIR="$OWN/tmp" \
+    XDG_RUNTIME_DIR="$OWN/runtime" LANG=C.UTF-8 \
+    xvfb-run -a -e "$OWN/tmp/xvfb.log" \
+      -s "-screen 0 1600x1100x24 -nolisten tcp" \
+      pnpm -C autobyteus-web test:e2e:<probe> --skip-build \
+        --output-dir "$OUT"
+~~~
+
+The UID/GID and writable directories must be prepared first; the worktree's build
+need not be made writable to the application user. Run all lifecycle commands
+under the same private environment so they address the same instance registry.
+Use only the returned instanceId/controlPort/serverPort, never example ports.
+If interrupted, stop **that instance** through the canonical launcher; do not
+kill Electron or X servers globally.
+
+After a run, check: canonical stop confirmed, own instance absent from list, own
+ports closed, auto data root removed, fixtures/evidence handled, and the owned
+virtual display/socket gone. Existing displays/processes/data stay unchanged.
 
 ## Limitations
 
