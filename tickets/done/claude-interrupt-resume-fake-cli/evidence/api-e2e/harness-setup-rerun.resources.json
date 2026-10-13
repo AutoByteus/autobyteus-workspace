@@ -1,0 +1,58 @@
+{
+  "seconds": 7.885,
+  "exit": 0,
+  "timedout": false,
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-claude-validation-jcb1r1tf",
+  "privateStateEntryCountBeforeRemoval": 1330,
+  "privateTopLevelStateBeforeRemoval": [
+    "home",
+    "home/.cache",
+    "home/Library",
+    "tmp",
+    "tmp/node-compile-cache"
+  ],
+  "privateTmpNonCacheStateBeforeRemoval": [],
+  "ownedGroupRemaining": [],
+  "fixtureChildrenObserved": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 82422,
+      "ppid": 82420,
+      "pgid": 82422,
+      "command": "(node)"
+    },
+    {
+      "pid": 82439,
+      "ppid": 82422,
+      "pgid": 82422,
+      "command": "(node)"
+    },
+    {
+      "pid": 82448,
+      "ppid": 82439,
+      "pgid": 82422,
+      "command": "(esbuild)"
+    },
+    {
+      "pid": 82450,
+      "ppid": 82439,
+      "pgid": 82422,
+      "command": "(node)"
+    },
+    {
+      "pid": 82453,
+      "ppid": 82450,
+      "pgid": 82422,
+      "command": "(schema-engine-da)"
+    },
+    {
+      "pid": 82458,
+      "ppid": 82439,
+      "pgid": 82422,
+      "command": "/Users/normy/.hermes/node/bin/node --conditions node --conditions development --experimental-import-meta-resolve --require /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/suppress-warnings.cjs /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/workers/forks.js"
+    }
+  ],
+  "privateRootRemoved": true,
+  "unhandledErrorMarker": false,
+  "testWorkspaceRemnants": []
+}

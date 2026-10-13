@@ -1,0 +1,288 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mAgent websocket attached for run claude-runtime-error-API-CL01
+Created agent session 43fdef3e-d39f-4fe8-be51-ff250ae5f84d for run claude-runtime-error-API-CL01
+Agent WebSocket connected: session=43fdef3e-d39f-4fe8-be51-ff250ae5f84d, run=claude-runtime-error-API-CL01
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClosed agent session 43fdef3e-d39f-4fe8-be51-ff250ae5f84d
+Agent WebSocket disconnected: 43fdef3e-d39f-4fe8-be51-ff250ae5f84d
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mAgent websocket attached for run claude-runtime-error-API-CL02
+Created agent session 4ca40586-9f6f-491f-aab5-f9544b5a79f1 for run claude-runtime-error-API-CL02
+Agent WebSocket connected: session=4ca40586-9f6f-491f-aab5-f9544b5a79f1, run=claude-runtime-error-API-CL02
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClosed agent session 4ca40586-9f6f-491f-aab5-f9544b5a79f1
+Agent WebSocket disconnected: 4ca40586-9f6f-491f-aab5-f9544b5a79f1
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mAgent websocket attached for run claude-runtime-error-API-CL03
+Created agent session 2c28c466-59e1-49f9-8d99-0cc2db472a07 for run claude-runtime-error-API-CL03
+Agent WebSocket connected: session=2c28c466-59e1-49f9-8d99-0cc2db472a07, run=claude-runtime-error-API-CL03
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClosed agent session 2c28c466-59e1-49f9-8d99-0cc2db472a07
+Agent WebSocket disconnected: 2c28c466-59e1-49f9-8d99-0cc2db472a07
+
+ [31m×[39m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mAPI-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn[32m 236[2mms[22m[39m
+[31m   → Claude WebSocket test/owned cleanup failed.[39m
+ [31m×[39m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mAPI-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn[32m 77[2mms[22m[39m
+[31m   → Claude WebSocket test/owned cleanup failed.[39m
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mAgent websocket attached for run claude-runtime-error-API-CL04
+Created agent session f94f72ff-629d-4cdc-bb10-47e710713897 for run claude-runtime-error-API-CL04
+Agent WebSocket connected: session=f94f72ff-629d-4cdc-bb10-47e710713897, run=claude-runtime-error-API-CL04
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClosed agent session f94f72ff-629d-4cdc-bb10-47e710713897
+Agent WebSocket disconnected: f94f72ff-629d-4cdc-bb10-47e710713897
+
+ [31m×[39m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mAPI-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn[32m 73[2mms[22m[39m
+[31m   → Claude WebSocket test/owned cleanup failed.[39m
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2minterrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+[22m[39mAgent websocket attached for run claude-ws-interrupt-same-process
+Created agent session afe10a73-e2ab-44a4-a9dc-f5996d6718b5 for run claude-ws-interrupt-same-process
+Agent WebSocket connected: session=afe10a73-e2ab-44a4-a9dc-f5996d6718b5, run=claude-ws-interrupt-same-process
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2minterrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+[22m[39mClosed agent session afe10a73-e2ab-44a4-a9dc-f5996d6718b5
+Agent WebSocket disconnected: afe10a73-e2ab-44a4-a9dc-f5996d6718b5
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mdelivers a message sent to a busy agent into the running turn (AC-003)
+[22m[39mAgent websocket attached for run claude-ws-busy-append
+Created agent session f42093f1-bb56-43bd-b648-0fe9d2e2ce42 for run claude-ws-busy-append
+Agent WebSocket connected: session=f42093f1-bb56-43bd-b648-0fe9d2e2ce42, run=claude-ws-busy-append
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mdelivers a message sent to a busy agent into the running turn (AC-003)
+[22m[39mClosed agent session f42093f1-bb56-43bd-b648-0fe9d2e2ce42
+Agent WebSocket disconnected: f42093f1-bb56-43bd-b648-0fe9d2e2ce42
+
+ [31m×[39m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mAPI-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn[32m 75[2mms[22m[39m
+[31m   → Claude WebSocket test/owned cleanup failed.[39m
+ [31m×[39m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22minterrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)[32m 78[2mms[22m[39m
+[31m   → Claude WebSocket test/owned cleanup failed.[39m
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mrequeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+[22m[39mAgent websocket attached for run claude-ws-append-after-settle
+Created agent session 4c95f2c5-f9a2-45da-9f5b-721ab9f4c8fd for run claude-ws-append-after-settle
+Agent WebSocket connected: session=4c95f2c5-f9a2-45da-9f5b-721ab9f4c8fd, run=claude-ws-append-after-settle
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mrequeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+[22m[39mClosed agent session 4c95f2c5-f9a2-45da-9f5b-721ab9f4c8fd
+Agent WebSocket disconnected: 4c95f2c5-f9a2-45da-9f5b-721ab9f4c8fd
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mannounces a background completion and streams the turn Claude starts on its own (AC-002)
+[22m[39mAgent websocket attached for run claude-ws-background-notice
+Created agent session 4c8ad393-7f9a-4d87-92e4-aa45d7f4596d for run claude-ws-background-notice
+Agent WebSocket connected: session=4c8ad393-7f9a-4d87-92e4-aa45d7f4596d, run=claude-ws-background-notice
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mannounces a background completion and streams the turn Claude starts on its own (AC-002)
+[22m[39mClosed agent session 4c8ad393-7f9a-4d87-92e4-aa45d7f4596d
+Agent WebSocket disconnected: 4c8ad393-7f9a-4d87-92e4-aa45d7f4596d
+
+ [31m×[39m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mdelivers a message sent to a busy agent into the running turn (AC-003)[32m 78[2mms[22m[39m
+[31m   → Claude WebSocket test/owned cleanup failed.[39m
+ [31m×[39m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mrequeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)[32m 91[2mms[22m[39m
+[31m   → Claude WebSocket test/owned cleanup failed.[39m
+ [31m×[39m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mannounces a background completion and streams the turn Claude starts on its own (AC-002)[32m 111[2mms[22m[39m
+[31m   → Claude WebSocket test/owned cleanup failed.[39m
+ [2m[90m↓[39m[22m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket interrupt/resume live E2E[2m > [22muses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 8 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mAPI-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mAPI-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mAPI-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mAPI-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[31m[1mAggregateError[22m: Claude WebSocket test/owned cleanup failed.[39m
+[36m [2m❯[22m closeHarness tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m511:28[22m[39m
+    [90m509| [39m  }
+    [90m510| [39m  [35mawait[39m [34mattempt[39m(() [33m=>[39m harness[33m.[39mapp[33m.[39m[34mclose[39m())[33m;[39m
+    [90m511| [39m  if (errors.length) throw new AggregateError(errors, "Claude WebSocke…
+    [90m   | [39m                           [31m^[39m
+    [90m512| [39m}[33m;[39m
+    [90m513| [39m
+[90m [2m❯[22m withHarness tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m528:3[22m[39m
+[90m [2m❯[22m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m557:7[22m[39m
+[90m [2m❯[22m recordCase tests/e2e/helpers/runtime-error-case-evidence.ts:[2m10:24[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'AggregateError: Claude exact component cleanup failed.\n    at ClaudeSessionCleanup.cleanupSessionResources (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:40:30)', message: 'Claude exact component cleanup failed.', errors: [ { stack: 'TypeError: this.runSessions.deactivateForRun is not a function\n    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)\n    at ClaudeSession.releaseAgentToolsMcp (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:192:65)\n    at stages (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:32:35)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:36:13\n    at Array.map (<anonymous>)\n    at ClaudeSessionCleanup.cleanupSessionResources (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:34:53)\n    at ClaudeSessionManager.releaseExactSession (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts:135:41)\n    at ClaudeSessionManager.closeRunSession (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts:127:16)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:493:46\n    at attempt (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:480:17)', message: 'this.runSessions.deactivateForRun is not a function', constructor: 'Function<TypeError>', name: 'TypeError', toString: 'Function<toString>' } ], constructor: 'Function<AggregateError>', name: 'AggregateError', toString: 'Function<toString>' }, { message: 'expected true to be false // Object.is equality', actual: true, expected: false, showDiff: true, operator: 'strictEqual', name: 'AssertionError', ok: false, stack: 'AssertionError: expected true to be false // Object.is equality\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94\n    at attempt (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:480:17)\n    at closeHarness (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:9)\n    at withHarness (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:528:3)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:557:7\n    at recordCase (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/helpers/runtime-error-case-evidence.ts:10:24)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20' } ] }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22minterrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+[31m[1mAggregateError[22m: Claude WebSocket test/owned cleanup failed.[39m
+[36m [2m❯[22m closeHarness tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m511:28[22m[39m
+    [90m509| [39m  }
+    [90m510| [39m  [35mawait[39m [34mattempt[39m(() [33m=>[39m harness[33m.[39mapp[33m.[39m[34mclose[39m())[33m;[39m
+    [90m511| [39m  if (errors.length) throw new AggregateError(errors, "Claude WebSocke…
+    [90m   | [39m                           [31m^[39m
+    [90m512| [39m}[33m;[39m
+    [90m513| [39m
+[90m [2m❯[22m withHarness tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m528:3[22m[39m
+[90m [2m❯[22m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m625:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'AggregateError: Claude exact component cleanup failed.\n    at ClaudeSessionCleanup.cleanupSessionResources (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:40:30)', message: 'Claude exact component cleanup failed.', errors: [ { stack: 'TypeError: this.runSessions.deactivateForRun is not a function\n    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)\n    at ClaudeSession.releaseAgentToolsMcp (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:192:65)\n    at stages (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:32:35)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:36:13\n    at Array.map (<anonymous>)\n    at ClaudeSessionCleanup.cleanupSessionResources (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:34:53)\n    at ClaudeSessionManager.releaseExactSession (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts:135:41)\n    at ClaudeSessionManager.closeRunSession (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts:127:16)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:493:46\n    at attempt (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:480:17)', message: 'this.runSessions.deactivateForRun is not a function', constructor: 'Function<TypeError>', name: 'TypeError', toString: 'Function<toString>' } ], constructor: 'Function<AggregateError>', name: 'AggregateError', toString: 'Function<toString>' }, { message: 'expected true to be false // Object.is equality', actual: true, expected: false, showDiff: true, operator: 'strictEqual', name: 'AssertionError', ok: false, stack: 'AssertionError: expected true to be false // Object.is equality\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94\n    at attempt (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:480:17)\n    at closeHarness (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:9)\n    at withHarness (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:528:3)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:625:5\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20' } ] }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mdelivers a message sent to a busy agent into the running turn (AC-003)
+[31m[1mAggregateError[22m: Claude WebSocket test/owned cleanup failed.[39m
+[36m [2m❯[22m closeHarness tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m511:28[22m[39m
+    [90m509| [39m  }
+    [90m510| [39m  [35mawait[39m [34mattempt[39m(() [33m=>[39m harness[33m.[39mapp[33m.[39m[34mclose[39m())[33m;[39m
+    [90m511| [39m  if (errors.length) throw new AggregateError(errors, "Claude WebSocke…
+    [90m   | [39m                           [31m^[39m
+    [90m512| [39m}[33m;[39m
+    [90m513| [39m
+[90m [2m❯[22m withHarness tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m528:3[22m[39m
+[90m [2m❯[22m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m679:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'AggregateError: Claude exact component cleanup failed.\n    at ClaudeSessionCleanup.cleanupSessionResources (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:40:30)', message: 'Claude exact component cleanup failed.', errors: [ { stack: 'TypeError: this.runSessions.deactivateForRun is not a function\n    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)\n    at ClaudeSession.releaseAgentToolsMcp (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:192:65)\n    at stages (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:32:35)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:36:13\n    at Array.map (<anonymous>)\n    at ClaudeSessionCleanup.cleanupSessionResources (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:34:53)\n    at ClaudeSessionManager.releaseExactSession (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts:135:41)\n    at ClaudeSessionManager.closeRunSession (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts:127:16)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:493:46\n    at attempt (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:480:17)', message: 'this.runSessions.deactivateForRun is not a function', constructor: 'Function<TypeError>', name: 'TypeError', toString: 'Function<toString>' } ], constructor: 'Function<AggregateError>', name: 'AggregateError', toString: 'Function<toString>' }, { message: 'expected true to be false // Object.is equality', actual: true, expected: false, showDiff: true, operator: 'strictEqual', name: 'AssertionError', ok: false, stack: 'AssertionError: expected true to be false // Object.is equality\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94\n    at attempt (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:480:17)\n    at closeHarness (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:9)\n    at withHarness (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:528:3)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:679:5\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20' } ] }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mrequeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+[31m[1mAggregateError[22m: Claude WebSocket test/owned cleanup failed.[39m
+[36m [2m❯[22m closeHarness tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m511:28[22m[39m
+    [90m509| [39m  }
+    [90m510| [39m  [35mawait[39m [34mattempt[39m(() [33m=>[39m harness[33m.[39mapp[33m.[39m[34mclose[39m())[33m;[39m
+    [90m511| [39m  if (errors.length) throw new AggregateError(errors, "Claude WebSocke…
+    [90m   | [39m                           [31m^[39m
+    [90m512| [39m}[33m;[39m
+    [90m513| [39m
+[90m [2m❯[22m withHarness tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m528:3[22m[39m
+[90m [2m❯[22m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m725:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'AggregateError: Claude exact component cleanup failed.\n    at ClaudeSessionCleanup.cleanupSessionResources (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:40:30)', message: 'Claude exact component cleanup failed.', errors: [ { stack: 'TypeError: this.runSessions.deactivateForRun is not a function\n    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)\n    at ClaudeSession.releaseAgentToolsMcp (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:192:65)\n    at stages (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:32:35)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:36:13\n    at Array.map (<anonymous>)\n    at ClaudeSessionCleanup.cleanupSessionResources (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:34:53)\n    at ClaudeSessionManager.releaseExactSession (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts:135:41)\n    at ClaudeSessionManager.closeRunSession (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts:127:16)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:493:46\n    at attempt (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:480:17)', message: 'this.runSessions.deactivateForRun is not a function', constructor: 'Function<TypeError>', name: 'TypeError', toString: 'Function<toString>' } ], constructor: 'Function<AggregateError>', name: 'AggregateError', toString: 'Function<toString>' }, { message: 'expected true to be false // Object.is equality', actual: true, expected: false, showDiff: true, operator: 'strictEqual', name: 'AssertionError', ok: false, stack: 'AssertionError: expected true to be false // Object.is equality\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94\n    at attempt (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:480:17)\n    at closeHarness (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:9)\n    at withHarness (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:528:3)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:725:5\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20' } ] }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mannounces a background completion and streams the turn Claude starts on its own (AC-002)
+[31m[1mAggregateError[22m: Claude WebSocket test/owned cleanup failed.[39m
+[36m [2m❯[22m closeHarness tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m511:28[22m[39m
+    [90m509| [39m  }
+    [90m510| [39m  [35mawait[39m [34mattempt[39m(() [33m=>[39m harness[33m.[39mapp[33m.[39m[34mclose[39m())[33m;[39m
+    [90m511| [39m  if (errors.length) throw new AggregateError(errors, "Claude WebSocke…
+    [90m   | [39m                           [31m^[39m
+    [90m512| [39m}[33m;[39m
+    [90m513| [39m
+[90m [2m❯[22m withHarness tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m528:3[22m[39m
+[90m [2m❯[22m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m776:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'AggregateError: Claude exact component cleanup failed.\n    at ClaudeSessionCleanup.cleanupSessionResources (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:40:30)', message: 'Claude exact component cleanup failed.', errors: [ { stack: 'TypeError: this.runSessions.deactivateForRun is not a function\n    at ClaudeAgentToolsMcpSessionState.release (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts:51:22)\n    at ClaudeSession.releaseAgentToolsMcp (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:192:65)\n    at stages (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:32:35)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:36:13\n    at Array.map (<anonymous>)\n    at ClaudeSessionCleanup.cleanupSessionResources (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts:34:53)\n    at ClaudeSessionManager.releaseExactSession (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts:135:41)\n    at ClaudeSessionManager.closeRunSession (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts:127:16)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:493:46\n    at attempt (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:480:17)', message: 'this.runSessions.deactivateForRun is not a function', constructor: 'Function<TypeError>', name: 'TypeError', toString: 'Function<toString>' } ], constructor: 'Function<AggregateError>', name: 'AggregateError', toString: 'Function<toString>' }, { message: 'expected true to be false // Object.is equality', actual: true, expected: false, showDiff: true, operator: 'strictEqual', name: 'AssertionError', ok: false, stack: 'AssertionError: expected true to be false // Object.is equality\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:94\n    at attempt (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:480:17)\n    at closeHarness (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:494:9)\n    at withHarness (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:528:3)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:776:5\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20' } ] }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m8 failed[39m[22m[2m | [22m[33m1 skipped[39m[90m (9)[39m
+[2m   Start at [22m 05:21:33
+[2m   Duration [22m 7.12s[2m (transform 3.66s, setup 26ms, import 5.76s, tests 820ms, environment 0ms)[22m
+

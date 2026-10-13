@@ -1,0 +1,10 @@
+{
+  "scope": "static preservation only; runtime evidence separate",
+  "comparedSource": "1f01e802",
+  "baselineMatchers": 57,
+  "currentMatchers": 57,
+  "identicalMatcherInventory": true,
+  "caseBodiesAndLiveGateByteIdentical": true,
+  "onlyAuthorityConformanceDelta": "7\t1\tautobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+  "fixtureSha256": "d408306b1decad92e9ddade8817c1768164a34791f94d25e6e4204ffcedd3933"
+}
