@@ -38,7 +38,8 @@
   - `origin/personal` @ `e3a6772951` merged cleanly as `e0a0ef9482`, and all 13 checks passed.
   - Finalization into `personal` with no release: the user did not ask for one, and `RELEASE.md` defaults to no release.
 - Docs sync: no further change. Round 2 added tests only, and the base's docs edit is in another section.
-- Terminal return to `/solution_designer`: sent after finalization and cleanup.
+- Finalized: `personal` @ `5eb5361cdd`, no release. Cleanup completed.
+- Terminal return to `/solution_designer`: `Sent` after this record commit is pushed.
 - Follow-up candidates:
   - O-4 (new, from CRR-004): a member's started-default fallback note still shows next to a user-chosen model.
   - O-1..O-3.

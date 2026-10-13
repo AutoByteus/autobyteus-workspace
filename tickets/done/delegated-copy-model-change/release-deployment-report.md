@@ -69,24 +69,33 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/delegated-copy-model-change`: `No` (after verification)
+- Ticket moved to `tickets/done/delegated-copy-model-change`: `Yes` (`b2c576f727`).
 
 ## Version / Tag / Release Commit
 
-- Pending the user's release decision. The next beta would be `v1.5.3-beta.4`.
+- `Not required`. No release was requested, and `RELEASE.md` → Release Decision defaults to no release. No version bump, tag or release commit. A release is available on request.
 
 ## Repository Finalization
 
-- Ticket branch: `codex/delegated-copy-model-change` (local).
-- Finalization target: `origin` / `personal` through `finalize/delegated-copy-model-change` with `--no-ff`.
-- Status: not started.
+- Ticket branch: `codex/delegated-copy-model-change`. It was local only and never pushed, per the guide's flow. The last commit was `b2c576f727`.
+- Target advanced after verification: `Yes`, twice.
+  - To `e3a6772951`: merged as `e0a0ef9482`, and 13 checks were rerun.
+  - To `db22ec0974`: another ticket's records only, so no rerun was needed.
+- Finalization:
+  - `finalize/delegated-copy-model-change` from `origin/personal` @ `db22ec0974`.
+  - `git merge --no-ff codex/delegated-copy-model-change` gave `5eb5361cdd`.
+  - Licensing and hygiene pass.
+  - The base was re-fetched and confirmed unchanged. Then `git push origin HEAD:personal` moved it `db22ec0974..5eb5361cdd`.
+- Repository finalization status: `Completed`.
 
 ## Post-Finalization Cleanup
 
-- Planned after finalization:
-  - remove the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change` and prune;
-  - delete the local ticket and finalize branches;
-  - remove `/tmp/dcm-agents`.
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change`: removed and pruned, after deleting its untracked application SDK `dist/` build outputs.
+- Local branches deleted: `codex/delegated-copy-model-change` (was `b2c576f727`) and `finalize/delegated-copy-model-change` (was `5eb5361cdd`).
+- Remote branch cleanup: `Not required` (never pushed).
+- `/tmp/dcm-agents` removed.
+- This record was committed from a temporary detached worktree, removed afterwards.
+- Cleanup result: `Completed`.
 
 ## Release Notes Summary
 
@@ -103,7 +112,15 @@
 - After the merge: revert the merge on `personal`. Older builds read the trees tolerantly and ignore the unknown choice fields, so the copies run on their started values again.
 - After a release: fix forward; never move a published tag.
 
+## Release / Publication / Deployment
+
+- Applicable: `No`. The release decision is not to release: none was requested, and the guide defaults to no release. Result: `Not required`.
+
 ## Final Status
 
-- Explicit user verification: `No`. Finalization: `No`. Release: pending. Cleanup: `No`.
-- Terminal package eligible: `No`.
+- Verification: `Yes`, from evidence (DR-002; see `handoff-summary.md` → Verification). The user's check was not needed.
+- Repository finalization complete: `Yes` (`personal` @ `5eb5361cdd`).
+- Release/deployment: `Not required` (no release requested).
+- Safe cleanup: `Yes`.
+- Unresolved blocker: none.
+- Terminal package eligible: `Yes`. Sent to `/solution_designer` after this record is pushed.
