@@ -2,7 +2,7 @@
 
 ## Document Status
 - Package: `agent-team-members-after-description`; Project Task `project_task_7fd4b73e-075b-464c-b313-bbbd59f45797`.
-- Status: Approved. Baseline: R1; current solution revision: SR-002; approval captured in SR-001.
+- Status: Approved. Baseline: R1; current solution revision: SR-004; R1 approval captured in SR-001, intended behavior unchanged.
 - Owner: /software_engineering_team/solution_designer. Date: 2026-10-13.
 - Approval: Solution Designer within the user-decided direction, 2026-10-13. Reference: conversation message beginning “I’ve approved the requirements within your requested scope: Description → Members → Instructions → Handoffs on all Agent Team detail pages”. Exact basis R1: REQ-001–003, AC-001–004, SCN-001–003 and preservation boundaries; no behavior-defining supplement. No Needs user decision in implementation scope.
 - Authorities read: solution-designer/SKILL.md; references/requirements-engineering.md; requirements-doc and investigation-notes templates; root and autobyteus-web AGENTS.md; root DESIGN.md and TESTING.md (2026-10-13).
@@ -88,3 +88,6 @@ Content ready: Yes; current behavior evidence-backed, desired/preserved behavior
 
 ## Delivery Constraints (not a claim of completion)
 Relevant regressions and rendered UI verification required; merge into personal; user must explicitly verify in the app before finalization gates pass. Delivery records source/build provenance, finalization, cleanup and applicable release decision with user agreement. Tests/screenshots do not replace user verification.
+
+## SR-003 — User-directed scope separation (unchanged R1)
+Task Manager confirmation, 2026-10-13: baseline API-F001/loadIssue and API-F002/loadIssues are tracked in separate TODO/not-dispatched Task `project_task_6b9ce371-7593-42d7-9d20-3c637512830a — Fix Agent/Org creation cache field completeness`. This enforces the existing UI-only Scope Guardrail; it adds no requirements to R1. Prepared unreviewed commit d8bac598606001b702e300eeaeefe06c3caf0d3d and its reproducer must be preserved outside the active UI source/test package, not discarded or duplicated. Broader API-REV-002 Fail remains historical truth; follow-up tracking is not defect resolution or full-app certification. A fresh API-owner scoped UI disposition, explicit user verification, release agreement and Delivery finalization/cleanup are still required. No follow-up implementation dispatch authorized.

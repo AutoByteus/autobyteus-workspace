@@ -1,7 +1,7 @@
 # Design Spec — Members directly after Description
 
 ## Solution And Approval Basis
-- Package: agent-team-members-after-description; current solution revision: SR-002.
+- Package: agent-team-members-after-description; current solution revision: SR-004 (preservation/separation receipt; R1 and technical design unchanged).
 - Requirements: R1 Approved by Solution Designer within user-decided direction; exact informing-message reference in requirements-doc.md. Scope REQ-001–003, AC-001–004; no behavior-defining supplement.
 - Design status: Ready / Architecture Design Complete, 2026-10-13.
 - Investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/investigation-notes.md.
@@ -98,3 +98,9 @@ Suggested relevant layer: `pnpm -C autobyteus-web test:nuxt components/agentTeam
 
 ## Key Tradeoffs And Risks
 Whole-block movement is smallest correct change and preserves document/visual order. Existing styles retain responsive behavior without new CSS. Source-current render/tests remain unexecuted until downstream work. Do not test user's running app/data or pre-change installed binary. Main checkout is dirty and diverges; RELEASE.md explicitly avoids it for finalization. Release defaults to none unless user requests otherwise at verification, but record decision; urgency does not authorize tags/publication. No other design blocker.
+
+## SR-003 — Scope recovery and source-package sequencing
+The approved local template design/classification remains Small/Low. Existing baseline Agent/Org fragment fixes and standalone failing mutation-cache reproducer are not part of this UI implementation. Implementation owner must preserve the existing work under the already observed `preserve/agent-definition-cache-fix-d8bac59860` (pin d8bac598606001b702e300eeaeefe06c3caf0d3d) and durable follow-up handover before excluding baseline source/test changes from active UI delta. Revert 09731dcd140a08e5bdab6e0889d54aaaf2812f22 restores the two mutation files, but at observation HEAD de450f82ba35561f08905486414a32a22dbc7cf0 the initial definitionMutationCache.spec.ts still remains an added active test. Separation therefore is not yet complete. Preserve Delivery edits and raw histories; do not rewrite/delete API-REV-002 Fail or create a new baseline fix. The API owner then issues a new source-pinned scoped UI validation disposition, with broader baseline app-health findings linked and unresolved; Delivery retains human/release/finalization gates. Follow-up implementation remains TODO/not dispatched. No new architecture/review or requirements approval is needed for unchanged UI intent; an out-of-scope defect is not a scoped UI failure merely because it was encountered in setup.
+
+## SR-004 — Preservation / separation completion observed
+Implementation IR-004 and baseline-follow-up-handover.md now supersede earlier incomplete SR-003 observation without rewriting it. At HEAD52a5a1ee4ca88f35d2ee21b472018bb32d481360, retained d8 branch remains exact; source-separation commitcf18b16f46230d20bc2c1d8c1c19f7fc81bb8b71 excludes standalone baseline regression from active UI root. Read-only diff of both mutation docs/cache spec against integratedf13bdd0eb79aacc63dffa5995b9c86f359001468 is empty; cache spec no longer tracked there. Prepared patch/full test hashes match manifest. Baseline defects remain unresolved/unreviewed and historical API-REV-002 Fail retained. New scoped API disposition and Delivery gates remain outstanding. No new design work/re-review/implementation route is triggered by this preservation receipt.
