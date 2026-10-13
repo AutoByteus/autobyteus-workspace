@@ -1,78 +1,85 @@
 # Implementation Handoff — settings-saved-model-refresh
 
-## Result / Current Implementation
-**Implementation Complete — IR-001**, initial round, 2026-10-13. Ready for independent executable validation; **not a desktop/API/E2E pass**.
+## Current Result / Implementation
+**Implementation Complete — IR-002 (Rework)**, 2026-10-13. Delivery's code-local integration conflict is resolved, with implementation-scoped checks passing. **Integrated API/E2E revalidation and Delivery verification are still required.** No release or finalization performed.
 
-Stopped Agent Settings now loads its own authoritative collaboration tree/closure snapshot alongside parent metadata. Delegated rows use that snapshot, while active Agent rows retain live-stream authority. Save remains pending through canonical readback; committed-but-unrefreshed settings show an explicit error and read-only Refresh, not Saved or false unsaved work. Same-target refresh keeps the Settings instance/disclosures mounted. Existing inheritance/row builders, mutation contracts and server persistence are unchanged.
+The complete product implementation remains the SR-002 canonical stopped Settings snapshot/readback fix: stopped Agent Settings loads parent metadata plus its own collaboration tree/closed-task snapshot; delegated rows use that snapshot, while active Agent rows retain live-stream authority. Save remains pending through canonical readback. Committed-but-unrefreshed settings show an explicit error and read-only Refresh instead of Saved or false unsaved work. Same-target refresh preserves the mounted editor/disclosures. Existing inheritance, mutation, persistence and runtime contracts are unchanged.
 
-Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh`
-Branch: `codex/settings-saved-model-refresh`; base `1a2379c57088e8976aeb0f43e1e607e1acc103c6`.
+IR-002 integrates latest target and resolves the shared test runner only. It preserves both Settings SSR/desktop coverage and incoming task-copy-stop-style real CSS/keyboard/Stop lifecycle coverage. One ledger owner now writes one Started and one Completed checkpoint per case; completion follows evidence JSON persistence. No new product behavior was introduced by conflict resolution.
 
-## Upstream Artifact Package
-All canonical package files are under `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/`:
-- `requirements-doc.md` — Approved SR-001; Scope Guardrail unchanged.
-- `investigation-notes.md` — original investigation E-01..13; reproduction limits still apply to real backend evidence.
-- `design-spec.md` — Ready SR-002, Medium/Low.
-- `solution-revision-record.md` — SR-001/002.
-- `handoff-architecture-design-complete.md` — original direction, full context and exact Task Manager receipt routing.
-- `implementation-revision-record.md` — current IR-001 baseline.
-- `implementation-local-evidence.md` — local commands, proof boundaries, rendered inspection and cleanup.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh`
+- Branch: `codex/settings-saved-model-refresh`; bootstrap `1a2379c57088e8976aeb0f43e1e607e1acc103c6`.
+- Prior API-validated candidate: `d25b1e74edefe6ce7f310cedb30b67a818d1978e`.
+- Delivery evidence preserved byte-for-byte in `24562de0637ee19fd9751fa96d4e60da6972c14c`.
+- Integrated `origin/personal`: `0c37f58d88220be3683a15da6e0956d6ab13c4db`.
+- Source merge commit: **`b312eaf758bffdaa9db285754e0cd382f499e0c2`**, both parents retained, no unresolved index. Subsequent IR-002 artifact commit does not alter code.
 
-Supplemental screenshot paths remain in the upstream handoff/investigation; observational only, not a UI redesign spec. Product UI/UX supplements, design-review report, architecture-review revision record: **N/A — not applicable** (configured direct Medium/Low route). Related ARCH-REV, CRR, API-REV, DR and triggering finding IDs: **N/A**. No prior implementation result inferred.
+## Upstream / Cumulative Package
+Canonical directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/`.
+- `requirements-doc.md`: Approved **SR-001**, Scope Guardrail unchanged.
+- `investigation-notes.md`, `design-spec.md`: Ready **SR-002**, Medium/Low; approved read-model design remains authoritative.
+- `solution-revision-record.md`, `handoff-architecture-design-complete.md`: solution history, original context and exact final Task Manager receipt routing.
+- `implementation-revision-record.md`: IR-001 baseline retained, current **IR-002** appended.
+- `implementation-local-evidence.md`: original local reproduction/implementation checks, not current integrated validation.
+- `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-test-case-ledger.md`, `api-e2e-revision-record.md`: prior **API-REV-001**, 95% before integration. Its recorded result is not reclassified or reused as a merged-base pass here.
+- Trigger: Delivery **DR-001**, `release-deployment-report.md`, `delivery-revision-record.md`, `docs-sync-report.md`, `handoff-summary.md`, `evidence/delivery/initial-integration.json` and `initial-integration-conflict.patch`. No separate finding ID assigned; the report's Initial Delivery Integration Refresh conflict is the finding.
+- Current local evidence: `implementation-integration-evidence.md`, `evidence/implementation-ir-002/`.
 
-## Routing Classification / Lightweight Self-review
-- **task_size=Medium; architectural_risk=Low — Confirmed**, as design classification section SR-002.
-- Nine production files, four colocated test files; renderer read model, internal settlement/ownership and existing refresh presentation only. No new wire, runtime, persistence, security or deployment contract.
-- Self-review **complete**: traced mutation → canonical load → atomic draft publication → rendered rows, mutation/readback failure distinction, next-edit baseline, exact run/node ownership at awaits, current query null versus failed query, active stream preservation, root-only snapshot preservation and same-view disclosure continuity.
-- Selected route: **Direct API/E2E**, rule lookup 2026-10-13 selected `/software_engineering_team/api_e2e_engineer`. Independent source review N/A; no design-impact escalation trigger found.
-- Current local evidence: 25 test files / 170 tests pass; production web build and web/localization guards pass. No provider calls or user run/data access.
+Observational screenshots remain referenced in the upstream investigation. Product UI/UX supplements, independent design/architecture review reports and **ARCH-REV/CRR: N/A — not applicable**, configured direct low-risk route. No missing-record prior result inferred. Delivery DR-001 artifacts are historical blocked records, not overwritten by implementation.
+
+## Routing Classification / Self-review
+- **task_size=Medium; architectural_risk=Low — Confirmed** against SR-002 classification and current merge.
+- No contract, persistence, security, deployment or runtime-lifecycle change in the resolution. Imported Stop color change is the target's separate approved implementation, preserved without alteration.
+- Selected route: **Direct API/E2E**. Current `get_handoff_rules` selected the most-specific **Delivery-requested direct-route Local Fix complete, Medium/Low** rule → `/software_engineering_team/api_e2e_engineer`. No independent source review or duplicate Delivery notification applies.
+- Lightweight self-review **complete**: compared shared harness against both parents, not an ours/theirs replacement. Preserved both coverage sets, selection order, unknown-case rejection, hash routing, root-manager targeting, Team disclosure, exact sibling configuration assertion, owned environment and cleanup. Verified one ledger parser/checkpoint path, failure continuation and evidence-before-completion ordering.
+- Prior product self-review remains applicable: mutation → canonical load → atomic publication → rows; mutation/read failure distinction; next-edit baseline; exact root/node guards; no live-context hydration or stopped fallback. **No design-impact trigger found.**
 
 ## Behavior Implementation Trace
-| Behavior | Actual production path / outcome |
+| Behavior | Actual production path and result |
 |---|---|
-| BEH-001 / REQ-001/002 | `existingRunConfigStore.readAgentCanonical` uses parent resume read plus public `readAgentRunCollaboration`; `syncAgentCanonical` copies only tree/closure fields. `ExistingRunConfigEditor.delegatedRows` selects stopped snapshot versus active view. `delegatedLaunchDraftStore.save` invokes required canonical reconciliation before clearing and reporting success. Existing builders retain Team follower/member policy. |
-| BEH-002 / REQ-003 | Mutation refusal/exception retains edits. Successful write calls `reloadCanonical(true)`; committed root edits cease to be unsaved, read failure marks reconciliation-required and localized saved-but-refresh-failed error. Committed delegated edits are cleared without success. `retryCanonicalRefresh` rereads the complete Agent snapshot; null-draft error surface now offers Refresh. Cancel remains no-write. |
-| BEH-003 / REQ-004/005 | Existing backend eligibility and fixed runtime rules unchanged; frontend lock covers mutation and readback. Request/node guards prevent stale publication, including root-only results and Team retry. No attach/restore/stream-context mutation/full-history hydration added. Existing active-context/closure/row regressions pass; desktop continuity proof remains downstream. |
+| BEH-001 / REQ-001/002 | `existingRunConfigStore.readAgentCanonical` reads parent resume + public `readAgentRunCollaboration`; `syncAgentCanonical` retains only copied tree/closure data. `ExistingRunConfigEditor.delegatedRows` selects stopped snapshot versus active view. `delegatedLaunchDraftStore.save` waits for required canonical reconciliation. Existing builders retain Team follower/member policy. Original implementation byte-unchanged by integration. |
+| BEH-002 / REQ-003 | Mutation refusal/exception retains edits; `reloadCanonical(true)` clears committed root draft, marks failed reconciliation with specific localized error; committed delegated edits clear without success. `retryCanonicalRefresh` rereads complete Agent snapshot, with Refresh available for null-draft error too. Cancel stays no-write. Byte-unchanged. |
+| BEH-003 / REQ-004/005 | Existing backend eligibility/fixed runtime unchanged; saving lock covers mutation/readback. Request/node guards protect publication, root-only results and Team retry. No attach/restore/full-history hydration added. Incoming shared Stop behavior and tests are preserved. Integration unit checks pass; integrated rendered/runtime proof remains downstream. |
 
-Changes stayed within Scope Guardrail: **Yes**.
+Scope Guardrail respected: **Yes**.
 
-## Key Files / Ownership
-Paths below are relative to the worktree:
-- `autobyteus-web/types/agent/ExistingRunModelConfigDraft.ts`: specialized required nullable Agent snapshot, no shared DTO expansion.
-- `autobyteus-web/stores/existingRunConfigStore.ts`: complete Agent read and copied publication; truthful boolean load outcomes; same-target/node draft retention and async ownership.
-- `autobyteus-web/stores/existingRunConfigResultActions.ts`: complete Agent retry/indeterminate read; guarded Team retry.
-- `autobyteus-web/stores/existingRunConfigEditActions.ts`: committed reload outcome and truthful error.
-- `autobyteus-web/stores/delegatedLaunchDraftStore.ts`: mutation/readback settlement, per-bind save generation, node-scoped options. Options refresh after an accepted write also covers failed canonical readback.
-- `autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue`: snapshot selection, stable selection binding, save callback, locks and null-draft Refresh.
-- `autobyteus-web/components/run-settings/ExistingRunSettings.vue`: specific readback error remains visible with Refresh instead of being obscured by generic warning.
-- `autobyteus-web/localization/messages/{en,zh-CN}/runSettings.ts`: saved-but-unrefreshed copy.
-- Tests: `ExistingRunConfigEditor.savedSnapshot.spec.ts` (new), existing delegatedSave component spec, existingRunConfigStore/delegatedLaunchDraftStore specs.
+## Key Files / Delta
+Original production files remain unchanged: `types/agent/ExistingRunModelConfigDraft.ts`; stores `existingRunConfigStore.ts`, `existingRunConfigResultActions.ts`, `existingRunConfigEditActions.ts`, `delegatedLaunchDraftStore.ts`; `components/workspace/config/ExistingRunConfigEditor.vue`; `components/run-settings/ExistingRunSettings.vue`; localization `{en,zh-CN}/runSettings.ts`, all under `autobyteus-web/`.
 
-## Design Health / Clean-cut / Data Checks
-Bug Fix, Local Implementation Defect confirmed by failing mounted component before production edits. No broad refactor needed; existing Settings owner is sufficient. Implementation matches SR-002; no structural escalation.
+IR-002 conflict resolution: `autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs`.
+- Kept incoming `stopPaint`, `sidebarPaint`, `taskOfCopy`, `keyboardStopCopy` unchanged and called from DCP-001/002. Keyboard requests are delayed then forwarded to real backend; no fabricated Stop response.
+- Kept SSR-001..004 registration, desktop adapter/setup/teardown, explicit selected case order, hash routes, root-manager and disclosure fixes, exact Grok sibling settings assertion. SSR case module, desktop fixture and package script are byte-identical to API-REV-001.
+- Consolidated `ledgerFile`/`checkpoint`; removed duplicate inline writes and dead case-filter guard. Each result JSON is written before Completed and before next case starts; failure result/screenshot/exit status preserved.
+- Automatically merged `DelegatedStopButton.vue` and its test are exactly the target versions; rest changes from red to neutral gray, existing hover/focus/pending behavior retained.
 
-Removed the stopped-Agent runtime-view source and metadata-only Agent reconciliation path; active runtime view remains a supported distinct lifecycle, not fallback. Removed early success settlement and obsolete reload-only assertion. No compatibility wrapper, dual write, optimistic saved overlay or new cache. No confirmed dead code left in touched modules; no newly discovered outside-scope dead code/follow-up. Shared structures remain tight; general/project design guidance reapplied.
+## Design Health / Clean-cut / Data
+Bug Fix / Local Implementation Defect remains confirmed; no broad refactor needed. Current package matches SR-002. General design principles and project DESIGN.md reapplied. No compatibility wrapper, alternate stale read path, optimistic saved overlay, new cache, dual write or loosened shared DTO. Duplicate ledger machinery and redundant filter removed; no confirmed new outside-scope dead code/follow-up.
 
-Size guard: all production files below 500 effective non-empty lines; largest `existingRunConfigStore.ts` **460 → 494**, editor **383 → 384**; no production changed-line delta >220. No oversized preexisting touched file needs a follow-up.
+Production size guard still satisfied: no original production file altered in IR-002; largest original `existingRunConfigStore.ts` 494 effective nonempty lines, editor 384; no original >220 production changed-line delta. Incoming Stop component does not grow. Probe/local self-check are tests, exempt from source-file limit.
 
-Persisted data decision **Not Affected** (SR-002 Legacy Removal / Persisted Data Decision). Existing mutation/writers/readers/formats/semantics unchanged; no migration, reset or version fallback. Conversations, IDs and resume behavior are not modified.
+Persisted-data decision **Not Affected** (SR-002 Legacy Removal / Persisted Data Decision), followed without migration/reset/version-specific fallback. IR-002 introduces no data transition.
 
-## Local Checks / Frontend Feedback Loop
-See `implementation-local-evidence.md` for exact commands and logs. Component regression failed before production edits with canonical fixture `new` while mounted row reverted to `old`; it passes after this change. This proves the missing renderer publication path with controlled transport, **not real backend persistence**.
+## Local Checks / Environment
+Current round on integrated source (details and commands in `implementation-integration-evidence.md`):
+- Syntax: three shared/SSR/desktop MJS modules pass `node --check`.
+- Actual runner/checkpoint source evaluated with synthetic cases: **five variants pass** (desktop absolute ledger, browser relative ledger, default order, no ledger, unknown case); pass/fail/browser-error continuation, failure screenshot rejection, single checkpoints and durable evidence ordering checked. No backend/browser/app launched by this self-check.
+- Static preservation: **28 checks pass** against both Git parents.
+- Relevant web unit/component suites plus incoming Stop tests: **26 files / 181 tests pass**.
+- Web boundary/localization guards and literal audit: **Pass**; web production build **Pass**.
+- Resolved merge staged whitespace check passes. Historical raw DR-001 conflict patch contains two trailing-space hunk labels; retained byte-for-byte as evidence, not a source defect. Delivery must account for that if checking the entire ticket diff.
 
-Regression assertions cover read pending lock, preserved mounted view/disclosure, canonical saved summary, next original, same-model thinking/fast config, repeated save/reopen, Team follower/member own choice and neighboring instance, Cancel/refusal, committed read failure/read-only retry, initial error with no stale fallback, active live-view path, root/node stale completion, root-only snapshot preservation, stopped transition and successful null collaboration.
+Dependencies/build outputs retained. Do not stage untracked `autobyteus-application-backend-sdk/dist/` or `autobyteus-application-sdk-contracts/dist/`. Build reports existing module-type, old Browserslist and large-chunk warnings; no dependency or global config change made. No separate `vue-tsc` result (unavailable in IR-001). This is web compilation, **not a rebuilt Electron package**.
 
-Direct visual inspection used the source-current Nuxt dev preview on owned port 48317, actual editor/Settings/cards/member rows, fixture-only Apollo transport and unreachable backend 48318. Inspected collapsed/expanded rows, model menu, dirty Save bar, Save and unchanged expanded editor/summary showing saved-model without navigation, with root and neighboring Team unchanged. Existing spacing, typography, controls and Saved feedback looked consistent. Same-target draft retention prevents disclosure collapse while loading. Browser screenshots were viewed in the implementation tool transcript; no durable screenshot file is claimed. Browser control later timed out during the planned error-state inspection; error/retry states have component assertions, not manual visual proof. No mobile viewport or source-current desktop inspection claimed.
+No runtime servers/apps started in IR-002, no user data/runs touched, no provider calls, no push/archive/finalization/release, dirty main checkout untouched. Local runner temporary files removed.
 
-## Environment / Assumptions / Known Risks
-- Installed worktree dependencies and prepared Nuxt. First build required building workspace `application-sdk-contracts`; corrected and rebuilt successfully. Do not stage its untracked `dist/`.
-- Standalone `vue-tsc` is not installed in this package; attempted command is recorded, not a pass. Production build is the available compilation check used here.
-- No server or desktop instance started. Preview tab/server closed and temporary route removed; preview fixture source retained as `.vue.txt` evidence, not production code. No listener remains on 48317.
-- Read-only public collaboration query still transfers its existing envelope; Settings retains only required fields. No full-context hydration introduced.
-- Real API publication timing, actual isolated desktop, Team/Org full journeys, stop/resume continuity and all provider-specific UX remain independent downstream checks, not inferred from unit success. Scripted runtime validation only; **zero model quota**.
+## Frontend Feedback Loop / Evidence Boundaries
+IR-002 resolution is test-runner-only: **no newly designed/rendered UI**. Original IR-001 feedback loop remains in `implementation-local-evidence.md`: actual source-current components with fixture transport inspected through model change/Save and preserved open editor; error state manual check was blocked by tool timeout, with component tests instead. No fresh manual visual inspection claimed this round.
+
+The integrated target includes a separately delivered Stop visual change. Unit tests and semantic inspection here are not computed-style proof. **Both Stop styling/lifecycle and same-view Settings must run together on a fresh integrated build downstream.** Prior API-REV-001 asar predates the Stop source change and is not current for that purpose.
 
 ## Downstream Required Work
-1. Investigate/extend durable browser/API coverage at the existing delegated-launch-defaults probe or a focused sibling. Current probes previously kept the Agent parent running, so must explicitly stop the parent.
-2. **Mandatory AC-006**: source-current isolated desktop build, owned backend/public-API-created fixtures, stop parent → gear → edit Agent/copy/Team/member → Save → inspect before leaving Settings. Compare actual mutation and canonical query with current DOM/editor/summary; repeat/save settings-only/reopen; capture exact build/source identity, API/DOM assertions, screenshots and cleanup. No old installed binary or browser fixture substitution.
-3. Confirm Team followers, own defaults/choices, unrelated target identity, active-parent and Team/Org roots, rejection/network readback failure + read-only retry, no Save/Refresh resume, existing conversation continuity. Keep scenario expansion bounded to approved ACs.
-4. Follow configured downstream validation/delivery routes. **No release**. Delivery reads source-current RELEASE.md; safe finalization targets `origin/personal` without dirty main checkout. Return completed tested limitations and finalization/cleanup receipt via Solution Designer to exact Task Manager run `project_task_manager_a5f6d9d306e54970bafdad895bdf731d` for Task `5ee10f33-b73e-4373-b646-e87613e9c57b`.
+1. API/E2E independently reviews the merged shared harness and appends **API-REV-002**; retain API-REV-001 evidence/history. Revalidate the combined real journeys, not only syntax/unit results.
+2. **Freshly build the current isolated desktop** and run the nine-case `test:e2e:settings-saved-model-refresh` package route (SSR-001..004 + DCP-001..005), using a real owned backend, public fixture APIs, Node Manager selection and scripted runtimes. Do **not** use `--skip-build` against the API-REV-001 package. Preserve sandbox, owned roots/ports/processes and zero model quota.
+3. Explicitly verify DCP-001/002 actual parent/copy rest/hover/leave, selected rows, native Enter/Space focus, held pending/disabled duplicate suppression/reduced-motion, exact Stop target/Task-open/parent survival, together with existing model Save/resume. Inspect fresh ledger for one Started and Completed per case and current evidence paths.
+4. Preserve critical AC-006 no-navigation stopped-parent Save proof: current DOM/editor/summary equals accepted mutation plus canonical readback; repeat/config-only/reopen, Team followers/own choices/neighbors, failure + read-only retry, no Save/Refresh resume. Record source/bundle hashes, screenshots and cleanup. Choose browser/API reruns proportionately per TESTING.md; no old validation result silently upgraded.
+5. Normal validation route then Delivery: independently verify integrated evidence, sync docs, append **DR-002**, safely finalize target under current RELEASE.md. **No release authorized**. Final receipt via Solution Designer to Task Manager run `project_task_manager_a5f6d9d306e54970bafdad895bdf731d`, Task `5ee10f33-b73e-4373-b646-e87613e9c57b`.
