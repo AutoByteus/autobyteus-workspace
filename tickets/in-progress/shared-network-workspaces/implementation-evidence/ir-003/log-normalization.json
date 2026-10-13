@@ -1,0 +1,25 @@
+{
+  "operation": "trailing horizontal whitespace/redundant EOF only; all outcomes and messages retained",
+  "files": [
+    {
+      "path": "go-race-final.log",
+      "beforeSha256": "b722dd9598f5ac06b2fe292e25922fe78936b10520ab2378d9b2f68ebfdb0fbc",
+      "afterSha256": "f8aae8f141a1221e36e0459e7036eaad8f05797c960989c9594b8f4921c92c37"
+    },
+    {
+      "path": "mutation-missing-parent-mode.log",
+      "beforeSha256": "5b94cad0c22f01bd72dd22f30ee97b58f8326415031935f4d0d7163c24325b41",
+      "afterSha256": "969cd2d9da4a9ad98b0397d7fb33fb04e0579eff6b293ed160a8c08c89fa3357"
+    },
+    {
+      "path": "mutation-old-umask.log",
+      "beforeSha256": "1bdbefdc2c4d0ba4e40fa4846d9b1e07a0ec075a7e60281d48d818d9dce71601",
+      "afterSha256": "386d3ce6dbb48d1f4a73eab5c2f4a557d0dba1702f1281660b85db048a1b0f24"
+    },
+    {
+      "path": "mutation-missing-node-mode.log",
+      "beforeSha256": "dabd81c5b73b2c3efbc2974268411284abdfbf979c39f6cdfbfe61eed0743a9a",
+      "afterSha256": "9975f9a504eb09961c4797cc9ca8faa5c00ddf6f52d7c070066bbef55809feb9"
+    }
+  ]
+}

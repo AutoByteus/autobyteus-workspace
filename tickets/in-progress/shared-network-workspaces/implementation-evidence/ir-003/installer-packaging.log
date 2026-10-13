@@ -1,0 +1,13 @@
+COMMAND ["python3", "-m", "unittest", "scripts/tests/test_nfs_packaging_and_launcher.py", "scripts/tests/test_nfs_installer_fixture.py", "-v"]
+test_nfs_workflow_build_only_never_pushes_or_publishes (scripts.tests.test_nfs_packaging_and_launcher.NfsPackagingAndLauncherTest) ... ok
+test_shell_selected_attachment_arguments_and_wrong_daemon_refusal (scripts.tests.test_nfs_packaging_and_launcher.NfsPackagingAndLauncherTest) ... ok
+test_unpublished_installer_fails_before_download (scripts.tests.test_nfs_packaging_and_launcher.NfsPackagingAndLauncherTest) ... ok
+test_unqualified_release_cannot_publish (scripts.tests.test_nfs_packaging_and_launcher.NfsPackagingAndLauncherTest) ... ok
+test_corrupt_or_unsafe_archive_never_executes (scripts.tests.test_nfs_installer_fixture.NfsInstallerFixtureTest) ... ok
+test_directory_modes_with_go_fixture (scripts.tests.test_nfs_installer_fixture.NfsInstallerFixtureTest) ... skipped 'invoked by Go platform bootstrap regression'
+test_valid_fixture_installs_and_immediately_invokes (scripts.tests.test_nfs_installer_fixture.NfsInstallerFixtureTest) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 2.669s
+
+OK (skipped=1)

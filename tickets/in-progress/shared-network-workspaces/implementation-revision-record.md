@@ -10,6 +10,7 @@ record does not imply an earlier Pass or completed implementation.
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / current report / round 2 | N/A | Design Impact (initial baseline) | SR-018, ARCH-REV-002; CRR/API-REV/DR N/A | Preparation stopped for IMP-D001; no production change |
 | IR-002 | Architecture Reviewer / current report / round 3 | IMP-D001 | Implementation Complete | SR-019 / Approved SR-018, ARCH-REV-003; CRR/API-REV/DR N/A | Source implemented; personal local checks complete with unrelated baseline frontend failure; ready for source review |
+| IR-003 | Code Reviewer / CRR-001 / round1 | CR-001 P1 | Local Fix Complete | SR-019 / Approved SR-018, ARCH-REV-003, CRR-001; API-REV/DR N/A | Restrictive-mask new-directory modes corrected; pending source re-review |
 
 ## IR-001 — Correct the source-generation lease reuse premise
 
@@ -105,3 +106,49 @@ record does not imply an earlier Pass or completed implementation.
   Mac/Linux/Docker proof, docs sync, merge, explicit user verification and release
   gates remain. **DEC015/D-001 is deferred, not fixed**; no outage worker/probe/
   stream-lease/cwd trampoline, source-retention queue or shared-to-local fallback.
+
+
+## IR-003 — Preserve new-directory modes across restrictive installer umask
+
+- Date:2026-10-13. Trigger: `/software_engineering_team/code_reviewer`, canonical
+  `code-review-report.md` / `code-review-revision-record.md`, **CRR-001 Fail**,
+  **CR-001 P1 Local Fix**. Review `d4ac42107e`; custody supplement `caa318d795`.
+- Prior authoritative implementation result: IR002 Implementation Complete; source
+  reviewer subsequently found CR001. Current result: **Local Fix Complete**, ready
+  for independent re-review, **not** a reviewer Pass or API/E2E handoff.
+- Related revisions: Approved SR018 / Ready SR019, ARCH-REV003, CRR-001 current;
+  IR001/IMP-D001 and IR002 preserved; API-REV N/A, DR N/A (not yet performed).
+- Classification: task_size **Large**, architectural_risk **High**, unchanged.
+- Why: normal fresh first installation carries077 into mkdir0755, creating0700
+  executable/public parents and blocking intended nonroot access. No changed
+  requirement/design or new supported failure scenario was necessary.
+- Affected behavior: BEH001/005, SCN001/011/013, AC012/018/019. Approval authorities
+  unchanged. D-001 remains deferred; source Update/Remove independent as in SR019.
+- Delta commit: **dfeac830f468994255fdafc31f66cdbeee1852cc**. Only production owner
+  `autobyteus-nfs/internal/platform/commands.go` now sets requested final modes on
+  successfully newly created directories under the trusted parent; recursive new
+  parents0755, private0700. Existing entries never chmodded/adopted. Production
+  `RootDirectory` always binds real `TrustedPath`; private recursion is testable
+  with an owned-fixture trust callback, not an exported or environment bypass.
+- Durable tests: new `autobyteus-nfs/internal/platform/directory_modes_test.go` and
+  extended `scripts/tests/test_nfs_installer_fixture.py`. Actual bootstrap to Go
+  fixture checks077 at verify/create, two virtual OS layouts, all necessary new
+  ancestors, private0700/0600 and public0755/0644, nonroot fixture exec/descriptors,
+  and existing-path refusal/non-adoption. No real sudo/root paths touched.
+- Personal validation: full7-package Go race/vet pass, existing Python6 pass plus
+  Go-invoked permission fixture, all4 target builds and native version/refusal pass.
+  Three disposable mutation controls fail exactly on missing final/node/ancestor
+  modes. Logs, commands, cleanup and limits in `implementation-evidence/ir-003/`.
+  No delegation.137 other IR002 audited paths unchanged; previous TS/UI results
+  carried honestly, not claimed rerun. FUP001 full-suite failures remain unchanged.
+- Size/persistence: one production owner78 ->86 nonempty lines; no hard limit or
+  >220 production delta; tests outside that limit. No migration/compatibility,
+  source-byte permission change, umask relaxation or new workflow machinery.
+- Routing: refresh rules after persisting; existing Large/High Local Fix returns
+  to Code Reviewer. Do not advance to API/E2E before reviewer Pass. CRR001 remains
+  the authoritative Fail until independent review updates it.
+- Limits: test trust substitutes UID ownership inside scratch, not live root-owned
+  different-UID verification; both layouts exercised on native Mac, foreign builds
+  not executed. Real privileged installer/OS/modes/Docker/native tools/assets/peer/
+  restore/healthy previews, physical proof, docs/merge/user verification/release
+  remain downstream. Main Task not closed; no live resource/provider/release action.
