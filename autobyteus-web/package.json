@@ -85,7 +85,8 @@
     "test:e2e:delegated-launch-defaults": "node tests/e2e/delegated-launch-defaults-probe.mjs",
     "test:e2e:delegated-copy-model-change": "node tests/e2e/delegated-launch-defaults-probe.mjs --cases DCP-001,DCP-002,DCP-003,DCP-004,DCP-005",
     "test:e2e:workspace-folder-picker": "node tests/e2e/workspace-folder-picker-probe.mjs",
-    "test:e2e:composer-context-file-removal": "node tests/e2e/composer-context-file-removal-probe.mjs"
+    "test:e2e:composer-context-file-removal": "node tests/e2e/composer-context-file-removal-probe.mjs",
+    "test:e2e:delegated-team-default-collapse": "node tests/e2e/delegated-team-default-collapse-probe.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",

@@ -96,6 +96,30 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls through the backend active-runtime approval command; it is not a restore or turn-starting operation.
   - `closeAgent()`: Cleans up local state and unsubscribes.
 
+### `agentRunCollaborationStore.ts` (Standalone Agent-run children)
+
+This store owns collaboration contexts, exact child selection and ephemeral
+Team disclosure beneath standalone Agent runs. Disclosure is keyed by
+`hostRunId` and `teamRunId`, not a displayed name or shared logical address.
+An absent choice means collapsed. Stored inspection, stream publication and
+collaborator additions never open member lists; explicit toggles retain their
+choices across same-session refresh/reselection. Fresh frontend sessions start
+collapsed again. There is no automatic-opening helper, suppression Set or
+policy-only collaborator-added callback.
+
+`AgentRunTaskRows` uses the existing exact disclosure/selection actions;
+`useTaskRootNavigation` deliberately reveals only its target Team and selects
+its coordinator. Status, closure recovery, conversations and execution remain
+separate from disclosure. Agent Team and Agent Org roots keep their own policies.
+
+Collapsing does not defer child hydration. Stored inspection and stream
+snapshots still stage complete child contexts before publication, fetching each
+child's projection and artifact state through the existing hydration owners.
+Compact rows are not evidence of fewer reads or a host-selection speedup;
+host selection, collaboration publication and member readiness are distinct
+boundaries. See [Projects](./projects.md#delegated-team-disclosure-under-agent-runs)
+for the user interaction contract.
+
 ### `agentTeamRunStore.ts` (Agent Teams)
 
 - **Role**: Owns Team launch, restore, exact execution focus, Team stream

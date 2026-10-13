@@ -1,0 +1,757 @@
+[79828:1013/071700.561528:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[2026-10-13T07:17:00.765Z] [INFO] [electron] Application started
+[2026-10-13T07:17:00.968Z] [INFO] [electron] Creating server manager for platform: linux
+[2026-10-13T07:17:00.968Z] [WARN] [electron.server.app-data] App data directory is missing .env. Reinitializing first-run data.
+[2026-10-13T07:17:00.968Z] [INFO] [electron.server.app-data] Created missing data directory: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/db
+[2026-10-13T07:17:00.969Z] [INFO] [electron.server.app-data] Created missing data directory: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/logs
+[2026-10-13T07:17:00.969Z] [INFO] [electron.server.app-data] Created missing data directory: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/download
+[79828:1013/071701.260805:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[79828:1013/071701.261065:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[79828:1013/071701.261389:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[2026-10-13T07:17:01.305Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:41711
+
+DevTools listening on ws://127.0.0.1:34599/devtools/browser/b85c5e77-7612-44df-85c0-825a86a7b0a5
+[2026-10-13T07:17:01.364Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-10-13T07:17:01.366Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-10-13T07:17:01.372Z] [INFO] [electron.server.base-server-manager] Server installation directory: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T07:17:01.373Z] [INFO] [electron.server.base-server-manager] App data directory: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[2026-10-13T07:17:01.374Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-10-13T07:17:01.375Z] [INFO] [electron.server.app-data] Generated runtime .env at: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/.env
+[2026-10-13T07:17:01.375Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-10-13T07:17:01.378Z] [INFO] [electron.server.base-server-manager] Port 36943 is free.
+[2026-10-13T07:17:01.393Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-10-13T07:17:01.393Z] [INFO] [electron] Login shell PATH: /tmp/collapse-review-crr001.1GB4Pg/bin:/usr/bin:/bin
+[2026-10-13T07:17:01.393Z] [INFO] [electron] Using PATH from login shell
+[2026-10-13T07:17:01.394Z] [INFO] [electron] Starting server with port: 36943
+[2026-10-13T07:17:01.394Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:36943
+[2026-10-13T07:17:01.394Z] [INFO] [electron] Working directory: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T07:17:01.394Z] [INFO] [electron] App data directory: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[2026-10-13T07:17:01.394Z] [INFO] [electron] Executing: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/app.js --port 36943 --data-dir /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[79828:1013/071701.500776:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[79828:1013/071701.502264:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[79828:1013/071701.536417:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2026-10-13T07:17:01.679Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-10-13T07:17:01.680Z] [INFO] [electron.embedded-server.stdout] App root directory: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T07:17:01.680Z] [INFO] [electron.embedded-server.stdout] App data directory: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[2026-10-13T07:17:01.680Z] [INFO] [electron.embedded-server.stdout] Config file path: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/.env
+[2026-10-13T07:17:01.680Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/.env
+[2026-10-13T07:17:01.681Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (2) from ../../../../../../../../../../../tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[2026-10-13T07:17:01.681Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-10-13T07:17:01.681Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:36943
+[2026-10-13T07:17:01.681Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-10-13T07:17:01.682Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/logging_config.ini
+[2026-10-13T07:17:01.682Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-13T07:17:01.682Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:36943
+[2026-10-13T07:17:01.682Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T07:17:01.682Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[2026-10-13T07:17:01.682Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/db
+[2026-10-13T07:17:01.682Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/logs
+[2026-10-13T07:17:01.682Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/download
+[2026-10-13T07:17:01.682Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory
+[2026-10-13T07:17:01.682Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-13T07:17:05.832Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-10-13T07:17:06.676Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-10-13T07:17:06.690Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+[2026-10-13T07:17:07.211Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-10-13T07:17:07.218Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/db/production.db"
+[2026-10-13T07:17:07.300Z] [INFO] [electron.embedded-server.stdout] SQLite database production.db created at file:/tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/db/production.db
+[2026-10-13T07:17:07.328Z] [INFO] [electron.embedded-server.stdout] 27 migrations found in prisma/migrations
+[2026-10-13T07:17:07.340Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260203074245_init`
+[2026-10-13T07:17:07.397Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260208094000_add_external_channel_tables`
+[2026-10-13T07:17:07.449Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[2026-10-13T07:17:07.462Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209213000_remove_agent_conversation_tables`
+[2026-10-13T07:17:07.477Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210101500_add_agent_avatar`
+[2026-10-13T07:17:07.490Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210192000_add_agent_team_avatar`
+[2026-10-13T07:17:07.501Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[2026-10-13T07:17:07.560Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260212070000_remove_workflow_definition`
+[2026-10-13T07:17:07.571Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[2026-10-13T07:17:07.598Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[2026-10-13T07:17:07.612Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331102000_remove_channel_bindings_table`
+[2026-10-13T07:17:07.622Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[2026-10-13T07:17:07.663Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260517090000_add_app_data_migration_records`
+[2026-10-13T07:17:07.677Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260624090000_add_token_usage_ledger_events`
+[2026-10-13T07:17:07.698Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[2026-10-13T07:17:07.745Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260629120000_add_token_usage_display_fields`
+[2026-10-13T07:17:07.766Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260702093000_token_usage_execution_address`
+[2026-10-13T07:17:07.781Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260726090000_add_secret_vault`
+[2026-10-13T07:17:07.799Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260730090000_add_token_usage_provider_name`
+[2026-10-13T07:17:07.811Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260801090000_token_usage_member_display_name`
+[2026-10-13T07:17:07.826Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260814090000_team_run_execution_tree_v1`
+[2026-10-13T07:17:07.833Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260819090000_add_token_usage_run_records`
+[2026-10-13T07:17:07.854Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260820090000_redesign_app_data_migration_summary`
+[2026-10-13T07:17:07.869Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260822090000_add_token_usage_analytics`
+[2026-10-13T07:17:07.896Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260923130000_add_claude_sdk_usage_state`
+[2026-10-13T07:17:07.909Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260924120000_remove_external_channel_tables`
+[2026-10-13T07:17:07.925Z] [INFO] [electron.embedded-server.stdout] Applying migration `20261009120000_token_meter_context_readings`
+[2026-10-13T07:17:07.935Z] [INFO] [electron.embedded-server.stdout] The following migration(s) have been applied:
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout] migrations/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260203074245_init/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260208094000_add_external_channel_tables/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209213000_remove_agent_conversation_tables/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210101500_add_agent_avatar/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210192000_add_agent_team_avatar/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260212070000_remove_workflow_definition/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260309103000_add_channel_binding_launch_preset/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331102000_remove_channel_bindings_table/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260517090000_add_app_data_migration_records/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260624090000_add_token_usage_ledger_events/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260625193000_token_usage_component_pricing_explainability/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260629120000_add_token_usage_display_fields/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260702093000_token_usage_execution_address/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260726090000_add_secret_vault/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260730090000_add_token_usage_provider_name/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260801090000_token_usage_member_display_name/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260814090000_team_run_execution_tree_v1/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260819090000_add_token_usage_run_records/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260820090000_redesign_app_data_migration_summary/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260822090000_add_token_usage_analytics/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260923130000_add_claude_sdk_usage_state/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20260924120000_remove_external_channel_tables/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]   └─ 20261009120000_token_meter_context_readings/
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T07:17:07.936Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-10-13T07:17:08.012Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-10-13T07:17:08.062Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-13T07:17:08.333Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 19 predefined settings
+[2026-10-13T07:17:08.359Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-13T07:17:08.360Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-13T07:17:08.482Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-10-13T07:17:08.482Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-10-13T07:17:08.484Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace
+[2026-10-13T07:17:08.484Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace.
+[2026-10-13T07:17:08.484Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-10-13T07:17:08.484Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-10-13T07:17:08.484Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-10-13T07:17:08.484Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-10-13T07:17:08.484Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-10-13T07:17:08.484Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-10-13T07:17:08.484Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-10-13T07:17:08.484Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-10-13T07:17:08.484Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-10-13T07:17:08.484Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-10-13T07:17:08.486Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-10-13T07:17:08.486Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-10-13T07:17:08.486Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-10-13T07:17:08.486Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-10-13T07:17:08.486Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-10-13T07:17:08.486Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-10-13T07:17:08.486Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-10-13T07:17:08.486Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-10-13T07:17:08.487Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-13T07:17:08.488Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-10-13T07:17:08.488Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-10-13T07:17:08.488Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-10-13T07:17:08.488Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-10-13T07:17:08.511Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-10-13T07:17:08.511Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agents'
+[2026-10-13T07:17:08.511Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-10-13T07:17:08.512Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-10-13T07:17:08.512Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-10-13T07:17:08.512Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-10-13T07:17:08.512Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-10-13T07:17:08.512Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Discovery Tools
+[2026-10-13T07:17:08.512Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-10-13T07:17:08.512Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-10-13T07:17:08.512Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-10-13T07:17:08.512Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-10-13T07:17:08.512Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-10-13T07:17:08.512Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_projects'
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_project_tasks'
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_project'
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_task'
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Project Task Tools
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-10-13T07:17:08.513Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-10-13T07:17:08.517Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-10-13T07:17:08.517Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-13T07:17:08.517Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-10-13T07:17:08.539Z] [INFO] [electron.embedded-server.stdout] Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+[2026-10-13T07:17:08.539Z] [INFO] [electron.embedded-server.stdout] Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+[2026-10-13T07:17:08.547Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791875828547,"pid":79884,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:37499"}
+[2026-10-13T07:17:08.582Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791875828582,"pid":79884,"hostname":"74ff273d28fe","msg":"Server listening at http://0.0.0.0:36943"}
+[2026-10-13T07:17:08.582Z] [INFO] [electron.embedded-server.stdout] [2026-10-13T07:17:08.582Z] [INFO] [server.runtime] Server listening on 0.0.0.0:36943
+[2026-10-13T07:17:08.583Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-10-13T07:17:08.587Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-10-13T07:17:08.587Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-10-13T07:17:08.587Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-10-13T07:17:08.587Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-10-13T07:17:08.587Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-10-13T07:17:08.588Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-10-13T07:17:08.588Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-10-13T07:17:08.588Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-10-13T07:17:08.588Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-10-13T07:17:08.588Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-10-13T07:17:08.589Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-10-13T07:17:08.589Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-10-13T07:17:08.589Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 35 LLM models into cache.
+[2026-10-13T07:17:08.589Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-10-13T07:17:08.589Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 audio models into cache.
+[2026-10-13T07:17:08.589Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-10-13T07:17:08.589Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-10-13T07:17:08.744Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-10-13T07:17:08.744Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-10-13T07:17:08.744Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[79828:1013/071708.793342:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2026-10-13T07:17:08.822Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/index.html
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[2026-10-13T07:17:09.318Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:17:09.320Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:17:09.905Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: solution-designer
+[2026-10-13T07:17:09.923Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: architecture-reviewer
+[2026-10-13T07:17:09.937Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: implementation-engineer
+[2026-10-13T07:17:09.949Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: code-reviewer
+[2026-10-13T07:17:09.964Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: api-e2e-engineer
+[2026-10-13T07:17:09.978Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: delivery-engineer
+[2026-10-13T07:17:09.990Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: project-task-manager-probe
+[2026-10-13T07:17:10.013Z] [INFO] [electron.embedded-server.stdout] Agent Team Definition created successfully with ID: software-engineering-team-probe
+[2026-10-13T07:17:10.029Z] [INFO] [electron.embedded-server.stdout] Agent Team Definition created successfully with ID: late-engineering-team-probe
+[2026-10-13T07:17:10.034Z] [INFO] [electron.embedded-server.stdout] GraphQL mutation to create workspace metadata
+[2026-10-13T07:17:10.034Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:10.034Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:10.035Z] [INFO] [electron.embedded-server.stdout] Created and registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:10.049Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:10.049Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:10.049Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:10.060Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:10.060Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:10.060Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:10.172Z] [INFO] [electron.embedded-server.stdout] AGY compaction detection off for run project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[2026-10-13T07:17:10.212Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:10.212Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:10.212Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:10.219Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:10.219Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:10.219Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:10.291Z] [INFO] [electron.embedded-server.stdout] AGY compaction detection off for run project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[2026-10-13T07:17:10.332Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239
+[2026-10-13T07:17:10.332Z] [INFO] [electron.embedded-server.stdout] Created agent session 5af8ad53-a884-4d45-9b5c-0dfa610fca12 for run project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239
+[2026-10-13T07:17:10.334Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=5af8ad53-a884-4d45-9b5c-0dfa610fca12, run=project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239
+[2026-10-13T07:17:10.335Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9
+[2026-10-13T07:17:10.335Z] [INFO] [electron.embedded-server.stdout] Created agent session 3fbd8c5c-0fd7-4a10-a4bc-40170ed5c5e4 for run project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9
+[2026-10-13T07:17:10.335Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=3fbd8c5c-0fd7-4a10-a4bc-40170ed5c5e4, run=project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9
+[2026-10-13T07:17:10.870Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791875830870,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.2897909879684448,"msg":"http request completed"}
+[2026-10-13T07:17:10.973Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:10.973Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:10.973Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:11.047Z] [INFO] [electron.embedded-server.stdout] AGY compaction detection off for run solution_designer_3b132307afe24faca6bd0ed203cfef07: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[2026-10-13T07:17:11.215Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791875831215,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.1411670446395874,"msg":"http request completed"}
+[2026-10-13T07:17:11.249Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:17:11.251Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:17:11.300Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:11.300Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:11.300Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:11.373Z] [INFO] [electron.embedded-server.stdout] AGY compaction detection off for run solution_designer_70cc3cf09c5c4e56a6e3e0c1c9eab2d4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[2026-10-13T07:17:11.435Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791875831435,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.19904202222824097,"msg":"http request completed"}
+[2026-10-13T07:17:11.539Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:11.539Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:11.539Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:11.629Z] [INFO] [electron.embedded-server.stdout] AGY compaction detection off for run solution_designer_0f11a6d91d9f482197deb2468bef86ef: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[2026-10-13T07:17:11.766Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791875831766,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.1141669750213623,"msg":"http request completed"}
+[2026-10-13T07:17:11.848Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:11.848Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:11.848Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:11.918Z] [INFO] [electron.embedded-server.stdout] AGY compaction detection off for run solution_designer_85150adaf59943278b6198b257b844e3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[2026-10-13T07:17:11.988Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791875831987,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.140749990940094,"msg":"http request completed"}
+[2026-10-13T07:17:12.074Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:12.074Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:12.074Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:12.148Z] [INFO] [electron.embedded-server.stdout] AGY compaction detection off for run solution_designer_482fa7bcd6e94191bfcdb70a7496ba0a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[2026-10-13T07:17:12.210Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791875832209,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.24083298444747925,"msg":"http request completed"}
+[2026-10-13T07:17:12.295Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:12.295Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:12.295Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:12.365Z] [INFO] [electron.embedded-server.stdout] AGY compaction detection off for run solution_designer_ebff34434424414b838f596f505449e0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[2026-10-13T07:17:12.428Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791875832428,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.22691696882247925,"msg":"http request completed"}
+[2026-10-13T07:17:12.512Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:12.512Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:12.512Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:12.583Z] [INFO] [electron.embedded-server.stdout] AGY compaction detection off for run solution_designer_632d17e5feb54031bc5d2e1f257485c0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[2026-10-13T07:17:12.982Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791875832982,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-v","method":"GET","url":"/mcp/agent-tools/agtrun_NvutjSLCrflOki1roTGZGbDh_r5TPSXn1fHPna0pMAw","statusCode":405,"elapsedMs":0.18229204416275024,"msg":"http request completed"}
+[2026-10-13T07:17:13.075Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:13.075Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:13.075Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:13.147Z] [INFO] [electron.embedded-server.stdout] AGY compaction detection off for run solution_designer_74d0972c871f4299a9db94b4b2808190: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[2026-10-13T07:17:13.213Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/implementation_engineer_6cf2355cbef24f68a7ae2ad3b1da9fe3/raw_traces_active.jsonl
+[2026-10-13T07:17:13.217Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791875833217,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.163457989692688,"msg":"http request completed"}
+[2026-10-13T07:17:13.220Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:13.220Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:13.220Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:13.293Z] [INFO] [electron.embedded-server.stdout] AGY compaction detection off for run implementation_engineer_6cf2355cbef24f68a7ae2ad3b1da9fe3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[2026-10-13T07:17:13.317Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/implementation_engineer_6cf2355cbef24f68a7ae2ad3b1da9fe3/raw_traces_active.jsonl
+[2026-10-13T07:17:13.425Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/implementation_engineer_3313100da33248dc9852546a36ffe0ed/raw_traces_active.jsonl
+[2026-10-13T07:17:13.430Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791875833429,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-13","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.1223750114440918,"msg":"http request completed"}
+[2026-10-13T07:17:13.430Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+[2026-10-13T07:17:13.431Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:13.431Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+[2026-10-13T07:17:13.513Z] [INFO] [electron.embedded-server.stdout] AGY compaction detection off for run implementation_engineer_3313100da33248dc9852546a36ffe0ed: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[2026-10-13T07:17:13.529Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/implementation_engineer_3313100da33248dc9852546a36ffe0ed/raw_traces_active.jsonl
+[79828:1013/071714.422074:ERROR:content/browser/network_service_instance_impl.cc:703] Network service crashed or was terminated, restarting service.
+[79828:1013/071714.427768:ERROR:content/common/zygote/zygote_communication_linux.cc:291] Failed to send GetTerminationStatus message to zygote
+[2026-10-13T07:17:14.459Z] [INFO] [electron.embedded-server.stdout] [2026-10-13T07:17:14.400Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[79828:1013/071714.476467:ERROR:content/common/zygote/zygote_communication_linux.cc:291] Failed to send GetTerminationStatus message to zygote
+[79828:1013/071714.491242:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[79828:1013/071714.493388:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[79828:1013/071714.494426:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[79828:1013/071714.495420:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[79828:1013/071714.496063:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[79828:1013/071714.496662:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[79828:1013/071714.496677:FATAL:content/browser/gpu/gpu_data_manager_impl_private.cc:418] GPU process isn't usable. Goodbye.
+[80547:1013/071724.647378:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[2026-10-13T07:17:24.796Z] [INFO] [electron] Application started
+[2026-10-13T07:17:24.981Z] [INFO] [electron] Creating server manager for platform: linux
+[80547:1013/071725.076486:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[80547:1013/071725.076587:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[80547:1013/071725.076600:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+
+DevTools listening on ws://127.0.0.1:34599/devtools/browser/a0f66bd1-a0f4-4575-92a4-c98a104a5984
+[2026-10-13T07:17:25.108Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:42963
+[2026-10-13T07:17:25.159Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-10-13T07:17:25.160Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-10-13T07:17:25.165Z] [INFO] [electron.server.base-server-manager] Server installation directory: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T07:17:25.165Z] [INFO] [electron.server.base-server-manager] App data directory: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[2026-10-13T07:17:25.168Z] [INFO] [electron.server.base-server-manager] Port 36943 is free.
+[2026-10-13T07:17:25.181Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-10-13T07:17:25.181Z] [INFO] [electron] Login shell PATH: /tmp/collapse-review-crr001.1GB4Pg/bin:/usr/bin:/bin
+[2026-10-13T07:17:25.181Z] [INFO] [electron] Using PATH from login shell
+[2026-10-13T07:17:25.182Z] [INFO] [electron] Starting server with port: 36943
+[2026-10-13T07:17:25.182Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:36943
+[2026-10-13T07:17:25.182Z] [INFO] [electron] Working directory: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T07:17:25.182Z] [INFO] [electron] App data directory: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[2026-10-13T07:17:25.182Z] [INFO] [electron] Executing: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/app.js --port 36943 --data-dir /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[80547:1013/071725.249821:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[80547:1013/071725.250017:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[80547:1013/071725.265124:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2026-10-13T07:17:25.379Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-10-13T07:17:25.379Z] [INFO] [electron.embedded-server.stdout] App root directory: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T07:17:25.379Z] [INFO] [electron.embedded-server.stdout] App data directory: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[2026-10-13T07:17:25.379Z] [INFO] [electron.embedded-server.stdout] Config file path: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/.env
+[2026-10-13T07:17:25.379Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/.env
+[2026-10-13T07:17:25.380Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (4) from ../../../../../../../../../../../tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[2026-10-13T07:17:25.380Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-10-13T07:17:25.380Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:36943
+[2026-10-13T07:17:25.380Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-10-13T07:17:25.381Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/logging_config.ini
+[2026-10-13T07:17:25.381Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-13T07:17:25.381Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:36943
+[2026-10-13T07:17:25.381Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T07:17:25.381Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[2026-10-13T07:17:25.381Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/db
+[2026-10-13T07:17:25.381Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/logs
+[2026-10-13T07:17:25.381Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/download
+[2026-10-13T07:17:25.381Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory
+[2026-10-13T07:17:25.381Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-13T07:17:27.669Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-10-13T07:17:28.262Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-10-13T07:17:28.267Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+[2026-10-13T07:17:28.729Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-10-13T07:17:28.734Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/db/production.db"
+[2026-10-13T07:17:28.779Z] [INFO] [electron.embedded-server.stdout] 27 migrations found in prisma/migrations
+[2026-10-13T07:17:28.786Z] [INFO] [electron.embedded-server.stdout] No pending migrations to apply.
+[2026-10-13T07:17:28.862Z] [ERROR] [electron.embedded-server.stderr] ┌─────────────────────────────────────────────────────────┐
+[2026-10-13T07:17:28.863Z] [ERROR] [electron.embedded-server.stderr] │  Update available 5.22.0 -> 8.0.0-rc.22                 │
+[2026-10-13T07:17:28.863Z] [ERROR] [electron.embedded-server.stderr] │                                                         │
+[2026-10-13T07:17:28.863Z] [ERROR] [electron.embedded-server.stderr] │  This is a major update - please follow the guide at    │
+[2026-10-13T07:17:28.863Z] [ERROR] [electron.embedded-server.stderr] │  https://pris.ly/d/major-version-upgrade                │
+[2026-10-13T07:17:28.863Z] [ERROR] [electron.embedded-server.stderr] │                                                         │
+[2026-10-13T07:17:28.863Z] [ERROR] [electron.embedded-server.stderr] │  Run the following to update                            │
+[2026-10-13T07:17:28.863Z] [ERROR] [electron.embedded-server.stderr] │    npm i --save-dev prisma@latest                       │
+[2026-10-13T07:17:28.863Z] [ERROR] [electron.embedded-server.stderr] │    npm i @prisma/client@latest                          │
+[2026-10-13T07:17:28.863Z] [ERROR] [electron.embedded-server.stderr] └─────────────────────────────────────────────────────────┘
+[2026-10-13T07:17:28.876Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-10-13T07:17:28.922Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-13T07:17:28.965Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 19 predefined settings
+[2026-10-13T07:17:29.013Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-13T07:17:29.015Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-13T07:17:29.117Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-10-13T07:17:29.118Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-10-13T07:17:29.119Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace
+[2026-10-13T07:17:29.119Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace.
+[2026-10-13T07:17:29.119Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-10-13T07:17:29.119Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-10-13T07:17:29.119Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-10-13T07:17:29.120Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-10-13T07:17:29.120Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-10-13T07:17:29.120Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-10-13T07:17:29.120Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-10-13T07:17:29.120Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-10-13T07:17:29.120Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-10-13T07:17:29.120Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-10-13T07:17:29.121Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-10-13T07:17:29.121Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-10-13T07:17:29.121Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-10-13T07:17:29.122Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-10-13T07:17:29.122Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-10-13T07:17:29.122Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-10-13T07:17:29.122Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-10-13T07:17:29.122Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-10-13T07:17:29.122Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-13T07:17:29.122Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-10-13T07:17:29.122Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-10-13T07:17:29.122Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-10-13T07:17:29.122Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-10-13T07:17:29.143Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-10-13T07:17:29.144Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agents'
+[2026-10-13T07:17:29.144Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-10-13T07:17:29.144Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-10-13T07:17:29.144Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-10-13T07:17:29.144Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-10-13T07:17:29.144Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-10-13T07:17:29.144Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Discovery Tools
+[2026-10-13T07:17:29.144Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-10-13T07:17:29.144Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-10-13T07:17:29.145Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-10-13T07:17:29.145Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-10-13T07:17:29.145Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-10-13T07:17:29.145Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-10-13T07:17:29.145Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-10-13T07:17:29.145Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-10-13T07:17:29.145Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-10-13T07:17:29.145Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-10-13T07:17:29.145Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-10-13T07:17:29.145Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-10-13T07:17:29.146Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-10-13T07:17:29.146Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_projects'
+[2026-10-13T07:17:29.146Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_project_tasks'
+[2026-10-13T07:17:29.146Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_project'
+[2026-10-13T07:17:29.146Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_task'
+[2026-10-13T07:17:29.146Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Project Task Tools
+[2026-10-13T07:17:29.146Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-10-13T07:17:29.146Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-10-13T07:17:29.146Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-10-13T07:17:29.150Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-10-13T07:17:29.150Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-13T07:17:29.150Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-10-13T07:17:29.179Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791875849179,"pid":80615,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:36263"}
+[2026-10-13T07:17:29.216Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791875849216,"pid":80615,"hostname":"74ff273d28fe","msg":"Server listening at http://0.0.0.0:36943"}
+[2026-10-13T07:17:29.217Z] [INFO] [electron.embedded-server.stdout] [2026-10-13T07:17:29.216Z] [INFO] [server.runtime] Server listening on 0.0.0.0:36943
+[2026-10-13T07:17:29.217Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-10-13T07:17:29.222Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-10-13T07:17:29.222Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-10-13T07:17:29.222Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-10-13T07:17:29.222Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-10-13T07:17:29.222Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-10-13T07:17:29.222Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-10-13T07:17:29.228Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-10-13T07:17:29.228Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-10-13T07:17:29.228Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-10-13T07:17:29.228Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-10-13T07:17:29.229Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-10-13T07:17:29.229Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-10-13T07:17:29.230Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 35 LLM models into cache.
+[2026-10-13T07:17:29.230Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-10-13T07:17:29.230Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 audio models into cache.
+[2026-10-13T07:17:29.230Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-10-13T07:17:29.230Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-10-13T07:17:29.266Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-10-13T07:17:29.266Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-10-13T07:17:29.266Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[80547:1013/071729.302453:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2026-10-13T07:17:29.330Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/index.html
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[2026-10-13T07:17:29.786Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:17:29.788Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:17:29.868Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[80547:1013/071731.292326:ERROR:content/browser/network_service_instance_impl.cc:703] Network service crashed or was terminated, restarting service.
+[80547:1013/071731.331854:ERROR:content/common/zygote/zygote_communication_linux.cc:291] Failed to send GetTerminationStatus message to zygote
+[2026-10-13T07:17:31.349Z] [INFO] [electron.embedded-server.stdout] [2026-10-13T07:17:31.268Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-13T07:17:31.350Z] [INFO] [electron.embedded-server.stdout] [2026-10-13T07:17:31.298Z] [INFO] [server.runtime] Server closed cleanly.
+[80547:1013/071731.360995:ERROR:content/common/zygote/zygote_communication_linux.cc:291] Failed to send GetTerminationStatus message to zygote
+[80547:1013/071731.371471:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[2026-10-13T07:17:31.372Z] [INFO] [electron.server.base-server-manager] Server process exited with code 0
+[80547:1013/071731.374232:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[80547:1013/071731.375263:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[80547:1013/071731.376316:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[80547:1013/071731.376907:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[80547:1013/071731.377368:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[80547:1013/071731.377383:FATAL:content/browser/gpu/gpu_data_manager_impl_private.cc:418] GPU process isn't usable. Goodbye.
+[80830:1013/071731.754824:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[2026-10-13T07:17:31.903Z] [INFO] [electron] Application started
+[2026-10-13T07:17:32.078Z] [INFO] [electron] Creating server manager for platform: linux
+[80830:1013/071732.166788:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[80830:1013/071732.166886:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[80830:1013/071732.166902:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+
+DevTools listening on ws://127.0.0.1:34599/devtools/browser/85c2a1db-ecfb-46b0-b618-acfc49c59b84
+[2026-10-13T07:17:32.193Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:44419
+[2026-10-13T07:17:32.241Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-10-13T07:17:32.242Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-10-13T07:17:32.249Z] [INFO] [electron.server.base-server-manager] Server installation directory: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T07:17:32.249Z] [INFO] [electron.server.base-server-manager] App data directory: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[2026-10-13T07:17:32.252Z] [INFO] [electron.server.base-server-manager] Port 36943 is free.
+[2026-10-13T07:17:32.263Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-10-13T07:17:32.264Z] [INFO] [electron] Login shell PATH: /tmp/collapse-review-crr001.1GB4Pg/bin:/usr/bin:/bin
+[2026-10-13T07:17:32.264Z] [INFO] [electron] Using PATH from login shell
+[2026-10-13T07:17:32.264Z] [INFO] [electron] Starting server with port: 36943
+[2026-10-13T07:17:32.264Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:36943
+[2026-10-13T07:17:32.264Z] [INFO] [electron] Working directory: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T07:17:32.264Z] [INFO] [electron] App data directory: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[2026-10-13T07:17:32.264Z] [INFO] [electron] Executing: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/app.js --port 36943 --data-dir /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[80830:1013/071732.323912:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[80830:1013/071732.324177:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[80830:1013/071732.337261:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2026-10-13T07:17:32.435Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-10-13T07:17:32.436Z] [INFO] [electron.embedded-server.stdout] App root directory: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T07:17:32.436Z] [INFO] [electron.embedded-server.stdout] App data directory: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[2026-10-13T07:17:32.436Z] [INFO] [electron.embedded-server.stdout] Config file path: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/.env
+[2026-10-13T07:17:32.436Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/.env
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (4) from ../../../../../../../../../../../tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:36943
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/logging_config.ini
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:36943
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/db
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/logs
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/download
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory
+[2026-10-13T07:17:32.437Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-13T07:17:35.008Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-10-13T07:17:35.632Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-10-13T07:17:35.638Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+[2026-10-13T07:17:36.192Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-10-13T07:17:36.198Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/db/production.db"
+[2026-10-13T07:17:36.251Z] [INFO] [electron.embedded-server.stdout] 27 migrations found in prisma/migrations
+[2026-10-13T07:17:36.260Z] [INFO] [electron.embedded-server.stdout] No pending migrations to apply.
+[2026-10-13T07:17:36.373Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-10-13T07:17:36.421Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-13T07:17:36.468Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 19 predefined settings
+[2026-10-13T07:17:36.521Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-13T07:17:36.524Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-13T07:17:36.648Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-10-13T07:17:36.649Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-10-13T07:17:36.651Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace
+[2026-10-13T07:17:36.651Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace.
+[2026-10-13T07:17:36.651Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-10-13T07:17:36.652Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-10-13T07:17:36.652Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-10-13T07:17:36.652Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-10-13T07:17:36.652Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-10-13T07:17:36.652Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-10-13T07:17:36.652Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-10-13T07:17:36.652Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-10-13T07:17:36.652Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-10-13T07:17:36.652Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-10-13T07:17:36.653Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-10-13T07:17:36.654Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-10-13T07:17:36.654Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-10-13T07:17:36.654Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-10-13T07:17:36.654Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-10-13T07:17:36.654Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-10-13T07:17:36.654Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-10-13T07:17:36.654Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-10-13T07:17:36.654Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-13T07:17:36.654Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-10-13T07:17:36.654Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-10-13T07:17:36.654Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-10-13T07:17:36.654Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-10-13T07:17:36.681Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-10-13T07:17:36.681Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agents'
+[2026-10-13T07:17:36.681Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-10-13T07:17:36.681Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-10-13T07:17:36.681Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-10-13T07:17:36.682Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-10-13T07:17:36.682Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-10-13T07:17:36.682Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Discovery Tools
+[2026-10-13T07:17:36.682Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-10-13T07:17:36.683Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-10-13T07:17:36.683Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-10-13T07:17:36.683Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-10-13T07:17:36.683Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-10-13T07:17:36.684Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-10-13T07:17:36.684Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-10-13T07:17:36.684Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-10-13T07:17:36.684Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-10-13T07:17:36.684Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-10-13T07:17:36.684Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-10-13T07:17:36.684Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-10-13T07:17:36.684Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-10-13T07:17:36.685Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_projects'
+[2026-10-13T07:17:36.685Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_project_tasks'
+[2026-10-13T07:17:36.685Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_project'
+[2026-10-13T07:17:36.685Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_task'
+[2026-10-13T07:17:36.685Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Project Task Tools
+[2026-10-13T07:17:36.685Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-10-13T07:17:36.685Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-10-13T07:17:36.685Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-10-13T07:17:36.689Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-10-13T07:17:36.689Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-13T07:17:36.689Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-10-13T07:17:36.728Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791875856728,"pid":80898,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:46683"}
+[2026-10-13T07:17:36.766Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791875856766,"pid":80898,"hostname":"74ff273d28fe","msg":"Server listening at http://0.0.0.0:36943"}
+[2026-10-13T07:17:36.766Z] [INFO] [electron.embedded-server.stdout] [2026-10-13T07:17:36.766Z] [INFO] [server.runtime] Server listening on 0.0.0.0:36943
+[2026-10-13T07:17:36.767Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-10-13T07:17:36.772Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-10-13T07:17:36.773Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-10-13T07:17:36.773Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-10-13T07:17:36.773Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-10-13T07:17:36.773Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-10-13T07:17:36.773Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-10-13T07:17:36.773Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-10-13T07:17:36.774Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-10-13T07:17:36.774Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-10-13T07:17:36.774Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-10-13T07:17:36.775Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-10-13T07:17:36.775Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-10-13T07:17:36.775Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 35 LLM models into cache.
+[2026-10-13T07:17:36.775Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-10-13T07:17:36.776Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 audio models into cache.
+[2026-10-13T07:17:36.776Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-10-13T07:17:36.776Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-10-13T07:17:36.837Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-10-13T07:17:36.837Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-10-13T07:17:36.837Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[80830:1013/071736.879365:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2026-10-13T07:17:36.909Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/index.html
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[2026-10-13T07:17:37.406Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:17:37.409Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:17:37.457Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:37.766Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9/collaboration/software_engineering_team_probe_0b6ffe7ff9e648b0a27ee9d1e4deeb99/architecture_reviewer_7f21016f53004e59a9e233aa4afd2064/raw_traces_active.jsonl
+[2026-10-13T07:17:37.767Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9/collaboration/software_engineering_team_probe_0b6ffe7ff9e648b0a27ee9d1e4deeb99/implementation_engineer_1251fe0d223f4b0185bde758f416e240/raw_traces_active.jsonl
+[2026-10-13T07:17:37.785Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9/collaboration/software_engineering_team_probe_0b6ffe7ff9e648b0a27ee9d1e4deeb99/code_reviewer_591ea4dd9dbc4d3485e78f58492cb34e/raw_traces_active.jsonl
+[2026-10-13T07:17:37.787Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9/collaboration/software_engineering_team_probe_0b6ffe7ff9e648b0a27ee9d1e4deeb99/api_e2e_engineer_2420a86eb01f4c73bd96b249009b4c45/raw_traces_active.jsonl
+[2026-10-13T07:17:37.788Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9/collaboration/software_engineering_team_probe_0b6ffe7ff9e648b0a27ee9d1e4deeb99/delivery_engineer_0add8a2d005249b4b0141fd3a0b3257b/raw_traces_active.jsonl
+[2026-10-13T07:17:37.797Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/architecture_reviewer_5f1206b36d5144e5a41325684dfaaa11/raw_traces_active.jsonl
+[2026-10-13T07:17:37.798Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/implementation_engineer_0631b2f64b0e49f7a2177cd218f35178/raw_traces_active.jsonl
+[2026-10-13T07:17:37.801Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/code_reviewer_2e8805586a554e4fa70f73dfbebb5135/raw_traces_active.jsonl
+[2026-10-13T07:17:37.805Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/api_e2e_engineer_6bfb67820e024bff86bf8fa78fef7cb1/raw_traces_active.jsonl
+[2026-10-13T07:17:37.810Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/delivery_engineer_34ee94eca3484351b99296839d94eccb/raw_traces_active.jsonl
+[2026-10-13T07:17:37.814Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/architecture_reviewer_80309f24f16e46758ea415161c367222/raw_traces_active.jsonl
+[2026-10-13T07:17:37.818Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/implementation_engineer_f133140bb73b44d3b179f3703309096d/raw_traces_active.jsonl
+[2026-10-13T07:17:37.822Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/code_reviewer_a271b34c89244c4cad7f54ae44e9d039/raw_traces_active.jsonl
+[2026-10-13T07:17:37.824Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/api_e2e_engineer_daff36399809442491715b13adb14d00/raw_traces_active.jsonl
+[2026-10-13T07:17:37.832Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/delivery_engineer_2360fdbbcd2a4def884db40f74a959a9/raw_traces_active.jsonl
+[2026-10-13T07:17:37.837Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/architecture_reviewer_b35e87bad5234167967b381a71c91e09/raw_traces_active.jsonl
+[2026-10-13T07:17:37.843Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/code_reviewer_b0e7b437014c4c8097f4178831cc33db/raw_traces_active.jsonl
+[2026-10-13T07:17:37.847Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/api_e2e_engineer_2a6502cd73924d96b5e934366e009f5e/raw_traces_active.jsonl
+[2026-10-13T07:17:37.848Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/delivery_engineer_b81f7f96da664614b93f2d36d10b86ef/raw_traces_active.jsonl
+[2026-10-13T07:17:37.854Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:17:37.856Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/architecture_reviewer_32d858774d6f476cbbbd8d8b1929181d/raw_traces_active.jsonl
+[2026-10-13T07:17:37.856Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:17:37.864Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/code_reviewer_fbc7c773735245f396d38ccab2acdb6b/raw_traces_active.jsonl
+[2026-10-13T07:17:37.865Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/api_e2e_engineer_b15cef7ca31e42edafaf817db746c6fd/raw_traces_active.jsonl
+[2026-10-13T07:17:37.869Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/delivery_engineer_c240893ebc9c4d73a52a7ebb4999a003/raw_traces_active.jsonl
+[2026-10-13T07:17:37.874Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/architecture_reviewer_7d5ee79e5f224ad29f745018d1fc3092/raw_traces_active.jsonl
+[2026-10-13T07:17:37.875Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:17:37.876Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/implementation_engineer_5f0e5e82c6bf48209d5985e1391cdc6b/raw_traces_active.jsonl
+[2026-10-13T07:17:37.877Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:17:37.880Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/code_reviewer_4b588715d2b34f7b8f4f2eca5b1445d1/raw_traces_active.jsonl
+[2026-10-13T07:17:37.881Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/api_e2e_engineer_65e8350df79742ec851b1c76acb61e10/raw_traces_active.jsonl
+[2026-10-13T07:17:37.885Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/delivery_engineer_d6afac20cacf48de80c76704378ebfb9/raw_traces_active.jsonl
+[2026-10-13T07:17:37.900Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/architecture_reviewer_94ffb14a0c364bfcab7d8310e9dd1db0/raw_traces_active.jsonl
+[2026-10-13T07:17:37.904Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/implementation_engineer_f6b67a5e3e724e6f8ed2882b7a074757/raw_traces_active.jsonl
+[2026-10-13T07:17:37.909Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/code_reviewer_dc6baeb0aaab48f8b327fd94ab2f85f3/raw_traces_active.jsonl
+[2026-10-13T07:17:37.910Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/api_e2e_engineer_3a6cfa4baaf74ebcb7b595abe2c35eee/raw_traces_active.jsonl
+[2026-10-13T07:17:37.916Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/delivery_engineer_a7cd1e26925f45e9ba420191b0cdb03e/raw_traces_active.jsonl
+[2026-10-13T07:17:37.920Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/architecture_reviewer_4f9902223bc54bf990590b7517bfe249/raw_traces_active.jsonl
+[2026-10-13T07:17:37.924Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/implementation_engineer_edafe057f3a24d65a3f2d75c930036ca/raw_traces_active.jsonl
+[2026-10-13T07:17:37.929Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/code_reviewer_ec21878fa6d144fd933343f3fef91bfd/raw_traces_active.jsonl
+[2026-10-13T07:17:37.930Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/api_e2e_engineer_73460dfc0a254eb4a3939637681f11b2/raw_traces_active.jsonl
+[2026-10-13T07:17:37.934Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/delivery_engineer_4bcd4c682ca44e8cbb3ddc1f1d5b2a8d/raw_traces_active.jsonl
+[2026-10-13T07:17:38.287Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:17:38.289Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:17:38.381Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/architecture_reviewer_5f1206b36d5144e5a41325684dfaaa11/raw_traces_active.jsonl
+[2026-10-13T07:17:38.385Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/implementation_engineer_0631b2f64b0e49f7a2177cd218f35178/raw_traces_active.jsonl
+[2026-10-13T07:17:38.422Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/code_reviewer_2e8805586a554e4fa70f73dfbebb5135/raw_traces_active.jsonl
+[2026-10-13T07:17:38.424Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/api_e2e_engineer_6bfb67820e024bff86bf8fa78fef7cb1/raw_traces_active.jsonl
+[2026-10-13T07:17:38.426Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/delivery_engineer_34ee94eca3484351b99296839d94eccb/raw_traces_active.jsonl
+[2026-10-13T07:17:38.444Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/architecture_reviewer_80309f24f16e46758ea415161c367222/raw_traces_active.jsonl
+[2026-10-13T07:17:38.453Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/implementation_engineer_f133140bb73b44d3b179f3703309096d/raw_traces_active.jsonl
+[2026-10-13T07:17:38.455Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/code_reviewer_a271b34c89244c4cad7f54ae44e9d039/raw_traces_active.jsonl
+[2026-10-13T07:17:38.460Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/api_e2e_engineer_daff36399809442491715b13adb14d00/raw_traces_active.jsonl
+[2026-10-13T07:17:38.463Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/delivery_engineer_2360fdbbcd2a4def884db40f74a959a9/raw_traces_active.jsonl
+[2026-10-13T07:17:38.471Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/architecture_reviewer_b35e87bad5234167967b381a71c91e09/raw_traces_active.jsonl
+[2026-10-13T07:17:38.476Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/code_reviewer_b0e7b437014c4c8097f4178831cc33db/raw_traces_active.jsonl
+[2026-10-13T07:17:38.489Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/api_e2e_engineer_2a6502cd73924d96b5e934366e009f5e/raw_traces_active.jsonl
+[2026-10-13T07:17:38.489Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/delivery_engineer_b81f7f96da664614b93f2d36d10b86ef/raw_traces_active.jsonl
+[2026-10-13T07:17:38.524Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/architecture_reviewer_32d858774d6f476cbbbd8d8b1929181d/raw_traces_active.jsonl
+[2026-10-13T07:17:38.536Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/code_reviewer_fbc7c773735245f396d38ccab2acdb6b/raw_traces_active.jsonl
+[2026-10-13T07:17:38.537Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/api_e2e_engineer_b15cef7ca31e42edafaf817db746c6fd/raw_traces_active.jsonl
+[2026-10-13T07:17:38.543Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/delivery_engineer_c240893ebc9c4d73a52a7ebb4999a003/raw_traces_active.jsonl
+[2026-10-13T07:17:38.548Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/architecture_reviewer_7d5ee79e5f224ad29f745018d1fc3092/raw_traces_active.jsonl
+[2026-10-13T07:17:38.551Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/implementation_engineer_5f0e5e82c6bf48209d5985e1391cdc6b/raw_traces_active.jsonl
+[2026-10-13T07:17:38.554Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/code_reviewer_4b588715d2b34f7b8f4f2eca5b1445d1/raw_traces_active.jsonl
+[2026-10-13T07:17:38.555Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/api_e2e_engineer_65e8350df79742ec851b1c76acb61e10/raw_traces_active.jsonl
+[2026-10-13T07:17:38.559Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/delivery_engineer_d6afac20cacf48de80c76704378ebfb9/raw_traces_active.jsonl
+[2026-10-13T07:17:38.564Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/architecture_reviewer_94ffb14a0c364bfcab7d8310e9dd1db0/raw_traces_active.jsonl
+[2026-10-13T07:17:38.567Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/implementation_engineer_f6b67a5e3e724e6f8ed2882b7a074757/raw_traces_active.jsonl
+[2026-10-13T07:17:38.567Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/code_reviewer_dc6baeb0aaab48f8b327fd94ab2f85f3/raw_traces_active.jsonl
+[2026-10-13T07:17:38.573Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/api_e2e_engineer_3a6cfa4baaf74ebcb7b595abe2c35eee/raw_traces_active.jsonl
+[2026-10-13T07:17:38.576Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/delivery_engineer_a7cd1e26925f45e9ba420191b0cdb03e/raw_traces_active.jsonl
+[2026-10-13T07:17:38.583Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/architecture_reviewer_4f9902223bc54bf990590b7517bfe249/raw_traces_active.jsonl
+[2026-10-13T07:17:38.588Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/implementation_engineer_edafe057f3a24d65a3f2d75c930036ca/raw_traces_active.jsonl
+[2026-10-13T07:17:38.589Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/code_reviewer_ec21878fa6d144fd933343f3fef91bfd/raw_traces_active.jsonl
+[2026-10-13T07:17:38.595Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/api_e2e_engineer_73460dfc0a254eb4a3939637681f11b2/raw_traces_active.jsonl
+[2026-10-13T07:17:38.602Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/delivery_engineer_4bcd4c682ca44e8cbb3ddc1f1d5b2a8d/raw_traces_active.jsonl
+[2026-10-13T07:17:39.329Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:17:39.331Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:17:42.534Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:17:42.538Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:17:47.534Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:17:47.537Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:17:52.543Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:17:52.547Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:17:57.535Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:17:57.539Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:18:02.534Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:18:02.540Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:18:07.533Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:18:07.535Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:18:12.535Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:18:12.540Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:18:17.534Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:18:17.538Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:18:22.540Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:18:22.544Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:18:27.535Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:18:27.537Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:18:32.534Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:18:32.537Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T07:18:37.534Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T07:18:37.537Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[80830:1013/071838.282310:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[80830:1013/071838.282499:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[80830:1013/071838.282551:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[80830:1013/071838.282601:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 

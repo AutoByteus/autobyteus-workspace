@@ -1,0 +1,2 @@
+714 711 0:115 / /dev/shm rw,nosuid,nodev,noexec,relatime - tmpfs shm rw,size=65536k
+727 714 0:105 / /dev/shm rw,nosuid,nodev,noexec,relatime - tmpfs crr001-shm rw,size=524288k

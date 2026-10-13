@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-39201-ab83",
+    "pid": 84546,
+    "executablePath": "/home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus",
+    "backendUrl": "http://127.0.0.1:39259",
+    "graphqlUrl": "http://127.0.0.1:39259/graphql",
+    "controlEndpoint": "http://127.0.0.1:39201",
+    "controlPort": 39201,
+    "serverPort": 39259,
+    "dataRoot": "/tmp/collapse-api-rev002.ots9s6/tmp/autobyteus-isolated-root-I1faSf",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/tmp/collapse-api-rev002.ots9s6/tmp/autobyteus-isolated-root-I1faSf/server-data/db/production.db",
+    "logPath": "/tmp/collapse-api-rev002.ots9s6/tmp/autobyteus-isolated-app/iso-39201-ab83.log"
+  }
+}

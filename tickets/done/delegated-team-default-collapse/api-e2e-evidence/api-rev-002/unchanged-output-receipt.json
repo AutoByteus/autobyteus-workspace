@@ -1,0 +1,11 @@
+{
+  "sha256": {
+    "autobyteus-web/stores/agentRunCollaborationStore.ts": "f2cf4d68dd2d4641d3a379d314753a527edd7d07369d800f61f50c2efc2696d0",
+    "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts": "c6942f27487b87fec87062ce4f9a866d3a32633bf875b4daea9608a6cb8bccd6",
+    "autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs": "cd073545c7c28c7a72c3f9c3f719de174309068cb6d44eba56fb085da06baf2d",
+    "autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus": "23e010547985b386ee3fe4a311949a5dbecf5eeb41cbf8427b8a61cdf69840cb",
+    "autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar": "e13d6c1a9403d5c00e5111f5c2c7c487355959c62e0f46b8cb15cc3447094dc0"
+  },
+  "equalsInput": true,
+  "equalsReviewerAB": true
+}

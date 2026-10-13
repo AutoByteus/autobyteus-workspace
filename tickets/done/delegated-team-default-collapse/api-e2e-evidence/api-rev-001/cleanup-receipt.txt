@@ -1,0 +1,1 @@
+Private desktop HOME/bin/TMPDIR/XDG runtime removed after owned uid24017 process, instance-registry and auto-data-root checks. Canonical stop receipts prove native ports released. Browser-current proves owned ports closed. User runtime/data untouched. Build/dependencies/worktree retained.
