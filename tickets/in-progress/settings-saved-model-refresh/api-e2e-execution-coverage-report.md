@@ -1,110 +1,104 @@
 # API/E2E Execution Coverage Report — settings-saved-model-refresh
 
 ## Latest authoritative result
-**Pass — API-REV-001, round 1, 2026-10-13. Final confidence 95%.**
+**Pass — API-REV-002, 2026-10-13, final confidence 95%.** Integrated IR-002 after Delivery DR-001; API-REV-001 remains historical pre-integration Pass/95%.
 
-- **170/170 web tests** (25 files); narrow 46-test run overlaps this selection.
-- **6/6 real HTTP/WS/MCP tests**, grouping DCM-001..008.
-- **9/9 isolated desktop journeys** in the final consolidated run.
-- **6/6 browser/real-backend journeys**.
-- Fresh desktop production build passed. No product-code change during API/E2E. No paid inference, user run/data access, push, release or finalization.
+- **181/181 web tests, 26 files** (narrow 57-test run overlaps).
+- **6/6 real HTTP/WS/MCP tests**, grouping DCM-001..008; fresh server build.
+- **9/9 final isolated desktop journeys**, original Settings plus imported Stop checks together.
+- **6/6 browser/real-backend journeys**, same preceding stopped-copy fixtures.
+- Fresh integrated Electron production build passed; final rerun uses exactly those bytes, not the old API-REV-001 package.
+- One API-owned test-selector repair, no product source change. No unresolved failure, user-only proof gap, quota, user-data access, push, finalization or release.
 
-## Execution meta / cumulative authority
-Task `5ee10f33-b73e-4373-b646-e87613e9c57b`; worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh`; branch `codex/settings-saved-model-refresh`.
-Canonical package: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/`.
+## Authority / current source
+Task `5ee10f33-b73e-4373-b646-e87613e9c57b`; **Medium / Low, Direct Low-Risk**. Independent test-code review **Not Required — direct low-risk route**. ARCH-REV/CRR/Product supplements **N/A — not applicable**.
 
-Read and retained: requirements-doc.md (Approved SR-001), investigation-notes.md, design-spec.md (SR-002), solution-revision-record.md, handoff-architecture-design-complete.md, implementation-handoff.md, implementation-revision-record.md (IR-001), implementation-local-evidence.md. Current coverage authority: api-e2e-coverage-investigation.md, this report, api-e2e-test-case-ledger.md and api-e2e-revision-record.md. Prior API result/confidence N/A. Architecture review, source review, Product supplements and related ARCH-REV/CRR/DR reports: **N/A — not applicable** on direct route. User screenshots remain observational context in upstream inventory.
+Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh`, branch `codex/settings-saved-model-refresh`. Canonical package `tickets/in-progress/settings-saved-model-refresh/` in that worktree.
 
-**Medium / Low; Direct Low-Risk. Successful route: Delivery. Test-code review: Not Required — direct low-risk route.** No structural reclassification trigger found.
+Read full cumulative SR-001 requirements, investigation, SR-002 design, solution history/architecture handoff, IR-001/002 implementation handoff/revision/local/integration evidence, prior API investigation/report/revision/ledger, and DR-001 release-deployment/docs-sync/handoff/revision plus raw conflict evidence. Legacy Removal and Persisted Data checks clean / **Not Affected**. Requirements/design unchanged. Trigger is DR-001 shared-harness merge conflict (no separate finding ID), not a new product behavior request.
+
+Source chain: pre-integration d25b1e74ed → DR-001 evidence preservation 24562de063 → merge **b312eaf758bffdaa9db285754e0cd382f499e0c2**, integrating **0c37f58d88220be3683a15da6e0956d6ab13c4db** → IR-002 intake **4dd213be087bda11d3f4e0bc87f9d44af1278e85** → API-owned test fix **e00d34ffdd7ed2421522ddde7182b3ed48a3f223**. Later evidence commits do not change application code.
 
 ## Acceptance-Criteria Proof
-All six criteria critical; all **Proven** within approved scope. No user-only missing proof.
-Evidence folder: `evidence/` under the canonical package. Below **F** means `evidence/desktop-final/`, **B** means `evidence/browser-01/`. JSON case details contain DOM assertions, exact target IDs, mutation/query variables and responses. Screenshots support rather than replace assertions.
+All critical ACs **Proven**. Evidence base **E = evidence/api-rev-002/**; **F = E/desktop-final/**; **B = E/browser/**. JSON cases contain actual DOM state, accepted mutation/read responses, exact identities and runtime argv. Screenshots support assertions, not replace them.
 
-| AC | Case proof | Evidence files relative to package | Result |
+| AC | Current integrated proof | Evidence relative to package | Result |
 |---|---|---|---|
-| AC-001 | SSR-001 stopped parent → gear → copy Save, same connected Settings element, same URL, expanded editor and summary match canonical query; second save and reopen. SSR-004 member thinking. | F/delegated-launch-defaults-evidence.json → cases.SSR-001/004.details; F/SSR-001-first-same-view.png; F/SSR-004-same-model-thinking-saved.png | Proven |
-| AC-002 | SSR-002 Team choice updates follower; own member choice/default survive; exact neighboring Team unchanged; repeated Team edit. SSR-004 low → xhigh and reopen. | F JSON → SSR-002/004; F/SSR-002-team-followers-own-choice.png; evidence/api-web-regression.log for Fast/config presentation | Proven |
-| AC-003 | SSR-001 Cancel sends no mutation; SSR-003 aborted write retains edits; real accepted write + injected read 503 shows saved-but-refresh-needed and locks; Refresh reads without another mutation. DCP-004 real backend refusal when copy wakes. | F JSON → SSR-001/003 and DCP-004; F/SSR-003-write-failed-recoverable.png; F/SSR-003-saved-refresh-needed.png; F/SSR-003-read-only-refresh-recovered.png; F/DCP-004-save-refused-copy-running-1280.png | Proven |
-| AC-004 | Agent copy + collaborator (SSR-001), Team and member/instance isolation (SSR-002/004), active Agent + Team/Org roots (DCP-001..005); unchanged-model settings-only real Grok schema. | F JSON all 9 cases; B/delegated-launch-defaults-evidence.json; F/DCP-003-org-settings-copy-saved-1280.png; F/DCP-005-team-copy-card-member-saved.png | Proven |
-| AC-005 | SSR-001/003 launch counts unchanged on Save/Refresh; unrelated canonical identities/settings unchanged. DCP-001..005 locks/refusal/next-message resume; DCP-005 nonempty conversation continuation flag. API DCM-001..008 restrictions/continuity. Pending root/node ownership and closure filter repository tests. | F JSON; evidence/api-server-e2e.log; evidence/api-web-regression.log; F/DCP-004-settings-after-restart-1280.png | Proven |
-| AC-006 | Fresh desktop build, actual production Electron renderer and Node Manager connecting to owned real backend; no mocked Apollo. Still-open Save assertions/API wire, screenshots, identity/cleanup receipts. | evidence/desktop-01/desktop-start.log; F/desktop-identity.json; F/desktop-start.json; F/desktop-stop.json; F case JSON; evidence/api-cleanup-and-identity.json; evidence/commands.md | Proven |
+| AC-001 | SSR-001 stopped parent → gear → Agent/collaborator edit → Save; same connected Settings element and URL, expanded editor+summary accepted model; repeated Save and reopen. SSR-004 member config. | F/delegated-launch-defaults-evidence.json cases.SSR-001/004; F/SSR-001-first-same-view.png; F/SSR-001-collaborator-saved.png | Proven |
+| AC-002 | SSR-002 Team followers change; own-default Grok, own member choice and exact neighboring Team retained; second edit. SSR-004 same Grok model low→xhigh and reopen. | F JSON SSR-002/004; F/SSR-002-team-followers-own-choice.png; F/SSR-004-same-model-thinking-saved.png; E/web-regression.log includes configurable/Fast labels | Proven |
+| AC-003 | Cancel no mutation; aborted write retains recoverable dirty draft; real committed write followed by injected read 503 gives truthful refresh-needed lock; Refresh reads only. DCP-004 real backend refusal after copy wakes. | F JSON SSR-001/003,DCP-004; F/SSR-003-write-failed-recoverable.png; F/SSR-003-saved-refresh-needed.png; F/SSR-003-read-only-refresh-recovered.png; F/DCP-004-save-refused-copy-running-1280.png | Proven |
+| AC-004 | Agent/collaborator/Team/member cases; active Agent and Team/Org roots DCP-001..005; same-model settings-only, all in actual packaged renderer. | F JSON all nine cases; B JSON six cases; F/DCP-003-org-settings-copy-saved-1280.png; F/DCP-005-team-copy-card-member-saved.png | Proven |
+| AC-005 | No launch/resume on Save/Refresh; exact unrelated settings/identity unchanged; running/runtime locks, refusal, next-message same conversation; root/node ownership and closure tests. Incoming Stop lifecycle preserved. | F JSON SSR-001/003,DCP-001..005; E/server-e2e.log DCM-001..008; E/web-regression.log | Proven |
+| AC-006 | Fresh source-current isolated Electron, private real backend registered/opened through production Node Manager; API/DOM assertions before navigation; identity/screenshots/cleanup. | E/desktop/desktop-start.log; F/desktop-identity.json; F/desktop-start.json; F/desktop-stop.json; F JSON; E/validation-audit.json; E/commands.md | Proven |
 
-## Commands / boundary matrix / ledger reconciliation
-Exact commands and working directory: **evidence/commands.md**. Repository plan and post-repository scorecard: investigation. No skip counted as Pass.
+### Imported Stop preservation (DR-001/IR-002 integration requirement)
+DCP-001/002 directly compare actual parent and copy computed color/background/transition for rest, hover, leave and after row activation: gray `rgb(153,153,153)` → red `rgb(220,38,38)` on `rgb(254,242,242)` → gray; transition 0.15s. Team row activation retains its existing group/coordinator semantics; no invented selected-state promise.
 
-| Cases | Execution surface / boundary | Latest result and evidence |
+Native **Enter / Space** produces visible focus/name/ring, one exact-root/copy Stop request, disabled pending opacity 0.6 and pulse; reduced motion disables pulse. Repeated key and mouse while held produce no duplicate and no row selection/expansion/URL change. Request is forwarded unchanged to real backend, returning STOPPED; Task remains open, parent active. Save and ordinary-message resume still pass. **F and B JSON cases.DCP-001/002.details.paint/stop/sidebarTarget**, plus `DCP-00x-parent-*`, `copy-*`, `copy-keyboard-focus.png`, `copy-pending.png` are direct proof. Target source/test unchanged by merge; own selector repair does not modify these assertions.
+
+## Execution / ledger reconciliation
+Exact commands/cwd/environment: **E/commands.md**. TESTING.md, applicable AGENTS, README/scripts/Vitest config and isolated-app instructions govern the execution; no closer testing guide. No build/dev-server overlap, installed app reuse or sandbox bypass.
+
+| Cases/layer | Executed result | Evidence |
 |---|---|---|
-| REP-001 / REP-002 | Nuxt/Happy DOM components/stores/row builders, controlled transport; alone cannot prove persistence | Pass 46/46 then 170/170; api-narrow.log, api-web-regression.log |
-| API-001 (DCM-001..008) | Real HTTP/GraphQL/WS/scoped MCP, catalog, run-history, lifecycle; external AGY/Grok CLI scripted | Pass 6 grouped tests; api-server-e2e.log |
-| SSR-001..004 | Production desktop → real node/backend; stopped Agent parent, Agent/collaborator/Team/member settings/recovery | Pass 4/4; desktop-final JSON |
-| DCP-001..005 | Production desktop active Agent/Team/Org roots, copy stop/model, wake refusal, backend restart, ordinary-message continuation | Pass 5/5; desktop-final JSON |
-| SSR-001..004 + DCP-002/005 | Fresh Chrome → Nuxt → owned real backend, same public fixture path | Pass 6/6; browser-01 JSON |
-| Build/static | Server build; fresh Electron full build includes guards/localization/production renderer; three MJS syntax checks and git diff check | Pass; api-server-build.log, desktop-01/desktop-start.log; syntax/diff commands exit 0 |
+| REP-001 | 4 files/57 component/store tests Pass | E/narrow.log |
+| REP-002 | 26 files/181 affected tests Pass | E/web-regression.log |
+| Static/source | 3 MJS syntax, 20 byte-preservation checks, 5 synthetic actual-runner variants Pass; runner/syntax repeated after fix | E/source-preservation.json; E/runner-check*.json; E/commands.md |
+| API-001 | Fresh server build + 6 actual API tests Pass, no skips | E/server-build.log; E/server-e2e.log |
+| Initial integrated desktop | 8 Pass / 1 harness Fail; cleanup complete | E/desktop.log; E/desktop/ JSON and DCP-002-failure.png |
+| Final integrated desktop | 9 Pass / 0 Fail; zero page errors | E/desktop-final.log; F JSON |
+| Browser supplement | 6 Pass / 0 Fail; zero page errors | E/browser.log; B JSON |
+| Build/guards | Fresh Electron build includes web/localization guards, server preparation, generated renderer, Electron transpilation/package | E/desktop/desktop-start.log |
+| AUDIT-002 | Pass identities, explicit order, one Started/Completed per case, durable final completion and owned cleanup | E/validation-audit.json; E/*-ledger-live-audit.json; E/isolated-list-after.json |
 
-Ledger reconciled **Yes**. No running, interrupted or unstarted required cases remain. Final consolidated desktop command exited 0 with 9 Pass/0 Fail and zero page errors; browser 6 Pass/0 Fail and zero page errors. Earlier attempts remain intact, not overwritten.
+Ledger reconciled **Yes**; all required cases resolved. Synthetic runner checks enforce JSON write before Completed/next case. Read-only live observers confirmed persisted result at every final desktop (9) and browser (6) completion. Initial failed event contains multiline error text; block-level audit counts exactly nine start/completion pairs even there.
 
-## Attempt history / failure resolution
-All failures below were harness defects/corrections, resolved before result classification; no product failure-origin reroute needed.
+## Attempt history / resolved findings
+1. Initial desktop DCP-002 used incoming label-only `.first()` selector. Earlier SSR Team copies share its label and are stopped; the wrong row has no Stop. Screenshot/source and read-only CDP diagnostic (`E/selector-diagnostic.json`) establish this as an **API-owned baseline harness Local Fix**, not product Stop failure. Fix scopes both sidebar locators to root ID + task_team kind + address, waits for unique match and records it. **e00d34ffdd**, 5 added/4 removed lines, `E/harness-fix.patch/json`. No assertion disabled or case skipped. Final full desktop and browser repeat SSR-before-DCP sequence and **Pass**.
+2. Supplemental ledger observer initially filtered physical lines, missing the multiline failed checkpoint's evidence path (8 observed of 9). Preserved `E/desktop-ledger-live-audit-initial.json`. Parser corrected to complete event blocks; production ledger/runner unchanged. Final 9+6 completions all observed; final audit validates every initial event too.
 
-| Attempt / symptom | Diagnosis and correction | Resolution |
-|---|---|---|
-| desktop-01 DCP-002/005 sidebar row missing | Existing helper clicked already-expanded Team row and collapsed it; explicitly disclose root after selection | final/browser both Pass |
-| desktop-01 DCP-004 chat wait after backend restart | Desktop hash goto retained Settings; unlike HTTP goto it does not reload. Explicit reload only in separate post-restart phase, never to make Save pass | desktop-02/final Pass; refusal/Save already proved before reload |
-| desktop-01 SSR-001 collaborator assertion | New helper assumed copy startedAt; collaborator has addedViaAgentRunId. Wire already showed accepted selection; correct public identity lookup | desktop-02/final/browser Pass |
-| desktop-02 DCP-002 self-target refusal | Last conversation was copy lead; root manager not selected. Product correctly rejected self-message | explicit manager click; desktop-03/final/browser Pass |
-| desktop-02 DCP-005 raw ID → friendly-name string | Catalog hydrated grok-4.7 to Grok 4.7, not config change. Compare recognized equivalent label plus exact canonical execution/source. Audit caught first helper returned undefined; now requires both records by ID/address | desktop-04/final/browser Pass with present exact records |
-| desktop-03 SSR-004 primary-menu option absent | Grok generic schema uses reasoning-effort menu, not primary mode; reuse established primary/generic selector. Actual xhigh display is Xhigh | desktop-04/final/browser Pass; backend enum exact |
+DR-001 integration conflict is resolved by IR-002 and now executable preservation proven. No other product, requirement/design or out-of-scope finding. Prior API-REV-001 harness attempts remain preserved in their original folders/investigation; not silently deleted or reclassified.
 
-Baseline helper fixes isolated in **8126fa99b1**. New coverage/desktop adapter in **74889c1ed8**. No source fix hidden in test commits.
+## Confidence / broader-validation decision
+Evidence judgments, not statistical probabilities. Equal-weight mean of seven applicable categories; missing critical proof cannot be averaged away.
 
-## Confidence scorecard
-Percentages are evidence judgments, not statistical probabilities or code coverage. Arithmetic mean across seven applicable categories; missing critical proof cannot be averaged away.
-
-| Category | Post-repository | Final | Final evidence / residual boundary |
+| Category | After repository | Final | Basis / residual boundary |
 |---|---|---|---|
-| Requirements/AC proof | 75% | 95% | All critical criteria mapped; no user-only gaps. |
-| Changed-boundary directness | 85% | 95% | Still-mounted real editor, real mutations/readback, stopped parent. |
-| Cross-boundary realism/mock gap | 85% | 95% | Real Electron/Nuxt/API/persistence/tools; external CLI and explicit outage controlled. |
-| Environment/config/identity/fixtures | 90% | 95% | Owned public-created data, source-current packaged bytes and exact run IDs. |
-| Failure/edge/lifecycle/recovery | 95% | 95% | Refusal, transport failure, committed-read failure, read-only retry, continuation; pending ownership tests. |
-| User-surface/desktop | 50% | 95% | Actual Electron, gear controls, saved/error screenshots inspected; Mac only. |
-| Durable regression coverage | 90% | 95% | New and existing coverage executed; corrected cases repeated in browser and consolidated desktop. |
+| Requirements/AC proof | 75% | 95% | Every critical criterion direct and current; no user-only gap. |
+| Changed-boundary directness | 85% | 95% | Real mounted Settings and actual CSS/native keyboard, accepted reads. |
+| Integration realism/mock gap | 85% | 95% | Real Electron/Nuxt/API/persistence/tools; only external CLIs/outages controlled. |
+| Environment/config/identity/fixtures | 90% | 95% | Fresh package/current server, public-created owned data and exact IDs. |
+| Failure/edge/lifecycle/recovery | 95% | 95% | Refusal, read failure/read-only retry, held Stop, continuity, ownership. |
+| User-surface/desktop | 50% | 95% | Source-current Mac renderer, actual gear/Save/focus, screenshots inspected. |
+| Durable coverage | 90% | 95% | Both merged coverage sets executed; root selector repaired and repeated. |
 
-Overall **81.4% → 95%**. Target met Yes; category below 90 No; every critical AC directly proven Yes. Broader validation **Required and completed**, not waived after unit success.
+**81.4% → 95%**. Broader validation **Required and completed**: repository-only gap was real integrated Settings/Stop publication and mandatory AC-006. No applicable category below 90; no material unresolved broader risk. Additional paid-provider or cross-platform work would not materially improve this bounded renderer fix's proof.
 
-## Environment, identity and desktop strategy
-- macOS **26.5.2 / arm64**, Node **22.23.1**, pnpm **10.28.2**. Build log packages Electron **42.4.1**, app version **1.5.3-beta.4**. Desktop viewport 1512×952; selected screenshots 1280×900; English UI with host date formatting. Browser context en-US, 1512×952. Not mobile/cross-OS certification.
-- Implementation `cd685b6407cd847db52b4a2d7a45b486287fac52`; final committed harness `74889c1ed8`. Fresh app built in desktop-01 from implementation source + test additions. Later diffs contain only tests/package-script entry, no executable application-source delta. Every desktop receipt has identical asar SHA-256 **55749a6189e5680f13bf5b2c254e50a6096a07ba1904dcc728055fab4116bc4b**. No installed binary used.
-- Isolated-app owns desktop/embedded backend. Fake CLI variables do not cross its production isolation: actual Nodes UI registers and opens a second desktop window for the owned current dist/app.js backend, private HOME/SQLite/data/free ports and scripted commands.
-- Definitions via real GraphQL; runs via actual UI/composer; scripted agent calls real delegation/message tools through scoped MCP. No persisted-tree edits, store injection, fixture page or mocked Apollo. Only SSR-003 transport faults injected; its preceding committed write is real.
-- DCP-004 is **backend restart + renderer reload**, not a whole desktop restart or released-app upgrade. Neither is a changed requirement here.
-- Final saved, thinking-only and refresh-needed screenshots opened and visually inspected. Disclosure/layout retained, Saved follows readback; failure distinguishes committed write and keeps Refresh visible.
+## Environment / build identity
+macOS 26.5.2 arm64, Node 22.23.1, pnpm 10.28.2, Electron 42.4.1, app 1.5.3-beta.4. Viewport 1512×952 (selected screenshots 1280×900). English UI; not cross-platform/mobile certification.
 
-## Durable coverage changed
-| Path relative to worktree | Change |
-|---|---|
-| autobyteus-web/tests/e2e/settings-saved-model-refresh-cases.mjs | Added SSR-001..004, same-view/repeat/isolation, thinking-only, errors/read recovery and wire receipts |
-| autobyteus-web/tests/e2e/fixtures/settings-refresh-desktop.mjs | Added safe lifecycle adapter, real Node Manager registration, build hash and owned cleanup |
-| autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs | Reused public fixtures/runtime; desktop/hash routing/ledger; focused SSR opt-in; baseline helper corrections |
-| autobyteus-web/package.json | Added test:e2e:settings-saved-model-refresh nine-case desktop suite |
+Fresh build at 4dd213be produced asar SHA256 **15ff98c7a607f6e33d814c9a63489d2c6c8d33bfb256de92a815c5f6ec53fab0**, launched `iso-63101-feda`. Final corrected harness e00d34ffdd launches `iso-63522-1749` with identical verified asar, `--skip-build` only for this new artifact. The only 4dd→e00 delta is the test selector, so application source-current identity remains valid. **Old API-REV-001 asar 55749a61… was not reused.** E/source-identity.json, harness-fix.json, desktop identity receipts and validation-audit.json bind this chain.
 
-No tests removed/skipped; no compatibility-only test added. No global TESTING.md change. Independent test review **Not Required — direct low-risk route**; paths attached for Delivery inspection.
+Public GraphQL creates definitions; actual UI/composer starts runs; scripted AGY invokes real scoped MCP delegation/message tools; fake Grok provides actual catalog/schema/ACP responses. Real node uses private HOME/SQLite/data/free ports; production Node Manager selects it in actual desktop. No mocked Apollo, injected Pinia, persisted-tree edits, secrets or user's data. Only SSR-003 transport failures and DCP Stop arrival delays controlled. Prior/continued conversations are asserted, not paid inference.
 
-## Compatibility / persisted data
-No upstream compatibility ambiguity or invalid retained fallback observed. Active live stream is a supported distinct lifecycle. **Not Affected** persisted-data decision respected: formats/readers/writers unchanged; normal saved records read through public APIs. No migration/reset/upgrade or legacy-protection claim.
+## Durable coverage / scope
+Round 2 modifies only **autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs**, exact-root DCP-002 selector repair e00d34ffdd. Prior SSR case module, desktop fixture and focused package script retained, no removals. Incoming CSS/keyboard assertions preserved. Evidence-only Python audit helpers under E are not application or durable test architecture. No TESTING.md or production changes. Independent test review **Not Required — direct low-risk route**.
 
-## Residual limitations / not tested
-- Scripted AGY turns and Grok catalog/reasoning schema are not paid inference. Actual provider behavior out of scope; zero quota used.
-- Fast mode absent from these controlled catalogs: its config/label has mounted-component coverage, not real-provider desktop proof. Actual desktop settings-only proof uses Grok low/xhigh.
-- No Windows/Linux shell certification, mobile/accessibility sweep, installed user data, whole desktop restart or release deployment. Shell source unchanged; required Mac desktop journey completed.
-- Upstream standalone vue-tsc unavailable; no pass claimed. Production Electron/web/server builds passed.
-- Agent-run testing is not user acceptance. No ticket behavior remains that only the user can check for this executable gate.
+No compatibility wrapper/stale fallback introduced; active stream remains intentionally separate supported lifecycle. Persisted data **Not Affected**; existing accepted selections read normally. No migration, reset or data-format claim.
 
-## Cleanup and retained outputs
-**evidence/api-cleanup-and-identity.json** asserts all six attempt-owned backend roots removed, node/frontend ports no longer listening, every exact desktop removed with data root and both ports released. `evidence/isolated-list-after.json` has no owned instance. Gated API fixture directories checked absent. Chrome closed; Nuxt/backend groups stopped; no temporary production route created. Temporary owned diagnostic JSON/patch removed after evidence audit.
+## Limitations / not tested
+- Scripted CLIs are not live paid inference. Zero provider quota; runtime/provider behavior outside scope.
+- Desktop same-model reasoning low/xhigh directly proven. Fast mode absent from controlled catalogs; configurable-schema component tests cover Fast/config labels, not provider-specific desktop Fast.
+- DCP-004 proves backend restart + explicit renderer reload **after** same-view Save assertions, not whole desktop restart, upgrade or released deployment.
+- Mac desktop/browser only; no Windows/Linux/native feature, mobile or broad accessibility certification. Native Stop keyboard/pending assertions are direct but bounded.
+- No standalone web vue-tsc pass (unavailable upstream); production web/Electron/server builds pass. Agent testing is not user acceptance.
 
-Dependencies, packaged build and untracked `autobyteus-application-sdk-contracts/dist/`, `autobyteus-application-backend-sdk/dist/` remain for Delivery reuse/cleanup; **do not stage**. Tracked contract outputs unchanged. Archive ticket evidence before worktree removal.
+## Cleanup / custody / history
+**E/validation-audit.json** verifies all three owned probe roots removed, all six recorded backend/frontend PIDs absent, ten recorded ports free (two desktop-only frontend allocations were never started). Both exact desktop data roots removed and control/server ports released. Filtered isolated list contains no owned instance; three unrelated registry entries untouched. Logged gated API fixture root normalized/checked absent. Temporary read-only audit stdout file removed. Dependencies, packaged build and untracked SDK dist retained for Delivery; **do not stage dist**.
+
+Screenshot inspection notes: E/visual-inspection.md. Raw first failure and resolved final evidence both retained. New log trailing whitespace/extra EOF normalization only is documented with hashes; historical DR-001 raw conflict patch unchanged (its existing trailing-space hunk labels/conflict markers are evidence, not unresolved source).
+
+API-REV-001 stays Pass/95% for pre-integration candidate d25b1e74ed (170 web / 6 API / 9 desktop / 6 browser); its evidence folders and revision remain. This report is current API-REV-002 and does not upgrade old proof to a merged-state claim. DR-001 documents remain historical blocked Delivery records; Delivery must append DR-002 after its own verification/docs/finalization.
 
 ## Handoff
-**Pass, 95%, no unresolved in-scope failure or external blocker.** Product-failure classification N/A. No unrelated product defect requiring Task Manager follow-up. Configured route receipt recorded in revision record. Finalization remains Delivery-owned via RELEASE.md and origin/personal, no release without user direction. Completion returns through Solution Designer to Task Manager run `project_task_manager_a5f6d9d306e54970bafdad895bdf731d`.
+**Pass / 95%, no unresolved in-scope failure or external blocker.** Successful direct-low-risk output to Delivery subject to current rule lookup. Full cumulative package, critical JSON/screenshots, cleanup and test patch attached. Delivery owns independent evidence review/docs/finalization under RELEASE.md to origin/personal. **No release authorized.** Eventual completion returns via Solution Designer to Task Manager run `project_task_manager_a5f6d9d306e54970bafdad895bdf731d`.

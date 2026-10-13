@@ -178,3 +178,132 @@ Call log:
 - Browser SSR-001..004 and DCP-002/005: **Pass** (6/6); evidence/browser-01*.
 - Earlier harness failures retained/resolved in investigation/report; no open case or incomplete product proof.
 - Cleanup audit **Pass**, evidence/api-cleanup-and-identity.json; no owned instance/root/port remains. Final report supersedes initial planning statuses, not historical events.
+
+
+## API-REV-002 plan — integrated source revalidation
+Candidate 4dd213be08; prior API-REV-001 preserved. Expected all Pass; no result inferred yet.
+- REP-001: narrow Settings/store + incoming Stop.
+- REP-002: affected 26-file web suite, syntax/runner check.
+- API-001: fresh server build + six real HTTP/WS/MCP tests (DCM-001..008).
+- Desktop SSR-001..004 and DCP-001..005, explicit nine-case order, fresh build.
+- Browser SSR-001..004 and DCP-001/002, real node/HTTP path.
+- AUDIT-002: ledger one Started/Completed, evidence identity and exact owned cleanup.
+
+- REP-001 Completed Pass 57/57; evidence/api-rev-002/narrow.log
+- REP-002 Started affected web and merged-runner checks
+
+- REP-002 Completed Pass syntax 3 modules, runner 5 synthetic variants, web 26 files/181 tests; evidence/api-rev-002/
+- API-001 Started fresh server build then scripted real API suite
+
+- API-001 Completed Pass fresh server build, 6 tests grouping DCM-001..008; evidence/api-rev-002/server-e2e.log
+
+- 2026-10-13T16:41:30.500Z SSR-001 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop
+
+- 2026-10-13T16:41:55.373Z SSR-001 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:41:55.373Z SSR-002 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop
+
+- 2026-10-13T16:42:14.654Z SSR-002 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:42:14.654Z SSR-003 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop
+
+- 2026-10-13T16:43:01.783Z SSR-003 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:43:01.783Z SSR-004 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop
+
+- 2026-10-13T16:43:22.192Z SSR-004 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:43:22.192Z DCP-001 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop
+
+- 2026-10-13T16:43:47.548Z DCP-001 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:43:47.548Z DCP-002 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop
+
+- 2026-10-13T16:44:32.387Z DCP-002 Completed Fail; locator.evaluate: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-test="workspace-team-transient-execution-row"]').filter({ hasText: 'pair team 8b11' }).first().locator('[data-test="workspace-delegated-stop"]')[22m
+; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:44:32.387Z DCP-003 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop
+
+- 2026-10-13T16:44:53.978Z DCP-003 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:44:53.979Z DCP-004 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop
+
+- 2026-10-13T16:45:24.852Z DCP-004 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:45:24.853Z DCP-005 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop
+
+- 2026-10-13T16:45:59.193Z DCP-005 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop/delegated-launch-defaults-evidence.json
+
+### API-REV-002 desktop final rerun after exact-root selector repair e00d34ffdd
+Reuse newly built 4dd213be application bytes only (asar 15ff98c7...), not API-REV-001 package. Same nine case order; all unresolved until reexecuted.
+
+- 2026-10-13T16:46:58.784Z SSR-001 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final
+
+- 2026-10-13T16:47:23.780Z SSR-001 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:47:23.780Z SSR-002 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final
+
+- 2026-10-13T16:47:43.255Z SSR-002 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:47:43.255Z SSR-003 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final
+
+- 2026-10-13T16:48:29.937Z SSR-003 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:48:29.938Z SSR-004 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final
+
+- 2026-10-13T16:48:50.549Z SSR-004 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:48:50.550Z DCP-001 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final
+
+- 2026-10-13T16:49:16.224Z DCP-001 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:49:16.224Z DCP-002 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final
+
+- 2026-10-13T16:50:01.769Z DCP-002 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:50:01.769Z DCP-003 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final
+
+- 2026-10-13T16:50:23.287Z DCP-003 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:50:23.287Z DCP-004 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final
+
+- 2026-10-13T16:50:53.172Z DCP-004 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:50:53.173Z DCP-005 Started desktop; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final
+
+- 2026-10-13T16:51:27.600Z DCP-005 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:52:36.805Z SSR-001 Started browser; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/browser
+
+- 2026-10-13T16:53:02.217Z SSR-001 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/browser/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:53:02.217Z SSR-002 Started browser; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/browser
+
+- 2026-10-13T16:53:21.969Z SSR-002 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/browser/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:53:21.969Z SSR-003 Started browser; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/browser
+
+- 2026-10-13T16:54:09.079Z SSR-003 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/browser/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:54:09.079Z SSR-004 Started browser; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/browser
+
+- 2026-10-13T16:54:29.984Z SSR-004 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/browser/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:54:29.984Z DCP-001 Started browser; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/browser
+
+- 2026-10-13T16:54:56.093Z DCP-001 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/browser/delegated-launch-defaults-evidence.json
+
+- 2026-10-13T16:54:56.093Z DCP-002 Started browser; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/browser
+
+- 2026-10-13T16:55:45.875Z DCP-002 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/browser/delegated-launch-defaults-evidence.json
+
+
+## Reconciled final state — API-REV-002
+- REP-001 Pass 57 tests (4 files, overlaps broader selection); REP-002 Pass 181 tests / 26 files, syntax 3 modules, synthetic actual-runner 5 variants, 20 source-preservation checks.
+- API-001 Pass fresh server build + six actual API tests grouping DCM-001..008.
+- Initial integrated desktop 8 Pass / DCP-002 Fail: wrong same-label row selected before Stop; preserved in evidence/api-rev-002/desktop. API-owned exact-root selector repair e00d34ffdd resolves it.
+- Final desktop SSR-001..004 + DCP-001..005 **9/9 Pass**, evidence/api-rev-002/desktop-final; browser SSR-001..004 + DCP-001/002 **6/6 Pass**, evidence/api-rev-002/browser. Zero page errors. No open/interrupted/unstarted required case.
+- AUDIT-002 **Pass**: exact order, one Started/Completed per case for all attempts; final 9+6 result JSONs observed persisted at completion; cleanup/identity proof in validation-audit.json. Initial supplementary observer missed the multiline failed entry; final event-block parser and audit reconcile it, no missing ledger event.
+- Final result **Pass / 95%**. API-REV-001 stays pre-integration history; this is the current integrated result.

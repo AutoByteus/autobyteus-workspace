@@ -1,0 +1,14 @@
+
+> autobyteus@1.5.3-beta.4 test:e2e:settings-saved-model-refresh /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web
+> node tests/e2e/delegated-launch-defaults-probe.mjs --desktop --cases SSR-001,SSR-002,SSR-003,SSR-004,DCP-001,DCP-002,DCP-003,DCP-004,DCP-005 --skip-build --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final --ledger-file /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/api-e2e-test-case-ledger.md
+
+SSR-001 Pass AC-001/004/005/006 stopped parent -> gear -> Agent copy + collaborator Save, repeat, cancel and reopen
+SSR-002 Pass AC-002/004/005/006 stopped parent Team followers, own member choice/default and neighboring instance
+SSR-003 Pass AC-003/005/006 write transport failure retains edits; committed read failure locks, read-only Refresh reconciles
+SSR-004 Pass AC-001/002/004/006 same-model settings-only Grok member thinking Save, repeated edit and reopen
+DCP-001 Pass delegated-copy-model-change AC-001/002/004/011, DEC-010: a running copy is locked with a stop icon; Stop from the sidebar; its model changed in Settings and saved; the next message resumes it on that model
+DCP-002 Pass delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a Team copy stopped from its sidebar row; its Team model changed and saved; the copy lead's "+" shows the choice without a reload; the next message resumes the lead on it
+DCP-003 Pass delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model
+DCP-004 Pass delegated-copy-model-change AC-011, AC-005 (UI): the delegating agent wakes the copy while the user edits: Save is refused and records nothing; after a Save and an app (backend) restart the choice is shown and the copy resumes on it
+DCP-005 Pass delegated-copy-model-change REQ-001 (any member), AC-010 scenario (Team root, UI): one member of a Team copy, after it has run, gets its own model in Settings; the other rows stay as they were; its next turn resumes its conversation on that model while the coordinator keeps its own
+Summary: 9 Pass, 0 Fail
