@@ -1,0 +1,82 @@
+{
+  "dateUtc": "2026-10-13T03:51:20.729693+00:00",
+  "result": "Pass \u2014 integrated executable validation; explicit user verification pending",
+  "task_size": "Small",
+  "architectural_risk": "Low",
+  "route": "Initial direct low-risk; required post-failure proportional durable repair review CRR-002 Pass",
+  "bootstrapBase": "32aca0818e88126c02f009c3987dd86541348c9a",
+  "reviewedCheckpoint": "193804c9354c75a5138f4b4cd7d1a6e2c1ac1d59",
+  "integratedBase": "f13bdd0eb79aacc63dffa5995b9c86f359001468",
+  "integrationCommit": "73f5c9f14f56dced7ee29219bcf9f6e4a2d40c10",
+  "integrationMethod": "Merge origin/personal into ticket branch, no conflicts",
+  "newBaseCommits": 19,
+  "targetUnchangedFromReviewed": true,
+  "productionDeltaFromIntegratedBase": [],
+  "targetSha256": "f2657a9d7c350025e4a5f9648ad1cf8d60cf018bc9a17bedf2dbd67734b46b38",
+  "fixtureSha256": "d408306b1decad92e9ddade8817c1768164a34791f94d25e6e4204ffcedd3933",
+  "checks": {
+    "target-1": {
+      "passed": 8,
+      "skipped": 1,
+      "exit": 0,
+      "unhandled": false,
+      "ownedGroupRemaining": [],
+      "workspaceRemnants": [],
+      "privateRootRemoved": true,
+      "seconds": 14.748,
+      "command": "evidence/delivery/target-1.command.json"
+    },
+    "lifecycle": {
+      "passed": 17,
+      "skipped": 0,
+      "exit": 0,
+      "unhandled": false,
+      "ownedGroupRemaining": [],
+      "workspaceRemnants": [],
+      "privateRootRemoved": true,
+      "seconds": 23.904,
+      "command": "evidence/delivery/lifecycle.command.json"
+    },
+    "regressions": {
+      "passed": 109,
+      "skipped": 0,
+      "exit": 0,
+      "unhandled": false,
+      "ownedGroupRemaining": [],
+      "workspaceRemnants": [],
+      "privateRootRemoved": true,
+      "seconds": 13.647,
+      "command": "evidence/delivery/regressions.command.json"
+    },
+    "typecheck": {
+      "passed": null,
+      "skipped": null,
+      "exit": 0,
+      "unhandled": false,
+      "ownedGroupRemaining": [],
+      "workspaceRemnants": [],
+      "privateRootRemoved": true,
+      "seconds": 18.388,
+      "command": "evidence/delivery/typecheck.command.json"
+    },
+    "target-2": {
+      "passed": 8,
+      "skipped": 1,
+      "exit": 0,
+      "unhandled": false,
+      "ownedGroupRemaining": [],
+      "workspaceRemnants": [],
+      "privateRootRemoved": true,
+      "seconds": 9.494,
+      "command": "evidence/delivery/target-2.command.json"
+    },
+    "licensing": {
+      "exit": 0,
+      "command": "python3 scripts/check_licensing.py"
+    },
+    "hygiene": {
+      "exit": 0,
+      "command": "python3 scripts/check_repository_artifact_hygiene.py"
+    }
+  }
+}

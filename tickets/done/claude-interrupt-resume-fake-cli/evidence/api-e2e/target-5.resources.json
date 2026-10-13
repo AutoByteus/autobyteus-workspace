@@ -1,0 +1,107 @@
+{
+  "seconds": 13.006,
+  "exit": 0,
+  "timedout": false,
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-claude-validation-jtv22zj4",
+  "privateStateEntryCountBeforeRemoval": 1330,
+  "privateTopLevelStateBeforeRemoval": [
+    "home",
+    "home/.cache",
+    "home/Library",
+    "tmp",
+    "tmp/node-compile-cache"
+  ],
+  "privateTmpNonCacheStateBeforeRemoval": [],
+  "ownedGroupRemaining": [],
+  "fixtureChildrenObserved": [
+    {
+      "pid": 71622,
+      "ppid": 71478,
+      "pgid": 71432,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    }
+  ],
+  "ownedProcessesObserved": [
+    {
+      "pid": 71432,
+      "ppid": 70818,
+      "pgid": 71432,
+      "command": "(node)"
+    },
+    {
+      "pid": 71455,
+      "ppid": 71432,
+      "pgid": 71432,
+      "command": "(node)"
+    },
+    {
+      "pid": 71467,
+      "ppid": 71455,
+      "pgid": 71432,
+      "command": "<defunct>"
+    },
+    {
+      "pid": 71469,
+      "ppid": 71455,
+      "pgid": 71432,
+      "command": "(node)"
+    },
+    {
+      "pid": 71472,
+      "ppid": 71469,
+      "pgid": 71432,
+      "command": "(schema-engine-da)"
+    },
+    {
+      "pid": 71475,
+      "ppid": 71469,
+      "pgid": 71432,
+      "command": "(schema-engine-da)"
+    },
+    {
+      "pid": 71478,
+      "ppid": 71455,
+      "pgid": 71432,
+      "command": "(node)"
+    },
+    {
+      "pid": 71622,
+      "ppid": 71478,
+      "pgid": 71432,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    },
+    {
+      "pid": 71624,
+      "ppid": 71478,
+      "pgid": 71432,
+      "command": "(node)"
+    },
+    {
+      "pid": 71629,
+      "ppid": 71478,
+      "pgid": 71432,
+      "command": "(node)"
+    },
+    {
+      "pid": 71636,
+      "ppid": 71478,
+      "pgid": 71432,
+      "command": "(node)"
+    },
+    {
+      "pid": 71639,
+      "ppid": 71478,
+      "pgid": 71432,
+      "command": "(node)"
+    },
+    {
+      "pid": 71641,
+      "ppid": 71478,
+      "pgid": 71432,
+      "command": "(node)"
+    }
+  ],
+  "privateRootRemoved": true,
+  "unhandledErrorMarker": false,
+  "testWorkspaceRemnants": []
+}

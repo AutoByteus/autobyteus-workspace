@@ -1,0 +1,75 @@
+{
+  "seconds": 18.388,
+  "exit": 0,
+  "timedout": false,
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-claude-validation-7eth99p3",
+  "privateStateEntryCountBeforeRemoval": 1322,
+  "privateTopLevelStateBeforeRemoval": [
+    "home",
+    "home/.cache",
+    "tmp",
+    "tmp/node-compile-cache"
+  ],
+  "privateTmpNonCacheStateBeforeRemoval": [],
+  "ownedGroupRemaining": [],
+  "fixtureChildrenObserved": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 55209,
+      "ppid": 55205,
+      "pgid": 55209,
+      "command": "(node)"
+    },
+    {
+      "pid": 55256,
+      "ppid": 55209,
+      "pgid": 55209,
+      "command": "(node)"
+    },
+    {
+      "pid": 55285,
+      "ppid": 55256,
+      "pgid": 55209,
+      "command": "(node)"
+    },
+    {
+      "pid": 55316,
+      "ppid": 55285,
+      "pgid": 55209,
+      "command": "sh -c node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs"
+    },
+    {
+      "pid": 55346,
+      "ppid": 55285,
+      "pgid": 55209,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-application-sdk-contracts/node_modules/.bin/../typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 55347,
+      "ppid": 55316,
+      "pgid": 55209,
+      "command": "node ./scripts/clean-dist.mjs"
+    },
+    {
+      "pid": 55355,
+      "ppid": 55316,
+      "pgid": 55209,
+      "command": "(node)"
+    },
+    {
+      "pid": 56708,
+      "ppid": 55285,
+      "pgid": 55209,
+      "command": "(node)"
+    },
+    {
+      "pid": 56910,
+      "ppid": 55209,
+      "pgid": 55209,
+      "command": "(node)"
+    }
+  ],
+  "privateRootRemoved": true,
+  "unhandledErrorMarker": false,
+  "testWorkspaceRemnants": []
+}

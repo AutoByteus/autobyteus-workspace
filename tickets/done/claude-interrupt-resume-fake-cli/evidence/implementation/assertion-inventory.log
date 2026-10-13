@@ -1,0 +1,21 @@
+{
+  "kind": "static inventory only, no executable case pass claimed",
+  "originalExpectations": 43,
+  "currentExpectations": 57,
+  "missing": [],
+  "originalDirectCaseTitles": [
+    "interrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)",
+    "delivers a message sent to a busy agent into the running turn (AC-003)",
+    "requeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)",
+    "announces a background completion and streams the turn Claude starts on its own (AC-002)"
+  ],
+  "currentDirectCaseTitles": [
+    "interrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)",
+    "delivers a message sent to a busy agent into the running turn (AC-003)",
+    "requeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)",
+    "announces a background completion and streams the turn Claude starts on its own (AC-002)"
+  ],
+  "unchangedLiveGateAndDeadlines": true,
+  "unchangedErrorCaseIds": true,
+  "normalization": "Only background-notice expression is renamed after Promise.all; matcher and expected payload unchanged."
+}
