@@ -3,7 +3,7 @@
 ## Investigation Meta
 
 - Package: `shared-network-workspaces` / Project Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.
-- Requirements owner/investigator: Solution Designer; date 2026-10-13; current revision SR-002 (proposed requirements baseline remains SR-001).
+- Requirements owner/investigator: Solution Designer; date 2026-10-13; current revision/proposed requirements baseline SR-003 (automated setup).
 - Repository mode: Git.
 - Isolated workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`.
 - Branch: `codex/shared-network-workspaces`.
@@ -12,7 +12,7 @@
 - Bootstrap: Complete; no blocker. Shared default checkout `personal` at `92de6460030480c33cef6481d2dd46d2fc9a34be` has unrelated modified/untracked artifacts and remains untouched.
 - Authorities read in full: solution-designer/SKILL.md; references/requirements-engineering.md; requirements-doc, investigation-notes and solution-revision-record templates; refreshed worktree AGENTS.md, DESIGN.md, TESTING.md, autobyteus-server-ts/AGENTS.md, autobyteus-web/AGENTS.md (2026-10-13).
 - Architecture-phase reading gate: Formal architecture phase not entered. Architecture-design.md and design-principles.md read in full on 2026-10-13 for the user-requested feasibility explanation; no approved-basis design authored. No approved requirements/design/implementation exists. Technical feasibility below is evidence, not selected target architecture.
-- Status: Requirements discovery sufficient for proposed SR-001; routine user approval hold. No live storage or mounts changed.
+- Status: Draft SR-003 refinement following explicit automated-setup direction; no approved requirements. Need storage-host scope/feasibility and remaining approval decisions. No live storage or mounts changed.
 
 ## Initial Request And Historical Context
 
@@ -97,7 +97,7 @@ Three user-facing questions sent on 2026-10-13 through request_user_input_async 
 1. Same absolute `/Volumes/autobyteus-shared/<project>` convention vs a different common path vs OS-specific host paths.
 2. Documented server/client setup + readiness + Docker integration vs an in-app privileged setup wizard.
 3. Concurrent different-file work with coordinated same-file/Git operations vs enforced simultaneous-edit support vs single-writer projects.
-These choices are not approvals. Recommend the first option for each with reasoning in DEC-001–003. Ask for actual Linux/storage and Docker hosts for later real validation; target-resource availability is an operational prerequisite, not substitute approval.
+Historical SR-001 options were not approvals. SR-003 supersedes the documented-setup-versus-GUI dichotomy: user explicitly requires a managed command workflow. DEC-002 is settled in that direction; path/concurrency remain open. Ask for actual Linux/storage and Docker hosts for later real validation; target-resource availability is an operational prerequisite, not substitute approval.
 
 ## Product Design Request Context And Findings
 
@@ -131,7 +131,7 @@ N/A — requirements not approved. Current technical evidence identifies questio
 
 ## Requirement Implications And Next Action
 
-SR-001 proposes ordinary whole-project access with a configured common root, one storage identity, bounded readiness, no unrelated local fallback, explicit consistency/concurrency/permissions/failure boundaries and safe setup/cleanup. Current code supports the path-based foundation but does not prove the cross-machine integration or readiness guarantees. Ask user for DEC-001–003 and explicit approval; revise canonical requirements if choices change. Then complete architecture investigation and design, classify actual scope/risk, and route only the completed implementation-ready package through configured rules. A routine approval hold remains in this requirements conversation, not a delegator/downstream handoff.
+Current SR-003 proposes ordinary whole-project access plus a single guided create/join setup invocation per computer, including the actual Mac desktop+existing managed Docker journey, packaging/accessibility, safe rerun/restart and printed verified common path. Common storage identity, bounded readiness/no local fallback, semantics/concurrency/permissions and data-preserving lifecycle remain required. Current code supports the path-based foundation but does not prove the cross-machine integration or readiness guarantees. Settle DEC-001/003/007 and explicit approval; revise canonical requirements if choices change. Then complete architecture investigation and design, classify actual scope/risk, and route only the completed implementation-ready package through configured rules. A routine approval hold remains in this requirements conversation, not a delegator/downstream handoff.
 
 ## SR-002 — Expert Recommendation Requested (2026-10-13)
 
@@ -140,3 +140,17 @@ User asks whether the idea is possible and requests our expert suggestion/archit
 Current official Ubuntu NFS, Apple mount_nfs, Docker bind-mount and JuiceFS architecture documents were reopened on 2026-10-13. A subsequent open of Ubuntu's noble Linux nfs.5 page returned Internal Error; do not treat that attempt as additional client-cache evidence. Previously retained source links are unchanged. Recommendation derives from confirmed trusted-LAN scope and the relative operating components, not tested cross-machine proof. Exact NFS protocol/configuration, permissions, cache/locking, shared runtime skill paths, failure/recovery and Mac Desktop bridge remain validation/design questions. Native Mac + Linux-hosted Docker is the recommended first reference topology; Mac-hosted Docker, if needed, is an explicit additional bridge-validation gate, not silently guaranteed or excluded.
 
 Supplement inventory addition: feasibility-recommendation.md; owner Solution Designer; purpose expert feasibility explanation; status Proposed; related REQ-001–012/DEC-001–006; evidence only, not a behavior-defining supplement. Requirements baseline and pending approvals are unchanged. No architecture-spec, code, test run, live mount/storage change or handoff.
+
+## SR-003 — User Requires A Productized One-Command Setup
+
+EV-015 (User, 2026-10-13): User has desktop application plus installed Docker node and wants an easy setup command that handles setup and prints the usable path; explicitly rejects requiring non-technical users to assemble a few technical commands. This is a Requirement Gap against REQ-006/SR-001, not merely documentation polish. DEC-002 now records user-directed automated command setup; entire SR-003 baseline remains unapproved.
+
+EV-016 (Code, read-only): inspected scripts/public/docker/autobyteus-docker.d/bash/commands.sh:1–85 and docker-runtime.sh:350–425. Launcher discovers managed nodes, supports workspace apply and can preserve named volumes during recreation. However start_node may pull a newer tagged image and calls docker rm -f; this path is not automatically safe for an unattended setup of active user runs and must not be reused blindly. Scope/targeted disruption, active-run stopping/consent, image preservation and data/auth continuity need explicit architecture investigation. Existing launcher installation can download modules, but this does not establish a desktop-distributed setup helper or single create/join workflow. No launcher was run and no live containers inspected.
+
+EV-017 (Web, 2026-10-13): opened [Apple nfsd source manual](https://raw.githubusercontent.com/apple-oss-distributions/NFS/main/nfsd/nfsd.8) and [Apple exports source manual](https://raw.githubusercontent.com/apple-oss-distributions/NFS/main/nfsd/exports.5); reopened [Docker bind mounts](https://docs.docker.com/engine/storage/bind-mounts/). Apple documents a native server, exports/service enable/update lifecycle, validation and possible privacy access requirements; this is feasibility evidence, not proof of target OS protocol/version or seamless Mac hosting. Read-only command -v nfsd returned /sbin/nfsd. No service/exports/mount changes performed. Exact Mac privacy approval, protocol/locking, join authorization and network/container path behavior remain unverified.
+
+Requirement implications: setup automation owns supported install/configure/create-or-connect/mount/permission/selected Docker integration/verify/print lifecycle. Normal users supply simple intent/connection information and required OS/disruption approvals, not UID/protocol/export/cache settings. One command is per participating computer, not remote silent administration of every host. Storage-host creation runs once; joining computers connect to that service. Do not invent public account/service provisioning or resume cross-node agent collaboration. Connection info must not be treated as access authorization merely because a code/path matches.
+
+Architecture recommendation impact: prior NFS-on-Linux sketch was about filesystem mechanism and low service count; it is insufficient as the product experience. Reassess engine/hosting/helper against easy setup. Do not force a separately administered Linux server on the Mac user or guarantee Mac-hosted NFSv4 from Mac client support. Ask which actual computer holds the files; platform/hosting scope (DEC-007) is material. The actual Mac desktop+existing local Docker setup is request-backed and must be tested; Linux Docker cannot silently substitute.
+
+Supplement: setup-revision-context.md, owner Solution Designer, full revised request/intent/blockers/context; evidence/result context only, no competing UI/UX specification. N/A Product design: user asks for command automation, not graphical design or Product Team involvement.

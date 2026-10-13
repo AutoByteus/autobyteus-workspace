@@ -3,9 +3,9 @@
 ## Status And Identity
 
 - Package: shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63.
-- Current revision: SR-002 evidence-only clarification, 2026-10-13; proposed requirements baseline SR-001 unchanged.
+- Current revision / proposed requirements baseline: SR-003, 2026-10-13; automated-setup Requirement Gap replaces unapproved SR-001 documented-setup proposal.
 - Outcome: **Routine requirements approval hold**, not Architecture Design Complete, Terminal or implementation-ready.
-- Requirements: Ready for Approval as a proposal; **NOT approved**. No technology selected, no design spec, code changes, live mount changes or validation passes.
+- Requirements: Draft SR-003 automated-setup refinement; **NOT approved**. No technology selected, no design spec, code changes, live mount changes or validation passes.
 - Delegator: /project_task_manager, AgentRun project_task_manager_a5f6d9d306e54970bafdad895bdf731d.
 
 ## Request, Goal And Scope
@@ -20,7 +20,7 @@ Done requires actual Mac/Linux multi-computer evidence including a Docker node a
 
 - Whole project source/Git workspace access, not merely documents/artifacts.
 - One common absolute root, recommended /Volumes/autobyteus-shared/<project> across hosts/containers (DEC-001 Needs user).
-- Documented storage/client setup + AutoByteus readiness/diagnostics + Docker integration, using existing workspace selection rather than privileged in-app wizard (DEC-002 Needs user).
+- User-directed automated command setup + readiness/diagnostics + managed local Docker integration: one guided invocation creates/joins, configures/mounts/verifies and prints the path. Required OS and disruption approvals stay explicit; no graphical wizard requested (DEC-002 decided by user direction, not full-baseline approval).
 - Concurrent different-file work, coordinated same-file and Git operations; no automatic merge (DEC-003 Needs user).
 - Small successfully synced/closed files reopened on other clients within5s on healthy reference network; not instantly updating already-open descriptors or a global performance SLA (DEC-004 proposed designer decision).
 - Missing/wrong/unavailable shared storage must not masquerade as local/temp work. Admission/diagnostic outcome within10s; underlying filesystem IO may stall/fail according to documented engine behavior (DEC-005).
@@ -29,7 +29,7 @@ Done requires actual Mac/Linux multi-computer evidence including a Docker node a
 
 ## Questions Presented To User
 
-2026-10-13 request_user_input_async accepted three questions: common path convention; operational versus in-app setup; concurrent-edit policy. No answers received at SR-001. The recommendation and reasoning for each are in requirements-doc.md DEC-001–003. User choices differing from proposed baseline require requirements revision before approval. Ask directly for explicit approval of the settled intended behavior and exact baseline; the delegator is not an approval authority.
+2026-10-13 request_user_input_async accepted three questions: common path convention; operational versus in-app setup; concurrent-edit policy. No answers received at SR-001. The recommendation and reasoning for each are in requirements-doc.md DEC-001–003. SR-003 now incorporates the explicit automated-command direction, which was neither of the original documented-setup-vs-GUI options. Path and concurrency are still open, as is DEC-007 storage-host location/platform. User choices changing current intended behavior require refinement before approval. Ask directly for explicit approval of the settled intended behavior and exact baseline; the delegator is not an approval authority.
 
 Additional execution prerequisite: identify actual Linux/storage computer and Docker host (Linux and/or Mac Desktop), permitted test resources, runtime availability and approved live setup actions before multi-machine modification/testing. This does not justify bypassing the approval hold.
 
@@ -62,10 +62,14 @@ Only read-only code/docs/local OS capability checks performed. Mac26.5.2 arm64, 
 
 ## Next Action And Routing
 
-Keep approval conversation here with the user. Settle DEC-001–003, refine/re-record baseline if needed, and obtain explicit approval of exact intended behavior; then pass architecture reading gate, investigate complete paths and write design-spec.md. Classify task_size/architectural_risk only after design is complete and apply configured routing then.
+Keep approval conversation here with the user. Settle DEC-001/003/007 (DEC-002 automation now directed by user), refine/re-record baseline if needed, and obtain explicit approval of exact intended behavior; then pass architecture reading gate, investigate complete paths and write design-spec.md. Classify task_size/architectural_risk only after design is complete and apply configured routing then.
 
 No get_handoff_rules/send_message_to/delegate_task handoff is made for this routine approval hold: the authoritative skill expressly says it stays in the requirements conversation. This is not a completed solution outcome and is not sent to the delegator as a substitute for direct user approval.
 
 ## User Follow-up — SR-002
 
 The user asks for an expert recommendation/feasibility/architecture explanation before deciding. Full persisted response context: /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/feasibility-recommendation.md. Recommend NFS for the current private-network reference architecture, with native Mac/Linux mounts and Docker bind exposure; explain why this is smaller than a JuiceFS infrastructure platform and why native file operations fit. This is an explanatory proposal, not user approval or authoritative design completion. Pending requirement decisions and no-live-modification boundary remain intact. No handoff for this ongoing requirements clarification.
+
+## User Follow-up — SR-003
+
+User rejects a collection of manual filesystem commands and wants one setup command that handles setup, integrates their desktop+installed Docker node and prints a usable path, suitable for non-technical users. This changes intended behavior and the canonical requirements; no approved design exists. Full revised request/context: /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/setup-revision-context.md. Current requirements are Draft SR-003, not Ready/Approved SR-001. DEC-002 is settled as user-directed automated command setup; path/concurrency and actual storage-host scope remain unresolved. No implicit approval for live mounts, exports, service/credential changes, container recreation or active-run interruption.

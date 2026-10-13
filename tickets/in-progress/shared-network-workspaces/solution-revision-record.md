@@ -5,8 +5,8 @@
 | Revision | Phase | Trigger | Findings | Prior status | Current status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Authorized 2026-10-13 Project Task dispatch and current feasibility investigation | EV-001–014 / R-001–009 | N/A | Requirements Ready for Approval; design N/A | BEH-001–006; REQ-001–012; AC-001–011; SCN-001–006; DEC-001–006 | Proposed baseline; routine user approval hold |
-
 | SR-002 | Evidence | User asks for expert feasibility/architecture recommendation | Existing EV-003–012; current primary-doc recheck | Ready for Approval, design N/A | Unchanged; no approval | REQ-001–012 rationale; DEC-001–006 unchanged | NFS reference recommendation explained; no authoritative design/handoff |
+| SR-003 | Requirements | User explicitly requires one-command non-technical setup | EV-015–017 | Ready for Approval SR-001, SR-002 evidence; design N/A | Draft SR-003, no approval | REQ-006/013–015, AC-012–015, SCN-001/008/009, DEC-002/007/008 | Productized managed setup replaces documents-first; hosting clarification pending |
 
 ## SR-001 — Private-network ordinary shared workspaces
 
@@ -42,3 +42,20 @@
 - Design/review/classification/routing impact: N/A before authoritative completed design; no forward-ready claim. No handoff for the ongoing requirements conversation.
 - Remaining gaps: explicit settled requirements approval; target hosts/live setup authorization; complete production-path architecture investigation and real storage/runtime/bridge validation.
 - Next action: Answer user directly with clear expert recommendation and operational architecture; continue approval discussion when the user is ready.
+
+## SR-003 — Productized Automated Setup, Not A Command Collection
+
+- Phase/classification: Requirements / Requirement Gap, 2026-10-13.
+- Trigger: User describes their Mac desktop plus installed Docker node and requires a setup command which handles setup and prints the usable path, especially for non-technical users.
+- Prior basis: unapproved SR-001 Ready for Approval plus SR-002 feasibility recommendation; no design or downstream implementation basis.
+- Current basis: requirements-doc.md Draft SR-003. Automated command setup direction comes from the user; whole baseline has no approval.
+- Affected IDs: BEH-001/004/005; UC-001; REQ-001/006 plus new REQ-013–015; new AC-012–015; SCN-001 refined and new request-backed SCN-008 (Mac desktop+existing Docker) and SCN-009 (repeat/restart); DEC-002 settled by user direction and DEC-007/008 added. Other native project/filesystem/privacy/concurrency constraints retained.
+- Canonical sections changed: desired behavior, actors, scope, setup/packaging/lifecycle requirements, AC/scenarios, command experience, traceability, decisions, readiness and architecture inputs; investigation adds user/launcher/native-Mac-service evidence.
+- Added supplement: setup-revision-context.md preserves latest request and full context; not an external GUI/UX spec. SR-002 feasibility-recommendation.md retained as historical proposal; re-evaluate its Linux/NFS assumptions against automation.
+- Intended behavior changed: Yes — managed setup rather than manual provisioning/docs-first; safe actual Mac-hosted Docker journey is no longer an optional bridge footnote.
+- Approval impact: no prior approval to invalidate; explicit user direction records DEC-002 but does not approve complete SR-003. Common path/concurrency remain open; storage-host location/platform scope DEC-007 must be settled. No live-system setup authorization inferred.
+- Design/review impact: N/A before design. Technology/helper packaging/lifecycle/hosting remains undecided; do not begin authoritative design or handoff.
+- Task-size/risk: N/A until actual completed design; do not retain historical early estimates.
+- Product design: not requested; command automation is not an implicit Product Team/GUI handoff.
+- Routing: N/A — ongoing direct user requirements refinement, no downstream/delegator handoff.
+- Next action: Explain proposed single setup flow and user-friendly architecture; clarify which computer stores the files; settle supported hosting/common path/concurrency and capture explicit complete requirements approval before design.
