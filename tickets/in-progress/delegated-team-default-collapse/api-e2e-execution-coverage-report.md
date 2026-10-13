@@ -98,3 +98,8 @@ Unproven: full native manual/Task-root/live/lifecycle journey, stable native col
 
 ### Failure evidence limit and reproduction guidance
 Raw native server/launcher logs were auto-removed by canonical stop in completed attempts; client failed-request/console/store receipts and screenshots are retained. No native backend-log correlation beyond actual public API responses/current packaged identity is claimed. Temporary desktop-session.mjs now copies those logs before stop for the reviewer’s next reproduction. Provision fresh private HOME/bin/runtime and unused non-root uid per docs/isolated-app-instances.md; the retained session recipe/fixture CLI wrapper reproduce latest setup without user credentials. No additional attempt or resolution inferred from this reporting change.
+
+## Routing and persisted stage location
+- Durable probe, package script, report/ledger/revision baseline and all evidence committed **e3d1bfc7c** on the task branch. Follow-up reporting-only commit indexes this receipt; no production source change. SDK generated dist remains intentionally untracked.
+- After completing validation/artifacts/cleanup, get_handoff_rules returned four routes. Most-specific match: “When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer.” Selected exact recipient **/software_engineering_team/code_reviewer** only. Large/High Pass, direct Pass Delivery and pre-execution upstream-gap routes do not apply.
+- Request F-API-001 origin review; no forwarding to Delivery, no upstream requirement change, no Task completion. Tool acceptance receipt (not this prose) proves message delivery.

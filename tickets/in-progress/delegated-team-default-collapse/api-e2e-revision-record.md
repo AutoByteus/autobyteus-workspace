@@ -16,3 +16,5 @@ Current investigation/report/ledger beside this file are authoritative.
 - Final confidence 84.29%; broader Required/executed; critical AC-006 incomplete. Result Fail, not environment Blocked and not successful-test review. Need Code Reviewer to establish origin and correct owner; base packaged reproduction not performed, pre-existing status unproven.
 - Cleanup: owned browser/native ports and test data removed, native registry empty, user runtime untouched. Build/dependencies/worktree retained; no merge/push/release/deployment/user restart or Task completion. Runtime/version/user verification still pending Delivery.
 - Cumulative package: all upstream references plus investigation/report/ledger/new probe/evidence paths in current report. No successful-output Delivery handoff authorized.
+
+- Persisted coverage/evidence baseline commit e3d1bfc7c. Final handoff rule selects only /software_engineering_team/code_reviewer for focused failure-origin review. No successful-output Delivery route applies. User app unchanged, all owned processes/data/ports plus private runtime setup cleaned; intentionally retained current worktree build/dependencies.
