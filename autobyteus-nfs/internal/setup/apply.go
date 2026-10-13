@@ -88,7 +88,7 @@ func (s *Service) Apply(p Plan, consented bool) error {
 			if err := s.Store.Write("apple-resource.json", p.Apple); err != nil {
 				return err
 			}
-			if err := backend.ApplyApple(s.Runner, *p.Apple); err != nil {
+			if err := backend.ApplyApple(s.Runner, *p.Apple, p.Attachment.Endpoint); err != nil {
 				return err
 			}
 		}

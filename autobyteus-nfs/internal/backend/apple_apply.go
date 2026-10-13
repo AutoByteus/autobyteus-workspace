@@ -35,7 +35,7 @@ func ReadApple() (string, string, error) {
 	settings, err := readOSFile("/etc/nfs.conf")
 	return exports, settings, err
 }
-func ApplyApple(r platform.Runner, p ApplePlan) error {
+func ApplyApple(r platform.Runner, p ApplePlan, endpoint string) error {
 	exports, settings, err := ReadApple()
 	if err != nil {
 		return err
@@ -54,20 +54,26 @@ func ApplyApple(r platform.Runner, p ApplePlan) error {
 			return err
 		}
 	}
-	if _, err = r.Run("/sbin/nfsd", "checkexports"); err != nil {
+	return activateApple(r, p.SettingsBlock != "", endpoint)
+}
+
+func activateApple(r platform.Runner, settingsOwned bool, endpoint string) error {
+	if _, err := r.Run("/sbin/nfsd", "checkexports"); err != nil {
 		return fmt.Errorf("export validation failed; intended configuration retained for explicit repair/detach: %w", err)
 	}
-	if _, err = r.Run("/sbin/nfsd", "enable"); err != nil {
+	if _, err := r.Run("/sbin/nfsd", "enable"); err != nil {
 		return err
 	}
-	if p.SettingsBlock != "" {
-		_, err = r.Run("/sbin/nfsd", "restart")
-	} else {
-		_, err = r.Run("/sbin/nfsd", "update")
+	action := "update"
+	if settingsOwned {
+		action = "restart"
 	}
-	return err
+	if _, err := r.Run("/sbin/nfsd", action); err != nil {
+		return err
+	}
+	return waitAppleRPC(r, endpoint)
 }
-func EnsureApple(r platform.Runner, p ApplePlan) error {
+func EnsureApple(r platform.Runner, p ApplePlan, endpoint string) error {
 	exports, settings, err := ReadApple()
 	if err != nil {
 		return err
@@ -78,8 +84,10 @@ func EnsureApple(r platform.Runner, p ApplePlan) error {
 	if _, err = r.Run("/sbin/nfsd", "checkexports"); err != nil {
 		return err
 	}
-	_, err = r.Run("/sbin/nfsd", "start")
-	return err
+	if _, err = r.Run("/sbin/nfsd", "start"); err != nil {
+		return err
+	}
+	return waitAppleRPC(r, endpoint)
 }
 
 // DetachApple reports deliberately retained shared/external settings separately

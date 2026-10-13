@@ -31,7 +31,7 @@ func (s *Service) Reconnect() error {
 			if err = s.Store.Read("apple-resource.json", &p); err != nil {
 				return err
 			}
-			if err = backend.EnsureApple(s.Runner, p); err != nil {
+			if err = backend.EnsureApple(s.Runner, p, a.Endpoint); err != nil {
 				return err
 			}
 		case "ganesha-native":
