@@ -1,0 +1,22 @@
+{
+  "receipt": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-52535-8486",
+      "wasRunning": true,
+      "forced": true,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-J5JTsc",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "ownRecordAbsent": true,
+  "controlPortClosed": true,
+  "serverPortClosed": true,
+  "rootAbsent": true,
+  "groupAbsent": true
+}
