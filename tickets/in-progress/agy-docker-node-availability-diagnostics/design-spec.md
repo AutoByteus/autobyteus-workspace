@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-003
+- Current solution revision ID: SR-005 (wording-only update to the quoted sign-in text; design otherwise as SR-003)
 - Approved requirements baseline: `requirements-doc.md` at SR-002. Approved by the Solution Designer within the Task's direction (user informed) and the user's scope message: "fix the agy bug now. codex is not a bug…" (2026-10-12).
 - Behavior-defining supplements: none
 - Design status: **Ready**
@@ -277,7 +277,7 @@ No new folders or files. All changes land in the files above (existing placement
 | Classification | `code !== 0 && AGY_SIGN_IN_PATTERN.test(stdout + stderr) ? "AGY_SIGN_IN_REQUIRED" : "AGY_MODEL_DISCOVERY_FAILED"` inside `runCommand` | Passing stderr up, or matching message text in `RuntimeAvailabilityService` / the frontend | Keeps raw output inside one owner |
 | Pattern fixtures | Must match: `Error: Please sign in to view available models. Launch the CLI without arguments to sign in.`; `You are not logged into Antigravity.`; `not signed in`. Must not match: `Error: Eligibility check failed: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist": proxyconnect tcp: dial tcp 127.0.0.1:9: connect: connection refused` | Overly broad words such as `auth` or `sign`, which can appear in network or unrelated errors | Precision |
 | Re-check | `const recheck = availabilities.filter(r => !r.enabled).map(r => r.runtimeKind); void fetchRuntimeAvailabilities(); recheck.forEach(k => void fetchRuntimeAvailability(k, true))` | Forcing `fetchRuntimeAvailabilities(true)` (re-checks every runtime, including Codex/Claude, on every open) or polling | QR-003 |
-| Row | `Antigravity CLI` / *(small gray)* `Antigravity CLI is not signed in. Run `agy` in this node's terminal…` · right: `Unavailable` | `Antigravity CLI · Not installed` | AC-003 |
+| Row | `Antigravity CLI` / *(small gray)* `Not signed in on this node. Run `agy` to sign in.` (SR-005 wording) · right: `Unavailable` | `Antigravity CLI · Not installed` | AC-003 |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 

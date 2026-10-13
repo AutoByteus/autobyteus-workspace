@@ -2,15 +2,16 @@
 
 ## Document Status
 
-- Status: **Approved** (baseline SR-002)
+- Status: **Approved** (baseline SR-005)
 - Approved by: Solution Designer within the direction (user informed). The user directed the scope in the conversation on 2026-10-12: "fix the agy bug now. codex is not a bug, its working i will log out and login codex again".
-- Current solution revision ID: SR-003 (design added; requirements unchanged since SR-002)
+- Current solution revision ID: SR-005 (REQ-001/DEC-005 sign-in wording changed by the user; design unchanged)
 - Package identifier: `agy-docker-node-availability-diagnostics`
 - Request / ticket: Project Task `project_task_4fbcd0c4-a279-4ead-85a3-17a2a7513e38` (URGENT, 2026-10-12)
 - Requirements owner: Solution Designer (`/software_engineering_team/solution_designer`)
 - Date: 2026-10-12
 - Approval state and reference: Approved 2026-10-12 within the Task's direction plus the user's scope message. SR-001 was my first baseline. At SR-002, still before design, I narrowed it: no GraphQL contract change, after verifying that the app has no handling for an older remote node (investigation "Architecture Investigation Findings"). The user is told the final behavior in the result summary. There are no `Needs user` decisions.
-- Exact approved requirements baseline: this document at SR-002
+- SR-005 wording change: the user approved it directly while testing (2026-10-12). User's words: the reason "looks too long … make the message cleaner". They chose option B, "Not signed in on this node. Run `agy` to sign in." Recorded in `implementation-revision-record.md` IR-002, commit `56b11aeae`.
+- Exact approved requirements baseline: this document at SR-005 (SR-002 plus the user-approved sign-in wording)
 - Behavior-defining supplements: none
 
 ## Problem And Desired Outcome
@@ -18,7 +19,7 @@
 - Problem: On Docker node 8003, `agy` is installed (`/usr/local/bin/agy`, v1.3.3) but **not signed in**. `agy models` exits 1 with "Please sign in to view available models…". The server turns this into a generic "model discovery failed; check authentication or network" reason. The chat model menu labels every unavailable runtime **"Not installed"**, whatever the reason, and shows the reason only as a hover tooltip. After signing in, the menu still doesn't show Antigravity until the app reloads, because it checks availability once per session. The image is current (`1.5.3-beta.1`); 8001 works because it is signed in.
 - Affected actors: AutoByteus users choosing a runtime/model on any node; the node's server.
 - Desired outcome:
-  - The server's reason for an unavailable Antigravity CLI names the actual cause and the fix. A signed-out CLI gets: "Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again."
+  - The server's reason for an unavailable Antigravity CLI names the actual cause and the fix. A signed-out CLI gets: "Not signed in on this node. Run `agy` to sign in."
   - The chat model menu no longer claims "Not installed". It shows each unavailable runtime's reason visibly.
   - After the user signs in, reopening the menu shows Antigravity with its models.
   - A signed-in node lists Antigravity models, and a run works.
@@ -90,7 +91,7 @@
 
 | ID | Requirement | Behaviors | Priority | Rationale | Source |
 | --- | --- | --- | --- | --- | --- |
-| REQ-001 | When the Antigravity CLI is installed but its model listing fails because it isn't signed in, the server reports Antigravity unavailable. The reason is the fixed text "Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again." Every consumer of the AGY diagnostic (availability, run start, model replacement, application launch validation) gets it. No CLI output is echoed. | BEH-001, BEH-005 | Must | Root cause on 8003 | Task direction; R-03/R-07/R-08 |
+| REQ-001 | When the Antigravity CLI is installed but its model listing fails because it isn't signed in, the server reports Antigravity unavailable. The reason is the fixed text "Not signed in on this node. Run `agy` to sign in." Every consumer of the AGY diagnostic (availability, run start, model replacement, application launch validation) gets it. No CLI output is echoed. | BEH-001, BEH-005 | Must | Root cause on 8003 | Task direction; R-03/R-07/R-08 |
 | REQ-002 | AGY reasons for other causes name the cause and the fix. Not found: says not installed/found and how to install or configure it. Missing required options: says too old, run `agy update`. Timeout, failed and invalid catalog keep their meaning. | BEH-007 | Should | "Show the actual reason … with a way to recover" | Task direction; DEC-005 |
 | REQ-003 | The chat model menu never labels an unavailable runtime "Not installed". The row shows a neutral "Unavailable" label (en "Unavailable", zh-CN "不可用"). Under the runtime name it shows that runtime's server reason as visible text, at most two lines, with the full text in the row tooltip. With no reason, only the label shows. | BEH-001, BEH-004 | Must | The fixed label is false for most causes | Task direction; DEC-001, DEC-007 |
 | REQ-004 | Opening the chat model menu re-checks each runtime currently shown as unavailable. A runtime that has become usable (e.g. after sign-in) appears enabled, and its models can be opened without reloading the app. Available runtimes are not re-checked on every open. | BEH-003 | Must | Recovery path | DEC-003 |
@@ -115,7 +116,7 @@
 
 | ID | Kind | Actor | Goal / event | Trigger | Start | Steps | Expected outcome | Alternate | Validity | Evidence | REQ / AC |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SCN-001 | User | App user | See why Antigravity can't be chosen | Open chat model menu | agy installed, signed out | Open menu → read the Antigravity row | "Unavailable" + "Antigravity CLI is not signed in. Run `agy` in this node's terminal…" | Other causes → their own reasons | Supported Normal Scenario | User report; 8003 live | REQ-001, REQ-003; AC-001, AC-003 |
+| SCN-001 | User | App user | See why Antigravity can't be chosen | Open chat model menu | agy installed, signed out | Open menu → read the Antigravity row | "Unavailable" + "Not signed in on this node. Run `agy` to sign in." | Other causes → their own reasons | Supported Normal Scenario | User report; 8003 live | REQ-001, REQ-003; AC-001, AC-003 |
 | SCN-002 | User | App user | Use Antigravity | Menu → Antigravity → model → send | agy installed + signed in | Pick model, run | Models listed; run completes | — | Supported Normal Scenario | 8001 live | REQ-005; AC-006 |
 | SCN-003 | User | App user | Recover after signing in | Reopen menu after `agy` sign-in in the node Terminal | SCN-001 state | Terminal → `agy` → sign in → chat → reopen menu | Antigravity enabled with models, no reload | Sign-in not done → still the sign-in reason | Supported Normal Scenario | Task direction ("way to recover") | REQ-004; AC-004 |
 | SCN-004 | User | App user | Understand any unavailable runtime | Open menu | Any runtime unavailable | Read row | Neutral label + that runtime's reason | — | Supported Normal Scenario | `ChatModelMenu.vue` | REQ-002, REQ-003; AC-002, AC-003 |
@@ -175,7 +176,7 @@
 | DEC-002 | Add a machine-readable cause to the GraphQL availability result, or keep the contract? | A cause field would allow localized short labels ("Sign in required"), but the app requests it from every node | Evidence: the app has no handling for an older remote node. A query naming a field the node doesn't know fails as a whole, and the store then marks **every** runtime unavailable on that node. Nodes (Docker images) and the desktop app update separately | **Keep the contract.** The server's reason text carries the cause and fix; the menu shows it visibly with a neutral label. Smallest change, no regression on older nodes (DESIGN.md rules 1 and 5). Supersedes SR-001 REQ-002/003 | Solution Designer | Decided (SR-002) |
 | DEC-003 | How does the user recover after signing in? | Without it, "sign in, then try again" doesn't work | (a) "Check again" button; (b) re-check unavailable runtimes when the menu opens; (c) polling | (b): no new control, matches "reopen the menu", cheap (unavailable kinds only). Polling would spawn the CLI forever | Solution Designer | Decided |
 | DEC-004 | How to detect "not signed in"? | agy has no auth-status command | Failed `agy models` output contains sign-in wording (R-03/R-08); network failure doesn't (R-07) | Classify only a failed `models` call whose bounded output matches sign-in wording. Never show the output; unknown wording → existing generic failure | Solution Designer | Decided |
-| DEC-005 | Reason texts | Shown in the menu, forms and run errors | — | Sign-in: "Antigravity CLI is not signed in. Run `agy` in this node's terminal and complete sign-in, then try again." Not found: "Antigravity CLI is not installed or not on this node's PATH. Install it, or set ANTIGRAVITY_CLI_COMMAND, then try again." Too old: "Antigravity CLI is too old for AutoByteus (required options are missing). Run `agy update`, then try again." Others unchanged | Solution Designer | Decided |
+| DEC-005 | Reason texts | Shown in the menu, forms and run errors | — | Sign-in: "Not signed in on this node. Run `agy` to sign in." Not found: "Antigravity CLI is not installed or not on this node's PATH. Install it, or set ANTIGRAVITY_CLI_COMMAND, then try again." Too old: "Antigravity CLI is too old for AutoByteus (required options are missing). Run `agy update`, then try again." Others unchanged | Solution Designer | Decided |
 | DEC-006 | Codex plan visibility | User asked | User: "codex is not a bug" | Out of scope | User | Decided |
 | DEC-007 | Short label wording | Replaces "Not installed" | "Unavailable" vs per-cause labels (needs DEC-002 (a)) | "Unavailable" / "不可用": true for every cause; the reason line carries the specifics | Solution Designer | Decided |
 
@@ -216,6 +217,6 @@
 ### Approved Basis Ready For Design
 
 - Approval recorded: Yes (Solution Designer within the direction; user's scope message recorded; user informed)
-- Exact basis recorded: Yes (SR-002)
+- Exact basis recorded: Yes (SR-005)
 - Ready for architecture design: Yes
 - Remaining blocker: none
