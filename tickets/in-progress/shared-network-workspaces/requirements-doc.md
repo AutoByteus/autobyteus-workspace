@@ -4,7 +4,7 @@
 
 - Status: **Ready for Approval — proposed, NOT Approved**.
 - Package identifier: `shared-network-workspaces` / `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.
-- Requirements baseline: SR-001, 2026-10-13.
+- Requirements baseline: SR-001, 2026-10-13; current solution revision SR-002 (evidence-only explanation, intended behavior unchanged).
 - Requirements owner: Solution Designer.
 - Approved by / approval reference / exact approved baseline: **N/A — pending the user's explicit approval**.
 - Behavior-defining supplements: None. Investigation and the historical transcript are evidence, not intended-behavior authorities.
@@ -162,7 +162,7 @@ All target scenarios await approval of SR-001. “Supported” describes request
 
 ## Supplemental Artifacts
 
-`investigation-notes.md` and `solution-revision-record.md` are canonical evidence/history. `requirements-approval-request.md` persists this conversation's approval hold. The attached October-1 transcript and May-21 draft are historical evidence only. No behavior-defining supplement or external Product design package exists.
+`investigation-notes.md` and `solution-revision-record.md` are canonical evidence/history. `requirements-approval-request.md` persists this conversation's approval hold. The attached October-1 transcript and May-21 draft are historical evidence only. No behavior-defining supplement or external Product design package exists. [feasibility-recommendation.md](feasibility-recommendation.md) is an expert explanatory sketch requested by the user (SR-002), not an approved design or new intended-behavior authority.
 
 ## Assumptions
 

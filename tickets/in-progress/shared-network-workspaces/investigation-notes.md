@@ -3,7 +3,7 @@
 ## Investigation Meta
 
 - Package: `shared-network-workspaces` / Project Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.
-- Requirements owner/investigator: Solution Designer; date 2026-10-13; current revision SR-001.
+- Requirements owner/investigator: Solution Designer; date 2026-10-13; current revision SR-002 (proposed requirements baseline remains SR-001).
 - Repository mode: Git.
 - Isolated workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`.
 - Branch: `codex/shared-network-workspaces`.
@@ -11,7 +11,7 @@
 - Finalization target: `origin/personal`, inferred from tracked default; read current RELEASE.md before finalization.
 - Bootstrap: Complete; no blocker. Shared default checkout `personal` at `92de6460030480c33cef6481d2dd46d2fc9a34be` has unrelated modified/untracked artifacts and remains untouched.
 - Authorities read in full: solution-designer/SKILL.md; references/requirements-engineering.md; requirements-doc, investigation-notes and solution-revision-record templates; refreshed worktree AGENTS.md, DESIGN.md, TESTING.md, autobyteus-server-ts/AGENTS.md, autobyteus-web/AGENTS.md (2026-10-13).
-- Architecture-phase reading gate: Not entered. No approved requirements/design/implementation exists. Technical feasibility below is evidence, not selected target architecture.
+- Architecture-phase reading gate: Formal architecture phase not entered. Architecture-design.md and design-principles.md read in full on 2026-10-13 for the user-requested feasibility explanation; no approved-basis design authored. No approved requirements/design/implementation exists. Technical feasibility below is evidence, not selected target architecture.
 - Status: Requirements discovery sufficient for proposed SR-001; routine user approval hold. No live storage or mounts changed.
 
 ## Initial Request And Historical Context
@@ -132,3 +132,11 @@ N/A — requirements not approved. Current technical evidence identifies questio
 ## Requirement Implications And Next Action
 
 SR-001 proposes ordinary whole-project access with a configured common root, one storage identity, bounded readiness, no unrelated local fallback, explicit consistency/concurrency/permissions/failure boundaries and safe setup/cleanup. Current code supports the path-based foundation but does not prove the cross-machine integration or readiness guarantees. Ask user for DEC-001–003 and explicit approval; revise canonical requirements if choices change. Then complete architecture investigation and design, classify actual scope/risk, and route only the completed implementation-ready package through configured rules. A routine approval hold remains in this requirements conversation, not a delegator/downstream handoff.
+
+## SR-002 — Expert Recommendation Requested (2026-10-13)
+
+User asks whether the idea is possible and requests our expert suggestion/architecture, not another decision questionnaire. Explain yes and recommend a Linux NFS storage host with native Mac/Linux mounts and container bind exposure, instead of a custom filesystem or starting with a public JuiceFS platform. This is a non-authoritative feasibility sketch for understanding requirements, not technology approval or completed design. Full explanation: feasibility-recommendation.md.
+
+Current official Ubuntu NFS, Apple mount_nfs, Docker bind-mount and JuiceFS architecture documents were reopened on 2026-10-13. A subsequent open of Ubuntu's noble Linux nfs.5 page returned Internal Error; do not treat that attempt as additional client-cache evidence. Previously retained source links are unchanged. Recommendation derives from confirmed trusted-LAN scope and the relative operating components, not tested cross-machine proof. Exact NFS protocol/configuration, permissions, cache/locking, shared runtime skill paths, failure/recovery and Mac Desktop bridge remain validation/design questions. Native Mac + Linux-hosted Docker is the recommended first reference topology; Mac-hosted Docker, if needed, is an explicit additional bridge-validation gate, not silently guaranteed or excluded.
+
+Supplement inventory addition: feasibility-recommendation.md; owner Solution Designer; purpose expert feasibility explanation; status Proposed; related REQ-001–012/DEC-001–006; evidence only, not a behavior-defining supplement. Requirements baseline and pending approvals are unchanged. No architecture-spec, code, test run, live mount/storage change or handoff.

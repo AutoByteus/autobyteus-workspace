@@ -6,6 +6,8 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Authorized 2026-10-13 Project Task dispatch and current feasibility investigation | EV-001–014 / R-001–009 | N/A | Requirements Ready for Approval; design N/A | BEH-001–006; REQ-001–012; AC-001–011; SCN-001–006; DEC-001–006 | Proposed baseline; routine user approval hold |
 
+| SR-002 | Evidence | User asks for expert feasibility/architecture recommendation | Existing EV-003–012; current primary-doc recheck | Ready for Approval, design N/A | Unchanged; no approval | REQ-001–012 rationale; DEC-001–006 unchanged | NFS reference recommendation explained; no authoritative design/handoff |
+
 ## SR-001 — Private-network ordinary shared workspaces
 
 - Phase/classification: Requirements / Initial Baseline, 2026-10-13.
@@ -25,3 +27,18 @@
 - Handoff-rule outcome: N/A — routine approval hold stays in this conversation by solution-designer skill. No forwarding to implementation/review/delegator and no delegate_task used.
 - Remaining gaps: path convention, setup experience and concurrency policy; actual real-machine test resources/live setup authorization; native-runtime skill-link sharing, Docker Desktop bridge, permissions, failure and cache semantics require later design/validation evidence.
 - Next action: Obtain user's choices and explicit settled requirements approval; record exact baseline/reference before architecture. If intent changes, append a material refinement round rather than overwriting this entry's history.
+
+## SR-002 — Explain Feasibility And Recommend A Reference Deployment
+
+- Phase/classification: Evidence / Refinement; 2026-10-13.
+- Trigger: User asks “What is your suggestion because you are experts? ... whether it's possible or not ... What is the architecture?”
+- Prior/current requirement state: proposed SR-001 Ready for Approval, unchanged; no design/approval.
+- Evidence: current canonical artifacts reread; architecture process/principles read in full for explanatory reasoning; official NFS/Apple/Docker/JuiceFS documentation rechecked. No runtime tests or live resource changes.
+- Sections changed: investigation adds rationale/limits; requirements adds current evidence revision and non-authoritative supplement; approval-request links this explanation.
+- Added supplement: feasibility-recommendation.md, user-requested expert explanation, evidence-only. No Product-owned UI/UX artifact; Product help not requested.
+- Recommendation: integrate native NFS for current trusted LAN, ordinary Mac/Linux mounted directories and Docker bind exposure; prefer Linux-host Docker reference and explicitly validate Mac Desktop network bridge if required. JuiceFS remains future/alternative infrastructure, not selected or rejected universally.
+- Intended behavior changed: No. No approved basis exists; do not infer a technology/path/setup/concurrency decision from this question. DEC-001–003 still Needs user.
+- Exact approval reference/supplement approval: N/A — none.
+- Design/review/classification/routing impact: N/A before authoritative completed design; no forward-ready claim. No handoff for the ongoing requirements conversation.
+- Remaining gaps: explicit settled requirements approval; target hosts/live setup authorization; complete production-path architecture investigation and real storage/runtime/bridge validation.
+- Next action: Answer user directly with clear expert recommendation and operational architecture; continue approval discussion when the user is ready.
