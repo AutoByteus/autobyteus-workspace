@@ -43,3 +43,12 @@ Events below appended after each attempt/checkpoint; harness events.jsonl record
 - API001 Completed final independent unit run5455Pass/7Skip,687filesPass/4Skip,exit0. API-F001 remains2 integration failures, separately diagnosed. Temporary diagnostic and private roots removed; exact testSQLite/journal cleanup in repository-cleanup.json.
 - API006 Completed scope/input audit: cumulative five-path non-ticket allowlist, package delta only one script; no dependency/recipe/lock/schema/caller change. Licensing/hygiene/syntax/current+cumulative whitespace/owned-container absence results recorded final-gates.json.
 - Final reconciliation: API001 Fail pending API-F001 origin; API002–006 Pass. No case running/unstarted, skips remain skips. api-e2e-execution-coverage-report.md owns authoritative API-REV001 Fail92.1%, broader Required/executed; initial/diagnostic failures retained, no waiver.
+
+## API-REV-002 — confirmed unrelated-failure continuation
+- Started: recheck prior API-F001 disposition FIRST via CRR-002/report/nine-path audit and PB-001 historical handoff/V-13/DR-002. Same real product failure; current-ticket Out Of Scope, not fixed/passing/stale. Manager custody delivered by reviewer; no Task ID invented. No duplicate follow-up dispatch.
+- Planned checkpoint: independently verify retained executable evidence/current inputs/dist equality before carrying forward API002–005; no fresh execution will be inferred.
+
+- Checkpoint completed: continuation-audit.json verifies zero non-ticket delta,69 prior raw evidence files/same5 input hashes and4559 dist entries unchanged; applicable policies unchanged. HEAD7ea1174ba3 only adds reviewer custody record, independently read with manager candidate. No runtime/suite rerun or new fixture.
+- API001 disposition Completed: scoped Pass; the371Pass/2Fail/68Skip broad result stays exit1 and diagnostic2Fail/5notselected stays failed. API-F001=PB-001 Out Of Scope, accountable PM approval-pending candidate; no repair, TaskID or transferable waiver. Later next-window assertions did not run.
+- API002–005 retained Pass after input/evidence continuity check, not newly executed. API006 fresh artifact/whitespace/license/hygiene gates recorded in api-rev-002/final-gates.json.
+- Round2 reconciliation: scoped Pass95.7%; broader Required/completed, all critical scoped proof retained. API-REV001 Fail92.1 remains previous result. No case running/unstarted; no unowned cleanup. Required proportional harness/script review next.

@@ -5,6 +5,7 @@ Canonical investigation/report own current truth; ledger records execution. This
 | Revision | Trigger / related rounds | Prior result/confidence | Current result/confidence |
 | --- | --- | --- | --- |
 | API-REV-001 | Code Reviewer CRR001 source Pass; R3/D1/SR004/ARCH001/IR001 | N/A | Fail pending API-F001 origin/disposition /92.1% |
+| API-REV-002 | CRR002 confirms API-F001=PB-001 Out Of Scope; manager custody receipt | API-REV001 Fail /92.1% | Scoped Pass /95.7% |
 
 ## API-REV-001 — Current-build native recreation proven; baseline transport failure routed
 - Initial baseline, completed2026-10-13. Cumulative approved permanent-source Task6b8, Medium/High unchanged, reviewed route. No previous API result or inherited operational Pass.
@@ -18,3 +19,15 @@ Canonical investigation/report own current truth; ledger records execution. This
 - Canonical report includes AC proof index and exact evidence. Current failure-origin review requested, not successful-test review; proportional High-route test review still required after successful disposition. Next owner determined by fresh get_handoff_rules. Delivery/finalization/sourceTask completion not claimed; old recovery Tasks untouched.
 
 - Applied route: fresh current get_handoff_rules failure-origin rule → exact `/software_engineering_team/code_reviewer`; no duplicate outcome recipient. Transport confirmed only by subsequent tool receipt.
+
+## API-REV-002 — confirmed unrelated PB-001; scoped successful continuation
+- Completed2026-10-13; trigger CRR002 failure-origin report/history/audit at3da5eb4c72 plus informational custody commit7ea1174ba3. R3/D1/SR004/ARCH001/IR001 unchanged; CRR001 source Pass carried by reviewer, no new source score or task approval.
+- Prior result **API-REV001 Fail92.1%** preserved verbatim above. First action rechecked API-F001 origin, validity and accountability. Reviewer independently confirmed SAME existing PB-001 product issue, no Prisma regression/current review gap/stale assertion/environment problem. Current ticket disposition **Out Of Scope**, not a passing assertion or a test Local Fix.
+- Prior failure resolution: no technical repair. Stable `tickets/done/base-test-suite-green/handoff-summary.md` PB-001, V-13 cause experiment and DR-002 historical acknowledgement corroborate current trace; acknowledgement is not transferable waiver. Reviewer successfully delivered to PM; manager confirmed existing approval-pending candidate at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/task-plans/context/pb-001-agent-streaming-cadence-candidate.md`, no matching TODO/IN_PROGRESS Task/TaskID/dispatch. No duplicate notification or scope extension.
+- Reuse API001–006; no new test case, durable edit/removal, source/build/model/Docker/live action. Independent `api-e2e-evidence/api-rev-002/continuation-audit.json`: zero non-ticket delta since testeddd7de6, same5 input hashes,69 original raw evidence files byte-identical, all4559 current dist entries identical to tested manifest. Relevant policies unchanged. Fresh artifact/license/hygiene/whitespace gates retained. Native/suite rerun not warranted solely for attribution; no changed-source proof waived.
+- Retained actual results: focused197/197, units5455Pass/7Skip, integration371Pass/2Fail/68Skip exit1, diagnostic2Fail/5notselected, nativeAPI002–005 Pass. Second cadence case's later next-window assertions did not execute. Full suite still NOT green; no new execution success claimed.
+- Current scoped score95.7%=(95+100+95+95+95+95+95)/7, all applicable>=90; broader Required/completed previously and retained. Increase from92.1 reflects independent unrelated-scope disposition, not product repair or test-total change. All critical in-scope native/currentbuild/no-pin/actual same-state recreation proof retained; public release/user-node health excluded.
+- Canonical investigation/report/ledger updated; API-REV001 raw history remains immutable. New/remaining in-scope failures None. PB-001 remains open in separate manager custody. Generated five build prerequisites preserved untracked; no owned fixture running.
+- Proportional successful-test review REQUIRED (Medium/High): same single durable Docker harness + one package script authored in API-REV001, not reviewed by CRR002. Apply fresh get_handoff_rules, attach complete proof-index/cumulative package. Not direct Delivery; permanent6b8/old operational Task statuses and release boundaries unchanged.
+
+- Applied route: fresh `get_handoff_rules` selected Pass + High + cumulative proportional test-code review → exact `/software_engineering_team/code_reviewer`; no duplicate PM/Delivery/operational recipient. Successful transport is not preclaimed.
