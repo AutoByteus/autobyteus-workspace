@@ -1,0 +1,102 @@
+{
+  "desktopInstances": [
+    {
+      "instanceId": "iso-43391-a434",
+      "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-s5ViDn",
+      "dataRootExists": false,
+      "stop": {
+        "instanceId": "iso-43391-a434",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-s5ViDn",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    {
+      "instanceId": "iso-33485-2309",
+      "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-ZYsZtc",
+      "dataRootExists": false,
+      "stop": {
+        "instanceId": "iso-33485-2309",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-ZYsZtc",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    {
+      "instanceId": "iso-46767-a316",
+      "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-J0nt5O",
+      "dataRootExists": false,
+      "stop": {
+        "instanceId": "iso-46767-a316",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-J0nt5O",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    {
+      "instanceId": "iso-38239-f867",
+      "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-6Eey32",
+      "dataRootExists": false,
+      "stop": {
+        "instanceId": "iso-38239-f867",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-6Eey32",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    {
+      "instanceId": "iso-46747-4c60",
+      "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-2nUx3u",
+      "dataRootExists": false,
+      "stop": {
+        "instanceId": "iso-46747-4c60",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-2nUx3u",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    {
+      "instanceId": "iso-37305-b236",
+      "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-z8GcGn",
+      "dataRootExists": false,
+      "stop": {
+        "instanceId": "iso-37305-b236",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-z8GcGn",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    }
+  ],
+  "ownRuntimeProcesses": [],
+  "fixtureRouteExists": false,
+  "privateSetupRoot": "/tmp/sidebar-api-setup.IYl8Nq",
+  "existingUserBrowserAndDisplays": "Untouched; only owned Xvfb wrappers used",
+  "dependenciesAndCurrentBuildOutputs": "Retained for delivery, do not stage generated SDK dist",
+  "privateSetupRootRemoved": true,
+  "ownedVirtualDisplaysRemaining": false,
+  "displayCheck": "pgrep -a Xvfb empty after all owning sessions; original Xvnc/session left alone"
+}
