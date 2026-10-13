@@ -1,0 +1,75 @@
+{
+  "actualExit": 0,
+  "expectedExit": 0,
+  "seconds": 16.559,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 85469,
+      "ppid": 84861,
+      "pgid": 85469,
+      "command": "(node)"
+    },
+    {
+      "pid": 85518,
+      "ppid": 85469,
+      "pgid": 85469,
+      "command": "(bash)"
+    },
+    {
+      "pid": 85519,
+      "ppid": 85518,
+      "pgid": 85469,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm prepare:shared"
+    },
+    {
+      "pid": 85548,
+      "ppid": 85519,
+      "pgid": 85469,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build"
+    },
+    {
+      "pid": 85579,
+      "ppid": 85548,
+      "pgid": 85469,
+      "command": "sh -c node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs"
+    },
+    {
+      "pid": 85609,
+      "ppid": 85548,
+      "pgid": 85469,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-application-sdk-contracts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 85610,
+      "ppid": 85579,
+      "pgid": 85469,
+      "command": "node ./scripts/clean-dist.mjs"
+    },
+    {
+      "pid": 85617,
+      "ppid": 85579,
+      "pgid": 85469,
+      "command": "(node)"
+    },
+    {
+      "pid": 86942,
+      "ppid": 85548,
+      "pgid": 85469,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-application-backend-sdk/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 86951,
+      "ppid": 85518,
+      "pgid": 85469,
+      "command": "(node)"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-fixture-types-6of40ji3",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

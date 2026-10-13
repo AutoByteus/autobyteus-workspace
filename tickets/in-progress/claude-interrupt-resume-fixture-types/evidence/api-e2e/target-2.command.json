@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+    "--no-watch",
+    "--reporter=verbose",
+    "--reporter=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/tickets/in-progress/claude-interrupt-resume-fixture-types/evidence/api-e2e/case-reporter.mjs"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types",
+  "expectedExit": 0,
+  "environment": "PATH + fresh private HOME/TMPDIR + explicit TEST_API_* evidence knobs, target-only AGY_ERROR_EVIDENCE_DIR",
+  "RUN_CLAUDE_E2E": "absent"
+}
