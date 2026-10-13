@@ -1,0 +1,4875 @@
+{
+  "startedAt": "2026-10-13T14:22:53.190Z",
+  "source": "4127815cd5383e055ff430674691e59f47742238",
+  "platform": "linux-arm64",
+  "cases": {
+    "BR-001": {
+      "result": "Pass",
+      "name": "Wide Team/Activity actual pointer drag, three cycles and meaningful controls"
+    },
+    "BR-002": {
+      "result": "Pass",
+      "name": "Exact capacity neighbors, actual navigation resize and drag while open"
+    },
+    "BR-003": {
+      "result": "Pass",
+      "name": "Constrained modal keyboard/backdrop and wide recovery cleanup"
+    },
+    "BR-004": {
+      "result": "Pass",
+      "name": "Automatic allocation keeps 480 center floor at1210 capacity"
+    }
+  },
+  "snapshots": [
+    {
+      "label": "1000-teamMembers-intermediate",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 470,
+            "preferredWidth": 470,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 598,
+        "measuredRight": 470,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 470,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1000-teamMembers-intermediate-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "1000-teamMembers-max-0",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 470,
+            "preferredWidth": 470,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 743,
+        "measuredRight": 470,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 470,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1000-teamMembers-max-0-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "1000-teamMembers-restore-0",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 743,
+            "preferredWidth": 743,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 743,
+        "measuredRight": 743,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 743,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1000-teamMembers-max-1",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 470,
+            "preferredWidth": 470,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 743,
+        "measuredRight": 470,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 470,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1000-teamMembers-max-1-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "1000-teamMembers-restore-1",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 743,
+            "preferredWidth": 743,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 743,
+        "measuredRight": 743,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 743,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1000-teamMembers-max-2",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 470,
+            "preferredWidth": 470,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 743,
+        "measuredRight": 470,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 470,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1000-teamMembers-max-2-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "1000-teamMembers-restore-2",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 743,
+            "preferredWidth": 743,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 743,
+        "measuredRight": 743,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 743,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1000-progress-intermediate",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 470,
+            "preferredWidth": 470,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 598,
+        "measuredRight": 470,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 470,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1000-progress-intermediate-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "teamMembers"
+    },
+    {
+      "label": "1000-progress-max-0",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 470,
+            "preferredWidth": 470,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 743,
+        "measuredRight": 470,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 470,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1000-progress-max-0-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "teamMembers"
+    },
+    {
+      "label": "1000-progress-restore-0",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 743,
+            "preferredWidth": 743,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 743,
+        "measuredRight": 743,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 743,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1000-progress-max-1",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 470,
+            "preferredWidth": 470,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 743,
+        "measuredRight": 470,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 470,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1000-progress-max-1-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "teamMembers"
+    },
+    {
+      "label": "1000-progress-restore-1",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 743,
+            "preferredWidth": 743,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 743,
+        "measuredRight": 743,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 743,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1000-progress-max-2",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 470,
+            "preferredWidth": 470,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 743,
+        "measuredRight": 470,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 470,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1000-progress-max-2-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "teamMembers"
+    },
+    {
+      "label": "1000-progress-restore-2",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 743,
+            "preferredWidth": 743,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 743,
+        "measuredRight": 743,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 743,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-teamMembers-intermediate",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 750,
+            "preferredWidth": 750,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 766,
+        "measuredRight": 750,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 750,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-teamMembers-intermediate-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "1280-teamMembers-max-0",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 750,
+            "preferredWidth": 750,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1023,
+        "measuredRight": 750,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 750,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-teamMembers-max-0-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "1280-teamMembers-restore-0",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 1023,
+            "preferredWidth": 1023,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1023,
+        "measuredRight": 1023,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 1023,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-teamMembers-max-1",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 750,
+            "preferredWidth": 750,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1023,
+        "measuredRight": 750,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 750,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-teamMembers-max-1-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "1280-teamMembers-restore-1",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 1023,
+            "preferredWidth": 1023,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1023,
+        "measuredRight": 1023,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 1023,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-teamMembers-max-2",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 750,
+            "preferredWidth": 750,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1023,
+        "measuredRight": 750,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 750,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-teamMembers-max-2-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "1280-teamMembers-restore-2",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 1023,
+            "preferredWidth": 1023,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1023,
+        "measuredRight": 1023,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 1023,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-progress-intermediate",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 750,
+            "preferredWidth": 750,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 766,
+        "measuredRight": 750,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 750,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-progress-intermediate-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "teamMembers"
+    },
+    {
+      "label": "1280-progress-max-0",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 750,
+            "preferredWidth": 750,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1023,
+        "measuredRight": 750,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 750,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-progress-max-0-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "teamMembers"
+    },
+    {
+      "label": "1280-progress-restore-0",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 1023,
+            "preferredWidth": 1023,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1023,
+        "measuredRight": 1023,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 1023,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-progress-max-1",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 750,
+            "preferredWidth": 750,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1023,
+        "measuredRight": 750,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 750,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-progress-max-1-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "teamMembers"
+    },
+    {
+      "label": "1280-progress-restore-1",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 1023,
+            "preferredWidth": 1023,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1023,
+        "measuredRight": 1023,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 1023,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-progress-max-2",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 750,
+            "preferredWidth": 750,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1023,
+        "measuredRight": 750,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 750,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1280-progress-max-2-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "teamMembers"
+    },
+    {
+      "label": "1280-progress-restore-2",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1280,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 1023,
+            "preferredWidth": 1023,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1023,
+        "measuredRight": 1023,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 1023,
+        "height": 800,
+        "right": 1280
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-teamMembers-intermediate",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 862,
+            "preferredWidth": 862,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 862,
+        "measuredRight": 862,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 253,
+        "height": 800,
+        "right": 576
+      },
+      "right": {
+        "x": 578,
+        "y": 0,
+        "width": 862,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-teamMembers-intermediate-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "1440-teamMembers-max-0",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 910,
+            "preferredWidth": 910,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 910,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 910,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-teamMembers-max-0-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "1440-teamMembers-restore-0",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 1183,
+            "preferredWidth": 1183,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 1183,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 1183,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-teamMembers-max-1",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 910,
+            "preferredWidth": 910,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 910,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 910,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-teamMembers-max-1-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "1440-teamMembers-restore-1",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 1183,
+            "preferredWidth": 1183,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 1183,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 1183,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-teamMembers-max-2",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 910,
+            "preferredWidth": 910,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 910,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 910,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-teamMembers-max-2-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "1440-teamMembers-restore-2",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 1183,
+            "preferredWidth": 1183,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 1183,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 1183,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-progress-intermediate",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 862,
+            "preferredWidth": 862,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 862,
+        "measuredRight": 862,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 253,
+        "height": 800,
+        "right": 576
+      },
+      "right": {
+        "x": 578,
+        "y": 0,
+        "width": 862,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-progress-intermediate-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "teamMembers"
+    },
+    {
+      "label": "1440-progress-max-0",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 910,
+            "preferredWidth": 910,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 910,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 910,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-progress-max-0-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "teamMembers"
+    },
+    {
+      "label": "1440-progress-restore-0",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 1183,
+            "preferredWidth": 1183,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 1183,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 1183,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-progress-max-1",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 910,
+            "preferredWidth": 910,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 910,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 910,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-progress-max-1-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "teamMembers"
+    },
+    {
+      "label": "1440-progress-restore-1",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 1183,
+            "preferredWidth": 1183,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 1183,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 1183,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-progress-max-2",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 910,
+            "preferredWidth": 910,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 910,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 910,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "1440-progress-max-2-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "teamMembers"
+    },
+    {
+      "label": "1440-progress-restore-2",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "redock-panel"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 1183,
+            "preferredWidth": 1183,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 1183,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "progress"
+      },
+      "left": null,
+      "center": {
+        "x": 50,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 255
+      },
+      "right": {
+        "x": 257,
+        "y": 0,
+        "width": 1183,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "nav-320-capacity-931",
+      "viewport": {
+        "width": 931,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 931,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 401,
+            "preferredWidth": 401,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 401,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 401,
+        "height": 800,
+        "right": 931
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "nav-320-capacity-930",
+      "viewport": {
+        "width": 930,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 930,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 400,
+            "preferredWidth": 400,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 400,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 400,
+        "height": 800,
+        "right": 930
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "nav-320-capacity-929",
+      "viewport": {
+        "width": 929,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 929,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "open-drawer"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 675,
+            "preferredWidth": 675,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 722,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "width": 252,
+        "height": 800,
+        "right": 252
+      },
+      "right": {
+        "x": 254,
+        "y": 0,
+        "width": 675,
+        "height": 800,
+        "right": 929
+      },
+      "drawer": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "backdrop": {
+        "x": 0,
+        "y": 0,
+        "width": 929,
+        "height": 800,
+        "right": 929
+      },
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "nav-520-capacity-1131",
+      "viewport": {
+        "width": 1131,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1131,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 520,
+            "preferredWidth": 520,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 401,
+            "preferredWidth": 401,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 401,
+        "intent": "user-sized",
+        "leftWidth": 520,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 520,
+        "height": 800,
+        "right": 520
+      },
+      "center": {
+        "x": 523,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 728
+      },
+      "right": {
+        "x": 730,
+        "y": 0,
+        "width": 401,
+        "height": 800,
+        "right": 1131
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "nav-520-capacity-1130",
+      "viewport": {
+        "width": 1130,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1130,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 520,
+            "preferredWidth": 520,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 400,
+            "preferredWidth": 400,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 400,
+        "intent": "user-sized",
+        "leftWidth": 520,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 520,
+        "height": 800,
+        "right": 520
+      },
+      "center": {
+        "x": 523,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 728
+      },
+      "right": {
+        "x": 730,
+        "y": 0,
+        "width": 400,
+        "height": 800,
+        "right": 1130
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "nav-520-capacity-1129",
+      "viewport": {
+        "width": 1129,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1129,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 520,
+            "stripBehavior": "consuming",
+            "stripActivation": "open-drawer"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 875,
+            "preferredWidth": 875,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 922,
+        "intent": "user-sized",
+        "leftWidth": 520,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "width": 252,
+        "height": 800,
+        "right": 252
+      },
+      "right": {
+        "x": 254,
+        "y": 0,
+        "width": 875,
+        "height": 800,
+        "right": 1129
+      },
+      "drawer": {
+        "x": 0,
+        "y": 0,
+        "width": 520,
+        "height": 800,
+        "right": 520
+      },
+      "backdrop": {
+        "x": 0,
+        "y": 0,
+        "width": 1129,
+        "height": 800,
+        "right": 1129
+      },
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "drag-while-open",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 488,
+            "preferredWidth": 488,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 488,
+        "measuredRight": 488,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 627,
+        "height": 800,
+        "right": 950
+      },
+      "right": {
+        "x": 952,
+        "y": 0,
+        "width": 488,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "drag-while-open-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "constrained-767-800",
+      "viewport": {
+        "width": 767,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 767,
+          "viewportHeight": 800,
+          "mode": "narrow",
+          "isNarrow": true,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "open-drawer"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "strip",
+            "presentationSource": "responsive",
+            "consumedWidth": 50,
+            "preferredWidth": 1183,
+            "stripBehavior": "consuming",
+            "stripActivation": "open-drawer",
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "responsive-yield",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": true
+        },
+        "rawRight": 1183,
+        "measuredRight": 560,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "width": 717,
+        "height": 800,
+        "right": 717
+      },
+      "right": null,
+      "drawer": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "backdrop": {
+        "x": 0,
+        "y": 0,
+        "width": 767,
+        "height": 800,
+        "right": 767
+      },
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "constrained-768-800",
+      "viewport": {
+        "width": 768,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 768,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "open-drawer"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 514,
+            "preferredWidth": 514,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 561,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "width": 252,
+        "height": 800,
+        "right": 252
+      },
+      "right": {
+        "x": 254,
+        "y": 0,
+        "width": 514,
+        "height": 800,
+        "right": 768
+      },
+      "drawer": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "backdrop": {
+        "x": 0,
+        "y": 0,
+        "width": 768,
+        "height": 800,
+        "right": 768
+      },
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "constrained-700-800",
+      "viewport": {
+        "width": 700,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 700,
+          "viewportHeight": 800,
+          "mode": "narrow",
+          "isNarrow": true,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "open-drawer"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "strip",
+            "presentationSource": "responsive",
+            "consumedWidth": 50,
+            "preferredWidth": 1183,
+            "stripBehavior": "consuming",
+            "stripActivation": "open-drawer",
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "responsive-yield",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": true
+        },
+        "rawRight": 1183,
+        "measuredRight": 493,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "width": 650,
+        "height": 800,
+        "right": 650
+      },
+      "right": null,
+      "drawer": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "backdrop": {
+        "x": 0,
+        "y": 0,
+        "width": 700,
+        "height": 800,
+        "right": 700
+      },
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "constrained-1440-480",
+      "viewport": {
+        "width": 1440,
+        "height": 480,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 480,
+          "mode": "short-height",
+          "isNarrow": false,
+          "isShortHeight": true,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "open-drawer"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "strip",
+            "presentationSource": "responsive",
+            "consumedWidth": 50,
+            "preferredWidth": 1183,
+            "stripBehavior": "consuming",
+            "stripActivation": "open-drawer",
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "responsive-yield",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": true
+        },
+        "rawRight": 1183,
+        "measuredRight": 1183,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "width": 1390,
+        "height": 480,
+        "right": 1390
+      },
+      "right": null,
+      "drawer": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 480,
+        "right": 320
+      },
+      "backdrop": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 480,
+        "right": 1440
+      },
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "wide-recovery",
+      "viewport": {
+        "width": 1440,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1440,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 910,
+            "preferredWidth": 910,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 1183,
+        "measuredRight": 910,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 205,
+        "height": 800,
+        "right": 528
+      },
+      "right": {
+        "x": 530,
+        "y": 0,
+        "width": 910,
+        "height": 800,
+        "right": 1440
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "wide-recovery-controls",
+      "hits": [
+        {
+          "selector": "[data-test=\"workspace-center-pane\"] textarea",
+          "hit": true
+        },
+        {
+          "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+          "hit": true
+        }
+      ],
+      "composerFocused": true,
+      "tabClickEffect": "progress"
+    },
+    {
+      "label": "automatic-1209",
+      "viewport": {
+        "width": 1209,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1209,
+          "viewportHeight": 800,
+          "mode": "large-constrained",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "strip",
+            "presentationSource": "responsive",
+            "consumedWidth": 50,
+            "preferredWidth": 450,
+            "stripBehavior": "consuming",
+            "stripActivation": "open-drawer",
+            "resizeIntent": "automatic",
+            "centerProtectionMode": "responsive-yield",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": false,
+          "showRightStrip": true
+        },
+        "rawRight": 450,
+        "measuredRight": 399,
+        "intent": "automatic",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 836,
+        "height": 800,
+        "right": 1159
+      },
+      "right": null,
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "automatic-1210",
+      "viewport": {
+        "width": 1210,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1210,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 400,
+            "preferredWidth": 400,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "automatic",
+            "centerProtectionMode": "automatic",
+            "effectiveCenterMinWidth": 480
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 450,
+        "measuredRight": 400,
+        "intent": "automatic",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 485,
+        "height": 800,
+        "right": 808
+      },
+      "right": {
+        "x": 810,
+        "y": 0,
+        "width": 400,
+        "height": 800,
+        "right": 1210
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "automatic-1211",
+      "viewport": {
+        "width": 1211,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1211,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 401,
+            "preferredWidth": 401,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "automatic",
+            "centerProtectionMode": "automatic",
+            "effectiveCenterMinWidth": 480
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 450,
+        "measuredRight": 401,
+        "intent": "automatic",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 485,
+        "height": 800,
+        "right": 808
+      },
+      "right": {
+        "x": 810,
+        "y": 0,
+        "width": 401,
+        "height": 800,
+        "right": 1211
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "automatic-1259",
+      "viewport": {
+        "width": 1259,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1259,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 449,
+            "preferredWidth": 449,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "automatic",
+            "centerProtectionMode": "automatic",
+            "effectiveCenterMinWidth": 480
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 450,
+        "measuredRight": 449,
+        "intent": "automatic",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 485,
+        "height": 800,
+        "right": 808
+      },
+      "right": {
+        "x": 810,
+        "y": 0,
+        "width": 449,
+        "height": 800,
+        "right": 1259
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    },
+    {
+      "label": "automatic-1260",
+      "viewport": {
+        "width": 1260,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1260,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 320,
+            "preferredWidth": 320,
+            "stripBehavior": null,
+            "stripActivation": null
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 450,
+            "preferredWidth": 450,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "automatic",
+            "centerProtectionMode": "automatic",
+            "effectiveCenterMinWidth": 480
+          },
+          "showLeftStrip": false,
+          "showRightStrip": false
+        },
+        "rawRight": 450,
+        "measuredRight": 450,
+        "intent": "automatic",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "center": {
+        "x": 323,
+        "y": 0,
+        "width": 485,
+        "height": 800,
+        "right": 808
+      },
+      "right": {
+        "x": 810,
+        "y": 0,
+        "width": 450,
+        "height": 800,
+        "right": 1260
+      },
+      "drawer": null,
+      "backdrop": null,
+      "url": "http://127.0.0.1:35267/api-e2e-workspaces-sidebar-dock"
+    }
+  ],
+  "browserErrors": [],
+  "operations": [
+    "GetApplicationsCapability",
+    "GetSkillImprovementCapability",
+    "GetAgentDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetApplicationsCapability",
+    "GetSkillImprovementCapability",
+    "GetAgentDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory"
+  ],
+  "cleanup": {
+    "routeRemoved": true,
+    "privateHomeRemoved": true,
+    "nuxtExit": 0,
+    "portFree": true,
+    "browserClosed": true
+  },
+  "browserUid": 1000,
+  "port": 35267,
+  "nuxtPid": 28910,
+  "browser": "153.0.8010.52",
+  "warmupErrors": [],
+  "result": "Pass",
+  "finishedAt": "2026-10-13T14:24:32.206Z"
+}
