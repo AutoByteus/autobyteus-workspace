@@ -1,3 +1,34 @@
+# Current Shared Network Workspace Result — SR-011 Ready For Approval
+
+## Current Status And Decision
+
+**Routine user requirements scope approval hold — proposed SR-011 is Ready for Approval, NOT approved or implementation-ready.** This header supersedes historical SR-010 current-status language below. Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63; owner /software_engineering_team/solution_designer; original delegator /project_task_manager AgentRun project_task_manager_a5f6d9d306e54970bafdad895bdf731d. Last approved scope SR-009 (Linux server), preserved record/requirements commit91cd215f27267e516a71fa779bb3636fe0b46a8e; latest user's three-mode/server-folder direction is a scope expansion. No new approval or technical capability assumed.
+
+Current user asks which solution is recommended, wants one very easy setup, hosting either Docker/local Mac/direct Linux and selecting a server folder. Recommendation: one managed Shared Folder product/setup experience with native Mac/native Linux and optional Docker deployment, a chosen supported persistent local source folder, normal OS/disruption approvals, selected managed Docker node integration and verified printed mount/connection locations. Native modes should not require Docker. Source folder may have existing project files; it is not the client mount target. No implicit copies/relocation/hidden replacement or unsafe/private exports. Prefer existing NFS-based foundations and platform-specific integration beneath the helper, not manual command collections/new storage engine. No final callable command or completed design supplied.
+
+Only scope decision for user: all three hosting modes plus chosen folder required for this ticket (recommended), versus staged support? Requirements-doc.md Ready for Approval SR-011 with REQ-001/015 revised; REQ-017/018, AC-017/018, SCN-011/012, DEC-009 and relevant scope/behavior/readiness/traceability changes. Other ordinary whole-project/native-CLI/private-LAN/preservation/no-fallback/consistency/concurrency/failure/real-machine/merge/user-verification criteria and exclusions retained. Product GUI/Team support not requested. Expanded authoritative design held until renewed scope approval; final size/risk/reviews/implementation/delivery N/A — not completed, not bypassed.
+
+## Evidence And Safety Boundary
+
+Existing Linux container service used an owned Docker named volume, NOT a selected Mac host folder. Native Mac client/multi-agent/readiness/reboot proofs do not prove native Mac server or host-folder export compatibility. Apple nfsd manual, Ganesha VFS requirements (Linux file handles/exportable filesystem), Docker Desktop bind docs rechecked; details in canonical notes. Native Mac hosting and Mac-source Docker export require experiments before supported claims. No new test/model/server/mount/export/credential/admin/network change this round; document reads/proposed scope authoring only. Prior Docker270 absence checks/VM clone retirement/public cache disposition remain as recorded below, no running owned experiments. Existing original user storage/mounts/nodes untouched.
+
+No actual separate-machine access supplied yet. The independent physical Linux participant might be client rather than storage host if native/Docker-on-Mac hosting is chosen; do not invent or scan host resources. Linux-server-only historical resource wording is not a new required product deployment. Actual physical Mac/Linux/Docker acceptance still applies; approval does not grant live modification.
+
+## Current Canonical Context And Next Action
+
+- /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/requirements-doc.md — current proposed intent/ACs/scope.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/requirements-approval-request.md — full current direct-user recommendation/scope decision; older body explicitly historical.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/investigation-notes.md — current primary evidence/uncertainties plus all prior probes.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/solution-revision-record.md — cumulative SR-001–011 approval/design impact/history.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/feasibility-blocker-handoff.md — this full current result, prior original request/artifact/safety context below.
+- Same isolated worktree/branch/base/finalization as historical context; no finalized merge/push/release or source changes. Authoritative design absent; original task stays unfinished.
+
+Next: answer user with recommendation/one-simple-flow and obtain focused SR-011 scope approval directly; then resume proof/architecture under renewed basis. The worker owns engines/permission/setup/validation choices; user is not asked to administer NFS/export/UID/Docker internals. Get current handoff rules for result disposition. Routine approval hold stays in user conversation; no PM approval request, implementation forwarding, duplicate collaborator or delegate_task bypass. No Terminal/DONE claim.
+
+---
+
+## Historical SR-010 Result And Full Original Context (Evidence Not Expanded)
+
 # Shared Network Workspaces — Current Feasibility Result / SR-010
 
 ## Status, Identity And Approval
@@ -98,3 +129,5 @@ Fresh get_handoff_rules on2026-10-13 returns only Architecture Design Complete r
 Evidence checkpoint ba5fbdb83f2b164dec7d85355311040d13b5cdbc; final audit/style receipt follows on same isolated branch. Literal captured tool help/backend log keep original whitespace; prototype source EOF normalized without semantics change. Repository artifact hygiene, JSON/source syntax and bounded value-pattern checks pass; unrestricted raw-evidence whitespace check is not represented as passed.
 
 Direct-user feasibility clarification (sameSR010): physical Mac can host the Linux container as already exercised locally; Docker Desktop's Linux VM is the service OS boundary. Read-only local binary/manual plus Apple primary manual confirm native macOS nfsd also exists, but not executed/configured/tested here and not a change to Approved Linux service scope. No exports/service/mount/admin modification. User asks possibility, not authority to expand native-server setup. Primary sources and exact read-only check recorded in investigation-notes.md. Answer both meanings directly; existing actual-LAN/setup/design blockers unchanged, no duplicate PM/implementation handoff for this clarification.
+
+SR-011 route decision2026-10-13: fresh get_handoff_rules returned only completed architecture size/risk and returned delivery-receipt gap routes; NONE applies to this Ready for Approval user scope conversation. Return recommendation/current proposed requirements directly to user; no PM approval request, implementation/architecture forwarding, duplicate collaborators or delegate_task. No new approval recorded.

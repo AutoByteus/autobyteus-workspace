@@ -1,3 +1,21 @@
+# Current Requirements Approval Conversation — SR-011
+
+- Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63; owner Solution Designer,2026-10-13.
+- Current canonical requirements: /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/requirements-doc.md — **Ready for Approval SR-011, NOT approved**. Historical last approved basis SR-009/approval-record-sr009.md; prior body below is historical, not current open decisions.
+- Current investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/investigation-notes.md; history /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/solution-revision-record.md; cumulative full context /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/feasibility-blocker-handoff.md.
+- Current user wants recommendation for very easy setup, server in Docker/native Mac/native Linux and a configurable storage folder. This expands earlier Linux-only server scope, not just an OS-name clarification.
+- Recommended proposed scope: native Mac + native Linux + Docker on supported Mac/Linux Docker hosts, selected persistent local source folder, one guided create/connect command, no Docker prerequisite for native mode. Users choose folder/normal deployment, give connection info and ordinary OS/disruption approval, get verified storage/mount/connection locations. Helper hides technical configuration and integrates selected managed Docker agent nodes. No finished command is provided until ready.
+- Retain previous ordinary project/native-runtime/semantics/concurrency/mount failure/private-state/preservation/real multi-machine/merge/user verification obligations and exclusions. No public service/SDK/custom filesystem/GUI wizard/parked collaboration expansion.
+- New REQ-017/018, AC-017/018, SCN-011/012; REQ-001/015, UC-001/BEH-001/005 and DEC-007/009 aligned. All details in canonical requirements, no behavior-defining supplement.
+- Sole user scope question: **Make all three service-hosting modes and a selectable folder required for this ticket (recommended), or stage some modes?** Worker selects technology/versions/permissions after proof; no protocol/UID/mount-setting question is delegated to user.
+- Evidence status: existing Linux NFSv4.1 named-volume/native-Mac-client/multi-agent experiments remain valid locally. Native Mac server and Docker export of a chosen Mac host directory not run; FSAL VFS handles/filesystem support cannot be inferred from Docker bind availability. Primary sources/rationale in notes. Actual separate-computer LAN/access and complete setup/integration remain gaps.
+- Bootstrap/base: isolated worktree /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces; branch codex/shared-network-workspaces; origin/personal@f13bdd0eb79aacc63dffa5995b9c86f359001468; finalization target origin/personal, no merge/release. Existing artifacts retained; no production/live user state changes.
+- This is a routine approval conversation with the user, not an implementation/design-complete handoff, and PM cannot approve for user. No native-server setup/live exports/mounts initiated. Expanded authoritative design/implementation must await renewed approval; previous tests are not discarded or generalized.
+
+---
+
+## Historical Approval Conversation / Superseded Current-Status Blocks
+
 > Current status (SR-008): Approved SR-004 intent unchanged. Actual Codex/Claude core journey now demonstrated locally in four runtime pairs/16 stages, but shared-skill cleanup fails and is causally reproduced; native Mac/LAN/source-build/GUI/setup gates remain incomplete. See evidence/feasibility/real-agent-roundtrip-report.md. Earlier approval holds/untested status below are historical. No implementation-ready design or live user-node/mount changes.
 
 # Requirements Approval Request / Persisted Context
