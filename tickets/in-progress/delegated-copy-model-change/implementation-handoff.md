@@ -122,3 +122,10 @@
 - Implementation revision record: `tickets/in-progress/delegated-copy-model-change/implementation-revision-record.md` (IR-001)
 
 ## Commits
+
+- `71d51a1608` server + contracts (src, rebuilt `dist`, tests) + server docs.
+- `312653734c` web (Settings rows, store, sidebar stop icon, probe case DCP-001, docs, localization).
+- `01ff6e8273` ticket artifacts (design package, this handoff, `implementation-revision-record.md`, evidence).
+- Final web unit run on the committed code: `pnpm -C autobyteus-web test:nuxt --run` → 615 files / 4285 tests passed, 5 skipped.
+- Untracked `autobyteus-application-backend-sdk/dist/` and `autobyteus-application-sdk-contracts/dist/` come from the
+  workspace install (`pnpm install` build steps) and are not part of this change.
