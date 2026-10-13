@@ -314,7 +314,7 @@ Expected: "docked"
 Received: "strip"
 
  ❯ utils/layout/__tests__/responsiveLayoutPolicy.spec.ts:124:43
-    122| 
+    122|
     123|     expect(state.leftPanel.presentation).toBe('strip')
     124|     expect(state.rightPanel.presentation).toBe('docked')
        |                                           ^

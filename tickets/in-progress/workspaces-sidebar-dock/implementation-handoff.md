@@ -63,7 +63,7 @@ Under `/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autob
 - Out-of-scope visual observation: existing compact Team header text can crowd header action icons at the approved ~200px center floor; conversation textarea remains hit-testable. No header redesign added. Track a separate compact-header polish follow-up if desired, not a changed minimum in this ticket.
 
 ## Local Implementation Checks
-Exact commands/results are in evidence logs (all worktree-owned):
+Exact commands/results are in evidence logs (all worktree-owned; trailing log whitespace normalized for repository formatting):
 1. Designer-installed dependencies retained. `corepack pnpm -C autobyteus-web exec nuxt prepare`: exit 0 (`evidence/nuxt-prepare.log`).
 2. Focused seven suites: **92 passed** (`evidence/focused-tests.log`). Adjacent thirteen suites: **135 passed** (`evidence/adjacent-tests.log`); these overlap, not additive unique coverage.
 3. Final current-source command: `corepack pnpm -C autobyteus-web test:nuxt --run utils/layout/__tests__ composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts layouts/__tests__/default-docking.spec.ts layouts/__tests__/default-drawer.spec.ts composables/__tests__/useRightPanel.spec.ts components/layout/__tests__ composables/__tests__/useAccessibleDrawer.spec.ts`: **15 files / 146 tests passed**, exit 0 (`evidence/final-local-tests.log`). Existing KaTeX/Vue warning text retained, no test failures.
