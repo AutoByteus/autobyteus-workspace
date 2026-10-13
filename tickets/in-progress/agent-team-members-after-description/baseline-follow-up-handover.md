@@ -40,3 +40,9 @@
 Follow-up stays TODO/not dispatched. Its eventual approved package must retain causal/scenario proof, validate selected-response cache semantics and create/update/scoped paths, obtain applicable source review, and perform a NEW source-current isolated app/actual UI creation validation; old asar cannot validate corrected mutation source. No paid inference needed. Do not use user app/data; retain isolated cleanup.
 Original iso-52535-8486 is stopped/cleaned; api-desktop-01/isolated-stop.json and cleanup-check.json record forced=true and released ports/root/record/group. No live resource is transferred.
 UI ticket receives a NEW truthful scoped API disposition after source/test exclusion; historical broader failure is not erased or converted to Pass. Human app acceptance, release agreement, finalization and cleanup remain Delivery-owned.
+
+## Completed UI Exclusion / Transfer Receipt
+- After this handover was committed in cf53160698, source/test exclusion completed in cf18b16f46230d20bc2c1d8c1c19f7fc81bb8b71: original standalone baseline-cache regression removed from active UI test package. Previously prepared mutation correction was already reverted in09731dcd14.
+- GraphQL and store source/test net delta versus integrated basef13bdd0eb79aacc63dffa5995b9c86f359001468 is now empty; the full regression remains preserved in committed exports and retained d8 branch, not silently skipped.
+- Current authority/receipt: implementation-handoff.md / IR-004 and implementation-ui-separation.json in this ticket. R1-only five-suite local check passes40 tests; no baseline defect resolution or new broader API Pass follows from that result.
+- Process follow-up project_task_4c7b3e0e-9edb-45da-914c-ce22c9a999c4 is distinct/TODO/not dispatched; this cache-work handover belongs only to project_task_6b9ce371-7593-42d7-9d20-3c637512830a.
