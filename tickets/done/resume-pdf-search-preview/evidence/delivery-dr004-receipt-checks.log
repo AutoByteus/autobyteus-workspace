@@ -1,0 +1,31 @@
+Licensing is consistent.
+Tracked files scanned: 6516
+Repository artifact hygiene check passed.
+Tracked files scanned: 62090
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+tickets/done/resume-pdf-search-preview/evidence/delivery-dr004-publication/release-branch-push.log:1: trailing whitespace.
++remote: 
+tickets/done/resume-pdf-search-preview/evidence/delivery-dr004-publication/release-branch-push.log:2: trailing whitespace.
++remote: GitHub found 940 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 429 moderate, 70 low). To find out more, visit:        
+tickets/done/resume-pdf-search-preview/evidence/delivery-dr004-publication/release-branch-push.log:3: trailing whitespace.
++remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+tickets/done/resume-pdf-search-preview/evidence/delivery-dr004-publication/release-branch-push.log:4: trailing whitespace.
++remote: 
+tickets/done/resume-pdf-search-preview/evidence/delivery-dr004-publication/target-finalization-push.log:1: trailing whitespace.
++remote: 
+tickets/done/resume-pdf-search-preview/evidence/delivery-dr004-publication/target-finalization-push.log:2: trailing whitespace.
++remote: GitHub found 940 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 429 moderate, 70 low). To find out more, visit:        
+tickets/done/resume-pdf-search-preview/evidence/delivery-dr004-publication/target-finalization-push.log:3: trailing whitespace.
++remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+tickets/done/resume-pdf-search-preview/evidence/delivery-dr004-publication/target-finalization-push.log:4: trailing whitespace.
++remote: 
+
+Unscoped whitespace check above is NOT globally clean: original Git push stderr contains intentional trailing whitespace. Preserve raw output exactly; this is not a source/test failure. Required licensing/hygiene and text-scoped receipt checks follow.
+Licensing is consistent.
+Tracked files scanned: 6516
+Repository artifact hygiene check passed.
+Tracked files scanned: 62091
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+Text-scoped receipt whitespace check passed; raw logs excluded without normalization.
