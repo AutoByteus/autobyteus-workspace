@@ -1,0 +1,108 @@
+{
+  "observedAt": "2026-10-13T14:50:27.913286+00:00",
+  "purpose": "Owned read-only metadata-only inspection of available local1779 image; NOT oldb141 image or current-source startup proof, no user nodes/mounts/service/DB accessed",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--name",
+    "sd-permanent-prisma-metadata-current-6b8c9612",
+    "--label",
+    "autobyteus.task=6b8c9612",
+    "--network",
+    "none",
+    "--read-only",
+    "--entrypoint",
+    "node",
+    "sha256:1779a6e136a2fcd48a3045687a88ded45628e306471f5fd9d3eb4321017b21fa",
+    "-e",
+    "const fs=require('fs'),path=require('path'),{createRequire}=require('module');const c='/app/autobyteus-server-ts/node_modules/prisma/build/index.js';const out={cliPath:c,cliRealPath:fs.realpathSync(c),unrealDependency:null,realDependency:null};try{out.unrealDependency=createRequire(c).resolve('@prisma/engines/package.json')}catch(e){out.unrealDependencyError=e.code}const r=createRequire(out.cliRealPath),p=r.resolve('@prisma/engines/package.json'),er=createRequire(fs.realpathSync(p));out.realDependency={path:p,package:JSON.parse(fs.readFileSync(p)),enginesVersion:er('@prisma/engines-version'),versionPackage:JSON.parse(fs.readFileSync(er.resolve('@prisma/engines-version/package.json'))),nativeFiles:fs.readdirSync(path.dirname(p)).filter(f=>/^(schema-engine|libquery_engine)/.test(f))};console.log(JSON.stringify(out));"
+  ],
+  "exit": 0,
+  "result": {
+    "cliPath": "/app/autobyteus-server-ts/node_modules/prisma/build/index.js",
+    "cliRealPath": "/app/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/build/index.js",
+    "unrealDependency": null,
+    "realDependency": {
+      "path": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/package.json",
+      "package": {
+        "name": "@prisma/engines",
+        "version": "5.22.0",
+        "description": "This package is intended for Prisma's internal use",
+        "main": "dist/index.js",
+        "types": "dist/index.d.ts",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/prisma/prisma.git",
+          "directory": "packages/engines"
+        },
+        "license": "Apache-2.0",
+        "author": "Tim Suchanek <suchanek@prisma.io>",
+        "devDependencies": {
+          "@swc/core": "1.6.13",
+          "@swc/jest": "0.2.36",
+          "@types/jest": "29.5.12",
+          "@types/node": "18.19.31",
+          "execa": "5.1.1",
+          "jest": "29.7.0",
+          "typescript": "5.4.5"
+        },
+        "dependencies": {
+          "@prisma/engines-version": "5.22.0-44.605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+          "@prisma/debug": "5.22.0",
+          "@prisma/fetch-engine": "5.22.0",
+          "@prisma/get-platform": "5.22.0"
+        },
+        "files": [
+          "dist",
+          "download",
+          "scripts"
+        ],
+        "sideEffects": false,
+        "scripts": {
+          "dev": "DEV=true tsx helpers/build.ts",
+          "build": "tsx helpers/build.ts",
+          "test": "jest --passWithNoTests",
+          "postinstall": "node scripts/postinstall.js"
+        }
+      },
+      "enginesVersion": {
+        "enginesVersion": "605197351a3c8bdd595af2d2a9bc3025bca48ea2"
+      },
+      "versionPackage": {
+        "name": "@prisma/engines-version",
+        "version": "5.22.0-44.605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+        "main": "index.js",
+        "types": "index.d.ts",
+        "license": "Apache-2.0",
+        "author": "Tim Suchanek <suchanek@prisma.io>",
+        "prisma": {
+          "enginesVersion": "605197351a3c8bdd595af2d2a9bc3025bca48ea2"
+        },
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/prisma/engines-wrapper.git",
+          "directory": "packages/engines-version"
+        },
+        "devDependencies": {
+          "@types/node": "18.19.34",
+          "typescript": "4.9.5"
+        },
+        "files": [
+          "index.js",
+          "index.d.ts"
+        ],
+        "scripts": {
+          "build": "tsc -d"
+        }
+      },
+      "nativeFiles": [
+        "libquery_engine-linux-arm64-openssl-3.0.x.so.node",
+        "schema-engine-linux-arm64-openssl-3.0.x"
+      ]
+    },
+    "unrealDependencyError": "MODULE_NOT_FOUND"
+  },
+  "stderr": "",
+  "cleanupAbsent": true
+}
