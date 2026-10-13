@@ -203,9 +203,13 @@ Initial settings follow one rule for every start page:
   [Member Launch Defaults](./agent_teams.md#member-launch-defaults).
 - **+:** the source run's settings and member overrides. A placed team keeps its
   workspace only where it differs from the Org's. If the run cannot be read or
-  copied, the Org defaults are used.
+  copied, the Org defaults are used. A copied start is not seeded.
 - **Heading switcher:** the carried workspace, approval and model config; member
-  overrides reset.
+  overrides reset. Then the placed teams and agents are seeded and pinned exactly
+  as on **Run** (`agentOrgLaunchDraftStore.prepare`: a carried model on a start
+  that is not copied runs `seedMembers`). Switching from this page to a Team seeds
+  that Team's members the same way (see
+  [Member Launch Defaults](./agent_teams.md#member-launch-defaults)).
 
 Copied and carried settings are kept as they are; their runtimes' availability
 and model catalogs (the Org card's and every override's) load before Run is

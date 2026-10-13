@@ -22,6 +22,7 @@ const runSettingsMessages = {
   'runSettings.inherited.resetAria': 'Reset {{setting}} to the default',
   'runSettings.members.title': 'Members',
   'runSettings.members.customizedCount': '{{count}} customized',
+  'runSettings.members.noteCount': 'Notes: {{count}}',
   'runSettings.members.resetAll': 'Reset all',
   'runSettings.members.coordinator': 'Coordinator',
   'runSettings.members.resetMemberAria': 'Reset {{name}} to defaults',

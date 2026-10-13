@@ -1,5 +1,53 @@
 # Delivery / Release / Deployment Report
 
+
+## Round 2 (Reopened, DR-003)
+
+This section is authoritative for round 2. The round-1 sections below describe the finalized `v1.5.3-beta.1` delivery.
+
+- Scope: SR-005 (switcher seeding) and SR-006 (Settings rows). Web only. `task_size=Medium`, `architectural_risk=Low`, direct route (API-REV-004 Pass).
+- Release guide: `RELEASE.md` on `32aca0818`. No deviation so far.
+- Integration refresh:
+  - Bootstrap base: `2756d7b29`.
+  - Latest base checked: `origin/personal` @ `32aca0818`. It had advanced by the legacy Docker retirement: `.gitignore`, `README.md`, `docker/*`, `scripts/*` and the Docker READMEs. None of these files overlaps the ticket.
+  - Checkpoint before integration: `50cd035c5`, staged by explicit path.
+  - Integration method: `Merge` (`071033f95`), no conflicts.
+  - Post-integration checks rerun: `Yes`, all passed (`delivery-evidence/dr-003/`):
+    - `autobyteus-ts` build, server prebuild and build;
+    - probe DLP-001..010: 10/10;
+    - web `test:nuxt`: 610 files, 4245 passed;
+    - the three web guards;
+    - licensing and hygiene.
+  - Server suites were not rerun: neither this round nor the merged base changed server source.
+- Handoff state current with the latest base: `Yes`.
+- User verification: `No`, pending.
+- Docs sync: `Updated` (web `agent_teams.md`, `agent_orgs.md`, `settings.md`; see `docs-sync-report.md` → Round 2).
+- Release notes: `release-notes.md` updated for round 2.
+- Ticket state transition, finalization and release: not started; waiting for verification and the release decision. The next beta would be `v1.5.3-beta.2`.
+- Cleanup after finalization:
+  - the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied`;
+  - the local branch `codex/delegated-launch-config-defaults-r2`;
+  - `/tmp/dlcd-r2-agents`.
+- DR-003 status: waiting for verification.
+
+### DR-004 — Verification, Re-integration And Finalization (Round 2)
+
+- User verification: `Yes`. On 2026-10-13 the user wrote: "the task is done. verified. lets finalize and release a new beta version".
+- Release decision: beta `v1.5.3-beta.2`.
+- Target advanced after verification: `Yes`. `origin/personal` @ `73f743211c` brought `agy-docker-node-availability-diagnostics`: server AGY availability, the web model menu "Unavailable" state, `useChatModelCatalog` and `TESTING.md`.
+  - None of these files is a file of this round.
+- Delivery-owned edits protected: `Completed`.
+  - `4ac1bd3ecc`: docs(web).
+  - `9af5a622e5`: DR-003 records.
+- Re-integration: `Merge` (`7b0c755221`), no conflicts.
+- Post-integration checks: all 11 passed (`delivery-evidence/dr-004/`):
+  - `autobyteus-ts` build;
+  - server prebuild, typecheck and build;
+  - probe DLP-001..010: 10/10;
+  - web `test:nuxt`: 610 files, 4252 passed, 3 skipped;
+  - the three web guards;
+  - licensing and hygiene.
+- Renewed verification: `Not needed`. The base touched only the model menu's runtime-availability display, and the probe, which covers the launch forms that use it, passes.
 ## Release / Publication / Deployment Scope
 
 - Ticket `delegated-launch-config-defaults`: `task_size=Large`, `architectural_risk=High`, reviewed route.

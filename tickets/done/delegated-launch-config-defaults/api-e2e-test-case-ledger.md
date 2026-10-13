@@ -7,7 +7,7 @@
 - Execution coverage report: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-execution-coverage-report.md`
 - API/E2E revision record: `tickets/in-progress/delegated-launch-config-defaults/api-e2e-revision-record.md`
 - Ledger scope and reason it is required: API-REV-001; repository suites, a multi-case server E2E and a browser probe, each multi-minute.
-- Last updated: 2026-10-12 (API-REV-003, UI coverage extension at the user's request)
+- Last updated: 2026-10-13 (API-REV-004, reopened round IR-003; worktree `launch-defaults-not-applied`)
 
 ## Planned Cases
 
@@ -34,6 +34,10 @@
 | DLP-006 | Pre-change saved runs (Agent + Team) after a backend restart: Settings "Source not recorded"; member starts on the Team value | AC-009, QR-002 | Browser probe (round 3) | same | 8 | — |
 | DLP-007 | Definition edited in the Agents editor after copy A; copy B; stop/reopen from Settings; copy A engineer on Grok | AC-008, DEC-008 | Browser probe (round 3) | same | 8 | runs last |
 | MOB-001 | Mobile Team start seeding through the setup controller; stale seed dropped | AC-011 (mobile), DS-006 | Web component | `MobileRunSetupMemberSeeding.spec.ts` | 8 | mobile needs pairing; no browser surface |
+| DLP-008 | SR-005: plain New chat → typed text → heading switcher → Team: members seeded, text and root kept (implementer-added) | AC-011 | Browser probe (round 4) | same | 10 | the user's journey |
+| DLP-009 | SR-005 carried starts: Team A → Team B; New chat → Org (Run readback); Org launch page → Team | AC-011, AC-012 | Browser probe (round 4) | same | 10 | — |
+| DLP-010 | Preserved: "+" on a Team run copies recorded member settings, no re-seed | DS-006 | Browser probe (round 4) | same | 10 | needs DLP-001 |
+| ISO-002 | Isolated desktop instance of the round-4 build: the user's switcher journey to a Marketing Team with real catalogs; a real delegation; collapsible Settings rows running and stopped | AC-011, AC-010 (SR-005, SR-006) | Isolated desktop instance | `isolated-app start --build`, browser-automation attach | 11 | real Claude + Codex (logged-in CLIs; no vault) |
 | ISO-001 | Isolated desktop instance (worktree build), real runtimes: Claude delegator, Codex coordinator default, native AutoByteus member default, unusable Codex default; tool card note, member context, Settings, New-chat seeding | AC-015 shape, AC-001, AC-005, AC-010, AC-011, AR-001 | Isolated desktop instance | `isolated-app start --build`, browser-automation attach | 9 | real provider calls (user-provided key file imported into the instance DB) |
 
 ## Execution Events
@@ -62,11 +66,17 @@
 | 20 | DLP-003..007 | 2026-10-12 | Checkpoint | probe extended so every action goes through the UI (user request: cover as many cases as possible through the real UI); runs 4–6 with `--cases` | — | run 4: run-view composer has no `chat-composer` test ID → visible textarea; run 5: DLP-005 pass, others: reader took the Team messages panel (`main.last()`) → read all `main` regions; run 6: DLP-003, 004, 006, 007 pass | — | `browser-probe-run-4..6/` | full runs |
 | 21 | DLP-001..007 | 2026-10-12 | Checkpoint | full run 7 | — | interrupted by a host restart during DLP-001 (browser closed); orphan probe process stopped; temp root already removed | — | `browser-probe-run-7-interrupted-by-host-restart/` | rerun twice |
 | 22 | DLP-001..007 | 2026-10-12 | Completed | full runs 8 and 9 (fresh stack each) | 7/7 | 7/7 and 7/7; no browser errors; cleanup receipts complete (first backend `already-exited` = DLP-006's intended stop) | Pass | `browser-probe-run-8/`, `browser-probe-run-9/` | — |
+| 23 | ROUND-4 | 2026-10-13 | Started | worktree `launch-defaults-not-applied`, IR-003 (`0ac4e4b07`); diff vs `2756d7b29` web + tickets only | — | investigation round 4 written | — | `api-e2e-coverage-investigation.md` → Round 4 | probe extension |
+| 24 | DLP-001..010 | 2026-10-13 | Completed | probe run 1 (10 cases; DLP-009/010 and SR-006 look assertions added) | 10/10 | 10/10; no browser errors; cleanup complete | Pass | `r2-browser-probe-run-1/` | bug check |
+| 25 | DLP-008, DLP-009 | 2026-10-13 | Completed | bug check: round-1 (released) `chatDraftStore.ts` + `agentOrgLaunchDraftStore.ts` restored temporarily; then only the Org store | fail on the old stores | both stores old: DLP-008 and DLP-009 fail (no seeds after the switch), DLP-001 and DLP-010 pass; Org store only old: DLP-009 fails at the New chat → Org step after the Team A → B step passed; sources restored (no diff) | Pass (detects the bug) | `r2-browser-probe-bug-check-round1-stores/`, `r2-browser-probe-bug-check-round1-org-store/` | — |
+| 26 | REPO-003 | 2026-10-13 | Completed | `test:nuxt --run` + three guards (round-4 worktree) | exit 0 | 610 files / 4243 tests pass, 5 skipped; guards 0/0/0 | Pass | `r2-web-nuxt.log`, `r2-web-guards.log` | — |
+| 27 | ISO-002 | 2026-10-13 | Completed | `iso-60438-de06` (round-4 build); Marketing Team definitions via GraphQL; recorded journey | seeded drawer after the switch; collapsible rows | Chat nav → "hell" → switcher → Marketing Team: heading switched, text and root kept, "2 of 4 customized" (strategist Codex Luna, copywriter Claude haiku), analyst follows, auditor note; PM Manager (Claude haiku) delegated `/marketing_team`: recorded strategist codex/agent_default, copywriter claude/agent_default, analyst inherited, auditor inherited + model_unavailable; ledger: manager claude-haiku-5-5, strategist codex_app_server/gpt-5.6-luna (~$0.006); Settings: one collapsed "Delegated copy" row "Notes: 1"; opened: card, MEMBERS, Coordinator chip on strategist, summaries `model · runtime · approval · source`, auditor note on the auditor only; stopped run shows the same collapsed row | Pass | `r2-isolated-instance/iso2-0*.png`, `iso2-journey.mp4` | instance stopped, data root removed |
+| 28 | DLP-001..010 | 2026-10-13 | Completed | probe run 2 (stability) | 10/10 | 10/10; no browser errors; cleanup complete | Pass | `r2-browser-probe-run-2/` | handoff to delivery |
 
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: 22
-- Last completed case and result: DLP-001..007 full runs 8–9, Pass
+- Last durably recorded event: 28
+- Last completed case and result: DLP-001..010 run 2, Pass
 - Cases still running, interrupted, or not started: none
 - Next case or recovery action: none
 - Interruption, context-compression, or rerun note: host power-off during the first chain (web suite and E2E run 3 interrupted); a host restart during probe run 7. All rerun cleanly.

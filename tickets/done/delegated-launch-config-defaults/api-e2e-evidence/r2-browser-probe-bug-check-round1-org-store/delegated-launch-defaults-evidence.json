@@ -1,0 +1,85 @@
+{
+  "startedAt": "2026-10-12T20:14:38.833Z",
+  "cases": {
+    "DLP-009": {
+      "title": "SR-005 (AC-011, AC-012): carried starts seed members: Team A → Team B (B's seeds only), New chat → Org (placed team and agents seeded; Run readback), Org launch page → Team (seeded)",
+      "result": "Fail",
+      "ms": 86692,
+      "error": "Timed out waiting for Org writer seeded after the switch",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 17277
+    },
+    {
+      "label": "frontend",
+      "pid": 17320
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 17320,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 17277,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-xt2vIH"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-xt2vIH",
+  "backendUrl": "http://127.0.0.1:59175",
+  "frontUrl": "http://127.0.0.1:59176",
+  "definitions": {
+    "ids": {
+      "manager": "manager-0590",
+      "lead": "lead-ce6f",
+      "worker": "worker-6783",
+      "plain": "plain-2fff",
+      "engineer": "engineer-cdfb",
+      "reviewer": "reviewer-a5bc",
+      "writer": "writer-f528",
+      "offline": "offline-cf8e",
+      "unoffered": "unoffered-4bb6",
+      "badsettings": "badsettings-13a5",
+      "incomplete": "incomplete-af8a",
+      "build": "build-team-0168",
+      "pair": "pair-team-21a0",
+      "squad": "squad-team-8277",
+      "home": "home-team-575f",
+      "launchOrg": "launchorg-org-079f",
+      "hostOrg": "hostorg-org-bfc4"
+    },
+    "names": {
+      "manager": "Manager 0590",
+      "lead": "Lead ce6f",
+      "worker": "Worker 6783",
+      "plain": "Plain 2fff",
+      "engineer": "Engineer cdfb",
+      "reviewer": "Reviewer a5bc",
+      "writer": "Writer f528",
+      "offline": "Offline cf8e",
+      "unoffered": "Unoffered 4bb6",
+      "badsettings": "Badsettings 13a5",
+      "incomplete": "Incomplete af8a",
+      "build": "Build Team 0168",
+      "pair": "Pair Team 21a0",
+      "squad": "Squad Team 8277",
+      "home": "Home Team 575f",
+      "launchOrg": "LaunchOrg Org 079f",
+      "hostOrg": "HostOrg Org bfc4"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 1
+  },
+  "completedAt": "2026-10-12T20:16:38.298Z"
+}

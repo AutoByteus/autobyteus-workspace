@@ -7,7 +7,7 @@ const values = { workspace: null, runtimeKind: 'autobyteus', llmModelIdentifier:
 const node = (key: string, customized = false): RunMemberNode => ({
   key, kind: 'agent', name: key.slice(1), isCoordinator: false, values, parentValues: values,
   fields: ['model', 'thinking', 'approval'], customized: { approval: customized }, customizedOptionKeys: [],
-  modelRequired: false, children: [],
+  modelRequired: false, launchNotes: [], children: [],
 })
 
 let wrapper: VueWrapper | null = null

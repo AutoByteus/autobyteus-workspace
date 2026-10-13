@@ -1,0 +1,8 @@
+
+> autobyteus@1.5.3-beta.1 test:e2e:delegated-launch-defaults /Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied/autobyteus-web
+> node tests/e2e/delegated-launch-defaults-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied/tickets/in-progress/delegated-launch-config-defaults/api-e2e-evidence/r2-browser-probe-bug-check-round1-org-store --cases DLP-009
+
+DLP-009 Fail SR-005 (AC-011, AC-012): carried starts seed members: Team A → Team B (B's seeds only), New chat → Org (placed team and agents seeded; Run readback), Org launch page → Team (seeded) — Timed out waiting for Org writer seeded after the switch
+Summary: 0 Pass, 1 Fail
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1
