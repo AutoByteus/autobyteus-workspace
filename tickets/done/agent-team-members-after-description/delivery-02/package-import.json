@@ -1,0 +1,29 @@
+{
+  "httpStatus": 200,
+  "instanceId": "iso-56609-2c4d",
+  "source": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-R40GRx/verification-package",
+  "result": {
+    "data": {
+      "importAgentPackage": [
+        {
+          "packageId": "built-in:default",
+          "displayName": "Built-in Storage",
+          "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-R40GRx/server-data",
+          "sourceKind": "BUILT_IN",
+          "sharedAgentCount": 8,
+          "teamLocalAgentCount": 0,
+          "agentTeamCount": 2
+        },
+        {
+          "packageId": "local:%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fautobyteus-isolated-root-R40GRx%2Fverification-package",
+          "displayName": "verification-package",
+          "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-R40GRx/verification-package",
+          "sourceKind": "LOCAL_PATH",
+          "sharedAgentCount": 8,
+          "teamLocalAgentCount": 49,
+          "agentTeamCount": 15
+        }
+      ]
+    }
+  }
+}

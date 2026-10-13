@@ -1,0 +1,78 @@
+{
+  "recordedAt": "2026-10-13T04:48:46.884211+00:00",
+  "probeResult": "Pass",
+  "browserEvents": [],
+  "ports": {
+    "renderer": 54528,
+    "backend": 54527
+  },
+  "rendererFree": true,
+  "boundaryFree": true,
+  "nuxtGroupAbsent": true,
+  "fixtureRouteAbsent": true,
+  "probeCleanup": {
+    "browser": {
+      "closed": true
+    },
+    "nuxt": {
+      "pid": 28779,
+      "groupAbsent": true
+    },
+    "fixture": {
+      "removed": true
+    },
+    "boundary": {
+      "closed": true
+    },
+    "home": {
+      "removed": true
+    },
+    "ports": {
+      "rendererFree": true,
+      "backendFree": true
+    }
+  },
+  "iconRequests": [
+    {
+      "type": "request",
+      "url": "https://api.iconify.design/heroicons.json?icons=arrow-right-20-solid%2Cchevron-down-20-solid%2Cuser-20-solid",
+      "at": "2026-10-13T04:48:14.757Z"
+    },
+    {
+      "type": "response",
+      "url": "https://api.iconify.design/heroicons.json?icons=arrow-right-20-solid%2Cchevron-down-20-solid%2Cuser-20-solid",
+      "status": 200,
+      "at": "2026-10-13T04:48:15.166Z"
+    },
+    {
+      "type": "request",
+      "url": "https://api.iconify.design/heroicons.json?icons=arrow-right-20-solid%2Cchevron-down-20-solid%2Cuser-20-solid",
+      "at": "2026-10-13T04:48:17.518Z"
+    },
+    {
+      "type": "response",
+      "url": "https://api.iconify.design/heroicons.json?icons=arrow-right-20-solid%2Cchevron-down-20-solid%2Cuser-20-solid",
+      "status": 200,
+      "at": "2026-10-13T04:48:17.522Z"
+    },
+    {
+      "type": "request",
+      "url": "https://api.iconify.design/heroicons.json?icons=arrows-right-left-20-solid%2Cchevron-down-20-solid",
+      "at": "2026-10-13T04:48:18.858Z"
+    },
+    {
+      "type": "response",
+      "url": "https://api.iconify.design/heroicons.json?icons=arrows-right-left-20-solid%2Cchevron-down-20-solid",
+      "status": 200,
+      "at": "2026-10-13T04:48:18.893Z"
+    }
+  ],
+  "fixtureRequests": [
+    {
+      "method": "GET",
+      "path": "/rest/health"
+    }
+  ],
+  "probeSHA256": "a6aab999b6cfb2a51511e73b2b9f0dc18a12d7e7fe1d715e5160ac4bf5ab2901",
+  "head": "051cbc06c2491a45d76ed09a7b0e08e9c51fca99"
+}

@@ -1,0 +1,74 @@
+{
+  "consoleErrors": [
+    {
+      "artifact": "e02-create-coordinator.json",
+      "code": 13,
+      "field": "loadIssue"
+    },
+    {
+      "artifact": "e02-create-other-members.json",
+      "code": 13,
+      "field": "loadIssue"
+    },
+    {
+      "artifact": "e02-create-other-members.json",
+      "code": 13,
+      "field": "loadIssue"
+    },
+    {
+      "artifact": "e02-create-other-members.json",
+      "code": 13,
+      "field": "loadIssue"
+    },
+    {
+      "artifact": "e02-create-other-members.json",
+      "code": 13,
+      "field": "loadIssue"
+    },
+    {
+      "artifact": "e02-create-other-members.json",
+      "code": 13,
+      "field": "loadIssue"
+    },
+    {
+      "artifact": "e04-org-roundtrip.json",
+      "code": 13,
+      "field": "loadIssues"
+    }
+  ],
+  "sourceBlobs": {
+    "autobyteus-web/stores/agentDefinitionStore.ts": {
+      "73f743211c8b86c704acb33f216154e42b7a67b8": "57142058049d10b48bd799fd893731aaa60492bf",
+      "HEAD": "57142058049d10b48bd799fd893731aaa60492bf"
+    },
+    "autobyteus-web/stores/agentOrgDefinitionStore.ts": {
+      "73f743211c8b86c704acb33f216154e42b7a67b8": "c5e96481390b304c4ae241f48529bc92cff6ad36",
+      "HEAD": "c5e96481390b304c4ae241f48529bc92cff6ad36"
+    },
+    "autobyteus-web/graphql/queries/agentDefinitionQueries.ts": {
+      "73f743211c8b86c704acb33f216154e42b7a67b8": "5aadaaf5a534d176400ae3ae708476a924eeec96",
+      "HEAD": "5aadaaf5a534d176400ae3ae708476a924eeec96"
+    },
+    "autobyteus-web/graphql/queries/agentOrgDefinitionQueries.ts": {
+      "73f743211c8b86c704acb33f216154e42b7a67b8": "486fb7b4988f3e61eca5b50db75791552e24359d",
+      "HEAD": "486fb7b4988f3e61eca5b50db75791552e24359d"
+    },
+    "autobyteus-web/graphql/mutations/agentDefinitionMutations.ts": {
+      "73f743211c8b86c704acb33f216154e42b7a67b8": "5a2b9a24d594c24ab65efe4fa57f9d55daff0519",
+      "HEAD": "5a2b9a24d594c24ab65efe4fa57f9d55daff0519"
+    },
+    "autobyteus-web/graphql/mutations/agentOrgDefinitionMutations.ts": {
+      "73f743211c8b86c704acb33f216154e42b7a67b8": "7129932ea7cb82bcddf6c84c4cd4322d08e19a28",
+      "HEAD": "7129932ea7cb82bcddf6c84c4cd4322d08e19a28"
+    }
+  },
+  "targetJourneySteps": [
+    "e02-real-detail-layout.json",
+    "e03-member-and-actions.json",
+    "e04-create-alternate.json",
+    "e04-org-return-journey.json"
+  ],
+  "targetJourneysErrorFree": true,
+  "finalRoundResult": "Fail",
+  "reason": "Observed baseline incomplete definition mutation cache writes; valid durable reproductions fail; not a layout or navigation failure."
+}

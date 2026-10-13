@@ -1,0 +1,63 @@
+{
+  "startedAt": "2026-10-13T04:04:37.503Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-create"
+    }
+  ],
+  "details": {
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nBack to Agent Orgs\nCreate Agent Org\n\nAdd Agents and Teams, then configure handoffs.\n\nAvatar (optional)\n\nAO\nUpload image\n\nJPEG, PNG, GIF or WebP. Saved with the Org.\n\nBasics\nName\nDescription\nMembers\nAdd member\nAgents\n\nNo Agents added.\n\nTeams\n\nNo Teams added.\n\nHandoffs\nAdd handoff\n\nNo handoffs yet\n\nAdd the first handoff\nCancel\nCreate Org",
+    "buttons": [
+      "Chat",
+      "",
+      "",
+      "Agents",
+      "Agent Teams",
+      "Agent Orgs",
+      "Projects",
+      "Skills",
+      "Memory",
+      "Nodes",
+      "",
+      "Temp Workspace",
+      "Settings",
+      " Back to Agent Orgs",
+      "",
+      "Upload image",
+      " Add member",
+      " Add handoff",
+      "Add the first handoff",
+      "Cancel",
+      "Create Org"
+    ],
+    "fields": [
+      {
+        "id": "",
+        "placeholder": null,
+        "tag": "INPUT",
+        "type": "file",
+        "required": false
+      },
+      {
+        "id": "",
+        "placeholder": null,
+        "tag": "INPUT",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "",
+        "placeholder": null,
+        "tag": "TEXTAREA",
+        "type": "textarea",
+        "required": false
+      }
+    ]
+  },
+  "result": "Pass",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-create",
+  "finishedAt": "2026-10-13T04:04:37.650Z"
+}

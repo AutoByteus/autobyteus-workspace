@@ -1,0 +1,292 @@
+{
+  "startedAt": "2026-10-13T03:38:56.997Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "scenarios": {
+    "B01": {
+      "result": "Pass",
+      "description": "Long-content production detail order, roster and responsive geometry",
+      "details": {
+        "600": {
+          "headings": [
+            "Description",
+            "Members (6)",
+            "Instructions",
+            "Handoffs"
+          ],
+          "sections": [
+            {
+              "x": 16,
+              "y": 266,
+              "width": 568,
+              "height": 102,
+              "bottom": 368,
+              "right": 584
+            },
+            {
+              "x": 16,
+              "y": 384,
+              "width": 568,
+              "height": 542,
+              "bottom": 926,
+              "right": 584
+            },
+            {
+              "x": 16,
+              "y": 942,
+              "width": 568,
+              "height": 302,
+              "bottom": 1244,
+              "right": 584
+            },
+            {
+              "x": 16,
+              "y": 1260,
+              "width": 568,
+              "height": 2530,
+              "bottom": 3790,
+              "right": 584
+            }
+          ],
+          "cards": [
+            {
+              "x": 37,
+              "y": 449,
+              "width": 526,
+              "height": 66,
+              "bottom": 515,
+              "right": 563
+            },
+            {
+              "x": 37,
+              "y": 527,
+              "width": 526,
+              "height": 66,
+              "bottom": 593,
+              "right": 563
+            },
+            {
+              "x": 37,
+              "y": 605,
+              "width": 526,
+              "height": 66,
+              "bottom": 671,
+              "right": 563
+            },
+            {
+              "x": 37,
+              "y": 683,
+              "width": 526,
+              "height": 66,
+              "bottom": 749,
+              "right": 563
+            },
+            {
+              "x": 37,
+              "y": 761,
+              "width": 526,
+              "height": 66,
+              "bottom": 827,
+              "right": 563
+            },
+            {
+              "x": 37,
+              "y": 839,
+              "width": 526,
+              "height": 66,
+              "bottom": 905,
+              "right": 563
+            }
+          ],
+          "cardText": [
+            "CcoordinatorCOORDINATORcoordinatorView ↗",
+            "AarchitectarchitectView ↗",
+            "IimplementerTeam-local WorkerView ↗",
+            "RreviewerreviewerView ↗",
+            "VvalidatorvalidatorView ↗",
+            "DdeliverydeliveryView ↗"
+          ],
+          "viewCount": 6,
+          "overflow": false,
+          "instructions": "Instruction 1: preserve approved requirements and ownership boundaries.\nInstruction 2: preserve approved requirements and ownership boundaries.\nInstruction 3: preserve approved requirements and ownership boundaries.\nInstruction 4: preserve approved requirements and ownership boundaries.\nInstruction 5: preserve approved requirements and ownership boundaries.\nInstruction 6: preserve approved requirements and ownership boundaries.\nInstruction 7: preserve approved requirements and ownership boundaries.\nInstruction 8: preserve approved requirements and ownership boundaries.\nInstruction 9: preserve approved requirements and ownership boundaries.\nInstruction 10: preserve approved requirements and ownership boundaries.\nInstruction 11: preserve approved requirements and ownership boundaries.\nInstruction 12: preserve approved requirements and ownership boundaries.\nInstruction 13: preserve approved requirements and ownership boundaries.\nInstruction 14: preserve approved requirements and ownership boundaries.\nInstruction 15: preserve approved requirements and ownership boundaries.\nInstruction 16: preserve approved requirements and ownership boundaries.\nInstruction 17: preserve approved requirements and ownership boundaries.\nInstruction 18: preserve approved requirements and ownership boundaries.\nInstruction 19: preserve approved requirements and ownership boundaries.\nInstruction 20: preserve approved requirements and ownership boundaries.\nInstruction 21: preserve approved requirements and ownership boundaries.\nInstruction 22: preserve approved requirements and ownership boundaries.\nInstruction 23: preserve approved requirements and ownership boundaries.\nInstruction 24: preserve approved requirements and ownership boundaries.\nInstruction 25: preserve approved requirements and ownership boundaries.\nInstruction 26: preserve approved requirements and ownership boundaries.\nInstruction 27: preserve approved requirements and ownership boundaries.\nInstruction 28: preserve approved requirements and ownership boundaries.\nInstruction 29: preserve approved requirements and ownership boundaries.\nInstruction 30: preserve approved requirements and ownership boundaries.\nInstruction 31: preserve approved requirements and ownership boundaries.\nInstruction 32: preserve approved requirements and ownership boundaries.\nInstruction 33: preserve approved requirements and ownership boundaries.\nInstruction 34: preserve approved requirements and ownership boundaries.",
+          "handoffs": [
+            "FromcoordinatorToarchitectWhenHandoff 1: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromarchitectToimplementerWhenHandoff 2: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromimplementerToreviewerWhenHandoff 3: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromreviewerTovalidatorWhenHandoff 4: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromvalidatorTodeliveryWhenHandoff 5: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromdeliveryTocoordinatorWhenHandoff 6: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromcoordinatorToarchitectWhenHandoff 7: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromarchitectToimplementerWhenHandoff 8: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner."
+          ]
+        },
+        "1440": {
+          "headings": [
+            "Description",
+            "Members (6)",
+            "Instructions",
+            "Handoffs"
+          ],
+          "sections": [
+            {
+              "x": 52,
+              "y": 204,
+              "width": 1336,
+              "height": 102,
+              "bottom": 306,
+              "right": 1388
+            },
+            {
+              "x": 52,
+              "y": 322,
+              "width": 1336,
+              "height": 308,
+              "bottom": 630,
+              "right": 1388
+            },
+            {
+              "x": 52,
+              "y": 646,
+              "width": 1336,
+              "height": 366,
+              "bottom": 1012,
+              "right": 1388
+            },
+            {
+              "x": 52,
+              "y": 1028,
+              "width": 1336,
+              "height": 1890,
+              "bottom": 2918,
+              "right": 1388
+            }
+          ],
+          "cards": [
+            {
+              "x": 73,
+              "y": 387,
+              "width": 641,
+              "height": 66,
+              "bottom": 453,
+              "right": 714
+            },
+            {
+              "x": 726,
+              "y": 387,
+              "width": 641,
+              "height": 66,
+              "bottom": 453,
+              "right": 1367
+            },
+            {
+              "x": 73,
+              "y": 465,
+              "width": 641,
+              "height": 66,
+              "bottom": 531,
+              "right": 714
+            },
+            {
+              "x": 726,
+              "y": 465,
+              "width": 641,
+              "height": 66,
+              "bottom": 531,
+              "right": 1367
+            },
+            {
+              "x": 73,
+              "y": 543,
+              "width": 641,
+              "height": 66,
+              "bottom": 609,
+              "right": 714
+            },
+            {
+              "x": 726,
+              "y": 543,
+              "width": 641,
+              "height": 66,
+              "bottom": 609,
+              "right": 1367
+            }
+          ],
+          "cardText": [
+            "CcoordinatorCOORDINATORcoordinatorView ↗",
+            "AarchitectarchitectView ↗",
+            "IimplementerTeam-local WorkerView ↗",
+            "RreviewerreviewerView ↗",
+            "VvalidatorvalidatorView ↗",
+            "DdeliverydeliveryView ↗"
+          ],
+          "viewCount": 6,
+          "overflow": false,
+          "instructions": "Instruction 1: preserve approved requirements and ownership boundaries.\nInstruction 2: preserve approved requirements and ownership boundaries.\nInstruction 3: preserve approved requirements and ownership boundaries.\nInstruction 4: preserve approved requirements and ownership boundaries.\nInstruction 5: preserve approved requirements and ownership boundaries.\nInstruction 6: preserve approved requirements and ownership boundaries.\nInstruction 7: preserve approved requirements and ownership boundaries.\nInstruction 8: preserve approved requirements and ownership boundaries.\nInstruction 9: preserve approved requirements and ownership boundaries.\nInstruction 10: preserve approved requirements and ownership boundaries.\nInstruction 11: preserve approved requirements and ownership boundaries.\nInstruction 12: preserve approved requirements and ownership boundaries.\nInstruction 13: preserve approved requirements and ownership boundaries.\nInstruction 14: preserve approved requirements and ownership boundaries.\nInstruction 15: preserve approved requirements and ownership boundaries.\nInstruction 16: preserve approved requirements and ownership boundaries.\nInstruction 17: preserve approved requirements and ownership boundaries.\nInstruction 18: preserve approved requirements and ownership boundaries.\nInstruction 19: preserve approved requirements and ownership boundaries.\nInstruction 20: preserve approved requirements and ownership boundaries.\nInstruction 21: preserve approved requirements and ownership boundaries.\nInstruction 22: preserve approved requirements and ownership boundaries.\nInstruction 23: preserve approved requirements and ownership boundaries.\nInstruction 24: preserve approved requirements and ownership boundaries.\nInstruction 25: preserve approved requirements and ownership boundaries.\nInstruction 26: preserve approved requirements and ownership boundaries.\nInstruction 27: preserve approved requirements and ownership boundaries.\nInstruction 28: preserve approved requirements and ownership boundaries.\nInstruction 29: preserve approved requirements and ownership boundaries.\nInstruction 30: preserve approved requirements and ownership boundaries.\nInstruction 31: preserve approved requirements and ownership boundaries.\nInstruction 32: preserve approved requirements and ownership boundaries.\nInstruction 33: preserve approved requirements and ownership boundaries.\nInstruction 34: preserve approved requirements and ownership boundaries.",
+          "handoffs": [
+            "FromcoordinatorToarchitectWhenHandoff 1: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromarchitectToimplementerWhenHandoff 2: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromimplementerToreviewerWhenHandoff 3: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromreviewerTovalidatorWhenHandoff 4: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromvalidatorTodeliveryWhenHandoff 5: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromdeliveryTocoordinatorWhenHandoff 6: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromcoordinatorToarchitectWhenHandoff 7: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner.",
+            "FromarchitectToimplementerWhenHandoff 8: when this stage completes, pass the cumulative package.Preserve evidence and route findings to the accountable owner."
+          ]
+        }
+      }
+    },
+    "B02": {
+      "result": "Fail",
+      "description": "Real controls: disclosure, shared/local View, Edit/Back and Delete cancel",
+      "failure": {
+        "message": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Delete definition', exact: true }) to be visible\u001b[22m\n",
+        "stack": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Delete definition', exact: true }) to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/tests/e2e/agent-team-detail-probe.mjs:191:80\n    at async scenario (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/tests/e2e/agent-team-detail-probe.mjs:88:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/tests/e2e/agent-team-detail-probe.mjs:175:3"
+      }
+    }
+  },
+  "browserEvents": [],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/rest/health"
+    },
+    {
+      "method": "GET",
+      "path": "/rest/health"
+    }
+  ],
+  "cleanup": {
+    "browser": {
+      "closed": true
+    },
+    "nuxt": {
+      "pid": 88974,
+      "groupAbsent": true
+    },
+    "fixture": {
+      "removed": true
+    },
+    "boundary": {
+      "closed": true
+    },
+    "home": {
+      "removed": true
+    },
+    "ports": {
+      "rendererFree": true,
+      "backendFree": true
+    }
+  },
+  "ports": {
+    "renderer": 60799,
+    "backend": 60798
+  },
+  "nuxtPid": 88974,
+  "browserVersion": "155.0.8059.40",
+  "result": "Fail",
+  "failure": {
+    "message": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Delete definition', exact: true }) to be visible\u001b[22m\n",
+    "stack": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Delete definition', exact: true }) to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/tests/e2e/agent-team-detail-probe.mjs:191:80\n    at async scenario (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/tests/e2e/agent-team-detail-probe.mjs:88:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/tests/e2e/agent-team-detail-probe.mjs:175:3"
+  },
+  "completedAt": "2026-10-13T03:40:19.757Z"
+}
