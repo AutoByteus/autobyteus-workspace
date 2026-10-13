@@ -40,9 +40,12 @@ describe('file_utils', () => {
   });
 
   it('should reject traversal attacks outside workspace', () => {
-    const outside = path.resolve(workspaceRoot, '../outside_secret.txt');
-    expect(() => resolveSafePath('../outside_secret.txt', workspaceRoot)).toThrow(/Security Violation/);
-    expect(() => resolveSafePath(outside, workspaceRoot)).toThrow(/Security Violation/);
+    // Pure path fixture: HOME may itself be a permitted temporary directory.
+    // Keep this workspace outside Temp/Downloads so traversal is actually denied.
+    const restrictedWorkspace = path.join(path.parse(workspaceRoot).root, 'file-utils-security-fixture', 'workspace');
+    const outside = path.resolve(restrictedWorkspace, '../outside_secret.txt');
+    expect(() => resolveSafePath('../outside_secret.txt', restrictedWorkspace)).toThrow(/Security Violation/);
+    expect(() => resolveSafePath(outside, restrictedWorkspace)).toThrow(/Security Violation/);
   });
 
   it('should reject absolute paths outside allowed roots', () => {
