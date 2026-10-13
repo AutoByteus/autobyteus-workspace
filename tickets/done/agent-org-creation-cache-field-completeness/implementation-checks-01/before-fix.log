@@ -1,0 +1,161 @@
+
+> autobyteus@1.5.3-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/definitionMutationCache.spec.ts stores/__tests__/agentDefinitionStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web
+
+stderr | stores/__tests__/agentDefinitionStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/definitionMutationCache.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentDefinitionStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentDefinitionStore.spec.ts (5 tests) 6ms
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Org without missing-field errors or an unreadable catalog cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Org without missing-field errors or an unreadable catalog cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Org with complete issue fields and cache-first rereads
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Org with complete issue fields and cache-first rereads
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ❯ stores/__tests__/definitionMutationCache.spec.ts (4 tests | 4 failed) 44ms
+   × definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache 24ms
+     → Creation must not publish a row missing fields required by its catalog query: expected [ 'loadIssue' ] to deeply equal []
+   × definition mutations publish a complete current-query cache row > creates a healthy Org without missing-field errors or an unreadable catalog cache 8ms
+     → Creation must not publish a row missing fields required by its catalog query: expected [ 'loadIssues' ] to deeply equal []
+   × definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads 7ms
+     → expected { Object (__typename, id, ...) } to match object { id: 'existing-agent', …(2) }
+(22 matching properties omitted from actual)
+   × definition mutations publish a complete current-query cache row > edits a healthy Org with complete issue fields and cache-first rereads 5ms
+     → expected { id: 'existing-org', …(10) } to match object { id: 'existing-org', …(3) }
+(8 matching properties omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache
+AssertionError: Creation must not publish a row missing fields required by its catalog query: expected [ 'loadIssue' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "loadIssue",
++ ]
+
+ ❯ stores/__tests__/definitionMutationCache.spec.ts:97:107
+     95|     else await orgs.create({ name: 'New Org', description: 'Healthy', …
+     96|     const missingFields = missingCacheFields(error.mock.calls)
+     97|     expect(missingFields, 'Creation must not publish a row missing fie…
+       |                                                                                                           ^
+     98|     const cached = io.client.readQuery({ query })
+     99|     expect(cached).not.toBeNull()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Org without missing-field errors or an unreadable catalog cache
+AssertionError: Creation must not publish a row missing fields required by its catalog query: expected [ 'loadIssues' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "loadIssues",
++ ]
+
+ ❯ stores/__tests__/definitionMutationCache.spec.ts:97:107
+     95|     else await orgs.create({ name: 'New Org', description: 'Healthy', …
+     96|     const missingFields = missingCacheFields(error.mock.calls)
+     97|     expect(missingFields, 'Creation must not publish a row missing fie…
+       |                                                                                                           ^
+     98|     const cached = io.client.readQuery({ query })
+     99|     expect(cached).not.toBeNull()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads
+AssertionError: expected { Object (__typename, id, ...) } to match object { id: 'existing-agent', …(2) }
+(22 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "id": "existing-agent",
+-   "loadIssue": null,
+    "name": "Edited Agent",
+  }
+
+ ❯ stores/__tests__/definitionMutationCache.spec.ts:117:21
+    115|       ? { id: agent.id, name: 'Edited Agent', loadIssue: null }
+    116|       : { id: org.id, name: 'Edited Org', revision: 'revision-2', load…
+    117|     expect(updated).toMatchObject(expected)
+       |                     ^
+    118|     expect(missingCacheFields(error.mock.calls)).toEqual([])
+    119|     const cached = io.client.readQuery({ query })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Org with complete issue fields and cache-first rereads
+AssertionError: expected { id: 'existing-org', …(10) } to match object { id: 'existing-org', …(3) }
+(8 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "id": "existing-org",
+-   "loadIssues": [],
+    "name": "Edited Org",
+    "revision": "revision-2",
+  }
+
+ ❯ stores/__tests__/definitionMutationCache.spec.ts:117:21
+    115|       ? { id: agent.id, name: 'Edited Agent', loadIssue: null }
+    116|       : { id: org.id, name: 'Edited Org', revision: 'revision-2', load…
+    117|     expect(updated).toMatchObject(expected)
+       |                     ^
+    118|     expect(missingCacheFields(error.mock.calls)).toEqual([])
+    119|     const cached = io.client.readQuery({ query })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  4 failed | 5 passed (9)
+   Start at  07:27:07
+   Duration  9.63s (transform 4.66s, setup 17.01s, collect 74ms, tests 50ms, environment 945ms, prepare 393ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,12 @@
+{
+  "sourceContext": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_3242d5c7c001__follow-up-cache-regression.spec.ts.txt",
+  "sourceSha256": "c0ed8fa6a41cf029cd54c4b650bca2dc3c01c6b2ca7467e22bdada36bb562067",
+  "bytes": 8883,
+  "copiedFourCaseTestVerbatim": true,
+  "preservedCommit": "d8bac598606001b702e300eeaeefe06c3caf0d3d",
+  "preservedRef": "d8bac598606001b702e300eeaeefe06c3caf0d3d",
+  "candidateParentMutationFilesEqualCurrentBase": true,
+  "currentBase": "dc2695cf968d15939b4b945a015fe465eb249605",
+  "startHead": "8078c0440436361526a25c2554379ec00aca5660",
+  "noPriorPassInherited": true
+}

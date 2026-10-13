@@ -1,0 +1,36 @@
+{
+  "startedAt": "2026-10-13T06:45:47.654Z",
+  "purpose": "Integrated cache fix smoke and human-check setup, not human acceptance",
+  "steps": [
+    {
+      "label": "D01-loaded-agent-catalog",
+      "result": "Pass"
+    },
+    {
+      "label": "D02-control-agent-create",
+      "result": "Pass"
+    },
+    {
+      "label": "D03-primary-agent-create",
+      "result": "Pass"
+    },
+    {
+      "label": "D04-agent-edit",
+      "result": "Pass"
+    },
+    {
+      "label": "D05-org-create",
+      "result": "Pass"
+    },
+    {
+      "label": "D06-org-edit",
+      "result": "Pass"
+    },
+    {
+      "label": "D07-user-check-ready",
+      "result": "Pass"
+    }
+  ],
+  "result": "Pass",
+  "finishedAt": "2026-10-13T06:45:57.838Z"
+}
