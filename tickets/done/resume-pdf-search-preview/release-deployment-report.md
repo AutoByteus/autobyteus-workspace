@@ -1,5 +1,20 @@
 # Delivery / Release / Deployment Report — resume-pdf-search-preview
 
+## DR-005 — Current Authoritative Result
+
+**Delivery Completed.** The user explicitly confirms **“its already verified. its working”**, in reply to the prior port8001 verification distinction. Reference `/home/autobyteus/workspace/.codex/delivery-artifacts/resume-pdf-search-preview/ticket/user-verification.md` and `/home/autobyteus/workspace/.codex/delivery-artifacts/resume-pdf-search-preview/ticket/evidence/delivery-dr005-user-verification.json`. This resolves the remaining functional-acceptance hold; no repeat user check is required.
+
+Same package `resume-pdf-search-preview`, **Small / High / Reviewed**; approved R1/SR001–004, current ARCH003 Pass, IR001–002, source CRR002 Pass/CR-F001 resolved, CRR003–005 and API001–003. Critical behavior is supported by retained actual HTTP/path-owner/browser/native byte/page/identity/restart evidence, production typecheck and integrated108backend+58web+51Node checks, plus this user confirmation for the previously inaccessible environment. No source, tests, fixture bytes, requirement/design or classification changes. Deleted permanent Electron PDF command/probe remains absent.
+
+Repository finalization, `v1.5.3-beta.3` publication, all4workflows/17assets/TestFlight/multiarchDocker and original task cleanup are Completed as proved by DR004. Solution Designer independently checked217archived Git/ticket bytes,16source hashes, tag/ancestry and live GitHub outputs in `/home/autobyteus/workspace/.codex/delivery-artifacts/resume-pdf-search-preview/solution-receipt-verification.md`. All published pins remain unchanged.
+
+The user reports the result working; **no agent-side live8001 upgrade** is claimed. Exact installed host/frontend/backend/image pins remain not independently observed. Additional agent host upgrade/restart, disruption timing approval or old-host-image rollback execution are **Not required**: no further host action is requested or undertaken, and RELEASE.md defines server rollout as Docker publication, already complete. Published code/digest is not mislabeled an installed image pin. This provenance limitation is disclosed, not a new blocker. Existing release rollback guidance remains valid; no data-format migration or loss.
+
+This round is receipt-only at fresh target `e3a6772951a3c0ccf54cfb5ef92350cccf16f2d2`, which already contains finalization/release/DR004receipt. Later unrelated commits are not newly claimed validated or included in the immutable beta. No old merge, release, runtime test or cleanup is replayed. Original latest read-only résumé SHA7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5 retained; no original/production/shared-state edit. Only the new sparse documentation writer is cleaned after its push.
+
+Current cumulative manifest `/home/autobyteus/workspace/.codex/delivery-artifacts/resume-pdf-search-preview/ticket/evidence/delivery-dr005-package.json`; exact receipt commit/push/snapshot/cleanup `/home/autobyteus/workspace/.codex/delivery-artifacts/resume-pdf-search-preview/finalization-receipt.json`. Prior DR004 frozen snapshot/receipt is preserved under `/home/autobyteus/workspace/.codex/delivery-artifacts/resume-pdf-search-preview/history/`. Current docs are Updated/Pass; no further long-lived product-doc impact. On safe receipt persistence/cleanup, use the successful Delivery Completed handoff rule to Solution Designer, which verifies this terminal package and applies parent/Task rules. Delivery does not itself alter Project Task status.
+
+## Historical DR-004 Receipt — Acceptance Hold Superseded
 ## DR-004 Result / Authorization
 **Repository finalization and requested public beta: Completed. Original live-runtime acceptance: external follow-up remains open.**
 
