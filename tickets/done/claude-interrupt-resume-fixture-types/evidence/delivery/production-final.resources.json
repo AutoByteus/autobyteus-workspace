@@ -1,0 +1,75 @@
+{
+  "actualExit": 0,
+  "expectedExit": 0,
+  "seconds": 14.926,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 27413,
+      "ppid": 27328,
+      "pgid": 27413,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-server-ts typecheck"
+    },
+    {
+      "pid": 27553,
+      "ppid": 27413,
+      "pgid": 27413,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm prepare:shared"
+    },
+    {
+      "pid": 27583,
+      "ppid": 27553,
+      "pgid": 27413,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build"
+    },
+    {
+      "pid": 27619,
+      "ppid": 27583,
+      "pgid": 27413,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-application-sdk-contracts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 27649,
+      "ppid": 27583,
+      "pgid": 27413,
+      "command": "(bash)"
+    },
+    {
+      "pid": 27650,
+      "ppid": 27649,
+      "pgid": 27413,
+      "command": "(node)"
+    },
+    {
+      "pid": 27666,
+      "ppid": 27649,
+      "pgid": 27413,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-ts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 28444,
+      "ppid": 27649,
+      "pgid": 27413,
+      "command": "(node)"
+    },
+    {
+      "pid": 28475,
+      "ppid": 27583,
+      "pgid": 27413,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-application-backend-sdk/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 28508,
+      "ppid": 27413,
+      "pgid": 27413,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json --noEmit"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delivery-fixture-types-rfvqbavm",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

@@ -1,0 +1,32 @@
+# Delivery Revision Record
+
+## Revision Index
+| Revision | Trigger | Prior result | Current result | Canonical artifacts |
+| --- | --- | --- | --- | --- |
+| DR-001 | API-REV-001 Pass; user-requested real Electron testing resumes API round 2 | N/A | Initial integration/checks/docs complete; desktop-validation and user-verification hold | docs-sync-report.md, handoff-summary.md, release-deployment-report.md, delivery-01/ |
+| DR-002 | Scoped API-REV-003 and explicit human acceptance / No release | DR-001 hold | Repository finalization Completed; safe teardown pending | Canonical Delivery reports, delivery-02/, api-human-01/ |
+
+## DR-001 — Integrated docs baseline, independent desktop hold
+- Date/round: 2026-10-13; initial Delivery round. Prior authoritative delivery result: N/A, not inferred from a missing record.
+- Basis: approved R1 / SR-001–002 / IR-001 / API-REV-001 Pass 95.71%; Small / Low / direct route; architecture/source/test-code review N/A — not applicable (test review Not Required).
+- Integration first: clean candidate a0cd28e4c0; `git fetch origin personal`, merge latest f13bdd0eb7 → 59a5bd76de; 11 new commits, no conflict/checkpoint needed. 40/40 relevant Nuxt tests rerun Pass, licensing/tracked artifact hygiene Pass. Production detail blob unchanged 82982846da660d3bb9c8b9349589e14cc8b5de17.
+- Docs sync: docs-sync-report.md Pass/Updated; Team frontend canonical doc adds detail layout/preservation; no global test or release rules changed.
+- Authoritative summary/report: handoff-summary.md and release-deployment-report.md; exact commands/pins/limits and cumulative original supplements preserved.
+- Changed continuation: API/E2E relayed explicit user request “please start the electron app, and test like a user” and resumes independent API-REV-002. Delivery's `isolated-app start --build` Completed; successful receipt identifies `iso-52535-8486`, PID 77879, controlPort 52535/serverPort 52536 and disposable private dataRoot. App.asar hash/isolation marker/pins captured in delivery-01/build-provenance.json. Exclusive desktop-journey/data/cleanup ownership assigned to API/E2E; no concurrent build/Delivery probe. Ticket script is unexecuted preparation only; no demo data exists yet.
+- User verification/finalization: not received; request to test is not acceptance. User-agreed release decision pending. No push/target merge/archive/tag/publication. Generated build outputs not staged.
+- Terminal return: Not yet eligible; no Delivery Completed message sent.
+- Why recorded: first completed integrated/docs delivery-stage result and explicit transfer of the next validation gate, while truthfully preserving incomplete human/finalization/release/cleanup gates.
+- Next action: return coordination/result to requesting /software_engineering_team/api_e2e_engineer (no handoff rule matches normal validation hold); resume only on later incoming independent result or explicit recovery request. Source-current isolated instance is already ready and explicitly transferred; no unowned-resource use.
+- Residual risk: API first-round browser/transport doubles cannot certify Electron/full backend/human acceptance. Source-current desktop build/readiness Completed, but UI journeys not yet executed or counted as successful proof. Rollback remains per RELEASE.md; no persisted-data action.
+
+## DR-002 — Scoped recovery integrated; human-verified No-release finalization
+- Date2026-10-13. TriggerAPI-REV-003 R1-only Pass95.71%, IR-004 source separation/SR-004 unchanged requirements; later direct user acceptance/no-release request and API resource-cleanup supplement.
+- Prior resultDR-001: initial integrated/docs complete, expanded desktop/user gates held. HistoricalAPI-REV-002 Fail91.43% and CRR-001 attribution remain, CRR-002 supersedes in-ticket repair routing; unresolved defects retained for separateTODO/not-dispatched Tasks.
+- Current stage: latest integrated scope-only checks/docs and explicit human verification complete; repository finalization/cleanup in progress, NOT Delivery Completed yet. Canonical docs-sync-report.md/handoff-summary.md/release-deployment-report.md updated against current state, prior entry retained.
+- Checkpoint26607d4136 protected Delivery docs/evidence; latestbase dec0f562ce6f26a09d1e6f59d59e838142cb4865 merged14 commits without conflict as52143e493c2663fcd7250b485ca5ca9cbd885fb2 before current edits. RelevantNuxt5 suites/40 tests Pass, licensing Pass; staged hygiene/portability pending final commit. Post-acceptance remote target same/already integrated; runtime unchanged so renewed verification not needed.
+- Runtime/source identity: sameDR-001 built59a5bd76de/app.asar hash; no new build/cache tests. Owniso-56609-2c4d reopened from worktree for user inspection. Detached canonical agentspackage593 files publicly imported, actual SoftwareEngineeringTeam6/correct order displayed; screenshot inspected. Directuser “i have verified. now finaliize, no need to release a new version.” Acceptance/no-release authority delivery-02/user-verification.json. API relay shutdownquote retained separately.
+- Source/private package/user app untouched; own app/root/record/group/snapshot stopped/removed byAPI per user request,56609/56610 free; api-human-01 exact receipts. PriorDR-001 live-instance description is historical, no longer current.
+- Retainedd8ref/patch/full-spec/manager six attachment acknowledgment preserved, no deletion/acceptance/follow-up dispatch. Terminal not yet eligible; next archive/commit/ticketpush/freshfinalizebranch/--no-ff targetmerge/push and safe source-worktree/local-branch cleanup. UserNo release makes all release/publication/rollout/version/notes work Not required.
+
+### DR-002 Completed Repository Result
+User-verified ticket archived/committed a14f684257 and pushed. Fresh origin/personaldec0 target → finalize branch --no-ff merge9fca5834266686a35f296cffb6b36c3ea9f06938, exact pre-push target check and personal push Completed, remote refs confirmed. Relevant integrated40-test check and merged licensing/hygiene Pass. Local ticket branch cleanup Completed after remote ancestry; remote codex retained. No release explicitly agreed/Not required. Source unchanged by finalization; no repeated human verification needed. Remaining only durable artifact export/source-worktree/local finalize branch teardown; next DR-003 will record its actual outcome at /Users/normy/autobyteus_org/autobyteus-delivery-records/agent-team-members-after-description-20261013. Not yet eligible terminal.

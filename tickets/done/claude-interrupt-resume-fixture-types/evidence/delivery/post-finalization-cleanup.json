@@ -1,0 +1,18 @@
+{
+  "recordedUtc": "2026-10-13T05:17:27.019736+00:00",
+  "package": "claude-interrupt-resume-fixture-types",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types",
+  "worktreeRemoval": "Completed",
+  "worktreeRegistrationAbsent": true,
+  "prune": "Completed",
+  "localTicketBranchCleanup": "Completed",
+  "localFinalizeBranchCleanup": "Completed",
+  "branchDeletionSafety": "Both tips proven ancestors of confirmed pushed origin/personal before deletion",
+  "remoteBranchCleanup": "Not required \u2014 pushed ticket checkpoint retained under guide",
+  "privateDeliveryEditProtectionBackupCleanup": "Completed after committed archive/source preservation",
+  "runtimeCleanup": "Every current Delivery command receipt has no unhandled/owned group/cwd remnants and private root removed; exact target resource assertions remain primary proof",
+  "artifactSnapshotPreserved": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types",
+  "sharedCheckoutFilesOrIndexChangedByDelivery": false,
+  "userAppOrDataChangedByDelivery": false,
+  "release": "Not required"
+}

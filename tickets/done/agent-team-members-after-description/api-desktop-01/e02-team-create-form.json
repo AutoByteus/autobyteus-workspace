@@ -1,0 +1,39 @@
+{
+  "startedAt": "2026-10-13T03:58:43.490Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [
+    {
+      "name": "GetDefinitionProblems",
+      "query": "definitionProblems(kind: $kind) {"
+    }
+  ],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=detail&id=api-delivery"
+    }
+  ],
+  "details": {
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nBack to Agents\nAD\nAPI Delivery\n\nDisposable desktop verification\n\nTOOLS\n\n0\n\nSKILLS\n\n0\n\nRun Agent\nEdit\nDelete\nDescription\n\nTest-owned member for isolated desktop Team inspection.\n\nCATEGORY\n\nAPI verification\n\nPREFERRED RUNTIME\n\nNot set\n\nPREFERRED MODEL\n\nNot set\n\nInstructions\nDefinition inspection only. Do not execute model turns.\nSkills\n\nNone configured.\n\nTools\n\nNone configured.",
+    "buttons": [
+      "Chat",
+      "",
+      "",
+      "Agents",
+      "Agent Teams",
+      "Agent Orgs",
+      "Projects",
+      "Skills",
+      "Memory",
+      "Nodes",
+      "",
+      "Temp Workspace",
+      "Settings",
+      " Reload",
+      "Create Team"
+    ]
+  },
+  "result": "Pass",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-list",
+  "finishedAt": "2026-10-13T03:58:43.600Z"
+}

@@ -1,0 +1,34 @@
+{
+  "recordedAt": "2026-10-13T03:30:02.052806+00:00",
+  "sourceCommit": "151c8131a8f4dbe70d4fd5ede3b6e502301adb04",
+  "sourceBlob": "82982846da660d3bb9c8b9349589e14cc8b5de17",
+  "lightweightSelfReview": {
+    "memberBlockByteIdentical": true,
+    "scriptIdenticalExceptUnusedRouterRemoval": true,
+    "sourceNonEmptyLines": 138,
+    "sourceDelta": "4 insertions / 6 deletions",
+    "unchanged": "header, bindings, keys, card markup, responsive classes, handlers, stores, routes, API and persistence",
+    "newWrappersOrCompatibilityPaths": false,
+    "designHealthAndSmallLowClassification": "Confirmed"
+  },
+  "cleanup": {
+    "ports": {
+      "renderer": {
+        "port": 53167,
+        "notListening": true
+      },
+      "backend": {
+        "port": 53166,
+        "notListening": true
+      }
+    },
+    "nuxtProcessGroupAbsent": true,
+    "temporaryPageAbsent": true,
+    "ownedBrowserClosed": true,
+    "previewHomeRemoved": true,
+    "ignoredPreparationOutputsRetained": "node_modules, .nuxt, .nuxtrc, generated web dist for downstream reuse; not staged",
+    "isolatedDesktopStarted": false,
+    "userAppDataTouched": false
+  },
+  "visualInspection": "Inspected desktop-1440.png and narrow-600.png via view_image: retained card visual language, spacing, header controls, contained two-/one-column roster, Members directly after Description. No in-scope visual defect."
+}

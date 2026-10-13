@@ -1,0 +1,75 @@
+{
+  "actualExit": 0,
+  "expectedExit": 0,
+  "seconds": 14.464,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 64362,
+      "ppid": 64355,
+      "pgid": 64362,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-server-ts typecheck"
+    },
+    {
+      "pid": 64407,
+      "ppid": 64362,
+      "pgid": 64362,
+      "command": "(node)"
+    },
+    {
+      "pid": 64436,
+      "ppid": 64407,
+      "pgid": 64362,
+      "command": "(node)"
+    },
+    {
+      "pid": 64471,
+      "ppid": 64436,
+      "pgid": 64362,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-application-sdk-contracts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 64501,
+      "ppid": 64436,
+      "pgid": 64362,
+      "command": "(bash)"
+    },
+    {
+      "pid": 64502,
+      "ppid": 64501,
+      "pgid": 64362,
+      "command": "node ./scripts/clean-dist.mjs"
+    },
+    {
+      "pid": 64509,
+      "ppid": 64501,
+      "pgid": 64362,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-ts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 65186,
+      "ppid": 64501,
+      "pgid": 64362,
+      "command": "(node)"
+    },
+    {
+      "pid": 65222,
+      "ppid": 64436,
+      "pgid": 64362,
+      "command": "(node)"
+    },
+    {
+      "pid": 65272,
+      "ppid": 64362,
+      "pgid": 64362,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json --noEmit"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delivery-fixture-types-tozk2th6",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

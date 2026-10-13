@@ -1,0 +1,67 @@
+{
+  "startedAt": "2026-10-13T04:03:21.782Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    }
+  ],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-list"
+    }
+  ],
+  "result": "Fail",
+  "failure": {
+    "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Add members', exact: true }) to be visible\u001b[22m\n",
+    "stack": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Add members', exact: true }) to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/[eval1]:4:65\n    at async run (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-desktop-01/desktop-session.mjs:37:24)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/[eval1]:2:1"
+  },
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-create",
+  "finishedAt": "2026-10-13T04:03:52.083Z"
+}
