@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal`
 - Bootstrap result: Worktree and branch created from refreshed `origin/personal`; ticket folder `tickets/in-progress/delegated-launch-config-defaults/`.
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-004`
+- Current solution revision ID: `SR-006` (reopened 2026-10-12)
 - Authorities read (requirements reading gate; file and date): `.claude/skills/solution-designer/references/requirements-engineering.md` (2026-10-12); repository `AGENTS.md` (2026-10-12). Architecture gate (2026-10-12): `references/architecture-design.md`, `references/design-principles.md`, `DESIGN.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md`, `TESTING.md`, `autobyteus-server-ts/AGENTS.md`.
 - Investigation status: Requirements and architecture investigation complete (2026-10-12).
 
@@ -190,3 +190,51 @@ N/A — not applicable.
 - Map SCN-001..SCN-006 onto: admission plan building (`CollaboratorEntryBuilder`), runnability (`CollaboratorRunnabilityValidator`), identity allocation, source projection, persisted records + DTOs, tool results, web launch drafts and Settings.
 - Keep inheritance from `rootLaunchConfiguration()` (DEC-003).
 - Verify UNK-001 and the persisted-data migration convention before choosing the transition.
+
+## Reopen Investigation — 2026-10-12 (SR-005)
+
+- Trigger: `/project_task_manager` reopened Task `project_task_e2060dfd-45b7-44a4-9b04-a86df802c23c` at the user's request: "the defaults don't appear to be respected".
+- User evidence (Task context files 37–39, read 2026-10-12):
+  - **Screenshot 37:** New chat, heading "Marketing Team ▾", draft titled "hell" with typed text "hell". Member settings shows all four members on the composer's GPT-6-Luna · Codex; the line under the composer reads "All 4 members use these settings".
+  - **Screenshots 38 and 39:** Marketing Content Creator (Team-local) shows preferred runtime `claude_agent_sdk` / model `sonnet`; Computer Use Operator shows `codex_app_server` / `gpt-6-astra`.
+- Fix worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied`, branch `codex/delegated-launch-config-defaults-r2`, from `origin/personal` @ `2756d7b29`. The ticket folder was moved back to `tickets/in-progress/`.
+
+| Lead / check | Command / source | Finding |
+| --- | --- | --- |
+| 1. Version of the node and the app | `docker ps`; `docker inspect autobyteus-server-2`; `docker exec autobyteus-server-2 find … collaborator-launch-resolver*`; `PlistBuddy /Applications/AutoByteus.app` | Port 8003 = `autobyteus-server-2`, image `autobyteus/autobyteus-server:beta` (`62ee64827c53`, built 2026-10-12 13:24 UTC during the v1.5.3-beta.1 release). The container includes `collaborator-launch-resolver.js`. The desktop app is `1.5.3-beta.1`. **Not the cause.** |
+| 2. "Preferred runtime/model" vs `defaultLaunchConfig` | `POST localhost:8003/graphql { agentDefinitions { id ownershipScope defaultLaunchConfig {…} } }` | They are the same setting. `team-local-agent:marketing-team:marketing-content-creator` → `claude_agent_sdk` / `sonnet` (+ `reasoning_effort: high, thinking_enabled: true`). `computer-use-operator` (shared) → `codex_app_server` / `gpt-6-astra` (+ `reasoning_effort: high, service_tier: fast`). The Marketing Team has no team default. **Not the cause.** |
+| Usability on that node | `runtimeAvailability` + `providerModelCatalogSnapshots` for both runtimes | Both enabled. Claude offers `sonnet` (alias rows are catalog identifiers); Codex offers `gpt-6-astra`. Both defaults are usable, so a seeding pass would have produced two pinned rows, not notes. |
+| 4. Team-local member IDs | `autobyteus-web/utils/teamLocalDefinitionId.ts`; `resolveLeafTeamMembers` | The web builds `team-local-agent:<teamId>:<ref>`, which matches the node's ID. **Not the cause.** |
+| 3. Is the composer model an explicit choice that overrides members? | DEC-009 | No. By design the top selection applies only to members without their own default. |
+| **Root cause: switcher starts never seed members** | `autobyteus-web/stores/chatDraftStore.ts` `retarget` (`:421-445`); `composables/runSettings/useRunStart.ts` `switchTarget` (`:103-121`) | The New-chat heading switcher calls `chatDraftStore.retarget(target)`. It keeps the typed text and the composer settings, resets `teamAgentOverrides`, `pinnedMemberAddresses` and `memberLaunchNotes`, and **never calls `seedTeamMembers`**. The draft "hell" (typed text kept across an Agent → Team switch, per DEC-006 of the earlier New-chat ticket) matches this path exactly. |
+| Same gap, other switcher paths | `chatDraftStore.startForDefinition` (`:225-238`); `agentOrgLaunchDraftStore.start` / `prepare` (`:101-175`) | (a) `startForDefinition` with `carried` (Org page switcher → Team) returns after `applyCarriedModel` + `loadCarriedStart`, with no seeding. (b) An Org start with carried settings (New-chat switcher → Org) takes `if (copied \|\| modelCarried) loadCarriedRuntimes` and skips `seedMembers`. |
+| Correctly unchanged | `useRunStart.copyTeamRun`, `copyOrgRun` | "+" copies of an existing run keep that run's recorded member settings (the earlier ticket's REQ-013). |
+
+**Classification:** bug, `Design Impact` originating in SR-003/SR-004 DS-006. The design limited seeding to "fresh starts" and grouped the switcher's carried settings with "+" copies. Carried settings only describe the root (composer); the new target's members carry nothing, so REQ-009 / AC-011 ("starts a team from New chat") requires seeding them. The approved requirements are unchanged.
+
+### Reproduction against the user's node (2026-10-12)
+
+- Method: a throwaway detached worktree at `2756d7b29` (removed afterwards). `pnpm install`, `nuxt prepare` and an application-sdk-contracts build, then Nuxt dev on `127.0.0.1:3917` with `BACKEND_NODE_BASE_URL=http://localhost:8003` (read-only: no run was started). Driven by headless Chrome (playwright-core) with the script `reopen-evidence/run-team-drawer.mjs`.
+- **Agent Teams → Marketing Team → Run:**
+  - Composer line: "2 of 4 customized".
+  - marketing_content_creator: Customized · claude-sonnet-5-5 · Claude SDK.
+  - computer_use_operator: Customized · GPT-6-Astra (default reasoning: medium) · Codex · Fast.
+  - The other two follow the root.
+  - Evidence: `reopen-evidence/fresh-run-seeded-drawer.png`.
+- **Plain New chat → type "hell" → heading switcher → Marketing Team:** "All 4 members use these settings", no seeding (`reopen-evidence/heading-switch-not-seeded-drawer.png`). This reproduces screenshots 37 and 41.
+- Conclusion: the fresh path works on the user's real data; the switcher path is the defect (SR-005).
+
+## Reopen Item 2 — Settings list of collaborators/copies is flat and always expanded (SR-006)
+
+- Trigger: user request relayed by `/project_task_manager` (2026-10-12), screenshots 40–42. Screenshot 40 is a running PM run: several SE team copies, each listing six members flat. Screenshot 42 is a stopped run: the same list, all expanded. The user wants one collapsed row per collaborator/copy with click-to-expand, like Member settings, in both running and stopped runs.
+- Current code: `autobyteus-web/components/run-settings/RunDelegatedLaunchList.vue` (`035b208d5`, 2026-10-12) renders `delegatedLaunchRows` as one flat `<ul>`: every team row followed by its member rows, no expand state.
+- History (the "it used to be collapsed" memory):
+  - `d45fe62bc` (2026-10-05, "unify run settings across New chat, Org launch and saved runs") introduced `RunMembersSection` + `RunMemberRow`. Configured members of a saved run render as collapsed rows: an empty `expandedKeys` set, a chevron, and placed teams that expand to child rows. They are read-only in saved runs via `read-only`.
+  - The pre-run Member settings drawer uses the same rows.
+  - So the collapsed behavior the user remembers is the **Members** section. The new collaborators/copies section never had it; it was added flat on 2026-10-12.
+- `RunMemberRow` already supports what is needed:
+  - `kind: 'team'` with `children`;
+  - a `launchNote` warning line;
+  - `read-only`;
+  - a nested read-only `RunSettingsCard` for model, thinking, fast mode and approval.
+- Delegated DTO launch values include `llmConfig` and `autoExecuteTools`, so the read-only card has its data.

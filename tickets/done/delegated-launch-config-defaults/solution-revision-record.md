@@ -7,6 +7,8 @@
 | SR-001 | Requirements | Initial coherent baseline from the PM-delegated Task (2026-10-12) | N/A | N/A | Ready for Approval | BEH-001..009; REQ-001..011; AC-001..015 | Presented to the user for approval and the DEC-001 decision |
 | SR-002 | Requirements | User clarification and approval (2026-10-12) | N/A | Ready for Approval | Approved | DEC-001, DEC-009 (new); REQ-010 | Approved; architecture design started |
 | SR-003 | Design | Architecture investigation and design (2026-10-12) | N/A | Requirements Approved; design N/A | Requirements Approved; design Ready | All REQ/AC (design mapping) | Architecture Design Complete; Large / High |
+| SR-006 | Mixed (Requirements refinement + Design) | User request via `/project_task_manager` (2026-10-12), screenshots 40–42: the Settings collaborators/copies list should be collapsible | REOPEN-002 | Delivered flat list (SR-004) | REQ-007/AC-010 refined; design Ready | REQ-007; AC-010; BEH-008 | Collapsible read-only rows reusing RunMemberRow; combined round Medium / Low |
+| SR-005 | Mixed (Evidence + Design) | Reopened by `/project_task_manager` at the user's request (2026-10-12): defaults not shown in the Marketing Team member settings | REOPEN-001 | Delivered (v1.5.3-beta.1) | Design Ready (corrected) | REQ-009, REQ-010; AC-011, AC-012, AC-013 | Bug confirmed (switcher starts don't seed members); web fix; Small / Low |
 | SR-004 | Design | Architecture review ARCH-REV-001 Fail — Design Impact (2026-10-12) | AR-001, AR-002, AR-003 | Design Ready (SR-003), review Fail | Design Ready (revised) | REQ-003, REQ-005, REQ-007, REQ-008, REQ-010; AC-001, AC-005, AC-007, AC-013, AC-015 | Design revised; resubmitted for review; Large / High |
 
 ## Revision Entries
@@ -109,3 +111,45 @@
 ## Review Notifications
 
 - 2026-10-12: Architecture review `ARCH-REV-002` **Pass** on `SR-004`. AR-001..AR-003 resolved. Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/in-progress/delegated-launch-config-defaults/design-review-report.md`. The reviewer delivered the implementation handoff to `/software_engineering_team/implementation_engineer`. Optional non-blocking editorial tidy-ups (design-spec Dependency Rules, Subsystem Allocation and Interface Boundary Check don't yet mention the contract-package functions) were noted and not applied; the authoritative mappings elsewhere in the spec already include them. Informational; no Solution Designer handoff.
+
+### SR-005 — Reopened: switcher starts must seed member defaults
+
+- Phase and classification: Mixed (Evidence + Design), `Design Impact` (defect originating in the SR-003/SR-004 DS-006 rule)
+- Triggering: `/project_task_manager` reopened Task `project_task_e2060dfd-45b7-44a4-9b04-a86df802c23c` at the user's request (2026-10-12). Screenshots 37–39 in the Task context.
+- Triggering finding IDs: REOPEN-001 (Member settings shows all Marketing Team members on the composer's model)
+- Prior authoritative requirements/design status: Requirements `Approved` (SR-002); design `Ready` (SR-004); delivered and released in `v1.5.3-beta.1`
+- Current authoritative requirements/design status: Requirements `Approved` (unchanged); design `Ready` (DS-006 corrected)
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: REQ-009, REQ-010, AC-011..AC-013, SCN-005 (no wording change)
+- Scenario-basis or scenario-validity changes: SCN-005's "New chat" entry includes the heading switcher (`Supported Normal Scenario`; the user's journey in screenshot 37)
+- Why this revision was recorded: the bug is confirmed by code trace, and leads 1, 2 and 4 are ruled out with node/app evidence
+- Canonical sections changed: investigation-notes → Reopen Investigation; design-spec → Revision Notes (SR-005); requirements Document Status (revision ID only)
+- Supplemental artifacts added, changed or removed: none (user screenshots stay in the Task context)
+- Intended behavior changed: No
+- Approval impact: none; the SR-002 approval stands. The user asked for a fix within this Task if it is a bug.
+- Affected design/review basis invalidated or rebuilt: the DS-006 rows for switcher starts; ARCH-REV-002 Pass covered the earlier rule. This round is classified Small/Low, so it takes the direct route.
+- Post-design task-size/risk classification: this revision `task_size=Small`, `architectural_risk=Low`
+- Applied handoff-rule outcome / result-file reference: `handoff-sr-005-switcher-seeding.md`
+- Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied`, branch `codex/delegated-launch-config-defaults-r2`, base `origin/personal` @ `2756d7b29`; finalization target `origin/personal`
+- Remaining gaps: the user's own AC-015 run on a fixed build; earlier follow-up candidates unchanged
+- Next action: implementation (direct route)
+
+### SR-006 — Reopened: collaborators and copies in Settings collapse like Member settings
+
+- Phase and classification: Mixed (`Requirement Gap` resolved by an explicit user request + design)
+- Triggering: user request relayed by `/project_task_manager` (2026-10-12) for the reopened Task `project_task_e2060dfd-45b7-44a4-9b04-a86df802c23c`, screenshots 40–42
+- Triggering finding IDs: REOPEN-002
+- Prior authoritative requirements/design status: Requirements `Approved` (SR-002); design `Ready` (SR-005)
+- Current authoritative requirements/design status: Requirements `Approved` with the REQ-007/AC-010 refinement (the user's own request is the approval basis); design `Ready` (DS-007 revised)
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: REQ-007, AC-010, BEH-008, SCN-007
+- Scenario-basis or scenario-validity changes: none
+- Why this revision was recorded: the user explicitly asked for collapsed-by-default rows with click-to-expand, consistent in running and stopped runs
+- Canonical sections changed: requirements (Document Status, REQ-007, AC-010); investigation-notes (Reopen item 2 + reproduction); design-spec (Revision Notes SR-006)
+- Supplemental artifacts added: `reopen-evidence/` (reproduction screenshots and script)
+- Intended behavior changed: Yes (presentation of REQ-007), requested by the user
+- Approval impact: the user's request is the approval reference. Details the user did not specify (note count on a collapsed team; team note shown once) are decided by the Solution Designer within that request.
+- Affected design/review basis: DS-007; `RunDelegatedLaunchList.vue` is removed
+- Post-design classification: combined SR-005 + SR-006 round `task_size=Medium`, `architectural_risk=Low`
+- Applied handoff-rule outcome / result-file reference: `handoff-sr-005-switcher-seeding.md` (updated for SR-006)
+- Next action: implementation (direct route), the same round as SR-005, released together
+
+- SR-006 addendum (2026-10-12): the user confirmed in the Solution Designer conversation that the copies should look like the team's own Members list (screenshot of a Team Configuration). Added: the Coordinator chip on a copy's coordinator and the same summary format. No other change.

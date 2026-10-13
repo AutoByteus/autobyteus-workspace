@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-004` (revised for architecture review `ARCH-REV-001` findings AR-001..AR-003; see Revision Notes at the end)
+- Current solution revision ID: `SR-006` (reopened: SR-005 switcher seeding fix; SR-006 collapsible collaborators/copies in Settings; see the Revision Notes at the end). SR-004 was revised for architecture review `ARCH-REV-001`
 - Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at `SR-002`, approved by the user on 2026-10-12 in the Solution Designer conversation ("I trust your reasoning…"). The user re-confirmed DEC-009 after a worked example: "Thanks, you made a very, very good judgment. Thanks a lot. Please continue."
 - Behavior-defining supplements and their approval references: None
 - Design status: `Ready`
@@ -510,3 +510,82 @@ N/A. The spine and ownership map suffice.
 | Non-blocking: requirements housekeeping | Requirements Document Status revision ID and the AC-002 wording corrected (editorial; no behavior change) | requirements-doc.md |
 
 The classification is unchanged: `Large` / `High`.
+
+## Revision Notes (SR-005, reopened: switcher starts must seed members)
+
+**Defect.** DS-006 said "Copied ("+") or carried starts keep their settings and have no pins". The implementation followed it:
+- `chatDraftStore.retarget` (New-chat heading switcher) and `startForDefinition` with `carried` never seed;
+- `agentOrgLaunchDraftStore.prepare` skips `seedMembers` when the model was carried.
+
+Carried settings describe only the root (workspace, approval, composer runtime/model/config); member overrides are reset by the switcher (REQ-019 of the earlier New-chat ticket). The new target's members therefore receive neither their own defaults nor any carried value. That contradicts REQ-009 / AC-011 and DEC-009 (the top selection applies only to members without their own default). Evidence: investigation-notes → Reopen Investigation.
+
+**Corrected rule (DS-006).** Member seeding runs on every start that does not copy an existing run's member settings:
+
+| Start | Root | Members |
+| --- | --- | --- |
+| Run on a definition (fresh) | Definition default → last chat model → default runtime (unchanged) | Seeded + pinned (unchanged) |
+| Heading switcher in New chat → Team (`retarget`) | Kept (carried, unchanged) | **Seeded + pinned for the new team** (after the existing reset) |
+| Org page switcher → Team (`startForDefinition` with `carried`) | Carried (unchanged) | **Seeded + pinned** |
+| New-chat switcher → Org (`agentOrgLaunchDraftStore.start` with `carried`) | Carried (unchanged) | **Placed teams and agents seeded + pinned** |
+| "+" on a Team run (`copied`, `teamAgentOverrides` from the run) | Copied | Copied as recorded; **no seeding** (unchanged) |
+| "+" on an Org run (`sourceOrgRunId`) | Copied | Copied; **no seeding** (unchanged) |
+
+**Changes (web only):**
+- `autobyteus-web/stores/chatDraftStore.ts`:
+  - `retarget`: after resetting overrides/pins/notes for a Team target, start the existing `seedTeamMembers(current)`. It already guards against a later retarget or discard via the team-ID and `drafts.includes` checks, and keeps edits made meanwhile.
+  - `startForDefinition`: when `options.carried` applies (and `options.copied` does not), also run `seedTeamMembers(next)` alongside `loadCarriedStart`.
+  - The team's member definitions must be loaded first: `seedTeamMembers` needs `agentTeamDefinitions` and `agentDefinitions`. Await `ensureTargetDefinitions(target)` before seeding (it is already loaded on these paths, but make it explicit).
+- `autobyteus-web/stores/agentOrgLaunchDraftStore.ts` `prepare`: when `modelCarried && !copied`, run `seedMembers(target, selected, references)` together with `loadCarriedRuntimes(target)`. `copied` (an Org run "+") stays unseeded.
+- No server, contract or persistence change. The existing pin semantics (`memberOverrides.ts` `pinnedModel`, release on model/row/all reset) apply unchanged.
+
+**Tests (extend the existing specs):**
+- `stores/__tests__/chatDraftStore.spec.ts`:
+  - (1) Retarget from an Agent draft with typed text to a Team whose members have usable defaults → those members are seeded and pinned, the root and the text are kept, and the row reads as customized.
+  - (2) Retarget Team A → Team B → B's seeds only, none of A's.
+  - (3) Retarget to a team, then quickly to an agent → no late seeds applied.
+  - (4) Carried `startForDefinition` for a Team → seeded.
+  - (5) Copied `startForDefinition` with `teamAgentOverrides` → unchanged, no seeding.
+- `stores/__tests__/agentOrgLaunchDraftStore.spec.ts`: a carried start seeds placed teams and agents; an Org "+" copy does not.
+- Browser probe (`test:e2e` DLP suite): add a case. Plain New chat → type text → heading switcher → a team with member defaults → Member settings shows the seeded rows. This is the user's exact journey (screenshot 37).
+
+**Classification of this revision:** `task_size=Small` (two web stores and their tests plus one probe case, within existing ownership), `architectural_risk=Low` (no contract, persistence, security, concurrency or ownership change; it reuses the existing seeding function and pin rules). Escalation trigger: any need to change seeding policy, pin semantics or server behavior → return to Solution Designer.
+
+## Revision Notes (SR-006, reopened: collaborators and copies in Settings use the collapsible member rows)
+
+**Problem.** DS-007 rendered collaborators and copies with a separate component, `RunDelegatedLaunchList.vue`: a flat, always-expanded list. The same Settings page shows the run's configured members with the collapsible `RunMemberRow` (since `d45fe62bc`), and the pre-run Member settings drawer uses the same rows. That makes the section long (six rows per SE team copy, several copies) and inconsistent. REQ-007/AC-010 are refined by the user's request (requirements SR-006).
+
+**Target (DS-007 revised).** Render the section with the existing `RunMembersSection` / `RunMemberRow` in `read-only` mode, as a second section under "Members", titled "Collaborators and delegated copies" with its existing description.
+- **One node per collaborator/copy, collapsed by default.** Expansion is local to the section (its own `expandedKeys`, empty on open) and identical for running and stopped runs. Nothing auto-expands.
+- **Team copy/collaborator** = a `kind: 'team'` node.
+  - Collapsed summary: its team-level runtime/model plus source label.
+  - Badge: "Delegated copy" / "Collaborator", in the chip slot the Coordinator chip uses.
+  - When any member has a fallback note, the collapsed summary shows a warning count ("N notes"), so a fallback stays visible without expanding.
+  - Expanding shows its team-level note (if any) and its agents as child rows.
+  - Each child row is itself collapsed, with summary `model · runtime · source`, and expands to the read-only settings card.
+- **Agent copy/collaborator** = a `kind: 'agent'` node.
+  - Summary: `model · runtime · source`; its notes are on the `launchNote` line.
+  - Expanding shows the read-only settings card (model, thinking, fast mode, approval).
+- Notes:
+  - A team-level fallback note is shown once, on the team node, and is no longer repeated on each member (this resolves follow-up O-2 here).
+  - A member's own notes stay on that member.
+- Names: as in Members (`role || last address segment`). Follow-up O-3 is unchanged.
+- **Same look as the team's own Members list (user confirmation, 2026-10-12).** The user compared the design to a stopped Team run's Team Configuration (Members: initials avatar, name, Coordinator chip, `model · runtime · approval`, chevron) and asked that copies look the same. Requirements:
+  - A copy's member nodes carry `isCoordinator` from the copy's/collaborator's `coordinatorAddress`, so the copy's coordinator shows the Coordinator chip.
+  - Member summaries use the same `model · runtime · approval` summary as configured members, followed by the source label.
+  - An expanded team copy shows its read-only team settings card, then the "Members" sub-list (the existing `RunMemberRow` team layout).
+
+**Changes (web only):**
+- `autobyteus-web/utils/runSettings/delegatedLaunchRows.ts`: project into `RunMemberNode[]` (read-only), or a new adjacent projector `delegatedLaunchNodes` reusing `memberNode`/`values` from `runMemberTree.ts`. Carry `badge`, `sourceLabelKey` and notes. Keep the contract-package effective-member functions as the only member-launch rule.
+- `autobyteus-web/utils/runSettings/runMemberTree.ts`: `RunMemberNode` gains optional `badge` (`'delegated_copy' | 'collaborator'`), optional `sourceKey` (`DelegatedLaunchSource`) and `launchNotes` (string list; keep the single-note `launchNote` behavior for launch rows by mapping it to a one-item list, without duplicating fields).
+- `autobyteus-web/components/run-settings/RunMemberRow.vue`: render the badge, the source label after the summary, a child-note count on collapsed team rows, and multiple notes. Read-only rows have no reset button (unchanged).
+- `autobyteus-web/components/run-settings/ExistingRunSettings.vue`: replace `<RunDelegatedLaunchList>` with a second read-only `<RunMembersSection>`.
+- `autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue`: pass the nodes.
+- **Remove** `autobyteus-web/components/run-settings/RunDelegatedLaunchList.vue` and its tests. Update its probe assertions (DLP-003/004/006/007) to expand before reading member rows.
+- Localization: the badge labels and source labels already exist (`runSettings.delegated.*`); add one key for the note count.
+- No server, contract or persistence change.
+
+**Tests:**
+- Component tests: the collapsed by default and a chevron toggle; a team expanding to members and a member expanding to its settings card; the same rendering for an active and a stopped run; the note count on a collapsed team; a team note shown once.
+- Browser probe: update the DLP cases that read Settings rows, plus one case asserting a collapsed-by-default list with a stopped and a running run.
+
+**Classification (SR-005 + SR-006 together):** `task_size=Medium` (two launch stores, settings projection and row component, one removed component, tests and probe updates; within existing web ownership), `architectural_risk=Low` (presentation and draft logic only; no contract, persistence or server change). Direct route.
