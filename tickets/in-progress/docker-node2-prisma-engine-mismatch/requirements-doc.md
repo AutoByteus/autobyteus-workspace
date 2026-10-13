@@ -1,94 +1,76 @@
-# Requirements — Node2 Prisma Engine Startup Recovery
+# Requirements R3 — Completed Node2 Operational Recovery
 
-## Document Status
-- Status: Approved; baseline R2; current revision SR-002 (user-prioritized operational slice O1).
-- Package: docker-node2-prisma-engine-mismatch; Task project_task_3466c3eb-4f04-4ca8-b487-dbcf4c90da14.
-- Requested by: /project_task_manager; AgentRun project_task_manager_a5f6d9d306e54970bafdad895bdf731d.
-- Requirements owner/date: Solution Designer / 2026-10-13.
-- Approved by: Solution Designer within supplied user direction, user informed in current conversation: “I’m keeping the correction narrow: make startup use engines matching its installed Prisma CLI, then recover only node2 with a backup first. No cache/data deletion, changes to 8001, or image release.”
-- Direction: user “yes please ... what is the reason”; subsequent “could you have a look at the 8001 docker envionement ... working fine”; direct “Can you directly fix the engine on Node 2? ... Is it possible?” permits node2-specific repair, not blame or wider rollout.
-- Exact approval: R2 / SR-002, all requirements/ACs below with current-slice sequencing; no normative external supplement. Evidence supplements factual, not alternative requirements.
-- Authorities read: solution-designer skill, requirements-engineering.md and requirements/investigation/revision templates; base AGENTS.md, DESIGN.md, TESTING.md, server AGENTS.md.
+## Document Status / Approval
+- Status Approved; exact baseline R3 / SR-003; package docker-node2-prisma-engine-mismatch.
+- Current Task project_task_3466c3eb-4f04-4ca8-b487-dbcf4c90da14; Requested by /project_task_manager, AgentRun project_task_manager_a5f6d9d306e54970bafdad895bdf731d.
+- Owner/date Solution Designer /2026-10-13. Approved by USER: exact message in delivery-evidence/dr-002/user-acceptance-scope-change.json, explicitly accepts working node2/current ticket done and requests deeper work in a SEPARATE follow-up if source cause is found. Solution Designer integrates that approval and informs user in current conversation: “Node2 is now running successfully on8003 ... keep this ticket limited to completed recovery ... separate follow-up”.
+- This supersedes prior R2 SAME-Task O2 continuation. Prior R1/R2 intent/history retained in solution-revision-record.md and committed historical versions; no fabricated prior pass or waived source fix.
+- Follow-up registered TODO project_task_6b8c9612-c94b-4d62-8053-00ef94bd94df; manager owns dispatch. Deeper obligation MOVED, not completed/canceled/waived. Registration is not delegation/implementation start.
+- Current technical approval/review applicability: executed O1 mechanism unchanged from reviewed R2/D1-O1 / ARCH-REV-001. Administrative scope partition only; D1.1 updates finalization/Task boundary, not live/source behavior. No review/repair/API replay required solely for this split.
+- Authorities read: solution-designer skill/requirements-engineering/templates, current AGENTS/DESIGN/TESTING/serverAGENTS and startup/migration policies. Integrated policies diff against bootstrap empty, checked2026-10-13.
+- Approval supplement: exact user acceptance/scope message above; factual evidence inventory remains investigation-owned.
 
 ## Problem And Desired Outcome
-Node2 retains original storage but Prisma migration startup selects an incompatible root-home engine despite matching bundled engines. Restore actual backend readiness safely, explain cause/provenance against confirmed healthy8001, and correct automatic engine discovery for supported package layouts without upgrading dependencies or changing migration semantics.
-Actors: node2 user; server startup; engineering/delivery operators; manager reconciling operation project_task_177e099f-3d40-4f21-a905-68e61e07c0ad.
-Success: compatible engine selection, regression proof, node2 HTTP readiness with verified original mounts/settings/data continuity, working node left running; source correction delivered through repository workflow. Readiness is not a declaration that every historical run or unrelated service is healthy.
+Original node2 backend startup selected an incompatible persisted cached Prisma engine despite matching installed binaries. CURRENT ticket outcome is safely restored usable node2 with original storage/settings and honest cause/control evidence. No application source change is required to close this recovery ticket after final repository/documentation/cleanup gates.
+Already achieved by Delivery DR-001/002: matching explicit pair, normal migration/startup, repeated8003 HTTP200/statusok, original mounts/settings/key and other workloads preserved, node left running, user acceptance. Repository finalization remains pending; no Terminal/Task DONE until finalized receipt verified.
+Further automatic-discovery/source/provenance investigation and conditional durable correction belong ONLY to separate follow-up above. Current pin survives restart of same container, NOT recreation from unfixed image; this limitation stays explicit.
 
-## Relevant Current And Desired Behavior
-| ID | Kind / scenarios | Current (evidence) | Desired | Preserved |
-| --- | --- | --- | --- | --- |
-| BEH-001 | System / SCN-001,002 | Package-local search misses pnpm root virtual store; cache platform/mtime ignores revision (E-005..008). | Automatically select engines belonging to installed CLI, never force unrelated cache revision. | Platform preferences, complete explicit override pair, operational DATABASE_URL, migration deploy/baseline/error propagation. |
-| BEH-002 | Operational / SCN-003 | Node2 FATAL,8003 resets; original mounts retained (E-001..003,006). | Recover only node2 with matching installed engines and safe backup before data-affecting action. | All original storage/settings;8001 and other workloads not modified. |
-| BEH-003 | Operational / SCN-004 | 8001 HTTP200; identical image/code, different retained engines; cache writer unknown (E-006..010). | Explain root/cache purpose, real differences, why startup exposes bug and limits of historical attribution. | No invented DB corruption, fetched-image change, malicious actor or historical cause. |
+## Behavior / Scenarios / Actors
+| ID | Kind/scenarios | Historical current failure → delivered desired outcome | Preserved boundary / evidence |
+| --- | --- | --- | --- |
+| BEH-001 | System/Contract SCN-001 | Automatic package-local search missed root pnpm engines and picked incompatible cache; O1 reuses existing complete explicit pair to select installed5.22/605. Automatic discovery itself is NOT fixed by this ticket. | Installed CLI/platform preference/canonical DB/deploy/P3005/true error propagation unchanged. E-005..013,014. |
+| BEH-002 | Operational SCN-003 | Before FATAL/reset; after protected pair pin normal startup and actual8003ready, original storage retained. | Backup before startup writes; no reset/deletion,8001/other workloads untouched, working user node retained. E-014. |
+| BEH-003 | Operational SCN-004 | HTTP-confirmed healthy8001 same image/code but cached605 vs node2c299; facts/limits explained. Deeper writer/source work moves to follow-up. | No guessed writer/tool/blame/different-image or DB-corruption claim. E-006..012,015. |
+Actors: user wants usable restored node; Delivery owns protected live correction/finalization; SD scope/receipt authority; manager owns Task status/follow-up dispatch/restoration-operation reconciliation. No UI/Product design (N/A).
 
 ## Scope Guardrail
-| Use case | Supported scope | Scenarios |
+| UC | Current authorized use case | Scenarios |
 | --- | --- | --- |
-| UC-001 | Start server with compatible Prisma CLI/engine resolution | SCN-001,002 |
-| UC-002 | Data-preserving repair/readiness of restored node2 | SCN-003 |
-| UC-003 | Read-only diagnosis/provenance and8001 comparison | SCN-004 |
-Out of scope: volume/cache/workspace reset/deletion/prune, schema reset, unsupported downgrade, migration bypass, broad upgrades/refactor, shared-network workspaces, legacy Dockerfiles, installer apostrophe bug, changes/restarts/recreation/upgrades to nodes0/1/build/user workloads, model inference, secret contents, image publication/release/wider rollout without separate decision.
-Non-goals: proving all old run history usable, reconstructing unrecorded actor history, certifying every platform or runtime provider.
-Preserved boundary: BEH-001..003; REQ-003..006; AC-003..006. Automatic discovery fix does not redefine custom-engine operator responsibility. No new failure gate auditing historical data.
-Review authority: findings protect approved REQ/AC/BEH; new policy/compatibility/operational scope is Requirement Gap requiring Solution Designer recovery and applicable approval. Out-of-scope findings become accountable follow-ups, not ticket growth.
+| UC-002 | Data-preserving node2 compatible-engine operational recovery and actual readiness | SCN-003 |
+| UC-003 | Existing read-only control diagnosis/cause report and honest remaining limits | SCN-004 |
+UC-001 startup is preserved contract in current ticket, NOT authorization to change automatic engine discovery. Moved follow-up UC-001 source correction + deeper UC-003 investigation.
+Out of scope CURRENT ticket: source/test/dependency/image/launcher/recipe refactor/fix, full cache provenance reconstruction, all-volume/cache/workspace deletion/reset/prune, schema reset/downgrade/error/ledger/migration bypass, other-node/build mutation/restart/upgrade, secret/history/environment dump/model work, release/tag/publication/wider rollout. Any such release/live decision remains separate.
+Non-goals: certifying every historical run/provider/platform/browser; reconstructing missing audit history; making temporary pin survive container recreation. Follow-up must address durable selection if source cause established.
+Preserved behavior: BEH-001..003 / REQ-003..006 and operational007 / AC-003..006; no user-data loss accepted. Ordinary already-shipped startup DB/log/migration writes need not be byte-identical; preservation proof scope truthful. No new historical audit/startup gate.
+Review authority: blocking finding traces approved REQ/AC/BEH; new product/migration/security/compatibility/wider operation is Requirement Gap through SD, not silent scope growth. Out-of-scope defects become accountable follow-ups.
 
-## Requirements
-| ID | Requirement | Behavior / priority / decision |
+## Requirements / Disposition
+Stable IDs retained; moved rows are NOT current-ticket completion criteria.
+| REQ | Current requirement/disposition | Behavior / rationale |
 | --- | --- | --- |
-| REQ-001 | Automatic startup discovery supports actual workspace/packaged layouts and prefers the installed CLI's engine pair. | BEH-001 / Must / DEC-001 |
-| REQ-002 | Cache fallback may select only the installed CLI's expected engine revision and compatible platform. If identity is unavailable or no matching pair exists, do not inject arbitrary cached overrides; retain normal Prisma resolution/error behavior. | BEH-001 / Must / DEC-001 |
-| REQ-003 | Preserve both explicit engine overrides, supported platform selection, canonical database target, migration deploy, existing P3005 baseline handling and genuine migration failure safety. | BEH-001 / Must / DEC-002 |
-| REQ-004 | Repair node2 only; back up affected data/settings before data-affecting remediation; retain all four named volumes and both host binds, data/settings/sign-ins and workspace continuity; no acceptable user-data loss. Leave ready node2 running. | BEH-002 / Must / user direction |
-| REQ-005 | Validation uses isolated test-owned resources; user node checks are approved read-only diagnosis or final operational verification, not test targets. No mutation/restart of8001 or other workloads, secret content output or model work. | BEH-002,003 / Must / TESTING/user constraints |
-| REQ-006 | Report evidenced cause/history/8001 comparison and cache provenance limits. Actual backend readiness must be verified, not inferred from container status; distinguish schema success from all historical-data usability. | BEH-002,003 / Must / user clarification |
-| REQ-007 | Deliver narrow tested source fix/regression coverage via engineering workflow. Node2-only compatible-engine repair need not wait for public image release; no publication/rollout is implied. If publication or broader live changes become necessary, obtain separate decision. | BEH-001,002 / Must / DEC-003 |
+| REQ-001 | MOVED to follow-up: determine/fix automatic discovery layout so engines belong to installed CLI. | BEH-001; automatic bug uncorrected here. |
+| REQ-002 | MOVED to follow-up: matching-revision/platform automatic cache fallback, no arbitrary cached overrides. | BEH-001; not proven/waived by explicit pair. |
+| REQ-003 | CURRENT preserved complete explicit override pair, runtime target, canonical DB, migrate deploy/P3005 and actual failure safety. No source change. | BEH-001; existing supported input. |
+| REQ-004 | CURRENT protected node2-only recovery: original four named volumes/two binds/settings/data/sign-ins/workspace retained; affected backup before normal startup; leave working node running. | BEH-002; user preservation direction. |
+| REQ-005 | CURRENT owned isolated validation; user node checks are diagnosis/authorized operational verification, not test targets. No other-node mutation, secrets/models. | BEH-002,003; TESTING/user constraints. |
+| REQ-006 | CURRENT report proven cause/8001 contrast and attribution limits, actual backend readiness not container status. DEEPER writer/source history moved to follow-up. | BEH-002,003; user accepted bounded recovery. |
+| REQ-007 | CURRENT finish operational-recovery evidence/archive/isolated personal finalization/cleanup, no release; source fix/regressions/current-build proof MOVED to follow-up. | BEH-001,002; latest user explicit scope partition. |
 
-## Acceptance Criteria
-| ID | REQ / scenarios | Observable outcome / alternate | Verification intent |
+## Acceptance Criteria / Traceability
+| AC | REQ/SCN | Current expected outcome / verification | Disposition |
 | --- | --- | --- | --- |
-| AC-001 | 001,002 /001,002 | Real pnpm workspace layout resolves CLI-matching bundled pair even with incompatible cached pair; discovery does not scan unrelated engine packages as authority. | Regression fixtures + installed-image isolated proof. |
-| AC-002 | 002 /002 | Expected-revision cache works when bundled pair absent; newer-mtime wrong revision/wrong arch/partial pair cannot win; unknown CLI identity leaves arbitrary cache unused. | Focused unit matrix; database-free RPC in isolated reproduction. |
-| AC-003 | 003 /001,002 | Complete explicit pair and DATABASE_URL respected; target preferences preserved; deploy/P3005/real-error propagation unchanged. | Existing and targeted startup tests/typecheck. |
-| AC-004 | 004,005 /003 | Safe affected-data/config backup receipt, original mounts/settings/workspaces retained, node2 migration/start/readiness HTTP200/status ok; other container IDs/images/start/mounts unchanged; restored node left running. | Delivery-only operational pre/post checks plus user verification; no claim of byte-identical DB if normal startup writes. |
-| AC-005 | 005,007 /001..003 | Current worktree build validated on owned container/free loopback port/private data; regression reproduction fails baseline and passes correction; only owned resources cleaned. No release/tag/wider node action without decision. | Implementation/source/API/delivery records. |
-| AC-006 | 006 /004 | Source history + HTTP-confirmed8001 engine/cache comparison + metadata/image-origin distinction recorded; exact writer unknown reported if unprovable. | Cause brief linked to factual evidence. |
+| AC-001 | 001,002 /001,002 | Root virtual-store compatible automatic discovery with wrong cache present. | MOVED; new-task regression/current-build proof, no current source pass. |
+| AC-002 | 002 /002 | Expected-revision cache only; platform/partial/unknown identity cases. | MOVED; source defect proof/correction in follow-up. |
+| AC-003 | 003 /001 | Complete matching explicit pair/canonicalDB normal migrate semantics preserved; no source delta. | CURRENT owned-image+Delivery effective-pair/native/startup proof. Changed-source unit/typecheck portion moved. |
+| AC-004 | 004,005 /003 | Private verified affected backup, original mounts/settings/key continuity, migration+HTTP200/statusok, other workloads unchanged, node left running and explicit user acceptance. | CURRENT deliveredDR-001/002 evidence; no all-history/DB-byte identity claim. |
+| AC-005 | 005,007 /001,003 | Same unmodified image/pair validated on owned free-loopback/private-home/data stack; owned cleanup, no release. | CURRENT config-only validation legitimate; changed-source/worktree/regression portions moved. |
+| AC-006 | 006 /004 | Current evidence-backed8001comparison/cause/cache-origin limitations retained; no invented historical writer. | CURRENT delivered brief/evidence; deeper work MOVED. |
+Current REQ003→UC002/preserved001/BEH001/AC003;004→UC002/BEH002/AC004;005→UC002,003/BEH002,003/AC004,005;006→UC003/BEH003/AC006;007→UC002/BEH002/AC005 and finalization. Moved001/002/source007→follow-up UC001/BEH001/AC001,002/source003,005. Supplement context follow-up-context.md and inventory in investigation notes.
 
-## Relevant Scenarios And Journeys
-| ID | Kind / actor / goal | Trigger / starting condition / steps | Outcome / supported alternate | Validity / independent basis |
-| --- | --- | --- | --- | --- |
-| SCN-001 | System / startup / open normal server | Supported Docker/packaged startup with installed Prisma; config initializes, schema deploy occurs, repository/services/transports start. | Compatible runtime; real schema/deployment failure retains existing fail behavior. | Supported Normal Scenario / supervisor/startup docs, runtime source, healthy8001. |
-| SCN-002 | Contract / read-only packaged startup / compatible engine availability | Existing read-only packaging may rely on revision-matched prepopulated cache if bundled native pair absent. | Matching cache used; absent matching pair leaves Prisma's normal failure/default resolution rather than wrong-engine override. | Supported Explicit Edge Scenario / released linux-appimage-prisma-erofs evidence, existing fallback contract. |
-| SCN-003 | Operational / user / restore node2 without loss | User approves targeted correction after normal installed-launcher recreation retaining storage; back up affected state, apply compatible-engine selection, resume startup, verify readiness/preservation. | Working original-storage node; later distinct data/startup failures reported without reset/bypass. | Supported Explicit Edge Scenario / current user authorization and observed FATAL. |
-| SCN-004 | Operational / user / understand why8001 works | Authorized read-only control comparison; inspect identity, HTTP readiness, resolver/package/cache metadata/log facts and history; explain. | Concrete cause plus attribution limits, no other-node mutation. | Supported Normal Scenario / direct request, E-006..010. |
-Manipulating DB/schema, deleting cache to make tests green, arbitrary malicious file corruption: Technically Possible but Unsupported/Contrived; not premises for new machinery.
+## Scenario Basis
+- SCN-001 Supported Normal Scenario: existing supervisor start→configuration→normal schema deployment→repository/vault/app-data→HTTP. CURRENT preserve/test supported explicit pair; automatic source change moved. Evidence actual8001and recoverednode2/startup source/policy.
+- SCN-002 Supported Explicit Edge Scenario: immutable packaged native-target/cache startup, released linux-appimage-prisma-erofs evidence. MOVED source correction; not a new operational promise for current ticket.
+- SCN-003 Supported Explicit Edge Scenario: user-authorized node2 recovery after retained-volume recreation→backup→compatible pair pin→normal start→actual readiness/preservation/user check. CURRENT observed and accepted; later distinct failure requires scoped recovery, no reset.
+- SCN-004 Supported Normal Scenario: user asks8001read-only contrast→identity/HTTP/cache/package/log source→factual cause/limits. CURRENT existing evidence; deeper history/source work MOVED.
+Synthetic arbitrary DB/cache corruption, unknown malicious writer or deleting cache to force green: Unsupported/Contrived, not current scope premise.
 
-## Quality / Data / Dependencies
-- Reliability (QR-001→REQ-001..003/AC-001..003): identity/platform-matched resolution; no arbitrary cache injection; preserve true migration errors.
-- Privacy/safety (QR-002→REQ-004..006/AC-004..006): zero data loss; no secret contents in evidence; no writes to control node.
-- Operability (QR-003→REQ-007/AC-005): node2-local reversible compatible-engine correction, explicit release boundary.
-Data continuity: existing user data directly retained; no new format transformation approved. Normal startup may execute already-shipped pending schema/app-data migrations; back up affected data first and report dispositions. No new migration or historical schema rewrite authorized. Untouched root-home credentials/browser/workspace must not be copied into Git evidence. Unknown integrity/later startup limits remain for Delivery verification; engine RPC proof is DB independent.
-External contracts: installed Prisma CLI expects its @prisma/engines-version revision; upstream cache/overrides and repository startup ordering. No dependencies/lockfile upgrade.
-UI/Product: N/A — no requested UI/UX change, no Product artifacts or behavior-defining visual supplements.
+## Quality / Data / External Contracts
+QR001→REQ003/AC003: existing migration/schema safety/platform/version-compatible explicit pair preserved. QR002→004..006/AC004..006: no data loss/reset/other-node change or secret exposure. QR003→007/AC005: truthful config-only/new-source distinction and pin lifetime/no-release boundary.
+No new stored format/schema transition. Already-shipped startup writes after secure private backup allowed, no whole-history/byte-identicalDB assurance. Actual data/db/root-key/memory and custom roots resolved by Delivery, private archive checked; protected configs/key continuity and retained mounts/control identities proven. Backup retention is intentional and not automatic restore/cleanup authorization.
+External contracts unchanged: installed Prisma5.22expects605, complete explicit engine override pair; repository startup ordering. Dependencies/lockfile untouched by repair. Prior upstream unrelated version/product merges NOT attributed to this fix.
 
-## Decisions / Assumptions
-| ID | Reasoning then decision | Owner / status |
-| --- | --- | --- |
-| DEC-001 | Same image works8001 with matching cache; node2 misses installed engines and selects wrong revision. Repair automatic identity-aware discovery, not dependency upgrades/cache deletion. | Solution Designer / Decided within direction |
-| DEC-002 | Existing custom overrides and migration failure safety are intentional operational contracts; preserve them, restrict only automatic discovery. No new cache corruption/security-verification framework. | Solution Designer / Decided |
-| DEC-003 | User explicitly asks direct node2 engine repair; matching binaries already installed. Prefer narrowly pinning existing compatible pair for node2 while durable source fix follows review. No image release is needed to make this repair; if that changes, stop for release decision. | Solution Designer / Decided |
-| ASM-001 | Correct-engine selection explains observed RPC failure, but later migration/startup readiness is not yet proven. | Verified mismatch only; Delivery owns full readiness, return findings if blocked. |
-No material Needs user decision for R1. No hypothesis that destroy altered image or data, or that a specific person/tool wrote the cache.
-
-## Traceability / Supplements / Architecture Input
-REQ-001,002→UC-001/BEH-001/AC-001,002/SCN-001,002; REQ-003→UC-001/BEH-001/AC-003/SCN-001,002; REQ-004→UC-002/BEH-002/AC-004/SCN-003; REQ-005→UC-001..003/BEH-002,003/AC-004,005/SCN-001..004; REQ-006→UC-002,003/BEH-002,003/AC-004,006/SCN-003,004; REQ-007→UC-001,002/BEH-001,002/AC-005/SCN-001..003.
-Factual supplements inventoried in investigation-notes.md: operator Task context and investigation-evidence, cause-comparison.md. No independent intended behavior or normative supplement.
-Architecture must verify realpath-based CLI dependency resolution, packaged dependency layouts, cache identity boundaries and node2-local no-release recovery; preserve migration owners/schema/app-data ordering. Defer exact resolver/file design and operational mechanism to approved architecture.
-Readiness gate: current evidence, desired/preserved behavior, guardrail, linked measurable REQ/AC/scenarios, privacy/data continuity, decisions and supplemental applicability all checked Yes; Product N/A. R2 ready and approved for current operational-slice design; no implementation/validation/delivery completion claimed.
-
-## R2 — Restore Usability First (User-Prioritized Slice O1)
-User subsequently directs: “node2 ... could you fix it directly make sure the server can be started” and “after that we start to dig deeper why two engines. make sure the docker can be used first”. This supersedes R1 sequencing, not preservation safeguards.
-- Approved by Solution Designer within this explicit user direction, user informed in current conversation: “Node2 recovery comes first. The immediate change will only pin startup to its already-installed matching engines, with a data backup; deeper investigation and the durable source correction follow afterward.”
-- CURRENT O1: REQ-003..006 and operational portion REQ-007; AC-003 (explicit override preservation),004,005 (isolated operational proof),006 (already-observed comparison with remaining origin investigation deferred). SCN-003 current production change; SCN-001 preserved startup contract; SCN-004 evidence complete enough for repair.
-- DEFERRED O2: REQ-001,002, durable-source portion REQ-007 and AC-001,002 plus changed-source validation portion AC-003,005; further history/provenance investigation AFTER node2 usable. Not waived, canceled, completed or authority for source implementation in O1. O2 requires completed design and applicable route; current delivery receipt must return to Solution Designer to resume O2, not mark original Task DONE.
-- No source/dependency/image/launcher edits in O1; existing installed explicit engine override contract is permitted for node2 only. No image publication or recreation needed. Scope remains narrow; if backup/normal startup reveals a distinct blocker, report precisely rather than reset, bypass migrations or mutate other nodes.
+## Decisions / Assumptions / Supplements
+DEC-001 automatic discovery correction moves to follow-up per User; evidence retained, no new source architecture approved here. DEC-002 existing override/migration safety preserved. DEC-003 completed node2 pin no public image release. DEC-004 user explicitly accepts working recovery/current ticket completion; separate follow-up registration prevents scope loss; exact approvalDR-002, Decided by User.
+InitialASM001 later readiness uncertainty resolved ONLY within delivered backend/preservation evidence and explicit user acceptance; all historical runs/platforms/cache actor origin not certified.
+Supplement acceptance json is exact user authority; cause/investigation and public metadata are factual; follow-up-context is backlog handoff, not new-task approved architecture. Private backup/full logs NOT attached/Git.
+Readiness: evidence, desired/preserved behavior, linked REQ/AC/scenarios, scope/data/quality/decisions/approval all Yes; UI/Product N/A. R3 approved for finalization-scope reconciliation; no new production work or review replay. Current technical D1-O1 review remains applicable unchanged; final Delivery completion/receipt still pending, original Task not patched DONE by SD.
