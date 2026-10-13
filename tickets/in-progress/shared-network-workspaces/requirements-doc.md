@@ -248,6 +248,12 @@ Current intended behavior is Approved SR-012; prior SR-009 approval remains hist
 | 018 | 001 | 001/004/005 | 018 | 011 |
 | 019 | 001/005 | 001/004/005 | 019 | 013 |
 
+## Working-First V1 Priority Clarification — SR-013
+
+Latest user requests a working first version, avoiding excessive security engineering and improving later, and asks for a rough independent-project/CI/install/command experience. This confirms the current private-network functional direction; it does not authorize public exposure or erase REQ-009/010 safety, runtime correctness, real-machine validation, merge or user verification. No enterprise account system, tenancy, billing, hosted security platform or certificate-management product is added to v1. Basic authorized-network/participant checks, nonroot/squashed file access, private-state isolation, safe mount/apply and no destructive/default world-write shortcuts remain required. No concrete plaintext/encryption or broad-subnet authorization policy is approved by this clarification alone.
+
+Approved intended-behavior authority remains SR-012, approval-record-sr012.md. SR-013 records a rough technical/packaging recommendation, not a newly approved command/security policy or completed design. Native Mac/Linux/Docker and chosen-folder scope are not silently narrowed. The earlier physical-test sequencing question remains unanswered; “working first” is not a waiver.
+
 ## Architecture Phase Input
 
 - Design basis: **Approved SR-012**, approval-record-sr012.md. Supported scenario set SCN-001–006/008–013; SCN-007 excluded. Historical SR-009 is narrower. Physical pre-implementation proof gate remains unmet; sequence-change question is pending, not assumed.

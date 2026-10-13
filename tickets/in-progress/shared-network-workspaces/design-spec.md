@@ -2,9 +2,9 @@
 
 ## Solution And Approval Basis
 
-- Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63; current solution revision SR-012.
+- Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63; current solution revision SR-013 (rough packaging/UX refinement; requirements remain Approved SR-012).
 - Approved intent: requirements-doc.md SR-012, designer within explicit service-first/nativeMac/Linux/Docker user direction; approval-record-sr012.md contains exact informing message. No behavior-defining supplements or Product-owned UI package.
-- **Design status: Draft — NOT implementation-ready.** Concrete established boundaries below are design decisions; backend/platform qualification, secured service control/data transport and runtime exposure remain incomplete and explicitly gated. Do not implement from this draft.
+- **Design status: Draft — NOT implementation-ready.** Concrete established boundaries below are design decisions; backend/platform qualification, proportionate trusted-LAN permission policy and runtime exposure remain incomplete and explicitly gated. Do not implement from this draft.
 - Canonical investigation: investigation-notes.md in this ticket; executed raw rounds at evidence/feasibility/fr-001–047. Actual physical gate REQ-016/AC-016 remains in force pending the separate async user sequencing answer.
 - Authorities read full2026-10-13: solution-designer references/architecture-design.md, design-principles.md, formal design template; root DESIGN.md/TESTING.md, server/web AGENTS.md; server Startup Initialization and Lazy Services, Terminal Service Unification and data_migration_guideline.md. No conflict with these authorities. Design-examples N/A — not yet used to decide a new structure.
 - Isolated worktree /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces, branch codex/shared-network-workspaces; base origin/personal@f13bdd0eb79aacc63dffa5995b9c86f359001468, finalization origin/personal. No source modifications/merge/release.
@@ -16,6 +16,51 @@ Current Docker launcher shares a local host directory only with that host's cont
 Configured runtime skill materialization writes node-private absolute symlinks into project .claude/.codex skill folders, with process-local last-holder cleanup. FR-009/011 prove stopping one node can break another. NFSv4.1 AllSquash file ownership causes default native Mac Git distrust (FR-028). These are in-scope integration boundaries, not reasons to narrow whole projects to artifacts.
 
 Intended delta: one persistent shared-folder service owns first-use create/connect, qualified source folder, host-client mount, selected local managed Docker integration, verified location output and continued lifecycle. Existing workspace selection/native runtimes access normal mounted files. This is not a new filesystem engine, synchronization agent, public SDK or peer collaboration feature.
+
+## Rough V1 Service / Packaging Recommendation — SR-013
+
+**Requested recommendation, not a shipped feature or implementation-ready spec.** The user explicitly prioritizes a working first version without excessive security effort and asks whether this should be a separate project, how CI produces it and how the user obtains/runs it. No new experiment, installed command, release endpoint, CI execution or live change is represented.
+
+### Standalone capability, same repository
+
+Choose one separately runnable package at `autobyteus-shared-folder/` in the current superrepo, not a new GitHub repository or separately managed Project. One product contains the interactive command and persistent service. It should run without opening AutoByteus desktop/server; ordinary apps may use the mounted folder. AutoByteus-specific support is a small opt-in adapter for selected local managed Docker nodes and existing workspace/runtime correctness, not the storage engine itself. A separate repository would add release/integration coordination without solving the demonstrated problem.
+
+The exact implementation language and self-contained packaging technique are still design work; do not create a dependency on a user-installed Node/Python/compiler/toolchain. CI, not the user's computer, builds the package. Native modes remain Docker-independent. Docker server mode is a deployment choice inside the same flow; it is not permission to mount a Mac host or reconfigure an arbitrary existing unprivileged container from inside that container. Host-mediated managed-container integration remains automatic and consented.
+
+### Build once, install and start once
+
+Proposed release path:
+
+`verified source -> CI build/test -> versioned Mac/Linux bundles + slim Linux Docker image -> published download assets -> platform-detecting install-and-start entry -> managed service`
+
+Reuse the repository's GitHub-release/tag conventions (RELEASE.md and existing release-desktop.yml/release-server-docker.yml), rather than invent a release system or independent v1 version stream. Add focused shared-folder build jobs/workflow and declare the new expected assets in the release guide when implemented. Publishing/tagging still requires the release decision and Delivery gates; this conversation does not authorize publishing. GitHub release binary assets and Docker multi-platform images are supported distribution foundations, not proof of this package build.
+
+Build for the selected supported OS/CPU matrix; include/bundle the user-space runtime/backend dependencies where applicable, honor vendor licenses/signing requirements and test clean installation. A target may be advertised only once validated. Docker image is a small service image, not the entire large agent/server prototype image. Primary capability references: https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases ; https://docs.docker.com/build/building/multi-platform/ .
+
+For a fresh computer, the public download page provides **one install-and-start invocation**. That invocation detects platform, downloads a versioned supported bundle, checks its release checksum, installs in an appropriate location, then directly runs the installed entrypoint by absolute path. It must not stop with “now edit PATH/source this file/run another command.” Future PATH integration is idempotent; it cannot change the caller's current shell, so initial configuration must not depend on it. No example URL is published in this draft. `autobyteus-share` is a proposed command name only, NOT callable today.
+
+### User journey
+
+1. Run the single install-and-start entry (or installed command on a configured computer).
+2. Choose **Create shared folder** or **Connect to existing shared folder**.
+3. Create: choose existing/new supported source folder, select native/default or Docker deployment if desired, and review the approved trusted-private-network access policy. Connect: paste the displayed server connection information. No NFS/protocol/UID/fstab editing or command assembly.
+4. Request only necessary OS/password/privacy approvals and selected Docker-node disruption consent. Configure the supported backend, persistent native mount/reconnect and selected local Docker volumes at the common root where supported.
+5. Verify same storage and actual runtime-identity read/write, then print the usable root, server/source mapping and each participating node's result. Example path from experiments: `/Volumes/autobyteus-shared/project`; final source can be any qualified selected source, not an implicit copy.
+6. Command exits; OS-managed service/client state continues. Repeating the command shows existing state and safe status/connect/stop actions rather than reinstalling/replacing data. Removing a workspace registration does not stop/delete storage.
+
+Create happens once; each other computer runs its own single connect invocation. Selected supported local Docker agent nodes need no separate in-container commands. Permissions/cancellation/unavailable source or declined node recreation produce truthful incomplete/per-node status, not a ready unrelated folder.
+
+### Storage architecture and MVP security effort
+
+`chosen ordinary source folder -> existing NFS backend -> LAN -> native Mac/Linux mounts + Docker-daemon-managed mounts -> existing workspace selection/native agent tools`
+
+One service UX hides platform-specific backend integration. Native Apple nfsd is the demonstrated Mac-serving route; Linux/Docker candidates are the demonstrated Linux engines. Do not use the failed native UNFS build as a reason to write our own filesystem or promise one unqualified engine everywhere. Existing source/mount identity, native runtime skill/Git/cwd correctness and safe recovery remain necessary working-version work, not optional security polish.
+
+For v1 recommend trusted-private-LAN-only deployment with basic explicit network/participant restrictions, nonroot/squashed data access, private app/runtime state excluded and preserved files/mounts. Do not front-load accounts, PKI/pairing infrastructure, public remote access, tenants or an enterprise security product. A plain NFS/data policy is an explicit **recommendation to explain to the user**, including lack of encryption and coarse trusted-host access; it is not approved here or described as public-network safe. Download integrity and ordinary admin consent are small existing obligations, not a security-platform program. Future hardening is separate scope and does not delay the functional v1 for hypothetical public-service needs.
+
+### Still unfinished
+
+This recommendation answers product/package/distribution shape. It does not complete native mode qualification, minimal exact authorization/export policy, final implementation language/distribution contracts, supported OS/CPU/version matrix, lifecycle/correctness paths or the physical forward gate. The next full design must turn these rough boundaries into a proportionate implementation map. No changed source, CI run, installer, release, user command or new test pass is claimed.
 
 ## Task Size And Architectural Risk
 
@@ -79,7 +124,7 @@ Thin entries: service command and desktop argument dispatch; existing workspace/
 | Docker selected-node apply | DS001 | Snapshot/validate exact local managed node configuration and confirm stop/recreate; preserve immutable image/private volumes/ports; reject remote/unmanaged daemon targets |
 | Shared binding/admission | DS003/004 | Expected source/identity and current mount readiness, bounded response; path prefix/hash alone never READY; ordinary local workspace branch is existing supported behavior, not shared fallback |
 | Native skill profile | DS003 runtime owner | Node-private assets, same configured logical scope/collision policy; no cross-node cleanup ownership or silent skill disable. Exact native API/name/profile shape still being proved |
-| Transport authorization | DS001/002 | Must establish authorized computer/data access and distinguish control credentials from NFS AUTH_SYS. Current raw test allowlists are not a final encrypted/authenticated service design |
+| Transport authorization | DS001/002 | Must establish authorized computer/data access and distinguish control credentials from NFS AUTH_SYS. Current raw test allowlists are not a completed supported permission policy; v1 does not automatically require a new PKI/pairing/encryption platform |
 
 Dependency rules: no normal application startup/global registry enumeration waits on network mounts. Existing workspace deletion removes registration only, not service/source. Runtime/file/terminal public owners consult shared authority; callers cannot directly run synchronous shared fs/chdir before it. OS/Docker mutation stays behind service consented lifecycle. A watchdog cannot release a still-alive child slot; already-running native tools retain their normal policy/failure contract.
 
@@ -128,7 +173,7 @@ Folder depth: entry/interactive transport, service lifecycle/control, private pe
 ## Change / Refactor Sequence And Guidance
 
 1. Finish candidate qualification: native binaries, chosen Mac/Linux/Docker source folder operations/identity/permissions, no fallback; published locks/rename/restart behavior. Retain failed experiments; physical preimplementation gate remains until explicit sequence change approval.
-2. Finish service distribution/control/data authorization and durable OS lifecycle design, normal privilege/disruption prompt and container execution limits; prove first-run/repeat/cancel/busy detach and selected-source preservation. No claims from a few internal mount commands.
+2. Finish service distribution/minimal trusted-LAN permission policy and durable OS lifecycle design, normal privilege/disruption prompt and container execution limits; prove first-run/repeat/cancel/busy detach and selected-source preservation. No claims from a few internal mount commands.
 3. Finish private configured native skill discovery/logical-name/collision/profile-generation/release and synchronous cwd/action ownership proof. Use existing exact runtime owners and no local-only shared compatibility fallback.
 4. Complete authoritative file/interface/transition map, Change Scope and final size/risk, then route via configured review/implementation rules. No product implementation from this draft.
 5. Implementation Engineer owns source/self-checks; independent reviewers and API/E2E own their gates; Delivery owns current-build/full guided user journey, physical Mac/Linux/Docker, docs/merge/user verification/release/cleanup. Original physical/user proof never replaced by these prototype totals.

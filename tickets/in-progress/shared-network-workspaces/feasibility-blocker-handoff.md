@@ -1,3 +1,18 @@
+# Current Shared Workspace Conversation Result — SR-013 Rough V1 Recommendation
+
+Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63, owner /software_engineering_team/solution_designer. Original delegator /project_task_manager AgentRun project_task_manager_a5f6d9d306e54970bafdad895bdf731d. This turn is the user's requested rough product/package/distribution explanation, NOT a completed architecture/implementation/feasibility phase. Approved requirements SR012 retained; working-first priority clarified without erasing REQ009/010/data/runtime/physical/delivery boundaries.
+
+Latest user: working first version, avoid excessive security effort, improve later; asks whether separate project and how pipeline-built command is installed/run as easily as possible. Recommendation: separate runnable shared-folder service+CLI package inside current superrepo, not a new repo/hosted SDK. CI builds supported Mac/Linux self-contained bundles and slim Linux Docker service image, releases via existing conventions. One public install-and-start invocation selects/downloads/validates platform bundle and immediately invokes configuration by absolute installed path—no second command/PATH edit/source build. Create/connect, folder or server input, necessary OS/privacy/password and Docker disruption approvals, automatic persistent mounting/selected managedDocker integration, verification and printed actual path; terminal exits but service remains. Repeat reuses/status/recovery, no silent replacement/copy.
+
+One user experience hides proven platform-specific existing NFS backends; normal native tools/workspaces remain. MVP basic trusted-LAN/participant restriction, nonroot/squashed data access, private state excluded, preserve existing storage and no public/world-write export. No enterprise accounts, tenant/pairing/PKI product required. Plain unencrypted NFS/coarse host trust is an explained recommendation, not an already approved final security policy. This conversation does not authorize dropping basic safety or source/runtime correctness. No final executable command/URL, current-source build or release supplied.
+
+Canonical paths in /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces: requirements-doc.md ApprovedSR012+v1priority; design-spec.md DraftSR013 rough package/journey, not forward-ready; investigation-notes.md; solution-revision-record.md; approval-record-sr012.md; this feasibility-blocker-handoff.md. Existing native-folder-hosting-report.md/FR001–047/raw cleanup evidence still valid only within recorded scope. Full original request/sources/constraints/workspace/base/open gaps/history retained below. Shared integration checkout untouched; no source/CI/experiments/providers/credentials/live storage/mount/node/tag/publication actions this round.
+
+No physical-test sequencing answer or authorized independentLinux target supplied. Prior gate unchanged; no inference that v1priority approves its waiver. Complete proportionate backend/permissions/distribution/lifecycle/runtime/action design still owned; no final size/risk, reviews/implementation/E2E/delivery/merge/user verification. Current result: rough recommendation in user conversation; no generic requirements reapproval requested. Fresh rules after persistence; if none applies, answer user directly, not duplicate originalPM blocker/approval forwarding or premature architecture/implementation.
+
+---
+## Historical SR-012 Interim Handoff (Preserved At Its Actual Basis)
+
 # Current Shared Network Workspace Result — SR-012 Ongoing Design/Feasibility
 
 ## Current Status And Authority
@@ -168,3 +183,5 @@ Current additional canonical paths (not represented in historicalSR010 path list
 - /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/design-spec.md — Draft, NOT forward-ready; no final classification.
 - /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/native-folder-hosting-report.md — executed mode/node/source/mount table, retained failures and next proof.
 - /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/sr012-resource-audit.json and sr012-artifact-audit.json — exact cleanup and scoped artifact checks, not final product verification.
+
+SR-013 route decision2026-10-13: fresh get_handoff_rules returned only completed-architecture size/risk and returned-delivery receipt-gap rules. NONE matches a requested rough packaging/MVP user conversation with Draft design. Return recommendation directly to user; no duplicate PM approval/blocker message, Product handoff, implementation route or delegate_task bypass. No approval of a concrete security policy, new scope, finished command or delivery inferred.
