@@ -1,0 +1,47 @@
+{
+  "scope": "Personal focused source-review checks only, not API/E2E or native/physical qualification. Existing task worktree dependencies/build outputs used; no builds, OS configuration, Docker, providers or user data. Prisma unit setup resets only its existing task-worktree tests/.tmp database.",
+  "environmentKeys": [
+    "PATH",
+    "HOME",
+    "TMPDIR",
+    "LANG",
+    "CI"
+  ],
+  "temporaryRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/crr001-checks-pvr0kdua",
+  "temporaryRootRemoved": true,
+  "checks": [
+    {
+      "name": "installer-fixtures",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "scripts/tests/test_nfs_packaging_and_launcher.py",
+        "scripts/tests/test_nfs_installer_fixture.py",
+        "-v"
+      ],
+      "exitCode": 0,
+      "seconds": 2.99,
+      "log": "installer-fixtures.log"
+    },
+    {
+      "name": "focused-server-unit",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/workspaces/shared-workspace-binding.test.ts",
+        "tests/unit/agent-execution/backends/shared/runtime-skill-profile.test.ts",
+        "tests/unit/agent-execution/backends/shared/private-skill-discovery.test.ts",
+        "tests/unit/skills/github/private-profile-source-lifecycle.test.ts",
+        "--no-watch"
+      ],
+      "exitCode": 0,
+      "seconds": 6.98,
+      "log": "focused-server-unit.log"
+    }
+  ]
+}
