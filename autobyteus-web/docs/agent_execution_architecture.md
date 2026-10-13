@@ -492,8 +492,13 @@ resolved through the tree) is kept in its aria-label only; a child without a
 recorded `delegatorAgentRunId` (created before the resource lifecycle) has no
 starter. Branch lines run straight through member and task rows.
 
-A delegated task-Agent or task-Team row in a live run has the run's small red
-stop icon (`DelegatedStopButton`) while the copy runs. This applies under Agent,
+A delegated task-Agent or task-Team row in a live run has a small stop icon
+(`DelegatedStopButton`) while the copy runs. Like the normal sidebar run Stop,
+it is neutral at rest (`text-gray-400`, project `#999999`), red on a pale-red
+background on hover (`hover:text-red-600 hover:bg-red-50`), and neutral again
+on pointer leave, using the existing color transition. Its labelled native
+button, focus-visible ring, disabled/pulsing pending state and reduced-motion
+override are unchanged. This applies under Agent,
 Team and Org roots (`WorkspaceTransientExecutionRow`,
 `WorkspaceAgentOrgHistoryCollection`). It stops only that copy and the copies it
 started (`delegatedLaunchDraftStore.stop` → `stopDelegatedExecution`). The copy

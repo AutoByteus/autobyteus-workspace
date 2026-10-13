@@ -1,0 +1,141 @@
+{
+  "startedAt": "2026-10-13T15:34:41.376566+00:00",
+  "worktree": "/home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style",
+  "steps": [
+    {
+      "argv": [
+        "git",
+        "--git-dir=/home/autobyteus/workspace/autobyteus-workspace/.git",
+        "ls-remote",
+        "origin",
+        "refs/heads/personal"
+      ],
+      "exitCode": 0,
+      "output": "be4190e94b4fd715ae41951a0ff9648d4f65f5fa\trefs/heads/personal"
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir=/home/autobyteus/workspace/autobyteus-workspace/.git",
+        "merge-base",
+        "--is-ancestor",
+        "3b34a9a2c78145e8e69a06b243bfcc8d8bad9947",
+        "be4190e94b4fd715ae41951a0ff9648d4f65f5fa"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style",
+        "ls-files",
+        "autobyteus-application-backend-sdk/dist"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style",
+        "ls-files",
+        "autobyteus-application-sdk-contracts/dist"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style",
+        "status",
+        "--porcelain"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir=/home/autobyteus/workspace/autobyteus-workspace/.git",
+        "worktree",
+        "remove",
+        "/home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir=/home/autobyteus/workspace/autobyteus-workspace/.git",
+        "branch",
+        "-d",
+        "codex/task-copy-stop-style"
+      ],
+      "exitCode": 0,
+      "output": "warning: deleting branch 'codex/task-copy-stop-style' that has been merged to\n         'refs/remotes/origin/codex/task-copy-stop-style', but not yet merged to HEAD\nDeleted branch codex/task-copy-stop-style (was 3b34a9a2c)."
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir=/home/autobyteus/workspace/autobyteus-workspace/.git",
+        "branch",
+        "-d",
+        "finalize/task-copy-stop-style"
+      ],
+      "exitCode": 0,
+      "output": "warning: deleting branch 'finalize/task-copy-stop-style' that has been merged to\n         'refs/remotes/origin/personal', but not yet merged to HEAD\nDeleted branch finalize/task-copy-stop-style (was be4190e94)."
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir=/home/autobyteus/workspace/autobyteus-workspace/.git",
+        "worktree",
+        "list",
+        "--porcelain"
+      ],
+      "exitCode": 0,
+      "output": "worktree /home/autobyteus/workspace/autobyteus-workspace\nHEAD 3514fe48eabedc5b0a33522110aa30665e3af17c\nbranch refs/heads/personal\n\nworktree /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance\nHEAD 7985cf6cd88bd70b3637de523a5291327587e7ab\nbranch refs/heads/codex/agent-run-history-performance\n\nworktree /home/autobyteus/workspace/.codex/worktrees/agent-team-project-task-navigation\nHEAD 30a7d6f0271b88b01cb6491c84defbd29807bc49\nbranch refs/heads/codex/agent-team-project-task-navigation\n\nworktree /home/autobyteus/workspace/.codex/worktrees/agent-team-universal-task-delegation\nHEAD eb79671448e7a2485f30476155e9f7cb6ea363ff\nbranch refs/heads/codex/agent-team-universal-task-delegation\n\nworktree /home/autobyteus/workspace/.codex/worktrees/avatar-upload-writability-display\nHEAD 146adecb40502f1db3667c28bde140f264ba91fe\nbranch refs/heads/requirements/avatar-upload-writability-display\n\nworktree /home/autobyteus/workspace/.codex/worktrees/browser-tab-crash-memory-investigation\nHEAD ce83847296d9eace2f6eb832521c1d6b135c4722\nbranch refs/heads/codex/browser-tab-crash-memory-investigation\n\nworktree /home/autobyteus/workspace/.codex/worktrees/codex-ultrafast-mode-frontend\nHEAD 090d3d4041ff75605bb396ffa49ffdfae0611bf8\nbranch refs/heads/requirements/codex-ultrafast-mode-frontend\n\nworktree /home/autobyteus/workspace/.codex/worktrees/deepseek-v41-flash-only\nHEAD d31932426b5612081aa2cb6b19e213114be2ce5f\nbranch refs/heads/requirements/deepseek-v41-flash-only\n\nworktree /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model\nHEAD 3f853c7626851cb5d89178965534401e9e4aa5e4\nbranch refs/heads/requirements/flat-agent-organization-model\n\nworktree /home/autobyteus/workspace/.codex/worktrees/fruit-shopping-nuxt-ssr\nHEAD 4d567832f71b312abd0ffb9f54585f6dd9d51b9e\nbranch refs/heads/codex/fruit-shopping-nuxt-ssr\n\nworktree /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline\nHEAD 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4\nbranch refs/heads/codex/initial-prototype-baseline\n\nworktree /home/autobyteus/workspace/.codex/worktrees/integration-gateway-mcp\nHEAD ae3aba1bfb7af6fefd8c69994e0b1bc421967d60\nbranch refs/heads/requirements/integration-gateway-mcp\n\nworktree /home/autobyteus/workspace/.codex/worktrees/mcp-circular-result-investigation\nHEAD 008a6eeaeb8363368cda293ce4fa9fb61ebe92c2\nbranch refs/heads/codex/mcp-circular-result-investigation\n\nworktree /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker\nHEAD 40a8060ade8766a0b2f66b013a30e99350636d4b\nbranch refs/heads/codex/mcp-tool-exposure-docker\n\nworktree /home/autobyteus/workspace/.codex/worktrees/member-artifact-lookup-cost\nHEAD a2d7dce76b3bb31e8805528661f2bdbcc86c74af\nbranch refs/heads/codex/member-artifact-lookup-cost\n\nworktree /home/autobyteus/workspace/.codex/worktrees/server-settings-8001-investigation\nHEAD fbd7b6764bd43751956d69ffe22b943d06188444\nbranch refs/heads/codex/server-settings-8001-investigation"
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir=/home/autobyteus/workspace/autobyteus-workspace/.git",
+        "branch",
+        "--list",
+        "codex/task-copy-stop-style"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--git-dir=/home/autobyteus/workspace/autobyteus-workspace/.git",
+        "branch",
+        "--list",
+        "finalize/task-copy-stop-style"
+      ],
+      "exitCode": 0,
+      "output": ""
+    }
+  ],
+  "removedGeneratedOutputs": [
+    "/home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style/autobyteus-application-backend-sdk/dist",
+    "/home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style/autobyteus-application-sdk-contracts/dist"
+  ],
+  "worktreeExists": false,
+  "worktreeRegistered": false,
+  "ticketBranchExists": false,
+  "finalizeBranchExists": false,
+  "shimExists": false,
+  "remoteTicketBranch": "Retained for provenance; deletion Not required",
+  "prune": "Not required; targeted removal cleared own registration; do not globally prune unrelated worktrees",
+  "result": "Completed",
+  "completedAt": "2026-10-13T15:35:44.058371+00:00"
+}

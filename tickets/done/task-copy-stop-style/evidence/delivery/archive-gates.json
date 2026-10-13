@@ -1,0 +1,11 @@
+{
+  "verification": "Complete before archive/push",
+  "ticketMovedTo": "tickets/done/task-copy-stop-style",
+  "hygiene": "Pass staged paths including new evidence, Windows/path length guard",
+  "licensing": "Pass",
+  "whitespace": "Pass staged diff",
+  "probeSyntax": "Pass",
+  "targetChecked": "99d5c2b03a1fbf97d598b33d0c4128ec7679b198",
+  "buildOutputsStaged": false,
+  "relevantSourceUnchangedSinceAPI": true
+}
