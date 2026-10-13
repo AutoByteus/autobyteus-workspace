@@ -1,0 +1,8 @@
+{
+  "sourceMerge": "a80785e5217aa707ee195340fe1a83de6182688c",
+  "filesVerified": 568,
+  "destination": "/Users/normy/autobyteus_org/autobyteus-delivery-records/settings-saved-model-refresh/package",
+  "firstAttempt": "Python tar extractall filter unavailable; stopped before any export/cleanup",
+  "recovery": "Manual regular-file-only extraction with destination containment assertion; all blobs compared",
+  "result": "Passed"
+}

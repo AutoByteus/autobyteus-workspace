@@ -1,0 +1,49 @@
+{
+  "time": "2026-10-13T17:42:00.414757+00:00",
+  "roots": [
+    {
+      "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-rbrIwf",
+      "absent": true
+    },
+    {
+      "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-bE6UG5",
+      "absent": true
+    },
+    {
+      "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-qyzwj2",
+      "absent": true
+    },
+    {
+      "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-dU0rHJ",
+      "absent": true
+    }
+  ],
+  "ports": [
+    {
+      "port": 49359,
+      "listeningNow": false
+    },
+    {
+      "port": 49360,
+      "listeningNow": false
+    },
+    {
+      "port": 65191,
+      "listeningNow": false
+    },
+    {
+      "port": 65192,
+      "listeningNow": false
+    },
+    {
+      "port": 65414,
+      "listeningNow": false
+    },
+    {
+      "port": 65415,
+      "listeningNow": false
+    }
+  ],
+  "deliveryStartedRuntime": false,
+  "result": "Completed; no cleanup action necessary; prior owned resources absent"
+}
