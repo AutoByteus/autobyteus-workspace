@@ -1,3 +1,10 @@
+# Current disposition — resolved by SR017
+
+No answer to the historical questionnaire below is pending. The user explicitly directed the Solution Designer to reason, choose and proceed after the hosting, plaintext-LAN and physical-validation-sequence choices were presented. Current authority is requirements-doc.md Approved SR017 and approval-record-sr017.md, including DEC012–014. Preserve the questions below as history only; do not ask them again or report a current approval blocker. Live administrative approvals and final user verification are separate.
+
+---
+## Historical approval-request record
+
 # Current Direct-User Decisions — SR-016
 
 Approved intent remains requirements-doc.md SR015/approval-record-sr015.md, retaining the full service/hosting/source/physical contract and Nodes NFS Guide. This is not approval of a specific protocol security policy or a waiver of the physical gate. Latest user requests proper handoff through a finished working delivery, then resumes after poweroff; that is continuation, not cancellation or implicit answers.

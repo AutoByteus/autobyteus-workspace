@@ -1,5 +1,36 @@
 # Investigation Notes — Shared Network Workspaces
 
+## Current SR017 — Approved Selection And Architecture Complete
+
+Latest user explicitly directs the designer to reason, choose and proceed, rather than ask choices. approval-record-sr017.md records exact authority/informing message. Requirements **ApprovedSR017**, DEC012 nativeMac/nativeLinux/Docker-on-Linux hosting with MacDocker clients retained; DEC013 selected trusted-private-network plaintext/coarse host trust; DEC014 independent physical proof before delivery rather than before implementation. No unanswered product-choice questionnaire or Git/delegator blocker. Live changes/release remain unapproved.
+
+Architecture design is now **Ready / Architecture Design Complete**, `task_size Large`, `architectural_risk High`. Canonical design-spec.md is rewritten as the current target, not stacked incompatible drafts: Go service + one bootstrap; Apple nfsd and Ganesha4.3/VFS; same root /Volumes/autobyteus-shared; persistent exact OS resources and nonroot data mapping; safe selectedDocker recreation; bounded shared admission/file/terminal child IO; per-runtime private skills/exact leases; Nodes NFS Guide. Current source paths, structs/ownership/data transitions/removals/file map and validation obligations are settled. Implementation/code review/API-E2E/delivery are not performed here.
+
+New factual evidence FR054–057 and selected prior proofs: evidence/feasibility/sr017-selection-report.md (node/source/mount/command/result/limits table), raw folders, experiment-index.json. FR0546passes LinuxGit on selectedMac source; FR0557passes then nativeMacGit stale handle, narrow handle trace, no fully established cause/fix. Therefore UNFS not selected and optional Docker-on-Mac source hosting deferred—not ordinary projects or MacDocker clients. FR056 wrong global Grok flag failure retained; FR057 native Grok1.0.52 ACP skills-only private plugin discovery passes without project writes/auth/inference. No finished installer/current product/independent physicalLAN proof implied.
+
+Latest code observations: core file workspace-path-utils has synchronous exists/realpath before denied-path check; core terminal execution-cwd sync stat/access; isolated-pty-session spawns bridge with requested cwd. Design moves **all** selected shared physical checks/IO into exact action/bridge child, preserving policy; checking only metadata owner is insufficient. Fixed child-exec trampoline for CLI cwd is a design mechanism requiring implementation validation, not an experiment falsely marked green. Codex extraRoots remains process-wide; cwd+privateProfileId process keys are required. Grok plugin-dir is under installed `agent` subcommand; generated plugin contains skills only, not hooks/MCP. Existing Antigravity capsule remains its owner.
+
+Final persisted-state trace: AgentDefinition domain/models.ts34–35 and providers/agent-definition-config.ts retain skillNames/skillScope; standalone lifecycle buildConfig351–363 restores workspace/agentDefinition/native config; Claude/Codex runtime-context materializedConfiguredSkills are in-memory preparation/cleanup receipts. No private plugin path or profile-generation persistent schema is introduced; reusing these authorities supports no run/definition migration. Two initially guessed run-history filenames were absent; no claims rest on them.
+
+Source/reference rechecks and inaccessible-source limits in sr017-selection-report.md.15 exact owned resource/path absences all pass,12 new syntax/JSON checks,0 bounded secret-value pattern hits in sr017-resource-artifact-audit.json. No active probe; caches intentionally retained, live mounts/sources/user nodes/auth/private state untouched. Current full result solution-design-handoff.md; feasibility-blocker-handoff.md preserves older checkpoints and points to it.
+
+### Current supplemental inventory additions / dispositions
+
+| Artifact | Owner / purpose | IDs / scope | Status / approval |
+| --- | --- | --- | --- |
+| approval-record-sr017.md | Solution Designer / exact latest delegated decision authority | REQ001/009/016/018, AC016/018, DEC012–014 and retained REQ/AC001–020 | Approved intended behavior, user informed; no live/release permission |
+| evidence/feasibility/sr017-selection-report.md | Solution Designer / selection, actual nodes/paths/limits/current source observations | BEH001–005, REQ003–010/016–018 | Evidence only; not additional behavior or downstream signoff |
+| evidence/feasibility/fr054–057 (actual folders fr-054 etc), experiment-index.json | Solution Designer / reproducible probes, raw results including failures | Same; runtime private profile | Evidence only;57 indexed rounds, not57 passes |
+| evidence/feasibility/sr017-resource-artifact-audit.json, sr017-fr054-audit.json | Solution Designer / exact absence/syntax/pattern audit | REQ009/010 | Scoped hygiene, not universal security test |
+| requirements-approval-request.md | Solution Designer / historical unanswered questions | Previous basis | Resolved by SR017; do not resend questionnaire |
+| design-spec.md | Solution Designer / current technical authority | All approved scenarios/REQ/AC | Ready SR017; Large/High, review requested via rules |
+| solution-design-handoff.md | Solution Designer / cumulative full request/result/context/routing | All | Current Architecture Design Complete; feasibility-blocker-handoff.md retained as history |
+
+All earlier reports/approval records/transcripts/UI image remain relevant historical evidence at their actual scope. Earlier status text below is **history**, not a pending forward gate. No Product-owned supplement required/requested. Independent review/implementation/API-E2E/delivery artifacts N/A—not yet produced. Remaining current build/install/mode/physical/user verification is explicit downstream validation, not claimed completed.
+
+---
+## Historical investigation rounds (unchanged evidence)
+
 ## Current SR-016 Continuation Checkpoint
 
 User requires proper handoff and a working delivered version, then resumes after power interruption; task is not cancelled/completed. Approved intent remains SR015. Actual owned work FR048–053 extends the canonical evidence, not production implementation. Current report: evidence/feasibility/backend-correctness-report.md (Solution Designer, BEH001–005/REQ004/005/009/010/016–018/AC004/008/016–018, unapproved evidence supplement, no intended-behavior authority). Exact source/packet metadata, results/failures, image-build/patch inputs and cleanup are in those round folders and experiment-index.json.

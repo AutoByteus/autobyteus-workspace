@@ -1,3 +1,8 @@
+# Historical handoff — superseded by Architecture Design Complete SR017
+
+Current full result and route: [solution-design-handoff.md](solution-design-handoff.md). Requirements ApprovedSR017, design Ready/Large/High. No Git/product-choice blocker is pending. The content below preserves actual older checkpoints only.
+
+---
 # Current Result — SR-016 Continued Feasibility / Blocked Forward Gate
 
 Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63; product AutoByteus NFS, planned autobyteus-nfs package/CLI. Owner /software_engineering_team/solution_designer; original delegator /project_task_manager AgentRun project_task_manager_a5f6d9d306e54970bafdad895bdf731d. User explicitly says requirements-only stopping is inadequate, requests proper handoff through a finished working version, then resumes after a poweroff. No cancellation, scope narrowing, final release decision or new technical/security approval inferred. Full original request, references, goals, constraints, workspace/base and history retained below.

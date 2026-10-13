@@ -1,0 +1,9 @@
+PASS patched UNFS3 squashed-data daemon directly serves selected Mac source without file handles
+PASS two independent Linux daemon mounts share same Mac-bound storage identity at agreed path
+PASS native Mac kernel client mounts same Mac-bound UNFS3 folder at identical path
+PASS ordinary Mac host-folder write is exact in both Linux NFS clients within five seconds
+PASS Linux mounted append reaches original Mac source and peer without copying
+PASS cross-client rename relative symlink executable exclusive-create and existing-source preservation
+PASS native Mac mounted append reaches original Mac source and both Linux mounted clients
+PROBE FAILURE RuntimeError("owned VM command failed ('exec', 'ab-sf-fr055-macos', '/usr/bin/sudo'): error: could not write config file /Volumes/autobyteus-shared/project/.git/config: Stale NFS file handle\nfatal: could not set 'core.logallrefupdates' to 'true'\n")
+{"run": "ab-sf-fr055-a6d40941", "passes": 7, "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr055-macos', '/usr/bin/sudo'): error: could not write config file /Volumes/autobyteus-shared/project/.git/config: Stale NFS file handle\\nfatal: could not set 'core.logallrefupdates' to 'true'\\n\")"}

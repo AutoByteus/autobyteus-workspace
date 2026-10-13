@@ -1,251 +1,286 @@
-# Design Spec — Shared Network Workspaces
+# Design Spec — AutoByteus NFS / Shared Network Workspaces
 
 ## Solution And Approval Basis
 
-- Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63; current solution revision SR-016 (continued backend-correctness investigation; approved intent remains SR-015).
-- Approved intent: requirements-doc.md SR-015, approval-record-sr015.md within explicit Nodes guide direction; prior SR-012 service/hosting authority and record retained. No behavior-defining supplements or separate Product-owned UI package; user screenshot is pattern evidence.
-- **Design status: Draft / Blocked at forward gate — NOT implementation-ready.** SR-016 rejects unmodified UNFS3 for exclusive-create correctness; a corrected Linux prototype passes, but Mac-bind Git stale handles remain unresolved. Concrete established boundaries below are design decisions; backend/platform qualification, proportionate trusted-LAN permission policy and runtime exposure remain incomplete and explicitly gated. Do not implement from this draft.
-- Canonical investigation: investigation-notes.md in this ticket; executed raw rounds at evidence/feasibility/fr-001–047. Actual physical gate REQ-016/AC-016 remains in force pending the separate async user sequencing answer.
-- Authorities read full2026-10-13: solution-designer references/architecture-design.md, design-principles.md, formal design template; root DESIGN.md/TESTING.md, server/web AGENTS.md; server Startup Initialization and Lazy Services, Terminal Service Unification and data_migration_guideline.md. No conflict with these authorities. Design-examples N/A — not yet used to decide a new structure.
-- Isolated worktree /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces, branch codex/shared-network-workspaces; base origin/personal@f13bdd0eb79aacc63dffa5995b9c86f359001468, finalization origin/personal. No source modifications/merge/release.
+- Package `shared-network-workspaces`, Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`; current revision **SR-017**; status **Ready — Architecture Design Complete**.
+- Intended-behavior authority: requirements-doc.md **Approved SR017**, Solution Designer under the user's explicit instruction to reason, select and proceed; exact words/decisions/informing message at approval-record-sr017.md. DEC012 hosting, DEC013 trusted-LAN plaintext and DEC014 physical-test sequencing supersede historical pending questions. No behavior-defining supplement or external Product-owned specification.
+- Canonical evidence: investigation-notes.md; ledger/report links below. Design is complete, not implemented, independently reviewed, delivered or claimed 100% proven. Actual native-Mac/Linux virtual-topology evidence satisfies architecture-selection intent; final independent physical topology and user verification remain mandatory.
+- Authorities read in this conversation2026-10-13: solution-designer SKILL and requirements-engineering, architecture-design, design-principles, full formal design template; root AGENTS.md/DESIGN.md/TESTING.md; server/web AGENTS.md; server startup/lazy-services, terminal-unification and data_migration_guideline; predecessor remove-global-skill-discovery-mode migration. No project/general principle conflict. Design-examples N/A — no example required as authority.
+- Isolated workspace `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`, branch `codex/shared-network-workspaces`; base `origin/personal@f13bdd0eb79aacc63dffa5995b9c86f359001468`; finalization `origin/personal`. No main-checkout changes, release, live mounts or data mutation authorized by this design.
 
 ## Current-State Read And Intended Change
 
-Current Docker launcher shares a local host directory only with that host's containers. WorkspaceManager/FileSystemWorkspace/registry store paths and path-hash IDs, not mount/backing identity or readiness. Standalone/Team/Org creation/restore converge on ensureWorkspaceByRootPath but runtime resolvers may fall back to temp/cwd. Terminal has an independent explicit-cwd/home path and directly stats it. Explorer actions use parent fs/promises; watcher child only handles events. Core terminal cwd resolution and Claude SDK spawn use synchronous filesystem inspection/process cwd changes. Those actual paths matter because hard-NFS calls were measured blocking independently of parent heartbeat.
+The Docker launcher maps a host-local folder, not common cross-computer storage. WorkspaceManager/FileSystemWorkspace create metadata and path-hash IDs; that is not mount readiness. Standalone, Team and Org provisioning/restore converge on workspace management, but native runtime resolvers can fall back to temp/cwd. Explorer actions run parent filesystem calls, whereas watcher isolation covers events only. Core file/terminal path validation and Claude startup perform synchronous filesystem work; hard NFS can stall these callers. Current configured skill publishers create node-private absolute links inside projects; FR009/011 show another node's cleanup breaking an active peer. These are real shared-workspace integration defects, not permission to narrow projects to documents.
 
-Configured runtime skill materialization writes node-private absolute symlinks into project .claude/.codex skill folders, with process-local last-holder cleanup. FR-009/011 prove stopping one node can break another. NFSv4.1 AllSquash file ownership causes default native Mac Git distrust (FR-028). These are in-scope integration boundaries, not reasons to narrow whole projects to artifacts.
-
-Intended delta: one persistent shared-folder service owns first-use create/connect, qualified source folder, host-client mount, selected local managed Docker integration, verified location output and continued lifecycle. Existing workspace selection/native runtimes access normal mounted files. This is not a new filesystem engine, synchronization agent, public SDK or peer collaboration feature.
-
-## Product Naming — SR-014
-
-User rejects “share the folder” as the product name and suggests filesystem/NFS naming, explicitly offering “autobyteus nfs.” Use **AutoByteus NFS** as the product/service name and **autobyteus-nfs** as the planned command/package name. User-facing Create/Connect choices refer to a shared filesystem. “Source folder” remains the precise underlying storage term, not product branding.
-
-Naming-only refinement within explicit user direction: canonical ticket/package identity shared-network-workspaces, Project Task ID, evidence paths, approved behavior, mount convention and MVP/delivery gates stay unchanged. No source/package/command/release is created by this naming decision; the command is not available yet. This name does not approve an unqualified engine or claim a finished service.
-
-## Rough V1 Service / Packaging Recommendation — SR-013
-
-**Requested recommendation, not a shipped feature or implementation-ready spec.** The user explicitly prioritizes a working first version without excessive security effort and asks whether this should be a separate project, how CI produces it and how the user obtains/runs it. No new experiment, installed command, release endpoint, CI execution or live change is represented.
-
-### Standalone capability, same repository
-
-Choose one separately runnable package at `autobyteus-nfs/` in the current superrepo, not a new GitHub repository or separately managed Project. One product contains the interactive command and persistent service. It should run without opening AutoByteus desktop/server; ordinary apps may use the mounted folder. AutoByteus-specific support is a small opt-in adapter for selected local managed Docker nodes and existing workspace/runtime correctness, not the storage engine itself. A separate repository would add release/integration coordination without solving the demonstrated problem.
-
-The exact implementation language and self-contained packaging technique are still design work; do not create a dependency on a user-installed Node/Python/compiler/toolchain. CI, not the user's computer, builds the package. Native modes remain Docker-independent. Docker server mode is a deployment choice inside the same flow; it is not permission to mount a Mac host or reconfigure an arbitrary existing unprivileged container from inside that container. Host-mediated managed-container integration remains automatic and consented.
-
-### Build once, install and start once
-
-Proposed release path:
-
-`verified source -> CI build/test -> versioned Mac/Linux bundles + slim Linux Docker image -> published download assets -> platform-detecting install-and-start entry -> managed service`
-
-Reuse the repository's GitHub-release/tag conventions (RELEASE.md and existing release-desktop.yml/release-server-docker.yml), rather than invent a release system or independent v1 version stream. Add focused shared-folder build jobs/workflow and declare the new expected assets in the release guide when implemented. Publishing/tagging still requires the release decision and Delivery gates; this conversation does not authorize publishing. GitHub release binary assets and Docker multi-platform images are supported distribution foundations, not proof of this package build.
-
-Build for the selected supported OS/CPU matrix; include/bundle the user-space runtime/backend dependencies where applicable, honor vendor licenses/signing requirements and test clean installation. A target may be advertised only once validated. Docker image is a small service image, not the entire large agent/server prototype image. Primary capability references: https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases ; https://docs.docker.com/build/building/multi-platform/ .
-
-For a fresh computer, the public download page provides **one install-and-start invocation**. That invocation detects platform, downloads a versioned supported bundle, checks its release checksum, installs in an appropriate location, then directly runs the installed entrypoint by absolute path. It must not stop with “now edit PATH/source this file/run another command.” Future PATH integration is idempotent; it cannot change the caller's current shell, so initial configuration must not depend on it. No example URL is published in this draft. `autobyteus-nfs` is a proposed command name only, NOT callable today.
-
-### User journey
-
-1. Run the single install-and-start entry (or installed command on a configured computer).
-2. Choose **Create shared filesystem** or **Connect to existing filesystem**.
-3. Create: choose existing/new supported source folder, select native/default or Docker deployment if desired, and review the approved trusted-private-network access policy. Connect: paste the displayed server connection information. No NFS/protocol/UID/fstab editing or command assembly.
-4. Request only necessary OS/password/privacy approvals and selected Docker-node disruption consent. Configure the supported backend, persistent native mount/reconnect and selected local Docker volumes at the common root where supported.
-5. Verify same storage and actual runtime-identity read/write, then print the usable root, server/source mapping and each participating node's result. Example path from experiments: `/Volumes/autobyteus-shared/project`; final source can be any qualified selected source, not an implicit copy.
-6. Command exits; OS-managed service/client state continues. Repeating the command shows existing state and safe status/connect/stop actions rather than reinstalling/replacing data. Removing a workspace registration does not stop/delete storage.
-
-Create happens once; each other computer runs its own single connect invocation. Selected supported local Docker agent nodes need no separate in-container commands. Permissions/cancellation/unavailable source or declined node recreation produce truthful incomplete/per-node status, not a ready unrelated folder.
-
-### Storage architecture and MVP security effort
-
-`chosen ordinary source folder -> existing NFS backend -> LAN -> native Mac/Linux mounts + Docker-daemon-managed mounts -> existing workspace selection/native agent tools`
-
-One service UX hides platform-specific backend integration. Native Apple nfsd is the demonstrated Mac-serving route; Linux/Docker candidates are the demonstrated Linux engines. Do not use the failed native UNFS build as a reason to write our own filesystem or promise one unqualified engine everywhere. Existing source/mount identity, native runtime skill/Git/cwd correctness and safe recovery remain necessary working-version work, not optional security polish.
-
-For v1 recommend trusted-private-LAN-only deployment with basic explicit network/participant restrictions, nonroot/squashed data access, private app/runtime state excluded and preserved files/mounts. Do not front-load accounts, PKI/pairing infrastructure, public remote access, tenants or an enterprise security product. A plain NFS/data policy is an explicit **recommendation to explain to the user**, including lack of encryption and coarse trusted-host access; it is not approved here or described as public-network safe. Download integrity and ordinary admin consent are small existing obligations, not a security-platform program. Future hardening is separate scope and does not delay the functional v1 for hypothetical public-service needs.
-
-### Still unfinished
-
-This recommendation answers product/package/distribution shape. It does not complete native mode qualification, minimal exact authorization/export policy, final implementation language/distribution contracts, supported OS/CPU/version matrix, lifecycle/correctness paths or the physical forward gate. The next full design must turn these rough boundaries into a proportionate implementation map. No changed source, CI run, installer, release, user command or new test pass is claimed.
-
-## Nodes NFS Guide Addition — SR-015
-
-The user explicitly asks for another Nodes tab like Docker Guide, giving download/run links and command-copy instructions; their screenshot is retained at evidence/ui-reference/docker-guide-user.png. Approved REQ020/AC020/UC007/BEH007/SCN014 add this informational surface only. It is not a browser-driven mounting wizard, live dashboard, Windows support or Product Team/visualizer request. No new rendered UI exists yet.
-
-Current owners: components/settings/NodeManagerTabs.vue owns tab buttons/ARIA/test identities; NodeManager.vue owns selected-panel union/validTabs/route-query synchronization; DockerNodeStartGuideCard.vue owns its current guide display/copy feedback, with pure command definitions in utils/dockerNodeLauncherCommands.ts. Existing component tests check tab isolation and clipboard output/failure. The NFS guide should use those boundaries, preserve node selection and existing tabs, and not reach a Docker daemon/mount helper/backend merely to show/copy instructions.
-
-Target guide spine DS005: `Nodes -> NFS Guide tab/panel -> supported release/command definitions -> display -> clipboard or download link -> user's terminal -> existing DS001 service setup`. Opening/copying a guide cannot start a service or mutate storage. Actual setup verification still belongs to the standalone service; the guide explains printed root/project selection and automatic selected managedDocker integration. Bootstrap remains one complete install-and-start invocation, unlike making the user copy required install and then mount/configure commands separately.
-
-Candidate in-scope files:
-- components/settings/NodeManagerTabs.vue and NodeManager.vue: add nfsGuide alongside dockerGuide, matching accessibility/selection/route behavior; preserve all old tab meanings.
-- components/settings/NfsGuideCard.vue (planned): AutoByteus NFS download/first-use/create/connect/workspace guidance, supported platform wording and exact command-copy feedback. Reuse established guide pattern, not a pixel-perfect screenshot clone or a broad command registry.
-- utils/nfsLauncherCommands.ts (planned): pure supported release/download/command descriptors, single installed-entry/first-use contract; no fake executable URLs, no live node lookups or command execution. Final syntax depends on service packaging design.
-- localization/messages/en/settings.ts and zh-CN/settings.ts: localized tab/content/accessibility/copy/unavailable/error text, existing localization policy.
-- corresponding colocated NodeManager/guide/descriptor tests and a current-build user-journey probe: tab/route isolation, display/copy equality, clipboard failure/unavailable release, supported platform labels and preserved navigation. Isolated desktop for full product journey; a UI test alone does not prove installer/filesystem readiness.
-
-UI lifecycle states are selected/unselected, command copied, copy failed and release unavailable. Explain which computer executes a command rather than assuming browser OS/current bound remote node is its execution target. Do not render Windows merely because the reference Docker guide has a PowerShell card. Exact future release links must be validated downstream before advertised as ready. Keep the service independently obtainable outside the app; this tab is a discoverability/onboarding guide, not its lifecycle owner.
-
-Product-owned final visual artifact N/A — explicit separate Product Team support not requested; user-supplied existing pattern and approved requirements govern this narrow addition. No new mockup/visualizer/external designer repository or task is invented. Final geometry should inherit existing accessible/responsive guide components; source implementation/rendered validation remains downstream work.
-
-## Continued Correctness And Concrete Lifecycle Decisions — SR-016
-
-User explicitly requires continuation and proper handoff through working delivery; the subsequent power interruption is not cancellation. Actual FR048–053 and exact node/mount/source/command results are in evidence/feasibility/backend-correctness-report.md. No new production implementation or final command.
-
-### Backend disposition
-
-Unmodified UNFS3 is rejected for whole-project use: FR048 two simultaneous exclusive creators both succeed; FR049 repeats6 violations in12 pairs and captures the binary-verifier/string-hash cause in5 complete pairs (one incomplete capture). FR050's eight-byte hashing correction satisfies12 paired exclusions, but a truly nonroot daemon cannot complete normal Git readonly-object write-close semantics. FR051 root daemon **without single-user mode**, all-squashed UID10001 data, preserves tested private-directory denial and passes coordinated different-UID Git with exact-project private process trust. This is not a client-root grant or permission rewrite. The correction is only a vendor-patch prototype; a shipping choice would require pinned patch maintenance/license and independently validated deployment, not an arbitrary fork or this large probe image.
-
-FR053 brings that variant back to a chosen ordinary Mac folder, actual native Mac and two Docker NFS mounts: seven useful sharing/operation passes, then native Git initialization fails stale NFS handle. Do not claim all-mode qualification or silently restrict approved project contents/modes. Original Apple nfsd/APFS and Linux Ganesha alternatives retain only their demonstrated scope. The exact cross-platform backend remains a material design gate, not delegated implementation guesswork.
-
-### Mount and lifecycle owner
-
-Select the persistent default root `/Volumes/autobyteus-shared` on participating supported Mac/Linux hosts and in managed Docker nodes; this is an ordinary creatable directory on Linux, not a requirement for Mac's volume-management machinery there. Project subfolders retain their names, e.g. `/Volumes/autobyteus-shared/project`. Best-effort alternate root remains allowed under DEC001 when occupied/unavailable; print the actual mapping and prove backing identity. Never use temporary `/tmp` as the managed default. One filesystem per default attachment is sufficient for the supported v1 journey; do not add discovery or a multi-tenant registry.
-
-The persistent service owns intended source/endpoint/allowed network and mount attachment. OS startup owner runs/reconnects it after supported login/restart; the initial CLI is not its process lifetime. Data engine owns byte semantics, not the AutoByteus server. Use a separate new private hosted-filesystem record and client-mount record, rather than changing workspace registry/run history schemas. Store expected storageId/endpoint/mount root, not a persisted READY flag. Known-field readers and exact atomic writers follow the existing migration guideline; no schemaVersion or historical migration is justified for new records.
-
-Creation validates a chosen supported local source, preserves existing files and refuses a conflicting identity/configuration. Connection carries expected storageId plus endpoint, export and actual protocol/ports; it is not an authentication credential under a plain trusted-LAN policy. The marker/OS mount-table/source checks diagnose accidental wrong storage; they are not a cryptographic identity guarantee against an authorized malicious administrator. Exact data access/security policy remains the user's pending decision.
-
-Readiness transitions: configured -> verifying -> ready, or unavailable/denied/wrong-identity/indeterminate. One currently owned file-check child per attachment; after a deadline the status is indeterminate and the owner retains the child until actual exit. No replacement probe storm, synchronous shared stat on the parent, global startup scan or local fallback. A ready observation does not make subsequent native filesystem calls cancellable. Stop/reconnect/detach only affect owned resources and require active-run drain/disruption consent; busy mounts remain busy/unready, not forced-detached over unknown writes.
-
-### Application and Docker contracts
-
-Register normal rootPath using the existing workspace manager/registry; query a new opt-in shared attachment authority before requested shared provisioning/restore/file/terminal operations. It must classify the selected path lexically using private attachment configuration before any shared-path fs lookup. Mounted path/hash equality alone is not admission. Missing private attachment means existing ordinary local behavior, not fallback for a known configured shared attachment. Host and container descriptors carry the same expected storageId; keep provider credentials/app DB/runtime homes out of this descriptor and shared export.
-
-Selected local managed Docker-node apply must use the exact existing image/configuration/private volumes and consented drain/recreation, not blindly call a launcher that pulls or resets. Daemon-managed NFS volumes and `volume-nocopy` avoid treating an absent host mount as a newly made local bind folder. Reject remote/unmanaged daemon targets by default. Preserve existing local-only sharing separately. Exact saved reconstruction/credential-handling contracts still need final file-level design; do not persist raw inspect environments in ticket logs or shared storage.
-
-Docker Desktop can collapse original peer addresses at its backend. A backend allowlist of the bridge gateway does NOT authorize specific LAN hosts. The final Docker-hosting transport must retain/enforce actual chosen network identity before NAT, or fail unsupported; do not expose a gateway-allowed engine publicly. The prior raw TCP relay proves ordinary NFS transport only, not final LAN authorization. A network byte relay, if selected for this concrete NAT boundary, is distinct from an application file API or copying projects. No speculative account/PKI platform follows from this concern.
-
-Exact-project private-process Git trust is the tested remedy for a deliberately trusted shared source with foreign numeric owner, not global `safe.directory=*` or changing stored ownership. Derive it only after validated shared attachment/workspace selection; retain normal Git/local-workspace trust outside this process. Core/native runtime environment and user shell guidance remain to finalize. Do not promise default shell Git ownership parity from UNFS single-user metadata presentation after its nonroot semantic failure.
-
-### Package and runtime gap boundary
-
-Retain the standalone `autobyteus-nfs/` package/current-repo and one install-and-start journey from SR013, with Nodes NFS Guide from SR015. Investigated Go native binary distribution is a viable packaging lead ([official compile/install](https://go.dev/doc/tutorial/compile-install)); it is not selected merely because it can compile, no Go toolchain was installed on this host. Final language/bundled backend/dependency/signing/release contracts remain explicit work. Users must not need Node, Python, Go, compilers or manual mount commands.
-
-Current source re-traced ClaudeSessionBootstrapper, resolveClaudeSessionQueryOptions and ClaudeSdkClient; CodexThreadBootstrapper and exact CodexAppServerClientManager leases; SkillService scope and shared collision policy. Native private discovery must preserve configured logical selection, EXPLICIT fail/ALL_INSTALLED prefer-workspace policy, resources and exact process-generation cleanup. Codex extra roots are process-wide: cwd-only pooling cannot serve divergent private profiles. Claude private plugin discovery is proven but namespace/prompt/MCP/cwd and release integration must be decided. Do not replace these with shared temporary links, silently drop skills, release live generations on timeout, or claim every enabled ACP runtime has a proved private exposure adapter. These remaining contracts belong to Solution Designer before the final implementation map.
-
-Two focused user questions are recorded in requirements-approval-request.md: consent to explicit trusted-LAN plaintext/coarse network access and a change of the physical preimplementation gate to mandatory predelivery. No response inferred from poweroff/resume. Even approval would not erase the remaining owned backend/profile/production-boundary design gaps. Current ApprovedSR015 remains; no final classification/review/implementation route yet.
+Add **one standalone persistent AutoByteus NFS service**, operated through `autobyteus-nfs`, in this superrepo. Its first invocation creates or connects storage, configures selected local Docker agent nodes, verifies and prints a usable path. Native operating-system NFS clients access the same chosen folder; AutoByteus does not proxy/copy individual project writes. Add a narrow Nodes NFS Guide and shared-path admission/private-runtime integration while preserving ordinary local behavior.
 
 ## Task Size And Architectural Risk
 
-**Not classified yet — completed design required first.** Concrete affected surfaces include new service/platform distribution, privilege/lifecycle/Docker apply, workspace/runtime admission, file/terminal operation ownership and private runtime skill integration. Known security/data-continuity and cross-process impacts rule out assuming Low. Final Small/Medium/Large and Low/High classification/escalation belong to the completed package, not the number of probes. Scope discovered outside the guardrail goes back as follow-up, not implicit expansion.
+- `task_size: Large`. New Go service/install/release package; native Mac/Linux lifecycle/backend adapters; managed Docker preservation; core/server file, terminal and multiple runtime boundaries; web guide and executable mode/lifecycle tests. This is the completed file/surface scope, not a count of research rounds.
+- `architectural_risk: High`. Privileged OS/export/mount changes, existing source and node-private data preservation, NFS outage/process lifetime, cross-node sharing and runtime-profile ownership. FR011 peer cleanup and FR029 retained blocked I/O demonstrate the risks.
+- Escalation: changed hosting/security/data-loss behavior, unsupported current runtime capability, another persisted format needing transformation, required force-unmount/permissions relaxation, source-copy fallback or inability to meet bounded parent responsiveness -> return specific Design Impact/Requirement Gap to Solution Designer. Do not weaken an AC or invent migration/security policy in implementation. Architecture review is selected by rules, not by this paragraph alone.
 
-## Architecture Investigation Evidence
+## Change Scope
 
-| Source / probe | Observation | Supports / limits |
+In scope UC001–007 / BEH001–007: supported native Mac/native Linux/Docker-on-Linux service; native and Docker clients on both OSes; one bootstrap/first-use command; persistent attach/reconnect/safe detach; chosen source mapping; Nodes guide; configured-shared workspace admission, ordinary file/terminal/native runtime integration and private skill exposure required to preserve current functionality. Concrete files below.
+
+Leave private databases, memories, provider homes/auth, existing local-only Docker sharing, ordinary local workspace defaults and unrelated runtime policies intact. No embedded desktop helper is necessary: REQ013 permits the selected standalone bootstrap route. No public/SDK/HA/offline-sync product, Windows, automatic notifications/context ingestion, general OS administration UI or parked collaboration work.
+
+Follow-ups: Docker Desktop **storage-server** export of a Mac host folder (FR038/053/055); native UNFS RPC/handle defects; encryption/individual accounts/public service; automatic remote file notifications. None is required to deliver the selected v1, and no vendor patch ships. Mac Docker **agent clients** remain in scope. These follow-ups are recorded for the Project Task Manager at delivery, not silently added here.
+
+## Architecture Evidence And Supplements
+
+All paths below are relative to this ticket; full canonical inventory remains investigation-notes.md. Evidence-only supplements do not redefine approved intent.
+
+| Evidence / source | Decision supported | Limit / applicability |
 | --- | --- | --- |
-| launcher scripts/public/docker/autobyteus-docker.sh and .d/bash implementation | mkdir local sharing; node recreation may pull/remove/recreate | New service integration must preserve existing image/ports/private mounts, consent before stopping; no blind reuse of launch helper |
-| workspace/runtime/terminal/core source paths in investigation | path registration != readiness; fallback and synchronous cwd/filesystem paths | Narrow configured-shared admission, no global startup gate, no main-thread shared stat/chdir assumption |
-| FR-026 actual release Mac+twoDocker agents | Four native agent stages with independent bytes/hash | Normal mounted-agent mechanism works; no current-source/product command/physical LAN proof |
-| FR-018/029 | Bounded identity/RPC/file child checking on Linux/Mac; timed-out child may remain alive | Retain ownership until observed exit; timeout is not cancellation/READY |
-| FR-033 | Reboot sameUUID automount and owned node recreation preserves private state | OS lifecycle components feasible; not normal-user privilege prompt/complete service |
-| FR-039 | Native Apple nfsd after explicit apply/restart; APFS source and nativeMac/twoDocker NFS3 ordinary file sharing | Native Mac can serve selected folder; initial Linux clients nolock, no NLM/agent/security parity claim |
-| FR-038 | Mac-source Docker bind name_to_handle_at returns95; bytes intact | Do not advertise Ganesha/VFS exports for that Desktop backing |
-| FR-040/041/042 | Pinned UNFS3 alternate directly serves Mac bind to ordinary NFS3 clients, no kernel file handles; separate Git assertion/repeat | Promising simpler folder-compatible candidate, not a selected fully qualified backend. No NLM, Native arm64 build/help succeeds but actual native UNFS serving fails FR046/047 bad RPC; no lifecycle/TLS proof |
+| evidence/feasibility/experiment-index.json, raw fr001–057 | Auditable attempts, exact commands/topology/failures/cleanup | Designer prototypes, not downstream signoff |
+| real-agent-roundtrip-report.md, private-runtime-skill-report.md, native-private-readiness-report.md under evidence/feasibility | Actual native agent IO; Claude private plugins; Codex process-wide extra roots and peer-stop/resume | Existing release/SDK proofs, not finished current product |
+| evidence/feasibility/macos-vm-feasibility-report.md and raw FR026/028/029/033 (raw rounds are authoritative) | Actual Mac+twoDocker same path; NFS4.1 operations/locks; bounded parent check; reboot/recreation | Single physical Mac with native VM; full public command and independent physical LAN not proved |
+| evidence/feasibility/native-folder-hosting-report.md, FR039 | Apple nfsd directly serves chosen nonempty APFS folder to Mac/twoDocker | Full native-server lock/agent/product matrix still validation work |
+| evidence/feasibility/backend-correctness-report.md, sr017-selection-report.md; FR038/048–055 | Reject Ganesha on Mac Desktop bind and UNFS portable-server detour | Retain failures; Git is a compatibility test, not sharing mechanism |
+| FR057 and current Grok launch/ACP sources | `grok agent --plugin-dir` private skills discovery | Native ACP discovery only, no inference/integrated shared-run proof |
+| Existing workspace/runtime/terminal/file/launcher paths in investigation | Explicit ownership and cleanup boundaries below | Whole current-source cross-runtime integration must be validated |
+| approval-record-sr017.md; prior approval records, historical transcripts, setup-revision-context.md | Current authority plus historical user journey | Historical requirements/questions are superseded, not current blockers |
+| evidence/ui-reference/docker-guide-user.png | Reuse user's Nodes guide pattern | Not Windows support or an external Product specification |
 
-## Behavior And Production-Path Map
+Independent architecture review: **N/A — not yet performed**, requested after this package. Implementation/code review/API-E2E/delivery artifacts: **N/A — not yet produced, not bypassed**. No Product-owned artifact missing; no separate Product Team assistance requested.
 
-| Behavior | Approved REQ / AC | Trigger and preserved contract | Target path / spine |
-| --- | --- | --- | --- |
-| BEH-001 operational | 001/002/006/013–019; AC001/012–019 | First service invocation, repeat/login; whole selected folder, simple flow | DS001 service lifecycle and DS002 ordinary mount/data; stable storage identity != path hash |
-| BEH-002 user/system | 003/004/012; AC002–004/011 | Select shared workspace, native instructed agent; sandbox/tools/private state preserved | DS003 existing run provisioning/runtime; registered shared path must verify before admission, no temp substitute |
-| BEH-003 contract | 002/004/005; AC001/003–005 | Successful fsync/close/fresh open, different-file access; coordinated same-file/Git | DS002 actual OS client -> same source; publication/cache/locking limits mode-specific |
-| BEH-004 operational | 007/008/014; AC006/007/014 | Absent/wrong/denied/unavailable/recovery; unrelated local work unaffected | DS004 requested shared-action admission + operation owner; no global startup or kernel deadline claim |
-| BEH-005 operational | 009/010/017/019; AC008/009/017/019 | Explicit grant/apply/detach; private state/storage and occupied target preservation | DS001 source/grant/lifecycle ownership; selected node consent and exact retained resources |
-| BEH-006 user/system | 011; AC010 | Deliberate reload/reopen; unsaved edits preserved | DS004 current explorer operation owner; remote watcher events not a readiness dependency |
-| BEH-007 user/interaction | 020; AC020 | User opens Nodes NFS Guide; copy/download only, existing tabs preserved | DS005 guide discovery -> user terminal -> DS001; no browser-driven mount/service execution |
+## Relevant Behavior And Production-Path Map
+
+| Behavior / kind | REQ / AC | Existing path and trigger | Target / preserved contract | Spine |
+| --- | --- | --- | --- | --- |
+| BEH001 Operational | 001/002/006/013–019; AC001/012–019 | Local-only launcher; user first/repeat invocation, restart | Guided service, same chosen source, actual root and selected nodes verified | DS001/002 |
+| BEH002 User/System | 003/004/012; AC002–004/011 | Workspace selection -> standalone/Team/Org -> runtime | Native tools/cwd, normal policies, private configured skills; no fallback | DS003 |
+| BEH003 Contract | 002/004/005; AC001/003–005 | OS write/sync/close then peer open | Same filesystem, concurrent different files, coordinated same-file/Git, stated locks | DS002 |
+| BEH004 Operational | 007/008/014; AC006/007/014 | Missing/wrong/denied/outage during requested work | <=10s admission/diagnosis, no unrelated local substitute, local work independent | DS004 |
+| BEH005 Operational | 009/010/017/019; AC008/009/017/019 | Source/export apply, node recreation, detach | Explicit network/OS/disruption consent; nonroot data mapping and exact preservation | DS001 |
+| BEH006 User/System | 011; AC010 | Explorer deliberate reload/reopen | Fresh remote state, no forced unsaved-buffer replacement | DS004 |
+| BEH007 User/Interaction | 020; AC020 | Nodes tab/copy/download | Existing guide pattern, truthful availability, no execution by copying | DS005 |
 
 ## Task Design Health Assessment
 
-- Posture: feature/larger requirement with evidence-proven integration defects. Current design issue: Yes in shared execution boundaries.
-- Structural triggers: process-local ownership used for cross-node project assets (FR011); readiness policy fragmented across provisioning/restore/terminal; parent synchronous shared filesystem access with measured blocking (FR029 plus traced core/Claude); node recreation lifecycle risks preservation. These are not hypothetical load optimizations.
-- Root causes: Missing Invariant and Boundary Or Ownership Issue. Refactor needed now for shared path admission/IO ownership/private runtime exposure; retain unrelated healthy local behavior and existing process release authorities.
-- Response: keep mount/storage service outside application DB/runtime homes; one explicit shared-location authority consumed by workspace/file/terminal/run boundaries; use the existing runtime process owners, not a second PID manager. No distributed skill-link registry: configured node-private assets must not be published into shared project directories.
-- Unresolved profile/native-name and parent-spawn contracts block final file/API design. Do not conceal them as implementation details already decided.
+Posture Larger Requirement; current issue Yes; root causes **Missing Invariant / Boundary Or Ownership Issue**. Structural triggers: process-local shared-link ownership used across nodes (FR011), fragmented admission/fallback and shared synchronous I/O on parent (source trace/FR029), destructive general launcher recreation unsuitable for selected attach. Refactor needed now, narrowly at shared boundaries below. Existing path registry and native process lifetime owners remain healthy and reused. No distributed skill-link registry or second PID authority. Deferred public security/remote watcher/alternate storage-host work does not invalidate explicitly limited v1 semantics.
 
-## Terminology
+## Terminology And Selected Storage Contract
 
-Source folder: chosen persistent local ordinary files actually served. Mount root: local OS-visible client attachment, preferably /Volumes/autobyteus-shared. Project: subfolder selected as workspace, e.g. /Volumes/autobyteus-shared/project. Storage identity: immutable expected backing identity established during create/connect, separate from workspace root/path hash. Participant: explicitly authorized computer/service identity, not arbitrary remote agent conversation.
+**Source folder** is the ordinary persistent local folder actually exported. **Storage ID** is the UUID marker of that filesystem, not the app's path-derived workspace ID. **Attachment** is a computer/daemon's expected storage ID + endpoint/export + mount root. **Project** is a subfolder selected as an ordinary workspace. **Private runtime profile** contains only configured skills/metadata on one node, not provider auth or project files.
 
-## Data-Flow Spines, Narratives And Ownership
+### Supported reference matrix / qualification targets
 
-| Spine | Scope / start -> end | Governing owner and narrative |
+| Role | Selected backend / client | Source / protocol | Design and evidence disposition |
+| --- | --- | --- | --- |
+| Native Mac server | Built-in Apple nfsd | Local APFS, NFSv3 TCP | FR039 actual macOS26.6.2 arm64 guest. No Docker dependency. Default Mac serving choice |
+| Native Linux server | NFS-Ganesha VFS4.3 family, Ubuntu24.04 packages | Local ext4; NFSv4.1 TCP | FR001/026/028 Ubuntu24.04 engine lineage (4.3-8ubuntu1). Native systemd packaging/current clean-machine validation required |
+| Docker-on-Linux server | Same Ganesha/VFS build in slim Ubuntu24.04 image | Explicit chosen Linux ext4 bind at /export; NFSv4.1 TCP | No hidden data volume. Linux host networking, exact capabilities; direct host-folder and restart validation required |
+| Mac native client | Built-in mount_nfs | v3 to Apple / v4 to Ganesha | Actual native VM proofs; full physical desktop installer journey remains |
+| Linux native client | nfs-common kernel client | v3 or v4.1 as descriptor specifies | Ubuntu24.04 reference; package install automatic, systemd lifecycle |
+| Mac/Linux managed Docker agent | Docker local-driver NFS volume | Same endpoint/protocol/storage ID; common container root | No privileged agent or per-container setup; Mac Desktop daemon reaches server separately from host mount |
+
+Default `/Volumes/autobyteus-shared`; e.g. project `/Volumes/autobyteus-shared/project` on every client. Linux creates an ordinary directory with that name. Never default to `/tmp`. Safely occupied default -> explicit alternative/root mapping or refusal, never hide contents. Only one attachment/default filesystem is needed for v1, not a multi-storage registry.
+
+Reference binaries are built for Darwin/Linux arm64/amd64; advertise only actually qualified combinations in the release manifest. Minimum new package reference is macOS26 / Ubuntu24.04, local APFS/ext4; older OS/other distributions/filesystems are not automatically promised. Exact package revisions, engine image digest, Docker Desktop/Engine and CPU are recorded by CI and delivery. Engine changes within the chosen family require full mode tests and locked manifest, not an unbounded apt upgrade on reconnect. Unsupported host role fails before mutation; Docker-on-Mac server choice explains use native Mac instead. No custom filesystem/UNFS patch/FUSE dependency.
+
+### Data identity, permissions and network
+
+Create writes an exclusive UUID record `.autobyteus-nfs/storage.json` under the selected source and establishes an owned health-probe subdirectory. Existing marker conflict never overwrites/regenerates identity. Source selection refuses filesystem root, home root, private app/runtime/auth trees, another network mount, inside/above the client target or unavailable/nonpersistent backing. No recursive chown/chmod. Existing source requires the chosen nonroot owner to have needed access; a new folder is created for the initiating user with private/group modes (not0777). Mixed inaccessible files remain a diagnosed permissions failure, not a mass rewrite. Marker and OS mount source identify accidental mismatch, not a cryptographic guarantee against trusted hostile admins.
+
+Ganesha `Access_Type=None` default, explicit CLIENT allowlist, `SecType=sys`, `Squash=All_Squash`, anonymous UID/GID set to selected source owner (not hardcoded10001). Apple `-mapall=<selected nonroot uid>:<gid>` plus exact selected hosts/private subnet. Every authorized client's writes use that identity, including container root. No client-root export or per-user isolation claim. Read-only private mode files outside source are never exported; symlink escapes do not expand export authorization.
+
+Native/server setup explains **unencrypted coarse host trust**, displays detected private LAN and offers selected address/range; disallow public/wildcard defaults. Connection metadata is not an access token. An allowed private subnet trusts all computers in it; an exact-host policy is narrower. NAT makes that policy computer-level, not container-level. Linux Docker **server** uses host network to avoid inbound Docker gateway masquerading as client identity; no application data relay. Mac Docker clients may appear as the Mac; that's the authorized participant. Never authorize a generic gateway on behalf of unknown remote clients. Current private topology must pass unauthorized-host test before ready/publication. No automatic router/UPnP/public-port opening. Required host firewall changes are bounded, displayed and consented; preserve existing rules.
+
+Ganesha v4.1 TCP2049 only; stable export pseudo `/autobyteus/<storageId>` and durable private recovery state outside source. Native Apple uses TCP NFS2049, mountd20048 and RPC111; preserve OS-owned nfsd and unrelated exports, parse/validate marked entry before reload. Use fixed owned settings only if they do not invalidate existing exports; conflict -> explicit refusal, not disable existing service. Native Apple Docker-client support may require non-reserved mount-source ports; allow only within the explicit coarse host-trust policy, with selected settings displayed and existing-export conflicts rejected. This is not an authentication guarantee. No wildcard Bonjour discovery. Mac source folder on APFS keeps native case/Unicode semantics: cross-platform users must not assume case-distinct names work on a case-insensitive export.
+
+### Filesystem semantics
+
+Hard TCP mounts, explicit protocol, cache bounds `actimeo=1` initial reference; Linux `timeo=50,retrans=2` and per-client independent mount for tests, Mac equivalent supported options. No soft fallback because write integrity matters. Kernel retries can outlive application deadline. Fresh open after successful fsync/close must meet AC003<=5s for<=1MiB test fixtures; already-open/in-progress writes and remote watch events have no instantaneous guarantee. Same-export rename/replace and exclusive creation must pass. Relative in-project symlink and execute-bit support required; cross-OS build artifacts not portable by implication.
+
+Ganesha v4 cross-client POSIX advisory locks are a supported validated target (FR028). Apple v3 reference deliberately uses local advisory locking (`locallocks` on Mac / `nolock` on Linux) and does **not** advertise cross-client flock/fcntl protection; no NLM callback/firewall dependency for v1. Exclusive create remains a cross-client obligation, and same-file/Git operations remain user-coordinated. If a project requires distributed advisory locks choose the Linux service. Test exact native client options before advertising, never silently disable promised locks. This is within REQ005's documented lock contract, not removal of ordinary projects.
+
+Git is not installed/executed as setup readiness. Where squashed ownership differs from the runtime user, add **only the verified selected project** to that child process's `GIT_CONFIG_COUNT/KEY_n/VALUE_n` safe.directory environment, preserving existing entries and policy. No global config, `*`, project init/chown or system-directory trust. Managed terminals inherit the same scoped environment. Other external terminals are ordinary OS clients and documentation explains their trust policy when applicable. Coordinated Git init/status/add/commit across Mac/Linux remains a controlled compatibility suite.
+
+## Spines, Narratives And Ownership
+
+| Spine / kind | Chain and narrative | Main-line owner / lifetime | Off-spine boundary |
+| --- | --- | --- | --- |
+| DS001 Primary | command -> plan -> selected consent -> apply -> OS service -> verify -> usable path. Create once or connect each computer, then terminal exits | SetupService owns selected resource plan/apply; supervisor owns persistent desired attachment; engine owns storage bytes | Platform elevation, config persistence, selected-node preservation |
+| DS002 Primary | ordinary tool -> OS mounted client -> LAN NFS -> source; another client fresh-open reads same bytes | OS client/backend data semantics; not app API or copy process | Source identity/allowlist/cache |
+| DS003 Primary | existing workspace/run request -> shared admission -> private skills -> existing runtime/process -> native tools | Existing standalone/Team/Org/runtime owners and exact process leases | SharedMountAccess and profile lease; no second session manager |
+| DS004 Bounded | requested file/terminal/turn -> classify -> verify -> exact child action -> complete/error/indeterminate | Shared operation owner retains live child until observed exit; parent bounded | No watcher-as-action-controller, no global startup probe |
+| DS005 Primary | Nodes tab -> pure release/command descriptor -> display/copy/download -> user's terminal -> DS001 | Existing Vue panel/copy lifecycle; not storage controller | Release availability/localization |
+
+Return/events: service reports per-host/node status/root, file child returns operation/tree result, existing runtime/PTY streams retain current APIs. Watcher child may emit available events but manual reload is authoritative. No cross-node messages or automatic context ingestion.
+
+Thin entries: Go main, bootstrap, web guide, GraphQL/REST/WS routes only translate inputs/output. They do not own source deletion, NFS privileges, runtime processes or retries. Desktop/server shutdown is not authority to stop shared storage. Workspace unregister remains metadata-only.
+
+## Service, Install And Docker Lifecycle
+
+### Distribution / first invocation
+
+`autobyteus-nfs/` is a Go module with a compiled control binary (no cgo/custom filesystem); user needs no Node/Python/Go/compiler. `scripts/public/nfs/install.sh` detects supported OS/CPU, downloads a **versioned** release manifest/archive privately, checks checksum and member paths, installs a versioned binary, then executes its absolute path. One invocation completes install and guided service setup; no follow-up PATH/source/mount commands. Read prompts from `/dev/tty` even when bootstrap source is piped. No TTY and missing input -> explicit error. SIGINT only cleans owned download scratch. A downloaded user-writable binary is never used as a root startup job: administrative apply installs a root-owned fixed binary first.
+
+Assets `autobyteus-nfs-<version>-<os>-<arch>.tar.gz`, manifest and SHA256SUMS plus slim Linux image digest. `.github/workflows/release-nfs.yml` follows existing repo version/tag and RELEASE.md; manual build-only mode must not publish. Tests/smoke on advertised architectures, signed/notarized Mac distribution per release policy, backend licenses/notices. Ubuntu native dependencies installed from approved distribution repository within the same consented flow; pin tested package set in release metadata. Mac uses system engine. No independent release stream. Checksums do not claim protection from publisher compromise. No working URL/command is claimed before publication.
+
+No-args unconfigured command -> Create/Connect; configured -> current status/actions. Explicit `create`, `connect`, `status`, `reconnect`, `detach`, `version`, `--json` use same owners, not extra mandatory steps. Create asks source/deployment/private network; connect parses printed bounded connection metadata (storageId/address/export/protocol/ports/root), never evaluates it as shell or treats it as authentication. Managed Docker selection and necessary stop/recreate approvals are part of the same flow. The storage computer must remain powered/online.
+
+### Configuration and supervisor
+
+Private root-owned config `/Library/Application Support/AutoByteusNFS` (Mac), `/var/lib/autobyteus-nfs` (Linux); fixed root-owned executable under corresponding libexec installation directory. `hosted-filesystem.json`: installationId/storageId/source/dev+inode/backend/dataUid+gid/allowlist/owned OS resources. `attachment.json`: installationId/storageId/endpoint/export/protocol/mountRoot/selected node references. Atomic exact writers, known-field readers; no schemaVersion/persisted READY. Private recreation receipts may include Docker env values:0600, never shared/logged.
+
+Public read-only **nonsecret** `/etc/autobyteus-nfs/attachment.json`: expected storageId, local mount root and backend endpoint/protocol/export. Bind into selected nodes read-only; use a descriptor directory bind plus atomic file replacement so updates aren't trapped by an old bind-mounted inode. Applications read lazily before a selected operation; malformed existing descriptor fails closed for its configured path, not silently local. No descriptor means existing ordinary local behavior, not proof arbitrary similarly named directories are shared. No global workspace scan.
+
+Mac launchd / Linux systemd start `autobyteus-nfs service` with fixed arguments/config; the private supervisor reconciles only its own source/mount/engine. Engine and source must precede server-host loopback/client mount. Native Ganesha uses a dedicated owned unit/config, not overwriting unrelated instance. Docker service state/config separate from /export, restart policy persistent; no mount of entire host/private data or Docker socket into backend. Source qualification calls Linux file-handle APIs in owned child before export; container gets only required capabilities (including DAC_READ_SEARCH plus conventional process/data-UID transition needs), not blanket privileged mode. Port/engine conflict refuses before apply. Native Apple remains OS-owned with marked export/settings changes and validated reload.
+
+Mount target preflight: inspect OS mount table first; missing target must be empty, owned and mode000 when unmounted so ordinary users cannot write local fallback. Source and target cannot overlap. Wrong mount/source -> wrong-storage, no forced replacement. At most one mount/probe child per attachment; status deadline <=10s returns indeterminate while the exact child remains owned. Retry only after actual exit, bounded backoff. Kernel outage does not start competing remounts. Supervisor restart reconciles mount state and any recorded exact child identity/start-time before new attempts; never signals a reused PID. A still-busy old attempt remains indeterminate. Unexpected child persistence is explicit operational state, not silent success.
+
+Readiness checks mount type/source/protocol plus marker plus unique create/fsync/read/remove in health directory as actual nonroot runtime UID. No parent shared stat, Git init or user-project mutation. Host readiness and each selected node are separate results. Declined/incompatible node isn't printed ready. Status is current observation, not a permanent permit for later filesystem calls.
+
+Detach drains relevant work with explicit disruption approval, refuses busy unmount, and removes only exact owned jobs/config/empty target after actual success. No force/lazy unmount, recursive permission rewrite, storage deletion or named-volume deletion. Preserve source and marker. For Apple shared global setting changes, restore only if value still equals owned applied value and restoring won't damage other exports; otherwise report retained external/shared setting. Never disable nfsd with unrelated exports. Repeating/cancel/retry uses persisted intended configuration and small per-resource receipts, not a generic workflow/journal platform.
+
+### Selected managed Docker nodes
+
+Host command controls **local** daemon. Daemon mounts NFS directly to a labeled local-driver volume; host mount is not copied/bind-translated as network storage. Descriptor carries daemon-reachable endpoint (Mac server via verified host-gateway/LAN address, not daemon localhost). `volume-nocopy`; verify exact driver/options/marker and actual node UID in a fresh probe before recreation. Private volumes, node-specific /home/autobyteus/workspace and old local-only shared folder unchanged.
+
+Do not reuse launcher `start_node()` which pulls/reassigns/removes. SetupService Docker adapter:
+1. Discover exact launcher labels/state (`com.autobyteus.launcher=server-docker`, nodeName); reject remote/unmanaged/ambiguous/custom unsupported configuration before stop. Never source user shell config as root.
+2. Snapshot exact container/image ID, Config, HostConfig/mounts, ports, network aliases and running/restart state in0600 receipt. Plan adds only attachment volume/descriptor; existing settings preserved, no image pull.
+3. Display selected interruption; require drain/operator consent; revalidate identities. Stop+rename old container retaining configuration and volumes. Create replacement at old name with immutable image/settings and new mounts. Container-name/IP changes are reported; preserve published ports/aliases and requested explicit network addresses where supported, reject conflicts.
+4. Verify current application startup/shared admission and UID read/write. On success remove stopped old container **without volumes**. On pre-ready failure remove exact replacement and restore old container/name/state. If replacement might have accepted work, do not auto-rollback unknown writes; require new drain. Configuration rollback is never data rollback.
+5. Save opted-in attachment reference only after apply. Launcher new/upgrade consumes that reference in desired config/hash and run_container, so later normal recreation cannot silently lose mount. Unselected nodes retain current behavior. Detach uses same preservation path with explicit selected disruption.
+
+One host command configures its selected Docker nodes; every other computer still needs its own connect invocation/admin consent. Running a command inside an arbitrary unprivileged agent container cannot alter the Mac host; explain unsupported context before mutation, not promise impossible privilege. Product service container on Linux is created by the host flow, not manual docker-run assembly.
+
+## Application Admission, File Actions And Child CWD
+
+### Shared access authority and exact operation ownership
+
+Put common read-only attachment/admission types and bounded child checks in core `autobyteus-ts/src/workspace-filesystem/shared-mount/`, exported for server and core tools. No service admin/elevation or app DB dependency in core. `SharedMountAccess.classify(absolutePath)` lexically checks the configured root/known platform aliases **before** shared filesystem calls; `verify(binding, accessMode)` returns ready/missing/wrong/denied/unavailable/indeterminate within10s. It returns an observation, never a cached durable READY. Source+marker/permissions check occurs in child, not shared libuv worker pool. One in-flight check per attachment, exact retained child; explicit shutdown does not forget a child merely because a deadline expired.
+
+Workspace registry/loader remain metadata-only. Existing provisioning/restore + runtime preparation/next-turn entry consult access before using configured shared path; preserve original intended root on failure, remove shared temp/cwd fallback. Already running native CLI may stall/fail; report actual state, not fabricated cancellation. Checks precede actions but cannot eliminate outage after check; child ownership handles that race. Missing mount directory remains nonwritable, and app never creates local replacement. Arbitrary administrator force-unmount/root writes remain outside safe lifecycle, not an advertised guarantee.
+
+Server shared explorer uses `SharedWorkspaceOperationOwner`: one action child per selected workspace, fixed typed operations for read/tree/search/write/create/rename/move/delete and bounded request queue. Spawn child in private cwd; all operation filesystem work and tree traversal happen there through existing explorer algorithms. Parent preserves public results/events and unsaved-editor behavior. A timed-out write is **outcome unknown**, never automatically repeated; retain child until close and report later completion/disposition. New work on that workspace is indeterminate while stalled, unrelated local workspace unaffected. Watcher owns notifications only; remote polling not added. Server does not open native shared file descriptors on parent just to pass them to a worker.
+
+Core native file tools have their own fixed file-action child owner (bounded one per attachment); preserve existing read/write/edit formats, denied-path rules and explicit absolute/base_dir semantics. Split lexical resolution from physical permission/symlink checks; physical resolution **and** IO execute in child for configured shared paths. Do not bypass denied paths or use workspace implicit fallback. Transfer configured denied-path values into child; local calls retain existing path policy. Server explorer and core file-tool owners have separate fixed purpose, each bounded, not a generic arbitrary-code remote worker. Parent worker_threads do not isolate a shared libuv pool; use processes.
+
+### Native process and terminal CWD
+
+Remove Claude parent `statSync/process.chdir` for shared cwd; SDK query cwd remains the project, existing exact ClaudeSdkProcessOwner remains child authority. A child spawn with cwd on NFS can itself block before exec; launch a fixed POSIX exec trampoline from private cwd for shared CLI processes:
+
+`/bin/sh -c 'cd -P "$1" || exit 126; shift; exec "$@"' autobyteus-shared-cwd <project> <absolute-runtime-command> <argv...>`
+
+No user text interpolated into script; argv boundaries only. Initial shell starts from private local directory, changes cwd **inside child**, then exec replaces that same PID with CLI. Existing streams/signals/exact-process lifetime still belong to existing runtime owner; SDK custom spawn hook wraps only process launching, not tool authorization. Failing chdir produces error, no private-cwd runtime fallback. Validate argument quoting, cancellation, no shell injection and outage response; this mechanism is a design choice, not claimed tested in the feasibility ledger.
+
+Codex/Grok launch use same fixed shared-cwd helper where an OS cwd is needed. ACP session cwd remains actual project; CLI/auth homes stay private. For terminal use existing isolated PTY bridge: launch bridge from private cwd, send intended cwd in fixed IPC/env, resolve/check/change directory inside bridge before shell-ready; never in server/core parent. Core run_bash/background and explicit WS terminal must use shared admission and isolated path. Non-shared/Windows behavior stays unchanged. Absolute terminal cwd is still explicit, not tied secretly to workspace registration.
+
+## Configured Skills And Runtime Lifecycle
+
+New server `RuntimeSkillProfile` is private per execution generation under existing private runtime/session storage, one capability with runtime-specific **exposure adapters**, not a new skill catalog. Existing SkillService/scope/collision policy remains authority. Resolve configured scope and managed-source generation/lease first; EXPLICIT conflicts fail, ALL_INSTALLED keeps project-owned entry and skips conflicting configured entry. Shared project inspection is bounded child IO. Missing configured source retains current warning/failure policy; no silent disable to make sharing pass.
+
+Stage generated manifest and complete skills/support files or private source links under node-private profile; do not copy credentials or arbitrary plugin hooks/MCP settings. Generated plugin name `autobyteus-configured`; keep mapping logical skill name -> native discovered name/path. Register exact profile/source leases before awaited preparation; release only after existing exact runtime process/SDK/client lease owner observes completion/close. Timeout/rejected async close retains receipt. Source managed-generation acquisition/publish semantics stay with existing skill owner; profile uses its pinned generation, never deletes catalog source. Refresh/new generation occurs through existing runtime lifecycle, not in-place process-wide roots mutation.
+
+| Runtime | Private exposure and selection | Process/restore contract |
 | --- | --- | --- |
-| DS001 | Primary: command -> first-use create/connect -> approved configuration -> OS/service lifecycle -> verified folder/status | Shared-folder service owns intended source/connection/grants and persistent lifecycle. Command is thin interactive entry, not a second setup product. OS adapter validates and applies only selected approved changes; operation receipt distinguishes configured from currently usable. Continued work does not require terminal open. |
-| DS002 | Primary: native file operation -> local mounted client -> network filesystem service -> chosen source; peer fresh open reverses this path | Existing engine owns filesystem semantics. AutoByteus never proxies individual file reads through a special sharing API or copies/synchronizes project files. Server source and all client roots map to one storage identity. Backend/protocol qualification remains pending. |
-| DS003 | Primary: workspace selection -> existing standalone/Team/Org provisioning/restore -> verified shared binding -> runtime opening -> native process cwd -> ordinary tools | Existing provisioning/runtime owners retain sessions, sandbox/auth policies and cancellation. Shared location authority supplies current verified binding or explicit unavailable result. Native configured skills require private exposure; existing process lifetime owners retain/drain exact generations. |
-| DS004 | Bounded requested path: file/terminal/run action -> classify configured shared path -> bounded current readiness -> selected action owner -> result/indeterminate | Shared authority does not stat NFS on the parent thread or re-audit every workspace at startup. A file child remains owned after deadline until exit; parent remains responsive. Actual native CLI IO may stall; app cannot promise cancellation of every syscall. |
+| Claude | SDK local plugin option points to generated skills-only private plugin. Native names are namespaced; prompt/configured-skill block resolves logical names to actual catalog names, Skill/MCP/policy unchanged | Bootstrap/query options carry plugin path. Existing preparation guard/ClaudeSdkProcessOwner owns release. Resume rebuilds private profile, passes current plugin, same native session ID; FR014 proves mechanism |
+| Codex | `skills/extraRoots/set {extraRoots:[private parent]}` before skills/list/thread; native schema capability check, catalog exact name/path; typed skill input uses discovered manifest | Client-manager key changes from cwd-only to compound `{cwd,profileId}`; actual cwd is not that key string. One immutable per-run generation profile per app-server process. Same-profile holders only; no mutation across threads. Exact existing lease owner closes before profile release; FR020 proves replacement-root resume |
+| Grok | Literal `agent --plugin-dir <private skills-only plugin>`; validate ACP plugin capability/discovered skill paths. Do not change GROK_HOME or transplant authentication | ACP process owner gets profile before spawn, release after actual exit; session/new/load cwd unchanged. FR057 actual1.0.52 ACP discovery passes; live turn/resume remains downstream validation |
+| Antigravity | Reuse existing private run capsule/.agents/skills linker, manifest/lifecycle owner. Route shared project collision checks through bounded worker; keep private source leases | Existing capsule restore/rebuild semantics and manifest retained; no duplicate plugin/capsule owner |
+| AutoByteus native | Existing configured skill prompt/source owner stays node-private; core tools use bounded shared path IO above | No CLI plugin adapter or new shared project link |
 
-Return/events: status/path output follows service verification; file/explorer returns follow explicit operation completion. Existing run/runtime streams and watcher streams keep their public boundaries. No cross-node messages, file-to-context ingestion or invented notification owner.
+Supported CLI versions/capabilities are recorded by runtime discovery; incompatible capability -> precise error, never publish node-private symlinks into common project as fallback. Do not silently drop configured skills or native names. Project-owned .claude/.codex/.agents skills remain ordinary project data; no global scan/delete of old absolute links. Existing ambiguous/broken project entries are preserved/reported according to collision policy, not claimed owned by this node. Stop one node must not delete another's needed private profile. Restoring on another node reconstructs profile from that node's configured sources, not copied absolute paths.
 
-Thin entries: service command and desktop argument dispatch; existing workspace/run/file/terminal API routes. No entry secretly owns storage grants, mount cleanup or process generations. New service app-independent lifecycle means desktop/server shutdown is not authority to delete shared storage.
+## Nodes NFS Guide
 
-## Off-Spine Concerns And Boundary Encapsulation
+Extend existing NodeManagerTabs/NodeManager union, route-query selection and panel with `nfsGuide` beside `dockerGuide`. Add NfsGuideCard.vue and pure nfsLauncherCommands.ts release descriptor, localized en/zh-CN content and copy/unavailable/failure feedback. Reuse responsive/accessibility card pattern from screenshot, preserve current node selection and all old tabs. Display one complete first-use install-and-start invocation, create/connect distinction, intended **computer** and resulting workspace path. No Windows card, mount-dashboard or browser execution. Missing compatible published release disables working-command copy and explains availability; test fixtures are not public availability evidence. Standalone service remains obtainable without app.
 
-| Concern / authority | Used by | Responsibility / forbidden bypass |
+## Off-Spine Boundaries, Interfaces And Dependency Rules
+
+| Public boundary / accepted subject | Encapsulates | Callers / forbidden bypass |
 | --- | --- | --- |
-| Source qualification/permission grant | DS001 service | Canonical supported folder/private-location/export checks before publish; no hidden copy, recursive chmod/chown or arbitrary root shell execution |
-| OS service/mount adapter | DS001 | Exact owned resource/privilege boundary, idempotent config and detach; preserve unrelated exports/mounts. Native mode no Docker prerequisite |
-| Docker selected-node apply | DS001 | Snapshot/validate exact local managed node configuration and confirm stop/recreate; preserve immutable image/private volumes/ports; reject remote/unmanaged daemon targets |
-| Shared binding/admission | DS003/004 | Expected source/identity and current mount readiness, bounded response; path prefix/hash alone never READY; ordinary local workspace branch is existing supported behavior, not shared fallback |
-| Native skill profile | DS003 runtime owner | Node-private assets, same configured logical scope/collision policy; no cross-node cleanup ownership or silent skill disable. Exact native API/name/profile shape still being proved |
-| Transport authorization | DS001/002 | Must establish authorized computer/data access and distinguish control credentials from NFS AUTH_SYS. Current raw test allowlists are not a completed supported permission policy; v1 does not automatically require a new PKI/pairing/encryption platform |
+| SetupService.plan/apply(plan receipt, consent) | Selected source, OS jobs, exact resource revalidation and apply result | CLI only; no renderer privileged changes, no shell-evaluated connection metadata |
+| HostedFilesystem + ClientAttachment config | Intended source vs expected local mount | Supervisor/installer; no READY persisted or workspaceId used as storage authorization |
+| SharedMountAccess.classify/verify(binding, accessMode) | Lazy descriptor, mount/identity/nonroot check child | workspace/run/file/terminal boundaries; no startup full scan or parent shared stat |
+| SharedWorkspaceOperationOwner.invoke(verified binding, typed action) | Explorer/action child and retained in-flight ownership | Existing explorer facade; watcher cannot own actions, unknown write cannot be replayed |
+| RuntimeSkillProfile.acquire(scope, runtime, executionGeneration) | Private adapter/discovered-name map, exact source/profile leases | Existing runtime bootstrap/close owner; no shared link publisher or cwd-only Codex pooling for profiles |
+| DockerNodeAttachment.apply(exact container plan) | Preservation/recreation/rollback receipt and daemon NFS mount | Setup owner; no start_node/pull/volume-delete shortcut |
+| NFS guide descriptor | Supported release/download/command text | Vue display/clipboard only; no fake URL or execution |
 
-Dependency rules: no normal application startup/global registry enumeration waits on network mounts. Existing workspace deletion removes registration only, not service/source. Runtime/file/terminal public owners consult shared authority; callers cannot directly run synchronous shared fs/chdir before it. OS/Docker mutation stays behind service consented lifecycle. A watchdog cannot release a still-alive child slot; already-running native tools retain their normal policy/failure contract.
+Singular responsibilities and explicit identity shapes: all above Yes; ambiguous-selector risk low after separating storageId, workspaceId, containerId and executionGeneration. Shared structures: `SharedMountBinding` has storageId/root/endpoint/export/protocol (no duplicated ready); `MountObservation` is a discriminated result with time/error and exact child disposition; `RuntimeSkillExposure` maps logical name to discovered native name/path; `DockerApplyReceipt` is private exact old/new resource state, not a second launcher catalog. Types stay with owning capability, not a generic utils bag. Config implementation language differs, so JSON contract fixtures are shared, not a generated cross-language framework.
 
-## Interface Boundary / Naming / Reuse Checks
-
-Proposed subjects have singular natural meaning: source folder, participant grant, shared binding, mount status, selected managed Docker node and runtime skill profile. Do not use generic workspaceId for storage authorization or a generic node selector for computer/container/process. Explicit compound shared binding must carry expected storageId + local mount root + backend endpoint, not redundantly persist a second asserted ready flag. Readiness is an observation, not intended configuration.
-
-Reuse existing workspace registry/manager for path registration; existing workspace input remains rootPath. Reuse native clients/engine for bytes, existing PtySessionManager/IsolatedPtySession and ClaudeSdkProcessOwner/Codex exact leases for lifetime, existing atomic config writer pattern for private intended state. Create a separate service owner because no current owner manages cross-machine storage and OS mount lifecycle. Extend file/terminal requested operation boundaries, not watcher into a second action controller. Detailed method signatures/current SDK profile names are pending proof, not authoritative placeholder APIs.
+Reuse/extend: workspace registry, skill catalog/collision policy, runtime exact owners, existing PTY bridge and explorer algorithms, atomic current config conventions, launcher and Nodes guide pattern. New capability only for missing OS service/attachment administration, read-only shared mount access and private exposure. Core never imports server; server composes core read-only access. Administrative Go state isn't the runtime process owner; TypeScript never mutates export/jobs. No shared global provider state, unnecessary startup dependency, engine I/O through app API or root-owned job reading user shell executable state.
 
 ## Persisted Data / State Transition Decision
 
-- New private service config: new subject, no historical file to migrate. Tolerant known-field projection and exact current writer, no schemaVersion field. Atomic replacement, ordinary recognized intended/actual retry, no speculative per-syscall journal/hash corpus.
-- Existing workspace registry: released object mapping workspaceId -> rootPath inspected in workspace-registry-file-persistence.ts110–140. Keep it unchanged. Shared attachment is a separate opt-in binding; absence truthfully means ordinary existing workspace. **Directly usable — no registry migration.** Do not rewrite old paths/IDs, infer every directory named shared was shared, or move projects.
-- Existing run/session metadata: no persisted shape change chosen; current skill intent/profile owner must be traced before deciding. **Undetermined for dependent runtime exposure changes**; no migration invented.
-- Existing project skill links: prior release creates absolute links without durable cross-node ownership proof; process-local holders do not authorize deleting unknown existing files. Preserve/reject an occupied path where needed; any cleanup needs exact demonstrable ownership and user consent. No global project scan at startup.
-- Governing migration convention: full data_migration_guideline.md. Closest inspected remove-global-skill-discovery-mode migration preserves per-file backup on rewrite, SKIPPED when no retired value, FAILED item on read/write error, aggregates partial results; that past mechanism is not selected for this task. Its preserved backups are inert, not authority to replay or reset successful ledger entries. No historical migration source shapes changed/imported yet. Final transition checklist remains required if a runtime format change is selected; no broad startup success gate.
+Migration conventions fully investigated before choice: server data_migration_guideline; remove-global-skill-discovery-mode predecessor demonstrates per-file backup/SKIPPED/FAILED, not authority for arbitrary startup migrations here.
 
-## Legacy Removal / Decommission Plan
-
-| Item | In-scope disposition / replacement |
-| --- | --- |
-| Shared-path runtime resolution fallback to temp/cwd | Remove only for configured shared binding; explicit admission failure, ordinary local default behavior preserved |
-| Node-private configured skill symlinks in shared project | Replace with proven runtime-private exposure; no distributed compatibility link, no blind deletion of user/project-owned assets |
-| Parent synchronous shared stat/realpath/chdir at traced boundaries | Move selected shared-path work to correct existing child/action owner; never retain a legacy shared bypass to get a green test |
-| Blind managed-node launch recreation for shared apply | Use exact validated configuration and explicit disruption approval, not pull/replace existing image/private state |
-| Existing local-only Docker shared folder | Preserve separate supported local use; do not rename/delete it or claim it is network storage |
-
-Compatibility rejection: no old shared runtime fallback/local mirror, SDK file interception, path-only identity, dual project-skill publisher, version-switch legacy data reader or global safe.directory wildcard. These would violate explicit scope/preservation guarantees. Unchanged local-only functionality is not a compatibility wrapper for replaced shared behavior.
-
-## Subsystem And Candidate Folder / File Responsibilities
-
-**Draft allocation, not final implementation map.** Final file list will follow proven backend/distribution/profile contracts, not invent a new subsystem for every row.
-
-| Area / candidate path | Owner / responsibility | Must not contain |
+| Stored subject / representative shape | Decision / why | Reader/writer, privacy and restart constraints |
 | --- | --- | --- |
-| Dedicated shared-folder service package (exact root pending distribution choice) | CLI boundary, persistent service owner, private config, platform OS/mount adapters, filesystem backend integration | App DB/memory, provider credentials, custom filesystem engine, public multi-tenant SDK |
-| Existing scripts/public/docker/.d/bash lifecycle | Extend selected local node apply/preservation boundary | Unapproved stop/recreate/pull, sharing CLI homes/private app data |
-| server src/workspaces shared binding capability | Path registration integration/admission, configured-vs-observed identity contract | Global startup mount scan, destructive unmount, remote file transfer |
-| server file-explorer and terminal-streaming/API ownership | Bounded selected shared actions, preserve terminal home independence | Watcher-as-action-owner, parent synchronous NFS stat |
-| server runtime-management and agent-execution/backends/shared | Runtime-private configured skill profile/cwd/lease integration | Shared node-private links, process-local holder mistaken as distributed lock |
-| core tools/terminal selected shared operation boundary | Preserve public absolute cwd semantics while removing parent shared blocking | Broad unrelated shell/Windows redesign |
-| desktop packaging/early command dispatch | Reach same service from desktop distribution without separate Node/Docker install | Duplicate service state or renderer-only mount orchestration |
+| Existing workspace registry workspaceId -> rootPath, volume proportional to registered workspaces | **Directly Usable — No Migration**; path meaning/ID unchanged | Existing known-field registry owner; separate attachment, no path rewrite or project move |
+| Existing run/session references/native session IDs plus AgentDefinition skillNames/skillScope | **Directly Usable — No Migration**; no persistent field change | Rebuild private current profile from existing scope on restore; do not persist plugin absolute path as new authority |
+| Private runtime profile generated per generation, not historical authority | **Discard or Rebuild** after exact process release | Existing configured catalog intent/source generations authoritative. Startup does not delete uncertain live profile; owned orphan cleanup only after process proof |
+| New hosted-filesystem/attachment and source marker, one filesystem/attachment per installation | **New subject — no historical migration** | Atomic exact current writer; known-field reader; schemaVersion not introduced. Keep source UUID and server recovery state across restarts |
+| Existing launcher state plus optional attachment reference | **Directly Usable — No Migration** | Missing reference retains unselected local behavior; known-field parser/writer preserves all existing settings. Only successfully applied nodes acquire opt-in reference |
+| Existing project absolute skill links | **Preserve; no automatic migration/cleanup** | No durable cross-node ownership proof, so don't delete/repair others' data. New managed-shared flow never creates them; collision result is explicit |
 
-Folder depth: entry/interactive transport, service lifecycle/control, private persistence, platform/engine adapters are distinct responsibilities, not one flat utility file. Existing capability folders remain authoritative. Shared types extracted only where real repeated boundary payloads exist; storage identity != workspaceId, intent != readiness, process release != timeout. Final extraction/data-model/field-key checks pending.
+No data loss allowed except disposable fixtures/rebuildable exact-owned generated profiles after lease release. No migration ledger/backups needed for untouched formats; normal new config apply retains bounded rollback receipts. External project backup/recovery is operator duty, not replication. Rollout: upgrade participating application/launcher to shared-capable build before selecting managed workspaces; refuse incompatible node integration before disruption. Old independent unmanaged applications are not silently reconfigured.
 
-## Change / Refactor Sequence And Guidance
+## Legacy Removal And Compatibility Rejection
 
-1. Finish candidate qualification: native binaries, chosen Mac/Linux/Docker source folder operations/identity/permissions, no fallback; published locks/rename/restart behavior. Retain failed experiments; physical preimplementation gate remains until explicit sequence change approval.
-2. Finish service distribution/minimal trusted-LAN permission policy and durable OS lifecycle design, normal privilege/disruption prompt and container execution limits; prove first-run/repeat/cancel/busy detach and selected-source preservation. No claims from a few internal mount commands.
-3. Finish private configured native skill discovery/logical-name/collision/profile-generation/release and synchronous cwd/action ownership proof. Use existing exact runtime owners and no local-only shared compatibility fallback.
-4. Complete authoritative file/interface/transition map, Change Scope and final size/risk, then route via configured review/implementation rules. No product implementation from this draft.
-5. Implementation Engineer owns source/self-checks; independent reviewers and API/E2E own their gates; Delivery owns current-build/full guided user journey, physical Mac/Linux/Docker, docs/merge/user verification/release/cleanup. Original physical/user proof never replaced by these prototype totals.
+| Item | Disposition / replacement | Scope |
+| --- | --- | --- |
+| Configured shared-path temp/cwd fallback | Remove; SharedMountAccess error retains intended path | In this change |
+| Shared-project configured skill publisher | Replace with private exposure; no dual publisher/profile fallback | In this change; healthy local workspace branch stays supported |
+| Shared parent synchronous physical path checks/Claude chdir/PTY spawn cwd | Move into exact child owner / fixed exec trampoline | In this change |
+| General launcher recreation for attachment | Not reused; exact preserved Docker apply | In this change |
+| Existing local-only /home/autobyteus/shared | Keep independent documented functionality, never presented as cross-machine storage | Preserved behavior, not legacy compatibility |
+| UNFS patch prototypes | Evidence only; do not move into production backend | Rejected candidate |
 
-## Change Scope, Tradeoffs And Risks
+No dead source is claimed without reachability proof. Remove newly unreachable shared-specific helpers/imports/tests in touched files once cutover is complete; do not broad-clean unrelated package. Reject path-only READY, local-copy fallback, global safe.directory, shared auth homes, compatibility schema readers, dual shared skill publishing and timeout-as-release. Unchanged local branch is a separate preserved behavior, not a fallback for failed shared execution.
 
-Draft boundary: UC001–007/BEH001–007 in approved scope only. New service integration, existing path/run/file/terminal/native runtime boundaries and necessary private-profile correction are in scope. Leave private databases/memories/CLI homes, public service/SDK, Windows, unrelated runtime/platform refactors and parked collaboration unchanged. Known automatic remote watcher limits documented, not a new notification subsystem. Follow-ups: any out-of-scope OS-specific build/dependency portability, broad runtime ownership redesign or public/HA filesystem service is separate work, not needed here.
+## Final Subsystem / File Responsibility Map
 
-Key tradeoffs: kernel clients avoid FUSE/CLI interception; native Mac nfsd available but different protocol/port/lifecycle; Ganesha VFS has stronger demonstrated NFS4.1 semantics but cannot directly export tested Mac bind; UNFS3 offers normal-folder portability/single-user UID presentation with no NLM and still-unqualified lifecycle/native packaging. Native UNFS3/libtirpc1.3.8 actual Mac kernel mount fails bad RPC in FR047 despite successful build; do not select it as a uniform engine. Native Apple nfsd remains the demonstrated Mac-serving route. Backend cannot be picked just to satisfy command aesthetics. Working mounted components are not a finished service.
+This is the finalized allocation after spine/ownership/type review; redundant draft mapping omitted. Paths relative to worktree; braces denote cohesive files, not new runtime layers for each name. Existing exact file names stay unless a narrow extraction is needed.
 
-Known risks/gates: physical topology untested; new engine native binary and failure/security matrix not complete; control authorization alone never secures raw NFS data; reserved-source-port checks do not authenticate participants; exact participant revocation/cache limits must be published; ordinary in-flight IO can block; multi-writer project/Git state requires coordination; busy detach must preserve mount/children/data; unsupported folders/OS privacy approval must fail truthfully. No 100% verification or final command is represented.
+| Path / create or extend | Owner and one concern | Boundary / must not contain |
+| --- | --- | --- |
+| autobyteus-nfs/go.mod; cmd/autobyteus-nfs/main.go | Build module and thin invocation | No storage state in entry |
+| autobyteus-nfs/internal/setup/{plan,apply}.go | Selected-resource plan, consent and apply sequencing | No general workflow engine |
+| autobyteus-nfs/internal/config/{hosted,attachment,store}.go | Tight subject records/atomic private storage | No workspace DB migration/READY cache |
+| autobyteus-nfs/internal/service/{supervisor,probe}.go | Persistent owned lifecycle/exact child check | No second engine data plane |
+| autobyteus-nfs/internal/platform/{darwin,linux}.go | Elevation, mount inspection, launchd/systemd/exact export ownership | No unbounded shell interpolation/global reset |
+| autobyteus-nfs/internal/backend/{apple,ganesha}.go; docker/Dockerfile | Chosen engine settings/start/qualification and slim pinned Linux image | No UNFS/custom driver/macDocker source fallback |
+| autobyteus-nfs/internal/docker/{discovery,attachment,recreate}.go | Local daemon and exact node preservation | No provider credentials in logs/general container manager |
+| scripts/public/nfs/install.sh; .github/workflows/release-nfs.yml; RELEASE.md | One install/start and existing-tag asset production/docs | No release outside guide/user authority |
+| scripts/public/docker/autobyteus-docker.d/bash/{core,docker-runtime,commands}.sh and focused tests | Preserve attachment reference in state/hash/new/upgrade | No NFS backend logic or Windows promise |
+| autobyteus-ts/src/workspace-filesystem/shared-mount/{binding,access,probe-worker}.ts + exports | Common lazy read-only descriptor/admission; same typed contract fixtures as Go | No server dependency/admin mutation |
+| autobyteus-ts/src/tools/file/{workspace-path-utils,read-file,write-file,edit-file}.ts; new shared-file-operation-owner/worker.ts | Lexical/physical split and bounded shared native file operation | Preserve denied paths and output semantics |
+| autobyteus-ts/src/tools/terminal/{execution-cwd,isolated-pty-session,isolated-pty-bridge-source}.ts; tools/{run-bash,start-background-process}.ts | Explicit shared admission, private bridge spawn/child cwd | No implicit workspace cwd or duplicate PTY owner |
+| autobyteus-server-ts/src/workspaces/{workspace-manager,filesystem-workspace}.ts | Metadata retained; requested shared admission and explorer owner selection | No startup scan/registry format change |
+| autobyteus-server-ts/src/file-explorer/file-explorer.ts; new shared/{operation-owner,operation-worker}.ts | Existing facade delegates all shared action/tree/search IO to child | No watcher-action conflation or repeated timed-out writes |
+| autobyteus-server-ts/src/api/websocket/terminal.ts; terminal-streaming/PtySessionManager.ts | Bounded explicit cwd admission and existing session ownership | No parent shared fsstat/home fallback |
+| server src/agent-execution/services/{agent-run-provisioning-service,standalone-agent-run-lifecycle-service}.ts; team/org run-service and configured-agent-execution-handle.ts | Existing create/restore/turn paths call shared authority through workspace/runtime boundary | No duplicated mount policy per Team/Org |
+| server src/agent-execution/backends/shared/{runtime-skill-profile,runtime-skill-exposure}.ts (new); existing workspace-skill-collision-policy | Private profile lease/adapter contract; existing scope semantics | No second skill catalog/shared symlink registry |
+| server src/agent-execution/backends/{claude,codex}/backend/*bootstrapper.ts; session query/options and workspace resolvers/materializers | Shared branch private exposure/native name map, no cwd fallback | Ordinary local publisher/policies unchanged |
+| server src/runtime-management/claude/client/{claude-sdk-client,claude-sdk-process-owner}.ts; codex client manager; new shared/shared-cwd-spawn.ts | Existing exact process/lease ownership, compound Codex profile identity and fixed trampoline | No second PID authority or process-global chdir |
+| server src/runtime-management/grok/grok-build-launch-profile.ts; acp/{acp-agent-launch-profile,acp-agent-process}.ts; backends/acp/backend/acp-agent-run-backend-factory.ts | Per-process skills-only plugin before spawn and actual-close release | No GROK_HOME/auth relocation |
+| server src/agent-execution/backends/antigravity/capsule/{agy-run-capsule,agy-configured-skill-linker}.ts | Existing capsule retained; bounded shared collision inspection | No new capsule schema/migration |
+| autobyteus-web/components/settings/{NodeManagerTabs,NodeManager,NfsGuideCard}.vue; utils/nfsLauncherCommands.ts; localization/messages/{en,zh-CN}/settings.ts | Narrow guide navigation/copy/release descriptor | No live service controller/Windows support |
+| Package-local tests and autobyteus-nfs/README.md; affected server/web docs | Durable acceptance coverage and accurate operational contract | No historical prototype represented as product signoff |
+
+Folder check: service transport, setup control, config persistence, platform/backend/Docker adapters remain distinct; core shared-mount is OS access (not app admin); server profiles stay runtime-owned; Vue guide stays interaction-only. Low layering ambiguity after explicit core->server dependency prohibition. No redundant independent storage identity fields, parallel profile catalogs or one-file-per-abstract-layer hierarchy. Applied patterns are existing lifecycle leases, bounded child isolation, private current-schema config and platform adapters, not a plugin framework.
+
+Concrete shape example: container `/Volumes/autobyteus-shared/project` -> daemon's NFS volume -> same storageId/source as Mac mount; **not** mkdir same path on two computers. Process preparation -> profile lease -> spawn -> observed close -> release; **not** Promise.race timeout -> delete live profile. JSON join metadata -> bounded parser -> typed plan; **not** pasted `eval` shell.
+
+## Change Sequence, Validation And Implementation Guidance
+
+1. Implement service config/plan/current state + backend/source qualification + packaged bootstrap on isolated resources, and pure contract fixtures. Current architecture-review gate precedes production implementation. No live data/export/mount/node change without explicit operation approval.
+2. Implement native supervisors/mount probes, selected Docker preservation and repeat/detach; integrate launcher opt-in reference. No installer success before same-source and execution-UID verification. Keep unsupported combinations explicit.
+3. Add common lazy shared admission and bounded file/terminal/cwd paths. Preserve metadata-only startup and unrelated local work. Remove shared fallback at all traced create/restore/turn boundaries before enabling feature.
+4. Add private runtime exposure with exact leases/capability checks, namespace/typed input mapping and restore. Cut shared publisher and cwd-only profile pooling paths, retain project-owned skills/collision semantics. Confirm denied-path and sandbox policies unchanged.
+5. Add narrow Nodes guide and pure release descriptor. Before publication, unavailable state is truthful; test command/download linkage against actual built/released assets, not invented URLs.
+6. Implementation self-checks -> configured independent review -> API/E2E realistic system checks -> Delivery docs, real physical scenario, merge, explicit user verification, authorized release/cleanup. No downstream artifact or pass is manufactured by Solution Designer.
+
+Validation obligations: pure plan/config/descriptor/parser tests; Go native build and real clean-machine bootstrap; checksum/noTTY/denied elevation/cancel/retry; identity/wrong/missing/source/UID/outage checks; zero local fallback and parent<=10s while exact child remains blocked; lock/exclusive/rename/symlink/execute/Git/concurrent different files/<=5s binary hashes; selected Docker image/ports/private volume preservation and failure rollback; restart sameUUID; busy detach/source preservation; current-build workspace selection/explorer reload and actual native Codex/Claude reciprocal instructions including peer-stop/restore configured skills; Grok/Antigravity/core in-scope smoke/lifecycle; accessible guide copy/failure/unavailable/navigation tests. Table every experiment with **node role/ID, source and mount path, exact command/build, result and uncovered scope**.
+
+Follow TESTING.md production public path requirements, isolated data/resource authorization and package test commands. Unit mocks do not prove NFS/native/OS behavior. No direct controller shortcuts for full user journey; no shell transport probe substituted for instructed native agents. Physical Mac and independent Linux plus Mac Docker agent, actual one-command create/connect and user verification are release/delivery gates, not designer waits. User receives the runnable single command only once built/published and verified; internal python/mount test scripts are never offered as that product command.
+
+Tradeoffs/risks: two mature OS backends, not one portable but faulty engine; private LAN plaintext/coarse trust rather than security-platform scope; Linux v4 locks vs Mac v3 documented local-only advisory locks; chosen source may have incompatible ownership/case/OSprivacy; hard mounts can retain blocked IO; exact Docker recreation needs downtime and configuration qualification; native runtime APIs may change; independently physical hardware/release credentials still not supplied here. These are bounded implementation/validation obligations with explicit failure behavior, not unresolved product-choice questions. If evidence disproves selected mechanism, return findings for solution revision instead of silently narrowing scope.

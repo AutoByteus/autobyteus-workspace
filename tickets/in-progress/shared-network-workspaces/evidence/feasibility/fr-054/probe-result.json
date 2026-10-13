@@ -1,0 +1,1990 @@
+{
+  "run": "ab-sf-fr054-00b67a81",
+  "scope": "minimal stale-handle diagnosis on original Mac source plus Linux kernel clients; no native Mac client/agents/physical LAN/finished setup; corrected prototype, root daemon all-squashed",
+  "engineCommit": "ec1660ba33c80d5c67131e163e68834c1a10e243",
+  "source": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr054-owned-6wfeynqy/source",
+  "mount": "/Volumes/autobyteus-shared",
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "bridge",
+        "--format",
+        "{{(index .IPAM.Config 0).Gateway}}"
+      ],
+      "rc": 0,
+      "stdout": "172.17.0.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "ab-sf-fr050-unfs:probe",
+        "--format",
+        "{{.Id}}"
+      ],
+      "rc": 0,
+      "stdout": "sha256:feb18a8f02a7470eb5427abac1dc8794da707ff6fbcbc14cdb850c28fbcf977b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr054-00b67a81-server",
+        "--label",
+        "org.autobyteus.probe=fr-054",
+        "--user",
+        "0:0",
+        "-p",
+        "127.0.0.1::2049",
+        "--mount",
+        "type=bind,src=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr054-owned-6wfeynqy/source,dst=/export",
+        "--mount",
+        "type=bind,src=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr054-owned-6wfeynqy/config,dst=/config,readonly",
+        "sha256:feb18a8f02a7470eb5427abac1dc8794da707ff6fbcbc14cdb850c28fbcf977b",
+        "-d",
+        "-p",
+        "-t",
+        "-n",
+        "2049",
+        "-m",
+        "2049",
+        "-e",
+        "/config/exports"
+      ],
+      "rc": 0,
+      "stdout": "f7ed018960b100b365b15ca75eefc47414b7cc63f8070a89fb52c0dd14a3d29d\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "ab-sf-fr054-00b67a81-server",
+        "--format",
+        "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}"
+      ],
+      "rc": 0,
+      "stdout": "172.17.0.6\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "port",
+        "ab-sf-fr054-00b67a81-server",
+        "2049/tcp"
+      ],
+      "rc": 0,
+      "stdout": "127.0.0.1:56788\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');console.log(JSON.stringify({uid:process.getuid(),source:f.readFileSync('/export/project/preexisting.txt','utf8'),owner:f.statSync('/export').uid}))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":0,\"source\":\"KEEP_MAC_BIND_SOURCE\",\"owner\":0}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-054",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/export",
+        "--opt",
+        "o=addr=172.17.0.6,vers=3,proto=tcp,mountproto=tcp,mountvers=3,port=2049,mountport=2049,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr054-00b67a81-nfs-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr054-00b67a81-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr054-00b67a81-client-a",
+        "--label",
+        "org.autobyteus.probe=fr-054",
+        "--user",
+        "10001:10001",
+        "--entrypoint",
+        "tail",
+        "--mount",
+        "type=volume,src=ab-sf-fr054-00b67a81-nfs-a,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "sha256:feb18a8f02a7470eb5427abac1dc8794da707ff6fbcbc14cdb850c28fbcf977b",
+        "-f",
+        "/dev/null"
+      ],
+      "rc": 0,
+      "stdout": "e24c7bbe0a4dcd9cc0f7fafe79355c7e33417f7c378686dd5f0fb170958b0e10\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-client-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(JSON.parse(require('fs').readFileSync(\"/Volumes/autobyteus-shared/storage.json\",'utf8'))))"
+      ],
+      "rc": 0,
+      "stdout": "{\"storageId\":\"b73c24c64dd94a9aa24d7e3f3b3ffb8d\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-054",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/export",
+        "--opt",
+        "o=addr=172.17.0.6,vers=3,proto=tcp,mountproto=tcp,mountvers=3,port=2049,mountport=2049,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr054-00b67a81-nfs-b"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr054-00b67a81-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr054-00b67a81-client-b",
+        "--label",
+        "org.autobyteus.probe=fr-054",
+        "--user",
+        "10001:10001",
+        "--entrypoint",
+        "tail",
+        "--mount",
+        "type=volume,src=ab-sf-fr054-00b67a81-nfs-b,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "sha256:feb18a8f02a7470eb5427abac1dc8794da707ff6fbcbc14cdb850c28fbcf977b",
+        "-f",
+        "/dev/null"
+      ],
+      "rc": 0,
+      "stdout": "0425fb03cc7e9f61da5672a3cdcfea9e8d560a6f83c73803da97627bb395441a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-client-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(JSON.parse(require('fs').readFileSync(\"/Volumes/autobyteus-shared/storage.json\",'utf8'))))"
+      ],
+      "rc": 0,
+      "stdout": "{\"storageId\":\"b73c24c64dd94a9aa24d7e3f3b3ffb8d\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-client-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_08a93ca34ae64683ac20edbc9e505acf\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-client-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_08a93ca34ae64683ac20edbc9e505acf\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');let q=f.openSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'a');f.writeSync(q,\"CLIENT_B_36ca54975b5e4baf9ec2d9e15d5e4774\\n\");f.fsyncSync(q);f.closeSync(q)"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-client-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_08a93ca34ae64683ac20edbc9e505acf\\nCLIENT_B_36ca54975b5e4baf9ec2d9e15d5e4774\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-client-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_08a93ca34ae64683ac20edbc9e505acf\\nCLIENT_B_36ca54975b5e4baf9ec2d9e15d5e4774\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-client-a",
+        "node",
+        "-e",
+        "const f=require('fs'),p=\"/Volumes/autobyteus-shared/project\";f.mkdirSync(p+'/dir');f.writeFileSync(p+'/dir/temp','RENAMED');f.renameSync(p+'/dir/temp',p+'/renamed');f.symlinkSync('roundtrip.txt',p+'/link');f.writeFileSync(p+'/exclusive','KEEP',{flag:'wx'});f.writeFileSync(p+'/exec.sh','#!/bin/sh\\necho UNFS_BIND_OK\\n');f.chmodSync(p+'/exec.sh',0o755)"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-client-b",
+        "node",
+        "-e",
+        "const f=require('fs'),p=\"/Volumes/autobyteus-shared/project\";let denied=false;try{f.openSync(p+'/exclusive','wx')}catch(e){denied=e.code==='EEXIST'};console.log(JSON.stringify({renamed:f.readFileSync(p+'/renamed','utf8'),link:f.readFileSync(p+'/link','utf8'),exec:require('child_process').execFileSync(p+'/exec.sh',{encoding:'utf8'}),denied,preserved:f.readFileSync(p+'/preexisting.txt','utf8')}))"
+      ],
+      "rc": 0,
+      "stdout": "{\"renamed\":\"RENAMED\",\"link\":\"HOST_SOURCE_08a93ca34ae64683ac20edbc9e505acf\\nCLIENT_B_36ca54975b5e4baf9ec2d9e15d5e4774\\n\",\"exec\":\"UNFS_BIND_OK\\n\",\"denied\":true,\"preserved\":\"KEEP_MAC_BIND_SOURCE\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":0,\"/export/project/.git\":{\"error\":\"ENOENT\"},\"/export/project/.git/config\":{\"error\":\"ENOENT\"},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "--user",
+        "10001:10001",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":10001,\"/export/project/.git\":{\"error\":\"ENOENT\"},\"/export/project/.git/config\":{\"error\":\"ENOENT\"},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-client-a",
+        "node",
+        "-e",
+        "require('fs').mkdirSync('/tmp/ab-owned-git-home',{mode:0o700})"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-client-b",
+        "node",
+        "-e",
+        "require('fs').mkdirSync('/tmp/ab-owned-git-home',{mode:0o700})"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-e",
+        "HOME=/tmp/ab-owned-git-home",
+        "-e",
+        "GIT_CONFIG_COUNT=1",
+        "-e",
+        "GIT_CONFIG_KEY_0=safe.directory",
+        "-e",
+        "GIT_CONFIG_VALUE_0=/Volumes/autobyteus-shared/project",
+        "ab-sf-fr054-00b67a81-client-a",
+        "git",
+        "-C",
+        "/Volumes/autobyteus-shared/project",
+        "init",
+        "--quiet"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":0,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":0,\"mode\":493},\"/export/project/.git/config\":{\"inode\":268,\"device\":48,\"uid\":10001,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "--user",
+        "10001:10001",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":10001,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":10001,\"mode\":493},\"/export/project/.git/config\":{\"inode\":268,\"device\":48,\"uid\":10001,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-e",
+        "HOME=/tmp/ab-owned-git-home",
+        "-e",
+        "GIT_CONFIG_COUNT=1",
+        "-e",
+        "GIT_CONFIG_KEY_0=safe.directory",
+        "-e",
+        "GIT_CONFIG_VALUE_0=/Volumes/autobyteus-shared/project",
+        "ab-sf-fr054-00b67a81-client-a",
+        "git",
+        "-C",
+        "/Volumes/autobyteus-shared/project",
+        "config",
+        "core.filemode",
+        "true"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":0,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":0,\"mode\":493},\"/export/project/.git/config\":{\"inode\":272,\"device\":48,\"uid\":10001,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "--user",
+        "10001:10001",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":10001,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":10001,\"mode\":493},\"/export/project/.git/config\":{\"inode\":272,\"device\":48,\"uid\":10001,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-e",
+        "HOME=/tmp/ab-owned-git-home",
+        "-e",
+        "GIT_CONFIG_COUNT=1",
+        "-e",
+        "GIT_CONFIG_KEY_0=safe.directory",
+        "-e",
+        "GIT_CONFIG_VALUE_0=/Volumes/autobyteus-shared/project",
+        "ab-sf-fr054-00b67a81-client-a",
+        "git",
+        "-C",
+        "/Volumes/autobyteus-shared/project",
+        "config",
+        "user.name",
+        "Probe"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":0,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":0,\"mode\":493},\"/export/project/.git/config\":{\"inode\":273,\"device\":48,\"uid\":10001,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "--user",
+        "10001:10001",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":10001,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":10001,\"mode\":493},\"/export/project/.git/config\":{\"inode\":273,\"device\":48,\"uid\":10001,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-e",
+        "HOME=/tmp/ab-owned-git-home",
+        "-e",
+        "GIT_CONFIG_COUNT=1",
+        "-e",
+        "GIT_CONFIG_KEY_0=safe.directory",
+        "-e",
+        "GIT_CONFIG_VALUE_0=/Volumes/autobyteus-shared/project",
+        "ab-sf-fr054-00b67a81-client-a",
+        "git",
+        "-C",
+        "/Volumes/autobyteus-shared/project",
+        "config",
+        "user.email",
+        "probe@example.invalid"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":0,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":0,\"mode\":493},\"/export/project/.git/config\":{\"inode\":274,\"device\":48,\"uid\":10001,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "--user",
+        "10001:10001",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":10001,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":10001,\"mode\":493},\"/export/project/.git/config\":{\"inode\":274,\"device\":48,\"uid\":10001,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-e",
+        "HOME=/tmp/ab-owned-git-home",
+        "-e",
+        "GIT_CONFIG_COUNT=1",
+        "-e",
+        "GIT_CONFIG_KEY_0=safe.directory",
+        "-e",
+        "GIT_CONFIG_VALUE_0=/Volumes/autobyteus-shared/project",
+        "ab-sf-fr054-00b67a81-client-a",
+        "git",
+        "-C",
+        "/Volumes/autobyteus-shared/project",
+        "add",
+        "preexisting.txt"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":0,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":0,\"mode\":493},\"/export/project/.git/config\":{\"inode\":274,\"device\":48,\"uid\":0,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "--user",
+        "10001:10001",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":10001,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":10001,\"mode\":493},\"/export/project/.git/config\":{\"inode\":274,\"device\":48,\"uid\":10001,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-e",
+        "HOME=/tmp/ab-owned-git-home",
+        "-e",
+        "GIT_CONFIG_COUNT=1",
+        "-e",
+        "GIT_CONFIG_KEY_0=safe.directory",
+        "-e",
+        "GIT_CONFIG_VALUE_0=/Volumes/autobyteus-shared/project",
+        "ab-sf-fr054-00b67a81-client-a",
+        "git",
+        "-C",
+        "/Volumes/autobyteus-shared/project",
+        "commit",
+        "--quiet",
+        "-m",
+        "LinuxOverMacSource"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":0,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":0,\"mode\":493},\"/export/project/.git/config\":{\"inode\":274,\"device\":48,\"uid\":0,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "--user",
+        "10001:10001",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":10001,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":10001,\"mode\":493},\"/export/project/.git/config\":{\"inode\":274,\"device\":48,\"uid\":10001,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-e",
+        "HOME=/tmp/ab-owned-git-home",
+        "-e",
+        "GIT_CONFIG_COUNT=1",
+        "-e",
+        "GIT_CONFIG_KEY_0=safe.directory",
+        "-e",
+        "GIT_CONFIG_VALUE_0=/Volumes/autobyteus-shared/project",
+        "ab-sf-fr054-00b67a81-client-a",
+        "git",
+        "-C",
+        "/Volumes/autobyteus-shared/project",
+        "rev-parse",
+        "HEAD"
+      ],
+      "rc": 0,
+      "stdout": "4f2e81edf181188e237b16cd9a3d78cd525fadab\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":0,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":0,\"mode\":493},\"/export/project/.git/config\":{\"inode\":274,\"device\":48,\"uid\":0,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "--user",
+        "10001:10001",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":10001,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":10001,\"mode\":493},\"/export/project/.git/config\":{\"inode\":274,\"device\":48,\"uid\":10001,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-e",
+        "HOME=/tmp/ab-owned-git-home",
+        "-e",
+        "GIT_CONFIG_COUNT=1",
+        "-e",
+        "GIT_CONFIG_KEY_0=safe.directory",
+        "-e",
+        "GIT_CONFIG_VALUE_0=/Volumes/autobyteus-shared/project",
+        "ab-sf-fr054-00b67a81-client-b",
+        "git",
+        "-C",
+        "/Volumes/autobyteus-shared/project",
+        "rev-parse",
+        "HEAD"
+      ],
+      "rc": 0,
+      "stdout": "4f2e81edf181188e237b16cd9a3d78cd525fadab\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":0,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":0,\"mode\":493},\"/export/project/.git/config\":{\"inode\":274,\"device\":48,\"uid\":0,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "--user",
+        "10001:10001",
+        "ab-sf-fr054-00b67a81-server",
+        "node",
+        "-e",
+        "const f=require('fs');let r={uid:process.getuid()};for(let p of ['/export/project/.git','/export/project/.git/config','/export/project/.git/config.lock']){try{let s=f.statSync(p);r[p]={inode:s.ino,device:s.dev,uid:s.uid,mode:s.mode&511}}catch(e){r[p]={error:e.code}}}console.log(JSON.stringify(r))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":10001,\"/export/project/.git\":{\"inode\":238,\"device\":48,\"uid\":10001,\"mode\":493},\"/export/project/.git/config\":{\"inode\":274,\"device\":48,\"uid\":10001,\"mode\":420},\"/export/project/.git/config.lock\":{\"error\":\"ENOENT\"}}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr054-00b67a81-client-b"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr054-00b67a81-client-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr054-00b67a81-client-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr054-00b67a81-client-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr054-00b67a81-nfs-b"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr054-00b67a81-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr054-00b67a81-nfs-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr054-00b67a81-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "logs",
+        "ab-sf-fr054-00b67a81-server"
+      ],
+      "rc": 0,
+      "stdout": "UNFS3 unfsd 0.11.0 (C) 2003-2025, various authors\n/export: ip ::ffff:172.17.0.1/128 options 22\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr054-00b67a81-server"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr054-00b67a81-server\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr054-00b67a81-server"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr054-00b67a81-server\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr054-00b67a81-client-a"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr054-00b67a81-client-a\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr054-00b67a81-client-b"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr054-00b67a81-client-b\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr054-00b67a81-nfs-a"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr054-00b67a81-nfs-a: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr054-00b67a81-nfs-b"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr054-00b67a81-nfs-b: no such volume\n"
+    }
+  ],
+  "cases": [
+    {
+      "name": "patched root daemon with all-squashed data directly serves selected Mac source",
+      "status": "PASS",
+      "result": {
+        "node": "ab-sf-fr054-00b67a81-server",
+        "ip": "172.17.0.6",
+        "uid": 0,
+        "privateLoopbackPublication": "127.0.0.1:56788",
+        "source": "KEEP_MAC_BIND_SOURCE",
+        "containerSource": "/export",
+        "clientAllowlist": [
+          "172.17.0.1"
+        ],
+        "notEncrypted": true,
+        "owner": 0
+      },
+      "seconds": 0.081
+    },
+    {
+      "name": "two independent Linux daemon mounts share same Mac-bound storage identity at agreed path",
+      "status": "PASS",
+      "result": {
+        "nodes": [
+          "ab-sf-fr054-00b67a81-client-a",
+          "ab-sf-fr054-00b67a81-client-b"
+        ],
+        "sameStorageId": "b73c24c64dd94a9aa24d7e3f3b3ffb8d",
+        "mount": "/Volumes/autobyteus-shared",
+        "project": "/Volumes/autobyteus-shared/project",
+        "nolockExplicit": true
+      },
+      "seconds": 0.513
+    },
+    {
+      "name": "ordinary Mac host-folder write is exact in both Linux NFS clients within five seconds",
+      "status": "PASS",
+      "result": {
+        "allExact": true,
+        "seconds": 0.174,
+        "nodes": [
+          "ab-sf-fr054-00b67a81-client-a",
+          "ab-sf-fr054-00b67a81-client-b"
+        ],
+        "hostSource": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr054-owned-6wfeynqy/source/project/roundtrip.txt"
+      },
+      "seconds": 0.174
+    },
+    {
+      "name": "Linux mounted append reaches original Mac source and peer without copying",
+      "status": "PASS",
+      "result": {
+        "allExact": true,
+        "seconds": 0.166,
+        "nodes": [
+          "ab-sf-fr054-00b67a81-client-a",
+          "ab-sf-fr054-00b67a81-client-b"
+        ],
+        "hostSource": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr054-owned-6wfeynqy/source/project/roundtrip.txt"
+      },
+      "seconds": 0.245
+    },
+    {
+      "name": "cross-client rename relative symlink executable exclusive-create and existing-source preservation",
+      "status": "PASS",
+      "result": {
+        "renamed": "RENAMED",
+        "link": "HOST_SOURCE_08a93ca34ae64683ac20edbc9e505acf\nCLIENT_B_36ca54975b5e4baf9ec2d9e15d5e4774\n",
+        "exec": "UNFS_BIND_OK\n",
+        "denied": true,
+        "preserved": "KEEP_MAC_BIND_SOURCE"
+      },
+      "seconds": 0.194
+    },
+    {
+      "name": "Linux Git on identical Mac source captures root versus data-UID inode/device views",
+      "status": "PASS",
+      "result": {
+        "sameHead": "4f2e81edf181188e237b16cd9a3d78cd525fadab",
+        "snapshots": [
+          {
+            "label": "before Git",
+            "host": {
+              "project/.git": null,
+              "project/.git/config": null,
+              "project/.git/config.lock": null
+            },
+            "rootServerView": {
+              "uid": 0,
+              "/export/project/.git": {
+                "error": "ENOENT"
+              },
+              "/export/project/.git/config": {
+                "error": "ENOENT"
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            },
+            "dataUidServerView": {
+              "uid": 10001,
+              "/export/project/.git": {
+                "error": "ENOENT"
+              },
+              "/export/project/.git/config": {
+                "error": "ENOENT"
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            }
+          },
+          {
+            "label": "after ab-sf-fr054-00b67a81-client-a init --quiet",
+            "host": {
+              "project/.git": {
+                "inode": 513226196,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o755"
+              },
+              "project/.git/config": {
+                "inode": 513226226,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o644"
+              },
+              "project/.git/config.lock": null
+            },
+            "rootServerView": {
+              "uid": 0,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 0,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 268,
+                "device": 48,
+                "uid": 10001,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            },
+            "dataUidServerView": {
+              "uid": 10001,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 10001,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 268,
+                "device": 48,
+                "uid": 10001,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            }
+          },
+          {
+            "label": "after ab-sf-fr054-00b67a81-client-a config core.filemode true",
+            "host": {
+              "project/.git": {
+                "inode": 513226196,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o755"
+              },
+              "project/.git/config": {
+                "inode": 513226230,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o644"
+              },
+              "project/.git/config.lock": null
+            },
+            "rootServerView": {
+              "uid": 0,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 0,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 272,
+                "device": 48,
+                "uid": 10001,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            },
+            "dataUidServerView": {
+              "uid": 10001,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 10001,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 272,
+                "device": 48,
+                "uid": 10001,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            }
+          },
+          {
+            "label": "after ab-sf-fr054-00b67a81-client-a config user.name Probe",
+            "host": {
+              "project/.git": {
+                "inode": 513226196,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o755"
+              },
+              "project/.git/config": {
+                "inode": 513226231,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o644"
+              },
+              "project/.git/config.lock": null
+            },
+            "rootServerView": {
+              "uid": 0,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 0,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 273,
+                "device": 48,
+                "uid": 10001,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            },
+            "dataUidServerView": {
+              "uid": 10001,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 10001,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 273,
+                "device": 48,
+                "uid": 10001,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            }
+          },
+          {
+            "label": "after ab-sf-fr054-00b67a81-client-a config user.email probe@example.invalid",
+            "host": {
+              "project/.git": {
+                "inode": 513226196,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o755"
+              },
+              "project/.git/config": {
+                "inode": 513226232,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o644"
+              },
+              "project/.git/config.lock": null
+            },
+            "rootServerView": {
+              "uid": 0,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 0,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 274,
+                "device": 48,
+                "uid": 10001,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            },
+            "dataUidServerView": {
+              "uid": 10001,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 10001,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 274,
+                "device": 48,
+                "uid": 10001,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            }
+          },
+          {
+            "label": "after ab-sf-fr054-00b67a81-client-a add preexisting.txt",
+            "host": {
+              "project/.git": {
+                "inode": 513226196,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o755"
+              },
+              "project/.git/config": {
+                "inode": 513226232,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o644"
+              },
+              "project/.git/config.lock": null
+            },
+            "rootServerView": {
+              "uid": 0,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 0,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 274,
+                "device": 48,
+                "uid": 0,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            },
+            "dataUidServerView": {
+              "uid": 10001,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 10001,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 274,
+                "device": 48,
+                "uid": 10001,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            }
+          },
+          {
+            "label": "after ab-sf-fr054-00b67a81-client-a commit --quiet -m LinuxOverMacSource",
+            "host": {
+              "project/.git": {
+                "inode": 513226196,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o755"
+              },
+              "project/.git/config": {
+                "inode": 513226232,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o644"
+              },
+              "project/.git/config.lock": null
+            },
+            "rootServerView": {
+              "uid": 0,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 0,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 274,
+                "device": 48,
+                "uid": 0,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            },
+            "dataUidServerView": {
+              "uid": 10001,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 10001,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 274,
+                "device": 48,
+                "uid": 10001,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            }
+          },
+          {
+            "label": "after ab-sf-fr054-00b67a81-client-a rev-parse HEAD",
+            "host": {
+              "project/.git": {
+                "inode": 513226196,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o755"
+              },
+              "project/.git/config": {
+                "inode": 513226232,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o644"
+              },
+              "project/.git/config.lock": null
+            },
+            "rootServerView": {
+              "uid": 0,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 0,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 274,
+                "device": 48,
+                "uid": 0,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            },
+            "dataUidServerView": {
+              "uid": 10001,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 10001,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 274,
+                "device": 48,
+                "uid": 10001,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            }
+          },
+          {
+            "label": "after ab-sf-fr054-00b67a81-client-b rev-parse HEAD",
+            "host": {
+              "project/.git": {
+                "inode": 513226196,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o755"
+              },
+              "project/.git/config": {
+                "inode": 513226232,
+                "device": 16777231,
+                "uid": 501,
+                "mode": "0o644"
+              },
+              "project/.git/config.lock": null
+            },
+            "rootServerView": {
+              "uid": 0,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 0,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 274,
+                "device": 48,
+                "uid": 0,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            },
+            "dataUidServerView": {
+              "uid": 10001,
+              "/export/project/.git": {
+                "inode": 238,
+                "device": 48,
+                "uid": 10001,
+                "mode": 493
+              },
+              "/export/project/.git/config": {
+                "inode": 274,
+                "device": 48,
+                "uid": 10001,
+                "mode": 420
+              },
+              "/export/project/.git/config.lock": {
+                "error": "ENOENT"
+              }
+            }
+          }
+        ],
+        "LinuxTriggerScopeOnly": true
+      },
+      "seconds": 2.366
+    }
+  ],
+  "cleanup": [
+    {
+      "container": "ab-sf-fr054-00b67a81-client-b",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr054-00b67a81-client-a",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr054-00b67a81-nfs-b",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr054-00b67a81-nfs-a",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr054-00b67a81-server",
+      "rc": 0
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr054-00b67a81-server",
+      "absent": true
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr054-00b67a81-client-a",
+      "absent": true
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr054-00b67a81-client-b",
+      "absent": true
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr054-00b67a81-nfs-a",
+      "absent": true
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr054-00b67a81-nfs-b",
+      "absent": true
+    },
+    {
+      "ownedHostScratchRemoved": true
+    }
+  ],
+  "engineImage": "sha256:feb18a8f02a7470eb5427abac1dc8794da707ff6fbcbc14cdb850c28fbcf977b",
+  "server": {
+    "node": "ab-sf-fr054-00b67a81-server",
+    "ip": "172.17.0.6",
+    "uid": 0,
+    "privateLoopbackPublication": "127.0.0.1:56788",
+    "source": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr054-owned-6wfeynqy/source",
+    "containerSource": "/export",
+    "clientAllowlist": [
+      "172.17.0.1"
+    ],
+    "notEncrypted": true
+  },
+  "clientNodes": [
+    "ab-sf-fr054-00b67a81-client-a",
+    "ab-sf-fr054-00b67a81-client-b"
+  ],
+  "inodeSnapshots": [
+    {
+      "label": "before Git",
+      "host": {
+        "project/.git": null,
+        "project/.git/config": null,
+        "project/.git/config.lock": null
+      },
+      "rootServerView": {
+        "uid": 0,
+        "/export/project/.git": {
+          "error": "ENOENT"
+        },
+        "/export/project/.git/config": {
+          "error": "ENOENT"
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      },
+      "dataUidServerView": {
+        "uid": 10001,
+        "/export/project/.git": {
+          "error": "ENOENT"
+        },
+        "/export/project/.git/config": {
+          "error": "ENOENT"
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      }
+    },
+    {
+      "label": "after ab-sf-fr054-00b67a81-client-a init --quiet",
+      "host": {
+        "project/.git": {
+          "inode": 513226196,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o755"
+        },
+        "project/.git/config": {
+          "inode": 513226226,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o644"
+        },
+        "project/.git/config.lock": null
+      },
+      "rootServerView": {
+        "uid": 0,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 0,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 268,
+          "device": 48,
+          "uid": 10001,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      },
+      "dataUidServerView": {
+        "uid": 10001,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 10001,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 268,
+          "device": 48,
+          "uid": 10001,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      }
+    },
+    {
+      "label": "after ab-sf-fr054-00b67a81-client-a config core.filemode true",
+      "host": {
+        "project/.git": {
+          "inode": 513226196,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o755"
+        },
+        "project/.git/config": {
+          "inode": 513226230,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o644"
+        },
+        "project/.git/config.lock": null
+      },
+      "rootServerView": {
+        "uid": 0,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 0,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 272,
+          "device": 48,
+          "uid": 10001,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      },
+      "dataUidServerView": {
+        "uid": 10001,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 10001,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 272,
+          "device": 48,
+          "uid": 10001,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      }
+    },
+    {
+      "label": "after ab-sf-fr054-00b67a81-client-a config user.name Probe",
+      "host": {
+        "project/.git": {
+          "inode": 513226196,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o755"
+        },
+        "project/.git/config": {
+          "inode": 513226231,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o644"
+        },
+        "project/.git/config.lock": null
+      },
+      "rootServerView": {
+        "uid": 0,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 0,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 273,
+          "device": 48,
+          "uid": 10001,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      },
+      "dataUidServerView": {
+        "uid": 10001,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 10001,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 273,
+          "device": 48,
+          "uid": 10001,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      }
+    },
+    {
+      "label": "after ab-sf-fr054-00b67a81-client-a config user.email probe@example.invalid",
+      "host": {
+        "project/.git": {
+          "inode": 513226196,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o755"
+        },
+        "project/.git/config": {
+          "inode": 513226232,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o644"
+        },
+        "project/.git/config.lock": null
+      },
+      "rootServerView": {
+        "uid": 0,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 0,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 274,
+          "device": 48,
+          "uid": 10001,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      },
+      "dataUidServerView": {
+        "uid": 10001,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 10001,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 274,
+          "device": 48,
+          "uid": 10001,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      }
+    },
+    {
+      "label": "after ab-sf-fr054-00b67a81-client-a add preexisting.txt",
+      "host": {
+        "project/.git": {
+          "inode": 513226196,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o755"
+        },
+        "project/.git/config": {
+          "inode": 513226232,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o644"
+        },
+        "project/.git/config.lock": null
+      },
+      "rootServerView": {
+        "uid": 0,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 0,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 274,
+          "device": 48,
+          "uid": 0,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      },
+      "dataUidServerView": {
+        "uid": 10001,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 10001,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 274,
+          "device": 48,
+          "uid": 10001,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      }
+    },
+    {
+      "label": "after ab-sf-fr054-00b67a81-client-a commit --quiet -m LinuxOverMacSource",
+      "host": {
+        "project/.git": {
+          "inode": 513226196,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o755"
+        },
+        "project/.git/config": {
+          "inode": 513226232,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o644"
+        },
+        "project/.git/config.lock": null
+      },
+      "rootServerView": {
+        "uid": 0,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 0,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 274,
+          "device": 48,
+          "uid": 0,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      },
+      "dataUidServerView": {
+        "uid": 10001,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 10001,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 274,
+          "device": 48,
+          "uid": 10001,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      }
+    },
+    {
+      "label": "after ab-sf-fr054-00b67a81-client-a rev-parse HEAD",
+      "host": {
+        "project/.git": {
+          "inode": 513226196,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o755"
+        },
+        "project/.git/config": {
+          "inode": 513226232,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o644"
+        },
+        "project/.git/config.lock": null
+      },
+      "rootServerView": {
+        "uid": 0,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 0,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 274,
+          "device": 48,
+          "uid": 0,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      },
+      "dataUidServerView": {
+        "uid": 10001,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 10001,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 274,
+          "device": 48,
+          "uid": 10001,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      }
+    },
+    {
+      "label": "after ab-sf-fr054-00b67a81-client-b rev-parse HEAD",
+      "host": {
+        "project/.git": {
+          "inode": 513226196,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o755"
+        },
+        "project/.git/config": {
+          "inode": 513226232,
+          "device": 16777231,
+          "uid": 501,
+          "mode": "0o644"
+        },
+        "project/.git/config.lock": null
+      },
+      "rootServerView": {
+        "uid": 0,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 0,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 274,
+          "device": 48,
+          "uid": 0,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      },
+      "dataUidServerView": {
+        "uid": 10001,
+        "/export/project/.git": {
+          "inode": 238,
+          "device": 48,
+          "uid": 10001,
+          "mode": 493
+        },
+        "/export/project/.git/config": {
+          "inode": 274,
+          "device": 48,
+          "uid": 10001,
+          "mode": 420
+        },
+        "/export/project/.git/config.lock": {
+          "error": "ENOENT"
+        }
+      }
+    }
+  ],
+  "uncovered": [
+    "native Mac mounted client of this engine",
+    "native Linux/Mac service binary",
+    "no network lock manager/cross-client fcntl",
+    "outage/restart/permission matrix and actual agents",
+    "finished one-command service/TLS/authorization/platform distribution",
+    "physical LAN/current-source/GUI/delivery"
+  ],
+  "serverLog": "UNFS3 unfsd 0.11.0 (C) 2003-2025, various authors\n/export: ip ::ffff:172.17.0.1/128 options 22\n"
+}

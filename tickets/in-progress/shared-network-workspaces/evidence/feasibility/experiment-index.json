@@ -857,5 +857,132 @@
     "diagnostic_not_acceptance": false,
     "cleanup_all_rc_zero": true,
     "cleanup_limitations": "Exact Docker absences rechecked; no host mounts/providers/user nodes; Mac clones052/053 deleted; full mode/current-source/physical/installer proof absent."
+  },
+  {
+    "round": "fr-054",
+    "run": "ab-sf-fr054-00b67a81",
+    "scope": "minimal stale-handle diagnosis on original Mac source plus Linux kernel clients; no native Mac client/agents/physical LAN/finished setup; corrected prototype, root daemon all-squashed",
+    "pass_count": 6,
+    "failed_cases": [],
+    "fatal": null,
+    "scoped_runner_exit": 0,
+    "production_patch": false,
+    "vendor_counterfactual": true,
+    "native_mac_client": false,
+    "cleanup_all_rc_zero": true,
+    "cleanup_limitations": "All exact owned containers/volumes absent and source removed; no native Mac client in this round. Native Mac FR053 failure not resolved."
+  },
+  {
+    "round": "fr-055",
+    "run": "ab-sf-fr055-a6d40941",
+    "scope": "patched UNFS3 root daemon with all-squashed data serves chosen Mac bind to actual native Mac and two Docker clients; exact per-process Git trust and concurrent create; one physical Mac only, no agents/NLM/final product proof",
+    "pass_count": 7,
+    "failed_cases": [
+      {
+        "name": "squashed-data backend permits coordinated native Mac and Linux Git with exact native-process-only project trust",
+        "status": "FAIL",
+        "error": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr055-macos', '/usr/bin/sudo'): error: could not write config file /Volumes/autobyteus-shared/project/.git/config: Stale NFS file handle\\nfatal: could not set 'core.logallrefupdates' to 'true'\\n\")",
+        "seconds": 0.64
+      }
+    ],
+    "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr055-macos', '/usr/bin/sudo'): error: could not write config file /Volumes/autobyteus-shared/project/.git/config: Stale NFS file handle\\nfatal: could not set 'core.logallrefupdates' to 'true'\\n\")",
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_all_rc_zero": true,
+    "cleanup_evidence": [
+      {
+        "nativeUnmountRc": 0
+      },
+      {
+        "container": "ab-sf-fr055-a6d40941-client-b",
+        "rc": 0
+      },
+      {
+        "container": "ab-sf-fr055-a6d40941-client-a",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr055-a6d40941-nfs-b",
+        "rc": 0
+      },
+      {
+        "volume": "ab-sf-fr055-a6d40941-nfs-a",
+        "rc": 0
+      },
+      {
+        "container": "ab-sf-fr055-a6d40941-server",
+        "rc": 0
+      },
+      {
+        "kind": "container",
+        "name": "ab-sf-fr055-a6d40941-server",
+        "absent": true
+      },
+      {
+        "kind": "container",
+        "name": "ab-sf-fr055-a6d40941-client-a",
+        "absent": true
+      },
+      {
+        "kind": "container",
+        "name": "ab-sf-fr055-a6d40941-client-b",
+        "absent": true
+      },
+      {
+        "kind": "volume",
+        "name": "ab-sf-fr055-a6d40941-nfs-a",
+        "absent": true
+      },
+      {
+        "kind": "volume",
+        "name": "ab-sf-fr055-a6d40941-nfs-b",
+        "absent": true
+      },
+      {
+        "exactVmStopRc": 0
+      },
+      {
+        "exactOwnedVmProcessExited": true
+      },
+      {
+        "exactOwnedCloneDeleteRc": 0,
+        "node": "ab-sf-fr055-macos"
+      },
+      {
+        "ownedHostScratchRemoved": true
+      }
+    ],
+    "limits": "Retained native Mac Git stale-handle failure; selected backend is not UNFS; no agent/current-source/physicalLAN/public command proof."
+  },
+  {
+    "round": "fr-056",
+    "run": null,
+    "scope": "Grok native private-plugin discovery, no model or mounted filesystem; not integrated ACP proof",
+    "pass_count": 0,
+    "failed_cases": [],
+    "fatal": "AssertionError(\"error: unexpected argument '--plugin-dir' found\\n\\n  tip: to pass '--plugin-dir' as a value, use '-- --plugin-dir'\\n\\nUsage: grok [OPTIONS] [PROMPT] [COMMAND]\\n\\nFor more information, try '--help'.\\n\")",
+    "scoped_runner_exit": 1,
+    "production_patch": false,
+    "cleanup_all_rc_zero": true,
+    "cleanup_evidence": {
+      "ownedScratchRemoved": true
+    },
+    "limits": "Incorrect global flag harness invocation; no plugin capability pass; discovery-only signed-out environment."
+  },
+  {
+    "round": "fr-057",
+    "run": null,
+    "scope": "native Grok ACP read-only private plugin discovery; no prompt/inference, mount or production changes",
+    "pass_count": 1,
+    "failed_cases": [],
+    "fatal": null,
+    "scoped_runner_exit": 0,
+    "production_patch": false,
+    "cleanup_all_rc_zero": true,
+    "cleanup_evidence": {
+      "ownedScratchRemoved": true,
+      "exactProcessExited": true
+    },
+    "limits": "Actual Grok1.0.52 ACP private skill discovery only; no prompt/inference, mount or integrated runtime turn."
   }
 ]
