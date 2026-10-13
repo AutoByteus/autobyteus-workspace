@@ -1,13 +1,18 @@
 # API/E2E Execution Coverage Report — resume-pdf-search-preview
 
-## Execution Round Meta / Cumulative Package
-- Date/owner:2026-10-12/api_e2e_engineer; round1/current authoritative round1; **API-REV-001**.
+## Current Execution Round Meta
+- Owner/date: api_e2e_engineer /2026-10-13; **round2 /API-REV-002**, latest authoritative completed round.
+- Trigger: direct user instruction to perform the full real Electron test ourselves and improve inadequate Linux/container testing guidance. This adds validation depth/guidance, not product behavior.
+- Previous result: API-REV-001 Pass95% for real backend/Nuxt/Chromium web-equivalent AC-001–003; **not Electron proof**. Prior result/history/evidence retained.
 - Worktree:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview; branch codex/resume-pdf-search-preview.
-- Trigger: Code Reviewer **CRR-002 source Pass**,7cd2a2db5; CR-F-001 independently resolved. Approved R1/SR-001 unchanged; SR-001–004; ARCH-REV-001–003(current003Pass); IR-001/002; CRR-001/002. Authoring snapshots with prior source Fail are historical.
-- Prior completed API result/confidence:N/A. DR/delivery and successful test-code review:N/A—not performed.
+- Approved R1/SR-001 unchanged; SR-001–004,ARCH-REV-001–003(current003Pass),IR-001/002,CRR-001–003(source002Pass, API-001 successful test review003Pass).
+- Relevant delivery round: **DR-001 Blocked** (host/runtime/user/finalization). Its dirty docs/artifacts and upstream history preserved untouched/unstaged. Additional desktop proof does not resolve deployment authority.
 - Investigation:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-coverage-investigation.md
 - Ledger:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-test-case-ledger.md
-- Revision:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-revision-record.md
+- History:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-revision-record.md
+- Successful review of newly changed round2 test/guidance: **Not performed; Required next**.
+
+### Cumulative Authority / Supplements
 - /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/requirements-doc.md
 - /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/investigation-notes.md
 - /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/solution-revision-record.md
@@ -19,131 +24,113 @@
 - /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/implementation-revision-record.md
 - /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/code-review-report.md
 - /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/code-review-revision-record.md
-Supplemental evidence at /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence: runtime-failure-excerpts.log, installed-module-checksums.txt, baseline-isolated-reproduction.log, all implementation/IR-002 and code-review/CRR-002 logs retained/attached. Original screenshot attached at original task-context path. Product/behavior-defining supplements:N/A—not applicable.
+- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-test-review-report.md
+- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/delivery-revision-record.md
+- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/docs-sync-report.md
+- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/handoff-summary.md
+- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/release-deployment-report.md
+- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/solution-blocked-result.md
+Retain all source/implementation/review/API-001/delivery evidence in the canonical evidence directory and original screenshot at its original task-context path. No Product/behavior-defining supplement applies. Direct user request is the round2 validation/guidance authority; intended R1 remains unchanged.
 
-## Routing Classification / Investigation Basis
-**Small / High**, confirmed; Reviewed route. Successful output **Code Review**; separate proportional successful durable-test review **Required**, not failure-origin review.
-Investigation/ledger persisted before first execution/durable edits; plan followed with API-owned environment/test fixes below. Required first execution was the unchanged current path-boundary E2E;1file/2tests Pass, then rerun with actual own AppConfig bootstrap1/2Pass. Later loaded-tree denial nonmutation also passed in broad run.
-Read root TESTING.md/DESIGN.md/AGENTS.md, both package AGENTS.md, package/runner/setup and documented probe-owned stack patterns. No closer testing guideline found. SR-004 ownership conflict resolved by E2E execution here, not waiver.
-No requirement/design/unclear reroute. Production diff from CRR-002 empty. Reviewed legacy/persisted checks confirmed: no compatibility/dual formats or reader/PDF workaround, **Not Affected**, no migration/schema/writer changes; live TreeNode/Skill serializer retained. No compatibility-only coverage.
+## Routing / Investigation / Coverage Validity
+**Small /High /Reviewed**, confirmed. Successful output **Code Review** for proportional successful test-code/guidance review, Required; not direct Delivery or source failure-origin review.
+Investigation and round2 ledger plan existed before setup/test edits/execution. Root TESTING.md/DESIGN/AGENTS, package AGENTS, isolated-app skill/guide/lifecycle/build scripts and existing Electron probes governed setup.
+Prior HTTP/store/browser coverage remains **Still Valid**, but cannot substitute for actual Electron. Prior166unique repository tests/31files and API-001–005 evidence retained for unchanged source; not claimed rerun this round. No durable case removed/skipped.
+New packaged probe and global Linux documentation were added/updated. No production, lockfile, source reader, viewer, identity adapter or compatibility delta. No design/requirement reroute needed.
 
-## Ledger Reconciliation / Changed Boundary Matrix
-Ledger initialized before execution; all attempts, checkpoints and terminal results recorded before later case work. All5planned cases completed; no unresolved/running/interrupted/unstarted validation-owned case.
-| Case | Requirement/AC and boundary | Surface / evidence | Final |
+## Cases / Ledger Reconciliation
+Ledger records completed attempts/checkpoints before subsequent case work; case IDs reused. All4round2 cases completed Pass, including automatic Xvfb recipe qualification. No interrupted/unstarted/running case.
+| Case | Approved scope / boundary | Final evidence | Result |
 | --- | --- | --- | --- |
-| API-001 | REQ-002/004; AC-002/003; diagnostic/path boundary | Current GraphQL executor E2E(null/tree nonmutation/ignored and sibling denials/watcher null/lease0); api-path-boundary-isolated.log and broad final log | Pass |
-| API-002 | REQ-001/002/004; AC-001–003; search→protected bytes/read | Added real socket GraphQL/REST6cases with actual FileSystemWorkspace; repeated full dist runtime; api-search-content-http-rerun.log, api-browser-run03/evidence.json | Pass |
-| API-004 | REQ-002/004; AC-002/003; regression/lifecycle |22backend files/108tests:87unit+integration,21E2E; no skips; api-backend-regression-final.log | Pass |
-| API-005 | REQ-004; AC-003; tree/lazy/order/query change |9web files/58tests including2new store cases; no skips; api-web-focused-rerun.log | Pass |
-| API-003 | REQ-001/004; AC-001/003; real Files/PDF renderer | Real production components/Apollo/REST/WebSocket/browser, final api-browser-run03/evidence.json and2screenshots | Pass |
-Final unique repository coverage: **31files/166tests all Pass/no skips**, not double-counting repeated runs. Browser probe2cases additional, not Vitest count. Excluded tracked JS counterparts not executed.
+| API-006 | SCN-001/002 and Linux run contract; native build/main/preload/environment |Native arm64 current package/AppImage build exit0;51Node lifecycle/environment checks+4Electron profile tests; actual non-root isolated-app launch/real file:// renderer and embedded server match current source |Pass |
+| API-002 | REQ-001/002/004,AC-001–003; protected embedded transport |Real isolated GraphQL search→200/application/pdf/exact878valid2page bytes, representative text,4denials400/existing detail/no outside sentinel/PDF bytes |Pass |
+| API-003 | SCN-001/002,REQ-001/004,AC-001/003; full actual product UI |Normal packaged /chat→target/workspace selection→Files→search lazy/unexpanded PDF→2ink canvases/loading complete/no alert/errors; loaded text tree reuse, actual text/tree/PDF identity |Pass |
+| API-007 | Requested Linux recipe/lifecycle qualification; normal recovery |Canonical restart preserves instance ID/ports/root, new renderer target, persisted registration, normal Files reopen/search/click renders again; canonical stop/list/ports/root/fixture/display cleanup |Pass |
+Prior API-001/004/005 are retained unchanged results, not rerun/native substitutes.
+Latest receipts:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/api-electron-run04/evidence.json and api-electron-cleanup.json. Previous failed/partial attempts retained; final03 and04 all4casesPass. Attempt02 syntax failure created no instance/case.
 
-## Commands / Configuration / Platform
-All commands from /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview, package -C scripts. Implementation frozen installation/shared prerequisites retained; fresh current build here.
-Own Corepack shim: corepack enable --install-directory "$OWN/bin".
-Clean prefix: env -i PATH="$OWN/bin:$PATH" HOME="$OWN/home" TMPDIR="$OWN/tmp" COREPACK_DEFAULT_TO_LATEST=0.
-OWN=/tmp/resume-pdf-api.RwYhMo, created and removed here. Node22.23.3; root pnpm10.28.2; Linux arm64. No inherited app variables/provider keys/CLI homes.
-| Exact package command | Result / evidence under canonical evidence directory |
+## Commands / Prerequisites / Runtime
+All from assigned worktree. Clean temporary builder HOME/TMPDIR/Corepack shim, no inherited app/provider keys. Corepack shim via corepack enable --install-directory "$OWN/bin"; root install pnpm10.28.2, web build scripts resolve pinned10.28.1, Node22.23.3.
+| Command / configuration | Observation / evidence |
 | --- | --- |
-| pnpm -C autobyteus-server-ts exec vitest run tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts --no-watch |1/2Pass; api-path-boundary.log |
-| Same current file command with --config tests/.tmp/api-vitest.config.ts, TEST_API_DATA_DIR="$OWN/data" |1/2Pass; api-path-boundary-isolated.log |
-| pnpm -C autobyteus-server-ts exec vitest run tests/e2e/file-explorer/search-content-http.e2e.test.ts --no-watch |6Pass after owned cleanup fix; api-search-content-http-rerun.log; initial hookFail retained |
-| pnpm -C autobyteus-server-ts exec vitest run tests/unit/file-explorer tests/unit/workspaces/workspace-path-utils.test.ts tests/unit/api/graphql/converters/workspace-converter.test.ts tests/integration/file-explorer/file-explorer.integration.test.ts tests/integration/file-explorer/file-search.integration.test.ts tests/integration/file-explorer/file-name-indexer.integration.test.ts tests/e2e/file-explorer --config tests/.tmp/api-vitest.config.ts --no-watch |22/108Pass,no skips; same TEST_API_DATA_DIR; api-backend-regression-final.log, initial and rerun failures retained |
-| pnpm -C autobyteus-web exec nuxt prepare |Pass; api-nuxt-prepare.log |
-| pnpm -C autobyteus-web test:nuxt stores/__tests__/fileExplorerStore.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts composables/__tests__/useWorkspaceFileExplorer.spec.ts components/fileExplorer/__tests__ --run |9/58Pass,no skips; named composable path absent/no count claimed; api-web-focused-rerun.log; initial collection failure retained |
-| pnpm -C autobyteus-server-ts prebuild; pnpm -C autobyteus-server-ts build |Pass Prisma/current TypeScript policy/sanitized built bootstrap; api-prebuild.log/api-build.log |
-| pnpm -C autobyteus-web test:e2e:search-pdf-preview --output-dir ../tickets/in-progress/resume-pdf-search-preview/evidence/api-browser-run03 --ledger-file /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-test-case-ledger.md |API-002/API-003Pass plus cleanup; api-browser-run03.log/evidence.json |
-| node --check autobyteus-web/tests/e2e/search-pdf-preview-probe.mjs; git diff --check 7cd2a2db5..HEAD -- . (exclude raw evidence and PDF fixture with pathspecs) |Pass for source/test/document text scope |
-Temporary Vitest config retained runner settings and standard setups, prepended AppConfigProvider.initialize({appDataDir:process.env.TEST_API_DATA_DIR}). Initial AUTOBYTEUS_DATA_DIR env knob is NOT read by AppConfig; corrected rerun uses actual option. Standard worktree test DB absent before first run/owned here. Temporary setup/config/DB removed.
+| apt-get update; apt-get install -y xvfb xauth ffmpeg |Missing Linux environment prerequisites installed by agent; no user setup requested. api-electron-apt.log/api-electron-packages.log |
+| Root and own non-root UID61193: unshare --user --map-root-user true |Both succeed; no sandbox/kernel/security policy changes |
+| env -i PATH="$OWN/bin:$PATH" HOME="$OWN/home" TMPDIR="$OWN/tmp" COREPACK_DEFAULT_TO_LATEST=0 pnpm install --frozen-lockfile |Pass; dependencies ready, lockfile unchanged; api-electron-install.log |
+| Same clean prefix node --test autobyteus-web/scripts/isolated-app/__tests__/*.node-test.mjs autobyteus-web/scripts/electron-launch/__tests__/*.node-test.mjs |**51Pass/no skips**; api-electron-lifecycle-unit.log |
+| Same prefix pnpm -C autobyteus-web test:electron --run launch-profile/__tests__/electronLaunchProfile.spec.ts launch-profile/__tests__/e2eLaunchPreflight.spec.ts |**2files/4Pass/no skips**; api-electron-profile-tests.log |
+| Same prefix pnpm -C autobyteus-web build:electron:linux |**Pass**, serial native ARM64 build: Prisma/server/mobile/renderer/main, Electron42.4.1, AppImage and unpacked output; api-electron-build.log |
+| Manual owned Xvfb :100 -screen0 1600x1100x24 -nolisten tcp -auth<own-cookie>, UID61193 |Own display/authority/home/runtime; shared VNC:99 never reused. api-electron-display.json/xvfb.log |
+| setpriv --reuid=61193 --regid=61193 --clear-groups env -i PATH="$OWN/bin:$PATH" HOME="$OWN/launch-home" TMPDIR="$OWN/launch-tmp" XDG_RUNTIME_DIR="$OWN/launch-runtime" LANG=C.UTF-8 TZ=UTC COREPACK_DEFAULT_TO_LATEST=0 xvfb-run -a -e "$OWN/launch-tmp/xvfb-run04.log" -s "-screen 0 1600x1100x24 -nolisten tcp" pnpm -C autobyteus-web test:e2e:search-pdf-electron --skip-build --output-dir ../tickets/in-progress/resume-pdf-search-preview/evidence/api-electron-run04 --ledger-file /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-test-case-ledger.md |**4actual casesPass**, automatic own display:101; full suite lifetime; api-electron-run04.log/evidence.json |
+| node --check new probe; bash -n guide blocks after documented placeholder substitution; text-scoped git diff --check |Pass; api-electron-guidance-check.json. Raw execution logs/PDF xref retain intentional formatting |
 
-## Broader Validation Decision And Execution
-**Required**, completed Browser+real HTTP/current full runtime. Post-repository evidence could not prove AC-001 render.
-- Current worktree dist/app.js --host127.0.0.1 --port37813 --data-dir<own>/data; own .env/SQLite/normal migrations and supervisor; /rest/health readiness.
-- Nuxt dev --host127.0.0.1 --port40589, BACKEND_NODE_BASE_URL=http://127.0.0.1:37813; own HOME/TMPDIR/PATH.
-- Temporary host route /api-e2e-search-pdf?workspaceId=<own-id>, publicly fetched registered workspace, unchanged product FileExplorerLayout→FileExplorer/FileItem/FileViewer/PdfViewer. No private setup writes, transport interception, viewer substitution or path adapter.
-- Chromium153.0.8010.52,1440x1000/en-US/UTC, fresh validation page/context after cold optimizer warmup; all actual page/console errors fail. Final **0actual and0warmup errors**.
-- Shared synthetic878byte valid2-page PDF with actual content/font/xref, SHA256999bd43e8b679a7f1b65482120948444dca47a1e541122cae3bb27862069e87d. Text/outside sentinel synthetic. No personal file copy, model/account/secret/provider spend.
-| Step | Actual directly asserted outcome |
+OWN=/tmp/resume-electron-api.Kcl9Y8, now removed. Runtime identity was unprivileged UID/GID61193 with own HOME/temp/runtime/output permissions; no account database edits. Builder was root/worktree owner, application was not root. No --no-sandbox, setuid-helper changes, sysctl/AppArmor overrides or live-app requests.
+CLI calls use the production isolated-app lifecycle owner. Current package built first as owner; runtime start uses --from-worktree. All later operations use returned instanceId/controlPort/serverPort, not fixed examples. No installed /app binary or dev/component-host route used.
+
+## Actual Packaged Boundary / Identity
+Platform: Ubuntu24.04.5 container, Linuxkit6.12.54/Linux arm64; virtual X11. Electron42.4.1/Chromium148.0.7778.265; actual main window viewport default desktop layout, not a fixture/emulated browser.
+Observed user-agent:Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) autobyteus/1.5.3-beta.1 Chrome/148.0.7778.265 Electron/42.4.1 Safari/537.36
+Executable:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus
+Renderer: file://.../resources/app.asar/dist/renderer/index.html#/chat; actual preload window.electronAPI observed. No transport/viewer mocks or private store setup writes; read-only state observations only.
+App asar SHA256:307f910bd37f983a9a323b7d7543f436bc02a30df6af695039cfa7dfbe69ada6.
+Embedded explorer JS SHA256:90b6abe16699570f760c89a8b5d9d266e42344582f815b493a400a2e46abb308, exactly current worktree build.
+Source explorer SHA256:8e43f4b98bcf7d8aa02b535fa22ee503beafa399e5dd47b1c647f2a16e78bd4e, still reviewed7f321575058d744c8e635b3aff0a6d1f4557e2c4. Build HEAD ea6c3235a source unchanged; subsequent testing/docs commits change no runtime source.
+Final instance iso-41017-dbed; backend45301/control41017; own auto data root. Restart creates new process/renderer target with same ID/root/ports. Captured GraphQL/content requests all target that owned backend.
+
+## Real Actor Journey / Direct Proof
+Synthetic fixture only: shared878byte valid2page PDF SHA999bd43e8b679a7f1b65482120948444dca47a1e541122cae3bb27862069e87d; own Markdown/outside sentinel. Public createWorkspace/createAgentDefinition seed minimal owned setup; normal UI selects them. No model messages/auth import/provider spend, original file copies or mocked history/session.
+| Step | Direct observed/asserted outcome |
 | --- | --- |
-| Initial shallow tree |applications/root text only; openFolders empty; nested PDF absent/unloaded |
-| Search resume |Real ordered relative paths; loaded text result reuses tree object; PDF fallback is relative lazy node |
-| Lazy PDF click |HTTP200/application/pdf/exact878fixture bytes, correct workspace+relative locator |
-| Viewer |2real896x1095canvases,5665/5676dark pixels, spinner absent/isLoading false/error null/no alerts. Both page headers screenshots visually inspected |
-| Text search click and tree click |Normal GraphQL exact text bytes/visible heading; equivalent workspace/path/content |
-| Expand applications/nested, click PDF tree node |Same PDF workspace/locator and rendered pages, no duplicate path format |
-|4HTTP denials |Absolute in-root/outside,parent traversal,same-prefix sibling all400/exact established detail/no PDF header or outside sentinel bytes |
-Correlated GraphQL requests/responses, content URL/status/MIME, state/pixel assertions and backend/frontend logs retained. Evidence:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/api-browser-run03/{evidence.json,backend.log,frontend.log,pdf-rendered.png,pdf-second-page.png}.
-Fixture host proves web-equivalent shared Files path, not native Electron packaging or the whole agent-sidebar journey. No shell delta; no running-user-app effect. No temporary-only substitute for durable regression.
+| Actual New chat target/workspace menus→Files |Packaged normal product surface, not temporary Nuxt host. Own selected workspace. Shallow tree/openFolders empty; nested PDF not loaded |
+| Search resume |Real ordered relative results; loaded root text reuses actual tree node; nested PDF is lazy relative result |
+| Click PDF |200/application/pdf/exact shared fixture bytes; preview relative locator/workspace ID and URL origin match reported isolated backend |
+| Viewer |2nonzero ink-bearing canvases, spinner absent/isLoading false/error null/no alerts. Page-one/page-two screenshots visually inspected. No renderer errors throughout |
+| Text and tree selection |Exact normal protected text bytes/visible heading; search/tree content and PDF workspace/file identity equivalent |
+|4denials |Absolute in-root/outside,parent traversal,sibling-prefix requests retain400/exact detail/no outside bytes through real path owner |
+| Restart/reopen |Registry and fixture remain; new actual renderer; user reopens Files/search/click normally; protected200/full bytes and2pages again |
+Evidence:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/api-electron-run04: evidence.json, desktop.log, start/restart/stop/list JSON/logs, electron-pdf-page-one.png, electron-pdf-page-two.png, electron-after-restart.png. Full actual03 evidence also retained. Screenshots supplement byte/state/pixel assertions.
 
-## Confidence Scorecard
-Simple mean over validation-owned AC-001–003/preserved material behavior; AC-004 separate Delivery gate, never counted as proven.
-| Mandatory category | Post-repository | Final | Evidence gain / residual |
+## Broader Decision / Mandatory Confidence
+**Required — Project Desktop Validation**, completed. The user explicitly requested the missing actual layer; browser-only history was not counted as completion.
+Post-repository new-scope scores were assessed from55focused lifecycle/profile checks/current build plus retained unchanged-source evidence, before desktop proof. This scorecard is reconstructed from that evidence, not a claimed prior scoring artifact.
+| Mandatory category | Post-repository | Final | Evidence gain / bounded residual |
 | --- | --- | --- | --- |
-| Requirement/AC proof |75% |95% |Direct byte/render/identity/guard proof; deployment not claimed |
-| Changed-boundary directness |95% |95% |Public owner, real schema/socket/current dist, real protected reader |
-| Integration realism/mock gap |90% |95% |Current full backend+Nuxt+Chrome+product components, no file transport mocks |
-| Environment/config/identity/fixture |90% |95% |Own roots/ports/DB/bootstrap/build hashes; synthetic valid2pages, not deployed original-client pin |
-| Failure/edge/lifecycle/recovery |95% |95% |4denials,order/abort/snapshot/watchers/leases, resolved harness failures and cleanup |
-| User-surface/browser/shell |50% |95% |Actual Files search/click/2inkcanvases/text/tree; no affected shell behavior |
-| Durable regression relevance |90% |95% |Socket/browser/store tests executed; independent proportional review next |
-Overall **83.57%→95%**, no applicable final category below90%; default scope target met.
-Every critical validation-owned AC directly proven: **Yes AC-001–003**. Every ticket AC proven: **No AC-004 Delivery-owned/unexecuted**. Not final ticket/delivery success.
+| Requirement/AC proof |75% |95% |Actual normal packaged lazy-PDF/text/tree and HTTP denials, not only fixture host |
+| Changed-boundary directness |95% |95% |Real public owner/current embedded module, source unchanged |
+| Cross-boundary realism/mock gap |90% |95% |Actual main/preload/bundled renderer/backend/SQL/HTTP/CDP, no mock gap on file journey |
+| Environment/config/identity/fixture |90% |95% |Native ARM64 package, unprivileged namespace-capable Linux, owned display/root/ports, binary/source pins |
+| Failure/edge/lifecycle/recovery |95% |95% |4denials plus actual restart/reopen and canonical cleanup; corrected probe order/syntax |
+| User/browser/desktop-shell confidence |50% |95% |Actual Electron normal UI, real preload, file:// package,2rendered pages; not all native OS features |
+| Durable coverage relevance |90% |95% |New Linux-capable packaged probe/script and qualified general setup recipes |
+Overall **83.57%→95%** simple7category mean. Default target met; none below90. Validation-owned AC-001–003 directly proven in actual desktop. **AC-004 remains Delivery-owned/unexecuted**; not full-ticket/deployed/user acceptance.
 
-## Durable Coverage Changes / Review Package
-No tests removed/disabled. Production code unchanged.
-| Path relative to worktree | Change / boundary |
+## Durable Changes / Global Guidance
+| Path | Change |
 | --- | --- |
-| server tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts |Update suffix-only expectation to exact relative locator |
-| server tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts |Add loaded-tree denial nonmutation; retain null/denial/watcher/lease assertions |
-| server tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts |Separate labelled baseline test-only teardown fix4c3734952c4e1219687b71df20ff4f4d00572958; all5route assertions intact |
-| server tests/e2e/file-explorer/search-content-http.e2e.test.ts |Add6real socket search/PDF/text/denial cases |
-| web stores/__tests__/fileExplorerStore.spec.ts |Add loaded tree reference/lazy ordered locator and ordinary superseded-query abort cases |
-| web tests/e2e/search-pdf-preview-probe.mjs |Add own-stack real browser/API probe, strict case errors/group/port/root cleanup |
-| web tests/e2e/fixtures/search-pdf-preview.page.vue |Add temporary product component host with public API setup |
-| test-support/file-explorer/resume-preview.pdf |Add valid shared minimal synthetic multipage fixture |
-| web package.json |Add discoverable test:e2e:search-pdf-preview script |
-Here server=autobyteus-server-ts, web=autobyteus-web. Absolute attached review paths:
-- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts
-- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts
-- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
-- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts/tests/e2e/file-explorer/search-content-http.e2e.test.ts
-- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/package.json
-- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/stores/__tests__/fileExplorerStore.spec.ts
-- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/fixtures/search-pdf-preview.page.vue
-- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-preview-probe.mjs
-- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/test-support/file-explorer/resume-preview.pdf
+| /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs |Added actual packaged4case probe, source/package fingerprint, normal UI, strict renderer errors, actual restart/reopen and canonical cleanup |
+| /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/package.json |Added test:e2e:search-pdf-electron script |
+| /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/TESTING.md |Global Linux/container actual-layer/agent-owned setup/non-root/sandbox/display-lifetime/cleanup policy; isolated single-file commit3d843ed9b |
+| /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/docs/isolated-app-instances.md |Replaced macOS-only Linux caveat; native/current-build, dependencies/Corepack, owned HOME/runtime/output, non-root/root-container and full-lifetime Xvfb recipes; commit3c5b40b99 |
+Probe/package commit8b32aa30a; all paths attached for independent proportional review. No removal/skip, runtime source change, migration, compatibility branch or reader/viewer workaround.
+Global TESTING contains no ticket case IDs/results or suite-specific recipe. Detailed steps/header/script/ticket evidence remain appropriately scoped. Guide syntax checked; whole non-root xvfb-run recipe actually executed successfully (final04), not merely written.
 
-## Resolved Execution Failures / Preliminary Classification
-All corrected here as **API/E2E-owned Local Fix**, not source/product blame. No open/new failure ID:
-1. Ineffective initial data env knob; proper AppConfig rerun; initial registry only own worktree fixture roots.
-2. New HTTP teardown invoked guarded product workspace-removal on focused route server without process run supervisor.6assertions initially green; close owned explorer/cache and remove complete own fixture in finally, then full suite Pass.
-3. Unchanged existing REST E2E had same no-supervisor afterEach failure. Base diff of test/WorkspaceRemovalGuard/AgentRunManager empty; changed teardown only, all5route assertions retained, separate baseline-fix commit per TESTING Rule9. First cleanup-edit delimiter error retained/corrected before108green run.
-4. Own HTTP AppConfig switch required existing data directory; mkdir corrected.
-5. Missing Nuxt prepare prevented initial collection(0tests); documented prerequisite then58green.
-6. run01 strict browser-error assertion included PRE-case cold Vite504 Outdated Optimize Dep/dynamic-import errors. Retained errors; fresh validation page after warmup, captures/fails EVERY actual error without filter/clear/waiver. run02/03 clean.
-7. run01 own root deletion raced Nuxt descendants' compile-cache flush after pnpm exit. Group-drain proof and bounded fs.rm retry fixed; manual verified run01 cleanup receipt retained separately, run02/03 cleanup green.
-8. Optional run02 second screenshot landed on blank page-bottom, not semantic proof. Only capture alignment to second canvas top changed; run03 repeated unchanged assertions, visibly records PAGE TWO.
-Canonical report/revision remain single files; fresh run output directories are evidence, not versioned reports. Initial logs never rewritten as Pass.
+## Iteration Failures / Preliminary Classification
+No remaining failure finding. Two new-probe issues corrected here as **API/E2E-owned Local Fix**; no production attribution:
+- Attempt01 API-006/002/003 alreadyPass. New restart check immediately issued raw REST after metadata-only listing and got404. That did not represent approved Files actor steps: REST uses active getWorkspaceById, metadata listing intentionally does not activate, actual folder/search uses getOrCreate first. Revised only new case setup/order to reopen/search/click through real UI; retained200/MIME/exact bytes/render/identity assertions. No reader change, fake warming/private injection or cold-REST guarantee invented.
+- Attempt02 new regex escaping parse error prevented any case/instance; retained log, corrected, syntax check fail-fast. No skipped/partial result counted Pass.
+- Actual03 and final04 all4Pass; canonical cleanup receipts green. Earlier failure artifacts not overwritten.
 
-## Lifecycle / Persistence / Not Tested
-Approved persistence **Not Affected**: no schema/writer/migration/registry policy changes, normal current text/PDF readers used; no hidden data repair or version fallback. Removed explorer facades stay removed; actual TreeNode/Skill serializer remains live.
-Internal absolute candidates valid/current; no compatibility-only tests. Existing lexical confinement preserved, not stronger symlink/TOCTOU claims.
-Electron shell/packaging, Windows, deployment/user8001 version, workers/providers not executed; unaffected or Delivery-owned, not falsely passed.
+## Persistence / Not Tested / Limits
+Approved **Not Affected**; no schema/writer/registry-policy/version/migration changes. Isolated restart proves its own current registry and fixture survive, not production migration. Internal absolute candidates remain current live mechanics; retired explorer methods still removed, TreeNode/Skill owners intact.
+No real-provider inference, native file-picker/notification/voice flows, physical desktop/window-manager or other distributions/Windows tested; those are not required by this file-search fix. This qualifies the observed Ubuntu/Linuxkit arm64 container recipe, not every Linux security policy.
+AC-004 actual host Docker image/frontend/runtime pin, authorized8001 rollout/rollback/timing, explicit user verification, integrity/final cleanup still open in DR-001. No user tests requested here; no inference that agent testing is user acceptance.
 
-## Cleanup / Safety / Identity
-Final receipt:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/api-cleanup.json. Browser closed; groups24840/24718 zero live members; ports37813/40589 closed; run03 temporary host+root removed. run01 manual api-browser-run01-cleanup.json and run02 receipts also retained.
-Own Corepack/cache/home/data/fixtures, standard test DB and temporary Vitest files removed. Initial ignored package-root workspaces.json removed only after proving EVERY entry was this run's own temp fixture. No unrelated process/data reused or removed.
-Worktree/dependencies/current build prerequisites retained; SDK/devkit/Brief Studio dist unstaged; upstream dirty ARCH-REV-003 solution-history receipt untouched/unstaged.
-No /app edit/live8001/PID61 request/restart, production registry/database/user CLI/config/original mutation, or provider spend.
-Original read-only SHA independently unchanged:**7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5**; Delivery must recheck at actual rollout.
-Current source SHA2568e43f4b98bcf7d8aa02b535fa22ee503beafa399e5dd47b1c647f2a16e78bd4e; dist SHA25690b6abe16699570f760c89a8b5d9d266e42344582f815b493a400a2e46abb308; launched worktree HEAD4c3734952 baseline-fix, production identical reviewed7f321575. api-build-identity.log and browser evidence pin source/build, NOT installed /app or deployed runtime.
+## Cleanup / Safety / Retained Outputs
+Final receipt:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/api-electron-cleanup.json.
+Canonical stop wasRunning true/forced false, root removed and both ports released; list empty; own fixture and CDP closed. Owned manual X100 and automatic X101 gone; UID61193 no live processes; builder/runtime homes/temp/cache/cookie removed. Original VNCX99/PID35 and installed serverPID61 remain untouched.
+Original read-only SHA independently unchanged7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5. No original fixture copy or /app/production registry/database/user CLI/config edit/live8001 request/restart/security-policy change.
+Installed test prerequisites xvfb/xauth/ffmpeg, worktree dependencies/current untracked Electron package/AppImage/SDK/devkit outputs retained for future testing/review, NOT staged. Upstream dirty area docs/history/delivery artifacts untouched/unstaged. Worktree/final branch cleanup remains Delivery-owned.
 
 ## Latest Authoritative Result
-**Pass — API-REV-001 / validation-owned AC-001–003 /95%confidence.**
-Broader validation Required/completed; clean scope target met; no unresolved validation-owned material risk.
-**NOT Delivery Completed:** AC-004 host Docker/runtime/frontend/image pin, safe8001 rollout/rollback/timing approval if disruptive, explicit user close-failed-tab/re-search/open verification, integrity and final cleanup remain Delivery-owned/unexecuted. No public release requested.
-Next: Code Reviewer separate proportional **successful API/E2E test-code review Required**, not source re-review or direct Delivery. Actual recipient is selected by fresh get_handoff_rules at handoff.
-
-## Final Evidence Formatting Check
-The earlier unstaged git diff --check passed. The full committed baseline-to-HEAD check later reports intentional PDF xref trailing spaces (20-byte entries) and raw process-log whitespace/ANSI/blank EOF; it is **not** claimed fully clean. Fixture bytes and original execution/error logs are retained unchanged. Text source/tests/docs check passes with exact pathspec exclusion: git diff --check 7cd2a2db5..HEAD -- . ':!tickets/in-progress/resume-pdf-search-preview/evidence/**' ':!test-support/file-explorer/resume-preview.pdf'. No runtime/test/fixture-byte delta or waiver of behavior assertions.
-Fresh get_handoff_rules selects passed High-risk cumulative package → /software_engineering_team/code_reviewer for separate proportional successful test-code review only. No delivery or failure rule matches.
+**Pass — API-REV-002 /round2 /95%**, actual packaged Linux Electron journey and restart/reopen plus qualified container guidance completed.
+All4round2 casesPass;55focused repository checksPass/no skips, actual03/04 repeatPass; prior166unchanged-source checks retained, not falsely rerun.
+Next: fresh passed High-risk handoff → Code Reviewer proportional successful review of new probe/script/global guidance. **Not deployment, user acceptance or Delivery Completed.**

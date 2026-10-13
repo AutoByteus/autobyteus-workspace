@@ -1,0 +1,461 @@
+[33435:1013/032915.352619:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[2026-10-13T03:29:15.541Z] [INFO] [electron] Application started
+[2026-10-13T03:29:15.710Z] [INFO] [electron] Creating server manager for platform: linux
+[2026-10-13T03:29:15.711Z] [WARN] [electron.server.app-data] App data directory is missing .env. Reinitializing first-run data.
+[2026-10-13T03:29:15.711Z] [INFO] [electron.server.app-data] Created missing data directory: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/db
+[2026-10-13T03:29:15.711Z] [INFO] [electron.server.app-data] Created missing data directory: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/logs
+[2026-10-13T03:29:15.711Z] [INFO] [electron.server.app-data] Created missing data directory: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/download
+[33435:1013/032916.368109:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[33435:1013/032916.368767:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[33435:1013/032916.368803:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[2026-10-13T03:29:16.427Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:41355
+
+DevTools listening on ws://127.0.0.1:35653/devtools/browser/bc68122a-470e-4da3-82f1-a8e42953dfe2
+[2026-10-13T03:29:16.818Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-10-13T03:29:16.820Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-10-13T03:29:16.824Z] [INFO] [electron.server.base-server-manager] Server installation directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T03:29:16.825Z] [INFO] [electron.server.base-server-manager] App data directory: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data
+[2026-10-13T03:29:16.826Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-10-13T03:29:16.828Z] [INFO] [electron.server.app-data] Generated runtime .env at: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/.env
+[2026-10-13T03:29:16.828Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-10-13T03:29:16.830Z] [INFO] [electron.server.base-server-manager] Port 34469 is free.
+[2026-10-13T03:29:16.846Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-10-13T03:29:16.846Z] [INFO] [electron] Login shell PATH: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/node_modules/.bin:/tmp/resume-electron-api.Kcl9Y8/launch-home/.cache/node/corepack/v1/pnpm/10.28.2/dist/node-gyp-bin:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/node_modules/.bin:/tmp/resume-electron-api.Kcl9Y8/bin:/usr/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-arm64/vendor/aarch64-unknown-linux-musl/codex-path:/root/.codex/tmp/arg0/codex-arg0rcoexc:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+[2026-10-13T03:29:16.846Z] [INFO] [electron] Using PATH from login shell
+[2026-10-13T03:29:16.847Z] [INFO] [electron] Starting server with port: 34469
+[2026-10-13T03:29:16.847Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:34469
+[2026-10-13T03:29:16.847Z] [INFO] [electron] Working directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T03:29:16.847Z] [INFO] [electron] App data directory: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data
+[2026-10-13T03:29:16.847Z] [INFO] [electron] Executing: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/app.js --port 34469 --data-dir /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data
+[33435:1013/032916.925559:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[33435:1013/032916.926132:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[33435:1013/032916.949514:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2026-10-13T03:29:17.141Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-10-13T03:29:17.141Z] [INFO] [electron.embedded-server.stdout] App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T03:29:17.141Z] [INFO] [electron.embedded-server.stdout] App data directory: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data
+[2026-10-13T03:29:17.141Z] [INFO] [electron.embedded-server.stdout] Config file path: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/.env
+[2026-10-13T03:29:17.141Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/.env
+[2026-10-13T03:29:17.142Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (2) from ../../../../../../../../../../../tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[2026-10-13T03:29:17.142Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-10-13T03:29:17.142Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:34469
+[2026-10-13T03:29:17.143Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-10-13T03:29:17.143Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/logging_config.ini
+[2026-10-13T03:29:17.143Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-13T03:29:17.143Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:34469
+[2026-10-13T03:29:17.143Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T03:29:17.143Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data
+[2026-10-13T03:29:17.143Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/db
+[2026-10-13T03:29:17.143Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/logs
+[2026-10-13T03:29:17.143Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/download
+[2026-10-13T03:29:17.143Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/memory
+[2026-10-13T03:29:17.143Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-13T03:29:22.084Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-10-13T03:29:23.112Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-10-13T03:29:23.119Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+[2026-10-13T03:29:23.616Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-10-13T03:29:23.620Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/db/production.db"
+[2026-10-13T03:29:23.698Z] [INFO] [electron.embedded-server.stdout] SQLite database production.db created at file:/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/db/production.db
+[2026-10-13T03:29:23.726Z] [INFO] [electron.embedded-server.stdout] 27 migrations found in prisma/migrations
+[2026-10-13T03:29:23.739Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260203074245_init`
+[2026-10-13T03:29:23.807Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260208094000_add_external_channel_tables`
+[2026-10-13T03:29:23.856Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[2026-10-13T03:29:23.868Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209213000_remove_agent_conversation_tables`
+[2026-10-13T03:29:23.884Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210101500_add_agent_avatar`
+[2026-10-13T03:29:23.905Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210192000_add_agent_team_avatar`
+[2026-10-13T03:29:23.924Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[2026-10-13T03:29:23.987Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260212070000_remove_workflow_definition`
+[2026-10-13T03:29:23.999Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[2026-10-13T03:29:24.023Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[2026-10-13T03:29:24.034Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331102000_remove_channel_bindings_table`
+[2026-10-13T03:29:24.046Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[2026-10-13T03:29:24.083Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260517090000_add_app_data_migration_records`
+[2026-10-13T03:29:24.095Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260624090000_add_token_usage_ledger_events`
+[2026-10-13T03:29:24.118Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[2026-10-13T03:29:24.164Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260629120000_add_token_usage_display_fields`
+[2026-10-13T03:29:24.185Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260702093000_token_usage_execution_address`
+[2026-10-13T03:29:24.196Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260726090000_add_secret_vault`
+[2026-10-13T03:29:24.210Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260730090000_add_token_usage_provider_name`
+[2026-10-13T03:29:24.221Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260801090000_token_usage_member_display_name`
+[2026-10-13T03:29:24.235Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260814090000_team_run_execution_tree_v1`
+[2026-10-13T03:29:24.246Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260819090000_add_token_usage_run_records`
+[2026-10-13T03:29:24.267Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260820090000_redesign_app_data_migration_summary`
+[2026-10-13T03:29:24.280Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260822090000_add_token_usage_analytics`
+[2026-10-13T03:29:24.310Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260923130000_add_claude_sdk_usage_state`
+[2026-10-13T03:29:24.325Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260924120000_remove_external_channel_tables`
+[2026-10-13T03:29:24.340Z] [INFO] [electron.embedded-server.stdout] Applying migration `20261009120000_token_meter_context_readings`
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout] The following migration(s) have been applied:
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout] migrations/
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout]   └─ 20260203074245_init/
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout]   └─ 20260208094000_add_external_channel_tables/
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209213000_remove_agent_conversation_tables/
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210101500_add_agent_avatar/
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210192000_add_agent_team_avatar/
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.351Z] [INFO] [electron.embedded-server.stdout]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260212070000_remove_workflow_definition/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260309103000_add_channel_binding_launch_preset/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331102000_remove_channel_bindings_table/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260517090000_add_app_data_migration_records/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260624090000_add_token_usage_ledger_events/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260625193000_token_usage_component_pricing_explainability/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260629120000_add_token_usage_display_fields/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260702093000_token_usage_execution_address/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260726090000_add_secret_vault/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260730090000_add_token_usage_provider_name/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260801090000_token_usage_member_display_name/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260814090000_team_run_execution_tree_v1/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260819090000_add_token_usage_run_records/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260820090000_redesign_app_data_migration_summary/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260822090000_add_token_usage_analytics/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260923130000_add_claude_sdk_usage_state/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20260924120000_remove_external_channel_tables/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]   └─ 20261009120000_token_meter_context_readings/
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-13T03:29:24.352Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-10-13T03:29:24.434Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-10-13T03:29:24.472Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-13T03:29:24.764Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 19 predefined settings
+[2026-10-13T03:29:24.787Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-13T03:29:24.789Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-13T03:29:24.886Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-10-13T03:29:24.887Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-10-13T03:29:24.888Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/temp_workspace
+[2026-10-13T03:29:24.889Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/temp_workspace.
+[2026-10-13T03:29:24.889Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-10-13T03:29:24.889Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-10-13T03:29:24.889Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-10-13T03:29:24.889Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-10-13T03:29:24.889Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-10-13T03:29:24.889Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-10-13T03:29:24.889Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-10-13T03:29:24.889Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-10-13T03:29:24.889Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-10-13T03:29:24.889Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-10-13T03:29:24.891Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-10-13T03:29:24.891Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-10-13T03:29:24.891Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-10-13T03:29:24.891Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-10-13T03:29:24.891Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-10-13T03:29:24.891Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-10-13T03:29:24.891Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-10-13T03:29:24.891Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-10-13T03:29:24.891Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-13T03:29:24.891Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-10-13T03:29:24.892Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-10-13T03:29:24.892Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-10-13T03:29:24.892Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-10-13T03:29:24.912Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-10-13T03:29:24.913Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agents'
+[2026-10-13T03:29:24.913Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-10-13T03:29:24.913Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-10-13T03:29:24.913Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-10-13T03:29:24.913Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-10-13T03:29:24.913Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-10-13T03:29:24.913Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Discovery Tools
+[2026-10-13T03:29:24.913Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_projects'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_project_tasks'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_project'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_task'
+[2026-10-13T03:29:24.914Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Project Task Tools
+[2026-10-13T03:29:24.915Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-10-13T03:29:24.915Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-10-13T03:29:24.915Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-10-13T03:29:24.918Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-10-13T03:29:24.918Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-13T03:29:24.919Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-10-13T03:29:24.938Z] [INFO] [electron.embedded-server.stdout] Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+[2026-10-13T03:29:24.938Z] [INFO] [electron.embedded-server.stdout] Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+[2026-10-13T03:29:24.946Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791862164946,"pid":33486,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:35255"}
+[2026-10-13T03:29:24.980Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791862164979,"pid":33486,"hostname":"74ff273d28fe","msg":"Server listening at http://0.0.0.0:34469"}
+[2026-10-13T03:29:24.980Z] [INFO] [electron.embedded-server.stdout] [2026-10-13T03:29:24.980Z] [INFO] [server.runtime] Server listening on 0.0.0.0:34469
+[2026-10-13T03:29:24.980Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-10-13T03:29:24.986Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-10-13T03:29:24.986Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-10-13T03:29:24.986Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-10-13T03:29:24.986Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-10-13T03:29:24.986Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-10-13T03:29:24.986Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-10-13T03:29:24.992Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-10-13T03:29:24.992Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-10-13T03:29:24.992Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-10-13T03:29:24.993Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-10-13T03:29:24.993Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-10-13T03:29:24.993Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-10-13T03:29:24.993Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 35 LLM models into cache.
+[2026-10-13T03:29:24.994Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-10-13T03:29:24.994Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 audio models into cache.
+[2026-10-13T03:29:24.994Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-10-13T03:29:24.994Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-10-13T03:29:25.200Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-10-13T03:29:25.200Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-10-13T03:29:25.200Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[33435:1013/032925.238234:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2026-10-13T03:29:25.265Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/index.html
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[2026-10-13T03:29:25.719Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T03:29:25.721Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T03:29:26.086Z] [INFO] [electron.embedded-server.stdout] GraphQL mutation to create workspace metadata
+[2026-10-13T03:29:26.086Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace
+[2026-10-13T03:29:26.086Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace.
+[2026-10-13T03:29:26.088Z] [INFO] [electron.embedded-server.stdout] Created and registered workspace ID: agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6
+[2026-10-13T03:29:26.112Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: electron-resume-test
+[2026-10-13T03:29:26.183Z] [INFO] [electron.embedded-server.stdout] Created WorkspaceFileExplorer for agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6 (graphql-search).
+[2026-10-13T03:29:26.185Z] [INFO] [electron.embedded-server.stdout] Starting directory traversal for: '/tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace' with max_depth=null
+[2026-10-13T03:29:26.192Z] [INFO] [electron.embedded-server.stdout] Directory traversal for '/tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace' completed in 0.0070 seconds.
+[2026-10-13T03:29:26.192Z] [INFO] [electron.embedded-server.stdout] FileNameIndexer refreshing snapshot index...
+[2026-10-13T03:29:26.193Z] [INFO] [electron.embedded-server.stdout] [Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+[2026-10-13T03:29:26.194Z] [INFO] [electron.embedded-server.stdout] [Search] FuzzysortSearchStrategy completed in 0.63ms, found 2 results (total: 0.74ms)
+[2026-10-13T03:29:26.221Z] [ERROR] [electron.embedded-server.stderr] Security error accessing path /tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace/applications/nested/resume sample.pdf in workspace agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6: Access denied: Path resolves outside the workspace boundary.
+[2026-10-13T03:29:26.222Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791862166221,"pid":33486,"hostname":"74ff273d28fe","reqId":"req-s","method":"GET","url":"/rest/workspaces/agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6/content?path=%2Ftmp%2Fresume-electron-api.Kcl9Y8%2Flaunch-tmp%2Felectron-resume-fixture-x0Gqin%2Fworkspace%2Fapplications%2Fnested%2Fresume+sample.pdf","statusCode":400,"elapsedMs":0.8730829954147339,"msg":"http request completed"}
+[2026-10-13T03:29:26.226Z] [ERROR] [electron.embedded-server.stderr] Security error accessing path /tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/outside.txt in workspace agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6: Access denied: Path resolves outside the workspace boundary.
+[2026-10-13T03:29:26.226Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791862166226,"pid":33486,"hostname":"74ff273d28fe","reqId":"req-t","method":"GET","url":"/rest/workspaces/agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6/content?path=%2Ftmp%2Fresume-electron-api.Kcl9Y8%2Flaunch-tmp%2Felectron-resume-fixture-x0Gqin%2Foutside.txt","statusCode":400,"elapsedMs":0.45054101943969727,"msg":"http request completed"}
+[2026-10-13T03:29:26.228Z] [ERROR] [electron.embedded-server.stderr] Security error accessing path ../outside.txt in workspace agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6: Access denied: Path resolves outside the workspace boundary.
+[2026-10-13T03:29:26.228Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791862166228,"pid":33486,"hostname":"74ff273d28fe","reqId":"req-u","method":"GET","url":"/rest/workspaces/agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6/content?path=..%2Foutside.txt","statusCode":400,"elapsedMs":0.32850003242492676,"msg":"http request completed"}
+[2026-10-13T03:29:26.232Z] [ERROR] [electron.embedded-server.stderr] Security error accessing path ../workspace-sibling/leak.txt in workspace agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6: Access denied: Path resolves outside the workspace boundary.
+[2026-10-13T03:29:26.232Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791862166231,"pid":33486,"hostname":"74ff273d28fe","reqId":"req-v","method":"GET","url":"/rest/workspaces/agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6/content?path=..%2Fworkspace-sibling%2Fleak.txt","statusCode":400,"elapsedMs":0.46491700410842896,"msg":"http request completed"}
+[2026-10-13T03:29:26.542Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T03:29:26.544Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T03:29:27.019Z] [INFO] [electron.embedded-server.stdout] FileSystemWatcher initialized for '/tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+[2026-10-13T03:29:27.103Z] [INFO] [electron.embedded-server.stdout] Created terminal session 1da8ac82-f2fe-4935-af72-887095ccb5a3 using backend PtySession for target /tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace
+[2026-10-13T03:29:27.110Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: 1da8ac82-f2fe-4935-af72-887095ccb5a3
+[2026-10-13T03:29:27.110Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace
+[2026-10-13T03:29:27.255Z] [INFO] [electron.embedded-server.stdout] Started filesystem watcher for workspace /tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace
+[2026-10-13T03:29:27.255Z] [INFO] [electron.embedded-server.stdout] Acquired file watcher lease for /tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace (file-explorer-websocket); active leases: 1
+[2026-10-13T03:29:27.255Z] [INFO] [electron.embedded-server.stdout] FileExplorerSession created: 79681c98-44d4-42a6-a4d8-b88cd43912bd for workspace agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6
+[2026-10-13T03:29:27.256Z] [INFO] [electron.embedded-server.stdout] Created file explorer session 79681c98-44d4-42a6-a4d8-b88cd43912bd for workspace agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6. Active sessions: 1
+[2026-10-13T03:29:27.256Z] [INFO] [electron.embedded-server.stdout] File explorer WebSocket connected: 79681c98-44d4-42a6-a4d8-b88cd43912bd for workspace agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6
+[2026-10-13T03:29:27.256Z] [INFO] [electron.embedded-server.stdout] File explorer websocket attached for workspace agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6
+[2026-10-13T03:29:27.771Z] [INFO] [electron.embedded-server.stdout] Starting directory traversal for: '/tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace' with max_depth=null
+[2026-10-13T03:29:27.773Z] [INFO] [electron.embedded-server.stdout] Directory traversal for '/tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace' completed in 0.0030 seconds.
+[2026-10-13T03:29:27.773Z] [INFO] [electron.embedded-server.stdout] FileNameIndexer refreshing snapshot index...
+[2026-10-13T03:29:27.773Z] [INFO] [electron.embedded-server.stdout] [Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+[2026-10-13T03:29:27.773Z] [INFO] [electron.embedded-server.stdout] [Search] FuzzysortSearchStrategy completed in 0.16ms, found 2 results (total: 0.20ms)
+[33435:1013/032928.369354:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[33435:1013/032928.369414:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[33435:1013/032928.369475:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[33435:1013/032928.369515:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[33435:1013/032928.500396:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[33435:1013/032928.500479:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[33435:1013/032928.500537:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[33435:1013/032928.500579:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2026-10-13T03:29:28.561Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-13T03:29:28.563Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-13T03:29:29.626Z] [INFO] [electron.embedded-server.stdout] [2026-10-13T03:29:29.618Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[33435:1013/032929.646167:ERROR:content/browser/network_service_instance_impl.cc:703] Network service crashed or was terminated, restarting service.
+[33435:1013/032929.669330:ERROR:content/common/zygote/zygote_communication_linux.cc:291] Failed to send GetTerminationStatus message to zygote
+[33435:1013/032929.705779:ERROR:content/common/zygote/zygote_communication_linux.cc:291] Failed to send GetTerminationStatus message to zygote
+[2026-10-13T03:29:29.725Z] [INFO] [electron.embedded-server.stdout] Released file watcher lease for /tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace (file-explorer-websocket); active leases: 0
+[2026-10-13T03:29:29.727Z] [INFO] [electron.embedded-server.stdout] Logically stopped filesystem watcher for workspace /tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace
+[2026-10-13T03:29:29.727Z] [INFO] [electron.embedded-server.stdout] FileExplorerSession closed: 79681c98-44d4-42a6-a4d8-b88cd43912bd
+[2026-10-13T03:29:29.727Z] [INFO] [electron.embedded-server.stdout] Closed file explorer session 79681c98-44d4-42a6-a4d8-b88cd43912bd. Active sessions: 0
+[2026-10-13T03:29:29.727Z] [INFO] [electron.embedded-server.stdout] File explorer WebSocket disconnected: 79681c98-44d4-42a6-a4d8-b88cd43912bd
+[2026-10-13T03:29:29.727Z] [INFO] [electron.embedded-server.stdout] [2026-10-13T03:29:29.639Z] [INFO] [server.runtime] Server closed cleanly.
+[2026-10-13T03:29:29.727Z] [ERROR] [electron.embedded-server.stderr] Watcher runtime child error for /tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace: write EPIPE
+[2026-10-13T03:29:29.727Z] [ERROR] [electron.embedded-server.stderr] Watcher runtime error for /tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace: write EPIPE
+[33435:1013/032929.733504:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[2026-10-13T03:29:29.737Z] [INFO] [electron.server.base-server-manager] Server process exited with code 0
+[33435:1013/032929.737837:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[33435:1013/032929.738748:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[33435:1013/032929.739466:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[33435:1013/032929.739684:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[33435:1013/032929.740921:ERROR:content/browser/gpu/gpu_process_host.cc:992] GPU process launch failed: error_code=1002
+[33435:1013/032929.740984:FATAL:content/browser/gpu/gpu_data_manager_impl_private.cc:418] GPU process isn't usable. Goodbye.
+[33775:1013/032930.803142:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[2026-10-13T03:29:30.951Z] [INFO] [electron] Application started
+[2026-10-13T03:29:31.117Z] [INFO] [electron] Creating server manager for platform: linux
+[33775:1013/032931.201818:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[33775:1013/032931.202200:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[33775:1013/032931.202285:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+
+DevTools listening on ws://127.0.0.1:35653/devtools/browser/165669cf-2138-4b15-ab91-f39a5f11dae9
+[2026-10-13T03:29:31.218Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:45179
+[2026-10-13T03:29:31.282Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-10-13T03:29:31.285Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-10-13T03:29:31.291Z] [INFO] [electron.server.base-server-manager] Server installation directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T03:29:31.292Z] [INFO] [electron.server.base-server-manager] App data directory: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data
+[2026-10-13T03:29:31.294Z] [INFO] [electron.server.base-server-manager] Port 34469 is free.
+[2026-10-13T03:29:31.307Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-10-13T03:29:31.308Z] [INFO] [electron] Login shell PATH: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/node_modules/.bin:/tmp/resume-electron-api.Kcl9Y8/launch-home/.cache/node/corepack/v1/pnpm/10.28.2/dist/node-gyp-bin:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/node_modules/.bin:/tmp/resume-electron-api.Kcl9Y8/bin:/usr/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-arm64/vendor/aarch64-unknown-linux-musl/codex-path:/root/.codex/tmp/arg0/codex-arg0rcoexc:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+[2026-10-13T03:29:31.308Z] [INFO] [electron] Using PATH from login shell
+[2026-10-13T03:29:31.308Z] [INFO] [electron] Starting server with port: 34469
+[2026-10-13T03:29:31.308Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:34469
+[2026-10-13T03:29:31.308Z] [INFO] [electron] Working directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T03:29:31.308Z] [INFO] [electron] App data directory: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data
+[2026-10-13T03:29:31.308Z] [INFO] [electron] Executing: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/app.js --port 34469 --data-dir /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data
+[33775:1013/032931.375997:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[33775:1013/032931.376198:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[33775:1013/032931.392797:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2026-10-13T03:29:31.487Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-10-13T03:29:31.487Z] [INFO] [electron.embedded-server.stdout] App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T03:29:31.487Z] [INFO] [electron.embedded-server.stdout] App data directory: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data
+[2026-10-13T03:29:31.487Z] [INFO] [electron.embedded-server.stdout] Config file path: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/.env
+[2026-10-13T03:29:31.487Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/.env
+[2026-10-13T03:29:31.488Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-10-13T03:29:31.488Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:34469
+[2026-10-13T03:29:31.488Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-10-13T03:29:31.489Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/logging_config.ini
+[2026-10-13T03:29:31.489Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-13T03:29:31.489Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:34469
+[2026-10-13T03:29:31.489Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-10-13T03:29:31.489Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data
+[2026-10-13T03:29:31.489Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/db
+[2026-10-13T03:29:31.489Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/logs
+[2026-10-13T03:29:31.489Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/download
+[2026-10-13T03:29:31.489Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/memory
+[2026-10-13T03:29:31.489Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-13T03:29:33.846Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-10-13T03:29:34.597Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-10-13T03:29:34.603Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+[2026-10-13T03:29:35.045Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-10-13T03:29:35.051Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/db/production.db"
+[2026-10-13T03:29:35.111Z] [INFO] [electron.embedded-server.stdout] 27 migrations found in prisma/migrations
+[2026-10-13T03:29:35.119Z] [INFO] [electron.embedded-server.stdout] No pending migrations to apply.
+[2026-10-13T03:29:35.212Z] [ERROR] [electron.embedded-server.stderr] ┌─────────────────────────────────────────────────────────┐
+[2026-10-13T03:29:35.213Z] [ERROR] [electron.embedded-server.stderr] │  Update available 5.22.0 -> 8.0.0-rc.22                 │
+[2026-10-13T03:29:35.213Z] [ERROR] [electron.embedded-server.stderr] │                                                         │
+[2026-10-13T03:29:35.213Z] [ERROR] [electron.embedded-server.stderr] │  This is a major update - please follow the guide at    │
+[2026-10-13T03:29:35.213Z] [ERROR] [electron.embedded-server.stderr] │  https://pris.ly/d/major-version-upgrade                │
+[2026-10-13T03:29:35.213Z] [ERROR] [electron.embedded-server.stderr] │                                                         │
+[2026-10-13T03:29:35.213Z] [ERROR] [electron.embedded-server.stderr] │  Run the following to update                            │
+[2026-10-13T03:29:35.213Z] [ERROR] [electron.embedded-server.stderr] │    npm i --save-dev prisma@latest                       │
+[2026-10-13T03:29:35.213Z] [ERROR] [electron.embedded-server.stderr] │    npm i @prisma/client@latest                          │
+[2026-10-13T03:29:35.213Z] [ERROR] [electron.embedded-server.stderr] └─────────────────────────────────────────────────────────┘
+[2026-10-13T03:29:35.228Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-10-13T03:29:35.267Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-13T03:29:35.310Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 19 predefined settings
+[2026-10-13T03:29:35.347Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-13T03:29:35.349Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-13T03:29:35.456Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-10-13T03:29:35.456Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-10-13T03:29:35.458Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/temp_workspace
+[2026-10-13T03:29:35.458Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/temp_workspace.
+[2026-10-13T03:29:35.458Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-10-13T03:29:35.458Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-10-13T03:29:35.458Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-10-13T03:29:35.458Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-10-13T03:29:35.458Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-10-13T03:29:35.458Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-10-13T03:29:35.458Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-10-13T03:29:35.458Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-10-13T03:29:35.458Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-10-13T03:29:35.458Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-10-13T03:29:35.460Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-10-13T03:29:35.460Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-10-13T03:29:35.460Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-10-13T03:29:35.460Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-10-13T03:29:35.460Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-10-13T03:29:35.461Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-10-13T03:29:35.461Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-10-13T03:29:35.461Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-10-13T03:29:35.461Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-13T03:29:35.461Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-10-13T03:29:35.461Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-10-13T03:29:35.461Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-10-13T03:29:35.461Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-10-13T03:29:35.481Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-10-13T03:29:35.481Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agents'
+[2026-10-13T03:29:35.481Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-10-13T03:29:35.481Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-10-13T03:29:35.481Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Discovery Tools
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-10-13T03:29:35.482Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-10-13T03:29:35.483Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-10-13T03:29:35.483Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-10-13T03:29:35.483Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_projects'
+[2026-10-13T03:29:35.483Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_project_tasks'
+[2026-10-13T03:29:35.483Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_project'
+[2026-10-13T03:29:35.483Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_task'
+[2026-10-13T03:29:35.483Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Project Task Tools
+[2026-10-13T03:29:35.483Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-10-13T03:29:35.483Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-10-13T03:29:35.483Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-10-13T03:29:35.488Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-10-13T03:29:35.488Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-13T03:29:35.488Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-10-13T03:29:35.519Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791862175519,"pid":33846,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:35755"}
+[2026-10-13T03:29:35.553Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791862175553,"pid":33846,"hostname":"74ff273d28fe","msg":"Server listening at http://0.0.0.0:34469"}
+[2026-10-13T03:29:35.553Z] [INFO] [electron.embedded-server.stdout] [2026-10-13T03:29:35.553Z] [INFO] [server.runtime] Server listening on 0.0.0.0:34469
+[2026-10-13T03:29:35.554Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-10-13T03:29:35.558Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-10-13T03:29:35.558Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-10-13T03:29:35.558Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-10-13T03:29:35.558Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-10-13T03:29:35.558Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-10-13T03:29:35.558Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-10-13T03:29:35.558Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-10-13T03:29:35.559Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-10-13T03:29:35.559Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-10-13T03:29:35.559Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-10-13T03:29:35.559Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-10-13T03:29:35.560Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-10-13T03:29:35.560Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 35 LLM models into cache.
+[2026-10-13T03:29:35.560Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-10-13T03:29:35.560Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 audio models into cache.
+[2026-10-13T03:29:35.560Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-10-13T03:29:35.560Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-10-13T03:29:35.637Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-10-13T03:29:35.637Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-10-13T03:29:35.637Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[33775:1013/032935.667212:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2026-10-13T03:29:35.688Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/index.html
+[2026-10-13T03:29:35.780Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace.
+[2026-10-13T03:29:35.785Z] [ERROR] [electron.embedded-server.stderr] Attempted to access non-existent workspace: agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6
+[2026-10-13T03:29:35.785Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791862175785,"pid":33846,"hostname":"74ff273d28fe","reqId":"req-4","method":"GET","url":"/rest/workspaces/agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6/content?path=applications%2Fnested%2Fresume+sample.pdf","statusCode":404,"elapsedMs":0.6986669898033142,"msg":"http request completed"}
+[33775:1013/032935.869007:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[33775:1013/032935.869064:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[33775:1013/032935.869118:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[33775:1013/032935.869200:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.

@@ -1,0 +1,8 @@
+{
+  "bashBlocksChecked": 7,
+  "placeholdersResolvedForSyntaxOnly": true,
+  "runtimeQualifiedRecipe": "non-root setpriv + clean HOME/TMPDIR/runtime + xvfb-run -a full owning packaged probe",
+  "runtimeEvidence": "api-electron-run04/evidence.json",
+  "platform": "Ubuntu24.04.5 / Linuxkit6.12.54 / arm64",
+  "noBlanketOtherDistributionClaim": true
+}
