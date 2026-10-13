@@ -6,6 +6,10 @@ import { buildLLMUserMessage } from '../message/multimodal-message-builder.js';
 import { partitionRawTraceAttachments } from '../../memory/models/raw-trace-attachments.js';
 import { SenderType } from '../sender-type.js';
 import { resolveInterAgentSenderId } from '../message/inter-agent-sender.js';
+import { LLMUserMessage } from '../../llm/user-message.js';
+import { readPlatformInputPreface, stripPlatformInputPreface } from '../message/platform-input-preface-metadata.js';
+
+const SOURCE_EVENT = 'LLMUserMessageReadyEvent';
 
 export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcessor {
   static getOrder(): number {
@@ -42,13 +46,38 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
     const original = triggeringEvent.agentInputUserMessage;
     const fileAttachments = original.recordingFileAttachments
       ?? partitionRawTraceAttachments(original.contextFiles ?? []).fileAttachments;
+    const identity = {
+      messageId: typeof original.metadata?.message_id === 'string' ? original.metadata.message_id : undefined,
+      dedupeKey: typeof original.metadata?.dedupe_key === 'string' ? original.metadata.dedupe_key : undefined,
+    };
+
+    const preface = readPlatformInputPreface(original.metadata);
+    if (preface) {
+      // The model sees the notice and the input together; history keeps them apart: one system
+      // notice, then the input as it was sent (when there is one). The working-context entry is
+      // linked to both traces explicitly, because its content matches neither.
+      const traceIds = [memoryManager.ingestSystemTaskNotification(preface.content, turnId, preface.senderId, SOURCE_EVENT)];
+      const inputContent = stripPlatformInputPreface(llmUserMessage.content, preface);
+      if (inputContent !== null) {
+        traceIds.push(memoryManager.ingestUserMessage(
+          new LLMUserMessage({
+            content: inputContent,
+            image_urls: llmUserMessage.image_urls,
+            audio_urls: llmUserMessage.audio_urls,
+            video_urls: llmUserMessage.video_urls,
+          }),
+          turnId, SOURCE_EVENT, fileAttachments, resolveInterAgentSenderId(original.metadata), identity,
+        ));
+      }
+      context.state.activeTurn?.recordInputRawTraceIds(traceIds);
+      console.debug(`MemoryIngestInputProcessor stored a platform notice and its input with turnId ${turnId}`);
+      return message;
+    }
+
     memoryManager.ingestUserMessage(
-      llmUserMessage, turnId, 'LLMUserMessageReadyEvent', fileAttachments,
+      llmUserMessage, turnId, SOURCE_EVENT, fileAttachments,
       resolveInterAgentSenderId(original.metadata),
-      {
-        messageId: typeof original.metadata?.message_id === 'string' ? original.metadata.message_id : undefined,
-        dedupeKey: typeof original.metadata?.dedupe_key === 'string' ? original.metadata.dedupe_key : undefined,
-      },
+      identity,
     );
     console.debug(`MemoryIngestInputProcessor stored processed user input with turnId ${turnId}`);
     return message;

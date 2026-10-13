@@ -40,6 +40,7 @@ export class AgentTurn {
   private readonly pendingToolApprovals = new Map<string, ToolInvocation>();
   private llmCallSequence = 0;
   private continuation = false;
+  private inputRawTraces: readonly string[] | null = null;
   private executionPromise: Promise<TurnOutcome> | null = null;
   private settledOutcome: TurnOutcome | null = null;
   private settlementResolve!: (outcome: TurnOutcome) => void;
@@ -78,6 +79,20 @@ export class AgentTurn {
 
   beginContinuation(): void {
     this.continuation = true;
+  }
+
+  /**
+   * The raw traces memory recorded for this turn's input, when they cannot be found by content
+   * (an input carrying a platform notice is recorded as a notice trace plus the input without
+   * it, while the model sees both together). The request assembler links the working-context
+   * entry to exactly these traces. Null means "find them by content", the default.
+   */
+  get inputRawTraceIds(): readonly string[] | null {
+    return this.inputRawTraces;
+  }
+
+  recordInputRawTraceIds(rawTraceIds: readonly string[]): void {
+    this.inputRawTraces = Object.freeze([...rawTraceIds]);
   }
 
   get pendingToolApprovalsSnapshot(): Record<string, ToolInvocation> {
