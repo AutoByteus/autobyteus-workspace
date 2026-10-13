@@ -12,9 +12,9 @@ Finalize the AGY sign-in diagnostic and the Model menu "Unavailable" row into `o
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-docker-node-availability-diagnostics/tickets/in-progress/agy-docker-node-availability-diagnostics/handoff-summary.md`
+- Handoff summary artifact: `tickets/done/agy-docker-node-availability-diagnostics/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-docker-node-availability-diagnostics/tickets/in-progress/agy-docker-node-availability-diagnostics/delivery-revision-record.md`
+- Delivery revision record: `tickets/done/agy-docker-node-availability-diagnostics/delivery-revision-record.md`
 - Current delivery revision ID: `DR-001`
 - Notes: the user decided on no release and approved the `TESTING.md` note (DR-002).
 
@@ -46,7 +46,7 @@ Finalize the AGY sign-in diagnostic and the Model menu "Unavailable" row into `o
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-docker-node-availability-diagnostics/tickets/in-progress/agy-docker-node-availability-diagnostics/docs-sync-report.md`
+- Docs sync artifact: `tickets/done/agy-docker-node-availability-diagnostics/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `antigravity_cli_runtime.md`, `autobyteus-web/docs/chat.md` and `autobyteus-server-ts/docker/README.md`, all in the implementation commits and confirmed accurate. `TESTING.md` is in `15625371b`, approved by the user.
 
@@ -63,11 +63,22 @@ Not required: there is no release, version bump or tag. `autobyteus-web/package.
 
 - Bootstrap context source: `solution-handoff.md` (finalization target `origin/personal`), confirmed by `RELEASE.md`.
 - Ticket branch: `codex/agy-docker-node-availability-diagnostics`
-- Ticket branch commit result: Pending
-- Ticket branch push result: Pending
+- Ticket branch commit result: `Completed`
+  - `15625371b`: `docs(testing)`.
+  - `c148ccceb`: the archived ticket and delivery records.
+  - Both are on top of `6e1fbd7e5`, the DR-001 integration merge.
+- Ticket branch push result: `Completed`. The new remote branch `origin/codex/agy-docker-node-availability-diagnostics` is at `c148ccceb`.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Repository finalization status: Pending (waiting for the user's decisions)
+- Target advanced after verification / acceptance: `No` (re-fetched at `32aca0818` both before the archive commit and immediately before the push)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. `finalize/agy-docker-node-availability-diagnostics` was created from `origin/personal` @ `32aca0818`.
+- Merge into target result: `Completed`. The `--no-ff` merge is `f615a69c7`. Its tree is identical to the checked ticket branch (`git diff --quiet` passed).
+- Push target branch result: `Completed`. `32aca0818..f615a69c7 HEAD -> personal`. After a re-fetch, `origin/personal` equals `f615a69c7`, and the ticket branch is an ancestor.
+- Merged-state checks: `check_repository_artifact_hygiene.py` exit 0 and `check_licensing.py` exit 0, run on the archived ticket commit `c148ccceb`, which has the same tree as the merge. The DR-001 executable checks still apply, because only docs and records changed after them.
+- Repository finalization status: `Completed`
+- Records: this report's final results are a forward `docs(delivery)` commit on `personal`, on top of `f615a69c7`.
 
 ## Release / Publication / Deployment
 
@@ -78,11 +89,16 @@ Not required: there is no release, version bump or tag. `autobyteus-web/package.
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-docker-node-availability-diagnostics`
-- Cleanup: pending, after finalization and release.
+- Worktree cleanup result: `Completed`. Before removal, the only untracked or ignored files were build outputs (`*/dist/`, `.nuxt`, electron build files), and no process referenced the worktree. Removed with `git worktree remove --force`; the folder and the worktree registration are gone.
+- Worktree prune result: `Not required` (the removal cleared the registration).
+- Local ticket branch cleanup result: `Completed`. `codex/agy-docker-node-availability-diagnostics` and `finalize/agy-docker-node-availability-diagnostics` were deleted.
+- Remote branch cleanup result: `Not required`. `origin/codex/agy-docker-node-availability-diagnostics` is kept as a record of the ticket's commits, as in earlier tickets.
+- The temporary worktree `agy-docker-records`, used only to commit these final records, is removed after its push.
+- Test environments: API/E2E already removed every test container (with its token copies), Nuxt, Chrome and isolated desktop instances. The user's nodes 8001–8007 and their volumes were not touched.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-docker-node-availability-diagnostics/tickets/in-progress/agy-docker-node-availability-diagnostics/release-notes.md`
+- Release notes artifact created before verification / acceptance: `tickets/done/agy-docker-node-availability-diagnostics/release-notes.md`
 - Archived release notes artifact used for release/publication: Not required (no release).
 - Release notes status: `Updated`, kept for a later release.
 
@@ -93,18 +109,18 @@ Not required: there is no release, version bump or tag. `autobyteus-web/package.
 
 ## Verification Checks
 
-See "Initial Delivery Integration Refresh". After a release, the user's check on node 8003 is: upgrade to the new image, open the model menu (signed out it shows "Unavailable" with the sign-in text), run `agy` in that node's Terminal, then reopen the menu.
+See "Initial Delivery Integration Refresh" and "Repository Finalization". There is no rollout to watch, because there is no release. After the next release that includes this fix, the user's check on node 8003 is: upgrade to the new image, open the model menu (signed out it shows "Unavailable" with the sign-in text), run `agy` in that node's Terminal, then reopen the menu.
 
 ## Rollback Criteria
 
-If the release shows Antigravity as unavailable on a signed-in node, or breaks the Model menu, revert the merge on `personal` and cut the next beta (`RELEASE.md`, Rollback). No data migration is involved.
+If Antigravity shows as unavailable on a signed-in node, or the Model menu breaks, revert merge `f615a69c7` on `personal` (`git revert -m 1 f615a69c7`) before the next release. No tag or published artifact contains this change yet. No data migration is involved.
 
 ## Final Status
 
-- Explicit user testing/verification complete: `Yes`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (pending decision)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: waiting for the user's release decision and `TESTING.md` wording
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes` (2026-10-13)
+- Repository finalization complete: `Yes` (`origin/personal` @ `f615a69c7`)
+- Applicable release/deployment/rollout complete or not required: `Yes`. Release is `Not required`, by the user's decision.
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent right after this record commit is pushed. The tool-confirmed reference is in the terminal message, not in this file.

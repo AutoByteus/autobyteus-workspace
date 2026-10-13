@@ -10,13 +10,14 @@
 
 ## State For User Verification (DR-001)
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-docker-node-availability-diagnostics`, branch `codex/agy-docker-node-availability-diagnostics` (local only, not pushed).
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-docker-node-availability-diagnostics`, branch `codex/agy-docker-node-availability-diagnostics` (pushed at finalization; the worktree is removed).
   - `87b246c7d`: IR-001, the fix (server classifier, menu row, re-check, locales, docs).
   - `56b11aeae`: IR-002, the shorter sign-in text the user chose.
   - `eb98574bf`: checkpoint. Adds the durable GraphQL E2E `autobyteus-server-ts/tests/e2e/runtime/agy-runtime-availability-graphql.e2e.test.ts` and the SR-004/SR-005 and API/E2E records.
   - `6e1fbd7e5`: merge of `origin/personal` @ `32aca0818` (legacy personal Docker retirement). It merged without conflicts; `autobyteus-server-ts/docker/README.md` combines both sides correctly.
   - `15625371b`: `docs(testing)`, the approved `TESTING.md` note (DR-002).
-  - Then the ticket is archived to `tickets/done/` with the delivery records and merged `--no-ff` into `personal`. See `release-deployment-report.md` for the final commits.
+  - `c148ccceb`: the archived ticket and delivery records.
+  - `f615a69c7`: the `--no-ff` merge into `personal`, pushed. The ticket worktree and local branches were removed; the remote ticket branch is kept.
 - Base and finalization target: `origin/personal` (see `RELEASE.md`).
 - Classification: `task_size=Small`, `architectural_risk=Low`. Route: direct; architecture, source and test-code review are N/A.
 - Not to be committed: the untracked `autobyteus-application-backend-sdk/dist/` and `autobyteus-application-sdk-contracts/dist/`.
