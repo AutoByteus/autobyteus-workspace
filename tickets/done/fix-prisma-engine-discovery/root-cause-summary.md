@@ -1,7 +1,7 @@
-# Root Cause and Permanent Correction — Design Basis, Not Yet Implemented
+# Root Cause and Permanent Correction — Source Implemented and Validated
 
 ## What actually failed
-Our startup engine resolver is defective in two connected ways:
+The prior startup engine resolver was defective in two connected ways:
 1. It looks for bundled Prisma engines under the server package's node_modules, but Docker's pnpm layout keeps the actual engine package in the workspace-root node_modules/.pnpm. The installed CLI's dependency links already identify that package; the old resolver ignores them.
 2. When its search misses those correct engines, it scans the root-user cache and selects a platform-compatible pair without checking the engine revision expected by the CLI. Native architecture compatibility is not RPC/protocol compatibility. The selected c299 engine lacks the listMigrationDirectories method used by installed Prisma5.22; the installed605 engine supports it.
 
@@ -17,9 +17,36 @@ New processes rerun normal schema/startup engine selection against the retained 
 
 The flawed automatic fallback predates these operations: source history ties it to Feb26 immutable Linux AppImage/native-engine EROFS repair, with later platform/DB corrections. Retiring obsolete Dockerfiles left this runtime owner unchanged. Exact last successful removed-node2 cache/image history cannot be reconstructed from available facts.
 
-## Permanent design
+## Implemented permanent correction
 Follow the real installed Prisma CLI's dependency graph to its own @prisma/engines package and @prisma/engines-version metadata. Prefer that package's supported native pair. Only fall back to cache under the exact expected revision, never another version or newest timestamp. Preserve explicit operator overrides and normal schema/error behavior. Use Node's [realpath package dependency resolution](https://nodejs.org/download/release/v22.15.0/docs/api/modules.html#package-manager-tips) / [createRequire](https://nodejs.org/download/release/v22.15.0/docs/api/module.html#modulecreaterequirefilename); don't hardcode an engine version or add another directory scan.
 
-Regression proof must include real current-source Docker startup and recreation using the SAME test-owned persisted home/data with incompatible cache retained, no explicit pin, plus package-local/flat/cache/override unit cases. No real user volume or working-node changes. Source merge is not public-image publication: a future release/upgrade is a separately authorized deployment decision. Until corrected image rollout, the live workaround remains recreation-unsafe.
+Independent API validation executed current-source Docker startup and actual container recreation using the SAME test-owned persisted home/data with the incompatible cache retained and no explicit pin. Package-local/flat/cache/override selection cases also passed. No real user volume or working-node changes. Source merge is not public-image publication: a future release/upgrade is a separately authorized deployment decision. Until corrected image rollout, the live workaround remains recreation-unsafe.
 
-Evidence: current investigation-notes.md E001..008; current recurrence-node2-readonly.json and available-image-dependency-metadata.json; prior finalized cause-comparison/control/RPC evidence and fresh Delivery recurrence package linked there. D1 specifies implementation and pending validation; this report does not claim they have passed.
+Evidence: current investigation-notes.md E001..008; current recurrence-node2-readonly.json and available-image-dependency-metadata.json; prior finalized cause-comparison/control/RPC evidence and fresh Delivery recurrence package linked there. D1 is implemented at dd7be60ff6c732e0ddf6d9ac97a822bda8a85869; API-REV-002 scoped Pass95.7% and CRR-003 durable-test Pass are current authorities. Historical reports retain their stage-time wording. Current finalization state is in handoff-summary.md; no public image or user-node deployment is claimed.
+
+## What the current proof establishes
+
+The immutable dependency image1779 plus a read-only **current built server dist**
+was audited across4559 files: only `startup/migrations.js` and its declaration
+map differed. In the owned LinuxARM64 fixture, the original resolver selected
+c299 and its native RPC returned method-not-found; the corrected source selected
+its own605 bundle and the real RPC returned27 migration directories. Normal
+startup reached three HTTP200/statusok responses. A representative definition
+created through GraphQL survived removal of the first container and creation of
+a different container over the same owned HOME/data; three further health checks
+passed and the wrong-cache bytes remained unchanged. The immutable image alone
+is **not** fixed or published by that test.
+
+Delivery integrated the latest checked personal base and reran197 focused tests
+and production typecheck successfully; tested runtime inputs/dist and69 raw
+API evidence files were unchanged. No user node, pin or backup was probed or
+modified. Native proof is LinuxARM64, not every packaged platform, UI, provider
+or historical record.
+
+The full integration suite remains **371 passed / 2 failed / 68 skipped, exit1**.
+Independent failure-origin review confirms both failures are the existing,
+unrelated streaming-cadence defect PB-001. They were not fixed, skipped or waived;
+the second case did not reach later timing assertions. The manager retains the
+separate approval-pending candidate, with no new Task ID or dispatch. Full units
+were5455 passed/7 skipped; neither skipped tests nor source merge certify a
+published image. Source delivery and any future release/rollout remain separate.
