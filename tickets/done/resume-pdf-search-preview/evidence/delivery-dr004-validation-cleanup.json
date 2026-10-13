@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-10-13T05:29:59.708115+00:00",
+  "ownedRootRemoved": "/tmp/resume-beta-dr004.6A90Ku",
+  "standardWorktreeTestDbInitiallyAbsent": true,
+  "ownedDbFilesRemoved": [
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal"
+  ],
+  "packageRootRegistryAbsent": true,
+  "validationResult": "productiontypecheckPass;22backendfiles/108tests+9webfiles/58tests+51NodechecksPass/no skips",
+  "initialSetupFailure": "outside-package .ts Vitest config inferred CommonJS; no tests collected; same temporary config .mts fixes ESM bundling; initial log preserved",
+  "liveUserRequestsRestartOrDeployment": false,
+  "originalReadOnlySha256": "7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5",
+  "allPersistentBuildOutputsRetainedUntilFinalization": true
+}

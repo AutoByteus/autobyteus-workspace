@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "restart",
+  "result": {
+    "instanceId": "iso-41017-dbed",
+    "pid": 35865,
+    "executablePath": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus",
+    "backendUrl": "http://127.0.0.1:45301",
+    "graphqlUrl": "http://127.0.0.1:45301/graphql",
+    "controlEndpoint": "http://127.0.0.1:41017",
+    "controlPort": 41017,
+    "serverPort": 45301,
+    "dataRoot": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-61ThXd",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-61ThXd/server-data/db/production.db",
+    "logPath": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-app/iso-41017-dbed.log"
+  }
+}

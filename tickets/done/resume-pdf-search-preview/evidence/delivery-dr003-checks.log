@@ -1,0 +1,25 @@
+DR-003 bounded delivery static checks 2026-10-13T04:38:02.994490+00:00
+$ git merge-base --is-ancestor origin/personal HEAD
+exit=0
+$ git diff --check
+exit=0
+$ git diff --check e7a5c20c..HEAD -- . :!tickets/**
+exit=0
+$ git diff --exit-code e7a5c20c HEAD -- autobyteus-server-ts/src autobyteus-web/components autobyteus-web/stores pnpm-lock.yaml test-support/file-explorer/resume-preview.pdf
+exit=0
+$ git grep -n -F -e test:e2e:search-pdf-electron -e search-pdf-electron-probe.mjs -- . :!tickets/**
+exit=1
+$ python3 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 61631
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+exit=0
+$ python3 scripts/check_licensing.py
+Licensing is consistent.
+Tracked files scanned: 6513
+exit=0
+Exact package key deletion only; shared probe absent; retained browser entrypoint and878-byte fixture unchanged. No alias/relocation/replacement introduced by Delivery.
+All prior raw evidence/manifests/DR002integration log hashes unchanged; DR001/002 entries preserved; owner receipt unchanged; no staged paths.
+185existing cumulative attachment paths verified; deleted source excluded; current Delivery reports have no removed-command/file discovery string; generic shared setup retained. Candidate/hypothetical archive hygienePass.
+Static scope sync only; no new executable suite/PDF/app/build/recipe runtime/host retry/original-file hash read. Full raw-log/PDF whitespace not claimed clean. Existing external hold and finalization gates unchanged.

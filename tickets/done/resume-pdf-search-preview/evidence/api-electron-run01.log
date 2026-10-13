@@ -1,0 +1,16 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.3-beta.1 test:e2e:search-pdf-electron /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web
+> node tests/e2e/search-pdf-electron-probe.mjs --skip-build --output-dir ../tickets/in-progress/resume-pdf-search-preview/evidence/api-electron-run01 --ledger-file /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-test-case-ledger.md
+
+API-006: Started
+API-006: Pass
+API-002: Started
+API-002: Pass
+API-003: Started
+API-003: Checkpoint actual packaged2page PDF rendered through protected200 bytes
+API-003: Pass
+API-007: Started
+API-007: Fail
+{"cases":{"API-006":"Pass","API-002":"Pass","API-003":"Pass","API-007":"Fail"},"failure":"AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n404 !== 200\n\n    at file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs:261:12\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async run (file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs:130:36)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs:247:3","cleanup":{"stop":{"instanceId":"iso-35653-51e9","wasRunning":true,"forced":false,"dataRoot":"/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz","dataRootRemoved":true,"controlPortReleased":true,"serverPortReleased":true,"logPath":null},"list":{"instances":[]},"dataRootRemoved":true,"cdpClosed":true,"fixtureRemoved":true}}
+ ELIFECYCLE  Command failed with exit code 1.

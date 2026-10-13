@@ -1,0 +1,162 @@
+{
+  "verifiedAt": "2026-10-13T06:07:23.911885+00:00",
+  "tag": "v1.5.3-beta.3",
+  "releaseCommit": "8d52dc4eb378609ae2dca6089eb62678eeafe803",
+  "releaseUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.3-beta.3",
+  "isPrerelease": true,
+  "draft": false,
+  "allFourWorkflows": "success",
+  "assetCount": 17,
+  "assets": [
+    {
+      "name": "AutoByteus_personal_android-1.5.3-beta.3-release.apk",
+      "size": 1846695,
+      "digest": "sha256:fc020cf9b4df0a647875408dfab78c22bc25ab9f15b517d6b7f83ca12d91f451",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/AutoByteus_personal_android-1.5.3-beta.3-release.apk"
+    },
+    {
+      "name": "AutoByteus_personal_android-1.5.3-beta.3-release.apk.sha256",
+      "size": 119,
+      "digest": "sha256:fd0ca838d611e0896a2fa8b28740b6f4216224e38c000208b13dc6884cc3dc63",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/AutoByteus_personal_android-1.5.3-beta.3-release.apk.sha256"
+    },
+    {
+      "name": "AutoByteus_personal_linux-arm64-1.5.3-beta.3.AppImage",
+      "size": 449194813,
+      "digest": "sha256:17852d34173bf513b774480682a905ec249176bf7f78450d301e2aa12e47a2e1",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/AutoByteus_personal_linux-arm64-1.5.3-beta.3.AppImage"
+    },
+    {
+      "name": "AutoByteus_personal_linux-x64-1.5.3-beta.3.AppImage",
+      "size": 461137030,
+      "digest": "sha256:06e829eec40c17fd6d573c750fad46cb503bfff474544d0c00f137f7e4ff3ed4",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/AutoByteus_personal_linux-x64-1.5.3-beta.3.AppImage"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.5.3-beta.3.dmg",
+      "size": 517317811,
+      "digest": "sha256:abd3f5f279ad6ab8c8ffca79785d8e72088c1a4ebde7875e85cf4a0951c97533",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/AutoByteus_personal_macos-arm64-1.5.3-beta.3.dmg"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.5.3-beta.3.dmg.blockmap",
+      "size": 539744,
+      "digest": "sha256:462420d9cee8071bd8df9db1ff74b20a2537234ad37432d953e0699dcc34a89c",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/AutoByteus_personal_macos-arm64-1.5.3-beta.3.dmg.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.5.3-beta.3.zip",
+      "size": 513098648,
+      "digest": "sha256:494ba18f98b26c25cd01f35fedbf50b360b1e6dbbbbed4469f8235b30f18527b",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/AutoByteus_personal_macos-arm64-1.5.3-beta.3.zip"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.5.3-beta.3.zip.blockmap",
+      "size": 527316,
+      "digest": "sha256:e0bf833f85dd51dd3aead76f2447b3fa18871b687fe7dd320b086d73ef042847",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/AutoByteus_personal_macos-arm64-1.5.3-beta.3.zip.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.5.3-beta.3.dmg",
+      "size": 539388057,
+      "digest": "sha256:67367b6b60bf6aac5790dba941c849ffbf9ced00537b23faf0a30546227c075b",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/AutoByteus_personal_macos-x64-1.5.3-beta.3.dmg"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.5.3-beta.3.dmg.blockmap",
+      "size": 562481,
+      "digest": "sha256:08f24603e0ac46d94f504a61e67a30927982f37bb6fac407e593e31c8196ac90",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/AutoByteus_personal_macos-x64-1.5.3-beta.3.dmg.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.5.3-beta.3.zip",
+      "size": 534738457,
+      "digest": "sha256:603d3e1f8a2d8ff4688687aedeab4252614df7c98cc9e79ca1f6d57e6ffa2fb3",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/AutoByteus_personal_macos-x64-1.5.3-beta.3.zip"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.5.3-beta.3.zip.blockmap",
+      "size": 548662,
+      "digest": "sha256:1016bca910de54b08f110a2b1d916fdda1e284c7e75c49ceb6b4613e2145366d",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/AutoByteus_personal_macos-x64-1.5.3-beta.3.zip.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_windows-1.5.3-beta.3.exe",
+      "size": 341289376,
+      "digest": "sha256:31c15932a53077751283b99cc2c7254365774c6a5872907e53bf03a7890f5da7",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/AutoByteus_personal_windows-1.5.3-beta.3.exe"
+    },
+    {
+      "name": "latest-linux-arm64.yml",
+      "size": 435,
+      "digest": "sha256:ff70e4a605477be29a18350511ff3a49e23f051cc70b739ba7513837b3e09499",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/latest-linux-arm64.yml"
+    },
+    {
+      "name": "latest-linux.yml",
+      "size": 431,
+      "digest": "sha256:1e89127447d4800a27a40552f8db0cf151f327d63f158a1d87e51242756fcd74",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/latest-linux.yml"
+    },
+    {
+      "name": "latest-mac.yml",
+      "size": 933,
+      "digest": "sha256:0c3f06a57218e455f059758ecbc5100c10d1eebda774770c233f680d2700c571",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/latest-mac.yml"
+    },
+    {
+      "name": "latest.yml",
+      "size": 372,
+      "digest": "sha256:b161fed81b679020735fd8b5193e15b7d4120b5b86a8e188e1f5d0564150d4b8",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.3-beta.3/latest.yml"
+    }
+  ],
+  "updaterMetadata": {
+    "latest-linux-arm64.yml": {
+      "version": "1.5.3-beta.3",
+      "referencedFiles": [
+        "AutoByteus_personal_linux-arm64-1.5.3-beta.3.AppImage",
+        "AutoByteus_personal_linux-arm64-1.5.3-beta.3.AppImage"
+      ]
+    },
+    "latest-linux.yml": {
+      "version": "1.5.3-beta.3",
+      "referencedFiles": [
+        "AutoByteus_personal_linux-x64-1.5.3-beta.3.AppImage",
+        "AutoByteus_personal_linux-x64-1.5.3-beta.3.AppImage"
+      ]
+    },
+    "latest-mac.yml": {
+      "version": "1.5.3-beta.3",
+      "referencedFiles": [
+        "AutoByteus_personal_macos-arm64-1.5.3-beta.3.zip",
+        "AutoByteus_personal_macos-arm64-1.5.3-beta.3.dmg",
+        "AutoByteus_personal_macos-x64-1.5.3-beta.3.zip",
+        "AutoByteus_personal_macos-x64-1.5.3-beta.3.dmg",
+        "AutoByteus_personal_macos-arm64-1.5.3-beta.3.zip"
+      ]
+    },
+    "latest.yml": {
+      "version": "1.5.3-beta.3",
+      "referencedFiles": [
+        "AutoByteus_personal_windows-1.5.3-beta.3.exe",
+        "AutoByteus_personal_windows-1.5.3-beta.3.exe"
+      ]
+    }
+  },
+  "apkChecksumMatchesGitHubDigest": true,
+  "docker": {
+    "repository": "autobyteus/autobyteus-server",
+    "tag": "1.5.3-beta.3",
+    "digest": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+    "platforms": [
+      "linux/amd64",
+      "linux/arm64"
+    ],
+    "betaDigest": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+    "isNewestRelease": "true",
+    "betaAliasMatchesThisRelease": true
+  },
+  "iosEvidence": "Archive And Upload To App Store Connect job success; public App Store listing/review not implied",
+  "actualPort8001Upgraded": false
+}

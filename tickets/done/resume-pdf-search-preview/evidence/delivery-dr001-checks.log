@@ -1,0 +1,26 @@
+DR-001 documentation/artifact/preliminary finalization checks; 2026-10-12T16:47:24.315732+00:00
+$ git rev-parse HEAD:RELEASE.md
+66c54a9a4be8a385ca00bd63d1ddeb0a8ac6245a
+exit=0
+$ python3 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 61036
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+exit=0
+$ python3 scripts/check_licensing.py
+Licensing is consistent.
+Tracked files scanned: 6524
+exit=0
+$ git diff --check 2756d7b298ca5b203ebd2310d172b37a5d381b5c..HEAD -- . :!tickets/in-progress/resume-pdf-search-preview/evidence/** :!test-support/file-explorer/resume-preview.pdf
+exit=0
+$ git diff --check
+exit=0
+$ git diff --exit-code -- autobyteus-server-ts/src autobyteus-web/components autobyteus-web/stores :!autobyteus-web/stores/__tests__/**
+exit=0
+No staged files; working production/source/test diff empty. Delivery only area docs/artifacts.
+Incoming designer receipt unchanged/unstaged; validated878-byte synthetic fixture unchanged; original read-only hash unchanged.
+Documented durable entrypoints exist; workspace usage examples no longer pass leading-slash locators.
+48 exact absolute file references checked across4authoritative delivery artifacts; local Markdown whitespace clean.
+Official hygiene collect_violations checks tracked+8explicit delivery-owned candidate paths and hypothetical archived paths: Pass; no actual archive or staging.
+No new-base/source/test behavior; no executable suites/browser rerun in Delivery. Final merged-personal guards and actual deployment/user/cleanup checks remain open. Full raw-log/PDF whitespace deliberately excluded, not globally clean.

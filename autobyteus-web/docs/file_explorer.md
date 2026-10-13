@@ -652,7 +652,7 @@ async searchFiles(query: string, workspaceId: string) {
 
 #### 3. TreeNode Conversion
 
-Search results from the backend are file paths. The frontend converts these to `TreeNode` objects so they can be rendered by the same `FileItem.vue` component used for the directory tree:
+GraphQL search results are workspace-relative file paths, in the same convention as tree nodes, not absolute host filesystem paths. The server converts and validates its internal absolute search candidates at the public explorer boundary, preserving result order. The frontend uses each returned locator unchanged for workspace text reads and protected content previews, including PDFs, without relaxing the readers' path restrictions. It converts results to `TreeNode` objects so they can be rendered by the same `FileItem.vue` component used for the directory tree:
 
 ```typescript
 wsState.searchResults = matchedPaths.map((filePath) => {
@@ -675,6 +675,16 @@ wsState.searchResults = matchedPaths.map((filePath) => {
   );
 });
 ```
+
+Loaded results reuse the existing tree node. Results beneath unexpanded
+folders use a temporary node with the same workspace-relative locator; opening
+that node does not require expanding its parents. Workspace identity is the
+pair of `workspaceId` and relative path, not the temporary search node id.
+
+After a backend update changes search results, close an old failed preview tab
+and re-enter the query before selecting a result. This obtains fresh locators
+through the normal UI; do not repair cached paths by enabling absolute reads
+or switching a workspace preview to a client-local file.
 
 ### UI Component (FileExplorer.vue)
 
@@ -919,7 +929,7 @@ Snapshot operations intentionally bypass this lifecycle:
 
 - `createWorkspace`, `fetchAllWorkspaces`, `folderChildren`, `fileContent`, and `searchFiles` return snapshots without acquiring watcher leases.
 - File mutations return concrete change events that the frontend applies immediately; the later stream echo is filtered if a live stream is open.
-- Search index refresh uses snapshot traversal (`getAllFilePaths`), observes request abort signals, and does not keep watcher state alive.
+- Search index refresh builds a directory-tree snapshot (`buildWorkspaceDirectoryTree`) and traverses `getTree` via `FileNameIndexer.refreshSnapshotIndex`, observes request abort signals, and does not keep watcher state alive.
 
 ### Sequence Diagram
 
@@ -1097,24 +1107,27 @@ function determineFileType(
 
 ### Opening a File
 
+All paths in these workspace examples are relative to the selected workspace
+root, without a leading slash. They are not absolute host paths or URLs.
+
 Prefer the workspace-scoped composable inside components:
 
 ```typescript
 const explorer = useWorkspaceFileExplorer(toRef(props, "workspaceId"));
 
 // Open in full edit mode
-explorer.openFile("/src/main.ts");
+explorer.openFile("src/main.ts");
 
 // Open in preview mode
-explorer.openFilePreview("/docs/README.md");
+explorer.openFilePreview("docs/README.md");
 ```
 
 If using the store directly, pass `workspaceId` explicitly:
 
 ```typescript
 const fileExplorerStore = useFileExplorerStore();
-await fileExplorerStore.openFile("/src/main.ts", workspaceId);
-await fileExplorerStore.openFilePreview("/docs/README.md", workspaceId);
+await fileExplorerStore.openFile("src/main.ts", workspaceId);
+await fileExplorerStore.openFilePreview("docs/README.md", workspaceId);
 ```
 
 ### Performing File Operations
@@ -1126,16 +1139,16 @@ still invoke the store directly when they already have an explicit workspace id:
 
 ```typescript
 // Create a new file
-await fileExplorerStore.createFileOrFolder("/src/utils/helpers.ts", true, workspaceId);
+await fileExplorerStore.createFileOrFolder("src/utils/helpers.ts", true, workspaceId);
 
 // Rename a file
-await fileExplorerStore.renameFileOrFolder("/src/old-name.ts", "new-name.ts", workspaceId);
+await fileExplorerStore.renameFileOrFolder("src/old-name.ts", "new-name.ts", workspaceId);
 
 // Delete a file
-await fileExplorerStore.deleteFileOrFolder("/src/deprecated.ts", workspaceId);
+await fileExplorerStore.deleteFileOrFolder("src/deprecated.ts", workspaceId);
 
 // Move a file
-await fileExplorerStore.moveFileOrFolder("/src/utils.ts", "/src/lib/utils.ts", workspaceId);
+await fileExplorerStore.moveFileOrFolder("src/utils.ts", "src/lib/utils.ts", workspaceId);
 ```
 
 ### Navigating Open Files
@@ -1146,9 +1159,9 @@ fileExplorerStore.navigateToNextTab(workspaceId); // Arrow Right
 fileExplorerStore.navigateToPreviousTab(workspaceId); // Arrow Left
 
 // Close files
-fileExplorerStore.closeFile("/src/main.ts", workspaceId);
+fileExplorerStore.closeFile("src/main.ts", workspaceId);
 fileExplorerStore.closeAllFiles(workspaceId);
-fileExplorerStore.closeOtherFiles("/src/app.ts", workspaceId); // Keep only app.ts
+fileExplorerStore.closeOtherFiles("src/app.ts", workspaceId); // Keep only app.ts
 ```
 
 ## Related Documentation

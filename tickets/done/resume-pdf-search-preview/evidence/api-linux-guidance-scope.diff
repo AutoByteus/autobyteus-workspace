@@ -1,0 +1,66 @@
+diff --git a/TESTING.md b/TESTING.md
+index 2a5e2cde8..d935daf67 100644
+--- a/TESTING.md
++++ b/TESTING.md
+@@ -150,7 +150,15 @@ not paid inference. Agent-run testing is not the user's verification.
+   `tests/integration/agent/agent-status-websocket.integration.test.ts` fail because of a
+   reported product defect. Remove this note when it is fixed.
+ 
+-## Linux and container desktop validation
++## Environment-specific setup: headless Linux and containers
++
++The virtual-display and root-container recipes below apply **only when those
++environment conditions exist**, such as a headless Linux testing container.
++They are not the setup procedure for every developer's host desktop. On a normal
++host desktop, use its existing graphical session and normal non-root account;
++do not install Xvfb or switch numeric UID/GID just because you are running tests.
++Use the supported platform's isolated-instance instructions. The global
++test-layer, evidence, isolation and safety rules above still apply.
+ 
+ - A full product journey still needs the **actual isolated Electron worktree build**.
+   A browser/component fixture is not a substitute for this layer.
+@@ -161,8 +169,8 @@ not paid inference. Agent-run testing is not the user's verification.
+   owner, then launch the current unpacked build as an unprivileged user with
+   isolated-app start --from-worktree. Preserve Chromium's sandbox; do not add
+   --no-sandbox or change host security settings to force a pass.
+-- Keep the display alive for **start → automation → stop**. Wrap the complete
+-  owning probe/session in xvfb-run, not just the short-lived start command.
++- When Xvfb is needed, keep it alive for **start → automation → stop**. Wrap the
++  complete owning probe/session in xvfb-run, not just the short-lived start command.
+ - Verify the reported instance/ports, packaged identity, renderer assertions and
+   cleanup. A launch, skipped case, or screenshot alone is not a journey pass.
+   If safe setup cannot work, report the precise missing dependency and attempted
+diff --git a/docs/isolated-app-instances.md b/docs/isolated-app-instances.md
+index 21d546e24..d2ab28473 100644
+--- a/docs/isolated-app-instances.md
++++ b/docs/isolated-app-instances.md
+@@ -303,6 +303,21 @@ An isolated instance starts empty.
+ 
+ ## Linux
+ 
++### Choose setup for the environment
++
++| Environment | Setup to use |
++| --- | --- |
++| Normal Linux host desktop with a graphical session | Use the existing display and normal non-root account with an isolated current worktree build. Xvfb and a numeric UID/GID switch are not required. |
++| Headless Linux worker/container without a graphical session | Use the headless build/Xvfb recipe below; keep the display alive for the whole automation session. |
++| Root-only Linux container | Build as the owner, then use the root-container recipe to run Electron non-root. Add Xvfb only if there is no usable owned graphical session. |
++| Other supported host platforms | Use their platform-specific build/launch instructions, not these Linux apt/Xvfb/setpriv recipes. |
++
++The headless/root-container method was exercised in an Ubuntu 24.04 ARM64
++container. It is reusable setup guidance for matching environments, not a
++universal host-desktop procedure or proof for every distribution/architecture.
++All environments still need test-owned data/ports, current-build evidence,
++sandbox preservation and owned-instance cleanup.
++
+ Use a native Linux build and an unprivileged runtime user. The unpacked worktree
+ path supports a real graphical session or an owned Xvfb display; no installed app,
+ Docker socket, FUSE mount or user-operated desktop is needed for that path.
+@@ -334,6 +349,7 @@ Before building/launching, record platform/architecture and runtime identity:
+ ~~~bash
+ node -p 'process.platform + "-" + process.arch'
+ id
++# Only when using the headless/Xvfb recipe:
+ command -v Xvfb xvfb-run xauth
+ # Run this as the intended NON-ROOT application user, not only as the builder:
+ unshare --user --map-root-user true

@@ -1,0 +1,21 @@
+
+> autobyteus@1.5.3-beta.1 test:e2e:search-pdf-preview /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web
+> node tests/e2e/search-pdf-preview-probe.mjs --output-dir ../tickets/in-progress/resume-pdf-search-preview/evidence/api-browser-run01 --ledger-file /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-test-case-ledger.md
+
+API-002: Started
+API-002: Pass
+API-003: Started
+API-003: Fail
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+[Error: ENOTEMPTY: directory not empty, rmdir '/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/node-compile-cache/v22.23.3-arm64-2b4477fa-0'] {
+  errno: -39,
+  code: 'ENOTEMPTY',
+  syscall: 'rmdir',
+  path: '/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/node-compile-cache/v22.23.3-arm64-2b4477fa-0'
+}
+
+Node.js v22.23.3
+ ELIFECYCLE  Command failed with exit code 1.
