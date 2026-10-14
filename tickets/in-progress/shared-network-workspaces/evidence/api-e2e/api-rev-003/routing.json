@@ -22,5 +22,12 @@
     "recipient_address": "/software_engineering_team/code_reviewer"
   },
   "outcome": "API-REV-003 Fail57.14%, broaderRequired; API-F002 resolved, API-F003 reproduced",
-  "notification": "Not yet sent; confirmed receipt appended after send"
+  "notification": "Confirmed delivered; stage ended, no recipient polling",
+  "evidenceCommit": "f76cf11a519c8f22fd89e5acc946802c5d23259f",
+  "receipt": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /software_engineering_team/code_reviewer.",
+    "target_agent_run_id": "code_reviewer_15230647f3a742cc9256cf89dbec603f"
+  }
 }
