@@ -152,3 +152,68 @@ record does not imply an earlier Pass or completed implementation.
   not executed. Real privileged installer/OS/modes/Docker/native tools/assets/peer/
   restore/healthy previews, physical proof, docs/merge/user verification/release
   remain downstream. Main Task not closed; no live resource/provider/release action.
+
+## IR-004 — Bridge native Apple cold activation to the first host mount
+
+- Recorded:2026-10-14; execution evidence2026-10-13 UTC. Trigger:
+  `/software_engineering_team/code_reviewer`, **CRR-003 Fail / Local Fix**, **CR-002 P1**,
+  API-REV001/API-F001 failure-origin review. Input artifacts164e871e55 and receipt
+  4ed9a12720. Prior IR003 Local Fix Complete was independently accepted by CRR002;
+  CR001 remains resolved, not reopened. Latest CRR003/API001 Fail still governs.
+- Current result: **Local Fix Complete, source re-review required**. Not a source
+  reviewer Pass, API signoff, delivery or Task Done. Approved SR018 / Ready SR019 /
+  ARCH-REV003 unchanged; IR001/IMP-D001 history preserved. DR N/A, not yet performed.
+  Task size **Large**, architectural risk **High**, confirmed without downgrade.
+- Supported behavior: BEH001/004, SCN001/011/013, AC012/018/019; preserve BEH005
+  source identity/private-state/nonroot/consent/ownership contracts. Ordinary fresh
+  native-Mac create must complete in one invocation, not require manual reconnect.
+- Diagnosis: personally reproduced unchanged-source mount_nfs74/EPROGUNAVAIL.
+  Passive trace confirms TCP111 initially not serving. Published Apple activation
+  command/PID completion is not RPC readiness. Rejected candidates additionally
+  exposed implicit rpcinfo lookup sending NFS NULL to port111 after lookup failure.
+  Do not infer a required statd/NLM feature or ignored locallocks from error wording.
+  `implementation-evidence/ir-004/startup-investigation.md` separates raw facts,
+  primary contracts, candidate failures and limits; no exact kernel-cause claim.
+- Source commit **174e480bd0cfaee29f22fd46b1922afbb274e56b**. Existing Apple backend
+  `apple_apply.go` now awaits its `apple_startup.go` serving boundary; setup apply/
+  lifecycle pass the validated selected endpoint. Observe both TCP v3 registrations,
+  then actual NULL replies at explicit registered ports. Only known not-yet-ready
+  conditions/missing mappings get a bounded startup observation window; invalid
+  configuration/procedure/auth/version and unknown errors remain failures. No blind
+  sleep, blanket mount retry, daemon-policy change or implicit-lookup fallback.
+- Exact existing administrative lock and synchronous child ownership retained;
+  source/UUID, settings blocks, mapall/nonroot, pending intent, CR001 modes, mount
+  flags, job ordering and no intentional shared-to-local fallback unchanged. No
+  persisted migration or compatibility path. DEC015/D001 deferred NOT fixed;
+  no per-action worker/probe/stream lease/cwd trampoline or outage guarantee.
+- Durable new `internal/backend/apple_startup_test.go`: ordering, absent/partial/
+  wrong-version/UDP-only registrations, actual serving transitions, exact endpoint/
+  explicit ports, invalid table/ports, fatal setup errors and unsuccessful bounded
+  observation. Five changed files (four production); new owner98 nonempty lines,
+  all production files below500 and per-file deltas below220.906 prior source/
+  authority/evidence paths unchanged; API-owned af9f23 REST tests untouched.
+- Personally executed final checks:7-package Go race/vet, Python6 pass plus child
+  permission fixture executed through Go,4-target builds, native smoke and expected
+  unqualified publishing refusal. Three disposable mutation controls fail on the
+  intended assertions. No testing or implementation delegated.
+- Native narrow regression: two complete fresh current-source Mac VM harnesses
+  **Pass13.407s and11.496s**, real guest sudo/root installation under077, one public
+  create and no manual reconnect. Original/mounted bytes and UUID match; source
+  inode/device/owner/mode retained; private0700/0600, exact installed binary and
+  running launchd job verified. A third current create passed16.975s but an extra
+  harness assertion incorrectly required GID0 instead of root UID + private mode;
+  overall Fail retained, harness corrected only. Baseline and three rejected
+  candidate failures also retained rather than relabelled as passes.
+- Final production hash497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da;
+  guest binarye8c88d75a1ce43fcffd78f831dbfde38e8f4c11af06274251b600ea7bd5535c1,
+  identical native crossbuild. Full commands/limits/raw packet diagnostics/cleanup
+  in `implementation-evidence/ir-004/`. All8 exact owned clones/processes removed,
+  cached public image retained; owned toolchain/scratch removed. No host shares,
+  private credentials, user nodes, host mounts, paid providers, push or release.
+- Next: fresh rules select source re-review of this Large/High Local Fix, before
+  API owner reruns API-F001 and the remaining matrix. Current API001 confidence/
+  failure remains authoritative. Current native tools/assets/peer/restore/modes,
+  both-OS managed Docker clients, Linux native/Docker storage, mounted healthy
+  previews, independent physicalMac/Linux/Docker, docs/finalization/user verification
+  and authorized release remain gates. FUP001 stays PM-owned, no duplicate task or
+  patch; Nuxt/Electron baseline failures and candidate-only green distinction remain.

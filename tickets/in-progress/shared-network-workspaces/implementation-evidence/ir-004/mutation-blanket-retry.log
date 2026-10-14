@@ -1,0 +1,36 @@
+--- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution (0.00s)
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution//registration (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution//NULL (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Authentication_error/registration (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Authentication_error/NULL (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Program/version_mismatch/registration (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Program/version_mismatch/NULL (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Procedure_unavailable/registration (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Procedure_unavailable/NULL (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unknown_host/registration (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unknown_host/NULL (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/Permission_denied/registration (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/Permission_denied/NULL (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/unrecognized_option/registration (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/unrecognized_option/NULL (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unable_to_receive/registration (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unable_to_receive/NULL (0.00s)
+        apple_startup_test.go:130: retried invalid/unknown setup
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend	0.367s
+FAIL

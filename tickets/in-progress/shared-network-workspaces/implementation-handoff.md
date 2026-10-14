@@ -1,12 +1,15 @@
-# Implementation Handoff — IR-003
+# Implementation Handoff — IR-004
 
 ## Current result
 
-**Local Fix Complete — CR-001 addressed in code; independent source re-review required.**
-The latest source-review authority is still **CRR-001 Fail**, not an inferred Pass.
-IR-003 corrects restrictive-umask creation modes for new executable/public directories
-and their parents while preserving private modes and existing-path refusal.
-Implementation and local checks performed personally; no delegated work/testing.
+**Local Fix Complete — CR-002 / API-F001 addressed; independent source re-review required.**
+Latest source-review authority remains **CRR-003 Fail**; **API-REV001 Fail** and
+confidence57.14% remain unchanged pending independent retest. Historical CRR002
+source Pass and CR001 resolution are preserved, not reopened.
+IR004 corrects Apple activation-to-mount startup sequencing through registered-port
+and actual NFSv3/MOUNTv3 serving checks in the existing backend. Two complete fresh
+native Mac VM checks pass; failed candidates and one harness-only false assertion
+remain recorded. Implementation and local checks performed personally, no delegation.
 
 IR002's full-suite results remain historical local evidence for unchanged areas,
 not an all-green repository result: the same3 baseline updater failures remain.
@@ -36,8 +39,8 @@ Ticket root (all ticket-relative artifacts below live here):
   **ARCH-REV-003 Pass**, review commit `65b0e6e57a`; independent architecture review
   applies. ARCH-REV-002's source-lease acceptance is superseded, ARCH-REV-001/D-001
   remains historical. No production behavior is qualified by those reviews.
-- `implementation-revision-record.md`: IR-001/002 preserved plus current **IR-003**.
-  Current trigger **CRR-001 / CR-001 P1**. Historical **IMP-D001**, detailed original evidence
+- `implementation-revision-record.md`: IR-001/002/003 preserved plus current **IR-004**.
+  Current trigger **CRR-003 / CR-002 P1 / API-F001**. Historical **IMP-D001**, detailed original evidence
   `implementation-evidence/ir-001/source-lease-design-impact.md` and `source-audit.json`.
 - Retained feasibility supplements under `evidence/feasibility/`:
   `sr019-artifact-audit.json`, `sr018-artifact-audit.json`, `sr017-selection-report.md`,
@@ -48,25 +51,42 @@ Ticket root (all ticket-relative artifacts below live here):
   These are historical experiments, not current-product qualification.
 - UI reference: `evidence/ui-reference/docker-guide-user.png`; no separate
   Product-owned behavior supplement was requested (N/A — not applicable).
-- Current local-fix evidence: `implementation-evidence/ir-003/checks-and-limits.md`,
-  `source-audit.json`, `final-checks.json` and retained control failures.
+- Current local-fix evidence: `implementation-evidence/ir-004/checks-and-limits.md`,
+  `startup-investigation.md`, `source-audit.json`, `local-checks-result.json`,
+  `vm-summary.json`, `run-mac-cold.py`, raw8 VM attempts and `cleanup.json`.
+  `package-index.json` inventories IR004 receipts; `final-source-check.json` verifies
+  source/history preservation. `packaging-check.json` records untouched raw-log
+  whitespace warnings; source and authored artifact whitespace checks pass.
+  IR003 permission fix/evidence remains under `implementation-evidence/ir-003/`.
 - IR002 implementation evidence index:
   `implementation-evidence/ir-002/checks-and-limits.md`; historical source hashes,
   expanded check receipts, native metadata discovery, rendered artifacts and all
   earlier failures reside alongside it. `progress.md` is historical checkpoint context.
-- `code-review-report.md`, `code-review-revision-record.md`: **CRR-001 Fail / Local Fix**;
-  `code-review-evidence/crr-001/checks-and-limits.md`, `installer-permission-trace.md`,
-  `installer-umask-result.json`, `check-installer-umask.py`, `source-audit.json`,
-  `source-size-audit.md`, `focused-checks-result.json` are active triggering evidence.
-  Review-only commit `d4ac42107e`, FUP001 informational custody `caa318d795`.
-- API-REV / DR: **N/A — not yet performed**, not waived or marked passed.
+- `code-review-report.md`, `code-review-revision-record.md`: **CRR-003 Fail / Local Fix**;
+  `code-review-evidence/crr-003/` contains source contracts, focused hashes, execution
+  summary, routing and limits. Review commit164e871e55, receipt4ed9a12720.
+  Historical CRR002 Pass (3b7dd9a289) and CRR001/CR001 permission finding retained,
+  with all `code-review-evidence/crr-001/` and `crr-002/` receipts.
+- `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`,
+  `api-e2e-revision-record.md`, `api-e2e-test-case-ledger.md`: **API-REV001 Fail**,
+  API-F001; `evidence/api-e2e/api-rev-001/package-index.json` indexes actual V01 Pass,
+  V02/single-VM Fail, public reconnect limits, source identity, executed harnesses
+  and cleanup. API evidence1009ce87e5; API-owned REST fixture correctionaf9f23 unchanged.
+  Reviewer did not rerun that API evidence. This fix does not overwrite its result.
+- DR: **N/A — not yet performed**, not waived or marked passed.
 
 ## Current implementation summary
 
-- Cycle: Implementation-owned **Local Fix** after source review; revision **IR-003**.
+- Cycle: Implementation-owned **Local Fix** after API failure-origin review; revision **IR-004**.
 - Related revisions: SR-019 / Approved SR-018; ARCH-REV-003, retained preceding history.
-  **CRR-001 / CR-001** current trigger; API-REV/DR N/A. IMP-D001 historical resolution retained.
-- IR003 fix: **`dfeac830f468994255fdafc31f66cdbeee1852cc`**: one production owner
+  **CRR-003 / CR-002 / API-REV001 / API-F001** current trigger; DR N/A. IMP-D001 historical resolution retained.
+- IR004 fix: **`174e480bd0cfaee29f22fd46b1922afbb274e56b`**; `backend/apple_apply.go`,
+  new `apple_startup.go` + durable unit regression, and selected-endpoint arguments
+  in `setup/apply.go`/`lifecycle.go`. Existing Apple owner waits for TCP registrations
+  AND NULL replies at explicit ports before returning to the one-shot mount/probe.
+  Narrow startup conditions only; invalid setup/procedure/auth errors remain fatal.
+  No implicit-lookup fallback, daemon policy, mount retry, OS ownership or state change.
+- IR003 fix (retained, CR001 independently resolved by CRR002): **`dfeac830f468994255fdafc31f66cdbeee1852cc`**: one production owner
   `autobyteus-nfs/internal/platform/commands.go`; durable Go directory/installer
   regression and existing Python bootstrap fixture extended. Only newly created
   directories receive exact requested modes, including recursive0755 parents;
@@ -107,7 +127,7 @@ Production paths below are relative to the worktree root.
 
 | Behavior | Approved change / preserved outcome | Actual owner and key paths | Implementation result / evidence limit |
 | --- | --- | --- | --- |
-| BEH001 | One app-independent guided service, selected original source and same mapping across reconnect | `autobyteus-nfs/cmd/autobyteus-nfs`; `internal/cli`, `setup`, `config`, `service`, `platform/jobs.go`; `scripts/public/nfs/install.sh`; release workflow/packaging | Implemented normal create/connect/status/reconnect/detach and pending-state ownership. IR003 corrects CR001 via `platform/commands.go` new-directory final modes; restrictive-mask bootstrap/parent/descriptor regression passes. Real privileged install/restart qualification outstanding. |
+| BEH001 | One app-independent guided service, selected original source and same mapping across reconnect | `autobyteus-nfs/cmd/autobyteus-nfs`; `internal/cli`, `setup`, `config`, `service`, `platform/jobs.go`; `scripts/public/nfs/install.sh`; release workflow/packaging | Implemented normal create/connect/status/reconnect/detach and pending-state ownership. IR003 new-directory modes retained; IR004 Apple serving barrier corrects CR002. Two fresh current native-Mac VM creates under077 verify source/mounted bytes/UUID and live job; not physical/peer/reboot/published-installer qualification. |
 | BEH002 | Standalone/Team/Org/restore normal tools/cwd, configured skills, no intentional shared temp fallback | server `agent-execution/services/shared-run-workspace-admission.ts` via `agent-run-manager.ts`; `workspaces/shared-workspace-binding.ts`; native helper/resolvers; shared `runtime-skill-profile.ts` and `prepare-private-runtime-skills.ts`; Claude/Codex/Grok exact discovery adapters/process owners | Shared activation check central, private linked profiles/process close implemented; ordinary local branch retained as a distinct supported mode. Unit and native signed-out discovery proof, not real native tool/support-asset/peer-turn proof. |
 | BEH003 | Same filesystem bytes and documented concurrency/Git behavior | Go `backend/apple*`, `ganesha*`, `platform/mounts.go`, filesystem/file-handle qualification; server `runtime-management/shared/scoped-project-git-environment.ts`; core `tools/terminal/terminal-child-environment.ts` and existing PTY/process owners | Hard TCP NFS3/NFS4.1 mapping, source nonroot map-all, child-only exact-project Git trust preserving indices. No merge/sync/cache substitute; mounted filesystem/concurrent peer semantics await actual matrix. |
 | BEH004 | Known bad new-run binding not ready, ordinary healthy reconnect, no local substitute | Go `setup/status.go`, `lifecycle.go`, `service/supervisor.go`; server lazy descriptor/mount/source/UUID/access checker | No global workspace startup scan or per-turn/file checks. Actual bad binding rejected, status host/node distinctions retained. Checks may stall; no outage deadline. |
@@ -171,7 +191,31 @@ AGY keeps its existing capsule manifest and missing-source warn/skip restore.
 
 ## Local implementation checks and frontend feedback
 
-### IR003 current local-fix checks
+### IR004 current local-fix checks
+
+`implementation-evidence/ir-004/checks-and-limits.md` is the detailed current evidence
+index. Go7 packages race/vet pass, Python6 pass plus child fixture invoked through
+Go,4 target builds pass, native version and unqualified-publication refusal pass.
+Three mutation controls fail on expected assertions: command-only activation,
+one-shot observation, blanket retry. Five durable startup-test groups cover RPC
+registration/actual serving, partial startup, exact targets/ports, invalid setup
+and bounded unsuccessful observation with original errors preserved.
+
+Two separate fresh native-Mac VM complete harnesses pass13.407s/11.496s under077,
+without manual reconnect. Original source inode/device/owner/mode and bytes remain;
+mounted bytes/UUID match; private0700/0600, exact root binary and live launchd job
+verified. A third current-source create passed but its expanded harness incorrectly
+required GID0 instead of root ownership and private modes; that false assertion is
+retained and corrected in the two subsequent runs. Baseline and three rejected
+candidate failures are also retained. Packet evidence refines RPC startup/implicit-
+lookup diagnosis; not a statd/NLM feature prescription or blanket retry.
+
+All8 exact disposable clones and owned toolchain/scratch cleaned. No host shares,
+credentials, providers, user node or host mount. This is narrow implementation
+regression requested by CRR003, not broad API/E2E coverage, physical proof or release.
+No rendered UI delta: new-round frontend feedback N/A; IR002 render proof retained.
+
+### IR003 carried local-fix checks (historical)
 
 `implementation-evidence/ir-003/checks-and-limits.md` and `final-checks.json` record
 all7 Go packages race/vet passing,7 Python cases (6 pass plus the child fixture that
@@ -180,15 +224,15 @@ Mac/Linux private/executable/public/node directory layouts, all new ancestors,
 0644 descriptors, private0600 receipts and actual nonroot fixture exec/read.
 Three mutation controls fail as expected for old mkdir-only behavior, missing node
 mode, and missing intermediate-parent mode. Four OS/architecture targets compile;
-native version/unqualified-release refusal pass. No privileged/root install is
-claimed: fixture trust is substituted inside an owned temp root, not actual sudo
-or a different-UID root-owned traversal. No OS resources or user data touched.
+native version/unqualified-release refusal pass. No privileged/root install was
+claimed in IR003: fixture trust is substituted inside an owned temp root, not actual sudo
+or a different-UID root-owned traversal. No OS resources or user data touched in IR003.
 
 Production owner78 ->86 nonempty lines,137 other IR002 audited paths unchanged;
 no source-size trigger. New tests excluded from production-file limit. No dead
 code/compatibility path or persisted transition added. This is a bounded approved
 BEH001/005 / SCN001/011/013 / AC012/018/019 correctness fix, not design recovery.
-No rendered UI delta: current-round feedback N/A; previous rendered proof retained.
+No rendered UI delta in IR003; previous rendered proof retained.
 
 ### IR002 carried checks (not re-executed in this local-fix round)
 
@@ -228,16 +272,18 @@ throwaway homes, no provider prompts/keys. No user CLI config was edited.
 
 Source/tests/docs are development commits only. Generated SDK dist outputs remain
 untracked and deliberately unstaged. No merge, push, tag, publication, codesigning,
-Docker engine build/pull, package install, root action, export, mount, live user
-node disruption or provider inference was performed. Release pins derive from the
+Docker engine build/pull, live user-node disruption or provider inference was
+performed. IR004 used authorized credential-free disposable Mac guests for actual
+guest root install/export/mount/job startup only; no host/user resource mutation. Release pins derive from the
 reviewed reference inventory; current publication qualification is deliberately
 empty. The UI must remain unavailable until actual qualified publication.
 
 **DEC015/D-001 remains deferred, not repaired:** hard NFS may stall file operations,
 previews, startup, terminals and unrelated work. Local component tests cannot prove
-actual file handles, native OS job/restart behavior, kernel permissions, physical
-network semantics or prompt/tool behavior. Go coverage particularly leaves most
-privileged setup paths unexecuted; see numerical report, not just green test exits.
+actual physical network semantics or prompt/tool behavior. IR004 narrows only the
+fresh native-Mac setup gap with current guest execution. Peer/reboot/Docker/Linux/
+physical and real runtime/preview gates remain; previous numeric unit coverage is
+not replaced by an all-path claim from these focused checks.
 
 ## Out-of-scope finding and testing ownership
 
@@ -254,14 +300,17 @@ commits; updater production changes were not bundled with NFS.
 The user's request for full personal testing was honored within this role's
 permitted local-check scope; no tests were delegated. The implementation skill
 reserves API/E2E authoring/execution and broad system validation for the independent
-validation role, so this round does not execute or claim those gates. The main
+validation role. This round executes only the specifically requested narrow
+native-Mac startup reproduction/regression, not that broader matrix/signoff. The main
 project Task remains open, not Done or Cancelled. The two previously cancelled
 sub-work copies reported no edits, children or processes; no remaining delegated
 implementation work is being awaited.
 
 ## Required downstream coverage / delivery gates
 
-1. Independent Large/High source review, including exact root-resource ownership,
+1. Independent Large/High source re-review of IR004 / CR002 first; then API owner
+   reruns API-F001 cold case and continues the remaining matrix. Preserve prior
+   source-review coverage of exact root-resource ownership,
    partial setup, native child/profile cleanup, selected-node daemon identity,
    consent/rollback, source Update/Remove and launcher attachment retention.
 2. Current-build selected modes: native Mac APFS/Apple; native Ubuntu24.04 ext4/
