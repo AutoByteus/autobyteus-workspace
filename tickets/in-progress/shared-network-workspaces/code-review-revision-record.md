@@ -294,3 +294,95 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   `api_e2e_engineer_4b3516b0eb7d448586471bee29383f50`; accepted=true/DELIVERED,
   453 cumulative references. Single most-specific recipient only; no duplicate
   informational notification, Delivery handoff or polling.
+
+### CRR-008 — API003 normal host reboot strands selected Docker client; Design Impact
+
+- Date2026-10-14; canonical [code-review-report.md](code-review-report.md) now
+  **Fail / Design Impact**, focused **API/E2E Failure-Origin Review**, round8;
+  source-review scope **N/A**. Trigger `/software_engineering_team/api_e2e_engineer`,
+  API-REV003 Fail57.14%/broaderRequired, API-F003. Not successful test-code review.
+- Prior **CRR007 source Pass100/100**, not runtime qualification. Current new
+  **CR-005 P1 / CAND009**. Approved SR018 / Ready SR020 / ARCH-REV004 / IR006;
+  API-REV003; DR **N/A — not performed**. **Large/High Reviewed** retained.
+- Input/builde8ed5627da2afa646c9ab89c6ce69b3a0bc0826c;
+  API reportf76cf11a519c8f22fd89e5acc946802c5d23259f and receipt/review input
+  8f497a61fde65e44aefd2362f8fb37db91570997;
+  sourceeb7934072a1f98832b7b6330a1bc6a7f348fd93d unchanged.
+
+#### Prior Finding Resolution
+
+| Finding | Prior | Current | Verification |
+| --- | --- | --- | --- |
+| CR-003 / API-F002 | Design/source remedy accepted; API open | **Independent public native-Ubuntu resolution accepted** | API003 final fresh public create16.778s, reconnect0.508/0.605s; no preinstall/probe bypass/defaultY; real1000:109/no groups, modes/jobs, original source identity/bytes and mounted marker. Seven cases/raw outputs/harness independently reconciled. Earlier two create passes with later harness errors retained as incomplete attempts |
+| CR-004 | Resolved source/contract | **Retained** | Workflow unchanged since IR006/CRR007; hosted publication/signing still unexecuted |
+| CR-002 / API-F001 | Scoped nativeMac cold-create resolved | **Retained** | Unchanged source/API002 fresh public passes; no freshMac create in API003 |
+| CR-001 | Resolved | **Retained** | Untouched mode/trust source; API003 actual077/private700600/public644/nonroot corroboration |
+| FUP001 | PM-owned out of scope | **Unchanged** | No duplicate notification/Task/patch/penalty; historical non-green versus candidate-only green remains |
+
+- **CAND009 Promote / Supported Normal Scenario / Reachable / in-ticket**:
+  REQ014/019, AC007/014/018/019, SCN009/013, BEH001/004/005 plus source/private/
+  selected/unselected preservation. Independent trigger is ordinary OS reboot
+  after successful public setup, not timing injection or deferred outage.
+  Previously-running selected client and Docker storage on supported Linux host.
+- Exact path: first-use Apply orders storage/probe/recreation; on whole-host boot
+  Docker restores containers independently and selected NFS local volume mount
+  fails before client process begins. Later `service.Supervise -> Reconnect`
+  ensures engine/host/probe only, never selected-client startup. Status correctly
+  says attached/stopped/not ready. No local fallback/source loss evidenced.
+- Two ordinary reboot journals show selected mount connection refused; second
+  refusal07:46:57.935220 precedes Ganesha start07:46:57.940143044. Fifteen repeated
+  observations through148.599s show exited255/notrestarting/OOMfalse/APIunavailable,
+  with hostReadytrue from21.53s onward. Public reconnect leaves stopped.
+  Diagnostic-only start restores same ID/Config/HostConfig/API; second reboot
+  reproduces. Same source identity/bytes/UUID preserved. Manual start is not
+  automatic-recovery Pass;150s is observation, not a newly invented deadline.
+- **Design Impact**, not bounded implementation Local Fix: design157–159 limits
+  supervisor to source/mount/engine and expects engine-before-client readiness;
+  166–173 direct volumes/preserved restart state do not define boot-ready ordering
+  or an eligible failed-client recovery owner/current intent. Code follows that
+  insufficient boundary. Requirements are clear; no invalid-test, fixture,
+  post-review-source or unrelated old-app attribution. Primary Docker/Moby
+  contracts support mechanism, not accusation of an upstream vendor defect.
+- Earlier review gap: first-use ordering plus restart-policy preservation was
+  insufficient evidence for normal selected-client boot completion. Exact timing
+  needed runtime evidence, but absent owned boot path was visible in source/design.
+  Only affected ownership/API-readiness/runtime-correctness rationale reopened;
+  **no full scorecard/new aggregate** in failure-only round. Prior100 historical;
+  API003 confidence remains57.14%, no independent confidence upgrade.
+- Solution Designer owns proportionate lifecycle/dependency recovery design and
+  eligibility/current intent under preservation constraints; no mandate to start
+  all stopped nodes, add fixed sleeps/blanket retry/outage workers, alter global
+  Docker or use stale apply snapshots as operator intent. Changed intended
+  behavior requires approval; otherwise preserve approved intent. Then configured
+  architecture route, implementation, source review, API/E2E and later separate
+  proportional test-code review before Delivery.
+- Personal evidence review/read-only audit:625 refs exist;169 API manifest entries
+  match;22 focused source/authority identities unchanged;11 retained IR005 files
+  unchanged; only173 API/ticket paths differ since reviewed input. Both aggregate
+  hashes recomputed unchanged. New current nativeCLI0f7d6a37.../DockerCLI532b9816...
+  are API-built, not reviewer builds; no fresh VM/test/runtime/UI/physical execution.
+  Initial reviewer root-path assertion and corrected public-source tag lookup
+  recorded honestly. Primary fetch and archived-raw assertion audit retained.
+- Evidence: [checks/limits](code-review-evidence/crr-008/checks-and-limits.md),
+  [focused audit](code-review-evidence/crr-008/focused-audit.json),
+  [execution review](code-review-evidence/crr-008/execution-evidence-review.json),
+  [primary contracts](code-review-evidence/crr-008/primary-contracts.md),
+  complete cumulative package index. Existing CRR001–007 prefix preserved.
+- API003 scoped real mounted API/PTY/locks/current isolated desktop and Linux
+  storage/selected-node create/reconnect gains retained; no full approval. All
+  remaining both-OS/native+managedDocker, physical peer, actual native tools/
+  unread linked assets/peer close/restore/modes/completed previews, current
+  docs/user/finalization/authorized release obligations remain. Native amd64
+  engine/hosted signing/public installer unqualified; no new release metadata.
+  Only MacDocker STORAGE deferred; peer NAT limit separate. D001/DEC015 deferred
+  not fixed; IMP-D001 private current links/independent Update-Remove/AGY/local
+  unchanged; no pin/copy/refcount/retirement. No duplicate follow-up.
+- API cleanup receipts confirm public drained detach/preservation then all3 owned
+  LinuxVMs/processes, desktop/tunnel/test tag/audit container/scratch removed.
+  Reviewer created only artifacts; no external resources to dispose. Five old
+  untracked dist trees, public cache and11 ignored IR005 files untouched.
+- Routing: fresh most-specific **Design Impact / upstream design revision** rule
+  selects only `/software_engineering_team/solution_designer`. Entire625-reference
+  input chain plus new review/source references preserved. Receipt recorded after
+  confirmed send; no direct API/implementation duplicate forwarding, delegation,
+  polling, TaskDone, merge/push/tag/release or user-verification claim.
