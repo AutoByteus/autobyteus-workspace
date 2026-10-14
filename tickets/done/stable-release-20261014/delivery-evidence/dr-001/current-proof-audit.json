@@ -1,0 +1,55 @@
+{
+  "cut": "1ea74caa2d8e503aa0223c550e22b98f9bb8de08",
+  "settingsValidatedSource": "76fab065ec30bff5be76dd2e013243abda3a6934",
+  "currentApplicationDelta": [
+    "autobyteus-web/docs/agent_execution_architecture.md",
+    "autobyteus-web/docs/settings.md",
+    "autobyteus-web/package.json"
+  ],
+  "meaning": "Only two docs and package version differ; executable source and harness same. Original integrated77/77 and current9desktop+7browser remain applicable, not freshly rerun or a stable binary claim.",
+  "raw": [
+    {
+      "path": "tickets/done/settings-saved-model-refresh/evidence/api-rev-003/desktop/delegated-launch-defaults-evidence.json",
+      "sha256": "bff2410aea19836acc989ae300f1bb70d7f4d9fde5c81c5f4495aa2877432a87",
+      "summary": {
+        "pass": 9,
+        "fail": 0
+      },
+      "cases": {
+        "SSR-001": "Pass",
+        "SSR-002": "Pass",
+        "SSR-003": "Pass",
+        "SSR-004": "Pass",
+        "DCP-001": "Pass",
+        "DCP-002": "Pass",
+        "DCP-003": "Pass",
+        "DCP-004": "Pass",
+        "DCP-005": "Pass"
+      },
+      "browserErrors": [],
+      "SSR001NoAdditionalRuntimeLaunch": true
+    },
+    {
+      "path": "tickets/done/settings-saved-model-refresh/evidence/api-rev-003/browser/delegated-launch-defaults-evidence.json",
+      "sha256": "18370e9d5e7c157dd3cdf3d4b9f78ae89d5d67fd24f36ffb912f54f2d0c751b3",
+      "summary": {
+        "pass": 7,
+        "fail": 0
+      },
+      "cases": {
+        "SSR-001": "Pass",
+        "SSR-002": "Pass",
+        "SSR-003": "Pass",
+        "SSR-004": "Pass",
+        "DCP-001": "Pass",
+        "DCP-002": "Pass",
+        "DCP-003": "Pass"
+      },
+      "browserErrors": [],
+      "SSR001NoAdditionalRuntimeLaunch": true
+    }
+  ],
+  "prisma": "Read actual native-proof/recreation-proof: c299 RPC-32601 vs own605/27dirs; no pins; distinct containers; identical wrong-cache; signed-out owned data. Entire server/core/lock/recipes/release workflows equal beta5 (four completed pipelines).",
+  "newReleaseChecks": "31release-version tests, licensing/hygiene pass; FUP001 actual current classifier bug repro confirms three incorrect categories, not green tests.",
+  "noUserStateOperations": true
+}

@@ -1,0 +1,79 @@
+[
+  {
+    "args": [
+      "node",
+      "--experimental-strip-types",
+      "--input-type=module",
+      "-e",
+      "import {classifyAppUpdateError as classify} from './autobyteus-web/electron/updater/appUpdateErrorClassifier.ts';\nconst cases=[['ERR_UPDATER_CHANNEL_FILE_NOT_FOUND: Cannot find latest-mac.yml','startup-check','release-preparing'],['ERR_UPDATER_ZIP_FILE_NOT_FOUND: ZIP file not provided','manual-check','metadata'],['quit failed','install','install']];\nconsole.log(JSON.stringify(cases.map(([message,operation,expected])=>{const e=new Error(message);e.stack='Error: '+message+'\\n    at /test/shared-network-workspaces/appUpdateErrorClassifier.ts:10:1';const actual=classify(e,{operation,fallbackMessage:'Update failed.'});e.stack='Error: '+message+'\\n    at /test/release/appUpdateErrorClassifier.ts:10:1';const control=classify(e,{operation,fallbackMessage:'Update failed.'});return {message,expected,actual:actual.kind,normalPathControl:control.kind,diagnosis:'Known FUP001 reproduced, not a passing classification assertion'};}),null,2));"
+    ],
+    "exit": 0,
+    "stdout": "[\n  {\n    \"message\": \"ERR_UPDATER_CHANNEL_FILE_NOT_FOUND: Cannot find latest-mac.yml\",\n    \"expected\": \"release-preparing\",\n    \"actual\": \"network\",\n    \"normalPathControl\": \"release-preparing\",\n    \"diagnosis\": \"Known FUP001 reproduced, not a passing classification assertion\"\n  },\n  {\n    \"message\": \"ERR_UPDATER_ZIP_FILE_NOT_FOUND: ZIP file not provided\",\n    \"expected\": \"metadata\",\n    \"actual\": \"network\",\n    \"normalPathControl\": \"metadata\",\n    \"diagnosis\": \"Known FUP001 reproduced, not a passing classification assertion\"\n  },\n  {\n    \"message\": \"quit failed\",\n    \"expected\": \"install\",\n    \"actual\": \"network\",\n    \"normalPathControl\": \"install\",\n    \"diagnosis\": \"Known FUP001 reproduced, not a passing classification assertion\"\n  }\n]\n",
+    "stderr": "(node:44505) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/stable-release-20261014/autobyteus-web/electron/updater/appUpdateErrorClassifier.ts is not specified and it doesn't parse as CommonJS.\nReparsing as ES module because module syntax was detected. This incurs a performance overhead.\nTo eliminate this warning, add \"type\": \"module\" to /Users/normy/autobyteus_org/autobyteus-worktrees/stable-release-20261014/autobyteus-web/package.json.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  },
+  {
+    "args": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/tests",
+      "-p",
+      "test_release_versions.py",
+      "-v"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": "test_encodes_stable_and_prerelease_versions (test_release_versions.AndroidVersionCodeTest) ... ok\ntest_every_next_version_line_sorts_above_the_last_patch (test_release_versions.AndroidVersionCodeTest) ... ok\ntest_patch_refusal_names_the_next_minor (test_release_versions.AndroidVersionCodeTest) ... ok\ntest_refuses_what_android_cannot_encode (test_release_versions.AndroidVersionCodeTest) ... ok\ntest_android_version_code_prints_code_or_refuses (test_release_versions.CommandLineTest) ... ok\ntest_is_newest_prints_true_or_false_with_exit_zero (test_release_versions.CommandLineTest) ... ok\ntest_next_beta_prints_version (test_release_versions.CommandLineTest) ... ok\ntest_next_beta_refusal_exits_non_zero_with_message (test_release_versions.CommandLineTest) ... ok\ntest_reads_git_tags_when_no_file_given (test_release_versions.CommandLineTest) ... ok\ntest_recognizes_only_canonical_grammar (test_release_versions.GrammarTest) ... ok\ntest_semver_precedence (test_release_versions.GrammarTest) ... ok\ntest_beta_ten_is_newer_than_beta_nine (test_release_versions.IsNewestTest) ... ok\ntest_concurrent_later_beta_wins (test_release_versions.IsNewestTest) ... ok\ntest_out_of_grammar_candidate_is_false (test_release_versions.IsNewestTest) ... ok\ntest_real_inventory_ignores_rc_e2e_and_voice_tags (test_release_versions.IsNewestTest) ... ok\ntest_republish_of_older_tag_does_not_move_beta (test_release_versions.IsNewestTest) ... ok\ntest_stable_is_newer_than_its_betas (test_release_versions.IsNewestTest) ... ok\ntest_default_base_after_minor_nine_nine_nine_is_the_next_major (test_release_versions.NextBetaAndroidLimitTest) ... ok\ntest_default_base_after_patch_ninety_nine_is_the_next_minor (test_release_versions.NextBetaAndroidLimitTest) ... ok\ntest_default_beta_after_the_published_v1_4_100_beta_1 (test_release_versions.NextBetaAndroidLimitTest) ... ok\ntest_explicit_base_android_cannot_encode_is_refused (test_release_versions.NextBetaAndroidLimitTest) ... ok\ntest_default_base_moves_past_new_stable (test_release_versions.NextBetaTest) ... ok\ntest_explicit_base (test_release_versions.NextBetaTest) ... ok\ntest_increments_existing_betas_for_base (test_release_versions.NextBetaTest) ... ok\ntest_rc_tags_do_not_count_as_betas (test_release_versions.NextBetaTest) ... ok\ntest_real_inventory_defaults_to_next_patch (test_release_versions.NextBetaTest) ... ok\ntest_refuses_invalid_base (test_release_versions.NextBetaTest) ... ok\ntest_refuses_past_ninety_eight (test_release_versions.NextBetaTest) ... ok\ntest_refuses_when_stable_for_base_exists (test_release_versions.NextBetaTest) ... ok\ntest_refuses_without_stable_tag_or_base (test_release_versions.NextBetaTest) ... ok\ntest_fixture_matches_recorded_inventory (test_release_versions.RealInventoryFixtureTest) ... ok\n\n----------------------------------------------------------------------\nRan 31 tests in 0.446s\n\nOK\n"
+  },
+  {
+    "args": [
+      "python3",
+      "scripts/release_versions.py",
+      "android-version-code",
+      "1.5.3"
+    ],
+    "exit": 0,
+    "stdout": "10050399\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "python3",
+      "scripts/check_licensing.py"
+    ],
+    "exit": 0,
+    "stdout": "Licensing is consistent.\nTracked files scanned: 6574\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "python3",
+      "scripts/check_repository_artifact_hygiene.py"
+    ],
+    "exit": 0,
+    "stdout": "Repository artifact hygiene check passed.\nTracked files scanned: 64551\nPath-length threshold: 200\nLongest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "git",
+      "diff",
+      "--quiet",
+      "v1.5.3-beta.5",
+      "HEAD",
+      "--",
+      "autobyteus-server-ts",
+      "autobyteus-ts",
+      "pnpm-lock.yaml",
+      ".github/workflows",
+      "scripts",
+      "RELEASE.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]
