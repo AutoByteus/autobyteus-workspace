@@ -1,8 +1,28 @@
 # Implementation Handoff — imported-team-defaults-edit
 
-**Current round: IR-001 (initial baseline; `Small` / `Low`, direct route).** Worktree
+**Current round: IR-002 (Local Fix IMPL-F-001 from failure-origin review CRR-001 of API-F-001; `Small` / `Low`, direct
+route unchanged).** IR-001 was the initial baseline. Worktree
 `/Users/normy/autobyteus_org/autobyteus-worktrees/imported-team-defaults-edit`, branch `codex/imported-team-defaults-edit`
 (base `origin/personal` @ `c285adf6bf`). Commits: see "Commits".
+
+## IR-002 — IMPL-F-001: package saves keep relative links
+
+- **Defect (API-F-001, CRR-001):** the shared package writer staged a save with
+  `fs.cp(canonicalPath, stagePath, { recursive: true, errorOnExist: true })`, which turns relative symlinks into
+  absolute paths of this machine; the staged copy then replaced the folder. Before IR-001 only app-data folders reached
+  it; registered packages (git checkouts such as the SE Team) have such links.
+- **Fix:** `definition-package-transaction.ts` stages with `verbatimSymlinks: true`, so links are copied as authored. The
+  same transaction serves Team and Org saves. Nothing else changes.
+- **Tests:** `registered-package-definition-writes.test.ts` +2: the writer keeps a relative file link and a relative
+  directory link unchanged (`readlink` returns the same string, the link still resolves) after a commit; a registered
+  Team save keeps the package's relative link. Both fail with the previous `fs.cp` options (negative check done).
+- **Checks:** `tsc -p tsconfig.build.json --noEmit` clean; affected unit/integration suites 91 files / 659 tests passed;
+  `tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts` (scripted AGY,
+  `RUN_AGY_FAILURE_E2E=1`) 8/8 pass, including RPE-008 (`implementation-evidence/ir-002/rpe-e2e.log`).
+- **For re-validation:** RPE-008 and the full RPE file, and a UI re-save on the kept instance `iso-60463-5627`
+  (package copy `/private/tmp/ited-pkg`) where `git status` shows only the intended files.
+- **Follow-ups (not in this fix):** O-3 (a process whose cwd is inside the swapped folder is left in a deleted
+  directory); BASE-001 (stale `agent-team-definitions-graphql.e2e.test.ts`).
 
 ## Upstream basis
 
@@ -85,7 +105,8 @@ Negative check: with the previous rule restored, 6 of the 7 new tests fail (the 
 - Design spec: `tickets/in-progress/imported-team-defaults-edit/design-spec.md` (SR-003)
 - Supplemental task artifacts: N/A — not applicable
 - Design review report: N/A — not applicable (direct route; the existing report covers withdrawn SR-001)
-- Implementation revision record: `tickets/in-progress/imported-team-defaults-edit/implementation-revision-record.md` (IR-001)
+- Implementation revision record: `tickets/in-progress/imported-team-defaults-edit/implementation-revision-record.md` (IR-001, IR-002)
+- API/E2E: `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`; failure-origin review: `code-review-report.md` (CRR-001)
 
 ## Commits
 

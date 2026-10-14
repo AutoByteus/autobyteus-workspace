@@ -7,6 +7,7 @@ import type { ApplicationBundleService } from "../../../src/application-bundles/
 import { FileAgentTeamDefinitionProvider } from "../../../src/agent-team-definition/providers/file-agent-team-definition-provider.js";
 import { FileAgentOrgDefinitionProvider } from "../../../src/agent-org-definition/providers/file-agent-org-definition-provider.js";
 import { buildAgentOrgOwnedDefinitionId } from "../../../src/agent-org-definition/utils/agent-org-owned-definition-id.js";
+import { DefinitionPackageTransaction } from "../../../src/collaboration-definition-admission/providers/definition-package-transaction.js";
 import {
   assertDefinitionSourceWritableByRuntime,
   createDefinitionSourceDescriptor,
@@ -107,6 +108,34 @@ describe("registered package definitions are writable (SR-003)", () => {
     expect(owned).toBeTruthy();
     await expect(f.teams.update(owned)).rejects.toThrow(/atomic parent AgentOrg save/);
     await expect(f.teams.delete(f.ownedTeamId)).rejects.toThrow(/atomic parent AgentOrg save/);
+  });
+
+  it("the package writer keeps relative links inside a saved folder exactly as authored (IMPL-F-001)", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "package-writer-links-")); roots.push(root);
+    const packagePath = path.join(root, "checkout", "agent-teams", "team");
+    await fs.mkdir(path.join(root, "checkout", "shared"), { recursive: true });
+    await fs.writeFile(path.join(root, "checkout", "shared", "design-examples.md"), "shared guide");
+    await fs.mkdir(path.join(packagePath, "docs"), { recursive: true });
+    await fs.writeFile(path.join(packagePath, "team-config.json"), "{}");
+    await fs.symlink("../../../shared/design-examples.md", path.join(packagePath, "docs", "design-examples.md"));
+    await fs.symlink("../../shared", path.join(packagePath, "shared"));
+    const transaction = new DefinitionPackageTransaction();
+    await transaction.commit({ packagePath, files: { "team-config.json": "{\"saved\":true}" }, validatePackage: async () => undefined });
+    expect(await fs.readFile(path.join(packagePath, "team-config.json"), "utf8")).toBe("{\"saved\":true}");
+    expect(await fs.readlink(path.join(packagePath, "docs", "design-examples.md"))).toBe("../../../shared/design-examples.md");
+    expect(await fs.readlink(path.join(packagePath, "shared"))).toBe("../../shared");
+    expect(await fs.readFile(path.join(packagePath, "docs", "design-examples.md"), "utf8")).toBe("shared guide");
+  });
+
+  it("a registered Team save leaves the package's relative links unchanged (IMPL-F-001)", async () => {
+    const f = await fixture();
+    await fs.mkdir(path.join(f.pkg, "shared"), { recursive: true });
+    await fs.writeFile(path.join(f.pkg, "shared", "guide.md"), "guide");
+    await fs.symlink("../../shared/guide.md", path.join(f.teamDir, "guide.md"));
+    const team = (await f.teams.getById("software-engineering-team"))!;
+    team.defaultLaunchConfig = launch as never;
+    await f.teams.update(team);
+    expect(await fs.readlink(path.join(f.teamDir, "guide.md"))).toBe("../../shared/guide.md");
   });
 
   it.skipIf(process.getuid?.() === 0)("a package folder the disk refuses gives the existing read-only error (AC-006)", async () => {
