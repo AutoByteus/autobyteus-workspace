@@ -487,6 +487,14 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         context_window_usage_percent: z.ZodNullable<z.ZodNumber>;
         context_compaction_threshold_tokens: z.ZodNullable<z.ZodNumber>;
         reports_model_call: z.ZodBoolean;
+        output_throughput: z.ZodNullable<z.ZodObject<{
+            method: z.ZodEnum<{
+                generation: "generation";
+                end_to_end: "end_to_end";
+            }>;
+            output_tokens: z.ZodNumber;
+            duration_ms: z.ZodNumber;
+        }, z.core.$strict>>;
         quality_flags: z.ZodArray<z.ZodString>;
         run_summary_after_event: z.ZodNullable<z.ZodObject<{
             run_id: z.ZodString;

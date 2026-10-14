@@ -3,7 +3,7 @@
     <nav class="flex flex-wrap gap-2 p-3 text-sm">
       <button v-for="action in actions" :key="action" class="rounded border bg-white px-2 py-1" @click="perform(action)">{{ action }}</button>
     </nav>
-    <div class="mx-auto h-[1100px] w-full max-w-[440px]" data-preview="panel"><TokenUsageMeterPanel /><pre data-test="probe-state" class="hidden">{{ JSON.stringify(meter.getRunThroughput(liveRunId || 'run-1')) }}</pre></div>
+    <div class="mx-auto h-[1100px] w-full max-w-[440px]" data-preview="panel"><TokenUsageMeterPanel /><pre data-test="probe-state" class="hidden">{{ JSON.stringify(meter.getRunTps(liveRunId || 'run-1')) }}</pre></div>
   </main>
 </template>
 <script setup lang="ts">
@@ -166,7 +166,7 @@ contexts.runs.set('other-run', buildAgentContext('other-run', 'Historical Agent'
 contexts.runs.get('run-1')!.state.currentStatus = AgentStatus.Running;
 selection.setRunSelection('run-1', 'agent');
 let revision = 0;
-const actions = liveRunId ? ['Connect', 'Send', 'Other', 'Live', 'Disconnect'] : ['Baseline', 'Second', 'Third', 'Zero', 'Invalid', 'Totals', 'Offline', 'Other', 'Host', 'Chinese', 'English'];
+const actions = liveRunId ? ['Connect', 'Send', 'Other', 'Live', 'Disconnect'] : ['Generation', 'Tiny', 'EndToEnd', 'Totals', 'Offline', 'Other', 'Host', 'Chinese', 'English'];
 let stream: AgentStreamingService | null = null;
 onUnmounted(() => stream?.disconnect());
 if (liveRunId) {
@@ -190,13 +190,19 @@ function perform(action: string) {
   if (action === 'Other' || action === 'Host') { selection.setRunSelection(action === 'Other' ? 'other-run' : 'run-1', 'agent'); return; }
   if (action === 'Offline') { contexts.runs.get('run-1')!.state.currentStatus = AgentStatus.Offline; return; }
   if (action === 'Totals') { meter.upsertRecordBackedStandaloneRunSummary({ runId: 'run-1', summary: buildSummary({ outputTokens: 99999, latestModelIdentifier: 'aggregate-child-model' }) }); return; }
-  const seconds = ({ Baseline: 0, Second: 10, Third: 15, Zero: 20, Invalid: 20 } as Record<string, number>)[action];
+  // AC-006 sequence: a qualifying call (120 tokens/s), a tiny tool call without TPS, then an
+  // end-to-end call (90 tokens/s). The server decides each call's TPS; the page only delivers it.
+  const outputThroughput = ({
+    Generation: { method: 'generation', output_tokens: 2400, duration_ms: 20000 },
+    Tiny: null,
+    EndToEnd: { method: 'end_to_end', output_tokens: 900, duration_ms: 10000 },
+  } as const)[action as 'Generation' | 'Tiny' | 'EndToEnd'];
   revision++;
   meter.applyTokenUsageUpdated({ usage_event_id: `preview-${revision}`, idempotency_key: `preview-${revision}`,
     run_id: 'run-1', turn_id: 'preview-turn', reports_model_call: true,
     model_identifier: 'exact-reported-model-with-a-long-identity-for-narrow-panel-checks',
-    observed_at: `2026-10-13T10:00:${String(seconds).padStart(2, '0')}.000Z`,
-    meter_delta_output_tokens: action === 'Zero' ? 0 : action === 'Third' ? 150 : 200,
+    observed_at: '2026-10-13T10:00:00.000Z', meter_delta_output_tokens: 200,
+    output_throughput: outputThroughput ?? null,
     run_summary_after_event: buildSummaryDto(buildSummary({ revision, usageReportCount: revision })),
   });
 }

@@ -1,0 +1,5 @@
+
+> autobyteus@1.5.3-beta.5 test:e2e:token-meter-tps /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web
+> node tests/e2e/token-meter-tps-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/tickets/in-progress/output-tps-precision/evidence/api-e2e/browser-fixture --browser-executable '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+
+/Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/tickets/in-progress/output-tps-precision/evidence/api-e2e/browser-fixture pass 

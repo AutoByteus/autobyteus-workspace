@@ -18,6 +18,12 @@ const contextPath = z.object({ path: nonEmptyStringSchema, type: nullableNonEmpt
 /** Runtime-neutral background-task vocabulary; runtime-specific task types are mapped by each server backend. */
 export const backgroundTaskKindSchema = z.enum(["shell", "subagent", "monitor", "workflow", "other"]);
 export const backgroundTaskStatusSchema = z.enum(["running", "completed", "failed", "stopped"]);
+/** One model call's TPS as its runtime measured it; null when the call has none (DEC-003). */
+const outputThroughput = z.object({
+    method: z.enum(["generation", "end_to_end"]),
+    output_tokens: z.number().int().nonnegative(),
+    duration_ms: z.number().int().nonnegative(),
+}).strict();
 const token = {
     usage_event_id: nonEmptyStringSchema, idempotency_key: nonEmptyStringSchema, observed_at: nonEmptyStringSchema,
     turn_id: turnId, llm_call_id: nullableNonEmptyStringSchema, model_provider: nullableNonEmptyStringSchema,
@@ -44,6 +50,7 @@ const token = {
     selected_pricing_tier_id: nullableNonEmptyStringSchema, latest_prompt_tokens: nullableFiniteNumberSchema,
     effective_context_window_tokens: nullableFiniteNumberSchema, context_window_usage_percent: nullableFiniteNumberSchema,
     context_compaction_threshold_tokens: nullableFiniteNumberSchema, reports_model_call: z.boolean(),
+    output_throughput: outputThroughput.nullable(),
     run_summary_after_event: agentTokenUsageRunSummarySchema.nullable(), quality_flags: z.array(nonEmptyStringSchema),
 };
 const compaction = {

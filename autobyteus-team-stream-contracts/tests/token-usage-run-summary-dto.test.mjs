@@ -113,6 +113,7 @@ const teamTokenMessage = () => ({
     context_window_usage_percent: 0.15625,
     context_compaction_threshold_tokens: null,
     reports_model_call: true,
+    output_throughput: { method: "end_to_end", output_tokens: 300, duration_ms: 4000 },
     run_summary_after_event: summary(),
     quality_flags: [],
   },

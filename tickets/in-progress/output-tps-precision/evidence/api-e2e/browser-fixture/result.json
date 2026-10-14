@@ -1,0 +1,42 @@
+{
+  "layer": "Durable browser fixture; not runtime inference",
+  "source": "1ea74caa2d8e503aa0223c550e22b98f9bb8de08",
+  "errors": [],
+  "checks": [
+    "\"—\" without a reading",
+    "120 generation on a single call",
+    "removed words absent",
+    "tiny call keeps value",
+    "reported model vs aggregate totals",
+    "keyboard help with method numbers",
+    "offline keeps value",
+    "90 end-to-end with qualifier",
+    "zh-CN 320px no card overflow",
+    "selection switches immediately",
+    "reload shows \"—\""
+  ],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtStopped": true,
+    "routeRemoved": true
+  },
+  "hashes": {
+    "components/workspace/usage/TokenUsageThroughputCard.vue": "d94c902a7b17b6e544e2ea2be00986ac52594477888b6aa14df7884c9441257f",
+    "components/workspace/usage/TokenUsageMeterPanel.vue": "1015c08f3886d7bf2f535e2105bbe3c7fadfa41dd9f0a3dd94c84414249a5824",
+    "stores/tokenUsageThroughput.ts": "b14e5bbb95104f73d2dd6396e844100fed847d3df2244e80ed43750b9a989374",
+    "stores/tokenUsageMeterStore.ts": "2708c7c9b2f58e9c6270840b8cc307b31ea398c1eda5ba001cb368b3d6ecf8f5",
+    "composables/useTokenUsageWorkspaceScope.ts": "fe01e212c630d7c325a30df4a00c35e384c7e0be8eda0cec72a2b6a696650992"
+  },
+  "ports": {
+    "uiPort": 62981,
+    "backendPort": 62982
+  },
+  "nuxtPid": 93296,
+  "frames": [],
+  "geometry": {
+    "client": 286,
+    "scroll": 286,
+    "width": 288
+  },
+  "status": "pass"
+}

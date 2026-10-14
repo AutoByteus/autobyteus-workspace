@@ -1,0 +1,13 @@
+import { createRequire } from 'node:module';
+const { chromium } = createRequire('/Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/package.json')('playwright-core');
+const browser = await chromium.connectOverCDP(process.argv[2]);
+const page = browser.contexts()[0].pages().find(p => p.url().includes('renderer/index.html'));
+const seen = {};
+page.on('websocket', ws => { seen[ws.url()] = []; ws.on('framereceived', f => { const s = typeof f.payload === 'string' ? f.payload : '<binary ' + f.payload.length + '>'; if (seen[ws.url()].length < 6) seen[ws.url()].push(s.slice(0, 160)); }); });
+page.on('worker', w => { seen['worker:' + w.url()] = []; });
+const url = page.url();
+await page.reload(); await page.waitForLoadState('load'); await new Promise(r => setTimeout(r, 2500));
+await page.evaluate(h => { location.hash = h; }, process.argv[3]);
+await new Promise(r => setTimeout(r, 8000));
+console.log(JSON.stringify(seen, null, 1));
+await browser.close();

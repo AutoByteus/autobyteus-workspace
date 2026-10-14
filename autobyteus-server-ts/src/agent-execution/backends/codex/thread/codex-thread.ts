@@ -31,6 +31,7 @@ import {
   type CodexPendingMcpToolCall,
 } from "./codex-pending-mcp-tool-call-registry.js";
 import type { SystemInstructionTraceRecord } from "autobyteus-ts";
+import { CodexModelCallTiming } from "./codex-model-call-timing.js";
 
 export type { CodexPendingMcpToolCall } from "./codex-pending-mcp-tool-call-registry.js";
 
@@ -76,6 +77,7 @@ export class CodexThread {
   readonly approvalRecords: Map<string, CodexApprovalRecord>;
   private readonly pendingMcpToolCalls: CodexPendingMcpToolCallRegistry;
   readonly pendingTokenUsageUpdates: Map<string, CodexReadyTokenUsageUpdate>;
+  readonly modelCallTiming: CodexModelCallTiming;
   readonly listeners: Set<(message: CodexThreadEventMessage) => void>;
   readonly unbindHandlers: Array<() => void>;
   lastTerminalTurnId: string | null;
@@ -90,6 +92,7 @@ export class CodexThread {
     approvalRecords?: Map<string, CodexApprovalRecord>;
     pendingMcpToolCalls?: Map<string, CodexPendingMcpToolCall>;
     pendingTokenUsageUpdates?: Map<string, CodexReadyTokenUsageUpdate>;
+    modelCallTiming?: CodexModelCallTiming;
     listeners?: Set<(message: CodexThreadEventMessage) => void>;
     unbindHandlers?: Array<() => void>;
     lastTerminalTurnId?: string | null;
@@ -101,6 +104,7 @@ export class CodexThread {
     this.approvalRecords = input.approvalRecords ?? new Map();
     this.pendingMcpToolCalls = new CodexPendingMcpToolCallRegistry(input.pendingMcpToolCalls);
     this.pendingTokenUsageUpdates = input.pendingTokenUsageUpdates ?? new Map();
+    this.modelCallTiming = input.modelCallTiming ?? new CodexModelCallTiming();
     this.listeners = input.listeners ?? new Set();
     this.unbindHandlers = input.unbindHandlers ?? [];
     this.lastTerminalTurnId = input.lastTerminalTurnId ?? null;
@@ -244,6 +248,7 @@ export class CodexThread {
         this.emitLocalDerivedEvent(event);
       },
     });
+    this.modelCallTiming.markRequestReplyBoundary();
   }
 
   handleAppServerNotification(method: string, params: JsonObject): void {
@@ -294,7 +299,7 @@ export class CodexThread {
       emitEvent: (_codexThread, event) => {
         this.emitLocalDerivedEvent(event);
       },
-    });
+    }).then(() => this.modelCallTiming.markRequestReplyBoundary());
   }
 
 

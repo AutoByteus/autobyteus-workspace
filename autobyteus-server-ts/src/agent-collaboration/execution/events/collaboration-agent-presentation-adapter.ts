@@ -20,6 +20,7 @@ import type {
   AgentRunFileChangeStatus,
 } from "../../../agent-execution/domain/agent-run-file-change.js";
 import type { TokenUsageRunSummaryPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
+import type { ModelCallThroughput } from "../../../agent-execution/domain/model-call-throughput.js";
 import { parseBackgroundTaskUpdatedPayload } from "../../../agent-execution/domain/agent-background-task.js";
 
 export type AgentRunPresentationAdaptationResult =
@@ -247,6 +248,8 @@ const token = (payload: Record<string, unknown>, expectedIdentity: Collaboration
   contextWindowUsagePercent: number(raw(payload, "context_window_usage_percent", "contextWindowUsagePercent")),
   contextCompactionThresholdTokens: number(raw(payload, "context_compaction_threshold_tokens", "contextCompactionThresholdTokens")),
   reportsModelCall: raw(payload, "reports_model_call", "reportsModelCall") === true,
+  // Already accepted (or nulled) by the run's canonical payload builder.
+  outputThroughput: (raw(payload, "output_throughput", "outputThroughput") ?? null) as ModelCallThroughput | null,
   runSummaryAfterEvent: tokenRunSummary(payload, expectedIdentity),
   qualityFlags: strings(raw(payload, "quality_flags", "qualityFlags")),
   });

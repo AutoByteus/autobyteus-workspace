@@ -1,0 +1,515 @@
+{
+  "journey": "D03 Org",
+  "errors": [],
+  "frames": [
+    {
+      "t": 1791970928412,
+      "url": "ws://127.0.0.1:50467/ws/agent-org/tps_desktop_org_308e737ba9814f5cb55d70558982988c",
+      "row": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "tps_desktop_org_308e737ba9814f5cb55d70558982988c",
+          "change_sequence": 5038,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/lead",
+            "agent_run_id": "tps_coordinator_d196defc0f48462c8b9239a6d4ae08a6",
+            "message": {
+              "type": "TOKEN_USAGE_UPDATED",
+              "payload": {
+                "usage_event_id": "a9053c06-c54b-4663-b9c6-66ba2d792e17",
+                "idempotency_key": "tps_coordinator_d196defc0f48462c8b9239a6d4ae08a6:turn_0004:llm:1",
+                "observed_at": "2026-10-14T09:42:08.378Z",
+                "turn_id": "turn_0004",
+                "llm_call_id": "turn_0004:llm:1",
+                "model_provider": "DEEPSEEK",
+                "model_identifier": "deepseek-v4-flash",
+                "model_value": "deepseek-v4-flash",
+                "usage_scope": "per_call",
+                "input_token_semantic": "gross_includes_cache",
+                "standard_input_tokens": 256,
+                "cache_miss_input_tokens": 256,
+                "cache_read_input_tokens": 7296,
+                "cache_creation_input_tokens": null,
+                "cache_creation_5m_input_tokens": null,
+                "cache_creation_1h_input_tokens": null,
+                "cache_state": "positive",
+                "reasoning_output_tokens": 74,
+                "billable_output_tokens": 150,
+                "meter_delta_input_tokens": 7552,
+                "meter_delta_output_tokens": 150,
+                "meter_delta_total_tokens": 7702,
+                "input_price_per_million": 0.44,
+                "output_price_per_million": 1.32,
+                "cached_input_read_price_per_million": 0.014,
+                "cached_input_write_price_per_million": null,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "estimated_api_input_cost": 0.00021478399999999998,
+                "estimated_api_standard_input_cost": 0.00011263999999999999,
+                "estimated_api_cache_read_input_cost": 0.000102144,
+                "estimated_api_cache_creation_input_cost": null,
+                "estimated_api_cache_creation_5m_input_cost": null,
+                "estimated_api_cache_creation_1h_input_cost": null,
+                "estimated_api_output_cost": 0.000198,
+                "estimated_api_reasoning_output_cost": 0.00009768,
+                "estimated_api_total_cost": 0.00041278399999999997,
+                "currency": "USD",
+                "api_cost_status": "estimated",
+                "missing_price_dimensions": [],
+                "pricing_policy_key": "autobyteus_model_catalog:DEEPSEEK:deepseek-v4-flash:deepseek-v4-2026-08-23:peak",
+                "selected_pricing_tier_id": null,
+                "latest_prompt_tokens": 7552,
+                "effective_context_window_tokens": 1000000,
+                "context_window_usage_percent": 0.7552,
+                "context_compaction_threshold_tokens": 492595,
+                "reports_model_call": true,
+                "output_throughput": {
+                  "method": "generation",
+                  "output_tokens": 150,
+                  "duration_ms": 673
+                },
+                "run_summary_after_event": {
+                  "run_id": "tps_coordinator_d196defc0f48462c8b9239a6d4ae08a6",
+                  "agent_definition_id": "tps-coordinator",
+                  "workspace_id": "agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d",
+                  "gross_input_tokens": 42614,
+                  "standard_input_tokens": 7798,
+                  "cache_miss_input_tokens": 7798,
+                  "cache_read_input_tokens": 34816,
+                  "cache_creation_input_tokens": 0,
+                  "cache_creation_5m_input_tokens": 0,
+                  "cache_creation_1h_input_tokens": 0,
+                  "output_tokens": 821,
+                  "reasoning_output_tokens": 254,
+                  "billable_output_tokens": 821,
+                  "total_tokens": 43435,
+                  "cache_read_input_token_rate": 0.8170084948608438,
+                  "standard_input_token_rate": 0.18299150513915616,
+                  "cache_creation_input_token_rate": 0,
+                  "cache_state": "positive",
+                  "estimated_api_input_cost": 0.003918543999999999,
+                  "estimated_api_standard_input_cost": 0.00343112,
+                  "estimated_api_cache_read_input_cost": 0.000487424,
+                  "estimated_api_cache_creation_input_cost": null,
+                  "estimated_api_cache_creation_5m_input_cost": null,
+                  "estimated_api_cache_creation_1h_input_cost": null,
+                  "estimated_api_output_cost": 0.00108372,
+                  "estimated_api_reasoning_output_cost": 0.00033528,
+                  "estimated_api_total_cost": 0.005002264,
+                  "currency": "USD",
+                  "api_cost_status": "estimated",
+                  "missing_price_dimensions": [],
+                  "pricing_policy_key": "autobyteus_model_catalog:DEEPSEEK:deepseek-v4-flash:deepseek-v4-2026-08-23:peak",
+                  "selected_pricing_tier_id": null,
+                  "unit_prices": {
+                    "standard_input": {
+                      "status": "single",
+                      "price_per_million": 0.44
+                    },
+                    "cache_read_input": {
+                      "status": "single",
+                      "price_per_million": 0.014
+                    },
+                    "cache_creation_input": {
+                      "status": "not_applicable",
+                      "price_per_million": null
+                    },
+                    "cache_creation_5m_input": {
+                      "status": "not_applicable",
+                      "price_per_million": null
+                    },
+                    "cache_creation_1h_input": {
+                      "status": "not_applicable",
+                      "price_per_million": null
+                    },
+                    "output": {
+                      "status": "single",
+                      "price_per_million": 1.32
+                    },
+                    "reasoning_output": {
+                      "status": "single",
+                      "price_per_million": 1.32
+                    }
+                  },
+                  "latest_prompt_tokens": 7552,
+                  "effective_context_window_tokens": 1000000,
+                  "context_window_usage_percent": 0.7552,
+                  "context_compaction_threshold_tokens": 492595,
+                  "latest_model_provider": "DEEPSEEK",
+                  "latest_model_identifier": "deepseek-v4-flash",
+                  "latest_selected_raw_model_id": null,
+                  "has_cache_write_rate_assumption": false,
+                  "latest_runtime_kind": "autobyteus",
+                  "usage_report_count": 6,
+                  "revision": 6,
+                  "updated_at": "2026-10-14T09:42:08.378Z"
+                },
+                "quality_flags": []
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "t": 1791970930836,
+      "url": "ws://127.0.0.1:50467/ws/agent-org/tps_desktop_org_308e737ba9814f5cb55d70558982988c",
+      "row": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "tps_desktop_org_308e737ba9814f5cb55d70558982988c",
+          "change_sequence": 5979,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/lead",
+            "agent_run_id": "tps_coordinator_d196defc0f48462c8b9239a6d4ae08a6",
+            "message": {
+              "type": "TOKEN_USAGE_UPDATED",
+              "payload": {
+                "usage_event_id": "e5f6cc7d-031d-4cbc-a09d-e75263df2fbb",
+                "idempotency_key": "tps_coordinator_d196defc0f48462c8b9239a6d4ae08a6:turn_0004:llm:2",
+                "observed_at": "2026-10-14T09:42:10.818Z",
+                "turn_id": "turn_0004",
+                "llm_call_id": "turn_0004:llm:2",
+                "model_provider": "DEEPSEEK",
+                "model_identifier": "deepseek-v4-flash",
+                "model_value": "deepseek-v4-flash",
+                "usage_scope": "per_call",
+                "input_token_semantic": "gross_includes_cache",
+                "standard_input_tokens": 217,
+                "cache_miss_input_tokens": 217,
+                "cache_read_input_tokens": 7552,
+                "cache_creation_input_tokens": null,
+                "cache_creation_5m_input_tokens": null,
+                "cache_creation_1h_input_tokens": null,
+                "cache_state": "positive",
+                "reasoning_output_tokens": 0,
+                "billable_output_tokens": 134,
+                "meter_delta_input_tokens": 7769,
+                "meter_delta_output_tokens": 134,
+                "meter_delta_total_tokens": 7903,
+                "input_price_per_million": 0.44,
+                "output_price_per_million": 1.32,
+                "cached_input_read_price_per_million": 0.014,
+                "cached_input_write_price_per_million": null,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "estimated_api_input_cost": 0.000201208,
+                "estimated_api_standard_input_cost": 0.00009548,
+                "estimated_api_cache_read_input_cost": 0.000105728,
+                "estimated_api_cache_creation_input_cost": null,
+                "estimated_api_cache_creation_5m_input_cost": null,
+                "estimated_api_cache_creation_1h_input_cost": null,
+                "estimated_api_output_cost": 0.00017688000000000003,
+                "estimated_api_reasoning_output_cost": null,
+                "estimated_api_total_cost": 0.00037808800000000006,
+                "currency": "USD",
+                "api_cost_status": "estimated",
+                "missing_price_dimensions": [],
+                "pricing_policy_key": "autobyteus_model_catalog:DEEPSEEK:deepseek-v4-flash:deepseek-v4-2026-08-23:peak",
+                "selected_pricing_tier_id": null,
+                "latest_prompt_tokens": 7769,
+                "effective_context_window_tokens": 1000000,
+                "context_window_usage_percent": 0.7769,
+                "context_compaction_threshold_tokens": 492595,
+                "reports_model_call": true,
+                "output_throughput": {
+                  "method": "generation",
+                  "output_tokens": 134,
+                  "duration_ms": 1126
+                },
+                "run_summary_after_event": {
+                  "run_id": "tps_coordinator_d196defc0f48462c8b9239a6d4ae08a6",
+                  "agent_definition_id": "tps-coordinator",
+                  "workspace_id": "agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d",
+                  "gross_input_tokens": 50383,
+                  "standard_input_tokens": 8015,
+                  "cache_miss_input_tokens": 8015,
+                  "cache_read_input_tokens": 42368,
+                  "cache_creation_input_tokens": 0,
+                  "cache_creation_5m_input_tokens": 0,
+                  "cache_creation_1h_input_tokens": 0,
+                  "output_tokens": 955,
+                  "reasoning_output_tokens": 254,
+                  "billable_output_tokens": 955,
+                  "total_tokens": 51338,
+                  "cache_read_input_token_rate": 0.8409185638012822,
+                  "standard_input_token_rate": 0.1590814361987178,
+                  "cache_creation_input_token_rate": 0,
+                  "cache_state": "positive",
+                  "estimated_api_input_cost": 0.004119751999999998,
+                  "estimated_api_standard_input_cost": 0.0035266,
+                  "estimated_api_cache_read_input_cost": 0.000593152,
+                  "estimated_api_cache_creation_input_cost": null,
+                  "estimated_api_cache_creation_5m_input_cost": null,
+                  "estimated_api_cache_creation_1h_input_cost": null,
+                  "estimated_api_output_cost": 0.0012606,
+                  "estimated_api_reasoning_output_cost": 0.00033528,
+                  "estimated_api_total_cost": 0.005380352000000001,
+                  "currency": "USD",
+                  "api_cost_status": "estimated",
+                  "missing_price_dimensions": [],
+                  "pricing_policy_key": "autobyteus_model_catalog:DEEPSEEK:deepseek-v4-flash:deepseek-v4-2026-08-23:peak",
+                  "selected_pricing_tier_id": null,
+                  "unit_prices": {
+                    "standard_input": {
+                      "status": "single",
+                      "price_per_million": 0.44
+                    },
+                    "cache_read_input": {
+                      "status": "single",
+                      "price_per_million": 0.014
+                    },
+                    "cache_creation_input": {
+                      "status": "not_applicable",
+                      "price_per_million": null
+                    },
+                    "cache_creation_5m_input": {
+                      "status": "not_applicable",
+                      "price_per_million": null
+                    },
+                    "cache_creation_1h_input": {
+                      "status": "not_applicable",
+                      "price_per_million": null
+                    },
+                    "output": {
+                      "status": "single",
+                      "price_per_million": 1.32
+                    },
+                    "reasoning_output": {
+                      "status": "single",
+                      "price_per_million": 1.32
+                    }
+                  },
+                  "latest_prompt_tokens": 7769,
+                  "effective_context_window_tokens": 1000000,
+                  "context_window_usage_percent": 0.7769,
+                  "context_compaction_threshold_tokens": 492595,
+                  "latest_model_provider": "DEEPSEEK",
+                  "latest_model_identifier": "deepseek-v4-flash",
+                  "latest_selected_raw_model_id": null,
+                  "has_cache_write_rate_assumption": false,
+                  "latest_runtime_kind": "autobyteus",
+                  "usage_report_count": 7,
+                  "revision": 7,
+                  "updated_at": "2026-10-14T09:42:10.818Z"
+                },
+                "quality_flags": []
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "t": 1791970930987,
+      "url": "ws://127.0.0.1:50467/ws/agent-org/tps_desktop_org_308e737ba9814f5cb55d70558982988c",
+      "row": {
+        "type": "ROOT_EXECUTION_EVENT",
+        "payload": {
+          "root_subject_kind": "agent_org",
+          "root_run_id": "tps_desktop_org_308e737ba9814f5cb55d70558982988c",
+          "change_sequence": 6015,
+          "event": {
+            "kind": "agent_presentation",
+            "member_address": "/crew/worker",
+            "agent_run_id": "tps_worker_2f2da92b64394e77acc4c00e7db59417",
+            "message": {
+              "type": "TOKEN_USAGE_UPDATED",
+              "payload": {
+                "usage_event_id": "a1c7d242-ee6e-4ecd-b7bb-b5839ccc98ec",
+                "idempotency_key": "tps_worker_2f2da92b64394e77acc4c00e7db59417:turn_0003:llm:1",
+                "observed_at": "2026-10-14T09:42:10.973Z",
+                "turn_id": "turn_0003",
+                "llm_call_id": "turn_0003:llm:1",
+                "model_provider": "DEEPSEEK",
+                "model_identifier": "deepseek-v4-flash",
+                "model_value": "deepseek-v4-flash",
+                "usage_scope": "per_call",
+                "input_token_semantic": "gross_includes_cache",
+                "standard_input_tokens": 223,
+                "cache_miss_input_tokens": 223,
+                "cache_read_input_tokens": 7424,
+                "cache_creation_input_tokens": null,
+                "cache_creation_5m_input_tokens": null,
+                "cache_creation_1h_input_tokens": null,
+                "cache_state": "positive",
+                "reasoning_output_tokens": 26,
+                "billable_output_tokens": 174,
+                "meter_delta_input_tokens": 7647,
+                "meter_delta_output_tokens": 174,
+                "meter_delta_total_tokens": 7821,
+                "input_price_per_million": 0.44,
+                "output_price_per_million": 1.32,
+                "cached_input_read_price_per_million": 0.014,
+                "cached_input_write_price_per_million": null,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "estimated_api_input_cost": 0.000202056,
+                "estimated_api_standard_input_cost": 0.00009812,
+                "estimated_api_cache_read_input_cost": 0.000103936,
+                "estimated_api_cache_creation_input_cost": null,
+                "estimated_api_cache_creation_5m_input_cost": null,
+                "estimated_api_cache_creation_1h_input_cost": null,
+                "estimated_api_output_cost": 0.00022968,
+                "estimated_api_reasoning_output_cost": 0.00003432,
+                "estimated_api_total_cost": 0.000431736,
+                "currency": "USD",
+                "api_cost_status": "estimated",
+                "missing_price_dimensions": [],
+                "pricing_policy_key": "autobyteus_model_catalog:DEEPSEEK:deepseek-v4-flash:deepseek-v4-2026-08-23:peak",
+                "selected_pricing_tier_id": null,
+                "latest_prompt_tokens": 7647,
+                "effective_context_window_tokens": 1000000,
+                "context_window_usage_percent": 0.7647,
+                "context_compaction_threshold_tokens": 492595,
+                "reports_model_call": true,
+                "output_throughput": {
+                  "method": "generation",
+                  "output_tokens": 174,
+                  "duration_ms": 1540
+                },
+                "run_summary_after_event": {
+                  "run_id": "tps_worker_2f2da92b64394e77acc4c00e7db59417",
+                  "agent_definition_id": "tps-worker",
+                  "workspace_id": "agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d",
+                  "gross_input_tokens": 21167,
+                  "standard_input_tokens": 6831,
+                  "cache_miss_input_tokens": 6831,
+                  "cache_read_input_tokens": 14336,
+                  "cache_creation_input_tokens": 0,
+                  "cache_creation_5m_input_tokens": 0,
+                  "cache_creation_1h_input_tokens": 0,
+                  "output_tokens": 1046,
+                  "reasoning_output_tokens": 604,
+                  "billable_output_tokens": 1046,
+                  "total_tokens": 22213,
+                  "cache_read_input_token_rate": 0.6772806727453111,
+                  "standard_input_token_rate": 0.3227193272546889,
+                  "cache_creation_input_token_rate": 0,
+                  "cache_state": "positive",
+                  "estimated_api_input_cost": 0.003206344,
+                  "estimated_api_standard_input_cost": 0.00300564,
+                  "estimated_api_cache_read_input_cost": 0.000200704,
+                  "estimated_api_cache_creation_input_cost": null,
+                  "estimated_api_cache_creation_5m_input_cost": null,
+                  "estimated_api_cache_creation_1h_input_cost": null,
+                  "estimated_api_output_cost": 0.00138072,
+                  "estimated_api_reasoning_output_cost": 0.00079728,
+                  "estimated_api_total_cost": 0.004587064,
+                  "currency": "USD",
+                  "api_cost_status": "estimated",
+                  "missing_price_dimensions": [],
+                  "pricing_policy_key": "autobyteus_model_catalog:DEEPSEEK:deepseek-v4-flash:deepseek-v4-2026-08-23:peak",
+                  "selected_pricing_tier_id": null,
+                  "unit_prices": {
+                    "standard_input": {
+                      "status": "single",
+                      "price_per_million": 0.44
+                    },
+                    "cache_read_input": {
+                      "status": "single",
+                      "price_per_million": 0.014
+                    },
+                    "cache_creation_input": {
+                      "status": "not_applicable",
+                      "price_per_million": null
+                    },
+                    "cache_creation_5m_input": {
+                      "status": "not_applicable",
+                      "price_per_million": null
+                    },
+                    "cache_creation_1h_input": {
+                      "status": "not_applicable",
+                      "price_per_million": null
+                    },
+                    "output": {
+                      "status": "single",
+                      "price_per_million": 1.32
+                    },
+                    "reasoning_output": {
+                      "status": "single",
+                      "price_per_million": 1.32
+                    }
+                  },
+                  "latest_prompt_tokens": 7647,
+                  "effective_context_window_tokens": 1000000,
+                  "context_window_usage_percent": 0.7647,
+                  "context_compaction_threshold_tokens": 492595,
+                  "latest_model_provider": "DEEPSEEK",
+                  "latest_model_identifier": "deepseek-v4-flash",
+                  "latest_selected_raw_model_id": null,
+                  "has_cache_write_rate_assumption": false,
+                  "latest_runtime_kind": "autobyteus",
+                  "usage_report_count": 3,
+                  "revision": 3,
+                  "updated_at": "2026-10-14T09:42:10.973Z"
+                },
+                "quality_flags": []
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "Org lead before any call shows \"—\""
+    },
+    {
+      "name": "Org direct agent (lead) shows its own newest reading",
+      "runId": "tps_coordinator_d196defc0f48462c8b9239a6d4ae08a6",
+      "shown": "119.0 tokens/s",
+      "reading": {
+        "method": "generation",
+        "output_tokens": 134,
+        "duration_ms": 1126,
+        "model": "deepseek-v4-flash",
+        "member": "/lead",
+        "url": "ws://127.0.0.1:50467/ws/agent-org/tps_desktop_org_308e737ba9814f5cb55d70558982988c"
+      }
+    },
+    {
+      "name": "Org team member without a call (crew/coordinator) shows \"—\"",
+      "runId": "tps_coordinator_b8f890b16acb4a258cc38e6b2200844a"
+    },
+    {
+      "name": "Org team member (crew/worker) shows its own newest reading",
+      "runId": "tps_worker_2f2da92b64394e77acc4c00e7db59417",
+      "shown": "113.0 tokens/s",
+      "reading": {
+        "method": "generation",
+        "output_tokens": 174,
+        "duration_ms": 1540,
+        "model": "deepseek-v4-flash",
+        "member": "/crew/worker",
+        "url": "ws://127.0.0.1:50467/ws/agent-org/tps_desktop_org_308e737ba9814f5cb55d70558982988c"
+      }
+    }
+  ],
+  "sentAt": 1791970926560,
+  "newest": {
+    "tps_coordinator_d196defc0f48462c8b9239a6d4ae08a6": {
+      "method": "generation",
+      "output_tokens": 134,
+      "duration_ms": 1126,
+      "model": "deepseek-v4-flash",
+      "member": "/lead",
+      "url": "ws://127.0.0.1:50467/ws/agent-org/tps_desktop_org_308e737ba9814f5cb55d70558982988c"
+    },
+    "tps_worker_2f2da92b64394e77acc4c00e7db59417": {
+      "method": "generation",
+      "output_tokens": 174,
+      "duration_ms": 1540,
+      "model": "deepseek-v4-flash",
+      "member": "/crew/worker",
+      "url": "ws://127.0.0.1:50467/ws/agent-org/tps_desktop_org_308e737ba9814f5cb55d70558982988c"
+    }
+  },
+  "leadRunId": "tps_coordinator_d196defc0f48462c8b9239a6d4ae08a6",
+  "status": "pass"
+}

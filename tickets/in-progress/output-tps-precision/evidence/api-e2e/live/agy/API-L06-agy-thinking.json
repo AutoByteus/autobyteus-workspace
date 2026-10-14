@@ -1,0 +1,189 @@
+{
+  "caseId": "API-L06-agy-thinking",
+  "runtimeKind": "antigravity_cli",
+  "model": "gemini-3.8-flash-high",
+  "runId": "tps_live_antigravity_cli_60a66f5e_a628_4697_9e6f_8a1c4cb6a65a468399d4534b954cf562",
+  "sentAtMs": 1791965433164,
+  "turnCompletedAtMsSinceSend": 23260,
+  "modelCallCount": 1,
+  "text": "The farmer now has 27 sheep in total. To determine the correct amount, we first examine the classic riddle phrasing that states all but 9 sheep run away. Rather than subtracting nine from seventeen, this phrasing explicitly tells us that exactly 9 sheep remained on the property while the others ran off. Following that event, the farmer decides to purchase twice as many sheep as currently remain. Because there are 9 sheep remaining, twice that specific amount comes out to 18 newly bought animals. To calculate the final total, we simply add the 9 original sheep that stayed to the 18 sheep that were newly purchased, giving a grand total of exactly 27 sheep currently living on the farmer's land.\n",
+  "contentWindow": {
+    "frames": 23,
+    "firstAtMsSinceSend": 22611,
+    "lastAtMsSinceSend": 23260
+  },
+  "timeline": [
+    {
+      "atMsSinceSend": 4,
+      "type": "AGENT_STATUS"
+    },
+    {
+      "atMsSinceSend": 4,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 4,
+      "type": "AGENT_STATUS"
+    },
+    {
+      "atMsSinceSend": 4,
+      "type": "TURN_STARTED"
+    },
+    {
+      "atMsSinceSend": 4,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 4,
+      "type": "AGENT_COMMAND_ACK"
+    },
+    {
+      "atMsSinceSend": 4,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 22611,
+      "type": "SEGMENT_START"
+    },
+    {
+      "atMsSinceSend": 22611,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 22713,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 22738,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 22763,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 22791,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 22817,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 22841,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 22867,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 22895,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 22918,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 22943,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 22970,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 22997,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 23021,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 23047,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 23072,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 23098,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 23124,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 23149,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 23175,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 23201,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 23226,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 23260,
+      "type": "SEGMENT_END"
+    },
+    {
+      "atMsSinceSend": 23260,
+      "type": "TOKEN_USAGE_UPDATED",
+      "call_sequence": 1,
+      "reports_model_call": true,
+      "model_identifier": "gemini-3.8-flash-high",
+      "reported_output_tokens": 3284,
+      "reasoning_output_tokens": 3138,
+      "output_throughput": {
+        "method": "end_to_end",
+        "output_tokens": 3284,
+        "duration_ms": 23203
+      },
+      "raw_usage_json": {
+        "input_tokens": 9075,
+        "output_tokens": 3284,
+        "thinking_tokens": 3138,
+        "cache_read_tokens": 0,
+        "total_tokens": 12359
+      }
+    },
+    {
+      "atMsSinceSend": 23260,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 23260,
+      "type": "TURN_COMPLETED"
+    },
+    {
+      "atMsSinceSend": 23260,
+      "type": "AGENT_STATUS"
+    },
+    {
+      "atMsSinceSend": 23260,
+      "type": "AGENT_INPUT_STATE"
+    }
+  ],
+  "readings": [
+    {
+      "method": "end_to_end",
+      "output_tokens": 3284,
+      "duration_ms": 23203,
+      "tokensPerSecond": 141.5,
+      "receivedAtMsSinceSend": 23260,
+      "call_sequence": 1,
+      "model": "gemini-3.8-flash-high"
+    }
+  ]
+}
