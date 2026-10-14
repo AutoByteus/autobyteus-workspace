@@ -1,0 +1,454 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/imported-team-defaults-edit/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/imported-team-defaults-edit/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:79773) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/imported-team-defaults-edit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/imported-team-defaults-edit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/imported-team-defaults-edit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/imported-team-defaults-edit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mAdded new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mAgent Definition created successfully with ID: rpe-manager-064993
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mAgent Definition created successfully with ID: rpe-worker-2b1e2e
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mAgent Team Definition created successfully with ID: rpe-home-e5db7f
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-001 (AC-001, REQ-001, REQ-003): the Team edit page's save writes the default runtime/model into the package
+[22m[39mError updating agent team definition: Error: Definition source '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-package-gnXd25/autobyteus-agents/agent-teams/software-engineering-team' is part of the app's implementation and cannot be changed from the app.
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-002 (AC-003): a stale revision conflicts and leaves the package unchanged
+[22m[39mError updating agent team definition: Error: The Team definition changed after this draft was loaded. Refresh and apply the draft again.
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-004 (AC-004): an Org-owned Team of the package still changes only through its Org
+[22m[39mError updating agent team definition: Error: AgentOrg-owned Team definitions can only be changed through their atomic parent AgentOrg save.
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-004 (AC-004): an Org-owned Team of the package still changes only through its Org
+[22m[39mError deleting agent team definition with ID agent-org-owned-team:studio:squad: Error: Deleting application-owned team definitions is not supported.
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-005 (AC-006): a package folder the disk refuses gives the read-only filesystem error
+[22m[39mError updating agent team definition: Error: Definition source '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-package-gnXd25/autobyteus-agents/agent-teams/software-engineering-team' is part of the app's implementation and cannot be changed from the app.
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mCreated and registered workspace ID: agent_ws_4bf1e2751ff36320171d9539028f8b2602df4816f85559c1797156fa96ba6452
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mAgent team websocket attached for team run rpe_home_e5db7f_24df1e75e03a4c9cb345811759f6e479
+Created agent session ef01d8d9-78fb-46a1-8bfc-954d63f65747 for run rpe_home_e5db7f_24df1e75e03a4c9cb345811759f6e479
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mAgent Team WebSocket connected: session=ef01d8d9-78fb-46a1-8bfc-954d63f65747, run=rpe_home_e5db7f_24df1e75e03a4c9cb345811759f6e479
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/memory/agent_teams/rpe_home_e5db7f_24df1e75e03a4c9cb345811759f6e479/rpe_manager_064993_ae8f7be17c804703a352f15947e66af7/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mReusing registered workspace ID: agent_ws_4bf1e2751ff36320171d9539028f8b2602df4816f85559c1797156fa96ba6452
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/memory/agent_teams/rpe_home_e5db7f_24df1e75e03a4c9cb345811759f6e479/rpe_manager_064993_ae8f7be17c804703a352f15947e66af7/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/memory/agent_teams/rpe_home_e5db7f_24df1e75e03a4c9cb345811759f6e479/rpe_manager_064993_ae8f7be17c804703a352f15947e66af7/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/memory/agent_teams/rpe_home_e5db7f_24df1e75e03a4c9cb345811759f6e479/rpe_manager_064993_ae8f7be17c804703a352f15947e66af7/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mAGY compaction detection off for run rpe_manager_064993_ae8f7be17c804703a352f15947e66af7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/memory/agent_teams/rpe_home_e5db7f_24df1e75e03a4c9cb345811759f6e479/rpe_manager_064993_ae8f7be17c804703a352f15947e66af7/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-ZlVhYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mReusing registered workspace ID: agent_ws_4bf1e2751ff36320171d9539028f8b2602df4816f85559c1797156fa96ba6452
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[22m[39mAGY compaction detection off for run lead_bc98db394eb34176ab2ee4860ead3c34: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22m[2mRPE-007 (UC-003): a package Team is deleted from its package folder
+[22m[39mError deleting agent team definition with ID spare-team: Error: Definition source '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-package-gnXd25/autobyteus-agents/agent-teams/spare-team' is part of the app's implementation and cannot be changed from the app.
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22m[2mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)
+[22m[39mClosed agent session ef01d8d9-78fb-46a1-8bfc-954d63f65747
+
+ [31m❯[39m tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts [2m([22m[2m7 tests[22m[2m | [22m[31m6 failed[39m[2m)[22m[33m 2354[2mms[22m[39m
+[31m     [31m×[31m RPE-001 (AC-001, REQ-001, REQ-003): the Team edit page's save writes the default runtime/model into the package[39m[32m 24[2mms[22m[39m
+[31m     [31m×[31m RPE-002 (AC-003): a stale revision conflicts and leaves the package unchanged[39m[32m 22[2mms[22m[39m
+[31m     [31m×[31m RPE-003 (AC-002): the Org edit page's save writes the Org default into the package[39m[32m 10[2mms[22m[39m
+     [32m✓[39m RPE-004 (AC-004): an Org-owned Team of the package still changes only through its Org[32m 16[2mms[22m[39m
+[31m     [31m×[31m RPE-005 (AC-006): a package folder the disk refuses gives the read-only filesystem error[39m[32m 9[2mms[22m[39m
+[31m     [31m×[31m RPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one[39m[33m 736[2mms[22m[39m
+[31m     [31m×[31m RPE-007 (UC-003): a package Team is deleted from its package folder[39m[32m 2[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 6 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22mRPE-001 (AC-001, REQ-001, REQ-003): the Team edit page's save writes the default runtime/model into the package
+[31m[1mAssertionError[22m: [{"message":"Failed to update agent team definition: Definition source '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-package-gnXd25/autobyteus-agents/agent-teams/software-engineering-team' is part of the app's implementation and cannot be changed from the app.","locations":[{"line":1,"column":50}],"path":["updateAgentTeamDefinition"],"extensions":{"code":"AGENT_TEAM_DEFINITION_INVALID"}}]: expected [ { …(4) } ] to be undefined[39m
+
+[32m- Expected:[39m 
+undefined
+
+[31m+ Received:[39m 
+[
+  {
+    "extensions": {
+      "code": "AGENT_TEAM_DEFINITION_INVALID",
+    },
+    "locations": [
+      {
+        "column": 50,
+        "line": 1,
+      },
+    ],
+    "message": "Failed to update agent team definition: Definition source '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-package-gnXd25/autobyteus-agents/agent-teams/software-engineering-team' is part of the app's implementation and cannot be changed from the app.",
+    "path": [
+      "updateAgentTeamDefinition",
+    ],
+  },
+]
+
+[36m [2m❯[22m tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:[2m229:56[22m[39m
+    [90m227| [39m    const teamLocalBefore = await snapshot(path.join(teamDir(), "agent…
+    [90m228| [39m    const saved = await saveTeam(before, { description: "Edited in the…
+    [90m229| [39m    [34mexpect[39m(saved[33m.[39merrors[33m,[39m [33mJSON[39m[33m.[39m[34mstringify[39m(saved[33m.[39merrors))[33m.[39m[34mtoBeUndefined[39m()[33m;[39m
+    [90m   | [39m                                                       [31m^[39m
+    [90m230| [39m    [35mconst[39m team [33m=[39m saved[33m.[39mdata[33m![39m[33m.[39mupdateAgentTeamDefinition [35mas[39m [33mRec[39m[33m;[39m
+    [90m231| [39m    expect(team).toMatchObject({ id: TEAM_ID, description: "Edited in …
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22mRPE-002 (AC-003): a stale revision conflicts and leaves the package unchanged
+[31m[1mAssertionError[22m: expected 'From the package' to be 'Edited in the app' // Object.is equality[39m
+
+Expected: [32m"Edited in the app"[39m
+Received: [31m"From the package"[39m
+
+[36m [2m❯[22m tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:[2m258:51[22m[39m
+    [90m256| [39m    expect(stale.errors?.[0]?.extensions, JSON.stringify(stale.errors)…
+    [90m257| [39m    [34mexpect[39m([35mawait[39m [34msnapshot[39m([34mteamDir[39m()))[33m.[39m[34mtoEqual[39m(files)[33m;[39m
+    [90m258| [39m    expect((await readTeam(TEAM_ID)).description).toBe("Edited in the …
+    [90m   | [39m                                                  [31m^[39m
+    [90m259| [39m    evidence[33m.[39mrpe002 [33m=[39m stale[33m.[39merrors[33m;[39m
+    [90m260| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22mRPE-003 (AC-002): the Org edit page's save writes the Org default into the package
+[31m[1mAssertionError[22m: [{"message":"Definition source '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-package-gnXd25/autobyteus-agents/agent-orgs/studio' is part of the app's implementation and cannot be changed from the app.","locations":[{"line":1,"column":49}],"path":["updateAgentOrgDefinition"],"extensions":{"code":"AGENT_ORG_DEFINITION_INVALID"}}]: expected [ { …(4) } ] to be undefined[39m
+
+[32m- Expected:[39m 
+undefined
+
+[31m+ Received:[39m 
+[
+  {
+    "extensions": {
+      "code": "AGENT_ORG_DEFINITION_INVALID",
+    },
+    "locations": [
+      {
+        "column": 49,
+        "line": 1,
+      },
+    ],
+    "message": "Definition source '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-package-gnXd25/autobyteus-agents/agent-orgs/studio' is part of the app's implementation and cannot be changed from the app.",
+    "path": [
+      "updateAgentOrgDefinition",
+    ],
+  },
+]
+
+[36m [2m❯[22m tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:[2m266:56[22m[39m
+    [90m264| [39m    expect(org).toMatchObject({ id: ORG_ID, defaultLaunchConfig: null …
+    [90m265| [39m    const saved = await saveOrg(org, { description: "Org edited in the…
+    [90m266| [39m    [34mexpect[39m(saved[33m.[39merrors[33m,[39m [33mJSON[39m[33m.[39m[34mstringify[39m(saved[33m.[39merrors))[33m.[39m[34mtoBeUndefined[39m()[33m;[39m
+    [90m   | [39m                                                       [31m^[39m
+    [90m267| [39m    expect(saved.data!.updateAgentOrgDefinition).toMatchObject({ descr…
+    [90m268| [39m      defaultLaunchConfig: { runtimeKind: AGY, llmModelIdentifier: SAV…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22mRPE-005 (AC-006): a package folder the disk refuses gives the read-only filesystem error
+[31m[1mAssertionError[22m: expected '[{"message":"Failed to update agent t…' to match /read-only at source path/[39m
+
+[32m- Expected:[39m 
+/read-only at source path/
+
+[31m+ Received:[39m 
+"[{\"message\":\"Failed to update agent team definition: Definition source '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-package-gnXd25/autobyteus-agents/agent-teams/software-engineering-team' is part of the app's implementation and cannot be changed from the app.\",\"locations\":[{\"line\":1,\"column\":50}],\"path\":[\"updateAgentTeamDefinition\"],\"extensions\":{\"code\":\"AGENT_TEAM_DEFINITION_INVALID\"}}]"
+
+[36m [2m❯[22m tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:[2m296:62[22m[39m
+    [90m294| [39m    [35mtry[39m {
+    [90m295| [39m      const refused = await saveTeam(current, { description: "Blocked …
+    [90m296| [39m      expect(JSON.stringify(refused.errors ?? refused.data)).toMatch(/…
+    [90m   | [39m                                                             [31m^[39m
+    [90m297| [39m      evidence[33m.[39mrpe005 [33m=[39m refused[33m.[39merrors[33m;[39m
+    [90m298| [39m    } [35mfinally[39m {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22mRPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+[31m[1mAssertionError[22m: expected { Object (runtimeKind, model) } to deeply equal { Object (runtimeKind, model) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "model": "rpe-saved-model",[39m
+[31m+   "model": "gemini-3.8-flash-low",[39m
+[2m    "runtimeKind": "antigravity_cli",[22m
+[2m  }[22m
+
+[36m [2m❯[22m tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:[2m345:69[22m[39m
+    [90m343| [39m
+    [90m344| [39m    [35mconst[39m first [33m=[39m [35mawait[39m [34mdelegatePackageTeam[39m()[33m;[39m
+    [90m345| [39m    expect(launchOf(f(first.source, "defaultLaunchConfiguration"))).to…
+    [90m   | [39m                                                                    [31m^[39m
+    [90m346| [39m    expect(f(f(first.source, "defaultLaunchSource"), "origin")).toBe("…
+    [90m347| [39m    [34mexpect[39m(first[33m.[39mresult[33m.[39mlaunch_notes [33m??[39m [])[33m.[39m[34mtoEqual[39m([])[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts[2m > [22mRegistered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY)[2m > [22mRPE-007 (UC-003): a package Team is deleted from its package folder
+[31m[1mAssertionError[22m: Error: Definition source '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-package-gnXd25/autobyteus-agents/agent-teams/spare-team' is part of the app's implementation and cannot be changed from the app.: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:[2m365:98[22m[39m
+    [90m363| [39m    [35mawait[39m [34mexpect[39m(fs[33m.[39m[34maccess[39m(spareDir))[33m.[39mresolves[33m.[39m[34mtoBeUndefined[39m()[33m;[39m
+    [90m364| [39m    const deleted = await graphql(`mutation($id:String!){deleteAgentTe…
+    [90m365| [39m    expect(deleted.deleteAgentTeamDefinition.success, deleted.deleteAg…
+    [90m   | [39m                                                                                                 [31m^[39m
+    [90m366| [39m    [35mawait[39m [34mexpect[39m(fs[33m.[39m[34maccess[39m(spareDir))[33m.[39mrejects[33m.[39m[34mtoThrow[39m()[33m;[39m
+    [90m367| [39m    [34mexpect[39m([35mawait[39m [34mreadTeam[39m([33mSPARE_ID[39m))[33m.[39m[34mtoBeNull[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m6 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (7)[39m
+[2m   Start at [22m 14:53:42
+[2m   Duration [22m 10.93s[2m (transform 6.00s, setup 30ms, import 8.02s, tests 2.35s, environment 0ms)[22m
+

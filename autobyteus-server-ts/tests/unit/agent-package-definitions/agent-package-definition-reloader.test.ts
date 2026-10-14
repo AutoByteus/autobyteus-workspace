@@ -15,7 +15,7 @@ import type {
 
 const ROOT: RegisteredPackageRoot = {
   rootPath: "/pkg",
-  sourceClass: "external_read_only",
+  sourceClass: "registered_package",
   kindDirs: { agents: "/pkg/agents", "agent-teams": "/pkg/agent-teams", "agent-orgs": "/pkg/agent-orgs" },
 };
 
@@ -32,7 +32,7 @@ class FakeReader<K extends AgentPackageDefinitionKind> implements DefinitionFold
     if (folderId === this.failOn) throw new Error("EIO");
     const folder = this.folders.get(folderId);
     if (!folder) return { status: "absent" };
-    const location = { packageRoot: ROOT.rootPath, folderDir: `/pkg/${folderId}`, sourceClass: "external_read_only" as const };
+    const location = { packageRoot: ROOT.rootPath, folderDir: `/pkg/${folderId}`, sourceClass: "registered_package" as const };
     if (folder === "invalid") {
       return { status: "read", location, nested: new Map(), root: { kind: this.kind, result: { status: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: "bad", definitionPath: "/p" } } as never };
     }

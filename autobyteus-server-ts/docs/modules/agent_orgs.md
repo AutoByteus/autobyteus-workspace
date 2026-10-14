@@ -99,7 +99,10 @@ later edit is invalid. They
 are never added to the public Team or Agent lists. Exact readability and shared
 catalog visibility are separate facts: valid self-contained packages need no
 extraction, publication, copying or migration. Reads leave authored files intact.
-Existing source writability and mutation boundaries are unchanged.
+An Org from a registered agent package is saved and deleted in its package
+folder like the package's Agents and Teams (source class `registered_package`);
+only implementation-repository sources are refused. Saves stay one atomic Org
+package write with a revision check.
 
 `AgentOrgDefinition.loadIssues` lists every load issue in the definition folder
 (the Org first, then nested definitions in path order) with `kind`, `definitionId`, `name`, `code`,

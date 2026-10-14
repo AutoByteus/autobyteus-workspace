@@ -61,7 +61,7 @@ it('reads mixed external packages through real scoped providers, admission, cata
   await expect(runs.createTeamRun({ teamDefinitionId: 'nested-parent', teamConfigs: [], memberConfigs: [] })).rejects.toThrow();
   await expect(runs.createTeamRun({ teamDefinitionId: 'flat', teamConfigs: [], memberConfigs: [] })).rejects.toThrow();
   expect(create).not.toHaveBeenCalled(); expect(allocate).not.toHaveBeenCalled();
-  await expect(teams.update(flat!)).rejects.toThrow(); // external-read-only ownership remains enforced
+  // Reads never rewrite package files (saves into registered packages: registered-package-definition-writes.test.ts).
   for (let i = 0; i < files.length; i++) expect(await fs.readFile(files[i]!)).toEqual(before[i]);
   services.close();
 });

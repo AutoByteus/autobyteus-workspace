@@ -50,7 +50,9 @@ independently launchable and keep their own coordinator and Team-local handoffs.
   identities. Long labels wrap and narrow direction cards stack; unavailable
   endpoints remain readable, while malformed addresses use the localized generic
   endpoint label.
-- Save is atomic and retains a failed draft for correction.
+- Save is atomic and retains a failed draft for correction. Orgs from a
+  registered agent package are saved into their package folder, like that
+  package's Agents and Teams.
 - Mutation members contain only `memberName`, `ref`, `refType`, and `refScope`;
   Apollo response metadata such as `__typename` is not echoed into input.
   An omitted optional update remains omitted rather than resetting stored intent.

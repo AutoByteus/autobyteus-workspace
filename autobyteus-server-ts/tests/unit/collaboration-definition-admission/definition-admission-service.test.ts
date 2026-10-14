@@ -106,7 +106,7 @@ describe('DefinitionAdmissionService', () => {
     const before = { bytes: await fs.readFile(configPath, 'base64'), stats: await fs.stat(configPath) };
     const { service } = build({ dataRoot, externalRoots: [externalRoot] });
     const result = (await service.scan()).find((item) => item.definitionId === 'legacy');
-    expect(result).toMatchObject({ status: 'unavailable', sourceClass: 'external_read_only', expectedFamily: 'agent_team', code: 'DEFINITION_CONTRACT_INVALID' });
+    expect(result).toMatchObject({ status: 'unavailable', sourceClass: 'registered_package', expectedFamily: 'agent_team', code: 'DEFINITION_CONTRACT_INVALID' });
     expect(result).not.toHaveProperty('expectedSchemaVersion');
     const after = { bytes: await fs.readFile(configPath, 'base64'), stats: await fs.stat(configPath) };
     expect(after.bytes).toBe(before.bytes);
