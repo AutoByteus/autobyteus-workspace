@@ -1,34 +1,27 @@
-## New
-- **Auto-compaction marker in the Token Meter.** When a runtime reports its auto-compaction threshold, the context bar shows a marker and "Auto-compacts at …". This covers the Claude Agent SDK, and the native runtime with automatic compaction.
-- **Over-window state.** When a runtime's own reading is larger than its context window, the Token Meter shows the true percentage and marks it "Over the runtime's window".
+## What's New
+- **Agent packages refresh automatically.** Changes to Agent, Team and Org definitions appear without Reload. Invalid edits retain the last working definition with a visible explanation; new invalid definitions and unavailable package folders show their status.
+- **Launch defaults follow delegated work.** Agent and Team runtime/model defaults apply to delegated copies and collaborators. Team and Org launch forms seed member defaults, including when switching from New chat. Settings shows the source of each choice and explains unusable defaults.
+- **Stop a delegated copy and change its model.** Stop one Agent or Team copy and its descendants without stopping the rest of the run. While stopped, change its model or member settings; its next message resumes the existing conversation with the saved choice.
+- **Estimated output speed in the Token Meter.** Output TPS shows an estimate for the selected Agent, with runtime/model identity and observation time. Collecting and Unavailable states avoid invented readings. This estimate includes tool/wait time and is not instantaneous inference speed.
 
-## Changed
-- **Compaction uses the agent's own model.** When an agent on the AutoByteus runtime compacts its memory, the same model that is working on the conversation summarizes it.
-  - With Anthropic (Claude) and DeepSeek models, the summary request reuses the conversation that is already cached and summarizes the full conversation.
-  - Summaries have a fixed nine-section format: task, requests, decisions, unverified points, files changed, completed work, current state, next steps and references. This makes it easier for the agent to continue where it left off.
-  - Summary requests get enough room to finish, even when the agent's output limit is set low.
-  - Gemini and other models keep the transcript-based summary, now on the agent's own model.
-- The separate **compaction model** setting is removed. A value saved earlier is ignored and can be deleted from Server Settings.
-- **The remote AutoByteus model provider is removed** because its server no longer exists.
-  - Settings no longer lists an "AutoByteus" provider or an "AutoByteus LLM Hosts" card.
-  - Model pickers no longer offer remote AutoByteus LLM, image or audio models.
-  - The **AutoByteus agent runtime** is not affected and works with every other provider. The "AutoByteus VNC Hosts" setting is not affected either.
-- **Token Meter after a compaction.** On the native runtime and the Claude Agent SDK, the new context size arrives with the next model call. Until then the meter keeps the previous value, greyed, with "Compacted — updates on the next model call".
-- Compaction calls, including a native compaction's own summary call, now appear in the Token Meter with their tokens and cost.
-- In usage reports, the count now means model calls.
+## Improvements
+- Delegated Teams under standalone Agent conversations start collapsed after reopening or when new Teams appear; expand them to inspect members without changing ongoing work.
+- Team details put Members directly after Description.
+- Enabled sidebar Stop controls are consistently red, with darker hover styling. Disabled and pending controls remain gray; keyboard behavior and targets are preserved.
+- Runtime availability messages distinguish missing software from sign-in and other failures. An installed but signed-out Antigravity CLI explains how to sign in on that node; reopening the model menu rechecks unavailable runtimes.
+- Retired obsolete personal Docker build assets and clarified the supported monorepo Docker build path. Existing user containers, volumes and data are not deleted by this source change.
 
 ## Fixes
-- **A Claude agent's normal reply is no longer shown as a red "authentication failed" error** when the reply mentions being "not logged in" or asks to "run /login". The reply appears as a normal message and the run returns to Idle. A Claude runtime that really is not logged in still reports the authentication error.
-- **Claude Agent SDK: the Token Meter's latest prompt is correct.** It shows the SDK's own count of tokens in context for the latest model call, against the SDK's window. Before, it could add up every call of a turn and show several hundred percent.
-- **Claude Agent SDK: the Token Meter updates during the turn.** It updates on every model call, including for team members and delegated copies. The SDK's own compaction calls are counted, and no call is counted twice.
-- **Antigravity (AGY): usage arrives during the turn,** one update per model call. Cache reads count toward input, and the latest prompt is shown with "context limit unavailable".
-- **Codex:** after a compaction, the Token Meter shows the post-compaction context size instead of 0.
-- **Grok Build:** the Token Meter's latest prompt is now shown.
-- Gemini requests now take their system prompt from the request itself.
+- **Reliable Docker Prisma startup after recreation.** Startup resolves the installed Prisma CLI's own matching engines and only accepts an exact-revision cache fallback, rather than selecting an incompatible retained cache.
+- **Saved Settings refresh in place.** Stopped Agent, Team and collaborator model/configuration changes now show the saved values immediately, including repeated edits and reopen. If a write succeeded but readback failed, Settings reports that state and offers a read-only refresh instead of pretending the old values were saved.
+- PDFs selected from Files search open in the workspace preview even when their folder was not expanded, while retaining file-access restrictions.
+- Creating or editing Agents and Orgs keeps catalog diagnostic fields complete, avoiding missing-field cache errors without hiding warnings.
+- The Workspaces panel uses the available layout width correctly, avoiding an unnecessary drawer when it can remain docked.
 
-## Notes
-- **A database migration runs once on upgrade.** It clears stored Claude Agent SDK latest-prompt readings, which cannot be recomputed. Totals and costs are unchanged. Antigravity (AGY) runs recorded before this release keep their stored totals.
-- An agent, run, launch profile or media default that still names a remote AutoByteus model shows that model as unavailable. It does not start until you choose another model.
-  - The saved value is not changed.
-  - A stopped run whose model is no longer offered cannot switch models; start a new run instead.
-- A leftover `AUTOBYTEUS_LLM_SERVER_HOSTS` value appears under Server Settings as an ordinary custom setting that you can delete. A saved AutoByteus API key is ignored.
+## Notes and known limitations
+- This release does not automatically upgrade an existing Docker node. A separately chosen upgrade is required to use the corrected image; a temporary engine pin in an old container is not recreation-durable.
+- Launch defaults affect newly started copies. Per-copy model changes do not alter definitions, unrelated copies or future copies. Older copies without recorded starter relationships cannot be stopped together with their starter.
+- Package auto-refresh does not watch Skills or application-packaged Agent/Team definitions. An unavailable watch falls back to explicit Reload.
+- Live response batching can flush earlier than its configured interval; this existing streaming-cadence defect remains unresolved.
+- Some updater failures can be mislabeled as network errors when incidental diagnostic stack paths contain matching words; the underlying updater error classification defect remains unresolved.
+- The Docker installer's printed commands can be invalid for custom installation paths containing an apostrophe. This existing installer limitation remains unresolved.

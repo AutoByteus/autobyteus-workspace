@@ -1,0 +1,74 @@
+{
+  "utc": "2026-10-14T07:10:47.867037+00:00",
+  "tag": "v1.5.3",
+  "releaseCommit": "ffb4f72722e1e420404651d4dab45d536e2c78d7",
+  "allFourPipelines": "success",
+  "runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-14T06:25:45Z",
+      "databaseId": 38522146304,
+      "event": "push",
+      "headSha": "ffb4f72722e1e420404651d4dab45d536e2c78d7",
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38522146304",
+      "workflowName": "Android APK Release"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-14T06:25:45Z",
+      "databaseId": 38522146302,
+      "event": "push",
+      "headSha": "ffb4f72722e1e420404651d4dab45d536e2c78d7",
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38522146302",
+      "workflowName": "Desktop Release"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-14T06:25:45Z",
+      "databaseId": 38522146322,
+      "event": "push",
+      "headSha": "ffb4f72722e1e420404651d4dab45d536e2c78d7",
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38522146322",
+      "workflowName": "iOS App Store Connect Release"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-14T06:25:45Z",
+      "databaseId": 38522146372,
+      "event": "push",
+      "headSha": "ffb4f72722e1e420404651d4dab45d536e2c78d7",
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38522146372",
+      "workflowName": "Server Docker Release"
+    }
+  ],
+  "releaseUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.3",
+  "prerelease": false,
+  "draft": false,
+  "githubLatestEqual": true,
+  "assetCount": 17,
+  "expectedAssetSetExact": true,
+  "assetsAllNonemptyUploaded": true,
+  "curatedNotesExact": true,
+  "notesSha256": "e51fdc766324641369698805693c05052433c4588cbc5bb39dff264fa92511ca",
+  "updaterVersionsAndMacArchitectures": true,
+  "apkChecksumMatchesGitHubDigest": true,
+  "imageDigest": "sha256:01416762483610c11d97e10c5c5d8a9c9012de38da3143d2775a88ca3af9353d",
+  "versionLatestBetaDigestEqual": true,
+  "platforms": [
+    [
+      "linux",
+      "amd64"
+    ],
+    [
+      "linux",
+      "arm64"
+    ]
+  ],
+  "iOS": "Workflow TestFlight upload completed; public App Store review/approval not claimed",
+  "userNodes": "No probes or operations; publication is not installed-node rollout",
+  "knownFailures": "Existing PB001, FUP001 and launcher apostrophe limitation explicitly retained; no global test-suite green"
+}
