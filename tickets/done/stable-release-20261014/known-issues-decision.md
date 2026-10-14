@@ -1,4 +1,4 @@
-# Stable-channel risk decision — pending
+# Known issues — assessed nonblocking by Delivery
 
 ## Current DR-002 — evidence-led correction and readiness
 The initial DR-001 request for another user risk approval was unnecessary. Delivery reread its authoritative skill after the user challenged it. The user had already chosen stable publication. It is Delivery's responsibility to judge the evidence and route actual blockers; RELEASE.md does not add a blanket new waiver requirement for every known baseline defect. The intake's direction to assess and disclose risks does not make those risks automatic blockers. No user waiver or manual check has been invented.
@@ -24,3 +24,6 @@ None is introduced by this release task, but that does not fix it or grant a new
 Agent-package-auto-refresh's historical seven sibling E2E failures concern stale removed flat-Team/private backend APIs; they are not relabeled as current passes or new user defects. Historical voice-input load timeout passed in isolation; no full-suite-green claim. Later Agent/Org cache package resolves that separately reported cache-field issue with its own evidence. No universal current-suite total is asserted: latest Prisma fullunits5455Pass/7Skip and fullintegration371Pass/2Fail/68Skip; current Settings330web/38Prisma/6API/9desktop/7browser plus integrated77/77 are scoped proof, not universal new stable validation. No paid model, live node, authenticated user-data or whole-history certification.
 
 No repair, task creation, dispatch, cancellation or prior-task reopening authorized here. A decision to publish would accept/disclose existing limitations for this stable cut, not change test results. If user prefers fixes first, return scope/dispatch planning to Solution Designer/manager without merging unfinished shared-network work.
+
+## DR-003 publication result
+Stable v1.5.3 published with these limitations disclosed. All required workflows/artifact/channel checks succeeded; this does not repair or convert any existing test failure to a pass. See current release-deployment-report.md and delivery-evidence/dr-003/verification.json.

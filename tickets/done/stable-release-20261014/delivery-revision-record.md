@@ -19,3 +19,9 @@
 - Existing bounded cadence/diagnostic/installer issues assessed from actual current source/evidence, not blindly inherited acceptance. They do not invalidate required release gates or verified merged changes; documented nonblocking, not repaired/passing. Independent follow-up custody unchanged.
 - Currentcut1ea74caa2d still latest; current Settings executable source equals executed76fab065ec, no new material runtime/dependency/recipe change from successfulbeta5. Direct native/recreation/desktop/browser proof sufficient;31release-version/license/hygiene pass. No user-only proof required.
 - Prior DR001 policy error/hold and raw failures retained; current reports corrected. Archive, source metadata finalization and stablepublication to follow; no preclaimed tag/build/artifact/cleanup success. Next receipt appends actual outcome. User nodes/volumes/pins/backups remain untouched.
+
+## DR-003 — Stable publication and final receipt
+- Prior DR002 verification complete; no new source or user approval needed. Actual normal stable helper/tag/push completed; four tag-push workflows succeeded. Exact17assets, curated notes, updater/APKchecksums, TestFlight and dualarchitectureDocker version/latest/beta checked.
+- Full source/notes inventory included; report-only publication follows on fresh personal. Actual final report SHA/equality/durable package and cleanup must be read from final-repository-receipt.json, not inferred from this commit.
+- Prior unnecessary hold remains historical; technical judgement belongs to Delivery. Known unresolved failures remain disclosed, not waived/green. No live nodes, profiles, data, backups, unfinished branch or unrelated owner resources touched.
+- Current-skill gates complete once final receipt confirms report push and exact owned worktree/branch cleanup. Return Delivery Completed to original requesting Solution Designer through applicable rule or requester fallback; no new manual-verification predicate blocker.

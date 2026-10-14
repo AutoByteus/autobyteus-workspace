@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-14T06:25:46.024009+00:00",
+  "tag": "v1.5.3",
+  "version": "1.5.3",
+  "base": "1ea74caa2d8e503aa0223c550e22b98f9bb8de08",
+  "ticket": "cfe6ae46687d4342bd0f92dc8d7ae132eee7551c",
+  "merge": "14e62ebb7979764604b63bfb89c8d5762e0211e3",
+  "releaseCommit": "ffb4f72722e1e420404651d4dab45d536e2c78d7",
+  "archiveBeforeCommit": true,
+  "ticketPush": "Completed",
+  "targetPush": "Completed",
+  "annotatedTagPush": "Completed",
+  "notes": "curated exact archived notes copied by helper",
+  "sourceScope": "Release-only docs/notes/version; no product repair or live rollout",
+  "runtimeValidation": "Prior applicable proof plus release-version checks and unchanged-input audit; known failures retained",
+  "pipelines": "Pending; no duplicate manual dispatch",
+  "completion": "Not complete until all4pipelines/assets/channels and cleanup"
+}
