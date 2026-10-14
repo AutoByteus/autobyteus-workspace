@@ -48,5 +48,12 @@
     "recipient_address": "/software_engineering_team/api_e2e_engineer"
   },
   "reason": "Completed independent source re-review; single most-specific primary pass rule. Later developer single-recipient instruction takes precedence over informational duplicate.",
-  "receipt": "Pending send after artifact commit"
+  "receipt": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /software_engineering_team/api_e2e_engineer.",
+    "target_agent_run_id": "api_e2e_engineer_4b3516b0eb7d448586471bee29383f50"
+  },
+  "reviewCommit": "68fcb74588d502570dc511b46bc6e7918bc538c8",
+  "referenceCount": 453
 }

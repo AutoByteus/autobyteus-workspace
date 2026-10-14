@@ -288,3 +288,9 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   complete435-reference incoming chain plus new review evidence retained. Exact
   rule/confirmed receipt in CRR007 routing evidence. No informational duplicate or
   Delivery forwarding; main Task stays open. No merge/push/tag/release/user-verification claim.
+
+- **Confirmed primary handoff:** review68fcb74588d502570dc511b46bc6e7918bc538c8 delivered
+  to `/software_engineering_team/api_e2e_engineer`, AgentRun
+  `api_e2e_engineer_4b3516b0eb7d448586471bee29383f50`; accepted=true/DELIVERED,
+  453 cumulative references. Single most-specific recipient only; no duplicate
+  informational notification, Delivery handoff or polling.
