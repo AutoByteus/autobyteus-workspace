@@ -6,11 +6,12 @@ import (
 
 	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend"
 	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/config"
+	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker"
 	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform"
 	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/service"
 )
 
-func (s *Service) Reconnect() error {
+func (s *Service) Reconnect(retryConsumed bool) error {
 	var pending Plan
 	if err := s.Store.Read("pending-setup.json", &pending); err == nil {
 		return errors.New("setup incomplete; run reconnect interactively to review/resume")
@@ -63,7 +64,10 @@ func (s *Service) Reconnect() error {
 	if err = platform.EnsureMount(s.Runner, a.Connection); err != nil {
 		return err
 	}
-	return service.NonrootProbe(s.Binary, a.MountRoot, a.StorageID, a.UserUID, a.UserGID, false, s.Lock)
+	if err = service.NonrootProbe(s.Binary, a.MountRoot, a.StorageID, a.UserUID, a.UserGID, false, s.Lock); err != nil {
+		return err
+	}
+	return s.reconnectNodes(a, retryConsumed)
 }
 func (s *Service) Detach(consented bool) error {
 	if !consented {
@@ -141,6 +145,11 @@ func (s *Service) Detach(consented bool) error {
 			return err
 		}
 	}
-	// Source, marker, named volumes, recovery state and private receipts are preserved.
+	for _, node := range a.Nodes {
+		if err = docker.RemoveStartAttempt(s.Store, node); err != nil {
+			return err
+		}
+	}
+	// Source, marker, named volumes, recovery state and private recreation receipts are preserved.
 	return nil
 }

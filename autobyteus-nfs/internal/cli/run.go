@@ -85,7 +85,7 @@ func Run(args []string, release setup.Release) error {
 			if s.Docker != nil {
 				defer s.Docker.Close()
 			}
-			return s.Reconnect()
+			return s.Reconnect(false)
 		})
 	}
 	lock, err := platform.Lock(s.Store.Directory)
@@ -143,7 +143,10 @@ func Run(args []string, release setup.Release) error {
 				return e
 			}
 			fmt.Fprintln(os.Stderr, "Checking saved source and reconnecting; hard NFS may wait for storage.")
-			if err = s.Reconnect(); err != nil {
+			if !o.Yes && !terminal.Confirm("Reconnect saved storage and complete eligible selected-node failed starts, including one retry of consumed attempts? Current restart=no remains a veto") {
+				return errors.New("reconnect declined; no changes")
+			}
+			if err = s.Reconnect(true); err != nil {
 				return err
 			}
 			if err = platform.InstallJob(s.Runner); err != nil {

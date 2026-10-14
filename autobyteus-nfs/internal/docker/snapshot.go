@@ -28,8 +28,9 @@ type Snapshot struct {
 		Networks map[string]Object `json:"Networks"`
 	} `json:"NetworkSettings"`
 	State struct {
-		Running, Paused, Restarting, Dead bool
-		Status                            string
+		Running, Paused, Restarting, Dead, OOMKilled bool
+		Status, Error, StartedAt, FinishedAt         string
+		Pid, ExitCode                                int
 	} `json:"State"`
 }
 

@@ -7,29 +7,10 @@ import (
 	"reflect"
 
 	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/config"
-	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform"
 )
 
 func NodeAttachment(c config.Connection, node string) config.NodeAttachment {
 	return config.NodeAttachment{StorageID: c.StorageID, Node: node, MountRoot: c.MountRoot, Volume: "autobyteus-nfs-" + c.StorageID, DescriptorDirectory: config.PublicDirectory}
-}
-func (c *Client) EnsureVolume(binding config.Connection, a config.NodeAttachment) error {
-	options := map[string]string{"type": "nfs", "device": ":" + binding.Export, "o": "addr=" + binding.Endpoint + ",rw," + platform.MountOptions(binding.Protocol, true) + ",nosharecache"}
-	var actual struct {
-		Driver          string
-		Options, Labels map[string]string
-	}
-	err := c.Call("GET", "/volumes/"+url.PathEscape(a.Volume), nil, &actual)
-	if IsMissing(err) {
-		return c.Call("POST", "/volumes/create", Object{"Name": a.Volume, "Driver": "local", "DriverOpts": options, "Labels": map[string]string{storageLabel: a.StorageID}}, nil)
-	}
-	if err != nil {
-		return err
-	}
-	if actual.Driver != "local" || !reflect.DeepEqual(actual.Options, options) || actual.Labels[storageLabel] != a.StorageID {
-		return errors.New("existing NFS volume has different owner/driver/options; will not replace")
-	}
-	return nil
 }
 
 // QualifyImage refuses customized startup/UID before stopping an existing node.

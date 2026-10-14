@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/config"
+	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker"
 	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform"
 	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/service"
-	"path/filepath"
 )
 
 type Status struct {
@@ -43,51 +43,30 @@ func (s *Service) Status() (Status, error) {
 		return result, err
 	}
 	result.HostReady = true
-	if len(a.Nodes) > 0 && s.Docker == nil {
-		return result, errors.New("host ready, selected Docker daemon unavailable")
+	candidates, err := s.selectedNodes(a)
+	if err != nil {
+		return result, err
 	}
 	for _, node := range a.Nodes {
-		var ref config.NodeAttachment
-		public := config.Store{Directory: filepath.Join(s.Public.Directory, "nodes"), Owner: s.Public.Owner, Public: true}
-		if err = public.Read(node+".json", &ref); err != nil {
-			result.Nodes[node] = "not applied"
+		ref, e := s.nodeReference(a, node)
+		if e != nil {
+			result.Nodes[node] = e.Error()
 			continue
 		}
-		if ref.StorageID != a.StorageID || ref.MountRoot != a.MountRoot || ref.Node != node {
-			result.Nodes[node] = "node reference differs; not ready"
-			continue
-		}
-		if err = s.Docker.CheckDaemon(ref); err != nil {
-			result.Nodes[node] = "daemon/reference check incomplete; not ready: " + err.Error()
-			continue
-		}
-		candidates, err := s.Docker.Discover()
-		if err != nil {
-			return result, err
-		}
-		found := false
-		for _, candidate := range candidates {
-			if candidate.Node() == node {
-				found = true
-				if !candidate.Attached(ref) {
-					result.Nodes[node] = "attachment differs; not ready"
-					break
-				}
-				if !candidate.State.Running {
-					result.Nodes[node] = "attached, stopped (not ready)"
-					break
-				}
-				err = s.Docker.VerifyStarted(candidate.ID, a.MountRoot, true)
-				if err != nil {
-					result.Nodes[node] = "check incomplete: " + err.Error()
-				} else {
-					result.Nodes[node] = fmt.Sprintf("ready; container=%s; networks=%v", candidate.ID, candidate.NetworkIPs())
-				}
-				break
-			}
-		}
+		candidate, found := candidates[node]
 		if !found {
 			result.Nodes[node] = "unavailable"
+			continue
+		}
+		observed := s.Docker.ObserveFailedStart(candidate, a.Connection, ref, s.Store)
+		if observed.State != docker.StartUnchanged {
+			result.Nodes[node] = observed.State + ": " + observed.Reason
+			continue
+		}
+		if e = s.Docker.VerifyStarted(candidate.ID, a.MountRoot, true); e != nil {
+			result.Nodes[node] = "actual API/shared-binding check incomplete"
+		} else {
+			result.Nodes[node] = fmt.Sprintf("ready; container=%s; networks=%v", candidate.ID, candidate.NetworkIPs())
 		}
 	}
 	return result, nil

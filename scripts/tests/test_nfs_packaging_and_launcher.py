@@ -54,6 +54,26 @@ docker() { if [[ "$1" == info ]]; then printf '%s\\n' "$DAEMON"; else printf '%s
             result=subprocess.run(['/bin/bash','-c',prefix+module+commands],env=env,text=True,capture_output=True)
             self.assertNotEqual(result.returncode,0);self.assertIn('not the selected NFS daemon',result.stderr)
 
+    def test_launcher_stop_explains_noop_without_changing_policy(self):
+        module=(ROOT/'scripts/public/docker/autobyteus-docker.d/bash/commands.sh').read_text()
+        with tempfile.TemporaryDirectory(prefix='nfs-stop-unit-') as root:
+            p=Path(root); (p/'node-one.env').write_text('')
+            prefix="""set -euo pipefail
+state_dir() { printf '%s\\n' "$HOME"; }
+load_state() { NODE_NAME=node-one; CONTAINER_NAME=node-one; }
+container_exists() { return 0; }
+log() { printf '%s\\n' "$*"; }
+fail() { exit 1; }
+docker() { printf '%s\\n' "$*" >> "$HOME/calls"; }
+"""
+            q=subprocess.run(['/bin/bash','-c',prefix+module+'\nstop_nodes node-one 0'],
+                env={'HOME':root,'PATH':'/usr/bin:/bin'},capture_output=True,text=True)
+            self.assertEqual(q.returncode,0,q.stderr)
+            self.assertEqual((p/'calls').read_text(),'stop node-one\n')
+            self.assertIn('already-failed/non-running node is a no-op',q.stdout)
+            self.assertIn('docker update --restart=no node-one',q.stdout)
+            self.assertIn('restart policy were kept',q.stdout)
+
     def test_nfs_workflow_build_only_never_pushes_or_publishes(self):
         content=(ROOT/'.github/workflows/release-nfs.yml').read_text()
         self.assertIn('default: false',content)

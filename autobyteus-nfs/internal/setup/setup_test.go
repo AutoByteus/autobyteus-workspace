@@ -40,7 +40,7 @@ func TestBackgroundReconnectDoesNotResumePendingNodeMutation(t *testing.T) {
 		t.Fatal(err)
 	}
 	s := Service{Store: store}
-	if err := s.Reconnect(); err == nil || !strings.Contains(err.Error(), "interactively") {
+	if err := s.Reconnect(false); err == nil || !strings.Contains(err.Error(), "interactively") {
 		t.Fatal(err)
 	}
 }

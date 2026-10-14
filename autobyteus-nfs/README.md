@@ -142,3 +142,21 @@ or provider calls merely because a design review passed.
 
 See [packaging/RELEASE.md](packaging/RELEASE.md) for distribution gates and
 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES) for backend/runtime notices.
+
+### Selected Docker clients after an ordinary host restart
+
+The existing reconnect service completes only a recognized pre-process NFS
+connection-refused start failure on a currently selected, attached client with
+current `unless-stopped` or `always` policy. After fresh daemon-side UUID/access
+proof it starts the **same container ID**, once per failed process incarnation,
+then checks its actual API/shared binding. It does not recreate, pull, change
+policy or restart an unhealthy running process. Unknown startup diagnostics stay
+incomplete. Status does not start clients. A confirmed public `reconnect` (or
+`--yes`) can retry a consumed eligible attempt; background ticks cannot.
+
+A normal Stop of a successfully running `unless-stopped` node remains stopped.
+Docker Stop on an **already-failed, non-running** node (including through the
+launcher) is a no-op and supplies no new stop intent. To durably veto pending
+failed-start completion in that case use `docker update --restart=no <node>`.
+Reconnect never overrides this policy. Docker `always` retains its own restart
+semantics. No private stop-veto file or Docker-private state is used.
