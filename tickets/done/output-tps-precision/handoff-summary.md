@@ -39,7 +39,14 @@ Verified from the evidence, without a user check. See release-deployment-report.
 
 ## Release
 
-The user chose a **beta** on 2026-10-14 ("i think we could release a beta"). See release-deployment-report.md for the tag, pipelines and assets.
+The user chose a **beta** on 2026-10-14 ("i think we could release a a beta"). It was published as **v1.5.4-beta.1**:
+
+- Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.4-beta.1. It is a pre-release with 17 assets.
+- Workflows: Desktop, Android, iOS (TestFlight upload) and Server Docker all succeeded.
+- Docker: `1.5.4-beta.1` and `:beta` are `sha256:6dfe389e…`; `:latest` stays on v1.5.3.
+- Repository: finalized at `origin/personal@8f9cb37d65` (merge `f5bc9b02ef`).
+
+See release-deployment-report.md for the details.
 
 ## Known Limits
 
