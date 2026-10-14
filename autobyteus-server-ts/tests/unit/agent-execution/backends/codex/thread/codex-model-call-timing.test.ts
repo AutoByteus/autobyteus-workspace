@@ -15,7 +15,7 @@ import type { CodexReadyTokenUsageUpdate } from "../../../../../../src/agent-exe
 const repoRoot = path.resolve(__dirname, "../../../../../../..");
 /** Live codex-cli 0.162.1 app-server stdout captured by API/E2E (API-L03/L04), one JSON line per frame. */
 const liveWire = (sample: "codex" | "codex-repeat") =>
-  path.join(repoRoot, `tickets/in-progress/output-tps-precision/evidence/api-e2e/live/${sample}/codex-wire.jsonl`);
+  path.join(repoRoot, `tickets/done/output-tps-precision/evidence/api-e2e/live/${sample}/codex-wire.jsonl`);
 /** Recorded codex-cli 0.161.0 probes (no raw events) from token-meter-accuracy. */
 const probe = (name: string) => path.join(repoRoot, "tickets/done/token-meter-accuracy/probes", name);
 

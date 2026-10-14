@@ -61,11 +61,14 @@ For runtime details and contributor workflow, see:
 
 ## Token Meter
 
-The workspace **Token** tab includes **Output TPS** for the selected exact
-agent: an estimated, last-reported output rate with runtime/model and timestamp.
-It needs two compatible usage reports within one turn, includes intervening
-tools/waits, and is not restored after reload. See
-[Output TPS: method, states and runtime limits](docs/token_meter.md).
+The workspace **Token** tab includes a **TPS** card for the selected exact
+agent: the output speed of that run's latest model call, with the model that
+call reported. The server times each call itself, so even a turn with a single
+call gets a reading; tool time and approval waits are never counted. A reading
+is either generation speed (first streamed output → end) or end-to-end call
+speed (labelled "incl. time to first token"), depending on what the runtime can
+prove. Very short calls are skipped, and TPS is not kept after reload. See
+[TPS: what it measures, reading the card and methods per runtime](docs/token_meter.md).
 
 ## Server Modes
 
