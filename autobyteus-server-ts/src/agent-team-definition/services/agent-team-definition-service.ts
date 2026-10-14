@@ -38,7 +38,7 @@ export type AgentTeamAdmissionEntry = Readonly<{
   issue: DefinitionLoadIssue | null;
   definitionPath: string;
   packageRoot: string;
-  sourceClass: "server_data" | "implementation_repository" | "external_read_only";
+  sourceClass: "server_data" | "implementation_repository" | "registered_package";
 }>;
 
 type AgentTeamDefinitionServiceOptions = {

@@ -54,7 +54,12 @@ sources, but they still cannot contain Teams.
 | Shared `agent-teams/<id>/` | Standalone reusable Team | Shared Team provider |
 | Application `applications/<app>/agent-teams/<id>/` | Application-owned Team, also inspectable in the Team UI | Owning writable application bundle |
 | Org package-owned Team | Exact scoped read, excluded from public Team catalog | Existing Org-owned package authority; no independent write permission inferred |
-| Registered external package root | Admitted when supported Team fields and scoped references are valid | Read-only to this repository/process unless that package owner updates it |
+| Registered agent package root (local folder or GitHub install) | Admitted when supported Team fields and scoped references are valid | Writable like the package's Agents: saves and deletes go into the package folder (source class `registered_package`, owner `package_author`) through the same atomic save, revision check and filesystem check; a later GitHub package update overwrites local edits |
+
+`assertDefinitionSourceWritableByRuntime` lets the app write `server_data` and
+`registered_package` sources and refuses only `implementation_repository`
+sources. A folder the disk will not write still fails with "… is read-only at
+source path …". An Org-owned Team is still changed only through its Org's save.
 
 Org-owned Team exact reads and their Team-local Agent reads share the indexed
 owner/source lookup. An unavailable owner does not fall back to a same-named

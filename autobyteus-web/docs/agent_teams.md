@@ -45,6 +45,11 @@ registration is not a count of available Teams. The UI must not offer deeper
 configured composition. See the [Team input and write contract](../../autobyteus-server-ts/docs/modules/agent_team_definition.md).
 
 Shared Teams can be created, updated, and deleted through the shared provider.
+Teams from a registered agent package (a local folder or a GitHub install) are
+edited, saved and deleted like the package's Agents: the save, including the
+default runtime/model, is written into the package folder. Edits to a GitHub
+install are overwritten by a later package update. Org-owned Teams are changed
+through their Org.
 Application-owned Teams are inspectable and editable only when the owning
 bundle source is writable; generic deletion does not bypass source ownership.
 Team-local private Agents remain discoverable through their owning Team detail.

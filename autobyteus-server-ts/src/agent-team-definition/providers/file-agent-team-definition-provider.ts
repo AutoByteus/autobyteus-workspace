@@ -63,7 +63,7 @@ export class FileAgentTeamDefinitionProvider {
       return resolvedRoot === candidate || resolvedRoot.startsWith(`${candidate}${path.sep}`);
     });
     return createDefinitionSourceDescriptor({
-      sourceClass: serverRoots.has(resolvedRoot) ? "server_data" : external ? "external_read_only" : "implementation_repository",
+      sourceClass: serverRoots.has(resolvedRoot) ? "server_data" : external ? "registered_package" : "implementation_repository",
       packageRoot: source.rootPath,
       definitionPath: source.teamDir,
     });

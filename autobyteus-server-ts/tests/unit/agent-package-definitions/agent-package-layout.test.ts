@@ -9,7 +9,7 @@ import type { RegisteredPackageRoot } from "../../../src/agent-package-definitio
 const rootPath = path.resolve("/pkg");
 const root: RegisteredPackageRoot = {
   rootPath,
-  sourceClass: "external_read_only",
+  sourceClass: "registered_package",
   kindDirs: {
     agents: path.join(rootPath, "agents"),
     "agent-teams": path.join(rootPath, "agent-teams"),

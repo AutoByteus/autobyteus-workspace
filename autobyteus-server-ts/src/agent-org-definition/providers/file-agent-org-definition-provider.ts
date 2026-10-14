@@ -38,7 +38,7 @@ export class FileAgentOrgDefinitionProvider {
       return root === resolved || root.startsWith(`${resolved}${path.sep}`);
     });
     return createDefinitionSourceDescriptor({
-      sourceClass: root === serverRoot ? "server_data" : external ? "external_read_only" : "implementation_repository",
+      sourceClass: root === serverRoot ? "server_data" : external ? "registered_package" : "implementation_repository",
       packageRoot: source.root,
       definitionPath: source.packagePath,
     });
