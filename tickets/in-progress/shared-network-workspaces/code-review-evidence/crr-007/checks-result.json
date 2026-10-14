@@ -1,0 +1,182 @@
+[
+  {
+    "name": "actionlint-version",
+    "argv": [
+      "/opt/homebrew/bin/actionlint",
+      "-version"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.024
+  },
+  {
+    "name": "actionlint",
+    "argv": [
+      "/opt/homebrew/bin/actionlint",
+      "-shellcheck=",
+      "-pyflakes=",
+      ".github/workflows/release-nfs.yml"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.007
+  },
+  {
+    "name": "python-packaging",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "scripts/tests/test_nfs_release_workflow.py",
+      "scripts/tests/test_nfs_engine_packaging.py",
+      "scripts/tests/test_nfs_installer_fixture.py",
+      "scripts/tests/test_nfs_packaging_and_launcher.py",
+      "-v"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 0,
+    "expected": 0,
+    "seconds": 4.686
+  },
+  {
+    "name": "publish-refusal",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "autobyteus-nfs/packaging/release.py",
+      "--check-publish"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.254
+  },
+  {
+    "name": "source-hash",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "autobyteus-nfs/packaging/release.py",
+      "--source-hash"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.26
+  },
+  {
+    "name": "candidate-input-source-hash",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "autobyteus-nfs/packaging/release.py",
+      "--source-hash",
+      "--engine-manifest",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-005/built-engine-manifest.json"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.258
+  },
+  {
+    "name": "old-workflow-control",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-c",
+      "import pathlib,unittest;from scripts.tests import test_nfs_release_workflow as t;t.WORKFLOW=pathlib.Path('/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/before.yml');r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(t.ReleaseWorkflowGatesTest));raise SystemExit(not r.wasSuccessful())"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.137
+  },
+  {
+    "name": "missing-binary-result-control",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-c",
+      "import pathlib,unittest;from scripts.tests import test_nfs_release_workflow as t;t.WORKFLOW=pathlib.Path('/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/without-binary-result.yml');r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(t.ReleaseWorkflowGatesTest));raise SystemExit(not r.wasSuccessful())"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.139
+  },
+  {
+    "name": "source-whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check",
+      "b1747fbdc3fe41f8aa8413f7e110a42ce9687704",
+      "0d244f40496b368cbe1613f75d6cd21bb444c58d",
+      "--",
+      ".github/workflows/release-nfs.yml",
+      "scripts/tests/test_nfs_release_workflow.py"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.02
+  }
+]

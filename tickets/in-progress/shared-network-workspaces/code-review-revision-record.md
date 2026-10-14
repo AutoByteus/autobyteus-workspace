@@ -216,3 +216,75 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   `implementation_engineer_2c60a2b9fdf1490c818f25289337aa21`; accepted=true/DELIVERED.
   Only the most-specific source Local Fix recipient notified,411 references.
   No duplicate notification, API forwarding or polling.
+
+### CRR-007 — IR006 publication gating correction accepted; source Pass only
+
+- Date2026-10-14; canonical [code-review-report.md](code-review-report.md) updated
+  to **Pass**, entry **Implementation Review**, round7, **Targeted Delta Review**.
+  Prior **CRR006 Fail / Local Fix CR004 P2 /96/100** reviewed first. Only the same
+  workflow control path and its new regression changed (two non-ticket paths);
+  no owner/interface/data shape or engine/runtime change. Unaffected CRR006 full
+  structural audit/checklist carried after independent identity/impact review.
+- Input0d244f40496b368cbe1613f75d6cd21bb444c58d;
+  sourceeb7934072a1f98832b7b6330a1bc6a7f348fd93d;
+  baselineb1747fbdc3fe41f8aa8413f7e110a42ce9687704.
+  **Large/High Reviewed** retained. Approved SR018 / Ready SR020 /
+  ARCH-REV004 / IR006 / API-REV002; DR **N/A — not performed**.
+  No successful API test-code review triggered.
+
+#### Prior Finding Resolution
+
+| Finding | Prior status | Current status | Verification |
+| --- | --- | --- | --- |
+| CR-004 / CAND008 | P2 Local Fix open, CRR006 | **Resolved at source/contract boundary** | Four actual !cancelled() job predicates require all applicable needs success; publication bridge permits only exact skipped rebuild. Complete workflow/diff + primary GitHub contract; current five-method source-expression regression passes, old-condition and omitted-binary-result negative controls fail intended assertions. No hosted Actions claim |
+| CR-003 / API-F002 | Source remedy accepted, API pending | **Source-accepted retained; API-F002 OPEN** | Package recipe/install/runtime unchanged;11 actual retained candidate files rehashed; SR020 prototype/IR005 helper not independent public setup/reconnect proof |
+| CR-002 / API-F001 | Scoped independent Mac resolution | **Remains resolved at tested nativeMac cold-create scope** | Untouched startup source, API002 two fresh public passes retained; not peer/reboot/physical qualification |
+| CR-001 | Resolved | **Remains resolved** | Untouched new-directory mode/trust source and prior actual077/nonroot proof |
+| FUP001 | PM-owned out-of-scope follow-up | **Unchanged** | No duplicate notification/task/patch/penalty; historical current-source Nuxt/Electron failures and removed-candidate green distinction retained |
+
+- Independent scenario remains authorized SR020 retained-candidate publication
+  after qualification/user/release gates, not permission to release now. Prepare
+  -> deliberate package skip -> verified candidate -> image -> signed binary
+  matrix -> final qualification/publication. Explicit status predicates correct
+  skip propagation without admitting failed/cancelled applicable needs or unwanted
+  build-only publication. No new mechanism owner or requirement change.
+- Score **10/10,100/100**: readiness/correctness8->10 solely verified CR004
+  resolution; remaining eight10 categories revalidated/carried. No new finding.
+  Source quality is NOT API confidence, all-green repository, hosted scheduler,
+  physical-system or release proof. Supported-scenario/material-premise gates Pass.
+- Personal checks:1115 prior source/authority/history paths equal baseline/current,
+  435 incoming refs exist,11 candidate hashes/sizes preserved, implementation
+  history prefix preserved. Workflow277->283 nonempty (8add/2remove), cumulative
+  config+283 explicitly reviewed as one pipeline; test132 nonempty size-exempt.
+  Nine commands all expected: actionlint1.7.11 Pass (shellcheck/pyflakes disabled),
+  Python17enumerated/16pass/1Go-parent-only skip, default publish refusal, two hashes,
+  changed-source whitespace; scratch old-workflow5methods/10assertion failures and
+  missing-binary-result5methods/6assertion failures. No parser errors, no production
+  mutations. No Go/VM/Docker/hosted/runtime/UI/broad suites rerun.
+- Evidence [checks/limits](code-review-evidence/crr-007/checks-and-limits.md),
+  [delta audit](code-review-evidence/crr-007/delta-audit.json),
+  [resolution](code-review-evidence/crr-007/workflow-resolution.json),
+  [commands](code-review-evidence/crr-007/checks-result.json), cleanup and cumulative
+  package index. Owned home/tmp/control files removed, subprocesses complete.
+  Five preexisting dist trees and ignored IR005 candidate untouched; no source/test
+  fix, delegated worker, VM/app/node/mount/credential/provider/network change.
+- Current default source aggregate4568593b99bb3dff263e9824ceb7176e04a95ec90e3cd14a9f7421b4e43055ac;
+  with unchanged measured arm64 manifest5563645d23aaac13aaa26948490d68dfc12fef31775bb66156185f9052ab0acc.
+  Workflow is hashed. Old retained CLI/release metadata byte-identical but carry
+  prior aggregate, NOT new qualification. Reuse exact engine packages/source/
+  notices; generate current CLI/metadata and record identities before API checks.
+- API002 **Fail57.14%/broader Required** and API-F002 open retained. Next fresh PUBLIC
+  Ubuntu24.04.5/ext4/kernel7.0.0-38/defaultY/nonroot1000:109/no groups/nonempty source/
+  hard4.1 create+reconnect FIRST, with bytes/UUID/modes/job and preservation; no
+  manual engine preinstall or probe bypass. Then full both-OS native/managedDocker
+  clients, Linux native/Docker storage, peer/lifecycle/preservation/locks/Git,
+  actual native tools/unread linked assets/peerclose/restore/modes, mounted healthy
+  desktop previews, independent physicalMac/Linux/Docker and docs/user/release gates.
+  Hosted workflow/signing, native amd64 engine/public installer still unexecuted.
+  Only MacDocker STORAGE deferred; separate peer NAT limitation unchanged.
+  D001/DEC015 deferred/not fixed; IMP-D001 independent source Update-Remove/private
+  current-source links/AGY/local unchanged. Default unqualified Guide intentional.
+- Routing: fresh most-specific implementation-source Pass rule to API owner only;
+  complete435-reference incoming chain plus new review evidence retained. Exact
+  rule/confirmed receipt in CRR007 routing evidence. No informational duplicate or
+  Delivery forwarding; main Task stays open. No merge/push/tag/release/user-verification claim.
