@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "node",
+    "tickets/in-progress/claude-interrupt-resume-fixture-types/evidence/design-recovery/probe-ready-state-typing.cjs"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types",
+  "compilerCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts",
+  "environment": "PATH/private HOME/TMPDIR only; compiler cwd matches pnpm -C server; virtual readFile bytes; unchanged flags/full graph; no source write/child/app/model"
+}

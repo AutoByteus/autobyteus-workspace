@@ -1,0 +1,4 @@
+Project artifact-hygiene predicates against full proposed terminal receipt tree: Pass
+Paths: 61458
+Longest: 200
+No checkout-hostile name, raw xcresult or downloaded artifact zip introduced.

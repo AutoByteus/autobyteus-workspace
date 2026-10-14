@@ -1,0 +1,11 @@
+Created metadata-only FileSystemWorkspace at /tmp/resume-preview-investigation-OpPOkh.
+Created WorkspaceFileExplorer for investigation-test-owned (isolated-investigation).
+Starting directory traversal for: '/tmp/resume-preview-investigation-OpPOkh' with max_depth=null
+Directory traversal for '/tmp/resume-preview-investigation-OpPOkh' completed in 0.0040 seconds.
+FileNameIndexer refreshing snapshot index...
+FileNameIndexer refreshed snapshot index with 1 entries
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+[Search] FuzzysortSearchStrategy completed in 0.69ms, found 1 results (total: 0.98ms)
+{"runtimeModules":"/app/autobyteus-server-ts/dist","root":"/tmp/resume-preview-investigation-OpPOkh","query":"resume","matches":["/tmp/resume-preview-investigation-OpPOkh/job-applications/bit-capital-ai-engineer-2026/Yu_Zheng_Resume_2026_Application.pdf"],"absoluteSearchResultRejected":true,"relativeEquivalentAccepted":true,"watched":false}
+Closing FileSystemWorkspace investigation-test-owned
+cleanup: test-owned workspace removed, no server started, no live requests or data mutations

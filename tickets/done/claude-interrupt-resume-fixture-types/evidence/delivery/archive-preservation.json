@@ -1,0 +1,15 @@
+{
+  "sourceRevision": "dc2695cf968d15939b4b945a015fe465eb249605",
+  "ticketFileCount": 205,
+  "allTicketFilesPreserved": true,
+  "sourcePaths": [
+    "autobyteus-server-ts/package.json",
+    "autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+    "autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs",
+    "autobyteus-server-ts/tsconfig.claude-interrupt-resume-e2e.json",
+    "pnpm-lock.yaml"
+  ],
+  "archiveSha256": "801d691a47ba309cfb87899499fbd2be017550a21c8eec346ab17a667a60e3d7",
+  "onlyUntrackedBuildOutputs": true,
+  "cleanupSafe": true
+}

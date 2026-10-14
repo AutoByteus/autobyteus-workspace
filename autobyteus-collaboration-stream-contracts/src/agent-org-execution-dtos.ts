@@ -67,6 +67,39 @@ export const collaborationMemberLaunchSource = (
   member: MemberLaunchDto,
 ): CollaborationLaunchConfigurationSourceDto | null => member.launchSource ?? team.defaultLaunchSource ?? null;
 
+/**
+ * The user's model choice for one delegated copy or collaborator instance: it replaces only the
+ * model and its settings. Absent when the user made no choice (every older record).
+ */
+export const userLaunchSelectionDtoSchema = z.object({
+  llmModelIdentifier: nonEmptyStringSchema,
+  llmConfig: z.record(z.string(), jsonValueSchema).nullable(),
+  selectedAt: timestamp,
+}).strict();
+export type UserLaunchSelectionDto = Readonly<z.infer<typeof userLaunchSelectionDtoSchema>>;
+
+/**
+ * The single launch rule of a copy or collaborator agent (mirrors the server's
+ * `effectiveCopyAgentLaunch`): its own choice, else (when it follows its Team) the Team's choice,
+ * else its started launch. `selected` tells which choice applied.
+ */
+export const collaborationCopyAgentLaunch = (input: Readonly<{
+  started: LaunchConfigurationDto;
+  followsTeam?: boolean;
+  teamSelection?: UserLaunchSelectionDto | null;
+  agentSelection?: UserLaunchSelectionDto | null;
+}>): Readonly<{ launch: LaunchConfigurationDto; selected: "agent" | "team" | null }> => {
+  const selection = input.agentSelection ?? (input.followsTeam ? input.teamSelection ?? null : null);
+  if (!selection) return { launch: input.started, selected: null };
+  return {
+    launch: { ...input.started, llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig },
+    selected: input.agentSelection ? "agent" : "team",
+  };
+};
+
+/** A recorded Team member follows its Team's launch (and choice) iff it records no own launch. */
+export const collaborationMemberFollowsTeam = (member: MemberLaunchDto): boolean => member.launchConfiguration === undefined;
+
 /** The definition snapshot of a task copy started from the catalog (absent for every other copy). */
 export type TaskAgentExecutionSourceDto = Readonly<{
   kind: "agent";
@@ -89,11 +122,13 @@ type TaskAgentExecutionDto = Readonly<{
   delegatorAgentRunId?: string;
   startedAt: string;
   source?: TaskAgentExecutionSourceDto;
+  userLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskTeamAgentExecutionDto = Readonly<{
   address: string;
   agentRunId: string;
   platformAgentRunId: string | null;
+  userLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskTeamNestedExecutionDto = Readonly<{
   address: string;
@@ -111,12 +146,15 @@ type TaskTeamExecutionDto = Readonly<{
   delegatorAgentRunId?: string;
   startedAt: string;
   source?: TaskTeamExecutionSourceDto;
+  userTeamLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 
 const handoff = z.object({ from: agentAddressSchema, to: agentAddressSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
 const launchSource = collaborationLaunchConfigurationSourceDtoSchema.optional();
 const memberLaunch = { launchConfiguration: agentOrgLaunchConfigurationDtoSchema.optional(), launchSource };
+const agentSelection = { userLaunchSelection: userLaunchSelectionDtoSchema.optional() };
+const teamSelection = { userTeamLaunchSelection: userLaunchSelectionDtoSchema.optional() };
 const taskAgentSource: z.ZodType<TaskAgentExecutionSourceDto> = z.object({
   kind: z.literal("agent"), agentDefinitionId: nonEmptyStringSchema, launchConfiguration: agentOrgLaunchConfigurationDtoSchema,
   launchSource,
@@ -129,16 +167,16 @@ const taskTeamSource: z.ZodType<TaskTeamExecutionSourceDto> = z.object({
 }).strict();
 const taskAgent: z.ZodType<TaskAgentExecutionDto> = z.object({
   address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
-  delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource.optional(),
+  delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource.optional(), ...agentSelection,
 }).strict();
 const taskTeamMember: z.ZodType<TaskTeamMemberExecutionDto> = z.lazy(() => z.union([
-  z.object({ address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText }).strict(),
+  z.object({ address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText, ...agentSelection }).strict(),
   z.object({ address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember), taskExecutions: z.array(taskExecution) }).strict(),
 ]));
 const taskTeam: z.ZodType<TaskTeamExecutionDto> = z.lazy(() => z.object({
   address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember),
   taskExecutions: z.array(taskExecution), delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp,
-  source: taskTeamSource.optional(),
+  source: taskTeamSource.optional(), ...teamSelection,
 }).strict());
 const taskExecution: z.ZodType<TaskExecutionDto> = z.lazy(() => z.union([taskAgent, taskTeam]));
 /** Shared by every collaboration root view (Org and Agent roots). */
@@ -161,6 +199,18 @@ export const taskExecutionsClosedEventDtoSchema = z.object({
 export const taskExecutionsReopenedEventDtoSchema = z.object({
   kind: z.literal("task_executions_reopened"), task_executions: z.array(taskExecutionReferenceDtoSchema).min(1),
 }).strict();
+/**
+ * Live: the user's model choices of these delegated copies or collaborators were saved (DS-001).
+ * Each names one record by its run ID (unique in the tree) with its choice as now recorded.
+ */
+export const delegatedLaunchSelectionsChangedEventDtoSchema = z.object({
+  kind: z.literal("delegated_launch_selections_changed"),
+  selections: z.array(z.union([
+    z.object({ agentRunId: nonEmptyStringSchema, selection: userLaunchSelectionDtoSchema }).strict(),
+    z.object({ teamRunId: nonEmptyStringSchema, selection: userLaunchSelectionDtoSchema }).strict(),
+  ])).min(1),
+}).strict();
+export type DelegatedLaunchSelectionsChangedEventDto = Readonly<z.infer<typeof delegatedLaunchSelectionsChangedEventDtoSchema>>;
 
 const configuredTeam = z.object({
   address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
@@ -187,19 +237,19 @@ export const collaboratorEntryDtoSchema = z.discriminatedUnion("kind", [
     kind: z.literal("agent"), address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema,
     agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
     launchConfiguration: agentOrgLaunchConfigurationDtoSchema, launchSource,
-    addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema,
+    addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema, ...agentSelection,
   }).strict(),
   z.object({
     kind: z.literal("agent_team"), address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
     teamRunId: nonEmptyStringSchema, coordinatorAddress: agentAddressSchema,
     members: z.array(z.object({
       address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema,
-      agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText, ...memberLaunch,
+      agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText, ...memberLaunch, ...agentSelection,
     }).strict()).min(1),
     handoffs: z.array(handoff), defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
     defaultLaunchSource: launchSource,
     taskExecutions: z.array(taskExecution),
-    addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema,
+    addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema, ...teamSelection,
   }).strict(),
 ]);
 export type CollaboratorEntryDto = Readonly<z.infer<typeof collaboratorEntryDtoSchema>>;
@@ -252,6 +302,7 @@ export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("collaborator_added"), collaborator: collaboratorEntryDtoSchema }).strict(),
   taskExecutionsClosedEventDtoSchema,
   taskExecutionsReopenedEventDtoSchema,
+  delegatedLaunchSelectionsChangedEventDtoSchema,
 ]);
 
 export type AgentOrgExecutionTreeDto = Readonly<z.infer<typeof agentOrgExecutionTreeDtoSchema>>;

@@ -1,0 +1,14 @@
+
+> autobyteus@1.5.3-beta.1 test:e2e:search-pdf-electron /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web
+> node tests/e2e/search-pdf-electron-probe.mjs --skip-build --output-dir ../tickets/in-progress/resume-pdf-search-preview/evidence/api-electron-run03 --ledger-file /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-test-case-ledger.md
+
+API-006: Started
+API-006: Pass
+API-002: Started
+API-002: Pass
+API-003: Started
+API-003: Checkpoint actual packaged2page PDF rendered through protected200 bytes
+API-003: Pass
+API-007: Started
+API-007: Pass
+{"cases":{"API-006":"Pass","API-002":"Pass","API-003":"Pass","API-007":"Pass"},"cleanup":{"stop":{"instanceId":"iso-34083-efbb","wasRunning":true,"forced":false,"dataRoot":"/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-XTXCaA","dataRootRemoved":true,"controlPortReleased":true,"serverPortReleased":true,"logPath":null},"list":{"instances":[]},"dataRootRemoved":true,"cdpClosed":true,"fixtureRemoved":true}}

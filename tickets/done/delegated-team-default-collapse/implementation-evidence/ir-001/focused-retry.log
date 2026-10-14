@@ -1,0 +1,57 @@
+
+> autobyteus@1.5.3-beta.3 test:nuxt /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/agentRunCollaborationDisclosure.spec.ts components/workspace/history/__tests__/AgentRunTaskRowsDisclosure.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web
+
+stderr | stores/__tests__/agentRunCollaborationDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/AgentRunTaskRowsDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/AgentRunTaskRowsDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunCollaborationDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/agentRunCollaborationDisclosure.spec.ts (4 tests | 1 failed) 38ms
+   ✓ standalone delegated Team disclosure > a fresh stored manager lists seven collapsed Teams, with all 42 child contexts intact 7ms
+   ✓ standalone delegated Team disclosure > exact host/Team choices survive stored refresh/reselection and new copies do not open 7ms
+   ✓ standalone delegated Team disclosure > a fresh frontend store after restart has no earlier manual choices 4ms
+   × standalone delegated Team disclosure > live snapshot, collaborator addition and reconnect preserve disclosure without losing event/selection behavior 19ms
+     → {"phase":"reopen_required","error":"(0 , useRunHistoryStore)(...).resolveWorkspaceMetadataByRootPath is not a function","storeError":null,"closed":[],"sockets":1}: expected 'software-team-2-member-0' to be null
+ ✓ components/workspace/history/__tests__/AgentRunTaskRowsDisclosure.spec.ts (4 tests) 191ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentRunCollaborationDisclosure.spec.ts > standalone delegated Team disclosure > live snapshot, collaborator addition and reconnect preserve disclosure without losing event/selection behavior
+AssertionError: {"phase":"reopen_required","error":"(0 , useRunHistoryStore)(...).resolveWorkspaceMetadataByRootPath is not a function","storeError":null,"closed":[],"sockets":1}: expected 'software-team-2-member-0' to be null
+
+- Expected: 
+null
+
++ Received: 
+"software-team-2-member-0"
+
+ ❯ stores/__tests__/agentRunCollaborationDisclosure.spec.ts:101:292
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 7 passed (8)
+   Start at  06:18:18
+   Duration  11.68s (transform 6.22s, setup 19.30s, collect 595ms, tests 229ms, environment 1.43s, prepare 805ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -225,6 +225,17 @@ export class FlatTeamExecutionManager {
       : this.taskTeams.tryShutDownIfQuiet(reference.teamRunId);
   }
 
+  shutDownDirectTaskExecutionForUser(reference: TaskExecutionReference): Promise<boolean> {
+    this.assertActive();
+    return "agentRunId" in reference
+      ? this.taskAgents.shutDownForUser(reference.agentRunId)
+      : this.taskTeams.shutDownForUser(reference.teamRunId);
+  }
+
+  getRetainedAgentControl(agentRunId: string): FlatTeamAgentExecutionHandle | null {
+    return this.isActive() ? this.getDirectAgent(agentRunId) : null;
+  }
+
   /** The caller owns this entire stamped assembly; not the outer root or a borrowed host. */
   cancelRuntimeActivation(): void {
     this.taskTeams.cancelRestorations();

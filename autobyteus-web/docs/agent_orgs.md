@@ -55,6 +55,18 @@ independently launchable and keep their own coordinator and Team-local handoffs.
   Apollo response metadata such as `__typename` is not echoed into input.
   An omitted optional update remains omitted rather than resetting stored intent.
 
+### Mutation Response And Catalog Cache Contract
+
+Create and update share `AgentOrgDefinitionFields`. It selects the catalog's
+`loadIssues` entries with `kind`, `definitionId`, `name`, `code`, `reason`,
+`definitionPath`, `packageRoot`, and `usingLastGood`. The existing store can
+therefore publish complete mutation responses into the full catalog cache;
+an older normalized row is not a substitute for a complete update response.
+Healthy saves return the server's explicit empty list. Diagnostic values are
+preserved rather than replaced with synthetic defaults or hidden, without
+changing warning generation, expected revisions, input omission, members,
+handoffs, save navigation, or cache ownership.
+
 Canonical `org-config.json` and `team-config.json` output has no `schemaVersion`.
 Org input validation remains strict. Referenced Team inputs use the supported-field
 reader described in [Agent Teams](./agent_teams.md); unused metadata and absent
@@ -203,9 +215,13 @@ Initial settings follow one rule for every start page:
   [Member Launch Defaults](./agent_teams.md#member-launch-defaults).
 - **+:** the source run's settings and member overrides. A placed team keeps its
   workspace only where it differs from the Org's. If the run cannot be read or
-  copied, the Org defaults are used.
+  copied, the Org defaults are used. A copied start is not seeded.
 - **Heading switcher:** the carried workspace, approval and model config; member
-  overrides reset.
+  overrides reset. Then the placed teams and agents are seeded and pinned exactly
+  as on **Run** (`agentOrgLaunchDraftStore.prepare`: a carried model on a start
+  that is not copied runs `seedMembers`). Switching from this page to a Team seeds
+  that Team's members the same way (see
+  [Member Launch Defaults](./agent_teams.md#member-launch-defaults)).
 
 Copied and carried settings are kept as they are; their runtimes' availability
 and model catalogs (the Org card's and every override's) load before Run is

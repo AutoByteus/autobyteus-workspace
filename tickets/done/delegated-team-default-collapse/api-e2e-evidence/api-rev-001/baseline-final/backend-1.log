@@ -1,0 +1,690 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-server-ts
+App data directory: /tmp/delegated-team-collapse-JYNEzM
+Config file path: /tmp/delegated-team-collapse-JYNEzM/.env
+Loading environment from: /tmp/delegated-team-collapse-JYNEzM/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../tmp/delegated-team-collapse-JYNEzM/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:37219
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:37219
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/delegated-team-collapse-JYNEzM
+DB DIRECTORY: /tmp/delegated-team-collapse-JYNEzM/db
+LOGS DIRECTORY: /tmp/delegated-team-collapse-JYNEzM/logs
+DOWNLOAD DIRECTORY: /tmp/delegated-team-collapse-JYNEzM/download
+MEMORY DIRECTORY: /tmp/delegated-team-collapse-JYNEzM/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/tmp/delegated-team-collapse-JYNEzM/db/development.db"
+
+SQLite database development.db created at file:/tmp/delegated-team-collapse-JYNEzM/db/development.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:70950) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/delegated-team-collapse-JYNEzM/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/temp_workspace.
+Initialized TempWorkspace at /tmp/delegated-team-collapse-JYNEzM/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+{"level":30,"time":1791874054051,"pid":70950,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:40191"}
+{"level":30,"time":1791874054094,"pid":70950,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:37219"}
+[2026-10-13T06:47:34.094Z] [INFO] [server.runtime] Server listening on 127.0.0.1:37219
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: solution-designer
+Agent Definition created successfully with ID: architecture-reviewer
+Agent Definition created successfully with ID: implementation-engineer
+Agent Definition created successfully with ID: code-reviewer
+Agent Definition created successfully with ID: api-e2e-engineer
+Agent Definition created successfully with ID: delivery-engineer
+Agent Definition created successfully with ID: project-task-manager-probe
+Agent Team Definition created successfully with ID: software-engineering-team-probe
+Agent Team Definition created successfully with ID: late-engineering-team-probe
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Created and registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+AGY compaction detection off for run project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+AGY compaction detection off for run project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d
+Created agent session 13e38c7d-3109-40cf-b4ee-1501320b55e7 for run project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d
+Agent WebSocket connected: session=13e38c7d-3109-40cf-b4ee-1501320b55e7, run=project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d
+Agent websocket attached for run project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8
+Created agent session 3ca1e910-a134-4630-a28c-0b07a90cff6d for run project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8
+Agent WebSocket connected: session=3ca1e910-a134-4630-a28c-0b07a90cff6d, run=project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8
+{"level":40,"time":1791874065282,"pid":70950,"hostname":"74ff273d28fe","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_deaxxG0-26I4P_3TwlfJA72457YTPPnazNun6_4R9wE","statusCode":405,"elapsedMs":0.27445799112319946,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+AGY compaction detection off for run solution_designer_6e0d35ebeb64460bb04eb662434859a6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791874065544,"pid":70950,"hostname":"74ff273d28fe","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_deaxxG0-26I4P_3TwlfJA72457YTPPnazNun6_4R9wE","statusCode":405,"elapsedMs":0.25745803117752075,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+AGY compaction detection off for run solution_designer_99af3f138ea044ff88dd445b1588e59a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791874065763,"pid":70950,"hostname":"74ff273d28fe","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_deaxxG0-26I4P_3TwlfJA72457YTPPnazNun6_4R9wE","statusCode":405,"elapsedMs":0.187375009059906,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+AGY compaction detection off for run solution_designer_c1126740f0bc4a2abeb48734d8dfa5a4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791874065980,"pid":70950,"hostname":"74ff273d28fe","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_deaxxG0-26I4P_3TwlfJA72457YTPPnazNun6_4R9wE","statusCode":405,"elapsedMs":0.14691704511642456,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+AGY compaction detection off for run solution_designer_ce918e01eaf44c12b2e1b364d0365195: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791874066201,"pid":70950,"hostname":"74ff273d28fe","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_deaxxG0-26I4P_3TwlfJA72457YTPPnazNun6_4R9wE","statusCode":405,"elapsedMs":0.14604198932647705,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+AGY compaction detection off for run solution_designer_9ccbe249ed0e43ceabb4e2db8016195f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791874066424,"pid":70950,"hostname":"74ff273d28fe","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_deaxxG0-26I4P_3TwlfJA72457YTPPnazNun6_4R9wE","statusCode":405,"elapsedMs":0.1699170470237732,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+AGY compaction detection off for run solution_designer_172cbe11e0e94899930109b0f61fc7a4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791874066644,"pid":70950,"hostname":"74ff273d28fe","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_deaxxG0-26I4P_3TwlfJA72457YTPPnazNun6_4R9wE","statusCode":405,"elapsedMs":0.1725829839706421,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+AGY compaction detection off for run solution_designer_4df76473a5cc47e298b9fc27fb39b8ce: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791874067134,"pid":70950,"hostname":"74ff273d28fe","reqId":"req-v","method":"GET","url":"/mcp/agent-tools/agtrun_lPVfDNYQ15Y_xs_XJL6CfQd9uETw9_fJO5FPBdYVAek","statusCode":405,"elapsedMs":0.15891700983047485,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+AGY compaction detection off for run solution_designer_72c4e362b5e34ee6a5032c6060122c7c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/implementation_engineer_ea4a51748d16411499ece4480ce8de41/raw_traces_active.jsonl
+{"level":40,"time":1791874067421,"pid":70950,"hostname":"74ff273d28fe","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_deaxxG0-26I4P_3TwlfJA72457YTPPnazNun6_4R9wE","statusCode":405,"elapsedMs":0.2509160041809082,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+AGY compaction detection off for run implementation_engineer_ea4a51748d16411499ece4480ce8de41: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/implementation_engineer_ca28594f39ce434786c6008a5399ebf3/raw_traces_active.jsonl
+{"level":40,"time":1791874067532,"pid":70950,"hostname":"74ff273d28fe","reqId":"req-13","method":"GET","url":"/mcp/agent-tools/agtrun_deaxxG0-26I4P_3TwlfJA72457YTPPnazNun6_4R9wE","statusCode":405,"elapsedMs":0.1565839648246765,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/delegated-team-collapse-JYNEzM/workspace
+Created metadata-only FileSystemWorkspace at /tmp/delegated-team-collapse-JYNEzM/workspace.
+Reusing registered workspace ID: agent_ws_70b5d06964528afd72a4efb36e034b76eb06ef9a4b4f95e2600ce7b46f7c88b0
+AGY compaction detection off for run implementation_engineer_ca28594f39ce434786c6008a5399ebf3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 13e38c7d-3109-40cf-b4ee-1501320b55e7
+Agent WebSocket disconnected: 13e38c7d-3109-40cf-b4ee-1501320b55e7
+Closed agent session 3ca1e910-a134-4630-a28c-0b07a90cff6d
+Agent WebSocket disconnected: 3ca1e910-a134-4630-a28c-0b07a90cff6d
+Created terminal session 80d46adb-6f12-4d14-9f78-3a547bff3a28 using backend PtySession for target /tmp/delegated-team-home-wRRVPg
+Terminal WebSocket connected: 80d46adb-6f12-4d14-9f78-3a547bff3a28
+Terminal websocket attached for cwd /tmp/delegated-team-home-wRRVPg
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/architecture_reviewer_4fdee311c56c4f548554074428b3f99e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/implementation_engineer_75360d2c5d414f16be3e3e73883ed832/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/code_reviewer_29c7bf4fb8b243d8afc988d4bb09344a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/api_e2e_engineer_f9c983b6582546faa5daaf911253638e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/delivery_engineer_b6b17f5ad2914762ad2c8bc388f885b7/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/architecture_reviewer_13ebe4dad9394b90a0ae07dc6da1a9c3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/implementation_engineer_4b0448f602df484fbeb67aadff9e0ebc/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/code_reviewer_c3d432515ce14c978b98851b3100e4b9/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/api_e2e_engineer_8387c9648f544ae2b87710124a305c48/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/delivery_engineer_69424e23c6044077b4037f1cd5ebdb16/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/architecture_reviewer_63cdb2c73f7640229b7e105d3782b750/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/code_reviewer_e135ca58b37c4a44a92ada179471a775/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/api_e2e_engineer_e23e3dc86a484cd28a32c99233fc9df4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/delivery_engineer_fee6a2f603b3414daeca0b472b004936/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/architecture_reviewer_674579ff7b084bd688cb010c0e6f4515/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/code_reviewer_55dd1c2efb1e42a48302f11e72ea4ea8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/api_e2e_engineer_aad58cf4677f41be903d6dd987d95e7b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/delivery_engineer_36a46790ab924d2dbd239a5387378b7d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/architecture_reviewer_3355ba8ff1e94db9951833fd2d861fa2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/implementation_engineer_c103e47286f145cca75b1d5b6563a3a4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/code_reviewer_ef572dae9f0f4867b336971e532ee0fa/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/api_e2e_engineer_a21b1d495caa42609112c1ff3701da75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/delivery_engineer_c241a5f8a2bc47108dc8034f83ea1dbd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/architecture_reviewer_ace5a9b23d354a74b31838d79e523b43/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/implementation_engineer_0130b455a0f74233a192884e14df2a6c/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/code_reviewer_a629eac1400941bdb3a830d682f15e25/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/api_e2e_engineer_cb3e84560b1f468787bc31196363df75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/delivery_engineer_0a72ed66e40848429c7bb078f31a4112/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/architecture_reviewer_befb320c9f68428e9e2da9ca6b83da9f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/implementation_engineer_0cab9cc0d7174953980fdc8a2b55b568/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/code_reviewer_ee65e1d968d94d2490c8631059d0926e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/api_e2e_engineer_ab6abd4fddb741baa3a8f04c1977a462/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/delivery_engineer_d9f7855e6e9f43f5a9b5c51a585ad251/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/architecture_reviewer_73be0949d3834b03a6b86a1e92b2ab6b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/implementation_engineer_38948e56d8854f258aa9d81e4d12c195/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/code_reviewer_0cf518be68914158b641b5fc5ddb9118/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/api_e2e_engineer_ad6d0adac7ec498783dbc209e3d58eba/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/delivery_engineer_64fe7e94a6c446deba80022a7bc1571e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/architecture_reviewer_4fdee311c56c4f548554074428b3f99e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/implementation_engineer_75360d2c5d414f16be3e3e73883ed832/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/code_reviewer_29c7bf4fb8b243d8afc988d4bb09344a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/api_e2e_engineer_f9c983b6582546faa5daaf911253638e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/delivery_engineer_b6b17f5ad2914762ad2c8bc388f885b7/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/architecture_reviewer_13ebe4dad9394b90a0ae07dc6da1a9c3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/implementation_engineer_4b0448f602df484fbeb67aadff9e0ebc/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/code_reviewer_c3d432515ce14c978b98851b3100e4b9/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/api_e2e_engineer_8387c9648f544ae2b87710124a305c48/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/delivery_engineer_69424e23c6044077b4037f1cd5ebdb16/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/architecture_reviewer_63cdb2c73f7640229b7e105d3782b750/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/code_reviewer_e135ca58b37c4a44a92ada179471a775/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/api_e2e_engineer_e23e3dc86a484cd28a32c99233fc9df4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/delivery_engineer_fee6a2f603b3414daeca0b472b004936/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/architecture_reviewer_674579ff7b084bd688cb010c0e6f4515/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/code_reviewer_55dd1c2efb1e42a48302f11e72ea4ea8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/api_e2e_engineer_aad58cf4677f41be903d6dd987d95e7b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/delivery_engineer_36a46790ab924d2dbd239a5387378b7d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/architecture_reviewer_3355ba8ff1e94db9951833fd2d861fa2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/implementation_engineer_c103e47286f145cca75b1d5b6563a3a4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/code_reviewer_ef572dae9f0f4867b336971e532ee0fa/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/api_e2e_engineer_a21b1d495caa42609112c1ff3701da75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/delivery_engineer_c241a5f8a2bc47108dc8034f83ea1dbd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/architecture_reviewer_ace5a9b23d354a74b31838d79e523b43/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/implementation_engineer_0130b455a0f74233a192884e14df2a6c/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/code_reviewer_a629eac1400941bdb3a830d682f15e25/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/api_e2e_engineer_cb3e84560b1f468787bc31196363df75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/delivery_engineer_0a72ed66e40848429c7bb078f31a4112/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/architecture_reviewer_befb320c9f68428e9e2da9ca6b83da9f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/implementation_engineer_0cab9cc0d7174953980fdc8a2b55b568/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/code_reviewer_ee65e1d968d94d2490c8631059d0926e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/api_e2e_engineer_ab6abd4fddb741baa3a8f04c1977a462/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/delivery_engineer_d9f7855e6e9f43f5a9b5c51a585ad251/raw_traces_active.jsonl
+Closed PTY session 80d46adb-6f12-4d14-9f78-3a547bff3a28
+Terminal WebSocket disconnected: 80d46adb-6f12-4d14-9f78-3a547bff3a28
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/architecture_reviewer_4fdee311c56c4f548554074428b3f99e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/implementation_engineer_75360d2c5d414f16be3e3e73883ed832/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/code_reviewer_29c7bf4fb8b243d8afc988d4bb09344a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/api_e2e_engineer_f9c983b6582546faa5daaf911253638e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/delivery_engineer_b6b17f5ad2914762ad2c8bc388f885b7/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/architecture_reviewer_13ebe4dad9394b90a0ae07dc6da1a9c3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/implementation_engineer_4b0448f602df484fbeb67aadff9e0ebc/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/code_reviewer_c3d432515ce14c978b98851b3100e4b9/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/api_e2e_engineer_8387c9648f544ae2b87710124a305c48/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/delivery_engineer_69424e23c6044077b4037f1cd5ebdb16/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/architecture_reviewer_63cdb2c73f7640229b7e105d3782b750/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/code_reviewer_e135ca58b37c4a44a92ada179471a775/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/api_e2e_engineer_e23e3dc86a484cd28a32c99233fc9df4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/delivery_engineer_fee6a2f603b3414daeca0b472b004936/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/architecture_reviewer_674579ff7b084bd688cb010c0e6f4515/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/code_reviewer_55dd1c2efb1e42a48302f11e72ea4ea8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/api_e2e_engineer_aad58cf4677f41be903d6dd987d95e7b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/delivery_engineer_36a46790ab924d2dbd239a5387378b7d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/architecture_reviewer_3355ba8ff1e94db9951833fd2d861fa2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/implementation_engineer_c103e47286f145cca75b1d5b6563a3a4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/code_reviewer_ef572dae9f0f4867b336971e532ee0fa/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/api_e2e_engineer_a21b1d495caa42609112c1ff3701da75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/delivery_engineer_c241a5f8a2bc47108dc8034f83ea1dbd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/architecture_reviewer_ace5a9b23d354a74b31838d79e523b43/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/implementation_engineer_0130b455a0f74233a192884e14df2a6c/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/code_reviewer_a629eac1400941bdb3a830d682f15e25/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/api_e2e_engineer_cb3e84560b1f468787bc31196363df75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/delivery_engineer_0a72ed66e40848429c7bb078f31a4112/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/architecture_reviewer_befb320c9f68428e9e2da9ca6b83da9f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/implementation_engineer_0cab9cc0d7174953980fdc8a2b55b568/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/code_reviewer_ee65e1d968d94d2490c8631059d0926e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/api_e2e_engineer_ab6abd4fddb741baa3a8f04c1977a462/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/delivery_engineer_d9f7855e6e9f43f5a9b5c51a585ad251/raw_traces_active.jsonl
+Created terminal session 65fabfee-aed9-4acc-99fc-62970a6ab67f using backend PtySession for target /tmp/delegated-team-home-wRRVPg
+Terminal WebSocket connected: 65fabfee-aed9-4acc-99fc-62970a6ab67f
+Terminal websocket attached for cwd /tmp/delegated-team-home-wRRVPg
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/architecture_reviewer_73be0949d3834b03a6b86a1e92b2ab6b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/implementation_engineer_38948e56d8854f258aa9d81e4d12c195/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/code_reviewer_0cf518be68914158b641b5fc5ddb9118/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/api_e2e_engineer_ad6d0adac7ec498783dbc209e3d58eba/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/delivery_engineer_64fe7e94a6c446deba80022a7bc1571e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/architecture_reviewer_4fdee311c56c4f548554074428b3f99e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/implementation_engineer_75360d2c5d414f16be3e3e73883ed832/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/code_reviewer_29c7bf4fb8b243d8afc988d4bb09344a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/api_e2e_engineer_f9c983b6582546faa5daaf911253638e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/delivery_engineer_b6b17f5ad2914762ad2c8bc388f885b7/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/architecture_reviewer_13ebe4dad9394b90a0ae07dc6da1a9c3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/implementation_engineer_4b0448f602df484fbeb67aadff9e0ebc/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/code_reviewer_c3d432515ce14c978b98851b3100e4b9/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/api_e2e_engineer_8387c9648f544ae2b87710124a305c48/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/delivery_engineer_69424e23c6044077b4037f1cd5ebdb16/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/architecture_reviewer_63cdb2c73f7640229b7e105d3782b750/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/code_reviewer_e135ca58b37c4a44a92ada179471a775/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/api_e2e_engineer_e23e3dc86a484cd28a32c99233fc9df4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/delivery_engineer_fee6a2f603b3414daeca0b472b004936/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/architecture_reviewer_674579ff7b084bd688cb010c0e6f4515/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/code_reviewer_55dd1c2efb1e42a48302f11e72ea4ea8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/api_e2e_engineer_aad58cf4677f41be903d6dd987d95e7b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/delivery_engineer_36a46790ab924d2dbd239a5387378b7d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/architecture_reviewer_3355ba8ff1e94db9951833fd2d861fa2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/implementation_engineer_c103e47286f145cca75b1d5b6563a3a4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/code_reviewer_ef572dae9f0f4867b336971e532ee0fa/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/api_e2e_engineer_a21b1d495caa42609112c1ff3701da75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/delivery_engineer_c241a5f8a2bc47108dc8034f83ea1dbd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/architecture_reviewer_ace5a9b23d354a74b31838d79e523b43/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/implementation_engineer_0130b455a0f74233a192884e14df2a6c/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/code_reviewer_a629eac1400941bdb3a830d682f15e25/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/api_e2e_engineer_cb3e84560b1f468787bc31196363df75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/delivery_engineer_0a72ed66e40848429c7bb078f31a4112/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/architecture_reviewer_befb320c9f68428e9e2da9ca6b83da9f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/implementation_engineer_0cab9cc0d7174953980fdc8a2b55b568/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/code_reviewer_ee65e1d968d94d2490c8631059d0926e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/api_e2e_engineer_ab6abd4fddb741baa3a8f04c1977a462/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/delivery_engineer_d9f7855e6e9f43f5a9b5c51a585ad251/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/architecture_reviewer_4fdee311c56c4f548554074428b3f99e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/implementation_engineer_75360d2c5d414f16be3e3e73883ed832/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/code_reviewer_29c7bf4fb8b243d8afc988d4bb09344a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/api_e2e_engineer_f9c983b6582546faa5daaf911253638e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/delivery_engineer_b6b17f5ad2914762ad2c8bc388f885b7/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/architecture_reviewer_13ebe4dad9394b90a0ae07dc6da1a9c3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/implementation_engineer_4b0448f602df484fbeb67aadff9e0ebc/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/code_reviewer_c3d432515ce14c978b98851b3100e4b9/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/api_e2e_engineer_8387c9648f544ae2b87710124a305c48/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/delivery_engineer_69424e23c6044077b4037f1cd5ebdb16/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/architecture_reviewer_63cdb2c73f7640229b7e105d3782b750/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/code_reviewer_e135ca58b37c4a44a92ada179471a775/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/api_e2e_engineer_e23e3dc86a484cd28a32c99233fc9df4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/delivery_engineer_fee6a2f603b3414daeca0b472b004936/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/architecture_reviewer_674579ff7b084bd688cb010c0e6f4515/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/code_reviewer_55dd1c2efb1e42a48302f11e72ea4ea8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/api_e2e_engineer_aad58cf4677f41be903d6dd987d95e7b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/delivery_engineer_36a46790ab924d2dbd239a5387378b7d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/architecture_reviewer_3355ba8ff1e94db9951833fd2d861fa2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/implementation_engineer_c103e47286f145cca75b1d5b6563a3a4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/code_reviewer_ef572dae9f0f4867b336971e532ee0fa/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/api_e2e_engineer_a21b1d495caa42609112c1ff3701da75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/delivery_engineer_c241a5f8a2bc47108dc8034f83ea1dbd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/architecture_reviewer_ace5a9b23d354a74b31838d79e523b43/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/implementation_engineer_0130b455a0f74233a192884e14df2a6c/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/code_reviewer_a629eac1400941bdb3a830d682f15e25/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/api_e2e_engineer_cb3e84560b1f468787bc31196363df75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/delivery_engineer_0a72ed66e40848429c7bb078f31a4112/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/architecture_reviewer_befb320c9f68428e9e2da9ca6b83da9f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/implementation_engineer_0cab9cc0d7174953980fdc8a2b55b568/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/code_reviewer_ee65e1d968d94d2490c8631059d0926e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/api_e2e_engineer_ab6abd4fddb741baa3a8f04c1977a462/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/delivery_engineer_d9f7855e6e9f43f5a9b5c51a585ad251/raw_traces_active.jsonl
+Closed PTY session 65fabfee-aed9-4acc-99fc-62970a6ab67f
+Terminal WebSocket disconnected: 65fabfee-aed9-4acc-99fc-62970a6ab67f
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/architecture_reviewer_4fdee311c56c4f548554074428b3f99e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/implementation_engineer_75360d2c5d414f16be3e3e73883ed832/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/code_reviewer_29c7bf4fb8b243d8afc988d4bb09344a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/api_e2e_engineer_f9c983b6582546faa5daaf911253638e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/delivery_engineer_b6b17f5ad2914762ad2c8bc388f885b7/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/architecture_reviewer_13ebe4dad9394b90a0ae07dc6da1a9c3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/implementation_engineer_4b0448f602df484fbeb67aadff9e0ebc/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/code_reviewer_c3d432515ce14c978b98851b3100e4b9/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/api_e2e_engineer_8387c9648f544ae2b87710124a305c48/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/delivery_engineer_69424e23c6044077b4037f1cd5ebdb16/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/architecture_reviewer_63cdb2c73f7640229b7e105d3782b750/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/code_reviewer_e135ca58b37c4a44a92ada179471a775/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/api_e2e_engineer_e23e3dc86a484cd28a32c99233fc9df4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/delivery_engineer_fee6a2f603b3414daeca0b472b004936/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/architecture_reviewer_674579ff7b084bd688cb010c0e6f4515/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/code_reviewer_55dd1c2efb1e42a48302f11e72ea4ea8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/api_e2e_engineer_aad58cf4677f41be903d6dd987d95e7b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/delivery_engineer_36a46790ab924d2dbd239a5387378b7d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/architecture_reviewer_3355ba8ff1e94db9951833fd2d861fa2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/implementation_engineer_c103e47286f145cca75b1d5b6563a3a4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/code_reviewer_ef572dae9f0f4867b336971e532ee0fa/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/api_e2e_engineer_a21b1d495caa42609112c1ff3701da75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/delivery_engineer_c241a5f8a2bc47108dc8034f83ea1dbd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/architecture_reviewer_ace5a9b23d354a74b31838d79e523b43/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/implementation_engineer_0130b455a0f74233a192884e14df2a6c/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/code_reviewer_a629eac1400941bdb3a830d682f15e25/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/api_e2e_engineer_cb3e84560b1f468787bc31196363df75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/delivery_engineer_0a72ed66e40848429c7bb078f31a4112/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/architecture_reviewer_befb320c9f68428e9e2da9ca6b83da9f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/implementation_engineer_0cab9cc0d7174953980fdc8a2b55b568/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/code_reviewer_ee65e1d968d94d2490c8631059d0926e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/api_e2e_engineer_ab6abd4fddb741baa3a8f04c1977a462/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/delivery_engineer_d9f7855e6e9f43f5a9b5c51a585ad251/raw_traces_active.jsonl
+Created terminal session db3059df-1280-4769-a1eb-408814332544 using backend PtySession for target /tmp/delegated-team-home-wRRVPg
+Terminal WebSocket connected: db3059df-1280-4769-a1eb-408814332544
+Terminal websocket attached for cwd /tmp/delegated-team-home-wRRVPg
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/architecture_reviewer_73be0949d3834b03a6b86a1e92b2ab6b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/implementation_engineer_38948e56d8854f258aa9d81e4d12c195/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/code_reviewer_0cf518be68914158b641b5fc5ddb9118/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/api_e2e_engineer_ad6d0adac7ec498783dbc209e3d58eba/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/delivery_engineer_64fe7e94a6c446deba80022a7bc1571e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/architecture_reviewer_4fdee311c56c4f548554074428b3f99e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/implementation_engineer_75360d2c5d414f16be3e3e73883ed832/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/code_reviewer_29c7bf4fb8b243d8afc988d4bb09344a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/api_e2e_engineer_f9c983b6582546faa5daaf911253638e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/delivery_engineer_b6b17f5ad2914762ad2c8bc388f885b7/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/architecture_reviewer_13ebe4dad9394b90a0ae07dc6da1a9c3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/implementation_engineer_4b0448f602df484fbeb67aadff9e0ebc/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/code_reviewer_c3d432515ce14c978b98851b3100e4b9/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/api_e2e_engineer_8387c9648f544ae2b87710124a305c48/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/delivery_engineer_69424e23c6044077b4037f1cd5ebdb16/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/architecture_reviewer_63cdb2c73f7640229b7e105d3782b750/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/code_reviewer_e135ca58b37c4a44a92ada179471a775/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/api_e2e_engineer_e23e3dc86a484cd28a32c99233fc9df4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/delivery_engineer_fee6a2f603b3414daeca0b472b004936/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/architecture_reviewer_674579ff7b084bd688cb010c0e6f4515/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/code_reviewer_55dd1c2efb1e42a48302f11e72ea4ea8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/api_e2e_engineer_aad58cf4677f41be903d6dd987d95e7b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/delivery_engineer_36a46790ab924d2dbd239a5387378b7d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/architecture_reviewer_3355ba8ff1e94db9951833fd2d861fa2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/implementation_engineer_c103e47286f145cca75b1d5b6563a3a4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/code_reviewer_ef572dae9f0f4867b336971e532ee0fa/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/api_e2e_engineer_a21b1d495caa42609112c1ff3701da75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/delivery_engineer_c241a5f8a2bc47108dc8034f83ea1dbd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/architecture_reviewer_ace5a9b23d354a74b31838d79e523b43/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/implementation_engineer_0130b455a0f74233a192884e14df2a6c/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/code_reviewer_a629eac1400941bdb3a830d682f15e25/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/api_e2e_engineer_cb3e84560b1f468787bc31196363df75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/delivery_engineer_0a72ed66e40848429c7bb078f31a4112/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/architecture_reviewer_befb320c9f68428e9e2da9ca6b83da9f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/implementation_engineer_0cab9cc0d7174953980fdc8a2b55b568/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/code_reviewer_ee65e1d968d94d2490c8631059d0926e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/api_e2e_engineer_ab6abd4fddb741baa3a8f04c1977a462/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/delivery_engineer_d9f7855e6e9f43f5a9b5c51a585ad251/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/architecture_reviewer_4fdee311c56c4f548554074428b3f99e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/implementation_engineer_75360d2c5d414f16be3e3e73883ed832/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/code_reviewer_29c7bf4fb8b243d8afc988d4bb09344a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/api_e2e_engineer_f9c983b6582546faa5daaf911253638e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/delivery_engineer_b6b17f5ad2914762ad2c8bc388f885b7/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/architecture_reviewer_13ebe4dad9394b90a0ae07dc6da1a9c3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/implementation_engineer_4b0448f602df484fbeb67aadff9e0ebc/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/code_reviewer_c3d432515ce14c978b98851b3100e4b9/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/api_e2e_engineer_8387c9648f544ae2b87710124a305c48/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/delivery_engineer_69424e23c6044077b4037f1cd5ebdb16/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/architecture_reviewer_63cdb2c73f7640229b7e105d3782b750/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/code_reviewer_e135ca58b37c4a44a92ada179471a775/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/api_e2e_engineer_e23e3dc86a484cd28a32c99233fc9df4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/delivery_engineer_fee6a2f603b3414daeca0b472b004936/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/architecture_reviewer_674579ff7b084bd688cb010c0e6f4515/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/code_reviewer_55dd1c2efb1e42a48302f11e72ea4ea8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/api_e2e_engineer_aad58cf4677f41be903d6dd987d95e7b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/delivery_engineer_36a46790ab924d2dbd239a5387378b7d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/architecture_reviewer_3355ba8ff1e94db9951833fd2d861fa2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/implementation_engineer_c103e47286f145cca75b1d5b6563a3a4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/code_reviewer_ef572dae9f0f4867b336971e532ee0fa/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/api_e2e_engineer_a21b1d495caa42609112c1ff3701da75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/delivery_engineer_c241a5f8a2bc47108dc8034f83ea1dbd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/architecture_reviewer_ace5a9b23d354a74b31838d79e523b43/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/implementation_engineer_0130b455a0f74233a192884e14df2a6c/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/code_reviewer_a629eac1400941bdb3a830d682f15e25/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/api_e2e_engineer_cb3e84560b1f468787bc31196363df75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/delivery_engineer_0a72ed66e40848429c7bb078f31a4112/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/architecture_reviewer_befb320c9f68428e9e2da9ca6b83da9f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/implementation_engineer_0cab9cc0d7174953980fdc8a2b55b568/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/code_reviewer_ee65e1d968d94d2490c8631059d0926e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/api_e2e_engineer_ab6abd4fddb741baa3a8f04c1977a462/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/delivery_engineer_d9f7855e6e9f43f5a9b5c51a585ad251/raw_traces_active.jsonl
+Closed PTY session db3059df-1280-4769-a1eb-408814332544
+Terminal WebSocket disconnected: db3059df-1280-4769-a1eb-408814332544
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/architecture_reviewer_4fdee311c56c4f548554074428b3f99e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/implementation_engineer_75360d2c5d414f16be3e3e73883ed832/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/code_reviewer_29c7bf4fb8b243d8afc988d4bb09344a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/api_e2e_engineer_f9c983b6582546faa5daaf911253638e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/delivery_engineer_b6b17f5ad2914762ad2c8bc388f885b7/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/architecture_reviewer_13ebe4dad9394b90a0ae07dc6da1a9c3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/implementation_engineer_4b0448f602df484fbeb67aadff9e0ebc/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/code_reviewer_c3d432515ce14c978b98851b3100e4b9/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/api_e2e_engineer_8387c9648f544ae2b87710124a305c48/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/delivery_engineer_69424e23c6044077b4037f1cd5ebdb16/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/architecture_reviewer_63cdb2c73f7640229b7e105d3782b750/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/code_reviewer_e135ca58b37c4a44a92ada179471a775/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/api_e2e_engineer_e23e3dc86a484cd28a32c99233fc9df4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/delivery_engineer_fee6a2f603b3414daeca0b472b004936/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/architecture_reviewer_674579ff7b084bd688cb010c0e6f4515/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/code_reviewer_55dd1c2efb1e42a48302f11e72ea4ea8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/api_e2e_engineer_aad58cf4677f41be903d6dd987d95e7b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/delivery_engineer_36a46790ab924d2dbd239a5387378b7d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/architecture_reviewer_3355ba8ff1e94db9951833fd2d861fa2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/implementation_engineer_c103e47286f145cca75b1d5b6563a3a4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/code_reviewer_ef572dae9f0f4867b336971e532ee0fa/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/api_e2e_engineer_a21b1d495caa42609112c1ff3701da75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/delivery_engineer_c241a5f8a2bc47108dc8034f83ea1dbd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/architecture_reviewer_ace5a9b23d354a74b31838d79e523b43/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/implementation_engineer_0130b455a0f74233a192884e14df2a6c/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/code_reviewer_a629eac1400941bdb3a830d682f15e25/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/api_e2e_engineer_cb3e84560b1f468787bc31196363df75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/delivery_engineer_0a72ed66e40848429c7bb078f31a4112/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/architecture_reviewer_befb320c9f68428e9e2da9ca6b83da9f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/implementation_engineer_0cab9cc0d7174953980fdc8a2b55b568/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/code_reviewer_ee65e1d968d94d2490c8631059d0926e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/api_e2e_engineer_ab6abd4fddb741baa3a8f04c1977a462/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/delivery_engineer_d9f7855e6e9f43f5a9b5c51a585ad251/raw_traces_active.jsonl
+Created terminal session 7682f906-5b51-4476-a4b5-1d70ccddd372 using backend PtySession for target /tmp/delegated-team-home-wRRVPg
+Terminal WebSocket connected: 7682f906-5b51-4476-a4b5-1d70ccddd372
+Terminal websocket attached for cwd /tmp/delegated-team-home-wRRVPg
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/architecture_reviewer_73be0949d3834b03a6b86a1e92b2ab6b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/implementation_engineer_38948e56d8854f258aa9d81e4d12c195/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/code_reviewer_0cf518be68914158b641b5fc5ddb9118/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/api_e2e_engineer_ad6d0adac7ec498783dbc209e3d58eba/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_c01876cd05d34fccbadc10ceb6ad45c8/collaboration/software_engineering_team_probe_7a1244ff364c4d07adbfcd7c51f091f8/delivery_engineer_64fe7e94a6c446deba80022a7bc1571e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/architecture_reviewer_4fdee311c56c4f548554074428b3f99e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/implementation_engineer_75360d2c5d414f16be3e3e73883ed832/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/code_reviewer_29c7bf4fb8b243d8afc988d4bb09344a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/api_e2e_engineer_f9c983b6582546faa5daaf911253638e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/delivery_engineer_b6b17f5ad2914762ad2c8bc388f885b7/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/architecture_reviewer_13ebe4dad9394b90a0ae07dc6da1a9c3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/implementation_engineer_4b0448f602df484fbeb67aadff9e0ebc/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/code_reviewer_c3d432515ce14c978b98851b3100e4b9/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/api_e2e_engineer_8387c9648f544ae2b87710124a305c48/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/delivery_engineer_69424e23c6044077b4037f1cd5ebdb16/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/architecture_reviewer_63cdb2c73f7640229b7e105d3782b750/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/code_reviewer_e135ca58b37c4a44a92ada179471a775/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/api_e2e_engineer_e23e3dc86a484cd28a32c99233fc9df4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/delivery_engineer_fee6a2f603b3414daeca0b472b004936/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/architecture_reviewer_674579ff7b084bd688cb010c0e6f4515/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/code_reviewer_55dd1c2efb1e42a48302f11e72ea4ea8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/api_e2e_engineer_aad58cf4677f41be903d6dd987d95e7b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/delivery_engineer_36a46790ab924d2dbd239a5387378b7d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/architecture_reviewer_3355ba8ff1e94db9951833fd2d861fa2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/implementation_engineer_c103e47286f145cca75b1d5b6563a3a4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/code_reviewer_ef572dae9f0f4867b336971e532ee0fa/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/api_e2e_engineer_a21b1d495caa42609112c1ff3701da75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/delivery_engineer_c241a5f8a2bc47108dc8034f83ea1dbd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/architecture_reviewer_ace5a9b23d354a74b31838d79e523b43/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/implementation_engineer_0130b455a0f74233a192884e14df2a6c/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/code_reviewer_a629eac1400941bdb3a830d682f15e25/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/api_e2e_engineer_cb3e84560b1f468787bc31196363df75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/delivery_engineer_0a72ed66e40848429c7bb078f31a4112/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/architecture_reviewer_befb320c9f68428e9e2da9ca6b83da9f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/implementation_engineer_0cab9cc0d7174953980fdc8a2b55b568/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/code_reviewer_ee65e1d968d94d2490c8631059d0926e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/api_e2e_engineer_ab6abd4fddb741baa3a8f04c1977a462/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/delivery_engineer_d9f7855e6e9f43f5a9b5c51a585ad251/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/architecture_reviewer_4fdee311c56c4f548554074428b3f99e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/implementation_engineer_75360d2c5d414f16be3e3e73883ed832/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/code_reviewer_29c7bf4fb8b243d8afc988d4bb09344a/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/api_e2e_engineer_f9c983b6582546faa5daaf911253638e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_d758db322cd24851bef5e1c7e3c84e4b/delivery_engineer_b6b17f5ad2914762ad2c8bc388f885b7/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/architecture_reviewer_13ebe4dad9394b90a0ae07dc6da1a9c3/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/implementation_engineer_4b0448f602df484fbeb67aadff9e0ebc/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/code_reviewer_c3d432515ce14c978b98851b3100e4b9/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/api_e2e_engineer_8387c9648f544ae2b87710124a305c48/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_f545ddb0ad5d4da988087f947155cc10/delivery_engineer_69424e23c6044077b4037f1cd5ebdb16/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/architecture_reviewer_63cdb2c73f7640229b7e105d3782b750/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/code_reviewer_e135ca58b37c4a44a92ada179471a775/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/api_e2e_engineer_e23e3dc86a484cd28a32c99233fc9df4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_985b28dc6f4d49ce81e23d19f90a8e36/delivery_engineer_fee6a2f603b3414daeca0b472b004936/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/architecture_reviewer_674579ff7b084bd688cb010c0e6f4515/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/code_reviewer_55dd1c2efb1e42a48302f11e72ea4ea8/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/api_e2e_engineer_aad58cf4677f41be903d6dd987d95e7b/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_0cc86d300da84bbcad6da43fb934876d/delivery_engineer_36a46790ab924d2dbd239a5387378b7d/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/architecture_reviewer_3355ba8ff1e94db9951833fd2d861fa2/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/implementation_engineer_c103e47286f145cca75b1d5b6563a3a4/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/code_reviewer_ef572dae9f0f4867b336971e532ee0fa/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/api_e2e_engineer_a21b1d495caa42609112c1ff3701da75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_7e1e04de03c442c09ea5ae2c55cbd0a3/delivery_engineer_c241a5f8a2bc47108dc8034f83ea1dbd/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/architecture_reviewer_ace5a9b23d354a74b31838d79e523b43/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/implementation_engineer_0130b455a0f74233a192884e14df2a6c/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/code_reviewer_a629eac1400941bdb3a830d682f15e25/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/api_e2e_engineer_cb3e84560b1f468787bc31196363df75/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_03b9632df3674ac8aa422df66b8c8534/delivery_engineer_0a72ed66e40848429c7bb078f31a4112/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/architecture_reviewer_befb320c9f68428e9e2da9ca6b83da9f/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/implementation_engineer_0cab9cc0d7174953980fdc8a2b55b568/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/code_reviewer_ee65e1d968d94d2490c8631059d0926e/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/api_e2e_engineer_ab6abd4fddb741baa3a8f04c1977a462/raw_traces_active.jsonl
+Memory file missing: /tmp/delegated-team-collapse-JYNEzM/memory/agents/project_task_manager_probe_36a4dd95de5f45608dec80d4a6e2725d/collaboration/software_engineering_team_probe_1d910b52d2174f519dcc54849c9a9a6e/delivery_engineer_d9f7855e6e9f43f5a9b5c51a585ad251/raw_traces_active.jsonl
+Closed PTY session 7682f906-5b51-4476-a4b5-1d70ccddd372
+Terminal WebSocket disconnected: 7682f906-5b51-4476-a4b5-1d70ccddd372
+[2026-10-13T06:48:07.037Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-13T06:48:07.047Z] [INFO] [server.runtime] Server closed cleanly.

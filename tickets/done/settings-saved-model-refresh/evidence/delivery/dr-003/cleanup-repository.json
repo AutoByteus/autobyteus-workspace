@@ -1,0 +1,62 @@
+{
+  "time": "2026-10-13T17:42:54.119607+00:00",
+  "generatedDirsRemoved": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-application-backend-sdk/dist",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-application-sdk-contracts/dist"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+        "worktree",
+        "remove",
+        "--force",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+        "branch",
+        "-d",
+        "codex/settings-saved-model-refresh"
+      ],
+      "exit": 0,
+      "stdout": "Deleted branch codex/settings-saved-model-refresh (was cde52504c5).\n",
+      "stderr": "warning: deleting branch 'codex/settings-saved-model-refresh' that has been merged to\n         'refs/remotes/origin/personal', but not yet merged to HEAD\n"
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+        "branch",
+        "-d",
+        "finalize/settings-saved-model-refresh"
+      ],
+      "exit": 0,
+      "stdout": "Deleted branch finalize/settings-saved-model-refresh (was a80785e521).\n",
+      "stderr": "warning: deleting branch 'finalize/settings-saved-model-refresh' that has been merged to\n         'refs/remotes/origin/personal', but not yet merged to HEAD\n"
+    }
+  ],
+  "worktreeAbsent": true,
+  "registrationAbsent": true,
+  "localBranchesAbsent": true,
+  "worktreePrune": "Not required: remove already deleted own registration; global prune intentionally avoided",
+  "remoteTicketBranchCleanup": "Not required: retained pushed ticket branch for provenance",
+  "mainCheckoutUnchanged": true,
+  "mainFingerprint": {
+    "head": "92de6460030480c33cef6481d2dd46d2fc9a34be",
+    "statusSha256": "e286cfdc47803799b747913845cd0675112551891bf6c24d14d459dbfd3cc379",
+    "trackedDiffSha256": "2e0f0d67ab5bffadc600d4a75a7df72b3dbfb97ce190086c21fec89db9b620f2"
+  },
+  "custodyPreverifiedFiles": 568,
+  "result": "Completed"
+}

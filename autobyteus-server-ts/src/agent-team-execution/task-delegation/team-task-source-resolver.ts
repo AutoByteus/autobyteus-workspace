@@ -1,17 +1,16 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import {
+  configuredTeamFollowerAddresses,
   projectTaskExecutionSource,
   resolveCollaboratorCopySource,
+  type CollaboratorCopySource,
 } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import type { TaskExecutionSource } from "../../run-history/domain/run-execution-tree-shared-records.js";
-import type { TeamRunAgentNode, TeamRunAgentTeamNode, TeamRunConfig } from "../domain/team-run-config.js";
+import type { TeamRunAgentNode, TeamRunConfig } from "../domain/team-run-config.js";
 import type { TeamExecutionIndex } from "../services/team-execution-index.js";
 import { findTaskConfigNode } from "./task-delegation-execution-resolution.js";
 
-export type TeamTaskSource =
-  | Readonly<{ kind: "agent"; node: TeamRunAgentNode }>
-  | Readonly<{ kind: "agent_team"; node: TeamRunAgentTeamNode; handoffs: readonly CollaborationHandoff[] }>;
+export type TeamTaskSource = CollaboratorCopySource;
 
 /**
  * The runtime source of a task execution at an address, on activation and on restore: a
@@ -30,7 +29,12 @@ export class TeamTaskSourceResolver {
     if (configured && configured.address !== "/") {
       return configured.kind === "agent"
         ? Object.freeze({ kind: "agent", node: configured })
-        : Object.freeze({ kind: "agent_team", node: configured, handoffs: this.options.config.handoffs });
+        : Object.freeze({
+          kind: "agent_team",
+          node: configured,
+          handoffs: this.options.config.handoffs,
+          followerAddresses: configuredTeamFollowerAddresses(configured),
+        });
     }
     // An extra copy of a collaborator (or of a collaborator Team member) with pending identities.
     return resolveCollaboratorCopySource(this.options.getIndex().tree.rootTeam.collaborators, address);

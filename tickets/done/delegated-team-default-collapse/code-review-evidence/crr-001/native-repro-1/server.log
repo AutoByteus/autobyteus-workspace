@@ -1,0 +1,420 @@
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+{"level":30,"time":1791875828547,"pid":79884,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:37499"}
+{"level":30,"time":1791875828582,"pid":79884,"hostname":"74ff273d28fe","msg":"Server listening at http://0.0.0.0:36943"}
+[2026-10-13T07:17:08.582Z] [INFO] [server.runtime] Server listening on 0.0.0.0:36943
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: solution-designer
+Agent Definition created successfully with ID: architecture-reviewer
+Agent Definition created successfully with ID: implementation-engineer
+Agent Definition created successfully with ID: code-reviewer
+Agent Definition created successfully with ID: api-e2e-engineer
+Agent Definition created successfully with ID: delivery-engineer
+Agent Definition created successfully with ID: project-task-manager-probe
+Agent Team Definition created successfully with ID: software-engineering-team-probe
+Agent Team Definition created successfully with ID: late-engineering-team-probe
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Created and registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+AGY compaction detection off for run project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+AGY compaction detection off for run project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239
+Created agent session 5af8ad53-a884-4d45-9b5c-0dfa610fca12 for run project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239
+Agent WebSocket connected: session=5af8ad53-a884-4d45-9b5c-0dfa610fca12, run=project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239
+Agent websocket attached for run project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9
+Created agent session 3fbd8c5c-0fd7-4a10-a4bc-40170ed5c5e4 for run project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9
+Agent WebSocket connected: session=3fbd8c5c-0fd7-4a10-a4bc-40170ed5c5e4, run=project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9
+{"level":40,"time":1791875830870,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.2897909879684448,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+AGY compaction detection off for run solution_designer_3b132307afe24faca6bd0ed203cfef07: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791875831215,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.1411670446395874,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+AGY compaction detection off for run solution_designer_70cc3cf09c5c4e56a6e3e0c1c9eab2d4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791875831435,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.19904202222824097,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+AGY compaction detection off for run solution_designer_0f11a6d91d9f482197deb2468bef86ef: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791875831766,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.1141669750213623,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+AGY compaction detection off for run solution_designer_85150adaf59943278b6198b257b844e3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791875831987,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.140749990940094,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+AGY compaction detection off for run solution_designer_482fa7bcd6e94191bfcdb70a7496ba0a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791875832209,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.24083298444747925,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+AGY compaction detection off for run solution_designer_ebff34434424414b838f596f505449e0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791875832428,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.22691696882247925,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+AGY compaction detection off for run solution_designer_632d17e5feb54031bc5d2e1f257485c0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791875832982,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-v","method":"GET","url":"/mcp/agent-tools/agtrun_NvutjSLCrflOki1roTGZGbDh_r5TPSXn1fHPna0pMAw","statusCode":405,"elapsedMs":0.18229204416275024,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+AGY compaction detection off for run solution_designer_74d0972c871f4299a9db94b4b2808190: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/implementation_engineer_6cf2355cbef24f68a7ae2ad3b1da9fe3/raw_traces_active.jsonl
+{"level":40,"time":1791875833217,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.163457989692688,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+AGY compaction detection off for run implementation_engineer_6cf2355cbef24f68a7ae2ad3b1da9fe3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/implementation_engineer_6cf2355cbef24f68a7ae2ad3b1da9fe3/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/implementation_engineer_3313100da33248dc9852546a36ffe0ed/raw_traces_active.jsonl
+{"level":40,"time":1791875833429,"pid":79884,"hostname":"74ff273d28fe","reqId":"req-13","method":"GET","url":"/mcp/agent-tools/agtrun_IZSiM6gU8X0I1Mq9FbVqXpE3nplEvCjpW8S6ltn4p2c","statusCode":405,"elapsedMs":0.1223750114440918,"msg":"http request completed"}
+Creating new workspace for rootPath: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Reusing registered workspace ID: agent_ws_1c123b96bf13e972454581b62046c0e46da4cde4627d78b181864a3bfe3a178d
+AGY compaction detection off for run implementation_engineer_3313100da33248dc9852546a36ffe0ed: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/implementation_engineer_3313100da33248dc9852546a36ffe0ed/raw_traces_active.jsonl
+[2026-10-13T07:17:14.400Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1791875849179,"pid":80615,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:36263"}
+{"level":30,"time":1791875849216,"pid":80615,"hostname":"74ff273d28fe","msg":"Server listening at http://0.0.0.0:36943"}
+[2026-10-13T07:17:29.216Z] [INFO] [server.runtime] Server listening on 0.0.0.0:36943
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+[2026-10-13T07:17:31.268Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-13T07:17:31.298Z] [INFO] [server.runtime] Server closed cleanly.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1791875856728,"pid":80898,"hostname":"74ff273d28fe","msg":"Server listening at http://127.0.0.1:46683"}
+{"level":30,"time":1791875856766,"pid":80898,"hostname":"74ff273d28fe","msg":"Server listening at http://0.0.0.0:36943"}
+[2026-10-13T07:17:36.766Z] [INFO] [server.runtime] Server listening on 0.0.0.0:36943
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/workspace.
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9/collaboration/software_engineering_team_probe_0b6ffe7ff9e648b0a27ee9d1e4deeb99/architecture_reviewer_7f21016f53004e59a9e233aa4afd2064/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9/collaboration/software_engineering_team_probe_0b6ffe7ff9e648b0a27ee9d1e4deeb99/implementation_engineer_1251fe0d223f4b0185bde758f416e240/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9/collaboration/software_engineering_team_probe_0b6ffe7ff9e648b0a27ee9d1e4deeb99/code_reviewer_591ea4dd9dbc4d3485e78f58492cb34e/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9/collaboration/software_engineering_team_probe_0b6ffe7ff9e648b0a27ee9d1e4deeb99/api_e2e_engineer_2420a86eb01f4c73bd96b249009b4c45/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_0bd2bbf0037a4ff38f1ff2c34c258fd9/collaboration/software_engineering_team_probe_0b6ffe7ff9e648b0a27ee9d1e4deeb99/delivery_engineer_0add8a2d005249b4b0141fd3a0b3257b/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/architecture_reviewer_5f1206b36d5144e5a41325684dfaaa11/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/implementation_engineer_0631b2f64b0e49f7a2177cd218f35178/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/code_reviewer_2e8805586a554e4fa70f73dfbebb5135/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/api_e2e_engineer_6bfb67820e024bff86bf8fa78fef7cb1/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/delivery_engineer_34ee94eca3484351b99296839d94eccb/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/architecture_reviewer_80309f24f16e46758ea415161c367222/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/implementation_engineer_f133140bb73b44d3b179f3703309096d/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/code_reviewer_a271b34c89244c4cad7f54ae44e9d039/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/api_e2e_engineer_daff36399809442491715b13adb14d00/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/delivery_engineer_2360fdbbcd2a4def884db40f74a959a9/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/architecture_reviewer_b35e87bad5234167967b381a71c91e09/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/code_reviewer_b0e7b437014c4c8097f4178831cc33db/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/api_e2e_engineer_2a6502cd73924d96b5e934366e009f5e/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/delivery_engineer_b81f7f96da664614b93f2d36d10b86ef/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/architecture_reviewer_32d858774d6f476cbbbd8d8b1929181d/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/code_reviewer_fbc7c773735245f396d38ccab2acdb6b/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/api_e2e_engineer_b15cef7ca31e42edafaf817db746c6fd/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/delivery_engineer_c240893ebc9c4d73a52a7ebb4999a003/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/architecture_reviewer_7d5ee79e5f224ad29f745018d1fc3092/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/implementation_engineer_5f0e5e82c6bf48209d5985e1391cdc6b/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/code_reviewer_4b588715d2b34f7b8f4f2eca5b1445d1/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/api_e2e_engineer_65e8350df79742ec851b1c76acb61e10/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/delivery_engineer_d6afac20cacf48de80c76704378ebfb9/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/architecture_reviewer_94ffb14a0c364bfcab7d8310e9dd1db0/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/implementation_engineer_f6b67a5e3e724e6f8ed2882b7a074757/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/code_reviewer_dc6baeb0aaab48f8b327fd94ab2f85f3/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/api_e2e_engineer_3a6cfa4baaf74ebcb7b595abe2c35eee/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/delivery_engineer_a7cd1e26925f45e9ba420191b0cdb03e/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/architecture_reviewer_4f9902223bc54bf990590b7517bfe249/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/implementation_engineer_edafe057f3a24d65a3f2d75c930036ca/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/code_reviewer_ec21878fa6d144fd933343f3fef91bfd/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/api_e2e_engineer_73460dfc0a254eb4a3939637681f11b2/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/delivery_engineer_4bcd4c682ca44e8cbb3ddc1f1d5b2a8d/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/architecture_reviewer_5f1206b36d5144e5a41325684dfaaa11/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/implementation_engineer_0631b2f64b0e49f7a2177cd218f35178/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/code_reviewer_2e8805586a554e4fa70f73dfbebb5135/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/api_e2e_engineer_6bfb67820e024bff86bf8fa78fef7cb1/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c62a65b6cfaa48548cb752baadeb9681/delivery_engineer_34ee94eca3484351b99296839d94eccb/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/architecture_reviewer_80309f24f16e46758ea415161c367222/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/implementation_engineer_f133140bb73b44d3b179f3703309096d/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/code_reviewer_a271b34c89244c4cad7f54ae44e9d039/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/api_e2e_engineer_daff36399809442491715b13adb14d00/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_4a5abbee53c449c78791d11f4a19b632/delivery_engineer_2360fdbbcd2a4def884db40f74a959a9/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/architecture_reviewer_b35e87bad5234167967b381a71c91e09/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/code_reviewer_b0e7b437014c4c8097f4178831cc33db/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/api_e2e_engineer_2a6502cd73924d96b5e934366e009f5e/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_e9d6a603a5d74c02a6e382c1bde944d3/delivery_engineer_b81f7f96da664614b93f2d36d10b86ef/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/architecture_reviewer_32d858774d6f476cbbbd8d8b1929181d/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/code_reviewer_fbc7c773735245f396d38ccab2acdb6b/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/api_e2e_engineer_b15cef7ca31e42edafaf817db746c6fd/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_f1a21324ac634111b9532a859e5f2301/delivery_engineer_c240893ebc9c4d73a52a7ebb4999a003/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/architecture_reviewer_7d5ee79e5f224ad29f745018d1fc3092/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/implementation_engineer_5f0e5e82c6bf48209d5985e1391cdc6b/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/code_reviewer_4b588715d2b34f7b8f4f2eca5b1445d1/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/api_e2e_engineer_65e8350df79742ec851b1c76acb61e10/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ce618ea3b089429a9dd127501bc2276a/delivery_engineer_d6afac20cacf48de80c76704378ebfb9/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/architecture_reviewer_94ffb14a0c364bfcab7d8310e9dd1db0/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/implementation_engineer_f6b67a5e3e724e6f8ed2882b7a074757/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/code_reviewer_dc6baeb0aaab48f8b327fd94ab2f85f3/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/api_e2e_engineer_3a6cfa4baaf74ebcb7b595abe2c35eee/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_c903910f851c48f3b81ab929acc34140/delivery_engineer_a7cd1e26925f45e9ba420191b0cdb03e/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/architecture_reviewer_4f9902223bc54bf990590b7517bfe249/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/implementation_engineer_edafe057f3a24d65a3f2d75c930036ca/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/code_reviewer_ec21878fa6d144fd933343f3fef91bfd/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/api_e2e_engineer_73460dfc0a254eb4a3939637681f11b2/raw_traces_active.jsonl
+Memory file missing: /tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP/server-data/memory/agents/project_task_manager_probe_8eab0009b6434595b41ef267f5ba4239/collaboration/software_engineering_team_probe_ca89526ab7704a5ea039e8a6cb7c2d3a/delivery_engineer_4bcd4c682ca44e8cbb3ddc1f1d5b2a8d/raw_traces_active.jsonl

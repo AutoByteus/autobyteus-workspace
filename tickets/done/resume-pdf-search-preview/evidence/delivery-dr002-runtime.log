@@ -1,0 +1,31 @@
+Read-only target access/integrity after isolated native validation.
+$ hostname
+74ff273d28fe
+exit=0
+$ ps -p 35,61 -o pid,ppid,lstart,args
+  PID  PPID                  STARTED COMMAND
+   35     1 Mon Oct 12 18:41:58 2026 /usr/bin/Xvnc :99 -geometry 1920x1080 -depth 24 -rfbport 5900 -SecurityTypes=None -localhost no -AlwaysShared
+   61     1 Mon Oct 12 18:41:58 2026 node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data
+exit=0
+$ readlink /proc/61/cwd
+/app/autobyteus-server-ts
+exit=0
+$ sha256sum /app/autobyteus-server-ts/dist/file-explorer/file-explorer.js /home/autobyteus/workspace/autobyteus-investor-applications/job-applications/bit-capital-ai-engineer-2026/Yu_Zheng_Resume_2026_Application.pdf
+5dcb1ecaa2740df80f85d2828a74d18bcf575fe93c173599973bc9343a10cc8c  /app/autobyteus-server-ts/dist/file-explorer/file-explorer.js
+7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5  /home/autobyteus/workspace/autobyteus-investor-applications/job-applications/bit-capital-ai-engineer-2026/Yu_Zheng_Resume_2026_Application.pdf
+exit=0
+{
+  "docker": null,
+  "podman": null,
+  "sockets": {
+    "/var/run/docker.sock": false,
+    "/run/docker.sock": false,
+    "/run/podman/podman.sock": false
+  },
+  "dockerEndpoint": {
+    "DOCKER_HOST": "<unset>",
+    "DOCKER_CONTEXT": "<unset>",
+    "DOCKER_TLS_VERIFY": "<unset>"
+  }
+}
+No new authorized host/operator/frontend/rollout/acceptance facts received. PID61 current start observed18:41:58Oct12 differs from historical DR00113:49:29; no restart/deployment by Delivery. Still installed baseline module, no image identity inferred from PID/hostname.

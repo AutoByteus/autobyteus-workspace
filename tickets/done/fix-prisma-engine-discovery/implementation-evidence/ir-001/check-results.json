@@ -1,0 +1,56 @@
+{
+  "sourceCommit": "dd7be60ff6c732e0ddf6d9ac97a822bda8a85869",
+  "scope": "Implementation-only local checks; NOT Docker/API/E2E or final acceptance",
+  "initialBaseRegression": {
+    "passed": 10,
+    "failed": 20,
+    "log": "base-regression.log"
+  },
+  "initialCurrentGraph": {
+    "passed": 27,
+    "failed": 3,
+    "cause": "Vitest pnpm shim NODE_PATH allowed test-runner packages; corrected missing-metadata fixture isolation",
+    "log": "graph-regression.log"
+  },
+  "focusedUnits": {
+    "filesPassed": 20,
+    "testsPassed": 197,
+    "log": "focused-units.log"
+  },
+  "initialFullUnits": {
+    "filesPassed": 682,
+    "filesFailedToLoad": 5,
+    "filesSkipped": 4,
+    "testsPassed": 5431,
+    "testsSkipped": 7,
+    "cause": "Filtered dependency install omitted example-app SDK links; full frozen workspace install fixed setup",
+    "log": "server-units.log"
+  },
+  "correctedSetupUnits": {
+    "filesPassed": 7,
+    "testsPassed": 62,
+    "log": "setup-corrected-units.log"
+  },
+  "finalFullUnits": {
+    "exitCode": 0,
+    "filesPassed": 687,
+    "filesSkipped": 4,
+    "testsPassed": 5455,
+    "testsSkipped": 7,
+    "log": "server-units-complete-deps.log"
+  },
+  "prebuild": "passed after installing build-only SDK dependencies (initial failure preserved)",
+  "productionTypecheck": "passed",
+  "freshServerBuild": "passed",
+  "narrowNativeIntegration": {
+    "platform": "darwin-arm64",
+    "deployCount": 2,
+    "result": "PASS",
+    "log": "native-local.log"
+  },
+  "linuxDockerCurrentSourceRecreation": "REQUIRED downstream API-owned, NOT RUN",
+  "broaderIntegrationSuites": "REQUIRED downstream API-owned, NOT RUN",
+  "e2eHarnessAndPackageScript": "REQUIRED downstream API-owned, NOT AUTHORED by implementation role",
+  "userNodeOperations": 0,
+  "modelsOrPaidProviderCalls": 0
+}

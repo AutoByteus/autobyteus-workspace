@@ -1,0 +1,35 @@
+{
+  "observedAt": "2026-10-13T12:35:37.438907+00:00",
+  "autobyteus-server-0": {
+    "/var/log/supervisor/autobyteus_server.log": {
+      "engineSources": [
+        "Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x"
+      ],
+      "migrationsCompleted": true,
+      "migrationRpcMethodMissing": false,
+      "databaseMigrationFailed": false
+    },
+    "/var/log/supervisor/autobyteus_server.err.log": {
+      "engineSources": [],
+      "migrationsCompleted": false,
+      "migrationRpcMethodMissing": false,
+      "databaseMigrationFailed": false
+    }
+  },
+  "autobyteus-server-2": {
+    "/var/log/supervisor/autobyteus_server.log": {
+      "engineSources": [
+        "Using Prisma engine overrides from cache: /root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x"
+      ],
+      "migrationsCompleted": false,
+      "migrationRpcMethodMissing": false,
+      "databaseMigrationFailed": false
+    },
+    "/var/log/supervisor/autobyteus_server.err.log": {
+      "engineSources": [],
+      "migrationsCompleted": false,
+      "migrationRpcMethodMissing": true,
+      "databaseMigrationFailed": true
+    }
+  }
+}

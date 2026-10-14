@@ -1,0 +1,21 @@
+$ git -C /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node2-prisma-engine-mismatch status --porcelain
+EXIT 0
+$ git -C /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node2-prisma-engine-mismatch status --short --ignored
+EXIT 0
+$ git --git-dir=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git merge-base --is-ancestor codex/docker-node2-prisma-engine-mismatch origin/personal
+EXIT 0
+$ git --git-dir=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git merge-base --is-ancestor finalize/docker-node2-prisma-engine-mismatch origin/personal
+EXIT 0
+$ git --git-dir=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git worktree remove /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node2-prisma-engine-mismatch
+EXIT 0
+$ git --git-dir=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git branch -d codex/docker-node2-prisma-engine-mismatch
+warning: deleting branch 'codex/docker-node2-prisma-engine-mismatch' that has been merged to
+         'refs/remotes/origin/codex/docker-node2-prisma-engine-mismatch', but not yet merged to HEAD
+Deleted branch codex/docker-node2-prisma-engine-mismatch (was bc5ffb414d).
+EXIT 0
+$ git --git-dir=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git branch -d finalize/docker-node2-prisma-engine-mismatch
+warning: deleting branch 'finalize/docker-node2-prisma-engine-mismatch' that has been merged to
+         'refs/remotes/origin/personal', but not yet merged to HEAD
+Deleted branch finalize/docker-node2-prisma-engine-mismatch (was 381cadf91a).
+EXIT 0
+Complete public package byte-identical preserved before removal. Task worktree/local ticket/finalize branches absent. Prune Not required: worktree removal removed registration; no unrelated global prune. Remote ticket branch retained for provenance, cleanup Not required. No Docker commands or user-node/volume/workspace/private-backup changes. Backup retained0700/archive0600/25487360bytes.

@@ -1,0 +1,10 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--stat"
+  ],
+  "exit": 0,
+  "stdout": " autobyteus-server-ts/package.json | 3 ++-\n 1 file changed, 2 insertions(+), 1 deletion(-)\n",
+  "stderr": ""
+}

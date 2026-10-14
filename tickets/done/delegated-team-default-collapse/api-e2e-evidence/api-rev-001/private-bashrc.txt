@@ -1,0 +1,1 @@
+export PATH="/tmp/delegated-team-desktop.YhySpw/bin:/tmp/delegated-team-toolchain:/usr/bin:/bin"

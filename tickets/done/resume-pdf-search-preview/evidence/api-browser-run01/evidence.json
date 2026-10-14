@@ -1,0 +1,296 @@
+{
+  "startedAt": "2026-10-12T16:25:50.117Z",
+  "node": "v22.23.3",
+  "cases": {
+    "API-002": {
+      "result": "Pass",
+      "details": {
+        "found": [
+          "resume-notes.md",
+          "applications/nested/resume sample.pdf"
+        ],
+        "pdfStatus": 200,
+        "pdfSha256": "999bd43e8b679a7f1b65482120948444dca47a1e541122cae3bb27862069e87d",
+        "denied": [
+          {
+            "locator": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/workspace/applications/nested/resume sample.pdf",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          },
+          {
+            "locator": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/outside.txt",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          },
+          {
+            "locator": "../outside.txt",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          },
+          {
+            "locator": "../workspace-sibling/leak.txt",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          }
+        ],
+        "textRead": true
+      }
+    },
+    "API-003": {
+      "result": "Fail",
+      "error": "AssertionError [ERR_ASSERTION]: Browser errors are not waived\n+ actual - expected\n\n+ [\n+   {\n+     kind: 'console',\n+     message: 'Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)'\n+   },\n+   {\n+     kind: 'console',\n+     message: 'TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:33267/_nuxt/pages/api-e2e-search-pdf.vue'\n+   },\n+   {\n+     kind: 'console',\n+     message: '[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:33267/_nuxt/pages/api-e2e-search-pdf.vue'\n+   },\n+   {\n+     kind: 'console',\n+     message: 'Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)'\n+   },\n+   {\n+     kind: 'console',\n+     message: 'Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)'\n+   },\n+   {\n+     kind: 'console',\n+     message: '[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:33267/_nuxt/pages/api-e2e-search-pdf.vue'\n+   }\n+ ]\n- []\n\n    at file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-preview-probe.mjs:199:12\n    at async run (file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-preview-probe.mjs:81:36)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-preview-probe.mjs:164:3"
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 23507
+    },
+    {
+      "label": "frontend",
+      "pid": 23626
+    }
+  ],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:45267/graphql",
+      "request": {
+        "operationName": "GetAllWorkspaces",
+        "variables": {},
+        "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+      },
+      "response": {
+        "data": {
+          "workspaces": [
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "agent_ws_94f0d015ebf2c21b1acc19ea45847bdaef6a61151184db1f8ecb56bc6bc002fe",
+              "name": "workspace",
+              "displayName": "workspace",
+              "config": {
+                "rootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/workspace",
+                "workspaceId": null
+              },
+              "workspaceRootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/workspace",
+              "absolutePath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/workspace",
+              "kind": "filesystem",
+              "isTemp": false
+            },
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "temp_ws_default",
+              "name": "Temp Workspace",
+              "displayName": "Temp Workspace",
+              "config": {
+                "rootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/data/temp_workspace",
+                "workspaceId": "temp_ws_default"
+              },
+              "workspaceRootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/data/temp_workspace",
+              "absolutePath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/data/temp_workspace",
+              "kind": "temp",
+              "isTemp": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:45267/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_94f0d015ebf2c21b1acc19ea45847bdaef6a61151184db1f8ecb56bc6bc002fe",
+          "folderPath": ""
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"c984eea4-c843-5816-b16c-42ccac7ac935\",\"name\":\"workspace\",\"path\":\"workspace\",\"is_file\":false,\"children\":[{\"id\":\"b300cdc4-3ae2-52f6-affe-1dc517c9b482\",\"name\":\"applications\",\"path\":\"applications\",\"is_file\":false,\"children\":[],\"children_loaded\":false},{\"id\":\"3094e73e-b0d4-5bb6-aad1-da4398c4de88\",\"name\":\"resume-notes.md\",\"path\":\"resume-notes.md\",\"is_file\":true,\"children\":[],\"children_loaded\":true}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:45267/graphql",
+      "request": {
+        "operationName": "GetAllWorkspaces",
+        "variables": {},
+        "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+      },
+      "response": {
+        "data": {
+          "workspaces": [
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "agent_ws_94f0d015ebf2c21b1acc19ea45847bdaef6a61151184db1f8ecb56bc6bc002fe",
+              "name": "workspace",
+              "displayName": "workspace",
+              "config": {
+                "rootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/workspace",
+                "workspaceId": null
+              },
+              "workspaceRootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/workspace",
+              "absolutePath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/workspace",
+              "kind": "filesystem",
+              "isTemp": false
+            },
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "temp_ws_default",
+              "name": "Temp Workspace",
+              "displayName": "Temp Workspace",
+              "config": {
+                "rootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/data/temp_workspace",
+                "workspaceId": "temp_ws_default"
+              },
+              "workspaceRootPath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/data/temp_workspace",
+              "absolutePath": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/data/temp_workspace",
+              "kind": "temp",
+              "isTemp": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:45267/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_94f0d015ebf2c21b1acc19ea45847bdaef6a61151184db1f8ecb56bc6bc002fe",
+          "folderPath": ""
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"c984eea4-c843-5816-b16c-42ccac7ac935\",\"name\":\"workspace\",\"path\":\"workspace\",\"is_file\":false,\"children\":[{\"id\":\"b300cdc4-3ae2-52f6-affe-1dc517c9b482\",\"name\":\"applications\",\"path\":\"applications\",\"is_file\":false,\"children\":[],\"children_loaded\":false},{\"id\":\"3094e73e-b0d4-5bb6-aad1-da4398c4de88\",\"name\":\"resume-notes.md\",\"path\":\"resume-notes.md\",\"is_file\":true,\"children\":[],\"children_loaded\":true}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:45267/graphql",
+      "request": {
+        "operationName": "SearchFiles",
+        "variables": {
+          "workspaceId": "agent_ws_94f0d015ebf2c21b1acc19ea45847bdaef6a61151184db1f8ecb56bc6bc002fe",
+          "query": "resume"
+        },
+        "query": "query SearchFiles($workspaceId: String!, $query: String!) {\n  searchFiles(workspaceId: $workspaceId, query: $query)\n}"
+      },
+      "response": {
+        "data": {
+          "searchFiles": [
+            "resume-notes.md",
+            "applications/nested/resume sample.pdf"
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:45267/rest/workspaces/agent_ws_94f0d015ebf2c21b1acc19ea45847bdaef6a61151184db1f8ecb56bc6bc002fe/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+      "status": 200,
+      "contentType": "application/pdf"
+    },
+    {
+      "url": "http://127.0.0.1:45267/graphql",
+      "request": {
+        "operationName": "GetFileContent",
+        "variables": {
+          "workspaceId": "agent_ws_94f0d015ebf2c21b1acc19ea45847bdaef6a61151184db1f8ecb56bc6bc002fe",
+          "filePath": "resume-notes.md"
+        },
+        "query": "query GetFileContent($workspaceId: String!, $filePath: String!) {\n  fileContent(workspaceId: $workspaceId, filePath: $filePath)\n}"
+      },
+      "response": {
+        "data": {
+          "fileContent": "# SYNTHETIC RESUME NOTES\n\nSame workspace-relative text reader.\n"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:45267/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_94f0d015ebf2c21b1acc19ea45847bdaef6a61151184db1f8ecb56bc6bc002fe",
+          "folderPath": "applications"
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"b300cdc4-3ae2-52f6-affe-1dc517c9b482\",\"name\":\"applications\",\"path\":\"applications\",\"is_file\":false,\"children\":[{\"id\":\"2b387004-6df4-5b92-9101-58024b5de68d\",\"name\":\"nested\",\"path\":\"applications/nested\",\"is_file\":false,\"children\":[],\"children_loaded\":false}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:45267/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_94f0d015ebf2c21b1acc19ea45847bdaef6a61151184db1f8ecb56bc6bc002fe",
+          "folderPath": "applications/nested"
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"2b387004-6df4-5b92-9101-58024b5de68d\",\"name\":\"nested\",\"path\":\"applications/nested\",\"is_file\":false,\"children\":[{\"id\":\"e7ed1549-3298-5f08-88b5-efae4ef54b85\",\"name\":\"resume sample.pdf\",\"path\":\"applications/nested/resume sample.pdf\",\"is_file\":true,\"children\":[],\"children_loaded\":true}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:45267/rest/workspaces/agent_ws_94f0d015ebf2c21b1acc19ea45847bdaef6a61151184db1f8ecb56bc6bc002fe/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+      "status": 200,
+      "contentType": "application/pdf"
+    }
+  ],
+  "browserErrors": [
+    {
+      "kind": "console",
+      "message": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "kind": "console",
+      "message": "TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:33267/_nuxt/pages/api-e2e-search-pdf.vue"
+    },
+    {
+      "kind": "console",
+      "message": "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:33267/_nuxt/pages/api-e2e-search-pdf.vue"
+    },
+    {
+      "kind": "console",
+      "message": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "kind": "console",
+      "message": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "kind": "console",
+      "message": "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:33267/_nuxt/pages/api-e2e-search-pdf.vue"
+    }
+  ],
+  "cleanup": {},
+  "build": {
+    "source": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts/src/file-explorer/file-explorer.ts",
+    "sourceSha256": "8e43f4b98bcf7d8aa02b535fa22ee503beafa399e5dd47b1c647f2a16e78bd4e",
+    "dist": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts/dist/file-explorer/file-explorer.js",
+    "distSha256": "90b6abe16699570f760c89a8b5d9d266e42344582f815b493a400a2e46abb308",
+    "gitHead": "4c3734952c4e1219687b71df20ff4f4d00572958"
+  },
+  "fixture": {
+    "owned": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM",
+    "root": "/tmp/resume-pdf-api.RwYhMo/tmp/search-pdf-preview-abeFsM/workspace",
+    "pdfPath": "applications/nested/resume sample.pdf",
+    "textPath": "resume-notes.md",
+    "pdfSha256": "999bd43e8b679a7f1b65482120948444dca47a1e541122cae3bb27862069e87d"
+  },
+  "endpoints": {
+    "base": "http://127.0.0.1:45267",
+    "front": "http://127.0.0.1:33267"
+  },
+  "workspaceId": "agent_ws_94f0d015ebf2c21b1acc19ea45847bdaef6a61151184db1f8ecb56bc6bc002fe",
+  "browser": "153.0.8010.52"
+}

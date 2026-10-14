@@ -1,0 +1,153 @@
+{
+  "revision": "CRR-002",
+  "checkedAt": "2026-10-13T03:44:38.092557+00:00",
+  "head": "16e4da6e0544950f0fc9c7f2b60db609b90577e7",
+  "sourceCommit": "eff597d4ce1f40f1fbe489a6b9a340d6623e2a77",
+  "durableTestPaths": [
+    "autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts"
+  ],
+  "removingOnlyTypedAuthorityRepairRecoversIR001ByteForByte": true,
+  "sourceSha256": "f2657a9d7c350025e4a5f9648ad1cf8d60cf018bc9a17bedf2dbd67734b46b38",
+  "reviewerExecutedTests": false,
+  "reviewerMadeTestOrSourceFix": false,
+  "executions": {
+    "target-3": {
+      "exit": 0,
+      "summary": [
+        "Test Files  1 passed (1)",
+        "Tests  8 passed | 1 skipped (9)",
+        "Duration  8.87s (transform 4.96s, setup 30ms, import 7.43s, tests 828ms, environment 0ms)"
+      ],
+      "resourceObservations": {
+        "ownedGroupRemaining": [],
+        "testWorkspaceRemnants": [],
+        "privateRootRemoved": true,
+        "unhandledErrorMarker": false
+      },
+      "caseResults": {
+        "API-CL01": "Pass",
+        "API-CL02": "Pass",
+        "API-CL03": "Pass",
+        "API-CL04": "Pass",
+        "WS-INT": "Pass",
+        "WS-BUSY": "Pass",
+        "WS-RACE": "Pass",
+        "WS-BG": "Pass",
+        "LIVE-001": "Not Tested"
+      },
+      "eventSha256": "7d5f901db43fb2d1325ec2bd5f55befa699a10cac21c2311b044771928c4f1d1"
+    },
+    "target-4": {
+      "exit": 0,
+      "summary": [
+        "Test Files  1 passed (1)",
+        "Tests  8 passed | 1 skipped (9)",
+        "Duration  9.39s (transform 5.28s, setup 29ms, import 7.96s, tests 808ms, environment 0ms)"
+      ],
+      "resourceObservations": {
+        "ownedGroupRemaining": [],
+        "testWorkspaceRemnants": [],
+        "privateRootRemoved": true,
+        "unhandledErrorMarker": false
+      },
+      "caseResults": {
+        "API-CL01": "Pass",
+        "API-CL02": "Pass",
+        "API-CL03": "Pass",
+        "API-CL04": "Pass",
+        "WS-INT": "Pass",
+        "WS-BUSY": "Pass",
+        "WS-RACE": "Pass",
+        "WS-BG": "Pass",
+        "LIVE-001": "Not Tested"
+      },
+      "eventSha256": "05e89fc754fa467c57f9477a13aa8f6e59d33cc63e99e777534ea2ae8c1e83a6"
+    },
+    "target-5": {
+      "exit": 0,
+      "summary": [
+        "Test Files  1 passed (1)",
+        "Tests  8 passed | 1 skipped (9)",
+        "Duration  10.96s (transform 6.21s, setup 110ms, import 9.08s, tests 1.06s, environment 0ms)"
+      ],
+      "resourceObservations": {
+        "ownedGroupRemaining": [],
+        "testWorkspaceRemnants": [],
+        "privateRootRemoved": true,
+        "unhandledErrorMarker": false
+      }
+    },
+    "lifecycle-r2": {
+      "exit": 0,
+      "summary": [
+        "Test Files  5 passed (5)",
+        "Tests  17 passed (17)",
+        "Duration  24.32s (transform 3.27s, setup 99ms, import 8.46s, tests 14.47s, environment 0ms)"
+      ],
+      "resourceObservations": {
+        "ownedGroupRemaining": [],
+        "testWorkspaceRemnants": [],
+        "privateRootRemoved": true,
+        "unhandledErrorMarker": false
+      }
+    },
+    "regressions": {
+      "exit": 0,
+      "summary": [
+        "Test Files  4 passed (4)",
+        "Tests  109 passed (109)",
+        "Duration  11.34s (transform 5.03s, setup 70ms, import 9.27s, tests 1.00s, environment 0ms)"
+      ],
+      "resourceObservations": {
+        "ownedGroupRemaining": [],
+        "testWorkspaceRemnants": [],
+        "privateRootRemoved": true,
+        "unhandledErrorMarker": false
+      }
+    },
+    "typecheck": {
+      "exit": 0,
+      "summary": [],
+      "resourceObservations": {
+        "ownedGroupRemaining": [],
+        "testWorkspaceRemnants": [],
+        "privateRootRemoved": true,
+        "unhandledErrorMarker": false
+      }
+    },
+    "focused-types-r2": {
+      "exit": 0,
+      "summary": [],
+      "resourceObservations": {
+        "ownedGroupRemaining": [],
+        "testWorkspaceRemnants": [],
+        "privateRootRemoved": true,
+        "unhandledErrorMarker": false
+      }
+    },
+    "harness-probes-rerun": {
+      "exit": 0,
+      "summary": [
+        "Test Files  1 passed (1)",
+        "Tests  3 passed (3)",
+        "Duration  5.83s (transform 3.22s, setup 52ms, import 4.72s, tests 337ms, environment 0ms)"
+      ],
+      "resourceObservations": {
+        "ownedGroupRemaining": [],
+        "testWorkspaceRemnants": [],
+        "privateRootRemoved": true,
+        "unhandledErrorMarker": false
+      },
+      "caseResults": {
+        "PROBE-BODY": "Pass",
+        "PROBE-CLEANUP": "Pass",
+        "PROBE-SETUP": "Pass"
+      },
+      "eventSha256": "35499f91fd381699d239843a45a3a9a2fe4cab4dece1cc5d888f88ed18be47a4"
+    }
+  },
+  "exactAcceptanceCommandReceipt": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5.command.json",
+  "productionAndChildFixtureDiffExit": 0,
+  "durableTestWhitespaceDiffExit": 0,
+  "temporaryProbeSiblingAbsent": true
+}

@@ -1,0 +1,42 @@
+
+> autobyteus@1.5.3-beta.3 test:nuxt /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/agentRunCollaborationDisclosure.spec.ts components/workspace/history/__tests__/AgentRunTaskRowsDisclosure.spec.ts composables/projects/__tests__/useTaskRootNavigationDisclosure.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web
+
+stderr | components/workspace/history/__tests__/AgentRunTaskRowsDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRunCollaborationDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentRunCollaborationDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/AgentRunTaskRowsDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentRunCollaborationDisclosure.spec.ts (4 tests) 46ms
+ ✓ components/workspace/history/__tests__/AgentRunTaskRowsDisclosure.spec.ts (4 tests) 219ms
+stderr | composables/projects/__tests__/useTaskRootNavigationDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/projects/__tests__/useTaskRootNavigationDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/projects/__tests__/useTaskRootNavigationDisclosure.spec.ts (1 test) 10ms
+
+ Test Files  3 passed (3)
+      Tests  9 passed (9)
+   Start at  07:36:32
+   Duration  18.11s (transform 8.10s, setup 27.28s, collect 912ms, tests 275ms, environment 2.62s, prepare 1.14s)
+

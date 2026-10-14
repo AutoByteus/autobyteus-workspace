@@ -1,0 +1,1892 @@
+{
+  "startedAt": "2026-10-13T16:02:20.105Z",
+  "cases": {
+    "DCP-005": {
+      "title": "delegated-copy-model-change REQ-001 (any member), AC-010 scenario (Team root, UI): one member of a Team copy, after it has run, gets its own model in Settings; the other rows stay as they were; its next turn resumes its conversation on that model while the coordinator keeps its own",
+      "result": "Pass",
+      "ms": 34097,
+      "details": {
+        "teamRunId": "home_team_7903_9a3006a3aa674a97bdcf8473b82df43c",
+        "copyTeamRunId": "pair_team_3bb5_0f5a232917ce453e852faf379aad70a4",
+        "members": {
+          "lead": "lead_3cb5_3234f456639f41948cece60c32108235",
+          "engineer": "engineer_5d0e_1e152a3967794fd18c9a250c4e93b854",
+          "unoffered": "unoffered_f201_34140c034b9043179ec4b3e9b865dcef"
+        },
+        "firstCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /pair_team_3bb5/unoffered.\",\"target_agent_run_id\":\"unoffered_f201_34140c034b9043179ec4b3e9b865dcef\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /pair_team_3bb5/unoffered.\",\"target_agent_run_id\":\"unoffered_f201_34140c034b9043179ec4b3e9b865dcef\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nBrowser\nVNC Viewer\nMessages\n1 Messages\nMessage\n13. Okt., 18:02\n\nto unoffered\n\nFirst review.\n\nMessage\nunoffered\n13. Okt., 18:02\n\nFirst review.\nMessage\nunoffered\n13. Okt., 18:02\n\nFirst review.",
+        "memberFirst": [
+          [
+            "dlc-alt-model",
+            null
+          ]
+        ],
+        "engineerBefore": {
+          "execution": {
+            "kind": "task_team_agent",
+            "address": "/pair_team_3bb5/engineer",
+            "agent_run_id": "engineer_5d0e_1e152a3967794fd18c9a250c4e93b854",
+            "platform_agent_run_id": null
+          },
+          "source": {
+            "address": "/pair_team_3bb5/engineer",
+            "agent_definition_id": "engineer-5d0e",
+            "launch_configuration": {
+              "runtime_kind": "grok_build",
+              "llm_model_identifier": "grok-4.7",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+            },
+            "launch_source": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          }
+        },
+        "before": {
+          "team": "Alt test model · Antigravity · Auto-approve · Team default",
+          "lead": "Alt test model · Antigravity · Auto-approve · Team default",
+          "engineer": "grok-4.7 · Grok Build · Auto-approve · Agent default",
+          "member": "Alt test model · Antigravity · Auto-approve · Team default"
+        },
+        "after": {
+          "team": "Alt test model · Antigravity · Auto-approve · Team default",
+          "lead": "Alt test model · Antigravity · Auto-approve · Team default",
+          "engineer": "Grok 4.7 · Grok Build · Auto-approve · Agent default",
+          "member": "Gemini test · Antigravity · Auto-approve"
+        },
+        "memberSource": null,
+        "engineerAfter": {
+          "execution": {
+            "kind": "task_team_agent",
+            "address": "/pair_team_3bb5/engineer",
+            "agent_run_id": "engineer_5d0e_1e152a3967794fd18c9a250c4e93b854",
+            "platform_agent_run_id": null
+          },
+          "source": {
+            "address": "/pair_team_3bb5/engineer",
+            "agent_definition_id": "engineer-5d0e",
+            "launch_configuration": {
+              "runtime_kind": "grok_build",
+              "llm_model_identifier": "grok-4.7",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+            },
+            "launch_source": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          }
+        },
+        "storedChoices": {
+          "team": null,
+          "members": {
+            "lead": null,
+            "engineer": null,
+            "unoffered": "gemini-3.8-flash-low"
+          }
+        },
+        "secondCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /pair_team_3bb5/unoffered.\",\"target_agent_run_id\":\"unoffered_f201_34140c034b9043179ec4b3e9b865dcef\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /pair_team_3bb5/unoffered.\",\"target_agent_run_id\":\"unoffered_f201_34140c034b9043179ec4b3e9b865dcef\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nBrowser\nVNC Viewer\nMessages\n2 Messages\nMessage\n13. Okt., 18:03\n\nto unoffered\n\nSecond review.\n\nMessage\n13. Okt., 18:02\n\nto unoffered\n\nFirst review.\n\nMessage\nunoffered\n13. Okt., 18:02\n\nFirst review.\nMessage\nunoffered\n13. Okt., 18:02\n\nFirst review.",
+        "memberResume": [
+          [
+            "gemini-3.8-flash-low",
+            "b12af8de-9c57-4502-aa26-06b670d41fd3"
+          ]
+        ],
+        "leadResume": [
+          "dlc-alt-model"
+        ]
+      }
+    },
+    "SSR-004": {
+      "title": "AC-001/002/004/006 same-model settings-only Grok member thinking Save, repeated edit and reopen",
+      "result": "Pass",
+      "ms": 20469,
+      "details": {
+        "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+        "teamId": "pair_team_3bb5_34558022580d4a16ba4bc890e912331d",
+        "members": {
+          "lead": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7",
+          "engineer": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+          "unoffered": "unoffered_f201_b72b353001d44778afa1aabe68a79820"
+        },
+        "saves": [
+          {
+            "effort": "low",
+            "displayed": "Low",
+            "selection": {
+              "llmModelIdentifier": "grok-4.7",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "selectedAt": "2026-10-13T16:03:20.438Z"
+            },
+            "summary": "Grok 4.7 · Grok Build · Auto-approve"
+          },
+          {
+            "effort": "xhigh",
+            "displayed": "Xhigh",
+            "selection": {
+              "llmModelIdentifier": "grok-4.7",
+              "llmConfig": {
+                "reasoning_effort": "xhigh"
+              },
+              "selectedAt": "2026-10-13T16:03:21.026Z"
+            },
+            "summary": "Grok 4.7 · Grok Build · Auto-approve"
+          }
+        ],
+        "reopened": "Xhigh",
+        "wire": [
+          {
+            "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:10.967Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaboration": {
+                  "root_subject_kind": "agent",
+                  "root_run_id": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "root_agent": {
+                    "base_change_sequence": 0,
+                    "is_active": true,
+                    "execution_tree": {
+                      "subjectKind": "agent",
+                      "createdAt": "2026-10-13T16:03:10.958Z",
+                      "host": {
+                        "address": "/manager_c085",
+                        "agentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                        "agentDefinitionId": "manager-c085"
+                      },
+                      "collaborators": [],
+                      "taskExecutions": []
+                    },
+                    "closed_task_executions": [],
+                    "communication_messages": {
+                      "schemaVersion": 1,
+                      "subjectKind": "agent",
+                      "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                      "messages": []
+                    },
+                    "agent_statuses": [],
+                    "agent_input_states": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+            "variables": {
+              "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+              "memberAddress": "/pair_team_3bb5/lead",
+              "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7"
+            },
+            "at": "2026-10-13T16:03:13.138Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaborationMemberProjection": {
+                  "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7",
+                  "memberAddress": "/pair_team_3bb5/lead",
+                  "conversation": [],
+                  "activities": [],
+                  "summary": null,
+                  "lastActivityAt": null,
+                  "hasEarlierActiveTraceEvents": false,
+                  "__typename": "AgentRunCollaborationMemberProjectionPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+            "variables": {
+              "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+              "memberAddress": "/pair_team_3bb5/engineer",
+              "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5"
+            },
+            "at": "2026-10-13T16:03:13.139Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaborationMemberProjection": {
+                  "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                  "memberAddress": "/pair_team_3bb5/engineer",
+                  "conversation": [],
+                  "activities": [],
+                  "summary": null,
+                  "lastActivityAt": null,
+                  "hasEarlierActiveTraceEvents": false,
+                  "__typename": "AgentRunCollaborationMemberProjectionPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+            "variables": {
+              "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+              "memberAddress": "/pair_team_3bb5/unoffered",
+              "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820"
+            },
+            "at": "2026-10-13T16:03:13.140Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaborationMemberProjection": {
+                  "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820",
+                  "memberAddress": "/pair_team_3bb5/unoffered",
+                  "conversation": [],
+                  "activities": [],
+                  "summary": null,
+                  "lastActivityAt": null,
+                  "hasEarlierActiveTraceEvents": false,
+                  "__typename": "AgentRunCollaborationMemberProjectionPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:13.756Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "getAgentRunResumeConfig": {
+                  "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "isActive": true,
+                  "metadataConfig": {
+                    "agentDefinitionId": "manager-c085",
+                    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace",
+                    "llmModelIdentifier": "gemini-3.8-flash-low",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "runtimeKind": "antigravity_cli",
+                    "runtimeReference": {
+                      "runtimeKind": "antigravity_cli",
+                      "sessionId": null,
+                      "threadId": null,
+                      "metadata": null,
+                      "__typename": "RunRuntimeReferenceObject"
+                    },
+                    "__typename": "RunMetadataConfigObject"
+                  },
+                  "modelConfigEditability": {
+                    "editable": false,
+                    "reason": "RUN_ACTIVE",
+                    "__typename": "RunModelConfigEditabilityObject"
+                  },
+                  "__typename": "RunResumeConfigPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:15.928Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaboration": {
+                  "root_subject_kind": "agent",
+                  "root_run_id": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "root_agent": {
+                    "base_change_sequence": 0,
+                    "is_active": false,
+                    "execution_tree": {
+                      "subjectKind": "agent",
+                      "createdAt": "2026-10-13T16:03:10.958Z",
+                      "host": {
+                        "address": "/manager_c085",
+                        "agentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                        "agentDefinitionId": "manager-c085"
+                      },
+                      "collaborators": [],
+                      "taskExecutions": [
+                        {
+                          "address": "/pair_team_3bb5",
+                          "teamRunId": "pair_team_3bb5_34558022580d4a16ba4bc890e912331d",
+                          "members": [
+                            {
+                              "address": "/pair_team_3bb5/lead",
+                              "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7",
+                              "platformAgentRunId": "8d5d30aa-b3c4-4164-bb2c-08dc0dc52344"
+                            },
+                            {
+                              "address": "/pair_team_3bb5/engineer",
+                              "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                              "platformAgentRunId": null
+                            },
+                            {
+                              "address": "/pair_team_3bb5/unoffered",
+                              "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820",
+                              "platformAgentRunId": null
+                            }
+                          ],
+                          "taskExecutions": [],
+                          "delegatorAgentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                          "startedAt": "2026-10-13T16:03:13.085Z",
+                          "source": {
+                            "kind": "agent_team",
+                            "teamDefinitionId": "pair-team-3bb5",
+                            "coordinatorAddress": "/pair_team_3bb5/lead",
+                            "members": [
+                              {
+                                "address": "/pair_team_3bb5/lead",
+                                "agentDefinitionId": "lead-3cb5"
+                              },
+                              {
+                                "address": "/pair_team_3bb5/engineer",
+                                "agentDefinitionId": "engineer-5d0e",
+                                "launchConfiguration": {
+                                  "runtimeKind": "grok_build",
+                                  "llmModelIdentifier": "grok-4.7",
+                                  "llmConfig": null,
+                                  "autoExecuteTools": true,
+                                  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                                },
+                                "launchSource": {
+                                  "origin": "agent_default",
+                                  "fallbacks": []
+                                }
+                              },
+                              {
+                                "address": "/pair_team_3bb5/unoffered",
+                                "agentDefinitionId": "unoffered-f201",
+                                "launchSource": {
+                                  "origin": "team_default",
+                                  "fallbacks": [
+                                    {
+                                      "layer": "agent_default",
+                                      "runtimeKind": "antigravity_cli",
+                                      "llmModelIdentifier": "dlc-no-such-model",
+                                      "reason": "model_unavailable",
+                                      "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "handoffs": [],
+                            "defaultLaunchConfiguration": {
+                              "runtimeKind": "antigravity_cli",
+                              "llmModelIdentifier": "dlc-alt-model",
+                              "llmConfig": null,
+                              "autoExecuteTools": true,
+                              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                            },
+                            "defaultLaunchSource": {
+                              "origin": "team_default",
+                              "fallbacks": []
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "closed_task_executions": [],
+                    "communication_messages": {
+                      "schemaVersion": 1,
+                      "subjectKind": "agent",
+                      "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                      "messages": []
+                    },
+                    "agent_statuses": [],
+                    "agent_input_states": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:15.929Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "getAgentRunResumeConfig": {
+                  "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "isActive": false,
+                  "metadataConfig": {
+                    "agentDefinitionId": "manager-c085",
+                    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace",
+                    "llmModelIdentifier": "gemini-3.8-flash-low",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "runtimeKind": "antigravity_cli",
+                    "runtimeReference": {
+                      "runtimeKind": "antigravity_cli",
+                      "sessionId": null,
+                      "threadId": null,
+                      "metadata": null,
+                      "__typename": "RunRuntimeReferenceObject"
+                    },
+                    "__typename": "RunMetadataConfigObject"
+                  },
+                  "modelConfigEditability": {
+                    "editable": true,
+                    "reason": null,
+                    "__typename": "RunModelConfigEditabilityObject"
+                  },
+                  "__typename": "RunResumeConfigPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+            "variables": {
+              "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+              "memberAddress": "/pair_team_3bb5/lead",
+              "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7"
+            },
+            "at": "2026-10-13T16:03:15.935Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaborationMemberProjection": {
+                  "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7",
+                  "memberAddress": "/pair_team_3bb5/lead",
+                  "conversation": [
+                    {
+                      "kind": "message",
+                      "role": "user",
+                      "content": "Task delegator address: /manager_c085\nTask delegator AgentRun ID: manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9\n\nDescription:\nSettings-only member fixture.",
+                      "media": null,
+                      "ts": 1791907393.266
+                    },
+                    {
+                      "kind": "message",
+                      "role": "assistant",
+                      "content": "OK",
+                      "media": null,
+                      "ts": 1791907393.27
+                    }
+                  ],
+                  "activities": [],
+                  "summary": "Task delegator address: /manager_c085 Task delegator AgentRun ID: manager_c085_cf4e922d2c704fb4b4...",
+                  "lastActivityAt": "2026-10-13T16:03:13.270Z",
+                  "hasEarlierActiveTraceEvents": false,
+                  "__typename": "AgentRunCollaborationMemberProjectionPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+            "variables": {
+              "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+              "memberAddress": "/pair_team_3bb5/engineer",
+              "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5"
+            },
+            "at": "2026-10-13T16:03:15.936Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaborationMemberProjection": {
+                  "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                  "memberAddress": "/pair_team_3bb5/engineer",
+                  "conversation": [],
+                  "activities": [],
+                  "summary": null,
+                  "lastActivityAt": null,
+                  "hasEarlierActiveTraceEvents": false,
+                  "__typename": "AgentRunCollaborationMemberProjectionPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+            "variables": {
+              "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+              "memberAddress": "/pair_team_3bb5/unoffered",
+              "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820"
+            },
+            "at": "2026-10-13T16:03:15.937Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaborationMemberProjection": {
+                  "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820",
+                  "memberAddress": "/pair_team_3bb5/unoffered",
+                  "conversation": [],
+                  "activities": [],
+                  "summary": null,
+                  "lastActivityAt": null,
+                  "hasEarlierActiveTraceEvents": false,
+                  "__typename": "AgentRunCollaborationMemberProjectionPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:15.939Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaboration": {
+                  "root_subject_kind": "agent",
+                  "root_run_id": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "root_agent": {
+                    "base_change_sequence": 0,
+                    "is_active": false,
+                    "execution_tree": {
+                      "subjectKind": "agent",
+                      "createdAt": "2026-10-13T16:03:10.958Z",
+                      "host": {
+                        "address": "/manager_c085",
+                        "agentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                        "agentDefinitionId": "manager-c085"
+                      },
+                      "collaborators": [],
+                      "taskExecutions": [
+                        {
+                          "address": "/pair_team_3bb5",
+                          "teamRunId": "pair_team_3bb5_34558022580d4a16ba4bc890e912331d",
+                          "members": [
+                            {
+                              "address": "/pair_team_3bb5/lead",
+                              "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7",
+                              "platformAgentRunId": "8d5d30aa-b3c4-4164-bb2c-08dc0dc52344"
+                            },
+                            {
+                              "address": "/pair_team_3bb5/engineer",
+                              "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                              "platformAgentRunId": null
+                            },
+                            {
+                              "address": "/pair_team_3bb5/unoffered",
+                              "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820",
+                              "platformAgentRunId": null
+                            }
+                          ],
+                          "taskExecutions": [],
+                          "delegatorAgentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                          "startedAt": "2026-10-13T16:03:13.085Z",
+                          "source": {
+                            "kind": "agent_team",
+                            "teamDefinitionId": "pair-team-3bb5",
+                            "coordinatorAddress": "/pair_team_3bb5/lead",
+                            "members": [
+                              {
+                                "address": "/pair_team_3bb5/lead",
+                                "agentDefinitionId": "lead-3cb5"
+                              },
+                              {
+                                "address": "/pair_team_3bb5/engineer",
+                                "agentDefinitionId": "engineer-5d0e",
+                                "launchConfiguration": {
+                                  "runtimeKind": "grok_build",
+                                  "llmModelIdentifier": "grok-4.7",
+                                  "llmConfig": null,
+                                  "autoExecuteTools": true,
+                                  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                                },
+                                "launchSource": {
+                                  "origin": "agent_default",
+                                  "fallbacks": []
+                                }
+                              },
+                              {
+                                "address": "/pair_team_3bb5/unoffered",
+                                "agentDefinitionId": "unoffered-f201",
+                                "launchSource": {
+                                  "origin": "team_default",
+                                  "fallbacks": [
+                                    {
+                                      "layer": "agent_default",
+                                      "runtimeKind": "antigravity_cli",
+                                      "llmModelIdentifier": "dlc-no-such-model",
+                                      "reason": "model_unavailable",
+                                      "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "handoffs": [],
+                            "defaultLaunchConfiguration": {
+                              "runtimeKind": "antigravity_cli",
+                              "llmModelIdentifier": "dlc-alt-model",
+                              "llmConfig": null,
+                              "autoExecuteTools": true,
+                              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                            },
+                            "defaultLaunchSource": {
+                              "origin": "team_default",
+                              "fallbacks": []
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "closed_task_executions": [],
+                    "communication_messages": {
+                      "schemaVersion": 1,
+                      "subjectKind": "agent",
+                      "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                      "messages": []
+                    },
+                    "agent_statuses": [],
+                    "agent_input_states": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:16.325Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaboration": {
+                  "root_subject_kind": "agent",
+                  "root_run_id": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "root_agent": {
+                    "base_change_sequence": 0,
+                    "is_active": false,
+                    "execution_tree": {
+                      "subjectKind": "agent",
+                      "createdAt": "2026-10-13T16:03:10.958Z",
+                      "host": {
+                        "address": "/manager_c085",
+                        "agentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                        "agentDefinitionId": "manager-c085"
+                      },
+                      "collaborators": [],
+                      "taskExecutions": [
+                        {
+                          "address": "/pair_team_3bb5",
+                          "teamRunId": "pair_team_3bb5_34558022580d4a16ba4bc890e912331d",
+                          "members": [
+                            {
+                              "address": "/pair_team_3bb5/lead",
+                              "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7",
+                              "platformAgentRunId": "8d5d30aa-b3c4-4164-bb2c-08dc0dc52344"
+                            },
+                            {
+                              "address": "/pair_team_3bb5/engineer",
+                              "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                              "platformAgentRunId": null
+                            },
+                            {
+                              "address": "/pair_team_3bb5/unoffered",
+                              "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820",
+                              "platformAgentRunId": null
+                            }
+                          ],
+                          "taskExecutions": [],
+                          "delegatorAgentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                          "startedAt": "2026-10-13T16:03:13.085Z",
+                          "source": {
+                            "kind": "agent_team",
+                            "teamDefinitionId": "pair-team-3bb5",
+                            "coordinatorAddress": "/pair_team_3bb5/lead",
+                            "members": [
+                              {
+                                "address": "/pair_team_3bb5/lead",
+                                "agentDefinitionId": "lead-3cb5"
+                              },
+                              {
+                                "address": "/pair_team_3bb5/engineer",
+                                "agentDefinitionId": "engineer-5d0e",
+                                "launchConfiguration": {
+                                  "runtimeKind": "grok_build",
+                                  "llmModelIdentifier": "grok-4.7",
+                                  "llmConfig": null,
+                                  "autoExecuteTools": true,
+                                  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                                },
+                                "launchSource": {
+                                  "origin": "agent_default",
+                                  "fallbacks": []
+                                }
+                              },
+                              {
+                                "address": "/pair_team_3bb5/unoffered",
+                                "agentDefinitionId": "unoffered-f201",
+                                "launchSource": {
+                                  "origin": "team_default",
+                                  "fallbacks": [
+                                    {
+                                      "layer": "agent_default",
+                                      "runtimeKind": "antigravity_cli",
+                                      "llmModelIdentifier": "dlc-no-such-model",
+                                      "reason": "model_unavailable",
+                                      "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "handoffs": [],
+                            "defaultLaunchConfiguration": {
+                              "runtimeKind": "antigravity_cli",
+                              "llmModelIdentifier": "dlc-alt-model",
+                              "llmConfig": null,
+                              "autoExecuteTools": true,
+                              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                            },
+                            "defaultLaunchSource": {
+                              "origin": "team_default",
+                              "fallbacks": []
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "closed_task_executions": [],
+                    "communication_messages": {
+                      "schemaVersion": 1,
+                      "subjectKind": "agent",
+                      "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                      "messages": []
+                    },
+                    "agent_statuses": [],
+                    "agent_input_states": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+            "variables": {
+              "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+              "memberAddress": "/pair_team_3bb5/lead",
+              "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7"
+            },
+            "at": "2026-10-13T16:03:16.329Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaborationMemberProjection": {
+                  "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7",
+                  "memberAddress": "/pair_team_3bb5/lead",
+                  "conversation": [
+                    {
+                      "kind": "message",
+                      "role": "user",
+                      "content": "Task delegator address: /manager_c085\nTask delegator AgentRun ID: manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9\n\nDescription:\nSettings-only member fixture.",
+                      "media": null,
+                      "ts": 1791907393.266
+                    },
+                    {
+                      "kind": "message",
+                      "role": "assistant",
+                      "content": "OK",
+                      "media": null,
+                      "ts": 1791907393.27
+                    }
+                  ],
+                  "activities": [],
+                  "summary": "Task delegator address: /manager_c085 Task delegator AgentRun ID: manager_c085_cf4e922d2c704fb4b4...",
+                  "lastActivityAt": "2026-10-13T16:03:13.270Z",
+                  "hasEarlierActiveTraceEvents": false,
+                  "__typename": "AgentRunCollaborationMemberProjectionPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+            "variables": {
+              "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+              "memberAddress": "/pair_team_3bb5/engineer",
+              "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5"
+            },
+            "at": "2026-10-13T16:03:16.329Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaborationMemberProjection": {
+                  "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                  "memberAddress": "/pair_team_3bb5/engineer",
+                  "conversation": [],
+                  "activities": [],
+                  "summary": null,
+                  "lastActivityAt": null,
+                  "hasEarlierActiveTraceEvents": false,
+                  "__typename": "AgentRunCollaborationMemberProjectionPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+            "variables": {
+              "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+              "memberAddress": "/pair_team_3bb5/unoffered",
+              "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820"
+            },
+            "at": "2026-10-13T16:03:16.330Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaborationMemberProjection": {
+                  "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820",
+                  "memberAddress": "/pair_team_3bb5/unoffered",
+                  "conversation": [],
+                  "activities": [],
+                  "summary": null,
+                  "lastActivityAt": null,
+                  "hasEarlierActiveTraceEvents": false,
+                  "__typename": "AgentRunCollaborationMemberProjectionPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:17.555Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "getAgentRunResumeConfig": {
+                  "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "isActive": false,
+                  "metadataConfig": {
+                    "agentDefinitionId": "manager-c085",
+                    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace",
+                    "llmModelIdentifier": "gemini-3.8-flash-low",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "runtimeKind": "antigravity_cli",
+                    "runtimeReference": {
+                      "runtimeKind": "antigravity_cli",
+                      "sessionId": null,
+                      "threadId": null,
+                      "metadata": null,
+                      "__typename": "RunRuntimeReferenceObject"
+                    },
+                    "__typename": "RunMetadataConfigObject"
+                  },
+                  "modelConfigEditability": {
+                    "editable": true,
+                    "reason": null,
+                    "__typename": "RunModelConfigEditabilityObject"
+                  },
+                  "__typename": "RunResumeConfigPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:17.561Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaboration": {
+                  "root_subject_kind": "agent",
+                  "root_run_id": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "root_agent": {
+                    "base_change_sequence": 0,
+                    "is_active": false,
+                    "execution_tree": {
+                      "subjectKind": "agent",
+                      "createdAt": "2026-10-13T16:03:10.958Z",
+                      "host": {
+                        "address": "/manager_c085",
+                        "agentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                        "agentDefinitionId": "manager-c085"
+                      },
+                      "collaborators": [],
+                      "taskExecutions": [
+                        {
+                          "address": "/pair_team_3bb5",
+                          "teamRunId": "pair_team_3bb5_34558022580d4a16ba4bc890e912331d",
+                          "members": [
+                            {
+                              "address": "/pair_team_3bb5/lead",
+                              "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7",
+                              "platformAgentRunId": "8d5d30aa-b3c4-4164-bb2c-08dc0dc52344"
+                            },
+                            {
+                              "address": "/pair_team_3bb5/engineer",
+                              "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                              "platformAgentRunId": null
+                            },
+                            {
+                              "address": "/pair_team_3bb5/unoffered",
+                              "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820",
+                              "platformAgentRunId": null
+                            }
+                          ],
+                          "taskExecutions": [],
+                          "delegatorAgentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                          "startedAt": "2026-10-13T16:03:13.085Z",
+                          "source": {
+                            "kind": "agent_team",
+                            "teamDefinitionId": "pair-team-3bb5",
+                            "coordinatorAddress": "/pair_team_3bb5/lead",
+                            "members": [
+                              {
+                                "address": "/pair_team_3bb5/lead",
+                                "agentDefinitionId": "lead-3cb5"
+                              },
+                              {
+                                "address": "/pair_team_3bb5/engineer",
+                                "agentDefinitionId": "engineer-5d0e",
+                                "launchConfiguration": {
+                                  "runtimeKind": "grok_build",
+                                  "llmModelIdentifier": "grok-4.7",
+                                  "llmConfig": null,
+                                  "autoExecuteTools": true,
+                                  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                                },
+                                "launchSource": {
+                                  "origin": "agent_default",
+                                  "fallbacks": []
+                                }
+                              },
+                              {
+                                "address": "/pair_team_3bb5/unoffered",
+                                "agentDefinitionId": "unoffered-f201",
+                                "launchSource": {
+                                  "origin": "team_default",
+                                  "fallbacks": [
+                                    {
+                                      "layer": "agent_default",
+                                      "runtimeKind": "antigravity_cli",
+                                      "llmModelIdentifier": "dlc-no-such-model",
+                                      "reason": "model_unavailable",
+                                      "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "handoffs": [],
+                            "defaultLaunchConfiguration": {
+                              "runtimeKind": "antigravity_cli",
+                              "llmModelIdentifier": "dlc-alt-model",
+                              "llmConfig": null,
+                              "autoExecuteTools": true,
+                              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                            },
+                            "defaultLaunchSource": {
+                              "origin": "team_default",
+                              "fallbacks": []
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "closed_task_executions": [],
+                    "communication_messages": {
+                      "schemaVersion": 1,
+                      "subjectKind": "agent",
+                      "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                      "messages": []
+                    },
+                    "agent_statuses": [],
+                    "agent_input_states": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "query": "mutation UpdateDelegatedLaunchSelections($input: UpdateDelegatedLaunchSelectionsInput!) {\n  updateDelegatedLaunchSelections(input: $input) {\n    success\n    outcome\n    message\n    fieldErrors {\n      path\n      message\n      __typename\n    }\n    __typename\n  }\n}",
+            "variables": {
+              "input": {
+                "rootKind": "AGENT",
+                "rootRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                "changes": [
+                  {
+                    "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                    "selection": {
+                      "llmModelIdentifier": "grok-4.7",
+                      "llmConfig": {
+                        "reasoning_effort": "low"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "at": "2026-10-13T16:03:20.314Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "updateDelegatedLaunchSelections": {
+                  "success": true,
+                  "outcome": "UPDATED",
+                  "message": "Saved. The new model is used when the copy resumes.",
+                  "fieldErrors": [],
+                  "__typename": "UpdateDelegatedLaunchSelectionsResult"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:20.459Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "getAgentRunResumeConfig": {
+                  "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "isActive": false,
+                  "metadataConfig": {
+                    "agentDefinitionId": "manager-c085",
+                    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace",
+                    "llmModelIdentifier": "gemini-3.8-flash-low",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "runtimeKind": "antigravity_cli",
+                    "runtimeReference": {
+                      "runtimeKind": "antigravity_cli",
+                      "sessionId": null,
+                      "threadId": null,
+                      "metadata": null,
+                      "__typename": "RunRuntimeReferenceObject"
+                    },
+                    "__typename": "RunMetadataConfigObject"
+                  },
+                  "modelConfigEditability": {
+                    "editable": true,
+                    "reason": null,
+                    "__typename": "RunModelConfigEditabilityObject"
+                  },
+                  "__typename": "RunResumeConfigPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:20.462Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaboration": {
+                  "root_subject_kind": "agent",
+                  "root_run_id": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "root_agent": {
+                    "base_change_sequence": 0,
+                    "is_active": false,
+                    "execution_tree": {
+                      "subjectKind": "agent",
+                      "createdAt": "2026-10-13T16:03:10.958Z",
+                      "host": {
+                        "address": "/manager_c085",
+                        "agentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                        "agentDefinitionId": "manager-c085"
+                      },
+                      "collaborators": [],
+                      "taskExecutions": [
+                        {
+                          "address": "/pair_team_3bb5",
+                          "teamRunId": "pair_team_3bb5_34558022580d4a16ba4bc890e912331d",
+                          "members": [
+                            {
+                              "address": "/pair_team_3bb5/lead",
+                              "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7",
+                              "platformAgentRunId": "8d5d30aa-b3c4-4164-bb2c-08dc0dc52344"
+                            },
+                            {
+                              "address": "/pair_team_3bb5/engineer",
+                              "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                              "platformAgentRunId": null,
+                              "userLaunchSelection": {
+                                "llmModelIdentifier": "grok-4.7",
+                                "llmConfig": {
+                                  "reasoning_effort": "low"
+                                },
+                                "selectedAt": "2026-10-13T16:03:20.438Z"
+                              }
+                            },
+                            {
+                              "address": "/pair_team_3bb5/unoffered",
+                              "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820",
+                              "platformAgentRunId": null
+                            }
+                          ],
+                          "taskExecutions": [],
+                          "delegatorAgentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                          "startedAt": "2026-10-13T16:03:13.085Z",
+                          "source": {
+                            "kind": "agent_team",
+                            "teamDefinitionId": "pair-team-3bb5",
+                            "coordinatorAddress": "/pair_team_3bb5/lead",
+                            "members": [
+                              {
+                                "address": "/pair_team_3bb5/lead",
+                                "agentDefinitionId": "lead-3cb5"
+                              },
+                              {
+                                "address": "/pair_team_3bb5/engineer",
+                                "agentDefinitionId": "engineer-5d0e",
+                                "launchConfiguration": {
+                                  "runtimeKind": "grok_build",
+                                  "llmModelIdentifier": "grok-4.7",
+                                  "llmConfig": null,
+                                  "autoExecuteTools": true,
+                                  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                                },
+                                "launchSource": {
+                                  "origin": "agent_default",
+                                  "fallbacks": []
+                                }
+                              },
+                              {
+                                "address": "/pair_team_3bb5/unoffered",
+                                "agentDefinitionId": "unoffered-f201",
+                                "launchSource": {
+                                  "origin": "team_default",
+                                  "fallbacks": [
+                                    {
+                                      "layer": "agent_default",
+                                      "runtimeKind": "antigravity_cli",
+                                      "llmModelIdentifier": "dlc-no-such-model",
+                                      "reason": "model_unavailable",
+                                      "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "handoffs": [],
+                            "defaultLaunchConfiguration": {
+                              "runtimeKind": "antigravity_cli",
+                              "llmModelIdentifier": "dlc-alt-model",
+                              "llmConfig": null,
+                              "autoExecuteTools": true,
+                              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                            },
+                            "defaultLaunchSource": {
+                              "origin": "team_default",
+                              "fallbacks": []
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "closed_task_executions": [],
+                    "communication_messages": {
+                      "schemaVersion": 1,
+                      "subjectKind": "agent",
+                      "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                      "messages": []
+                    },
+                    "agent_statuses": [],
+                    "agent_input_states": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "query": "mutation UpdateDelegatedLaunchSelections($input: UpdateDelegatedLaunchSelectionsInput!) {\n  updateDelegatedLaunchSelections(input: $input) {\n    success\n    outcome\n    message\n    fieldErrors {\n      path\n      message\n      __typename\n    }\n    __typename\n  }\n}",
+            "variables": {
+              "input": {
+                "rootKind": "AGENT",
+                "rootRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                "changes": [
+                  {
+                    "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                    "selection": {
+                      "llmModelIdentifier": "grok-4.7",
+                      "llmConfig": {
+                        "reasoning_effort": "xhigh"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "at": "2026-10-13T16:03:20.905Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "updateDelegatedLaunchSelections": {
+                  "success": true,
+                  "outcome": "UPDATED",
+                  "message": "Saved. The new model is used when the copy resumes.",
+                  "fieldErrors": [],
+                  "__typename": "UpdateDelegatedLaunchSelectionsResult"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:21.044Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "getAgentRunResumeConfig": {
+                  "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "isActive": false,
+                  "metadataConfig": {
+                    "agentDefinitionId": "manager-c085",
+                    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace",
+                    "llmModelIdentifier": "gemini-3.8-flash-low",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "runtimeKind": "antigravity_cli",
+                    "runtimeReference": {
+                      "runtimeKind": "antigravity_cli",
+                      "sessionId": null,
+                      "threadId": null,
+                      "metadata": null,
+                      "__typename": "RunRuntimeReferenceObject"
+                    },
+                    "__typename": "RunMetadataConfigObject"
+                  },
+                  "modelConfigEditability": {
+                    "editable": true,
+                    "reason": null,
+                    "__typename": "RunModelConfigEditabilityObject"
+                  },
+                  "__typename": "RunResumeConfigPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:21.049Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaboration": {
+                  "root_subject_kind": "agent",
+                  "root_run_id": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "root_agent": {
+                    "base_change_sequence": 0,
+                    "is_active": false,
+                    "execution_tree": {
+                      "subjectKind": "agent",
+                      "createdAt": "2026-10-13T16:03:10.958Z",
+                      "host": {
+                        "address": "/manager_c085",
+                        "agentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                        "agentDefinitionId": "manager-c085"
+                      },
+                      "collaborators": [],
+                      "taskExecutions": [
+                        {
+                          "address": "/pair_team_3bb5",
+                          "teamRunId": "pair_team_3bb5_34558022580d4a16ba4bc890e912331d",
+                          "members": [
+                            {
+                              "address": "/pair_team_3bb5/lead",
+                              "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7",
+                              "platformAgentRunId": "8d5d30aa-b3c4-4164-bb2c-08dc0dc52344"
+                            },
+                            {
+                              "address": "/pair_team_3bb5/engineer",
+                              "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                              "platformAgentRunId": null,
+                              "userLaunchSelection": {
+                                "llmModelIdentifier": "grok-4.7",
+                                "llmConfig": {
+                                  "reasoning_effort": "xhigh"
+                                },
+                                "selectedAt": "2026-10-13T16:03:21.026Z"
+                              }
+                            },
+                            {
+                              "address": "/pair_team_3bb5/unoffered",
+                              "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820",
+                              "platformAgentRunId": null
+                            }
+                          ],
+                          "taskExecutions": [],
+                          "delegatorAgentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                          "startedAt": "2026-10-13T16:03:13.085Z",
+                          "source": {
+                            "kind": "agent_team",
+                            "teamDefinitionId": "pair-team-3bb5",
+                            "coordinatorAddress": "/pair_team_3bb5/lead",
+                            "members": [
+                              {
+                                "address": "/pair_team_3bb5/lead",
+                                "agentDefinitionId": "lead-3cb5"
+                              },
+                              {
+                                "address": "/pair_team_3bb5/engineer",
+                                "agentDefinitionId": "engineer-5d0e",
+                                "launchConfiguration": {
+                                  "runtimeKind": "grok_build",
+                                  "llmModelIdentifier": "grok-4.7",
+                                  "llmConfig": null,
+                                  "autoExecuteTools": true,
+                                  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                                },
+                                "launchSource": {
+                                  "origin": "agent_default",
+                                  "fallbacks": []
+                                }
+                              },
+                              {
+                                "address": "/pair_team_3bb5/unoffered",
+                                "agentDefinitionId": "unoffered-f201",
+                                "launchSource": {
+                                  "origin": "team_default",
+                                  "fallbacks": [
+                                    {
+                                      "layer": "agent_default",
+                                      "runtimeKind": "antigravity_cli",
+                                      "llmModelIdentifier": "dlc-no-such-model",
+                                      "reason": "model_unavailable",
+                                      "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "handoffs": [],
+                            "defaultLaunchConfiguration": {
+                              "runtimeKind": "antigravity_cli",
+                              "llmModelIdentifier": "dlc-alt-model",
+                              "llmConfig": null,
+                              "autoExecuteTools": true,
+                              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                            },
+                            "defaultLaunchSource": {
+                              "origin": "team_default",
+                              "fallbacks": []
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "closed_task_executions": [],
+                    "communication_messages": {
+                      "schemaVersion": 1,
+                      "subjectKind": "agent",
+                      "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                      "messages": []
+                    },
+                    "agent_statuses": [],
+                    "agent_input_states": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:21.509Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaboration": {
+                  "root_subject_kind": "agent",
+                  "root_run_id": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "root_agent": {
+                    "base_change_sequence": 0,
+                    "is_active": false,
+                    "execution_tree": {
+                      "subjectKind": "agent",
+                      "createdAt": "2026-10-13T16:03:10.958Z",
+                      "host": {
+                        "address": "/manager_c085",
+                        "agentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                        "agentDefinitionId": "manager-c085"
+                      },
+                      "collaborators": [],
+                      "taskExecutions": [
+                        {
+                          "address": "/pair_team_3bb5",
+                          "teamRunId": "pair_team_3bb5_34558022580d4a16ba4bc890e912331d",
+                          "members": [
+                            {
+                              "address": "/pair_team_3bb5/lead",
+                              "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7",
+                              "platformAgentRunId": "8d5d30aa-b3c4-4164-bb2c-08dc0dc52344"
+                            },
+                            {
+                              "address": "/pair_team_3bb5/engineer",
+                              "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                              "platformAgentRunId": null,
+                              "userLaunchSelection": {
+                                "llmModelIdentifier": "grok-4.7",
+                                "llmConfig": {
+                                  "reasoning_effort": "xhigh"
+                                },
+                                "selectedAt": "2026-10-13T16:03:21.026Z"
+                              }
+                            },
+                            {
+                              "address": "/pair_team_3bb5/unoffered",
+                              "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820",
+                              "platformAgentRunId": null
+                            }
+                          ],
+                          "taskExecutions": [],
+                          "delegatorAgentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                          "startedAt": "2026-10-13T16:03:13.085Z",
+                          "source": {
+                            "kind": "agent_team",
+                            "teamDefinitionId": "pair-team-3bb5",
+                            "coordinatorAddress": "/pair_team_3bb5/lead",
+                            "members": [
+                              {
+                                "address": "/pair_team_3bb5/lead",
+                                "agentDefinitionId": "lead-3cb5"
+                              },
+                              {
+                                "address": "/pair_team_3bb5/engineer",
+                                "agentDefinitionId": "engineer-5d0e",
+                                "launchConfiguration": {
+                                  "runtimeKind": "grok_build",
+                                  "llmModelIdentifier": "grok-4.7",
+                                  "llmConfig": null,
+                                  "autoExecuteTools": true,
+                                  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                                },
+                                "launchSource": {
+                                  "origin": "agent_default",
+                                  "fallbacks": []
+                                }
+                              },
+                              {
+                                "address": "/pair_team_3bb5/unoffered",
+                                "agentDefinitionId": "unoffered-f201",
+                                "launchSource": {
+                                  "origin": "team_default",
+                                  "fallbacks": [
+                                    {
+                                      "layer": "agent_default",
+                                      "runtimeKind": "antigravity_cli",
+                                      "llmModelIdentifier": "dlc-no-such-model",
+                                      "reason": "model_unavailable",
+                                      "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "handoffs": [],
+                            "defaultLaunchConfiguration": {
+                              "runtimeKind": "antigravity_cli",
+                              "llmModelIdentifier": "dlc-alt-model",
+                              "llmConfig": null,
+                              "autoExecuteTools": true,
+                              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                            },
+                            "defaultLaunchSource": {
+                              "origin": "team_default",
+                              "fallbacks": []
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "closed_task_executions": [],
+                    "communication_messages": {
+                      "schemaVersion": 1,
+                      "subjectKind": "agent",
+                      "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                      "messages": []
+                    },
+                    "agent_statuses": [],
+                    "agent_input_states": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+            "variables": {
+              "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+              "memberAddress": "/pair_team_3bb5/lead",
+              "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7"
+            },
+            "at": "2026-10-13T16:03:21.513Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaborationMemberProjection": {
+                  "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7",
+                  "memberAddress": "/pair_team_3bb5/lead",
+                  "conversation": [
+                    {
+                      "kind": "message",
+                      "role": "user",
+                      "content": "Task delegator address: /manager_c085\nTask delegator AgentRun ID: manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9\n\nDescription:\nSettings-only member fixture.",
+                      "media": null,
+                      "ts": 1791907393.266
+                    },
+                    {
+                      "kind": "message",
+                      "role": "assistant",
+                      "content": "OK",
+                      "media": null,
+                      "ts": 1791907393.27
+                    }
+                  ],
+                  "activities": [],
+                  "summary": "Task delegator address: /manager_c085 Task delegator AgentRun ID: manager_c085_cf4e922d2c704fb4b4...",
+                  "lastActivityAt": "2026-10-13T16:03:13.270Z",
+                  "hasEarlierActiveTraceEvents": false,
+                  "__typename": "AgentRunCollaborationMemberProjectionPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+            "variables": {
+              "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+              "memberAddress": "/pair_team_3bb5/engineer",
+              "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5"
+            },
+            "at": "2026-10-13T16:03:21.514Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaborationMemberProjection": {
+                  "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                  "memberAddress": "/pair_team_3bb5/engineer",
+                  "conversation": [],
+                  "activities": [],
+                  "summary": null,
+                  "lastActivityAt": null,
+                  "hasEarlierActiveTraceEvents": false,
+                  "__typename": "AgentRunCollaborationMemberProjectionPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+            "variables": {
+              "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+              "memberAddress": "/pair_team_3bb5/unoffered",
+              "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820"
+            },
+            "at": "2026-10-13T16:03:21.515Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaborationMemberProjection": {
+                  "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820",
+                  "memberAddress": "/pair_team_3bb5/unoffered",
+                  "conversation": [],
+                  "activities": [],
+                  "summary": null,
+                  "lastActivityAt": null,
+                  "hasEarlierActiveTraceEvents": false,
+                  "__typename": "AgentRunCollaborationMemberProjectionPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:22.738Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "getAgentRunResumeConfig": {
+                  "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "isActive": false,
+                  "metadataConfig": {
+                    "agentDefinitionId": "manager-c085",
+                    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace",
+                    "llmModelIdentifier": "gemini-3.8-flash-low",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "runtimeKind": "antigravity_cli",
+                    "runtimeReference": {
+                      "runtimeKind": "antigravity_cli",
+                      "sessionId": null,
+                      "threadId": null,
+                      "metadata": null,
+                      "__typename": "RunRuntimeReferenceObject"
+                    },
+                    "__typename": "RunMetadataConfigObject"
+                  },
+                  "modelConfigEditability": {
+                    "editable": true,
+                    "reason": null,
+                    "__typename": "RunModelConfigEditabilityObject"
+                  },
+                  "__typename": "RunResumeConfigPayload"
+                }
+              }
+            }
+          },
+          {
+            "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}",
+            "variables": {
+              "runId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9"
+            },
+            "at": "2026-10-13T16:03:22.743Z",
+            "status": 200,
+            "response": {
+              "data": {
+                "agentRunCollaboration": {
+                  "root_subject_kind": "agent",
+                  "root_run_id": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                  "root_agent": {
+                    "base_change_sequence": 0,
+                    "is_active": false,
+                    "execution_tree": {
+                      "subjectKind": "agent",
+                      "createdAt": "2026-10-13T16:03:10.958Z",
+                      "host": {
+                        "address": "/manager_c085",
+                        "agentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                        "agentDefinitionId": "manager-c085"
+                      },
+                      "collaborators": [],
+                      "taskExecutions": [
+                        {
+                          "address": "/pair_team_3bb5",
+                          "teamRunId": "pair_team_3bb5_34558022580d4a16ba4bc890e912331d",
+                          "members": [
+                            {
+                              "address": "/pair_team_3bb5/lead",
+                              "agentRunId": "lead_3cb5_79698fa9bc884d9e8b8b0553d690fac7",
+                              "platformAgentRunId": "8d5d30aa-b3c4-4164-bb2c-08dc0dc52344"
+                            },
+                            {
+                              "address": "/pair_team_3bb5/engineer",
+                              "agentRunId": "engineer_5d0e_353cdaa7d6a34827b360951f53a9c3d5",
+                              "platformAgentRunId": null,
+                              "userLaunchSelection": {
+                                "llmModelIdentifier": "grok-4.7",
+                                "llmConfig": {
+                                  "reasoning_effort": "xhigh"
+                                },
+                                "selectedAt": "2026-10-13T16:03:21.026Z"
+                              }
+                            },
+                            {
+                              "address": "/pair_team_3bb5/unoffered",
+                              "agentRunId": "unoffered_f201_b72b353001d44778afa1aabe68a79820",
+                              "platformAgentRunId": null
+                            }
+                          ],
+                          "taskExecutions": [],
+                          "delegatorAgentRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                          "startedAt": "2026-10-13T16:03:13.085Z",
+                          "source": {
+                            "kind": "agent_team",
+                            "teamDefinitionId": "pair-team-3bb5",
+                            "coordinatorAddress": "/pair_team_3bb5/lead",
+                            "members": [
+                              {
+                                "address": "/pair_team_3bb5/lead",
+                                "agentDefinitionId": "lead-3cb5"
+                              },
+                              {
+                                "address": "/pair_team_3bb5/engineer",
+                                "agentDefinitionId": "engineer-5d0e",
+                                "launchConfiguration": {
+                                  "runtimeKind": "grok_build",
+                                  "llmModelIdentifier": "grok-4.7",
+                                  "llmConfig": null,
+                                  "autoExecuteTools": true,
+                                  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                                },
+                                "launchSource": {
+                                  "origin": "agent_default",
+                                  "fallbacks": []
+                                }
+                              },
+                              {
+                                "address": "/pair_team_3bb5/unoffered",
+                                "agentDefinitionId": "unoffered-f201",
+                                "launchSource": {
+                                  "origin": "team_default",
+                                  "fallbacks": [
+                                    {
+                                      "layer": "agent_default",
+                                      "runtimeKind": "antigravity_cli",
+                                      "llmModelIdentifier": "dlc-no-such-model",
+                                      "reason": "model_unavailable",
+                                      "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "handoffs": [],
+                            "defaultLaunchConfiguration": {
+                              "runtimeKind": "antigravity_cli",
+                              "llmModelIdentifier": "dlc-alt-model",
+                              "llmConfig": null,
+                              "autoExecuteTools": true,
+                              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y/server-data/temp_workspace"
+                            },
+                            "defaultLaunchSource": {
+                              "origin": "team_default",
+                              "fallbacks": []
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "closed_task_executions": [],
+                    "communication_messages": {
+                      "schemaVersion": 1,
+                      "subjectKind": "agent",
+                      "hostRunId": "manager_c085_cf4e922d2c704fb4b44d39e6c5800bc9",
+                      "messages": []
+                    },
+                    "agent_statuses": [],
+                    "agent_input_states": []
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 2913
+    }
+  ],
+  "cleanup": [
+    {
+      "desktop": {
+        "instanceId": "iso-60438-b50d",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-vHluvT",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    {
+      "pid": 2913,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y",
+  "backendUrl": "http://127.0.0.1:60424",
+  "frontUrl": "http://127.0.0.1:60425",
+  "definitions": {
+    "ids": {
+      "manager": "manager-c085",
+      "lead": "lead-3cb5",
+      "worker": "worker-4e3b",
+      "plain": "plain-0aa3",
+      "engineer": "engineer-5d0e",
+      "reviewer": "reviewer-538b",
+      "writer": "writer-f429",
+      "offline": "offline-92a1",
+      "unoffered": "unoffered-f201",
+      "badsettings": "badsettings-0d8a",
+      "incomplete": "incomplete-45a9",
+      "build": "build-team-5e15",
+      "pair": "pair-team-3bb5",
+      "squad": "squad-team-8544",
+      "home": "home-team-7903",
+      "launchOrg": "launchorg-org-26dd",
+      "hostOrg": "hostorg-org-7e2d"
+    },
+    "names": {
+      "manager": "Manager c085",
+      "lead": "Lead 3cb5",
+      "worker": "Worker 4e3b",
+      "plain": "Plain 0aa3",
+      "engineer": "Engineer 5d0e",
+      "reviewer": "Reviewer 538b",
+      "writer": "Writer f429",
+      "offline": "Offline 92a1",
+      "unoffered": "Unoffered f201",
+      "badsettings": "Badsettings 0d8a",
+      "incomplete": "Incomplete 45a9",
+      "build": "Build Team 5e15",
+      "pair": "Pair Team 3bb5",
+      "squad": "Squad Team 8544",
+      "home": "Home Team 7903",
+      "launchOrg": "LaunchOrg Org 26dd",
+      "hostOrg": "HostOrg Org 7e2d"
+    }
+  },
+  "desktop": {
+    "head": "cd685b6407cd847db52b4a2d7a45b486287fac52",
+    "status": "M package.json\n M tests/e2e/delegated-launch-defaults-probe.mjs\n?? ../autobyteus-application-backend-sdk/dist/\n?? ../autobyteus-application-sdk-contracts/dist/\n?? tests/e2e/fixtures/settings-refresh-desktop.mjs\n?? tests/e2e/settings-saved-model-refresh-cases.mjs\n?? ../tickets/in-progress/settings-saved-model-refresh/api-e2e-coverage-investigation.md\n?? ../tickets/in-progress/settings-saved-model-refresh/api-e2e-test-case-ledger.md\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-narrow.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-server-build.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-server-e2e.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-web-regression.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-01-driver.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-01/\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-02-driver.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-02/\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-03-driver.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-03/\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-04-driver.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-04/",
+    "instance": {
+      "instanceId": "iso-60438-b50d",
+      "pid": 2928,
+      "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "backendUrl": "http://127.0.0.1:60439",
+      "graphqlUrl": "http://127.0.0.1:60439/graphql",
+      "controlEndpoint": "http://127.0.0.1:60438",
+      "controlPort": 60438,
+      "serverPort": 60439,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-vHluvT",
+      "ownsDataRoot": true,
+      "keepDataRoot": false,
+      "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-vHluvT/server-data/db/production.db",
+      "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-60438-b50d.log"
+    },
+    "skipBuild": true,
+    "asar": "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+    "asarSha256": "55749a6189e5680f13bf5b2c254e50a6096a07ba1904dcc728055fab4116bc4b"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 2,
+    "fail": 0
+  },
+  "completedAt": "2026-10-13T16:03:26.479Z"
+}

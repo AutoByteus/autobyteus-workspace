@@ -1,0 +1,40 @@
+{
+  "sourceCommit": "bd0fb189e6c6d19f99b11ee1216177acd2767aa4",
+  "files": [
+    {
+      "path": "tickets/in-progress/settings-saved-model-refresh/release-deployment-report.md",
+      "sha256": "3e0569e0a759c345c2d9bcac81b715b9489a5a2695fe79f043ae45a095a11593",
+      "byteIdenticalToDeliveryPreservation": true
+    },
+    {
+      "path": "tickets/in-progress/settings-saved-model-refresh/delivery-revision-record.md",
+      "sha256": "510c29c77145ffb6a8d35202b55c77833c34717e4607510a070837a8b2a6c796",
+      "byteIdenticalToDeliveryPreservation": true
+    },
+    {
+      "path": "tickets/in-progress/settings-saved-model-refresh/docs-sync-report.md",
+      "sha256": "344d1e643ea2c55621c3a2e3a85626caaa82e82f485f06aa022cbba77fc66c99",
+      "byteIdenticalToDeliveryPreservation": true
+    },
+    {
+      "path": "tickets/in-progress/settings-saved-model-refresh/handoff-summary.md",
+      "sha256": "5ac8f5f5926c40ad1154815c267aca7be48b10c57a51e4d0a97c7f2dee6c9986",
+      "byteIdenticalToDeliveryPreservation": true
+    },
+    {
+      "path": "tickets/in-progress/settings-saved-model-refresh/evidence/delivery/dr-002-integration.json",
+      "sha256": "469e45d702084b5d599ece0d5728f316e29d10c5eddf380eac20020e665178bc",
+      "byteIdenticalToDeliveryPreservation": true
+    },
+    {
+      "path": "tickets/in-progress/settings-saved-model-refresh/evidence/delivery/dr-002-integration-conflict.patch",
+      "sha256": "4e6d3c47943fa9f6c04ce01483671dce6358bc4bbf3480a29fe75f1c0a7b216c",
+      "byteIdenticalToDeliveryPreservation": true
+    },
+    {
+      "path": "tickets/in-progress/settings-saved-model-refresh/evidence/delivery/dr-002-merge.log",
+      "sha256": "037a54c5ba74d245114a6bcc5e5be57a851ad568f8a4b1058f9ae3335866348b",
+      "byteIdenticalToDeliveryPreservation": true
+    }
+  ]
+}

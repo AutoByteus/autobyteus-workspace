@@ -1,0 +1,41 @@
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds
+Clean env; no application/provider inheritance.
+$ /opt/homebrew/bin/python3.11 /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/tickets/in-progress/fix-legacy-docker-workspace-builds/api-e2e-evidence/api-rev-001/helpers.py
+$ /bin/bash /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/autobyteus-server-ts/docker/build.sh --tag api-fixture
+Built locally: autobyteus-server:api-fixture (linux/arm64)
+ Exit: 0
+$ /bin/bash /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/autobyteus-server-ts/docker/build-multi-arch.sh --load --variant zh --version api-fixture --image-name api/fake-retained
+Building image: api/fake-retained (variant: zh, mode: load)
+Built and loaded: api/fake-retained:api-fixture-zh, api/fake-retained:latest-zh
+ Exit: 0
+$ /bin/bash /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-probe-clean-env-dt1nc1wu/api-helper-fixture-ec9e9g5f/mirror/autobyteus-server-ts/docker/docker-start.sh up --build-local --project api-owned-fixture
+[2026-10-12 17:54:16] Picking unique ports for new project: api-owned-fixture
+[2026-10-12 17:54:17] Building variant: latest
+Built locally: autobyteus-server:latest (linux/arm64)
+[2026-10-12 17:54:17] Starting instance: api-owned-fixture (variant=latest)
+[2026-10-12 17:54:17] Instance api-owned-fixture is up.
+Endpoints:
+  Backend: http://localhost:52089
+  GraphQL: http://localhost:52089/graphql
+  noVNC:   http://localhost:52091
+ Exit: 0
+FAKE Docker receipt ["version", "--format", "{{.Server.Arch}}"]
+FAKE Docker receipt ["buildx", "version"]
+FAKE Docker receipt ["buildx", "build", "--build-arg", "CLI_INSTALL_CACHE_BUSTER=api-fixture-only", "--load", "--platform", "linux/arm64", "-f", "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/autobyteus-server-ts/docker/Dockerfile.monorepo", "-t", "autobyteus-server:api-fixture", "-t", "autobyteus-server:latest", "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds"]
+FAKE Docker receipt ["buildx", "version"]
+FAKE Docker receipt ["buildx", "inspect", "multi-platform-builder"]
+FAKE Docker receipt ["buildx", "use", "multi-platform-builder"]
+FAKE Docker receipt ["buildx", "inspect", "--bootstrap"]
+FAKE Docker receipt ["version", "--format", "{{.Server.Arch}}"]
+FAKE Docker receipt ["buildx", "build", "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds", "-f", "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/autobyteus-server-ts/docker/Dockerfile.monorepo", "--platform", "linux/arm64", "--tag", "api/fake-retained:api-fixture-zh", "--tag", "api/fake-retained:latest-zh", "--provenance=false", "--sbom=false", "--build-arg", "BASE_IMAGE_TAG=zh", "--build-arg", "CLI_INSTALL_CACHE_BUSTER=api-fixture-only", "--load"]
+FAKE Docker receipt ["version", "--format", "{{.Server.Arch}}"]
+FAKE Docker receipt ["buildx", "version"]
+FAKE Docker receipt ["buildx", "build", "--build-arg", "CLI_INSTALL_CACHE_BUSTER=api-fixture-only", "--load", "--platform", "linux/arm64", "-f", "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-probe-clean-env-dt1nc1wu/api-helper-fixture-ec9e9g5f/mirror/autobyteus-server-ts/docker/Dockerfile.monorepo", "-t", "autobyteus-server:latest", "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-probe-clean-env-dt1nc1wu/api-helper-fixture-ec9e9g5f/mirror"]
+FAKE Docker receipt ["compose", "-p", "api-owned-fixture", "-f", "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-probe-clean-env-dt1nc1wu/api-helper-fixture-ec9e9g5f/mirror/autobyteus-server-ts/docker/docker-compose.yml", "--env-file", "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-probe-clean-env-dt1nc1wu/api-helper-fixture-ec9e9g5f/mirror/autobyteus-server-ts/docker/.runtime/api-owned-fixture.env", "up", "-d", "--remove-orphans", "--force-recreate"]
+PASS default/zh retained helper args and owned docker-start -> build.sh -> monorepo -> Compose command chain.
+No real image build/pull/push/start; no real Buildx selection or user-node/state/profile operation.
+Owned mirror/HOME/bin/fake records/.runtime cleaned.
+
+Exit: 0
+
+Owned outer HOME/TMPDIR cleanup completed.

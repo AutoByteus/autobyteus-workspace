@@ -1,0 +1,17 @@
+{
+  "worktree": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock",
+  "branch": "codex/workspaces-sidebar-dock",
+  "base": "d9bccf2550b918ab138e30486ef4dbf1d5e9d1ff",
+  "productionSourceCommit": "1262714f6494a1292b69bda1f0cda02f2c2f1014",
+  "durableCoverageCommit": "6bb3c822c13a82815f70c279866ab5afbe959fbd",
+  "sha256": {
+    "autobyteus-web/utils/layout/responsiveLayoutPolicy.ts": "2b1cda4cc457ca737ffe53ecd2e5a4d7f0fe1b0fb0c002b0690de6d6a76d242e",
+    "autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts": "13cffe24df25d19d50aaed06e4e89a3ddbfe0b5e071e7feb2aadc444ac0293e6",
+    "autobyteus-web/tests/e2e/workspaces-sidebar-dock-probe.mjs": "fc1ec762439695ff2a270659fd16bfc12ca69d0534a3983c95b386f2beba2263",
+    "autobyteus-web/tests/e2e/fixtures/workspaces-sidebar-dock.page.vue": "d5bacdf881fc3808ceca02a999284b4974e461e2222477e0ea860da8071a641d",
+    "autobyteus-web/package.json": "2754469366446e197bc7576abdc94a1aa7a536ce9220d8b7b771859201f84b7d"
+  },
+  "sourceChangedByApiE2e": false,
+  "releaseMergedPushedTaggedInstalledUpdated": false,
+  "desktopBuild": "Serial current worktree Linux ARM64 Electron42.4.1/version1.5.3-beta.3, evidence/api-e2e/build.log; artifact/executable/server SHA in desktop-06/evidence.json"
+}

@@ -20,7 +20,7 @@ const values: RunSettingsValues = {
 const node: RunMemberNode = {
   key: '/product', kind: 'team', name: 'Product', isCoordinator: false,
   values, parentValues: values, fields: ['workspace'], customized: {}, customizedOptionKeys: [],
-  modelRequired: false, children: [],
+  modelRequired: false, launchNotes: [], children: [],
 }
 let wrapper: VueWrapper | null = null
 let originalBridge: Window['electronAPI']

@@ -1,0 +1,46 @@
+{
+  "gates": [
+    {
+      "command": [
+        "corepack",
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "guard:web-boundary"
+      ],
+      "exitCode": 0,
+      "log": "tickets/in-progress/workspaces-sidebar-dock/evidence/delivery/gate-1.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_licensing.py"
+      ],
+      "exitCode": 0,
+      "log": "tickets/in-progress/workspaces-sidebar-dock/evidence/delivery/gate-2.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_repository_artifact_hygiene.py"
+      ],
+      "exitCode": 0,
+      "log": "tickets/in-progress/workspaces-sidebar-dock/evidence/delivery/gate-3.log"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "origin/personal",
+        "--check"
+      ],
+      "exitCode": 0,
+      "log": "tickets/in-progress/workspaces-sidebar-dock/evidence/delivery/gate-4.log"
+    }
+  ],
+  "prospectiveUntrackedTicketPathsIncluded": true,
+  "trackedAndProspectivePaths": 63380,
+  "prospectiveCrossPlatformHygiene": "Passed; no Windows-invalid/reserved/trailing paths or over200 paths/raw xcresult/generated artifact zip",
+  "archiveStageChecksStillRequired": true,
+  "generatedDistStaged": false
+}

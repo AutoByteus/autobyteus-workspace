@@ -1,0 +1,566 @@
+[
+  {
+    "label": "before-selection",
+    "viewport": {
+      "width": 1440,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 450,
+          "preferredWidth": 450,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "automatic",
+          "centerProtectionMode": "automatic",
+          "effectiveCenterMinWidth": 480
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 450,
+      "measuredRight": 450,
+      "intent": "automatic",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 800,
+      "right": 320
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 323,
+      "y": 0,
+      "width": 665,
+      "height": 800,
+      "right": 988
+    },
+    "right": {
+      "x": 990,
+      "y": 0,
+      "width": 450,
+      "height": 800,
+      "right": 1440
+    }
+  },
+  {
+    "label": "after-layout-before-selection",
+    "viewport": {
+      "width": 1440,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 910,
+          "preferredWidth": 910,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1183,
+      "measuredRight": 910,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 800,
+      "right": 320
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 323,
+      "y": 0,
+      "width": 205,
+      "height": 800,
+      "right": 528
+    },
+    "right": {
+      "x": 530,
+      "y": 0,
+      "width": 910,
+      "height": 800,
+      "right": 1440
+    }
+  },
+  {
+    "label": "selected-layout-preview-agent-2",
+    "viewport": {
+      "width": 1440,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 910,
+          "preferredWidth": 910,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1183,
+      "measuredRight": 910,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team-2"
+      },
+      "focus": "layout-preview-agent-2",
+      "tab": "teamMembers"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 800,
+      "right": 320
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 323,
+      "y": 0,
+      "width": 205,
+      "height": 800,
+      "right": 528
+    },
+    "right": {
+      "x": 530,
+      "y": 0,
+      "width": 910,
+      "height": 800,
+      "right": 1440
+    }
+  },
+  {
+    "label": "selection-outcome-layout-preview-agent-2",
+    "url": "http://127.0.0.1:39839/workspace",
+    "selectedRows": [
+      {
+        "text": "RReviewer46mAgent · Reviewer · /Reviewer",
+        "team": "layout-preview-team-2",
+        "member": "/Reviewer"
+      }
+    ],
+    "conversationVisible": 2,
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 910,
+          "preferredWidth": 910,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1183,
+      "measuredRight": 910,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team-2"
+      },
+      "focus": "layout-preview-agent-2",
+      "tab": "teamMembers"
+    }
+  },
+  {
+    "label": "selection-preserved-layout-preview-agent-2",
+    "viewport": {
+      "width": 1440,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 910,
+          "preferredWidth": 910,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1183,
+      "measuredRight": 910,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team-2"
+      },
+      "focus": "layout-preview-agent-2",
+      "tab": "teamMembers"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 800,
+      "right": 320
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 323,
+      "y": 0,
+      "width": 205,
+      "height": 800,
+      "right": 528
+    },
+    "right": {
+      "x": 530,
+      "y": 0,
+      "width": 910,
+      "height": 800,
+      "right": 1440
+    }
+  },
+  {
+    "label": "workspaces-route-invariant-layout-preview-agent-2",
+    "before": "http://127.0.0.1:39839/workspace",
+    "after": "http://127.0.0.1:39839/workspace"
+  },
+  {
+    "label": "selected-layout-preview-agent",
+    "viewport": {
+      "width": 1440,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 910,
+          "preferredWidth": 910,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1183,
+      "measuredRight": 910,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 800,
+      "right": 320
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 323,
+      "y": 0,
+      "width": 205,
+      "height": 800,
+      "right": 528
+    },
+    "right": {
+      "x": 530,
+      "y": 0,
+      "width": 910,
+      "height": 800,
+      "right": 1440
+    }
+  },
+  {
+    "label": "selection-outcome-layout-preview-agent",
+    "url": "http://127.0.0.1:39839/workspace",
+    "selectedRows": [
+      {
+        "text": "EEngineer46mAgent · Engineer · /Engineer",
+        "team": "layout-preview-team",
+        "member": "/Engineer"
+      }
+    ],
+    "conversationVisible": 2,
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 910,
+          "preferredWidth": 910,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1183,
+      "measuredRight": 910,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    }
+  },
+  {
+    "label": "selection-preserved-layout-preview-agent",
+    "viewport": {
+      "width": 1440,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 910,
+          "preferredWidth": 910,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1183,
+      "measuredRight": 910,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 800,
+      "right": 320
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 323,
+      "y": 0,
+      "width": 205,
+      "height": 800,
+      "right": 528
+    },
+    "right": {
+      "x": 530,
+      "y": 0,
+      "width": 910,
+      "height": 800,
+      "right": 1440
+    }
+  },
+  {
+    "label": "workspaces-route-invariant-layout-preview-agent",
+    "before": "http://127.0.0.1:39839/workspace",
+    "after": "http://127.0.0.1:39839/workspace"
+  }
+]

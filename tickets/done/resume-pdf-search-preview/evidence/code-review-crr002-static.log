@@ -1,0 +1,231 @@
+CRR-002 targeted delta checks, 2026-10-12. Source correction 7f321575058d744c8e635b3aff0a6d1f4557e2c4; intake artifact HEAD 69be5f21f505ec5f0aff8cca51ca9d7366d8de25.
+
+$ git diff ddf1d7828 HEAD -- autobyteus-server-ts/src autobyteus-server-ts/tests
+diff --git a/autobyteus-server-ts/src/file-explorer/file-explorer.ts b/autobyteus-server-ts/src/file-explorer/file-explorer.ts
+index f368aa172..59baaaa9b 100644
+--- a/autobyteus-server-ts/src/file-explorer/file-explorer.ts
++++ b/autobyteus-server-ts/src/file-explorer/file-explorer.ts
+@@ -170,10 +170,6 @@ export class WorkspaceFileExplorer {
+     return this.rootNode;
+   }
+
+-  toJson(): string | null {
+-    return this.rootNode ? this.rootNode.toJson() : null;
+-  }
+-
+   async loadFolderChildren(
+     folderPath: string,
+     options: FolderProjectionOptions = {},
+diff --git a/autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts b/autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts
+index c6793f5b4..0efc160df 100644
+--- a/autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts
+@@ -7,6 +7,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+ import type { graphql as graphqlFn, GraphQLSchema, GraphQLError } from "graphql";
+ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+ import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
++import type { TreeNode } from "../../../src/file-explorer/tree-node.js";
+
+ const workspaceManager = getWorkspaceManager();
+
+@@ -100,14 +101,14 @@ describe("File explorer GraphQL path-boundary e2e", () => {
+       fileExplorer?: {
+         fileWatcher?: unknown;
+         watcherLeaseCount?: number;
+-        toJson?: () => string | null;
++        getTree: () => TreeNode | null;
+       } | null;
+     }).fileExplorer ?? null;
+
+     return {
+       watcher: fileExplorer?.fileWatcher ?? null,
+       leaseCount: fileExplorer?.watcherLeaseCount ?? 0,
+-      treeJson: fileExplorer?.toJson?.() ?? null,
++      treeJson: fileExplorer?.getTree()?.toJson() ?? null,
+     };
+   };
+
+diff --git a/autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js b/autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js
+index 479607313..b7da05605 100644
+--- a/autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js
++++ b/autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js
+@@ -41,15 +41,27 @@ describe("WorkspaceFileExplorer", () => {
+         const tree = explorer.getTree();
+         expect(tree.name).toBe(path.basename(tempDir));
+     });
+-    it("serializes the tree to JSON", () => {
+-        const jsonValue = explorer.toJson();
++    it("serializes the live tree to JSON with workspace-relative identity", async () => {
++        fs.mkdirSync(path.join(tempDir, "docs"));
++        fs.writeFileSync(path.join(tempDir, "docs", "notes.txt"), "notes", "utf-8");
++        await explorer.buildWorkspaceDirectoryTree();
++        const jsonValue = explorer.getTree()?.toJson() ?? null;
+         expect(jsonValue).toBeTruthy();
+         const parsed = JSON.parse(jsonValue);
+         expect(parsed.name).toBeTruthy();
+         expect(Array.isArray(parsed.children)).toBe(true);
++        expect(explorer.getTree()?.findNodeByPath(path.join("docs", "notes.txt"))?.getPath()).toBe(path.join("docs", "notes.txt"));
++        expect(parsed.children[0]?.children[0]?.path).toBe(path.join("docs", "notes.txt"));
++    });
++    it("keeps an unloaded snapshot's tree JSON null", async () => {
++        const unloadedExplorer = new WorkspaceFileExplorer(tempDir);
++        expect(unloadedExplorer.getTree()?.toJson() ?? null).toBeNull();
++        await unloadedExplorer.close();
+     });
+     it("rejects reading files outside the workspace", async () => {
++        const treeBeforeDenial = explorer.getTree()?.toJson() ?? null;
+         await expect(explorer.readFileContent("../outside.txt")).rejects.toThrow("Access denied: File is outside the workspace.");
++        expect(explorer.getTree()?.toJson() ?? null).toBe(treeBeforeDenial);
+     });
+     it("projects the live tree with limited depth and relative paths", async () => {
+         const folder2 = path.join(tempDir, "folder1", "folder2");
+diff --git a/autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts b/autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts
+index eddd29f1e..9b906831f 100644
+--- a/autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts
++++ b/autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts
+@@ -3,7 +3,7 @@ import os from "node:os";
+ import path from "node:path";
+ import { describe, expect, it, beforeEach, afterEach } from "vitest";
+ import { WorkspaceFileExplorer } from "../../../src/file-explorer/file-explorer.js";
+-import type { TreeNode } from "../../../src/file-explorer/tree-node.js";
++import type { TreeNode, TreeNodeDict } from "../../../src/file-explorer/tree-node.js";
+
+ const createTempDir = () => fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-file-explorer-"));
+
+@@ -58,19 +58,37 @@ describe("WorkspaceFileExplorer", () => {
+     expect(tree.name).toBe(path.basename(tempDir));
+   });
+
+-  it("serializes the tree to JSON", () => {
+-    const jsonValue = explorer.toJson();
++  it("serializes the live tree to JSON with workspace-relative identity", async () => {
++    fs.mkdirSync(path.join(tempDir, "docs"));
++    fs.writeFileSync(path.join(tempDir, "docs", "notes.txt"), "notes", "utf-8");
++    await explorer.buildWorkspaceDirectoryTree();
++
++    const jsonValue = explorer.getTree()?.toJson() ?? null;
+     expect(jsonValue).toBeTruthy();
+
+-    const parsed = JSON.parse(jsonValue as string) as { name?: string; children?: unknown[] };
++    const parsed = JSON.parse(jsonValue as string) as TreeNodeDict;
+     expect(parsed.name).toBeTruthy();
+     expect(Array.isArray(parsed.children)).toBe(true);
++    expect(explorer.getTree()?.findNodeByPath(path.join("docs", "notes.txt"))?.getPath()).toBe(
++      path.join("docs", "notes.txt"),
++    );
++    expect(parsed.children[0]?.children[0]?.path).toBe(
++      path.join("docs", "notes.txt"),
++    );
++  });
++
++  it("keeps an unloaded snapshot's tree JSON null", async () => {
++    const unloadedExplorer = new WorkspaceFileExplorer(tempDir);
++    expect(unloadedExplorer.getTree()?.toJson() ?? null).toBeNull();
++    await unloadedExplorer.close();
+   });
+
+   it("rejects reading files outside the workspace", async () => {
++    const treeBeforeDenial = explorer.getTree()?.toJson() ?? null;
+     await expect(explorer.readFileContent("../outside.txt")).rejects.toThrow(
+       "Access denied: File is outside the workspace.",
+     );
++    expect(explorer.getTree()?.toJson() ?? null).toBe(treeBeforeDenial);
+   });
+
+   it("projects the live tree with limited depth and relative paths", async () => {
+Exit 0
+
+$ git grep -n -E toShallowJson|getAllFilePaths -- autobyteus-server-ts/src autobyteus-server-ts/tests autobyteus-server-ts/docs autobyteus-web/docs
+Exit 1
+
+$ git grep -n toJson -- autobyteus-server-ts/src/file-explorer/file-explorer.ts autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts autobyteus-server-ts/src/file-explorer/tree-node.ts autobyteus-server-ts/src/api/graphql/types/skills.ts
+autobyteus-server-ts/src/api/graphql/types/skills.ts:191:      return tree.toJson();
+autobyteus-server-ts/src/file-explorer/tree-node.ts:166:  toJson(): string {
+autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts:111:      treeJson: fileExplorer?.getTree()?.toJson() ?? null,
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js:48:        const jsonValue = explorer.getTree()?.toJson() ?? null;
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js:58:        expect(unloadedExplorer.getTree()?.toJson() ?? null).toBeNull();
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js:62:        const treeBeforeDenial = explorer.getTree()?.toJson() ?? null;
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js:64:        expect(explorer.getTree()?.toJson() ?? null).toBe(treeBeforeDenial);
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts:66:    const jsonValue = explorer.getTree()?.toJson() ?? null;
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts:82:    expect(unloadedExplorer.getTree()?.toJson() ?? null).toBeNull();
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts:87:    const treeBeforeDenial = explorer.getTree()?.toJson() ?? null;
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts:91:    expect(explorer.getTree()?.toJson() ?? null).toBe(treeBeforeDenial);
+Exit 0
+
+$ git diff ddf1d7828 HEAD --name-only -- autobyteus-server-ts/src autobyteus-web DESIGN.md TESTING.md AGENTS.md tickets/in-progress/resume-pdf-search-preview/requirements-doc.md
+autobyteus-server-ts/src/file-explorer/file-explorer.ts
+Exit 0
+
+$ sha256sum autobyteus-server-ts/src/file-explorer/file-explorer.ts autobyteus-server-ts/dist/file-explorer/file-explorer.js
+8e43f4b98bcf7d8aa02b535fa22ee503beafa399e5dd47b1c647f2a16e78bd4e  autobyteus-server-ts/src/file-explorer/file-explorer.ts
+90b6abe16699570f760c89a8b5d9d266e42344582f815b493a400a2e46abb308  autobyteus-server-ts/dist/file-explorer/file-explorer.js
+Exit 0
+
+$ git diff --check ddf1d7828 HEAD
+Exit 0
+
+PASS: sole production-source change is exact toJson facade deletion; remaining class incl public search identical.
+Source effective lines403, round delta0added/4removed. No production shapes, dependencies or behavior map changed.
+
+Inspected current implementation evidence implementation-ir002-typecheck.log:
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+Inspected current implementation evidence implementation-ir002-prepare.log:
+
+> @autobyteus/application-devkit@0.1.0 build /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+
+[integration prerequisites] Brief Studio importable package
+AgentFactory (Singleton) initialized.
+(node:17547) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Generated importable package at /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/applications/brief-studio/dist/importable-package
+Generated application root at /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/applications/brief-studio/dist/importable-package/applications/brief-studio
+Integration test prerequisites are present.
+
+Inspected current implementation evidence implementation-ir002-focused.log:
+stdout | tests/unit/api/graphql/converters/workspace-converter.test.ts > WorkspaceConverter > maps the temp workspace with its fixed id and isTemp true
+Created metadata-only FileSystemWorkspace at /path/to/temp.
+Initialized TempWorkspace at /path/to/temp with fixed ID 'temp_ws_default'
+
+ ✓ tests/unit/api/graphql/converters/workspace-converter.test.ts (2 tests) 3ms
+ ✓ tests/unit/workspaces/workspace-path-utils.test.ts (3 tests) 2ms
+ ✓ tests/unit/file-explorer/watcher-runtime-protocol.test.ts (3 tests) 2ms
+
+ Test Files  16 passed (16)
+      Tests  87 passed (87)
+   Start at  16:05:45
+   Duration  3.92s (transform 413ms, setup 232ms, import 801ms, tests 300ms, environment 1ms)
+
+Inspected current implementation evidence implementation-ir002-cleanup.log:
+removed /tmp/autobyteus-server-ts-index-OdiO4C
+removed /tmp/autobyteus-server-ts-mhIHpd
+removed /tmp/autobyteus-server-ts-plg20J
+removed /tmp/watcher-runtime-unit-NkGBVv
+removed /tmp/watcher-runtime-unit-cANK5T
+removed owned autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+removed owned autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal
+removed owned Corepack shim/cache/home /tmp/resume-preview-ir002.EF0Fzw
+Build/check processes exited; current dependencies/local build prerequisites/worktree retained; upstream dirty notification not edited/staged.
+7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5  /home/autobyteus/workspace/autobyteus-investor-applications/job-applications/bit-capital-ai-engineer-2026/Yu_Zheng_Resume_2026_Application.pdf
+  PID COMMAND
+   61 node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data
+
+No reviewer suites/E2E/build/server/browser/live requests this round; evidence-only static checks. Previous own86 focused passes preserved; IR-002 reports current87 focused passes, E2E still pending.
+PASS exact TS->JS parity: autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test (not executed)
+PASS exact TS->JS parity: autobyteus-server-ts/tests/integration/file-explorer/file-explorer.integration.test (not executed)
+PASS exact TS->JS parity: autobyteus-server-ts/tests/integration/file-explorer/file-search.integration.test (not executed)
+PASS exact TS->JS parity: autobyteus-server-ts/tests/unit/api/graphql/converters/workspace-converter.test (not executed)
+PASS path-boundary diagnostic transpilation (not execution/typecheck); type-only TreeNode import erased.

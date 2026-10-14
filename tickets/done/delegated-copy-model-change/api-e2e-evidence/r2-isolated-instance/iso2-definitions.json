@@ -1,0 +1,22 @@
+{
+  "codex": [
+    "gpt-5.6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-6-astra",
+    "gpt-6-luna",
+    "gpt-6-sol",
+    "gpt-6.1-sol"
+  ],
+  "chosen": {
+    "reviewerStart": "gpt-5.6-luna",
+    "reviewerSwitch": "gpt-6-luna"
+  },
+  "ids": {
+    "manager": "pm-manager",
+    "lead": "review-lead",
+    "reviewer": "code-reviewer",
+    "writer": "doc-writer",
+    "team": "review-team"
+  }
+}

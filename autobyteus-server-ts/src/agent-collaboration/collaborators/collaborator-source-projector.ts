@@ -6,22 +6,23 @@ import type {
 } from "../../agent-team-execution/domain/team-run-config.js";
 import { getAgentTeamAddressSegments, type AgentTeamAddress } from "../domain/agent-team-address.js";
 import {
+  effectiveCopyAgentLaunch,
   effectiveMemberLaunchConfiguration,
+  memberFollowsTeam,
   type CollaboratorAgentEntry,
   type CollaboratorEntry,
   type CollaboratorTeamEntry,
+  type RecordedMemberLaunch,
   type TaskExecution,
   type TaskExecutionSource,
+  type UserLaunchSelection,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
 /** Extra copies get fresh identities from the task lifecycle; these only fill the shape. */
 const PENDING_RUN_ID = "collaborator-copy";
 
-/**
- * The hosted node of a collaborator Agent: the configured-member shape with the entry's stored
- * run identity, so the root hosts, restores and binds it like a configured member.
- */
-export const projectCollaboratorAgentNode = (entry: CollaboratorAgentEntry): TeamRunAgentNode => Object.freeze({
+/** A collaborator Agent's node on its started launch (no user selection). */
+const startedCollaboratorAgentNode = (entry: CollaboratorAgentEntry): TeamRunAgentNode => Object.freeze({
   kind: "agent",
   address: entry.address,
   agentDefinitionId: entry.agentDefinitionId,
@@ -32,8 +33,8 @@ export const projectCollaboratorAgentNode = (entry: CollaboratorAgentEntry): Tea
   ...entry.launchConfiguration,
 });
 
-/** The hosted node of a collaborator Team: one TeamRun with the entry's stored identities. */
-export const projectCollaboratorTeamNode = (entry: CollaboratorTeamEntry): TeamRunAgentTeamNode => Object.freeze({
+/** A collaborator Team's node on its members' started launches (no user selections). */
+const startedCollaboratorTeamNode = (entry: CollaboratorTeamEntry): TeamRunAgentTeamNode => Object.freeze({
   kind: "agent_team",
   address: entry.address,
   teamDefinitionId: entry.teamDefinitionId,
@@ -54,16 +55,64 @@ export const projectCollaboratorTeamNode = (entry: CollaboratorTeamEntry): TeamR
   }))),
 });
 
+/** An agent node with a user selection applied through the single launch rule. */
+export const withCopyLaunch = (
+  node: TeamRunAgentNode,
+  selection: Readonly<{ followsTeam?: boolean; teamSelection?: UserLaunchSelection; agentSelection?: UserLaunchSelection }>,
+): TeamRunAgentNode => {
+  const { launch, selected } = effectiveCopyAgentLaunch({ started: node, ...selection });
+  return selected === null ? node : Object.freeze({
+    ...node, llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig,
+  });
+};
+
+/**
+ * The hosted node of a collaborator Agent: the configured-member shape with the entry's stored
+ * run identity, so the root hosts, restores and binds it like a configured member. It runs on
+ * the entry's user selection when one is recorded (DS-003).
+ */
+export const projectCollaboratorAgentNode = (entry: CollaboratorAgentEntry): TeamRunAgentNode =>
+  withCopyLaunch(startedCollaboratorAgentNode(entry), { agentSelection: entry.userLaunchSelection });
+
+/**
+ * The hosted node of a collaborator Team: one TeamRun with the entry's stored identities. Each
+ * member runs on its own user selection, else (when it follows the Team) the Team's selection,
+ * else its started launch.
+ */
+export const projectCollaboratorTeamNode = (entry: CollaboratorTeamEntry): TeamRunAgentTeamNode => {
+  const node = startedCollaboratorTeamNode(entry);
+  const members = new Map(entry.members.map((member) => [member.address, member]));
+  return Object.freeze({
+    ...node,
+    children: Object.freeze(node.children.map((child) => {
+      const member = child.kind === "agent" ? members.get(child.address) : undefined;
+      return member && child.kind === "agent"
+        ? withCopyLaunch(child, {
+          followsTeam: memberFollowsTeam({ kind: "recorded", member }),
+          teamSelection: entry.userTeamLaunchSelection,
+          agentSelection: member.userLaunchSelection,
+        })
+        : child;
+    })),
+  });
+};
+
+/** The launch each collaborator agent (and collaborator Team member) is hosted on, by AgentRun ID. */
+export const collaboratorHostedLaunches = (collaborators: readonly CollaboratorEntry[]): ReadonlyMap<string, TeamRunAgentNode> =>
+  new Map(collaborators.flatMap((entry) => entry.kind === "agent"
+    ? [[entry.agentRunId, projectCollaboratorAgentNode(entry)] as const]
+    : projectCollaboratorTeamNode(entry).children.flatMap((child) => child.kind === "agent" ? [[child.agentRunId, child] as const] : [])));
+
 /**
  * The source of an **extra copy** started by `delegate_task` at a collaborator address
- * (REQ-013): the entry's definition and settings with pending identities, which the task
- * lifecycle replaces with fresh ones.
+ * (REQ-013): the entry's definition and **started** settings (never the instance's user
+ * selection, AR-005) with pending identities, which the task lifecycle replaces with fresh ones.
  */
 export const projectCollaboratorCopySource = (entry: CollaboratorEntry): TeamRunAgentNode | TeamRunAgentTeamNode => {
   if (entry.kind === "agent") {
-    return Object.freeze({ ...projectCollaboratorAgentNode(entry), agentRunId: PENDING_RUN_ID, platformAgentRunId: null });
+    return Object.freeze({ ...startedCollaboratorAgentNode(entry), agentRunId: PENDING_RUN_ID, platformAgentRunId: null });
   }
-  const node = projectCollaboratorTeamNode(entry);
+  const node = startedCollaboratorTeamNode(entry);
   return Object.freeze({
     ...node,
     teamRunId: PENDING_RUN_ID,
@@ -73,9 +122,31 @@ export const projectCollaboratorCopySource = (entry: CollaboratorEntry): TeamRun
   });
 };
 
+/**
+ * A task copy's runtime source. A Team source names its `followerAddresses`: the direct member
+ * agents that follow the Team's launch (`memberFollowsTeam`), so a Team-level user selection
+ * recorded on the copy reaches exactly them on restore.
+ */
 export type CollaboratorCopySource =
   | Readonly<{ kind: "agent"; node: TeamRunAgentNode }>
-  | Readonly<{ kind: "agent_team"; node: TeamRunAgentTeamNode; handoffs: readonly CollaborationHandoff[] }>;
+  | Readonly<{
+    kind: "agent_team";
+    node: TeamRunAgentTeamNode;
+    handoffs: readonly CollaborationHandoff[];
+    followerAddresses: readonly AgentTeamAddress[];
+  }>;
+
+/** The direct member agents of a configured Team placement that follow its launch (configured rule). */
+export const configuredTeamFollowerAddresses = (node: TeamRunAgentTeamNode): readonly AgentTeamAddress[] =>
+  Object.freeze(node.children.flatMap((child) => child.kind === "agent"
+    && memberFollowsTeam({ kind: "configured", team: node.defaultLaunchConfiguration, member: child })
+    ? [child.address] : []));
+
+/** The member addresses of a recorded Team that follow its launch (recorded rule). */
+const recordedFollowerAddresses = (
+  members: readonly (RecordedMemberLaunch & Readonly<{ address: AgentTeamAddress }>)[],
+): readonly AgentTeamAddress[] => Object.freeze(members.flatMap((member) =>
+  memberFollowsTeam({ kind: "recorded", member }) ? [member.address] : []));
 
 /**
  * The extra-copy source at `address`: a collaborator Agent, a collaborator Team (with its
@@ -89,7 +160,12 @@ export const resolveCollaboratorCopySource = (
   const entry = collaborators.find((candidate) => candidate.address === address);
   if (entry?.kind === "agent") return Object.freeze({ kind: "agent", node: projectCollaboratorCopySource(entry) as TeamRunAgentNode });
   if (entry?.kind === "agent_team") {
-    return Object.freeze({ kind: "agent_team", node: projectCollaboratorCopySource(entry) as TeamRunAgentTeamNode, handoffs: entry.handoffs });
+    return Object.freeze({
+      kind: "agent_team",
+      node: projectCollaboratorCopySource(entry) as TeamRunAgentTeamNode,
+      handoffs: entry.handoffs,
+      followerAddresses: recordedFollowerAddresses(entry.members),
+    });
   }
   for (const team of collaborators) {
     if (team.kind !== "agent_team") continue;
@@ -130,6 +206,7 @@ export const projectTaskExecutionSource = (address: AgentTeamAddress, source: Ta
   return Object.freeze({
     kind: "agent_team",
     handoffs: source.handoffs,
+    followerAddresses: recordedFollowerAddresses(source.members),
     node: Object.freeze({
       kind: "agent_team",
       address,

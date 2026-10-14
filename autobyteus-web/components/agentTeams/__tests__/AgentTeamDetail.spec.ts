@@ -1,8 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { flushPromises, mount } from '@vue/test-utils'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils'
 import AgentTeamDetail from '../AgentTeamDetail.vue'
 
-const { team, teamStore, agentStore, prepareTeamRun, push } = vi.hoisted(() => {
+enableAutoUnmount(afterEach)
+
+const { team, teamStore, agentStore, prepareTeamRun } = vi.hoisted(() => {
   const team = {
     id: 'team-1',
     name: 'Software Engineering',
@@ -35,14 +37,12 @@ const { team, teamStore, agentStore, prepareTeamRun, push } = vi.hoisted(() => {
       fetchAllAgentDefinitions: vi.fn().mockResolvedValue(undefined),
     },
     prepareTeamRun: vi.fn(),
-    push: vi.fn().mockResolvedValue(undefined),
   }
 })
 
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({ useAgentTeamDefinitionStore: () => teamStore }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => agentStore }))
 vi.mock('~/composables/runSettings/useRunStart', () => ({ useRunStart: () => ({ runTeam: prepareTeamRun }) }))
-vi.mock('vue-router', () => ({ useRouter: () => ({ push }) }))
 
 const translations: Record<string, string> = {
   'agentTeams.components.agentTeams.AgentTeamDetail.back_to_agent_teams': 'Back to Agent Teams',
@@ -61,16 +61,15 @@ const translations: Record<string, string> = {
   'agentTeams.components.agentTeams.AgentTeamDetail.delete_definition': 'Delete definition',
 }
 
-const mountDetail = async (returnToOrgId?: string) => {
+const mountDetail = async (returnToOrgId?: string, teamDefinitionId = 'team-1') => {
   const wrapper = mount(AgentTeamDetail, {
-    props: { teamDefinitionId: 'team-1', returnToOrgId },
+    props: { teamDefinitionId, returnToOrgId },
     global: {
       mocks: {
         $t: (key: string, params?: { count?: number }) => key.includes('membersHeading') ? `Members (${params?.count ?? 0})` : translations[key] ?? key,
       },
       stubs: {
         AgentDeleteConfirmDialog: true,
-        ExpandableInstructionCard: { props: ['content'], template: '<section>{{ content }}</section>' },
       },
     },
   })
@@ -80,6 +79,85 @@ const mountDetail = async (returnToOrgId?: string) => {
 
 describe('AgentTeamDetail flat Team experience', () => {
   beforeEach(() => vi.clearAllMocks())
+
+  it('places Members directly after Description and before the instruction and handoff cards', async () => {
+    const wrapper = await mountDetail()
+
+    expect(wrapper.findAll('section').map((section) => section.get('h2').text())).toEqual([
+      'Description', 'Members (2)', 'Instructions', 'Handoffs',
+    ])
+    expect(wrapper.get('[data-test="instruction-viewport"]').text()).toBe(team.instructions)
+    const members = wrapper.findAll('section')[1]
+    const cards = members.findAll('article')
+    expect(cards).toHaveLength(team.nodes.length)
+    expect(cards[0].text()).toContain('architecture_designer')
+    expect(cards[0].text()).toContain('Coordinator')
+    expect(cards[1].text()).toContain('implementation_engineer')
+    expect(cards[1].text()).not.toContain('Coordinator')
+    expect(members.get('.grid').classes()).toContain('lg:grid-cols-2')
+  })
+
+  it('uses the same order for another Team while preserving ownership-conditioned actions', async () => {
+    teamStore.getCatalogAgentTeamDefinitionById.mockReturnValueOnce({
+      ...team, id: 'research-team', name: 'Research Team', ownershipScope: 'APPLICATION_OWNED',
+    })
+    const wrapper = await mountDetail(undefined, 'research-team')
+
+    expect(wrapper.get('h1').text()).toBe('Research Team')
+    expect(wrapper.findAll('section').map((section) => section.get('h2').text())).toEqual([
+      'Description', 'Members (2)', 'Instructions', 'Handoffs',
+    ])
+    expect(wrapper.findAll('button').map((button) => button.text())).not.toContain('Delete')
+    expect(wrapper.findAll('[data-test="agent-member-view"]')).toHaveLength(2)
+  })
+
+  it('keeps loaded sections out of loading and not-found states', async () => {
+    let finishLoading!: () => void
+    teamStore.fetchAllAgentTeamDefinitions.mockImplementationOnce(() => new Promise<void>((resolve) => {
+      finishLoading = resolve
+    }))
+    const loading = await mountDetail()
+    expect(loading.text()).toContain('Loading')
+    expect(loading.findAll('section')).toHaveLength(0)
+    finishLoading()
+    await flushPromises()
+    expect(loading.findAll('section')).toHaveLength(4)
+
+    const missing = await mountDetail(undefined, 'missing-team')
+    expect(missing.text()).toContain('Agent Team not found')
+    expect(missing.findAll('section')).toHaveLength(0)
+  })
+
+  it('preserves shared member identity and Team return context', async () => {
+    const wrapper = await mountDetail()
+    await wrapper.findAll('[data-test="agent-member-view"]')[0].trigger('click')
+
+    expect(wrapper.emitted('navigate')?.at(-1)?.[0]).toEqual({
+      target: 'agents', view: 'detail', id: 'agent-architecture', returnToTeam: 'team-1',
+    })
+  })
+
+  it('preserves Back, Edit and confirmed Delete actions', async () => {
+    const wrapper = await mountDetail()
+    const button = (label: string) => wrapper.findAll('button').find((item) => item.text().includes(label))!
+    await button('Back to Agent Teams').trigger('click')
+    expect(wrapper.emitted('navigate')?.at(-1)?.[0]).toEqual({ view: 'team-list' })
+    await button('Edit').trigger('click')
+    expect(wrapper.emitted('navigate')?.at(-1)?.[0]).toEqual({ view: 'team-edit', id: team.id })
+    await button('Delete').trigger('click')
+    const dialog = wrapper.getComponent({ name: 'AgentDeleteConfirmDialog' })
+    expect(dialog.props('show')).toBe(true)
+    expect(teamStore.deleteAgentTeamDefinition).not.toHaveBeenCalled()
+    dialog.vm.$emit('cancel')
+    await flushPromises()
+    expect(dialog.props('show')).toBe(false)
+    await button('Delete').trigger('click')
+    dialog.vm.$emit('confirm')
+    await flushPromises()
+    expect(teamStore.deleteAgentTeamDefinition).toHaveBeenCalledWith(team.id)
+    expect(dialog.props('show')).toBe(false)
+    expect(wrapper.emitted('navigate')?.at(-1)?.[0]).toEqual({ view: 'team-list' })
+  })
 
   it('renders only direct Agent members, the exact coordinator, and ordered handoffs', async () => {
     const wrapper = await mountDetail()
@@ -116,7 +194,6 @@ describe('AgentTeamDetail flat Team experience', () => {
     await wrapper.findAll('button').find((button) => button.text() === 'Run')!.trigger('click')
 
     expect(prepareTeamRun).toHaveBeenCalledWith(team.id)
-    expect(push).not.toHaveBeenCalledWith('/workspace')
   })
 
   it('returns to the owning Agent Org detail without inferring a parent Team', async () => {

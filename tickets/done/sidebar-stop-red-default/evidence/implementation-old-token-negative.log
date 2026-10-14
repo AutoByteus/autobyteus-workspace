@@ -1,0 +1,269 @@
+
+> autobyteus@1.5.3-beta.4 test:nuxt /home/autobyteus/workspace/.codex/worktrees/sidebar-stop-red-default/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/DelegatedStopButton.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/sidebar-stop-red-default/autobyteus-web
+
+stderr | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/history/__tests__/DelegatedStopButton.spec.ts (31 tests | 12 failed) 164ms
+   × sidebar 'Agent' copy Stop under 'AGENT' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=false) 24ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+   × sidebar 'Agent' copy Stop under 'AGENT' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=true) 7ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+   ✓ sidebar 'Agent' copy Stop under 'AGENT' > stops exactly this copy without selecting or toggling its row; activation keys are contained 7ms
+   ✓ sidebar 'Agent' copy Stop under 'AGENT' > keeps pending visible, disabled and pulsing, prevents duplicate stops, then hides the stopped copy 7ms
+   ✓ sidebar 'Agent' copy Stop under 'AGENT' > does not offer Stop without a live copy or a root 5ms
+   × sidebar 'Team' copy Stop under 'AGENT' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=false) 8ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+   × sidebar 'Team' copy Stop under 'AGENT' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=true) 4ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+   ✓ sidebar 'Team' copy Stop under 'AGENT' > stops exactly this copy without selecting or toggling its row; activation keys are contained 5ms
+   ✓ sidebar 'Team' copy Stop under 'AGENT' > keeps pending visible, disabled and pulsing, prevents duplicate stops, then hides the stopped copy 4ms
+   ✓ sidebar 'Team' copy Stop under 'AGENT' > does not offer Stop without a live copy or a root 4ms
+   × sidebar 'Agent' copy Stop under 'AGENT_TEAM' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=false) 4ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+   × sidebar 'Agent' copy Stop under 'AGENT_TEAM' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=true) 4ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+   ✓ sidebar 'Agent' copy Stop under 'AGENT_TEAM' > stops exactly this copy without selecting or toggling its row; activation keys are contained 4ms
+   ✓ sidebar 'Agent' copy Stop under 'AGENT_TEAM' > keeps pending visible, disabled and pulsing, prevents duplicate stops, then hides the stopped copy 7ms
+   ✓ sidebar 'Agent' copy Stop under 'AGENT_TEAM' > does not offer Stop without a live copy or a root 4ms
+   × sidebar 'Team' copy Stop under 'AGENT_TEAM' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=false) 4ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+   × sidebar 'Team' copy Stop under 'AGENT_TEAM' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=true) 4ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+   ✓ sidebar 'Team' copy Stop under 'AGENT_TEAM' > stops exactly this copy without selecting or toggling its row; activation keys are contained 3ms
+   ✓ sidebar 'Team' copy Stop under 'AGENT_TEAM' > keeps pending visible, disabled and pulsing, prevents duplicate stops, then hides the stopped copy 4ms
+   ✓ sidebar 'Team' copy Stop under 'AGENT_TEAM' > does not offer Stop without a live copy or a root 3ms
+   × sidebar 'Agent' copy Stop under 'AGENT_ORG' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=false) 4ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+   × sidebar 'Agent' copy Stop under 'AGENT_ORG' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=true) 3ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+   ✓ sidebar 'Agent' copy Stop under 'AGENT_ORG' > stops exactly this copy without selecting or toggling its row; activation keys are contained 4ms
+   ✓ sidebar 'Agent' copy Stop under 'AGENT_ORG' > keeps pending visible, disabled and pulsing, prevents duplicate stops, then hides the stopped copy 7ms
+   ✓ sidebar 'Agent' copy Stop under 'AGENT_ORG' > does not offer Stop without a live copy or a root 5ms
+   × sidebar 'Team' copy Stop under 'AGENT_ORG' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=false) 3ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+   × sidebar 'Team' copy Stop under 'AGENT_ORG' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=true) 4ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+   ✓ sidebar 'Team' copy Stop under 'AGENT_ORG' > stops exactly this copy without selecting or toggling its row; activation keys are contained 3ms
+   ✓ sidebar 'Team' copy Stop under 'AGENT_ORG' > keeps pending visible, disabled and pulsing, prevents duplicate stops, then hides the stopped copy 4ms
+   ✓ sidebar 'Team' copy Stop under 'AGENT_ORG' > does not offer Stop without a live copy or a root 3ms
+   ✓ Team copy member rows > never offers an individual member Stop in place of the whole Team 2ms
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (17 tests | 3 failed) 295ms
+   × WorkspaceHistoryWorkspaceSection current execution rows > 'Agent' root Stop is red when enabled, muted while disabled, and keeps its exact target 44ms
+     → expected [ 'inline-flex', 'h-5', 'w-5', …(12) ] to deeply equal ArrayContaining{…}
+   × WorkspaceHistoryWorkspaceSection current execution rows > 'Team' root Stop is red when enabled, muted while disabled, and keeps its exact target 12ms
+     → expected [ 'inline-flex', 'h-5', 'w-5', …(12) ] to deeply equal ArrayContaining{…}
+   × WorkspaceHistoryWorkspaceSection current execution rows > 'Org' root Stop is red when enabled, muted while disabled, and keeps its exact target 11ms
+     → expected [ 'inline-flex', 'h-5', 'w-5', …(11) ] to deeply equal ArrayContaining{…}
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > keeps supplied Team images and uses the group glyph for missing or broken images 40ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > renders Orgs directly after standalone Teams and delegates exact root/member actions 39ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > renders any-active definition activity and exact sibling run activity reactively 7ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > renders mutually exclusive active Stop and inactive Archive/Delete actions 15ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > renders and selects exact stable and task-Agent execution identities 10ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > keeps multiple peer tasks independently selectable and obeys outer Team collapse 19ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > marks only the selected TeamRun current when member addresses repeat 11ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > toggles a task-Team subtree and selects only its concrete task Agent child 15ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > removes transient execution rows when the exact live projection disappears 13ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > toggles stable nested Team children by exact row key and selects the concrete child Agent 10ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > keeps a localized nested-Team aggregate visible, reactive, aligned, and non-interactive while collapsed 20ms
+   ✓ WorkspaceHistoryWorkspaceSection current execution rows > renders accessible printed-tree rails, node identities, and orthogonal selection 9ms
+   ✓ WorkspaceHistoryWorkspaceSection Task summary run opening > opens the Team run (never collapsing it) when a Team host Task summary is located without a right panel 9ms
+   ✓ WorkspaceHistoryWorkspaceSection Task summary run opening > opens the Agent run's own conversation (as its run row does) for an Agent host's open-run 9ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Agent' copy Stop under 'AGENT' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=false)
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Agent' copy Stop under 'AGENT' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=true)
+AssertionError: expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   "text-red-500",
++ [
++   "inline-flex",
++   "h-6",
++   "w-6",
++   "flex-shrink-0",
++   "items-center",
++   "justify-center",
++   "rounded-md",
++   "text-gray-400",
++   "transition-colors",
++   "hover:bg-red-50",
++   "hover:text-red-600",
+    "disabled:text-gray-400",
+    "disabled:hover:text-gray-400",
+    "disabled:hover:bg-transparent",
+-   "transition-colors",
+-   "hover:bg-red-50",
+-   "hover:text-red-600",
+    "focus:outline-none",
+    "focus-visible:ring-2",
+    "focus-visible:ring-red-500/40",
+    "disabled:cursor-default",
+    "disabled:opacity-60",
++   "mr-1",
++   "self-center",
+  ]
+
+ ❯ components/workspace/history/__tests__/DelegatedStopButton.spec.ts:49:30
+     47|     const wrapper = mount(WorkspaceTransientExecutionRow, { props: { r…
+     48|     const button = wrapper.get(stopSelector)
+     49|     expect(button.classes()).toEqual(expect.arrayContaining([
+       |                              ^
+     50|       'text-red-500', 'disabled:text-gray-400', 'disabled:hover:text-g…
+     51|       'focus:outline-none', 'focus-visible:ring-2', 'focus-visible:rin…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Team' copy Stop under 'AGENT' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=false)
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Team' copy Stop under 'AGENT' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=true)
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Agent' copy Stop under 'AGENT_TEAM' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=false)
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Agent' copy Stop under 'AGENT_TEAM' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=true)
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Team' copy Stop under 'AGENT_TEAM' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=false)
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Team' copy Stop under 'AGENT_TEAM' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=true)
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Agent' copy Stop under 'AGENT_ORG' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=false)
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Agent' copy Stop under 'AGENT_ORG' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=true)
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Team' copy Stop under 'AGENT_ORG' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=false)
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Team' copy Stop under 'AGENT_ORG' > uses red enabled and muted disabled tokens, retaining focus and semantics (selected=true)
+AssertionError: expected [ 'inline-flex', 'h-6', 'w-6', …(18) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   "text-red-500",
++ [
++   "inline-flex",
++   "h-6",
++   "w-6",
++   "flex-shrink-0",
++   "items-center",
++   "justify-center",
++   "rounded-md",
++   "text-gray-400",
++   "transition-colors",
++   "hover:bg-red-50",
++   "hover:text-red-600",
+    "disabled:text-gray-400",
+    "disabled:hover:text-gray-400",
+    "disabled:hover:bg-transparent",
+-   "transition-colors",
+-   "hover:bg-red-50",
+-   "hover:text-red-600",
+    "focus:outline-none",
+    "focus-visible:ring-2",
+    "focus-visible:ring-red-500/40",
+    "disabled:cursor-default",
+    "disabled:opacity-60",
++   "mr-1",
++   "self-center",
+  ]
+
+ ❯ components/workspace/history/__tests__/DelegatedStopButton.spec.ts:49:30
+     47|     const wrapper = mount(WorkspaceTransientExecutionRow, { props: { r…
+     48|     const button = wrapper.get(stopSelector)
+     49|     expect(button.classes()).toEqual(expect.arrayContaining([
+       |                              ^
+     50|       'text-red-500', 'disabled:text-gray-400', 'disabled:hover:text-g…
+     51|       'focus:outline-none', 'focus-visible:ring-2', 'focus-visible:rin…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection current execution rows > 'Agent' root Stop is red when enabled, muted while disabled, and keeps its exact target
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection current execution rows > 'Team' root Stop is red when enabled, muted while disabled, and keeps its exact target
+AssertionError: expected [ 'inline-flex', 'h-5', 'w-5', …(12) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+@@ -1,7 +1,14 @@
+- ArrayContaining [
+-   "text-red-500",
++ [
++   "inline-flex",
++   "h-5",
++   "w-5",
++   "items-center",
++   "justify-center",
++   "rounded",
++   "text-gray-400",
++   "transition-colors",
+    "hover:bg-red-50",
+    "hover:text-red-600",
+    "disabled:text-gray-400",
+    "disabled:hover:text-gray-400",
+    "disabled:hover:bg-transparent",
+
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:244:30
+    242|     const { wrapper, actions, state, team } = mountSubject({ agents: […
+    243|     const button = wrapper.get(variant.selector);
+    244|     expect(button.classes()).toEqual(expect.arrayContaining([
+       |                              ^
+    245|       'text-red-500', 'hover:bg-red-50', 'hover:text-red-600', 'disabl…
+    246|       'disabled:hover:text-gray-400', 'disabled:hover:bg-transparent',…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection current execution rows > 'Org' root Stop is red when enabled, muted while disabled, and keeps its exact target
+AssertionError: expected [ 'inline-flex', 'h-5', 'w-5', …(11) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+@@ -1,7 +1,13 @@
+- ArrayContaining [
+-   "text-red-500",
++ [
++   "inline-flex",
++   "h-5",
++   "w-5",
++   "items-center",
++   "justify-center",
++   "rounded",
++   "text-gray-400",
+    "hover:bg-red-50",
+    "hover:text-red-600",
+    "disabled:text-gray-400",
+    "disabled:hover:text-gray-400",
+    "disabled:hover:bg-transparent",
+
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:244:30
+    242|     const { wrapper, actions, state, team } = mountSubject({ agents: […
+    243|     const button = wrapper.get(variant.selector);
+    244|     expect(button.classes()).toEqual(expect.arrayContaining([
+       |                              ^
+    245|       'text-red-500', 'hover:bg-red-50', 'hover:text-red-600', 'disabl…
+    246|       'disabled:hover:text-gray-400', 'disabled:hover:bg-transparent',…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  15 failed | 33 passed (48)
+   Start at  16:12:01
+   Duration  11.02s (transform 6.02s, setup 17.37s, collect 1.36s, tests 460ms, environment 1.21s, prepare 623ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

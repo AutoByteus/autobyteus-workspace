@@ -1,0 +1,41 @@
+{
+  "result": "Fail",
+  "error": {
+    "message": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"agent-conversation-feed\"]').getByText('PRESERVED_CONVERSATION_ALPHA', { exact: true }) to be visible\n",
+    "stack": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"agent-conversation-feed\"]').getByText('PRESERVED_CONVERSATION_ALPHA', { exact: true }) to be visible\n\n    at select (/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/desktop-journey.mjs:73:94)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/desktop-journey.mjs:79:2"
+  },
+  "cleanup": {
+    "stop": {
+      "instanceId": "iso-38239-f867",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-6Eey32",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "list": {
+      "instances": [
+        {
+          "instanceId": "iso-46747-4c60",
+          "pid": 23731,
+          "executablePath": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus",
+          "backendUrl": "http://127.0.0.1:43217",
+          "graphqlUrl": "http://127.0.0.1:43217/graphql",
+          "controlEndpoint": "http://127.0.0.1:46747",
+          "controlPort": 46747,
+          "serverPort": 43217,
+          "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-2nUx3u",
+          "ownsDataRoot": true,
+          "keepDataRoot": false,
+          "databaseUrl": "file:/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-2nUx3u/server-data/db/production.db",
+          "logPath": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-app/iso-46747-4c60.log",
+          "startedAt": "2026-10-13T14:07:31.054Z",
+          "running": true
+        }
+      ]
+    }
+  },
+  "evidence": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/desktop-04/evidence.json"
+}

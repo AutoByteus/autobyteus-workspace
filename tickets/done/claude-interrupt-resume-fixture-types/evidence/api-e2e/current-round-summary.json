@@ -1,0 +1,58 @@
+{
+  "task": "project_task_11c75527-3875-4664-a49c-d1c871064d5c",
+  "package": "claude-interrupt-resume-fixture-types",
+  "source": "fdce8ad062c574b453e634cb254ccb4ecc21a1ef",
+  "priorTaskPassesReused": false,
+  "currentAPIRound": 1,
+  "scopedTotalDiagnostics": 0,
+  "scopedCleanExit": 0,
+  "scopedRestoredExit": 0,
+  "negativeActualExit": 2,
+  "negativeDiagnostic": [
+    "tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts(885,7): error TS2322: Type 'string' is not assignable to type 'number'."
+  ],
+  "targetRestoredSHA256": "3d7a40b5bf62946dabe0d03e2d060ab7b04de36895c29a7a415850036d44ade9",
+  "independentGraphAndPromptProof": true,
+  "targetResults": {
+    "target-1": {
+      "passed": 8,
+      "skipped": 1,
+      "exit": 0,
+      "unhandled": false,
+      "ownedGroupRemaining": [],
+      "privateWorkspacesRemaining": [],
+      "privateRootRemoved": true
+    },
+    "target-2": {
+      "passed": 8,
+      "skipped": 1,
+      "exit": 0,
+      "unhandled": false,
+      "ownedGroupRemaining": [],
+      "privateWorkspacesRemaining": [],
+      "privateRootRemoved": true
+    },
+    "target-3": {
+      "passed": 8,
+      "skipped": 1,
+      "exit": 0,
+      "unhandled": false,
+      "ownedGroupRemaining": [],
+      "privateWorkspacesRemaining": [],
+      "privateRootRemoved": true
+    }
+  },
+  "promptStatusLifecycleUnitFiles": 7,
+  "unitPassed": 48,
+  "productionTypecheckExit": 0,
+  "APIAddedUpdatedRemovedDurableTests": false,
+  "reviewDecision": "Not Required \u2014 direct low-risk route; fresh IR-002 proportional self-review recorded",
+  "broaderValidationDecision": "Not Required",
+  "confidencePercent": 96.7,
+  "deliveryGatesPending": [
+    "new user verification",
+    "latest-target integrated checks",
+    "merge/push/cleanup"
+  ],
+  "releaseRequested": false
+}

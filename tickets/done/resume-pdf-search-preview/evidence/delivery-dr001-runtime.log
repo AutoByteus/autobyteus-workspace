@@ -1,0 +1,32 @@
+DR-001 read-only runtime/access/integrity check; 2026-10-12T16:43:49.378279+00:00
+$ hostname
+74ff273d28fe
+exit=0
+$ bash -c command -v docker; command -v podman; command -v ssh
+/usr/bin/ssh
+exit=0
+$ python3 -c import os; print('
+'.join(k+'='+os.environ.get(k,'<unset>') for k in ['DOCKER_HOST','DOCKER_CONTEXT','DOCKER_TLS_VERIFY'])); print('
+'.join(p+': '+('socket present' if __import__('stat').S_ISSOCK(os.stat(p).st_mode) else 'not socket') if os.path.exists(p) else p+': absent' for p in ['/var/run/docker.sock','/run/docker.sock','/run/podman/podman.sock']))
+  File "<string>", line 1
+    import os; print('
+                     ^
+SyntaxError: unterminated string literal (detected at line 1)
+exit=1
+$ ps -p 61 -o pid,ppid,lstart,args
+  PID  PPID                  STARTED COMMAND
+   61     1 Mon Oct 12 13:49:29 2026 node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data
+exit=0
+$ readlink /proc/61/cwd
+/app/autobyteus-server-ts
+exit=0
+$ sha256sum /app/autobyteus-server-ts/dist/file-explorer/file-explorer.js autobyteus-server-ts/src/file-explorer/file-explorer.ts autobyteus-server-ts/dist/file-explorer/file-explorer.js test-support/file-explorer/resume-preview.pdf tickets/in-progress/resume-pdf-search-preview/solution-revision-record.md /home/autobyteus/workspace/autobyteus-investor-applications/job-applications/bit-capital-ai-engineer-2026/Yu_Zheng_Resume_2026_Application.pdf
+5dcb1ecaa2740df80f85d2828a74d18bcf575fe93c173599973bc9343a10cc8c  /app/autobyteus-server-ts/dist/file-explorer/file-explorer.js
+8e43f4b98bcf7d8aa02b535fa22ee503beafa399e5dd47b1c647f2a16e78bd4e  autobyteus-server-ts/src/file-explorer/file-explorer.ts
+90b6abe16699570f760c89a8b5d9d266e42344582f815b493a400a2e46abb308  autobyteus-server-ts/dist/file-explorer/file-explorer.js
+999bd43e8b679a7f1b65482120948444dca47a1e541122cae3bb27862069e87d  test-support/file-explorer/resume-preview.pdf
+0a6b6bedbacd89828e26dc76d92e6c12d2397df1391c9e54faa6522265b9c686  tickets/in-progress/resume-pdf-search-preview/solution-revision-record.md
+7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5  /home/autobyteus/workspace/autobyteus-investor-applications/job-applications/bit-capital-ai-engineer-2026/Yu_Zheng_Resume_2026_Application.pdf
+exit=0
+No Docker/Podman executable, local daemon socket or configured remote Docker endpoint; SSH executable alone is not host authorization/access. No host/container image inspection possible.
+No live HTTP request, restart, original copy, /app/registry/data/config mutation or deployment performed. External frontend/build/image/host-port mapping remain unverified.

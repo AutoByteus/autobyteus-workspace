@@ -1,0 +1,144 @@
+{
+  "surface": "browser",
+  "source": "delegated-launch-defaults-evidence.json",
+  "variants": [
+    {
+      "host": "Agent",
+      "control": "root",
+      "redEnabledGrayDisabledIncludingHover": true,
+      "exactOneNativeRequest": {
+        "agentRunId": "manager_0ea5_5cabb9da16f9471c8a62ed3d378f9222"
+      },
+      "key": "Space",
+      "realSuccess": true,
+      "taskPreservedParentActiveAndResumed": false,
+      "inactiveHistory": true
+    },
+    {
+      "host": "Agent",
+      "control": "copy",
+      "redEnabledGrayDisabledIncludingHover": true,
+      "exactOneNativeRequest": {
+        "input": {
+          "rootKind": "AGENT",
+          "rootRunId": "manager_0ea5_5cabb9da16f9471c8a62ed3d378f9222",
+          "agentRunId": "writer_5af2_e8c74a7693684a9d924b457671966648"
+        }
+      },
+      "key": "Enter",
+      "realSuccess": true,
+      "taskPreservedParentActiveAndResumed": true,
+      "inactiveHistory": false
+    },
+    {
+      "host": "Team",
+      "control": "root",
+      "redEnabledGrayDisabledIncludingHover": true,
+      "exactOneNativeRequest": {
+        "teamRunId": "home_team_d516_1a5fa08038914a9d9b720ca6152b75ee"
+      },
+      "key": "Enter",
+      "realSuccess": true,
+      "taskPreservedParentActiveAndResumed": false,
+      "inactiveHistory": true
+    },
+    {
+      "host": "Team",
+      "control": "copy",
+      "redEnabledGrayDisabledIncludingHover": true,
+      "exactOneNativeRequest": {
+        "input": {
+          "rootKind": "AGENT_TEAM",
+          "rootRunId": "home_team_d516_1a5fa08038914a9d9b720ca6152b75ee",
+          "teamRunId": "pair_team_95df_ceb8db1fd668463eb8efe1cd0a91a46e"
+        }
+      },
+      "key": "Space",
+      "realSuccess": true,
+      "taskPreservedParentActiveAndResumed": true,
+      "inactiveHistory": false
+    },
+    {
+      "host": "Org",
+      "control": "root",
+      "redEnabledGrayDisabledIncludingHover": true,
+      "exactOneNativeRequest": {
+        "agentOrgRunId": "hostorg_org_5cfa_b6b264ab26af46d598b4acef560a6633"
+      },
+      "key": "Space",
+      "realSuccess": true,
+      "taskPreservedParentActiveAndResumed": false,
+      "inactiveHistory": true
+    },
+    {
+      "host": "Org",
+      "control": "copy",
+      "redEnabledGrayDisabledIncludingHover": true,
+      "exactOneNativeRequest": {
+        "input": {
+          "rootKind": "AGENT_ORG",
+          "rootRunId": "hostorg_org_5cfa_b6b264ab26af46d598b4acef560a6633",
+          "agentRunId": "writer_5af2_8169bcdd745042d8aa107c32ca019ae9"
+        }
+      },
+      "key": "Enter",
+      "realSuccess": true,
+      "taskPreservedParentActiveAndResumed": true,
+      "inactiveHistory": false
+    }
+  ],
+  "settings": {
+    "noLaunchAndSameUrl": {
+      "runId": "manager_0ea5_87db90ea4b3f402f84b03db27f65b896",
+      "copyId": "writer_5af2_f1e347b6186d47c9b331a5b5b1d1350b",
+      "neighborId": "writer_5af2_8eefffbe8b7b4008b0543668110b87db",
+      "first": {
+        "summary": "Gemini test \u00b7 Antigravity \u00b7 Auto-approve",
+        "editor": "Gemini test\nAntigravity",
+        "expanded": "true",
+        "url": "http://127.0.0.1:49360/chat?id=manager_0ea5_87db90ea4b3f402f84b03db27f65b896"
+      },
+      "repeat": {
+        "summary": "Alt test model \u00b7 Antigravity \u00b7 Auto-approve",
+        "editor": "Alt test model\nAntigravity",
+        "expanded": "true",
+        "url": "http://127.0.0.1:49360/chat?id=manager_0ea5_87db90ea4b3f402f84b03db27f65b896"
+      }
+    },
+    "committedReadFailure": "Settings were saved, but could not be refreshed. Refresh before making more changes.\nRefresh",
+    "readOnlyRecovered": {
+      "summary": "Gemini test \u00b7 Antigravity \u00b7 Auto-approve",
+      "editor": "Gemini test\nAntigravity",
+      "expanded": "true",
+      "url": "http://127.0.0.1:49360/chat?id=manager_0ea5_2b0470a9379843768272e47d44b56ca3"
+    },
+    "sameModelConfiguration": [
+      {
+        "effort": "low",
+        "displayed": "Low",
+        "selection": {
+          "llmModelIdentifier": "grok-4.7",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "selectedAt": "2026-10-13T17:28:46.935Z"
+        },
+        "summary": "Grok 4.7 \u00b7 Grok Build \u00b7 Auto-approve"
+      },
+      {
+        "effort": "xhigh",
+        "displayed": "Xhigh",
+        "selection": {
+          "llmModelIdentifier": "grok-4.7",
+          "llmConfig": {
+            "reasoning_effort": "xhigh"
+          },
+          "selectedAt": "2026-10-13T17:28:47.551Z"
+        },
+        "summary": "Grok 4.7 \u00b7 Grok Build \u00b7 Auto-approve"
+      }
+    ]
+  },
+  "orgHistoryUrl": "http://127.0.0.1:49360/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-5cfa&orgRunId=hostorg_org_5cfa_b6b264ab26af46d598b4acef560a6633&mode=history&memberAddress=/manager",
+  "result": "Pass"
+}

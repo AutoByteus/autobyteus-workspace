@@ -1,0 +1,155 @@
+{
+  "task": "project_task_6b9ce371-7593-42d7-9d20-3c637512830a",
+  "package": "agent-org-creation-cache-field-completeness",
+  "files": [
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_3242d5c7c001__follow-up-cache-regression.spec.ts.txt",
+      "name": "ctx_3242d5c7c001__follow-up-cache-regression.spec.ts.txt",
+      "bytes": 8883,
+      "sha256": "c0ed8fa6a41cf029cd54c4b650bca2dc3c01c6b2ca7467e22bdada36bb562067",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_3d389e56537c__baseline-fix-d8bac59860.patch.gz.base64.json",
+      "name": "ctx_3d389e56537c__baseline-fix-d8bac59860.patch.gz.base64.json",
+      "bytes": 4338,
+      "sha256": "90f41f97dfad452ff989bc8a71effecee5ceb3d7f62f1c31ebdcd85bfbedb6ef",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_3f1e4765f114__failure-summary.json",
+      "name": "ctx_3f1e4765f114__failure-summary.json",
+      "bytes": 2526,
+      "sha256": "3b559f46f462d83c2082b8d589b3355d1cf2f951532609cff4d175f9fe9d6942",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_416c34b639ca__cache-regression-verified.txt",
+      "name": "ctx_416c34b639ca__cache-regression-verified.txt",
+      "bytes": 6092,
+      "sha256": "69b1b612f693630b2959bf36413db20eb9c8beaeb373b41b29bcd065be9976ee",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_4379bbab73a4__manager-retention-transfer-receipt.json",
+      "name": "ctx_4379bbab73a4__manager-retention-transfer-receipt.json",
+      "bytes": 5003,
+      "sha256": "463433ba8f3c46e7c6047d12350701463dc610d5947707239c8fd3561b490b6d",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_56e710755d13__code-review-report.md",
+      "name": "ctx_56e710755d13__code-review-report.md",
+      "bytes": 19670,
+      "sha256": "0f556d1fc425954269f0961955e067298ee66b828437f1322ba24b96804d3502",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_60c2d7715af4__failure-recheck.txt",
+      "name": "ctx_60c2d7715af4__failure-recheck.txt",
+      "bytes": 6091,
+      "sha256": "dd9ba395cab7c16a2d8a34cd9e515f029856aaf3d3a7d4edc09e56a167c2838e",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_60d7dcdac61c__api-e2e-execution-coverage-report.md",
+      "name": "ctx_60d7dcdac61c__api-e2e-execution-coverage-report.md",
+      "bytes": 21448,
+      "sha256": "91d4e849d4cff0e134b34504452b85456fdcc4e7157ce5b18537ef3bec2a2bbc",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_62ce90ad848f__baseline-fix-d8bac59860.patch.txt",
+      "name": "ctx_62ce90ad848f__baseline-fix-d8bac59860.patch.txt",
+      "bytes": 7693,
+      "sha256": "827d2feb934ac50293a07f34415e40360273ce8e5309c962b6873142cef3f23d",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_67ffde923b1e__retention-transfer-result.md",
+      "name": "ctx_67ffde923b1e__retention-transfer-result.md",
+      "bytes": 7745,
+      "sha256": "d7ff926ab09e5fee0dcde4b40753f4f7ce5e406a2face757c7276157070b5af7",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_7c9ed0260eea__agent-org-creation-definitionMutationCache.spec.txt",
+      "name": "ctx_7c9ed0260eea__agent-org-creation-definitionMutationCache.spec.txt",
+      "bytes": 8883,
+      "sha256": "c0ed8fa6a41cf029cd54c4b650bca2dc3c01c6b2ca7467e22bdada36bb562067",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_8605a6bda09d__code-review-revision-record.md",
+      "name": "ctx_8605a6bda09d__code-review-revision-record.md",
+      "bytes": 6281,
+      "sha256": "a4a19443970537bf00d0bd31af04e5eafc4e83bb6ac24638ec2f8b84bed11884",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_92e8ddd04be7__api-e2e-revision-record.md",
+      "name": "ctx_92e8ddd04be7__api-e2e-revision-record.md",
+      "bytes": 7852,
+      "sha256": "b0ad6d04487d8f24faa73d64da11bf08270e295b4ca353eebe26354429c95c06",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_964f1bf6202a__terminal-result.md",
+      "name": "ctx_964f1bf6202a__terminal-result.md",
+      "bytes": 9637,
+      "sha256": "191aec66be1c2c21476de8c5b5f8621fc1f7cc526c9863bd48417ae9d280955e",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_c91d3cddf243__backlog-linkage-result.md",
+      "name": "ctx_c91d3cddf243__backlog-linkage-result.md",
+      "bytes": 4741,
+      "sha256": "66cd91c169ff6a3152a5e4f6c0f669da267f20a0702eafd0d75e6d0979a3d273",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_d00e0ccab574__implementation-ui-separation.json",
+      "name": "ctx_d00e0ccab574__implementation-ui-separation.json",
+      "bytes": 1898,
+      "sha256": "e357fd835786e9cebbe1ca2375450b17143ed2098cdef3b01aa9f2d14aa724bb",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_d1c6deda8b10__cleanup-check.json",
+      "name": "ctx_d1c6deda8b10__cleanup-check.json",
+      "bytes": 555,
+      "sha256": "22586f31dbaf774069bebd8927fdac60201dd63539f23237ac91f47ad0d0593c",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    },
+    {
+      "path": "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_6b9ce371-7593-42d7-9d20-3c637512830a/context/ctx_d5254c6f51ff__baseline-follow-up-handover.md",
+      "name": "ctx_d5254c6f51ff__baseline-follow-up-handover.md",
+      "bytes": 8662,
+      "sha256": "c0da4dc0d29b2976e0b51fdfc6e4db1eb4de51031792a023775577015f0612a9",
+      "owner": "Task Manager / originating specialist",
+      "purpose": "historical causal / preservation / prior UI completion context, not current-task Pass or requirements approval"
+    }
+  ],
+  "retainedRef": "preserve/agent-definition-cache-fix-d8bac59860",
+  "retainedCommit": "d8bac598606001b702e300eeaeefe06c3caf0d3d",
+  "reuseState": "Unreviewed prepared candidate, own workflow still required; old UI worktree absent",
+  "dispatchAuthority": "New Task assignment and recorded user same-team approval 2026-10-13 override prior not-dispatched notes for this Task only",
+  "priorUiState": "DONE; immutable final artifacts linked read-only; process-prevention Task separate/queued"
+}

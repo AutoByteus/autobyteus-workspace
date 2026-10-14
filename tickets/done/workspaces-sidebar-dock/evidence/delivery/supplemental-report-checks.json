@@ -1,0 +1,29 @@
+{
+  "method": "disposable index read-tree current remote; explicit own ticket metadata changes only",
+  "sourceBase": "1a2379c57088e8976aeb0f43e1e607e1acc103c6",
+  "changedPathsBeforeThisReceipt": [
+    "tickets/done/workspaces-sidebar-dock/artifact-location-map.md",
+    "tickets/done/workspaces-sidebar-dock/delivery-revision-record.md",
+    "tickets/done/workspaces-sidebar-dock/docs-sync-report.md",
+    "tickets/done/workspaces-sidebar-dock/evidence/delivery/archive-hygiene-final.log",
+    "tickets/done/workspaces-sidebar-dock/evidence/delivery/archive-licensing.log",
+    "tickets/done/workspaces-sidebar-dock/evidence/delivery/cleanup.json",
+    "tickets/done/workspaces-sidebar-dock/evidence/delivery/merged-hygiene.log",
+    "tickets/done/workspaces-sidebar-dock/evidence/delivery/merged-licensing.log",
+    "tickets/done/workspaces-sidebar-dock/evidence/delivery/post-target-push-fetch.log",
+    "tickets/done/workspaces-sidebar-dock/evidence/delivery/power-loss-resume.json",
+    "tickets/done/workspaces-sidebar-dock/evidence/delivery/pre-target-push-fetch.log",
+    "tickets/done/workspaces-sidebar-dock/evidence/delivery/repository-finalization.json",
+    "tickets/done/workspaces-sidebar-dock/evidence/delivery/supplemental-whitespace-correction.json",
+    "tickets/done/workspaces-sidebar-dock/evidence/delivery/target-push.log",
+    "tickets/done/workspaces-sidebar-dock/evidence/delivery/verification-completed.json",
+    "tickets/done/workspaces-sidebar-dock/handoff-summary.md",
+    "tickets/done/workspaces-sidebar-dock/release-deployment-report.md"
+  ],
+  "sourceTestBuildChanges": false,
+  "artifactHygiene": "Passed",
+  "cachedDiffCheck": "Passed",
+  "licensing": "Merged source check passed; supplemental ticket-only records ignored by licensing rules; no licensing/source delta",
+  "mainIndexSeparate": true,
+  "postCleanupReportOnly": true
+}

@@ -1,0 +1,1149 @@
+{
+  "package": "claude-interrupt-resume-fixture-types",
+  "projectTask": "project_task_11c75527-3875-4664-a49c-d1c871064d5c",
+  "task_size": "Small",
+  "architectural_risk": "Low",
+  "route": "Direct low-risk; current IR-002 proportional self-review plus independent API-REV-001; API durable coverage delta none",
+  "requirements": "Approved SR-001",
+  "design": "Ready SR-003",
+  "implementation": "IR-002, IR-001 finding/recovery history retained",
+  "api": "API-REV-001 Pass 96.7% current reported",
+  "delivery": [
+    "DR-001",
+    "DR-002"
+  ],
+  "independentReviewArtifacts": {
+    "design-review-report.md": "N/A \u2014 not applicable",
+    "architecture-review-revision-record.md": "N/A \u2014 not applicable",
+    "code-review-report.md": "N/A \u2014 not applicable",
+    "code-review-revision-record.md": "N/A \u2014 not applicable",
+    "api-e2e-test-review-report.md": "N/A \u2014 Not Required direct low-risk route"
+  },
+  "currentReviewPolicyArtifact": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/review-policy-record.md",
+  "priorTaskPassOrVerificationReused": false,
+  "repoTicketPath": "tickets/done/claude-interrupt-resume-fixture-types",
+  "persistentArtifactRoot": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types",
+  "finalPublicationReceipt": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/final-repository-state.json",
+  "terminalReceipt": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/terminal-handoff-receipt.json",
+  "historicalAbsolutePaths": "Original deleted task-worktree paths are provenance only; use current manifest paths. Original DONE package remains immutable.",
+  "sourceSnapshots": [
+    {
+      "repoPath": "autobyteus-server-ts/package.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/autobyteus-server-ts/package.json",
+      "sha256": "893ee13dcf5a320b4d5f0f4dfaaf37a82ba4f0770058cb1e031144b750c9ccac"
+    },
+    {
+      "repoPath": "autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+      "sha256": "3d7a40b5bf62946dabe0d03e2d060ab7b04de36895c29a7a415850036d44ade9"
+    },
+    {
+      "repoPath": "autobyteus-server-ts/tsconfig.claude-interrupt-resume-e2e.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/autobyteus-server-ts/tsconfig.claude-interrupt-resume-e2e.json",
+      "sha256": "0c844d13a7790eb2dc2d558992c5add3bba45d55689614cae79e357c8bbe1923"
+    },
+    {
+      "repoPath": "pnpm-lock.yaml",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/pnpm-lock.yaml",
+      "sha256": "c24a5b3cd6f3020f5c3e4b907f3cdbf2b53d9432d2a818945be386025ce92600"
+    },
+    {
+      "repoPath": "autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs",
+      "sha256": "d408306b1decad92e9ddade8817c1768164a34791f94d25e6e4204ffcedd3933"
+    }
+  ],
+  "allCumulativeArtifacts": [
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/api-e2e-coverage-investigation.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/api-e2e-coverage-investigation.md",
+      "sha256": "8a6703e62906edd9cbd8e76b0f8552e55f474502b6886f73bfbe429f73119f80"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/api-e2e-execution-coverage-report.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/api-e2e-execution-coverage-report.md",
+      "sha256": "0d1fc3a1ca8dbe99c22b1b82419495bb17fab7b97df267106f5cb727794043c3"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/api-e2e-revision-record.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/api-e2e-revision-record.md",
+      "sha256": "4eda92fc34c35e5bf19eadf9aa0fe8fee3e65da24b69f2931161c1a90697526f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/api-e2e-test-case-ledger.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/api-e2e-test-case-ledger.md",
+      "sha256": "b290e4fff9929dd61506d319cabc1c307a1a381291ff276e94c85ee0333dbe48"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/delivery-revision-record.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/delivery-revision-record.md",
+      "sha256": "f2f096e9fc967140bc88665a138fd22bb30bd4ebeab900db4608b5a7d2f3eb7c"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/design-spec.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/design-spec.md",
+      "sha256": "fcb543841b112f5a48f74fa2f5f39b0e94fe752a93c4bdddf62a9df07ffcbbe1"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/docs-sync-report.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/docs-sync-report.md",
+      "sha256": "321fcfe4d135294c846e3f9ff1b46e84d8b1e0140e7883e15a1ed55204921e24"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/case-reporter.mjs",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/case-reporter.mjs",
+      "sha256": "d376faba27a5fc9ec2d8f0e7d383e9ad006b4282261f2d99a43547e2a910fd0a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/current-round-summary.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/current-round-summary.json",
+      "sha256": "50b21579f4fdd65a602b6fad8485d2463f031f187c4d6f0feb26905d4490e5f9"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/focused-units.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/focused-units.command.json",
+      "sha256": "2289538c73bad0806f74e0d389ca486c7582bedd5eea3b7160c1eca75333dbbc"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/focused-units.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/focused-units.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/focused-units.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/focused-units.log",
+      "sha256": "87ff4202da076f8c479becd7592c9a04f65c1c4747d98c92e72770f3f1889440"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/focused-units.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/focused-units.resources.json",
+      "sha256": "3940c531f41cf9c4f63f88a07b898637fb87c965c8c0ab8cfd02caac907b0ea7"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/independent-source-inventory.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/independent-source-inventory.json",
+      "sha256": "4de93daef7f87ebb538f0a656fb630d03897c1e1a46cce85f3d07327608e3f0e"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/negative-control.py",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/negative-control.py",
+      "sha256": "2c6b94c30a766b6def8a2a22a3a7af76c305fb01062d17ec8ef9bab245479c53"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/negative-restoration.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/negative-restoration.json",
+      "sha256": "ad51474fd1a8ec00985b6ca965aaac16054f5eb323940027e93b1c54f1c588cb"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/preservation.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/preservation.command.json",
+      "sha256": "1ace8f5c37ce5045d6d41369dd488767afef1e1f356b35f0f324ee4fc97a4ea6"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/preservation.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/preservation.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/preservation.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/preservation.log",
+      "sha256": "03eff6998fc764718f9df05be25de87cc2194d1ada7721688bd834458ce69ed8"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/preservation.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/preservation.resources.json",
+      "sha256": "ab3dcb26bc46ce8a2eb1e93b99c9e2db73dec8d461ced77abdaf11bd798a9ab1"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/production-typecheck.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/production-typecheck.command.json",
+      "sha256": "97e45b183cf22256a4d883ef55cd5fd533abcb59f127287796e61bf030936e70"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/production-typecheck.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/production-typecheck.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/production-typecheck.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/production-typecheck.log",
+      "sha256": "108f62f63263b70305c619f8d552a4e4739e1d6e36ae924ee41d24e028db5806"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/production-typecheck.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/production-typecheck.resources.json",
+      "sha256": "780ff9acb83dfd3e7424ad16a18d72291c6a934993f58e9cf453762c77100144"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/run-isolated.py",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/run-isolated.py",
+      "sha256": "e44683534780894502c819ef9e8aced0fed444f06e1d0c1c4dc86ea9f7387463"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-clean.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-clean.command.json",
+      "sha256": "6c7e5ec3d4dfb2ff7df7ee2898431fe4f9af8710b87e91a840d3eb9187823647"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-clean.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-clean.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-clean.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-clean.log",
+      "sha256": "df26d1c58ff47e0da2ec36692cdcb6784b35bf6aa7fc57e96f1b97f44d6c4a1a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-clean.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-clean.resources.json",
+      "sha256": "38b783c172995202bcefe3514ddf8ab6e1a645de13b82dc1fbc5a8df1d006df3"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-graph-files.txt",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-graph-files.txt",
+      "sha256": "2d2f7dc6a11817e543f597e29ac30498def57b59a4e1abddd6ef3a500a99ca74"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-negative.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-negative.command.json",
+      "sha256": "b9f0ec675bdecc9f831dcef6eec777de19618b2ddda0e1b2dc2705f4eb3fa781"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-negative.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-negative.exit",
+      "sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-negative.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-negative.log",
+      "sha256": "d4f87296f37ed7af407a120959cd707e1ec52af1c56205a2420e6e4793bbde1f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-negative.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-negative.resources.json",
+      "sha256": "aee0e9ac19dbbda30440d4ad5dc8416c67a9973b7ee34abf5b16f24c54861ab8"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-restored.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-restored.command.json",
+      "sha256": "6c7e5ec3d4dfb2ff7df7ee2898431fe4f9af8710b87e91a840d3eb9187823647"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-restored.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-restored.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-restored.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-restored.log",
+      "sha256": "df26d1c58ff47e0da2ec36692cdcb6784b35bf6aa7fc57e96f1b97f44d6c4a1a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-restored.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/scoped-restored.resources.json",
+      "sha256": "c41f84f469748e5b898476109ada5e1485c64603ef90d2d2a6c4a3386ed0de6c"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1-frames/API-CL01.json",
+      "sha256": "d6413bf69a15e767187e2676c02c4d7a302ca5206a16ab35e6aa06c2e4001e87"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1-frames/API-CL02.json",
+      "sha256": "396eabef2099d58cd350c203ad8fc13be4f15e2ff9c77fa00486b1d307640575"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1-frames/API-CL03.json",
+      "sha256": "5440b346d427071fd9b59dccf8c875be852dc2f9fb5ce2aa544fcaab10fde224"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1-frames/API-CL04.json",
+      "sha256": "4e60a35787e868f53a321c07084a4b75245cecb3655b09176edb280af81a1a7a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1.command.json",
+      "sha256": "9694743e225eb76ed50594b29894b616619190f300fc52da8facfd6d4c913e6d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1.log",
+      "sha256": "97d011f45df5c5601012954fdb49b3bcf4466b7a74b607e549712ad6b5a7ca45"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-1.resources.json",
+      "sha256": "ca512f4f4aeafbb6e691f88ed07bc85144f9312742eab7eaefc1aae23f4e64a5"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2-frames/API-CL01.json",
+      "sha256": "4a4e1d96facb23c1dd4396e0e979e569bd0b6e35aba9209077f27e12c4e8d2b1"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2-frames/API-CL02.json",
+      "sha256": "f5cdac603cbc084eb139b78ec5bb5a922de02a9758bd7e1ec50851a61c42c71a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2-frames/API-CL03.json",
+      "sha256": "fcd258dcddbae29b85aa4127c4ac9be08b8d664860182ec89678931c62bccc6e"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2-frames/API-CL04.json",
+      "sha256": "e28dacca7f9ccf891b3d2dbd8b4ad11aa1e92b64e9cba1c033f115127d93832b"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2.command.json",
+      "sha256": "21eeabd5d4c0ec4604f006448edeba8d1902ac292f5c414bba557b9f5b01fc8f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2.events.jsonl",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2.events.jsonl",
+      "sha256": "95d8a14068212b02f77aaf5c253ea8ed3c3b84d700a4f9674883f4db12128aa9"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2.log",
+      "sha256": "d054b9ea34ae0a2281160ce505fb72704bc1478a18f0fee04e625b80457fc0f9"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-2.resources.json",
+      "sha256": "2467b877a2baf8576e8cb339365128b82edca598c971b0f0d2ac66fd0c88d065"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3-frames/API-CL01.json",
+      "sha256": "9dc58e89762782170059866cf6fadb8e8c75c38b57ce42dacd242973b7686392"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3-frames/API-CL02.json",
+      "sha256": "8fd72b2821aaf62dbcee7a87b1030cce5e6daa8cfb8addef7bf44f590b970d42"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3-frames/API-CL03.json",
+      "sha256": "7cd7be1e615e70b0d8f7260e034ba9d1f2fa3aa19c5d36980974f83a39a18013"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3-frames/API-CL04.json",
+      "sha256": "1a9748b4fb72cf8fba69bcb26fbc583ac17c4b4f145f5678ac4f54ae316f501f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3.command.json",
+      "sha256": "9694743e225eb76ed50594b29894b616619190f300fc52da8facfd6d4c913e6d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3.log",
+      "sha256": "1c5c4b52d31b66f570dae4252e7382ac56677f497f0cc14e8c22a61dcdde9bf7"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/target-3.resources.json",
+      "sha256": "c9d2b97dface777059cc50cca3f5bd3af2d4293ba5473c8689ae5277678f3c70"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/verify-preservation.cjs",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/api-e2e/verify-preservation.cjs",
+      "sha256": "d9e175970ad020c789fcb183a05d478578a45ab836e671c3775bd22a0f5bed74"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/current-base-target.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/current-base-target.command.json",
+      "sha256": "d32464e49f8ee17430dc1b1ec640a9053f789b78e6777238b6df3b54466685da"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/current-base-target.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/current-base-target.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/current-base-target.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/current-base-target.log",
+      "sha256": "af4e93bde2ec23f1c51d6b1c22cfed1bedf83281ebd7af4f8d9cbcd6181f4f45"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/current-base-types.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/current-base-types.command.json",
+      "sha256": "891dc6357d998312c63825ce7403e008369abb4dabcadc991f9e521ebda0418f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/current-base-types.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/current-base-types.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/current-base-types.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/current-base-types.log",
+      "sha256": "4b9f5928443fe02a18b0a60e77293710f631f15cd8b031d103e7db993c6b3761"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/archive-preservation.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/archive-preservation.json",
+      "sha256": "bd8b0011ba439176b4a31d1e946a2120b62e4c9ede959d737fd603c27f6ab34b"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/execution-ledger.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/execution-ledger.md",
+      "sha256": "d4109087dea9b0e41e708221ffdf9738bbc81ac3da0a70ce975f73f516d94cbe"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/final-index-hygiene.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/final-index-hygiene.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/final-index-hygiene.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/final-index-hygiene.log",
+      "sha256": "f23a931311abad723705eef3a8a8dfd09b292cd17552abefe9b7dc6586f84e28"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/finalization-plan.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/finalization-plan.json",
+      "sha256": "64e358d09127b066c8c09a653bdc9d9fdd1db16d7586ee720d4a6af3d0cca84f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-refreshed.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-refreshed.command.json",
+      "sha256": "5abc04e57df2331bf473a8631c2b344f376ab90c1e6d9bca7d1123e3f3fc3acc"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-refreshed.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-refreshed.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-refreshed.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-refreshed.log",
+      "sha256": "fe10a8c2365495c5ba2eb203f1fbeea9e30aef90c26056d534b9e207af546cdc"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-refreshed.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-refreshed.resources.json",
+      "sha256": "21fb2195fb7e68d9f9903ecb74664460568ccf9012efe35232d7b69481ce5b3a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-units.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-units.command.json",
+      "sha256": "2a24c62b7ec69488c758a210d2d44d61a2263f96465c623d1a261e6838f4fa25"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-units.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-units.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-units.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-units.log",
+      "sha256": "3854fded9857b00c9ffd7e7c30f90d6dac83586db84b600b793bacc7c70fd473"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-units.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/focused-units.resources.json",
+      "sha256": "72753fee81423da4bbef228bc605d3a851d7b6285a05cf6dde136e6ea7e8f85d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/hygiene.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/hygiene.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/hygiene.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/hygiene.log",
+      "sha256": "374f8eb87954a57d265319a2f6843baacf43f9715d3b6ab3328f511c17ca055c"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/integrated-validation-summary.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/integrated-validation-summary.json",
+      "sha256": "6033360f75d1f8c9e4fb0c2b94d4c9222dfd54fa5b24e3b505c66420530fe8c7"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/licensing.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/licensing.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/licensing.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/licensing.log",
+      "sha256": "37920cc2cbdf12c7fc903f7451774f6552b42821abe4daf377607004a2f88c6f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/local-branch-cleanup.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/local-branch-cleanup.log",
+      "sha256": "ad306baa9f5f7b486dafbafbbfef73fe447f9fd0687d0000933880044002be84"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/merged-hygiene.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/merged-hygiene.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/merged-hygiene.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/merged-hygiene.log",
+      "sha256": "92ce8036124a1ac2c7c84f6371b9e8a6168cf92c68aabb2860eb26bedea625a8"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/merged-licensing.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/merged-licensing.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/merged-licensing.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/merged-licensing.log",
+      "sha256": "deadb1301efc3adf085efc8b6a938b7b000e56d721079a861d2cfeaca7e7f572"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/merged-validation-summary.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/merged-validation-summary.json",
+      "sha256": "d1b0545fe2a39dfe25555b66bee81c42833157efa1f2d9c535604b8a96af1e3f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/no-ff-merge.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/no-ff-merge.log",
+      "sha256": "8674e7d0db3b0537c8a5a1ccbfeb162db03bac141f522155a45bcdb253c243d1"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/personal-push.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/personal-push.log",
+      "sha256": "729f801f56dc266dc5eb88279eaef9d3080b714670662c67537739843ad0103a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/post-finalization-cleanup.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/post-finalization-cleanup.json",
+      "sha256": "43791e4be49da89ce25f318f1f26123a2eab6fbed3f2e95565c5f0afd0cb2b60"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/post-personal-push-fetch.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/post-personal-push-fetch.log",
+      "sha256": "e77843f813a0e367edf47bbf8290693fbe2c280973d2f41499885cabc39fa655"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/post-verification-reintegration.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/post-verification-reintegration.log",
+      "sha256": "72acbe67c52214a77ed6f8f30156ae4febd56b77cfc51a01ff7b6d5366407762"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/post-verification-validation-summary.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/post-verification-validation-summary.json",
+      "sha256": "79c7018e749d06574bc0fff45304d324281e41dd0fe7b4fd8530633e588a18eb"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/pre-personal-push-fetch.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/pre-personal-push-fetch.log",
+      "sha256": "e77843f813a0e367edf47bbf8290693fbe2c280973d2f41499885cabc39fa655"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-final.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-final.command.json",
+      "sha256": "44df025209dcbd0bf04c2cad143d750830aece90787284b6c555519ddc1a18d8"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-final.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-final.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-final.log",
+      "sha256": "90606121696fe162ca3effc8a40a28d51cafe13e55112a07f158bd3fcd1690f1"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-final.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-final.resources.json",
+      "sha256": "29a9e4979c7178b3d28ee7596a802bd50c3123da4d5590d842c33f844edd124c"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-refreshed.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-refreshed.command.json",
+      "sha256": "a7574f80279af4ed86f991efaf6bfa0f204eb3fe705f79ecc5fa9764c2127a77"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-refreshed.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-refreshed.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-refreshed.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-refreshed.log",
+      "sha256": "108f62f63263b70305c619f8d552a4e4739e1d6e36ae924ee41d24e028db5806"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-refreshed.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production-refreshed.resources.json",
+      "sha256": "4ed1d64e1c7f2115823d75deef7ac603ee4b0191bf8cc3c0e0828c63923641d8"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production.command.json",
+      "sha256": "885da19845b5397c22903c92a562903a422426dcf97cb9f3e8853bbe6ef91910"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production.log",
+      "sha256": "108f62f63263b70305c619f8d552a4e4739e1d6e36ae924ee41d24e028db5806"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/production.resources.json",
+      "sha256": "c0e26672b3892d6760acd732334d920096f16ab0177888c4a44d1d88671d6657"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/receipt-hygiene.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/receipt-hygiene.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/receipt-hygiene.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/receipt-hygiene.log",
+      "sha256": "9b56f77e7164ed936bef55eebe7ff823b78c2f26e8ce7aaa3af1a0278d736ff0"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/repository-finalization-receipt.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/repository-finalization-receipt.json",
+      "sha256": "52c2bad2189d13213eeddd615cae928b5983c4f6a5c75bf35a21e7a81af4e2d5"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/run-isolated.py",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/run-isolated.py",
+      "sha256": "0f65ee6e088b41a4e8da1a1fa6781b1dfb883fe8fcaeb2096dc8f96212457852"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-final.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-final.command.json",
+      "sha256": "b9e14be8680b17b746b8db52990e4f4442707bc27e2efa7ce6567e7ca114180d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-final.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-final.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-final.log",
+      "sha256": "df26d1c58ff47e0da2ec36692cdcb6784b35bf6aa7fc57e96f1b97f44d6c4a1a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-final.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-final.resources.json",
+      "sha256": "030c2d6b62c775b94289e527078bba3f800fc8da6d061080cb649c76e4a00054"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-refreshed.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-refreshed.command.json",
+      "sha256": "8eaf165e7039086488ece027e5389ea4818971d83f3b1cf4a3b8d254587e994d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-refreshed.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-refreshed.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-refreshed.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-refreshed.log",
+      "sha256": "df26d1c58ff47e0da2ec36692cdcb6784b35bf6aa7fc57e96f1b97f44d6c4a1a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-refreshed.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped-refreshed.resources.json",
+      "sha256": "20fa84145a4ffab8f2179454b91a1f88064e28346bdb205fb621d1dbeaa52ff3"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped.command.json",
+      "sha256": "8efb3eb5fed95eb2856d001646a9cff9e7632426fb8cde91a429f0f4d25e824e"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped.log",
+      "sha256": "df26d1c58ff47e0da2ec36692cdcb6784b35bf6aa7fc57e96f1b97f44d6c4a1a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/scoped.resources.json",
+      "sha256": "ce4aefda8858fd139e7421673b3eedb61fddfe619c52ef4de5d46a68b4e6b30c"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final-frames/API-CL01.json",
+      "sha256": "03a4753bafec6add03c396afed15cff228d07d88b4a2c849a8d702cae55a8712"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final-frames/API-CL02.json",
+      "sha256": "e10b8708bbebd1fd9ae4c08be7217d6b040b8a8f9b080d1fc31d01c59f508b62"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final-frames/API-CL03.json",
+      "sha256": "fd832976f9c8769ffb88f899663233b02bf5074289f579d65c4aa01ddae939d6"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final-frames/API-CL04.json",
+      "sha256": "caf56392d54ee643455583fc20064652896b0964f26ec9256f120c056d5524ee"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final.command.json",
+      "sha256": "88518fab9e6d85c1ef894139c8bfc66e6d0932fd44f8931ad40df2aa1ecdd088"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final.log",
+      "sha256": "0f1c7217bf348fc48ac327b718e86fa416694f9b3d81bcb19370dc5d4f631479"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-final.resources.json",
+      "sha256": "822127b1db3ae70e2226673e57bf5028ba4b69f5fdf8e104fdf1580901d9215a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated-frames/API-CL01.json",
+      "sha256": "8348a08e4dc8e97f67385e8a8ee598723ffe7717bfc21b8895c3e51858e3dfa2"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated-frames/API-CL02.json",
+      "sha256": "4cb09705e2657277203aa2eaf1add835d0ec72dd379d5bff5c0d85c780b31d48"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated-frames/API-CL03.json",
+      "sha256": "795e279de4f9c5166e6abea57dc3226f20757e531065410d403819677abc6f88"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated-frames/API-CL04.json",
+      "sha256": "2894f7e6892653ec21450183646ed0481e3874873e8a1fdefa390dfea17ba737"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated.command.json",
+      "sha256": "8b7281dc29fe77d3a1702c2de6789aee93e1e14126b2b63751a905adf017609b"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated.log",
+      "sha256": "972c710b54c5dde3b23513b77b3f4dc1954e16e7abd44e35c7ef31abb6e0beb8"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-integrated.resources.json",
+      "sha256": "c0b41d16a40bc14cc8e5370d93b42a59171e61e146762553a66b4446da13442b"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed-frames/API-CL01.json",
+      "sha256": "ee9d386d5e23cc505cf5c4ba4f93d5c98ec229e8141b112dae101aefc6ed0eb3"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed-frames/API-CL02.json",
+      "sha256": "20d9060058012547c5b3f69b2e605d914b36c2ae76f4f0e1aa424cc1dcb0607d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed-frames/API-CL03.json",
+      "sha256": "ce206800ec8d9db49673819ea668578b6a5815a129389289fafe48ca49e2d0b9"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed-frames/API-CL04.json",
+      "sha256": "42cba3b67f3178cc32dc35f75e1b26481e05d556caa745c553a2d8dd84faebc3"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed.command.json",
+      "sha256": "efe61a3e92d323dd36d45318e67fb6aa33384b5394079edefc3eb38f84acbe05"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed.log",
+      "sha256": "f3e7615356696783da911d5be928e6e9b630cbac55e02704b2a06aed3e10a45d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/target-refreshed.resources.json",
+      "sha256": "301e1007f97d91cfc121631e060fce13c4fde3262b370debf86441310d826880"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/ticket-push.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/ticket-push.log",
+      "sha256": "56013f755cf86a2d1759f3c60ae7bed039d6f7577f4a1f151f8d4876ba858e0d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/user-verification.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/user-verification.json",
+      "sha256": "52e948a07098997a3029d52875d56a07254852a3155ae98b22712f6683889938"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/worktree-prune.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/worktree-prune.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/worktree-remove.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/delivery/worktree-remove.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/dependency-install.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/dependency-install.log",
+      "sha256": "6a587663946fb52a24c3aaafa1b23bf5288998cc3ca2576ebff48aff893d1762"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/initial-probe-ready-state-typing.cjs",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/initial-probe-ready-state-typing.cjs",
+      "sha256": "c890c2e845f93684518595f42501293eafb735317044e081b69f199f3e783055"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/initial-probe.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/initial-probe.command.json",
+      "sha256": "26c7afdfd9a07cbb1c865f64cbefd58b19cf968793fab6b09f8d42afa1ee6cf2"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/initial-probe.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/initial-probe.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/initial-probe.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/initial-probe.log",
+      "sha256": "bee01183ac5d2567777889b45a28b8b13187caf1c0a47f5ac87a76cc96783b35"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/probe-ready-state-typing.cjs",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/probe-ready-state-typing.cjs",
+      "sha256": "7d9de190e3864300ec963f6f9d53cea98d5e1c6f5185ef29a95ea3f29d9db80a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/probe.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/probe.command.json",
+      "sha256": "7f4e5639bfdfc97a6163acad3a32e7e1a8839bb6dec9c6bbe716cb0dcc4cc4ab"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/probe.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/probe.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/probe.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/probe.log",
+      "sha256": "87ce87a2bb7adc7e5e72cb2fec5cfa4a7b23f4ac278324989d39cc243bc96b43"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/workspace-cwd-probe-ready-state-typing.cjs",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/workspace-cwd-probe-ready-state-typing.cjs",
+      "sha256": "7315fc558131989fd1da03ec768fbde7171e7c588dcadef78e9d8405fd687eb7"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/workspace-cwd-probe.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/workspace-cwd-probe.command.json",
+      "sha256": "c426922494dc12a2a33b51321dc49a8050929c9acb92749ece4417754da6d4f0"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/workspace-cwd-probe.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/workspace-cwd-probe.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/workspace-cwd-probe.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/design-recovery/workspace-cwd-probe.log",
+      "sha256": "1d49568d47e5b952ede485cc23a3df33d0cd2b2f8c8223895544f4e20a5ec37c"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/add-ws-types.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/add-ws-types.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/add-ws-types.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/add-ws-types.log",
+      "sha256": "5f58a87a4aba92403b10744c55b2383d9989bb78e83c3aa43d521ed4b059c289"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/frozen-install-store-explicit.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/frozen-install-store-explicit.command.json",
+      "sha256": "8074758dd81d4d04bd53d16ecfbd6c4c37a39de3e533dbe76a7264e9c358782a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/frozen-install-store-explicit.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/frozen-install-store-explicit.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/frozen-install-store-explicit.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/frozen-install-store-explicit.log",
+      "sha256": "464ccf66d54aa9f4200e5db596566043422ea7f2045e30049f0ddc39a8754b05"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/frozen-install.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/frozen-install.command.json",
+      "sha256": "84cf43459f1227a74fef4188404b98bf85334b40b29ae6844e2506da9c67f63e"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/frozen-install.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/frozen-install.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/frozen-install.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/frozen-install.log",
+      "sha256": "8a730bd952845d47d9d831aff5c038ac09e9ccd34dd27653298dd39c7bc17f23"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-negative-restoration.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-negative-restoration.json",
+      "sha256": "fbe3ade271c420da7140844bd066eb12b477f4e6b78179a53e9c598ddfcf82a0"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-preservation-proof.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-preservation-proof.command.json",
+      "sha256": "17459d6568f26e089f347813bea657a63495f93245be76717435584c2cc241db"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-preservation-proof.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-preservation-proof.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-preservation-proof.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-preservation-proof.log",
+      "sha256": "03eff6998fc764718f9df05be25de87cc2194d1ada7721688bd834458ce69ed8"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-production-typecheck.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-production-typecheck.command.json",
+      "sha256": "b8e3a1241f868d91aaa27d9e7af0fe9a6d69834396168117226a47a53a264e45"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-production-typecheck.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-production-typecheck.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-production-typecheck.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-production-typecheck.log",
+      "sha256": "108f62f63263b70305c619f8d552a4e4739e1d6e36ae924ee41d24e028db5806"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-clean.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-clean.command.json",
+      "sha256": "6ded208a30e35c9c9809993660cda8456c623b31674e4e076a40f201c1b0ad5f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-clean.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-clean.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-clean.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-clean.log",
+      "sha256": "df26d1c58ff47e0da2ec36692cdcb6784b35bf6aa7fc57e96f1b97f44d6c4a1a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-negative-control.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-negative-control.command.json",
+      "sha256": "b8476d3732925c4de1bae4fdbbb22ec14a4efb3100ddda7f185b891145bb43fc"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-negative-control.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-negative-control.exit",
+      "sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-negative-control.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-negative-control.log",
+      "sha256": "351e4d4a9b5859024f0fe222d65ced6a0737d9927c4aad0628ca3aa94f02c6d4"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-restored-clean.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-restored-clean.command.json",
+      "sha256": "ed636462850584e1556ebc6faad2cdb8c6b38790c1dae4ea6f9409c6d53cdb05"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-restored-clean.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-restored-clean.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-restored-clean.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-scoped-restored-clean.log",
+      "sha256": "df26d1c58ff47e0da2ec36692cdcb6784b35bf6aa7fc57e96f1b97f44d6c4a1a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-self-review.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-self-review.log",
+      "sha256": "b97b52a2ec364447f611350b95fed9ad3ff4e09e3a56f7278e8b2d478a816878"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-show-config.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-show-config.command.json",
+      "sha256": "7c191ed734c0db63c2c7b0b0288ea21597ebb3107c5c1a665826ada1c3a1acaa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-show-config.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-show-config.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-show-config.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/ir-002-show-config.log",
+      "sha256": "7e75b8813eba4a541e5976b1d5777f7c58cea5eb11d7ab8a685c6bb57b18547c"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/scoped-clean.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/scoped-clean.command.json",
+      "sha256": "d128f73f83057e99d3c56d0c27b4111263c3870d31280a9efa638d26cb200085"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/scoped-clean.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/scoped-clean.exit",
+      "sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/scoped-clean.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/scoped-clean.log",
+      "sha256": "34a0436112b8e3a42943acf7afbb5af75e0840ac24eabc0dac0d8c2d79b97812"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/scoped-graph-files.txt",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/scoped-graph-files.txt",
+      "sha256": "2d2f7dc6a11817e543f597e29ac30498def57b59a4e1abddd6ef3a500a99ca74"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/verify-preservation.cjs",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/implementation/verify-preservation.cjs",
+      "sha256": "d9e175970ad020c789fcb183a05d478578a45ab836e671c3775bd22a0f5bed74"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/prebuild.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/prebuild.command.json",
+      "sha256": "ed2da77e7002efd0b6228e20c9a60972c9aaba67ce160b8a5fb11730531ac705"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/prebuild.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/prebuild.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/prebuild.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/prebuild.log",
+      "sha256": "46b4a771e172c97cac37fcd3d16787ae1b879bcd91f024b54ad03cfe0d17fa7e"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/evidence/probe-current-types.cjs",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/evidence/probe-current-types.cjs",
+      "sha256": "a66291fe85ae5517db6253ee8f864357bf134928145f07ed63d70d60e89be1e2"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/handoff-architecture-design-complete.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/handoff-architecture-design-complete.md",
+      "sha256": "72ad7fa0d9ff453fd37f66217da88153c1058e58e49073a702126880f2f5f893"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/handoff-summary.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/handoff-summary.md",
+      "sha256": "37c5fe3f08dbd7a66962372b8999b51e6136f19352f8ac643402d8dfd9939a31"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/implementation-checks.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/implementation-checks.md",
+      "sha256": "4eb62ac255ff56ebfbb6dd58da438853de16d398db2c51539d2c22a201769487"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/implementation-finding-report.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/implementation-finding-report.md",
+      "sha256": "d1d35a9d62c0d3883816f7d38a1736aa37b0dd0f376f9e8c83326d68541512b1"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/implementation-handoff.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/implementation-handoff.md",
+      "sha256": "82637106ae19e458c71e93b78d5b8e8be8cd8a60b7fdd882da04ec6bb5049603"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/implementation-revision-record.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/implementation-revision-record.md",
+      "sha256": "8611762846afca9918f34fd6235005a8781b069364b086f54cf68448afe7f32f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/investigation-notes.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/investigation-notes.md",
+      "sha256": "807f85c2855393dae95116139884190a10cf0ac7a09986d37be12b9e6d08ccb1"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/release-deployment-report.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/release-deployment-report.md",
+      "sha256": "bbdfdd5abe7a3dff205b382f579627030474301f6e92c7bf0f6f8ce30878e35e"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/requirements-doc.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/requirements-doc.md",
+      "sha256": "c6a565250a096d1524944bc93c7f5dafb7b638b5cac4ae50bf12ec28a34fbf06"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/review-policy-record.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/review-policy-record.md",
+      "sha256": "fc3f66f743a049886b69650d613799f65253e3cc47cd8ac6030755bc214d3f70"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fixture-types/solution-revision-record.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types/solution-revision-record.md",
+      "sha256": "fcc65f6fa60118b3fee51bc1892443628fc0d6ba1a9f1c8317488b5b81e2feb6"
+    }
+  ],
+  "inventoryNote": "Every archived ticket file except self-describing manifest (no self-referential hash)."
+}

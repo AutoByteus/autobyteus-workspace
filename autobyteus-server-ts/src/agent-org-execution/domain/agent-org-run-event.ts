@@ -4,6 +4,7 @@ import type { TaskExecutionHostIdentity } from "../../agent-collaboration/execut
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
 import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { DelegatedLaunchSelectionRecord } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 
 export type AgentOrgRunEvent =
   | Readonly<{ kind: "agent_presentation"; execution: CollaborationMemberExecutionIdentity; message: AgentPresentationMessage }>
@@ -16,4 +17,6 @@ export type AgentOrgRunEvent =
   | Readonly<{ kind: "communication"; message: CollaborationCommunicationMessageV1 }>
   /** Committed at the root before any task execution references its address. */
   | Readonly<{ kind: "collaborator_added"; collaborator: CollaboratorEntry }>
+  /** The user's model choices of these copies or collaborators were committed on the live run (DS-001). */
+  | Readonly<{ kind: "delegated_launch_selections_changed"; selections: readonly DelegatedLaunchSelectionRecord[] }>
   | Readonly<{ kind: "lifecycle"; isActive: boolean }>;

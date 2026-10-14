@@ -1,0 +1,130 @@
+{
+  "startedAt": "2026-10-13T12:13:58.969Z",
+  "cases": {
+    "DCP-005": {
+      "title": "delegated-copy-model-change REQ-001 (any member), AC-010 scenario (Team root, UI): one member of a Team copy, after it has run, gets its own model in Settings; the other rows stay as they were; its next turn resumes its conversation on that model while the coordinator keeps its own",
+      "result": "Pass",
+      "ms": 37381,
+      "details": {
+        "teamRunId": "home_team_8e43_575cc5e2c4654269a3770f019be7a114",
+        "copyTeamRunId": "pair_team_af28_967b2de8c42c4d97b8cd77cbe5cb2296",
+        "members": {
+          "lead": "lead_1cb1_9968d2a734c84c75bb1fa2c231d9fa71",
+          "engineer": "engineer_38ca_9df5bf3dc59b4f01a50fdb10f5f981f3",
+          "unoffered": "unoffered_4c75_441420afc161490692fc643178d52160"
+        },
+        "firstCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /pair_team_af28/unoffered.\",\"target_agent_run_id\":\"unoffered_4c75_441420afc161490692fc643178d52160\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /pair_team_af28/unoffered.\",\"target_agent_run_id\":\"unoffered_4c75_441420afc161490692fc643178d52160\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 13, 02:14 PM\n\nto unoffered\n\nFirst review.\n\nMessage\nunoffered\nOct 13, 02:14 PM\n\nFirst review.\nMessage\nunoffered\nOct 13, 02:14 PM\n\nFirst review.",
+        "memberFirst": [
+          [
+            "dlc-alt-model",
+            null
+          ]
+        ],
+        "before": {
+          "team": "Alt test model · Antigravity · Auto-approve · Team default",
+          "lead": "Alt test model · Antigravity · Auto-approve · Team default",
+          "engineer": "grok-4.7 · Grok Build · Auto-approve · Agent default",
+          "member": "Alt test model · Antigravity · Auto-approve · Team default"
+        },
+        "after": {
+          "team": "Alt test model · Antigravity · Auto-approve · Team default",
+          "lead": "Alt test model · Antigravity · Auto-approve · Team default",
+          "engineer": "grok-4.7 · Grok Build · Auto-approve · Agent default",
+          "member": "Gemini test · Antigravity · Auto-approve"
+        },
+        "memberSource": null,
+        "storedChoices": {
+          "team": null,
+          "members": {
+            "lead": null,
+            "engineer": null,
+            "unoffered": "gemini-3.8-flash-low"
+          }
+        },
+        "secondCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /pair_team_af28/unoffered.\",\"target_agent_run_id\":\"unoffered_4c75_441420afc161490692fc643178d52160\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /pair_team_af28/unoffered.\",\"target_agent_run_id\":\"unoffered_4c75_441420afc161490692fc643178d52160\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nMessage\nOct 13, 02:15 PM\n\nto unoffered\n\nSecond review.\n\nMessage\nOct 13, 02:14 PM\n\nto unoffered\n\nFirst review.\n\nMessage\nunoffered\nOct 13, 02:14 PM\n\nFirst review.\nMessage\nunoffered\nOct 13, 02:14 PM\n\nFirst review.",
+        "memberResume": [
+          [
+            "gemini-3.8-flash-low",
+            "50f13249-7e85-4919-9b59-7ade166e5a16"
+          ]
+        ],
+        "leadResume": [
+          "dlc-alt-model"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 28520
+    },
+    {
+      "label": "frontend",
+      "pid": 28552
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 28552,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 28520,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-xqkcgX"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-xqkcgX",
+  "backendUrl": "http://127.0.0.1:65318",
+  "frontUrl": "http://127.0.0.1:65319",
+  "definitions": {
+    "ids": {
+      "manager": "manager-347f",
+      "lead": "lead-1cb1",
+      "worker": "worker-1dbe",
+      "plain": "plain-bd67",
+      "engineer": "engineer-38ca",
+      "reviewer": "reviewer-7401",
+      "writer": "writer-d964",
+      "offline": "offline-f564",
+      "unoffered": "unoffered-4c75",
+      "badsettings": "badsettings-995c",
+      "incomplete": "incomplete-871a",
+      "build": "build-team-2cfb",
+      "pair": "pair-team-af28",
+      "squad": "squad-team-d5b5",
+      "home": "home-team-8e43",
+      "launchOrg": "launchorg-org-745f",
+      "hostOrg": "hostorg-org-b29a"
+    },
+    "names": {
+      "manager": "Manager 347f",
+      "lead": "Lead 1cb1",
+      "worker": "Worker 1dbe",
+      "plain": "Plain bd67",
+      "engineer": "Engineer 38ca",
+      "reviewer": "Reviewer 7401",
+      "writer": "Writer d964",
+      "offline": "Offline f564",
+      "unoffered": "Unoffered 4c75",
+      "badsettings": "Badsettings 995c",
+      "incomplete": "Incomplete 871a",
+      "build": "Build Team 2cfb",
+      "pair": "Pair Team af28",
+      "squad": "Squad Team d5b5",
+      "home": "Home Team 8e43",
+      "launchOrg": "LaunchOrg Org 745f",
+      "hostOrg": "HostOrg Org b29a"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 0
+  },
+  "completedAt": "2026-10-13T12:15:10.274Z"
+}

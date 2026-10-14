@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-13T17:09:37.209980+00:00",
+  "revision": "IR-003",
+  "trigger": "DR-002 new DCP-002 locator conflict; DR-001 resolved, not reopened",
+  "candidate": "5d95381a6637b7fa7eb5a703e8c161064bb05d69",
+  "deliveryPreservationCommit": "bd0fb189e6c6d19f99b11ee1216177acd2767aa4",
+  "target": "7170fd755d0dd5e806371dd4594eb4a9bf3e2682",
+  "mergeCommit": "21bab56a2785f32e137dc54cbb62af43cbd157dc",
+  "mergeParents": [
+    "bd0fb189e6c6d19f99b11ee1216177acd2767aa4",
+    "7170fd755d0dd5e806371dd4594eb4a9bf3e2682"
+  ],
+  "probeSha256": "8ab8bc0d76eddf396ceac68dd10c781e645ac95becd96318c7989f3f25f3256d",
+  "unmergedIndex": "",
+  "localResults": {
+    "web": "33 files / 330 tests Pass",
+    "serverPrisma": "2 files / 38 tests Pass",
+    "serverTypecheck": "Pass (shared preparation + noEmit)",
+    "webBuildGuards": "Pass final serialized rerun",
+    "syntax": "3 Pass",
+    "runner": "5 Pass",
+    "rootHistoryBefore": "1 Fail (desktop history) / 5 Pass, controlled regression",
+    "rootHistoryAfter": "6 Pass",
+    "preservation": "61 Pass",
+    "mergeWhitespace": "Pass"
+  },
+  "priorRuntimeEvidence": "API-REV-002 at prior base; not current latest-base pass",
+  "currentApiDesktopValidation": "Pending API-REV-003",
+  "localLogNormalization": [
+    {
+      "file": "unit-web.log",
+      "beforeSha256": "d53ddf7a6f9aef7c555e8e7eeb5a335e60893a788fb242b787a0aa086c68a5de",
+      "afterSha256": "01145dccc3280eb97ba00ead7196d66218b416a1bc3c1da050458b8f58f5e861",
+      "operation": "Trailing whitespace/excess EOF blanks only"
+    },
+    {
+      "file": "unit-prisma.log",
+      "beforeSha256": "09a40411b323ca02f8c63a3f9597e0e0db56344eb0c58219541535797ca3a142",
+      "afterSha256": "e551b4528bd28c4a1e8c79471fb252d2dbf9b8eb76688197a8770d42f3228485",
+      "operation": "Trailing whitespace/excess EOF blanks only"
+    },
+    {
+      "file": "server-typecheck.log",
+      "beforeSha256": "0ad800a6129e303af88118d7167080d7e6094136a1ebbcfc417a1d19fa00b519",
+      "afterSha256": "7b0fe5aed8a17a776bf81f40dc3bd3cf2086ca13ae1031af9f1b9b7f935b3a2b",
+      "operation": "Trailing whitespace/excess EOF blanks only"
+    },
+    {
+      "file": "build-guards.log",
+      "beforeSha256": "45f12e3d2acc5ec1c84c43dcdfe1e59cd1d1d5117be9cfa366efcfcdbeb7dea5",
+      "afterSha256": "2ea5493c73abe37b7b14ffe40a3d8deeca3b6f6142d55bb922b8c39d149b160f",
+      "operation": "Trailing whitespace/excess EOF blanks only"
+    },
+    {
+      "file": "build-guards-final.log",
+      "beforeSha256": "c30934f615d0f3886e1116e068c8c75ca9cd44ee59ddfae7a3410ac3dc1cb028",
+      "afterSha256": "a3b86356f6e071ad23104e9a1b18624de02e3bc231ef1193d064f51d235d5d7a",
+      "operation": "Trailing whitespace/excess EOF blanks only"
+    }
+  ],
+  "generatedSdkDistStaged": false,
+  "productAppServerStarted": false,
+  "userDataAccess": false,
+  "push": false,
+  "release": false
+}

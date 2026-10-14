@@ -1,0 +1,255 @@
+{
+  "result": "Pass",
+  "checks": [
+    {
+      "path": "autobyteus-web/components/run-settings/ExistingRunSettings.vue",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/runSettings.ts",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/runSettings.ts",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/delegatedLaunchDraftStore.spec.ts",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/existingRunConfigStore.spec.ts",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/delegatedLaunchDraftStore.ts",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/existingRunConfigEditActions.ts",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/existingRunConfigResultActions.ts",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/existingRunConfigStore.ts",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/types/agent/ExistingRunModelConfigDraft.ts",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/tests/e2e/settings-saved-model-refresh-cases.mjs",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/tests/e2e/fixtures/settings-refresh-desktop.mjs",
+      "reference": "5d95381a66",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-server-ts/docs/modules/token_usage.md",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-server-ts/package.json",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/startup/migrations.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/runtime/token-meter-tps-transport.e2e.test.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/fixtures/agy-tps-cli.mjs",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/startup/migrations-command.test.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/startup/migrations-prisma-engine-env.test.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/README.md",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/DelegatedStopButton.vue",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/DelegatedStopButton.spec.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/usage/TokenUsageMeterPanel.vue",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/usage/TokenUsageThroughputCard.vue",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/usage/__tests__/TokenUsageThroughputCard.spec.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/composables/__tests__/useTokenUsageWorkspaceScope.spec.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/composables/__tests__/useWorkspaceHistoryMutations.spec.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/composables/useTokenUsageWorkspaceScope.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/docs/agent_execution_architecture.md",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/docs/settings.md",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/docs/token_meter.md",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/shell.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/shell.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/tokenUsageMeterStore.spec.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/tokenUsageThroughput.spec.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/tokenUsageMeterStore.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/tokenUsageTeamAggregate.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/tokenUsageThroughput.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/tests/e2e/fixtures/token-meter-tps.page.vue",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/tests/e2e/token-meter-tps-probe.mjs",
+      "reference": "7170fd755d",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/types/tokenUsageMeter.ts",
+      "reference": "7170fd755d",
+      "identical": true
+    }
+  ]
+}

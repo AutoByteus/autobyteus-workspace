@@ -33,6 +33,10 @@ export class TeamTaskExecutionService {
     return this.lifecycle.releaseTaskExecutions(refs);
   }
   taskExecutionStatus(ref: TaskExecutionReference): AgentExecutionStatus { return this.lifecycle.taskExecutionStatus(ref); }
+  stopForUser(refs: readonly TaskExecutionReference[]) { return this.lifecycle.stopForUser(refs); }
+  whileTaskExecutionsStopped<T>(refs: readonly TaskExecutionReference[], operation: () => Promise<T> | T) {
+    return this.lifecycle.whileTaskExecutionsStopped(refs, operation);
+  }
   closedTaskExecutions(): readonly TaskExecutionReference[] { return this.lifecycle.closedTaskExecutions(); }
 
   closeExternalAdmission(): void { this.lifecycle.closeExternalAdmission(); }

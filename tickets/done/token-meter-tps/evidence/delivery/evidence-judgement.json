@@ -1,0 +1,122 @@
+{
+  "browser-2/result.json": {
+    "status": "pass",
+    "checks": [
+      "No-total collecting",
+      "baseline only",
+      "20 then 30 TPS",
+      "exact vs aggregate identity",
+      "keyboard help and focus",
+      "offline frozen number/time",
+      "zh-CN 320px no card overflow",
+      "true zero",
+      "invalid interval no number",
+      "selection history unavailable"
+    ],
+    "sourceHashesMatchIntegratedTree": {
+      "components/workspace/usage/TokenUsageThroughputCard.vue": true,
+      "components/workspace/usage/TokenUsageMeterPanel.vue": true,
+      "stores/tokenUsageThroughput.ts": true,
+      "stores/tokenUsageMeterStore.ts": true,
+      "composables/useTokenUsageWorkspaceScope.ts": true
+    },
+    "cleanup": {
+      "browserClosed": true,
+      "nuxtStopped": true,
+      "routeRemoved": true
+    }
+  },
+  "transport-3/result.json": {
+    "status": "pass",
+    "checks": [
+      "three same-turn canonical calls",
+      "first baseline excludes 999 tokens",
+      "tool gap included",
+      "exact identity and server timestamp arithmetic",
+      "selection isolation",
+      "frozen after disconnect"
+    ],
+    "sourceHashesMatchIntegratedTree": {
+      "components/workspace/usage/TokenUsageThroughputCard.vue": true,
+      "components/workspace/usage/TokenUsageMeterPanel.vue": true,
+      "stores/tokenUsageThroughput.ts": true,
+      "stores/tokenUsageMeterStore.ts": true,
+      "composables/useTokenUsageWorkspaceScope.ts": true
+    },
+    "cleanup": {
+      "browserClosed": true,
+      "nuxtStopped": true,
+      "routeRemoved": true
+    },
+    "arithmetic": [
+      {
+        "output": 200,
+        "seconds": 1.203,
+        "rate": 166.25103906899417
+      },
+      {
+        "output": 150,
+        "seconds": 0.9,
+        "rate": 166.66666666666666
+      }
+    ]
+  },
+  "desktop-runs/attempt-1/result.json": {
+    "status": "pass",
+    "checks": [
+      "packaged worktree real server",
+      "public API test seed",
+      "real chat selection and Token tab",
+      "UI composer send",
+      "same-turn three calls with tool",
+      "server-time arithmetic and identity",
+      "keyboard help",
+      "frozen completed reading",
+      "other-run isolation",
+      "reload does not synthesize TPS"
+    ],
+    "sourceHashesMatchIntegratedTree": {
+      "stores/tokenUsageThroughput.ts": true,
+      "stores/tokenUsageMeterStore.ts": true,
+      "components/workspace/usage/TokenUsageThroughputCard.vue": true
+    },
+    "cleanup": {
+      "stop": {
+        "instanceId": "iso-42155-574d",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/tmp/token-tps-desktop-BtOj9p/tmp/autobyteus-isolated-root-K39f7m",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      },
+      "list": {
+        "instances": []
+      }
+    },
+    "arithmetic": [
+      {
+        "output": 200,
+        "seconds": 1.2,
+        "rate": 166.66666666666669
+      },
+      {
+        "output": 150,
+        "seconds": 0.9,
+        "rate": 166.66666666666666
+      }
+    ]
+  },
+  "persistedSummary": {
+    "runId": "tps_6868794b_2900_4ffc_911a_8f4976a70cbf_ad6fd12b34264500bbe0368be51a941b",
+    "outputTokens": 1349,
+    "usageReportCount": 3,
+    "latestRuntimeKind": "antigravity_cli",
+    "latestModelIdentifier": "gemini-3.8-flash-low"
+  },
+  "integratedCommit": "a81288041c2c5b9504d879c94a41d3de19338085",
+  "checkedRemoteBase": "0c37f58d88220be3683a15da6e0956d6ab13c4db",
+  "checkedAt": "2026-10-13T16:35:02.486039+00:00",
+  "verifierSetupCorrection": "Initial local receipt checker incorrectly required three WS reports from deterministic fixture (which has none); constrained wire assertions to receipts with frames. No source/receipt changed; corrected assertions pass."
+}

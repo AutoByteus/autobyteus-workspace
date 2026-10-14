@@ -1,0 +1,6 @@
+Exact TS->JS parity: autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js
+Exact TS->JS parity: autobyteus-server-ts/tests/integration/file-explorer/file-explorer.integration.test.js
+Exact TS->JS parity: autobyteus-server-ts/tests/integration/file-explorer/file-search.integration.test.js
+Exact TS->JS parity: autobyteus-server-ts/tests/unit/api/graphql/converters/workspace-converter.test.js
+E2E diagnostic adapter: transpilation only; NOT executed, no API/E2E sign-off.
+Default Vitest executes TS only; JS parity checks do not execute those files.

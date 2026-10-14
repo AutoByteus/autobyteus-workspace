@@ -8,7 +8,7 @@ const values = (overrides: Partial<RunSettingsValues> = {}): RunSettingsValues =
 })
 const node = (key: string, nodeValues: RunSettingsValues, children: RunMemberNode[] = []): RunMemberNode => ({
   key, kind: children.length ? 'team' : 'agent', name: key, isCoordinator: false, values: nodeValues, parentValues: values(),
-  fields: ['model', 'thinking', 'approval'], customized: {}, customizedOptionKeys: [], modelRequired: false, children,
+  fields: ['model', 'thinking', 'approval'], customized: {}, customizedOptionKeys: [], modelRequired: false, launchNotes: [], children,
 })
 const copy = {
   targetUnavailable: 'unavailable',

@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.5.3-beta.1",
+  "version": "1.5.3-beta.5",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "AGPL-3.0-only",
@@ -47,6 +47,7 @@
     "test:e2e:workspace-responsive": "node tests/e2e/workspace-responsive-probe.mjs",
     "test:e2e:diagram-zoom-viewer": "node tests/e2e/diagram-zoom-viewer-probe.mjs",
     "test:e2e:nested-team-aggregate-status": "node tests/e2e/nested-team-aggregate-status-probe.mjs",
+    "test:e2e:agent-team-detail": "node tests/e2e/agent-team-detail-probe.mjs",
     "test:e2e:team-group-icon": "node tests/e2e/team-group-icon-probe.mjs",
     "test:e2e:nested-team-hierarchy": "node tests/e2e/nested-team-hierarchy-probe.mjs",
     "test:e2e:existing-run-model-config": "node tests/e2e/existing-run-model-config-probe.mjs",
@@ -72,6 +73,7 @@
     "test:e2e:chat-composer-polish": "node tests/e2e/chat-composer-polish-probe.mjs",
     "test:e2e:chat-composer-menus-open-upward": "node tests/e2e/chat-composer-menus-open-upward-probe.mjs",
     "test:e2e:cross-scope-agent-mentions": "node tests/e2e/cross-scope-agent-mentions-live-probe.mjs",
+    "test:e2e:search-pdf-preview": "node tests/e2e/search-pdf-preview-probe.mjs",
     "test:e2e:event-monitor-file-preview": "node tests/e2e/event-monitor-file-preview-probe.mjs",
     "test:e2e:electron": "node scripts/run-electron-e2e.mjs",
     "test:e2e:electron:isolation": "node tests/e2e/electron-launch-profile-probe.mjs",
@@ -81,8 +83,13 @@
     "test:e2e:fresh-run-auto-approval": "node tests/e2e/fresh-run-auto-approval-probe.mjs",
     "test:e2e:run-settings-live": "node tests/e2e/run-settings-live-probe.mjs",
     "test:e2e:delegated-launch-defaults": "node tests/e2e/delegated-launch-defaults-probe.mjs",
+    "test:e2e:settings-saved-model-refresh": "node tests/e2e/delegated-launch-defaults-probe.mjs --desktop --cases SSR-001,SSR-002,SSR-003,SSR-004,DCP-001,DCP-002,DCP-003,DCP-004,DCP-005",
+    "test:e2e:delegated-copy-model-change": "node tests/e2e/delegated-launch-defaults-probe.mjs --cases DCP-001,DCP-002,DCP-003,DCP-004,DCP-005",
     "test:e2e:workspace-folder-picker": "node tests/e2e/workspace-folder-picker-probe.mjs",
-    "test:e2e:composer-context-file-removal": "node tests/e2e/composer-context-file-removal-probe.mjs"
+    "test:e2e:composer-context-file-removal": "node tests/e2e/composer-context-file-removal-probe.mjs",
+    "test:e2e:delegated-team-default-collapse": "node tests/e2e/delegated-team-default-collapse-probe.mjs",
+    "test:e2e:workspaces-sidebar-dock": "node tests/e2e/workspaces-sidebar-dock-probe.mjs",
+    "test:e2e:token-meter-tps": "node tests/e2e/token-meter-tps-probe.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",

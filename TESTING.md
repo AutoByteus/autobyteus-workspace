@@ -112,6 +112,12 @@ not paid inference. Agent-run testing is not the user's verification.
     exported home applies to every CLI started from that shell.
   - **A per-run override.** Where the test launches the CLI itself, pass the setting on the
     command line, e.g. `codex app-server -c <key>=<value>`.
+  - **Antigravity CLI (`agy`) sign-in state.** `agy` keeps its sign-in and state under
+    `$HOME/.gemini/antigravity-cli/` and has no home variable of its own, so isolate it with a
+    throwaway `HOME`, which also hides the other CLIs' logins from that process. An empty
+    `HOME` gives a signed-out `agy`. For a signed-in one, copy only
+    `antigravity-oauth-token` into the throwaway home; never symlink it or point at the
+    user's real folder, because `agy` writes into that folder. Never print or commit it.
   - **Isolated desktop instances.** The embedded server receives only a system-baseline
     environment. Of the CLI homes, only `CODEX_HOME` passes through, so start (and
     `restart`) the instance with it set. Other runtime variables reach only in-process
@@ -123,6 +129,15 @@ not paid inference. Agent-run testing is not the user's verification.
     `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO`.
   - Claude: `CLAUDE_CODE_AUTO_COMPACT_WINDOW` (in-process suites only), or a manual
     `/compact`.
+- **Docker server nodes.** Never test against the user's node containers or their volumes
+  (`/root` holds each node's CLI sign-ins). Start a test-owned container from the same image,
+  bound to `127.0.0.1` on a free port and without the user's volumes, so its runtime CLIs
+  start signed out. To run this worktree's server in it, mount
+  `autobyteus-server-ts/dist` read-only over `/app/autobyteus-server-ts/dist`, after checking
+  that the image's `dist` differs only in the files you changed. If a signed-in CLI is needed,
+  stream only its credential file from a node container into the test container without
+  writing it to the host, e.g. `docker exec <node> tar -C <dir> -cf - <file> | docker exec -i
+  <test> tar -C <dir> -xf -`. Remove the container with `docker rm -f -v` afterwards.
 - **Data.** Every run uses its own data root, database, ports and processes. Create data
   through public APIs or the UI, never by editing another run's files.
 - **Build outputs** such as the application SDK `dist/` folders and
@@ -134,6 +149,37 @@ not paid inference. Agent-run testing is not the user's verification.
 - **Known baseline exception.** Two content-cadence cases in
   `tests/integration/agent/agent-status-websocket.integration.test.ts` fail because of a
   reported product defect. Remove this note when it is fixed.
+
+## Environment-specific setup: headless Linux and containers
+
+The virtual-display and root-container recipes below apply **only when those
+environment conditions exist**, such as a headless Linux testing container.
+They are not the setup procedure for every developer's host desktop. On a normal
+host desktop, use its existing graphical session and normal non-root account;
+do not install Xvfb or switch numeric UID/GID just because you are running tests.
+Use the supported platform's isolated-instance instructions. The global
+test-layer, evidence, isolation and safety rules above still apply.
+
+- A full product journey still needs the **actual isolated Electron worktree build**.
+  A browser/component fixture is not a substitute for this layer.
+- The validation agent owns ordinary setup: dependencies, a private HOME/temp root,
+  an unprivileged runtime identity, and a real or owned virtual display. Do not
+  hand routine test setup to the user when it can safely be prepared locally.
+- Electron must not run as root. In a root-only container, build as the worktree
+  owner, then launch the current unpacked build as an unprivileged user with
+  isolated-app start --from-worktree. Preserve Chromium's sandbox; do not add
+  --no-sandbox or change host security settings to force a pass.
+- When Xvfb is needed, keep it alive for **start → automation → stop**. Wrap the
+  complete owning probe/session in xvfb-run, not just the short-lived start command.
+- Verify the reported instance/ports, packaged identity, renderer assertions and
+  cleanup. A launch, skipped case, or screenshot alone is not a journey pass.
+  If safe setup cannot work, report the precise missing dependency and attempted
+  diagnostics—never a desktop pass based only on browser evidence.
+
+The runnable preflight, root-container and virtual-display recipes are in
+[Isolated instances on Linux](docs/isolated-app-instances.md#linux). Keep
+shared setup guidance separate from ticket-specific journeys. Temporary
+ticket-owned automation does not require a new global package command.
 
 ## Browser probes
 

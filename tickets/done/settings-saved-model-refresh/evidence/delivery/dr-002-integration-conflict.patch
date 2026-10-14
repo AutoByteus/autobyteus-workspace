@@ -1,0 +1,21 @@
+diff --cc autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs
+index d8bc5de473,25839aab92..0000000000
+--- a/autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs
++++ b/autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs
+@@@ -1170,11 -1207,8 +1217,16 @@@ defineCase('DCP-002', 'delegated-copy-m
+    await waitFor('copy lead started on the Team default', async () => (await agyLaunchesOf(r.copyMembers.lead)).length > 0, 60000)
+    assert(JSON.stringify(await agyLaunchesOf(r.copyMembers.lead)) === JSON.stringify([ALT]), 'copy lead did not start on the Team default (ALT)', await agyLaunchesOf(r.copyMembers.lead))
+    await openTeamRun(page, r.teamRunId, ids.home)
+++<<<<<<< HEAD
+ +  // Earlier SSR cases retain stopped copies with the same label; bind to this root and Team address.
+ +  const teamSidebarRow = page.locator(`${sel('workspace-team-transient-execution-row')}[data-team-run-id="${r.teamRunId}"][data-transient-kind="task_team"][data-member-address="${address('pair')}"]`)
+ +  await waitFor('one exact Team copy sidebar row', async () => await teamSidebarRow.count() === 1, 60000)
+ +  r.sidebarTarget = await teamSidebarRow.evaluate(el => ({ rootRunId: el.dataset.teamRunId, address: el.dataset.memberAddress, kind: el.dataset.transientKind }))
+ +  const parentStop = page.locator(sel(`workspace-team-row-${r.teamRunId}`)).locator('xpath=..').locator('button[aria-label]').first()
+++=======
++   const teamSidebarRow = page.locator(sel('workspace-team-transient-execution-row')).filter({ hasText: address('pair').slice(1).replace(/_/g, ' ') }).first()
++   const parentStop = page.locator(sel(`workspace-team-row-${r.teamRunId}`)).locator('xpath=..').getByRole('button', { name: 'Terminate team', exact: true })
+++>>>>>>> origin/personal
+    r.paint = await sidebarPaint(page, 'DCP-002', teamSidebarRow, parentStop)
+    await openTeamRun(page, r.teamRunId, ids.home)
+    await openSettings(page)

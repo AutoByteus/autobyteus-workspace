@@ -1,0 +1,64 @@
+{
+  "package": "claude-interrupt-resume-fixture-types",
+  "actualNoFfMerge": "07a079dc3eeabdd6a21a78d60245f2d730fe5700",
+  "parents": [
+    "2614fc38c26248998e0eb563bfcd7ebe2f72fcbe",
+    "8a727df388497844308543a8aff64083767ad0e2"
+  ],
+  "checkedBase": "2614fc38c26248998e0eb563bfcd7ebe2f72fcbe",
+  "ticketCommit": "8a727df388497844308543a8aff64083767ad0e2",
+  "checks": {
+    "scoped-final": {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "typecheck:claude-interrupt-resume-e2e"
+      ],
+      "actualExit": 0,
+      "totalDiagnostics": 0,
+      "noUnhandled": true,
+      "noOwnedRemnants": true,
+      "privateRootRemoved": true
+    },
+    "target-final": {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+        "--no-watch"
+      ],
+      "actualExit": 0,
+      "totalDiagnostics": 0,
+      "noUnhandled": true,
+      "noOwnedRemnants": true,
+      "privateRootRemoved": true,
+      "passed": 8,
+      "liveSkipped": 1
+    },
+    "production-final": {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "typecheck"
+      ],
+      "actualExit": 0,
+      "totalDiagnostics": 0,
+      "noUnhandled": true,
+      "noOwnedRemnants": true,
+      "privateRootRemoved": true
+    }
+  },
+  "licensingExit": 0,
+  "hygieneExit": 0,
+  "priorTaskPassReused": false,
+  "newUserVerification": "evidence/delivery/user-verification.json",
+  "renewedVerificationRequired": false,
+  "sourceUnchangedFromCurrentPassedPackage": true,
+  "targetSha256": "3d7a40b5bf62946dabe0d03e2d060ab7b04de36895c29a7a415850036d44ade9"
+}

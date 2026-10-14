@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "typecheck"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types",
+  "expectedExit": 0,
+  "environment": "PATH + fresh private HOME/TMPDIR + explicit TEST_DELIVERY_EXECUTION marker, target-only AGY_ERROR_EVIDENCE_DIR",
+  "RUN_CLAUDE_E2E": "absent",
+  "revision": "07a079dc3eeabdd6a21a78d60245f2d730fe5700"
+}

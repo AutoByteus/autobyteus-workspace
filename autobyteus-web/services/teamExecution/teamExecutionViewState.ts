@@ -11,7 +11,8 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TeamRunConfigurationView } from '~/types/agent/TeamRunConfig';
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
-import { insertTaskExecution } from './teamExecutionTreeMutations';
+import { insertTaskExecution, recordDelegatedLaunchSelections } from './teamExecutionTreeMutations';
+import { refreshTeamAgentLaunches } from './teamExecutionContextFactory';
 import {
   agentRunKey,
   collectClosedSubtrees,
@@ -21,11 +22,13 @@ import {
   taskExecutionReferenceKey,
   teamRunKey,
   type TaskExecutionReference,
-  type TaskExecutionTreeWalk,
 } from '~/utils/collaboration/taskExecutionClosure';
 import {
   collectAgentExecutionLocations,
   projectNavigationRows,
+  teamTreeRunKeys,
+  teamTreeWalk,
+  type TeamTreeNode,
 } from './teamExecutionTreeSelectors';
 import type {
   TeamAgentContextEntry,
@@ -102,32 +105,12 @@ const sequenceOf = (message: Exclude<TeamStreamServerMessage,
 };
 
 const targetAgentRunId = (message: Exclude<TeamStreamServerMessage,
-  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE' | 'COLLABORATOR_ADDED' }>): string | null => {
+  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE' | 'COLLABORATOR_ADDED' | 'DELEGATED_LAUNCH_SELECTIONS_CHANGED' }>): string | null => {
   if (message.type === 'MEMBER_INPUT_MESSAGE') return message.payload.recipient_agent_run_id;
   if (message.type === 'ERROR') return message.payload.agent_run_id;
   return message.payload.agent_run_id;
 };
 
-/** A node of the Team tree: Agents, and Teams with members, collaborators and task executions. */
-type TeamTreeNode = Readonly<{ agent_run_id: string }> | Readonly<{
-  team_run_id: string; members?: readonly unknown[]; collaborators?: readonly unknown[]; task_executions?: readonly unknown[];
-  delegator_agent_run_id?: string | null;
-}>;
-const teamTreeWalk: TaskExecutionTreeWalk<TeamTreeNode> = {
-  keyOf: (node) => 'agent_run_id' in node ? agentRunKey(node.agent_run_id) : teamRunKey(node.team_run_id),
-  childrenOf: (node) => 'agent_run_id' in node ? []
-    : [...(node.members ?? []), ...(node.collaborators ?? []), ...(node.task_executions ?? [])] as readonly TeamTreeNode[],
-};
-
-const teamTreeRunKeys = (root: TeamTreeNode): ReadonlySet<string> => {
-  const keys = new Set<string>();
-  const visit = (node: TeamTreeNode): void => {
-    keys.add(teamTreeWalk.keyOf(node));
-    teamTreeWalk.childrenOf(node).forEach(visit);
-  };
-  visit(root);
-  return keys;
-};
 
 export const createTeamExecutionViewState = (
   input: CreateTeamExecutionViewStateInput,
@@ -434,6 +417,11 @@ export const createTeamExecutionViewState = (
         }
         effects.push({ kind: 'reconcile_team_navigation' });
         effects.push({ kind: 'collaborators_changed' });
+      } else if (message.type === 'DELEGATED_LAUNCH_SELECTIONS_CHANGED') {
+        // A Save on the live run (DS-001): records take the choices; contexts the model their agent now runs with.
+        const nextTree = recordDelegatedLaunchSelections(publication.value.tree, message.payload.selections);
+        publication.value = { ...publication.value, tree: nextTree, changeSequence: sequence ?? publication.value.changeSequence };
+        refreshTeamAgentLaunches(nextTree, publication.value.locations, publication.value.contexts);
       } else if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
         if (publication.value.messages.some((entry) => entry.message_id === message.payload.message.message_id)) {
           return Object.freeze({ disposition: 'rejected', code: 'TEAM_COMMUNICATION_DUPLICATE_MESSAGE', message: `Duplicate Team message '${message.payload.message.message_id}'.`, effects: Object.freeze([]) });
@@ -490,7 +478,7 @@ export const createTeamExecutionViewState = (
     getAgentWorkspaceRootPath: (agentRunId) => {
       const location = publication.value.locations.get(agentRunId.trim());
       return location
-        ? teamAgentSourceAt(publication.value.tree, location.memberAddress)?.launch_configuration.workspace_root_path ?? null
+        ? teamAgentSourceAt(publication.value.tree, location.memberAddress, location.agentRunId)?.launch_configuration.workspace_root_path ?? null
         : null;
     },
     getAgentExecutionLocation: (agentRunId) => publication.value.locations.get(agentRunId.trim()) ?? null,

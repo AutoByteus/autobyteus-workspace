@@ -1,0 +1,63 @@
+{
+  "startedAt": "2026-10-13T06:17:48.329Z",
+  "label": "e07-final-observe",
+  "instanceId": "iso-55097-2f31",
+  "purpose": "Current task live boundary proof, not user verification",
+  "events": [],
+  "operations": [],
+  "pages": {
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-list",
+    "headings": [
+      "Agent Orgs",
+      "Featured organizations"
+    ],
+    "buttons": [
+      "Chat",
+      "",
+      "",
+      "Agents",
+      "Agent Teams",
+      "Agent Orgs",
+      "Projects",
+      "Skills",
+      "Memory",
+      "Nodes",
+      "",
+      "Temp Workspace",
+      "Settings",
+      " Reload",
+      "Create Agent Org",
+      "Run",
+      "View Details →",
+      "Run",
+      "View Details →"
+    ],
+    "links": [],
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nAgent Orgs\nSearch Agent Orgs\nReload\nCreate Agent Org\nFeatured organizations\nCC\nCache Control Org\n\nDisposable Org with real referenced Agents and preserved routing.\n\nRun\nView Details\n→\ncache control agent\nCV\nCache Validation Org Edited\n\nDescription edited through the ordinary Org edit form.\n\nRun\nView Details\n→\ncache control agent\ncache validation agent edited"
+  },
+  "details": {
+    "target": {
+      "primaryAgentId": "cache-validation-agent",
+      "primaryOrgId": "cache-validation-org"
+    },
+    "environment": {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-list",
+      "width": 1512,
+      "height": 917,
+      "dpr": 2,
+      "language": "de",
+      "languages": [
+        "de",
+        "de-DE",
+        "en-US",
+        "zh-Hans-DE"
+      ],
+      "timezone": "Europe/Berlin"
+    },
+    "modelMessagesSent": false,
+    "providerCredentialsImported": false
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-13T06:17:48.779Z",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-list"
+}

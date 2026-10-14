@@ -1,0 +1,4 @@
+DCP-002 Pass delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a Team copy stopped from its sidebar row; its Team model changed and saved; the copy lead's "+" shows the choice without a reload; the next message resumes the lead on it
+DCP-004 Pass delegated-copy-model-change AC-011, AC-005 (UI): the delegating agent wakes the copy while the user edits: Save is refused and records nothing; after a Save and an app (backend) restart the choice is shown and the copy resumes on it
+Summary: 2 Pass, 0 Fail
+exit 0

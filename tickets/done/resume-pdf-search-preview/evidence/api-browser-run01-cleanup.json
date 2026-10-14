@@ -1,0 +1,14 @@
+{
+  "groups": [
+    23626,
+    23507
+  ],
+  "liveGroupMembers": [],
+  "portsClosed": {
+    "base": true,
+    "front": true
+  },
+  "rootRemoved": true,
+  "fixturePageRemoved": true,
+  "browserClosedByProbeBeforeRemovalError": true
+}

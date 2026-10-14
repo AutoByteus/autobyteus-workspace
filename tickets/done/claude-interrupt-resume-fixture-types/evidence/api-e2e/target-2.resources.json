@@ -1,0 +1,81 @@
+{
+  "actualExit": 0,
+  "expectedExit": 0,
+  "seconds": 8.431,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 22969,
+      "ppid": 22358,
+      "pgid": 22969,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts --no-watch --reporter=verbose --reporter=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/tickets/in-progress/claude-interrupt-resume-fixture-types/evidence/api-e2e/case-reporter.mjs"
+    },
+    {
+      "pid": 22988,
+      "ppid": 22969,
+      "pgid": 22969,
+      "command": "node ./node_modules/.bin/../../../node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/vitest.mjs run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts --no-watch --reporter=verbose --reporter=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/tickets/in-progress/claude-interrupt-resume-fixture-types/evidence/api-e2e/case-reporter.mjs"
+    },
+    {
+      "pid": 22996,
+      "ppid": 22988,
+      "pgid": 22969,
+      "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/node_modules/.pnpm/@esbuild+darwin-arm64@0.27.3/node_modules/@esbuild/darwin-arm64/bin/esbuild --service=0.27.3 --ping"
+    },
+    {
+      "pid": 22998,
+      "ppid": 22988,
+      "pgid": 22969,
+      "command": "(node)"
+    },
+    {
+      "pid": 23003,
+      "ppid": 22998,
+      "pgid": 22969,
+      "command": "(schema-engine-da)"
+    },
+    {
+      "pid": 23006,
+      "ppid": 22988,
+      "pgid": 22969,
+      "command": "(node)"
+    },
+    {
+      "pid": 23134,
+      "ppid": 23006,
+      "pgid": 22969,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    },
+    {
+      "pid": 23136,
+      "ppid": 23006,
+      "pgid": 22969,
+      "command": "(node)"
+    },
+    {
+      "pid": 23139,
+      "ppid": 23006,
+      "pgid": 22969,
+      "command": "(node)"
+    },
+    {
+      "pid": 23225,
+      "ppid": 23006,
+      "pgid": 22969,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    },
+    {
+      "pid": 23304,
+      "ppid": 23006,
+      "pgid": 22969,
+      "command": "(node)"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-fixture-types-_6nz8lxp",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

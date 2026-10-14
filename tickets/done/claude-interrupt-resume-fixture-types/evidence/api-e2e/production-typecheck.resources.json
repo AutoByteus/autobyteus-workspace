@@ -1,0 +1,75 @@
+{
+  "actualExit": 0,
+  "expectedExit": 0,
+  "seconds": 17.115,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 15810,
+      "ppid": 15203,
+      "pgid": 15810,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-server-ts typecheck"
+    },
+    {
+      "pid": 16289,
+      "ppid": 15810,
+      "pgid": 15810,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm prepare:shared"
+    },
+    {
+      "pid": 16498,
+      "ppid": 16289,
+      "pgid": 15810,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build"
+    },
+    {
+      "pid": 16536,
+      "ppid": 16498,
+      "pgid": 15810,
+      "command": "(node)"
+    },
+    {
+      "pid": 16557,
+      "ppid": 16498,
+      "pgid": 15810,
+      "command": "sh -c node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs"
+    },
+    {
+      "pid": 16587,
+      "ppid": 16498,
+      "pgid": 15810,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-application-sdk-contracts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 16588,
+      "ppid": 16557,
+      "pgid": 15810,
+      "command": "node ./scripts/clean-dist.mjs"
+    },
+    {
+      "pid": 16595,
+      "ppid": 16557,
+      "pgid": 15810,
+      "command": "(node)"
+    },
+    {
+      "pid": 17325,
+      "ppid": 16498,
+      "pgid": 15810,
+      "command": "(node)"
+    },
+    {
+      "pid": 17360,
+      "ppid": 15810,
+      "pgid": 15810,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json --noEmit"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-fixture-types-1ilrv3q2",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

@@ -1,0 +1,17 @@
+# API-F001 — Existing websocket cadence failure; NOT a Prisma native failure
+
+Preliminary classification: bounded existing product integration defect, outside R3 Scope Guardrail / D1 Change Scope. Code Review must confirm origin, expected behavior and accountable follow-up. TESTING.md's explicit known-baseline note is corroboration, NOT closure or a waiver. Do not patch cadence policy or suppress assertions in the Prisma ticket.
+
+Observed full documented integration command: `pnpm -C autobyteus-server-ts test:integration`, clean private HOME/TMPDIR after successful `test:integration:prepare`. Exit1,91 files:72pass/1fail/18skip;441 tests:371pass/2fail/68skip. Two cases in `tests/integration/agent/agent-status-websocket.integration.test.ts` expect zero SEGMENT_CONTENT before the configured500ms window, but receive one at the350ms assertion (lines357 and409). `integration.log` retains exact output, not all-green.
+
+Cause traced beyond the baseline label:
+1. `src/agent-execution/domain/agent-run.ts`, publishSourceEvents→onCanonicalEventsDispatched calls publishInputState after the content batch.
+2. `src/services/agent-streaming/agent-run-event-message-mapper.ts` maps that event to AGENT_INPUT_STATE.
+3. `src/services/agent-streaming/websocket-egress/agent-stream-content-cadence-scheduler.ts`, classifyMessage treats unlisted messages as FLUSH_THEN_FORWARD. AGENT_INPUT_STATE is absent from SAFE_COMPANION_TYPES, so it flushes buffered content immediately before forwarding the input-state companion, not at the cadence timer.
+4. Existing test capture filters AGENT_INPUT_STATE out of its status/content trace; it does not cause the flush. A temporary copy of the original tests adds ONLY a raw scripted message type/time/delta logger before that filter. No production mutation, skipped failing assertion or changed expectation. Targeted rerun again2fail (other5notselected). Full output `cadence-diagnostic.log`.
+5. Direct socket trace: first scenario SEGMENT_START, combined30-delta SEGMENT_CONTENT and AGENT_INPUT_STATE all at1791908485919ms; second scenario start, `first`content and input-state all at1791908486284ms. This is immediate companion-triggered flush, not slow startup, native ABI, DB deployment, scheduler load or provider access. The timer settings/500ms assertion alone do not explain immediate delivery.
+6. `cadence-diagnostic.json` records byte equality to source basee22245f for test, AgentRun, mapper, scheduler and interval owner. All are untouched by this source package. No Prisma resolver call is introduced by this transport path. Base equality establishes non-regression, not defect acceptance.
+
+Actual permanent-Prisma evidence is independently green: current built4559-file audited Docker dist, original c299 nativeRPC-32601 control, corrected605 nativeRPC, normal unpinned schema/startup/repeatedHTTP, API data across distinct-container same-home/data recreation. Those results remain valid; the round is not all-green pending failure-origin disposition. Request an existing reported issue reference or proper separately accountable product follow-up under TESTING Rule9, not a fabricated task ID. No manager/product-repair dispatch by API before failure-origin routing.
+
+Temporary diagnostic file is removed by its runner; canonical test and production files remain unchanged. Separate `diagnose-cadence.py` is retained only as executable evidence/reproduction of the observation, not a second durable Docker harness.

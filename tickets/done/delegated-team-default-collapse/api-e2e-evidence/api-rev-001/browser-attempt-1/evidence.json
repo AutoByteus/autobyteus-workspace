@@ -1,0 +1,528 @@
+{
+  "startedAt": "2026-10-13T06:39:30.458Z",
+  "executablePath": "/usr/bin/chromium",
+  "cases": {},
+  "cleanup": {
+    "frontend": {
+      "pid": 65770,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 65649,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "message": "Representative workload must be seven six-member Teams",
+      "details": [
+        {
+          "address": "/software_engineering_team_probe",
+          "teamRunId": "software_engineering_team_probe_3929f24aa4e54c15af96c5c2201e984a",
+          "members": [
+            {
+              "address": "/software_engineering_team_probe/solution_designer",
+              "agentRunId": "solution_designer_e158ff6d7575402b93b210fc79f7255e",
+              "platformAgentRunId": "756a5862-0990-4536-8592-c2d09ba3209b"
+            },
+            {
+              "address": "/software_engineering_team_probe/architecture_reviewer",
+              "agentRunId": "architecture_reviewer_a5c13239691a480fa77e7f6b62285d9c",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/implementation_engineer",
+              "agentRunId": "implementation_engineer_901a1b9d997b40e8b828bd0db8b48faa",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/code_reviewer",
+              "agentRunId": "code_reviewer_18429024e83047f1905fac5ec91d99f0",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/api_e2e_engineer",
+              "agentRunId": "api_e2e_engineer_9b7132d863ab4024a395b624c68e157b",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/delivery_engineer",
+              "agentRunId": "delivery_engineer_7369bdd40e854894892204df9847cc4c",
+              "platformAgentRunId": null
+            }
+          ],
+          "taskExecutions": [],
+          "delegatorAgentRunId": "project_task_manager_probe_ee0ec24d374740f88e4517680bd4654f",
+          "startedAt": "2026-10-13T06:39:57.621Z",
+          "source": {
+            "kind": "agent_team",
+            "teamDefinitionId": "software-engineering-team-probe",
+            "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+            "members": [
+              {
+                "address": "/software_engineering_team_probe/solution_designer",
+                "agentDefinitionId": "solution-designer"
+              },
+              {
+                "address": "/software_engineering_team_probe/architecture_reviewer",
+                "agentDefinitionId": "architecture-reviewer"
+              },
+              {
+                "address": "/software_engineering_team_probe/implementation_engineer",
+                "agentDefinitionId": "implementation-engineer"
+              },
+              {
+                "address": "/software_engineering_team_probe/code_reviewer",
+                "agentDefinitionId": "code-reviewer"
+              },
+              {
+                "address": "/software_engineering_team_probe/api_e2e_engineer",
+                "agentDefinitionId": "api-e2e-engineer"
+              },
+              {
+                "address": "/software_engineering_team_probe/delivery_engineer",
+                "agentDefinitionId": "delivery-engineer"
+              }
+            ],
+            "handoffs": [],
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/delegated-team-collapse-LHACkz/workspace"
+            },
+            "defaultLaunchSource": {
+              "origin": "inherited",
+              "fallbacks": []
+            }
+          }
+        },
+        {
+          "address": "/software_engineering_team_probe",
+          "teamRunId": "software_engineering_team_probe_02ec3b04865f43f89d74ad1bf9b823d3",
+          "members": [
+            {
+              "address": "/software_engineering_team_probe/solution_designer",
+              "agentRunId": "solution_designer_b36d4b5e94224452a984b04278c0a283",
+              "platformAgentRunId": "0fcee5a6-e3dc-4949-84f4-fb29e29aa88a"
+            },
+            {
+              "address": "/software_engineering_team_probe/architecture_reviewer",
+              "agentRunId": "architecture_reviewer_c56ddb9169d748ec8a9e3470e6a0b63c",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/implementation_engineer",
+              "agentRunId": "implementation_engineer_e38d1ec1b72f4ba9844124841389bf77",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/code_reviewer",
+              "agentRunId": "code_reviewer_45f8b52179314a0b89f187aead600fa0",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/api_e2e_engineer",
+              "agentRunId": "api_e2e_engineer_0a806427eb544c9598e6ef713bcd6ace",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/delivery_engineer",
+              "agentRunId": "delivery_engineer_979ef0847ed04b73bc1dab333469ad74",
+              "platformAgentRunId": null
+            }
+          ],
+          "taskExecutions": [],
+          "delegatorAgentRunId": "project_task_manager_probe_ee0ec24d374740f88e4517680bd4654f",
+          "startedAt": "2026-10-13T06:39:57.963Z",
+          "source": {
+            "kind": "agent_team",
+            "teamDefinitionId": "software-engineering-team-probe",
+            "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+            "members": [
+              {
+                "address": "/software_engineering_team_probe/solution_designer",
+                "agentDefinitionId": "solution-designer"
+              },
+              {
+                "address": "/software_engineering_team_probe/architecture_reviewer",
+                "agentDefinitionId": "architecture-reviewer"
+              },
+              {
+                "address": "/software_engineering_team_probe/implementation_engineer",
+                "agentDefinitionId": "implementation-engineer"
+              },
+              {
+                "address": "/software_engineering_team_probe/code_reviewer",
+                "agentDefinitionId": "code-reviewer"
+              },
+              {
+                "address": "/software_engineering_team_probe/api_e2e_engineer",
+                "agentDefinitionId": "api-e2e-engineer"
+              },
+              {
+                "address": "/software_engineering_team_probe/delivery_engineer",
+                "agentDefinitionId": "delivery-engineer"
+              }
+            ],
+            "handoffs": [],
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/delegated-team-collapse-LHACkz/workspace"
+            },
+            "defaultLaunchSource": {
+              "origin": "inherited",
+              "fallbacks": []
+            }
+          }
+        },
+        {
+          "address": "/software_engineering_team_probe",
+          "teamRunId": "software_engineering_team_probe_11d455cea4db42c995bc222e0b126a14",
+          "members": [
+            {
+              "address": "/software_engineering_team_probe/solution_designer",
+              "agentRunId": "solution_designer_bd913f8529c04a54aa44f6be8549665f",
+              "platformAgentRunId": "18d02585-107d-4019-a428-9ab22a312849"
+            },
+            {
+              "address": "/software_engineering_team_probe/architecture_reviewer",
+              "agentRunId": "architecture_reviewer_c1aafb14e64c4cc485438c7d33c4f685",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/implementation_engineer",
+              "agentRunId": "implementation_engineer_02b8ec4caff640d1b1272e02f878b011",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/code_reviewer",
+              "agentRunId": "code_reviewer_8be80d94ef4d4393a6920fb21b337d10",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/api_e2e_engineer",
+              "agentRunId": "api_e2e_engineer_68d0e7d3073b43d6885cc13a0c0ca1f9",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/delivery_engineer",
+              "agentRunId": "delivery_engineer_ae087c45b1e3465f8b708c9914253737",
+              "platformAgentRunId": null
+            }
+          ],
+          "taskExecutions": [],
+          "delegatorAgentRunId": "project_task_manager_probe_ee0ec24d374740f88e4517680bd4654f",
+          "startedAt": "2026-10-13T06:39:58.192Z",
+          "source": {
+            "kind": "agent_team",
+            "teamDefinitionId": "software-engineering-team-probe",
+            "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+            "members": [
+              {
+                "address": "/software_engineering_team_probe/solution_designer",
+                "agentDefinitionId": "solution-designer"
+              },
+              {
+                "address": "/software_engineering_team_probe/architecture_reviewer",
+                "agentDefinitionId": "architecture-reviewer"
+              },
+              {
+                "address": "/software_engineering_team_probe/implementation_engineer",
+                "agentDefinitionId": "implementation-engineer"
+              },
+              {
+                "address": "/software_engineering_team_probe/code_reviewer",
+                "agentDefinitionId": "code-reviewer"
+              },
+              {
+                "address": "/software_engineering_team_probe/api_e2e_engineer",
+                "agentDefinitionId": "api-e2e-engineer"
+              },
+              {
+                "address": "/software_engineering_team_probe/delivery_engineer",
+                "agentDefinitionId": "delivery-engineer"
+              }
+            ],
+            "handoffs": [],
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/delegated-team-collapse-LHACkz/workspace"
+            },
+            "defaultLaunchSource": {
+              "origin": "inherited",
+              "fallbacks": []
+            }
+          }
+        },
+        {
+          "address": "/software_engineering_team_probe",
+          "teamRunId": "software_engineering_team_probe_cb684ce8f85e4c389068c12224c7a66e",
+          "members": [
+            {
+              "address": "/software_engineering_team_probe/solution_designer",
+              "agentRunId": "solution_designer_2f09d95ecfaf4c6cbec4ea8db054efaa",
+              "platformAgentRunId": "69c3efb8-8feb-4f47-827c-016c3442bcc4"
+            },
+            {
+              "address": "/software_engineering_team_probe/architecture_reviewer",
+              "agentRunId": "architecture_reviewer_267ea9833170432388e3b3436188c168",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/implementation_engineer",
+              "agentRunId": "implementation_engineer_0eb5a514c07740268ea3263e6d268f26",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/code_reviewer",
+              "agentRunId": "code_reviewer_cad10920de2246f09c6db0ed8b427d94",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/api_e2e_engineer",
+              "agentRunId": "api_e2e_engineer_94050d94360a489d8cf35fc2a49a0e0f",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/delivery_engineer",
+              "agentRunId": "delivery_engineer_4074c693c9c241b4bd2e65020fbfc247",
+              "platformAgentRunId": null
+            }
+          ],
+          "taskExecutions": [],
+          "delegatorAgentRunId": "project_task_manager_probe_ee0ec24d374740f88e4517680bd4654f",
+          "startedAt": "2026-10-13T06:39:58.423Z",
+          "source": {
+            "kind": "agent_team",
+            "teamDefinitionId": "software-engineering-team-probe",
+            "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+            "members": [
+              {
+                "address": "/software_engineering_team_probe/solution_designer",
+                "agentDefinitionId": "solution-designer"
+              },
+              {
+                "address": "/software_engineering_team_probe/architecture_reviewer",
+                "agentDefinitionId": "architecture-reviewer"
+              },
+              {
+                "address": "/software_engineering_team_probe/implementation_engineer",
+                "agentDefinitionId": "implementation-engineer"
+              },
+              {
+                "address": "/software_engineering_team_probe/code_reviewer",
+                "agentDefinitionId": "code-reviewer"
+              },
+              {
+                "address": "/software_engineering_team_probe/api_e2e_engineer",
+                "agentDefinitionId": "api-e2e-engineer"
+              },
+              {
+                "address": "/software_engineering_team_probe/delivery_engineer",
+                "agentDefinitionId": "delivery-engineer"
+              }
+            ],
+            "handoffs": [],
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/delegated-team-collapse-LHACkz/workspace"
+            },
+            "defaultLaunchSource": {
+              "origin": "inherited",
+              "fallbacks": []
+            }
+          }
+        },
+        {
+          "address": "/software_engineering_team_probe",
+          "teamRunId": "software_engineering_team_probe_be9703adc6aa4d268e9bb60203e7bfe0",
+          "members": [
+            {
+              "address": "/software_engineering_team_probe/solution_designer",
+              "agentRunId": "solution_designer_4e16c76c81c84548bacf58031e24bc92",
+              "platformAgentRunId": "66feaa13-fda2-40d4-90fb-2955b2a3f9f5"
+            },
+            {
+              "address": "/software_engineering_team_probe/architecture_reviewer",
+              "agentRunId": "architecture_reviewer_679ea802e8ee494ebca7db8d66cfdb7b",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/implementation_engineer",
+              "agentRunId": "implementation_engineer_66b9481e99c34a75818163bbb7bc7061",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/code_reviewer",
+              "agentRunId": "code_reviewer_ffcc56f02d5c41ada886b18ac8d0a7e7",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/api_e2e_engineer",
+              "agentRunId": "api_e2e_engineer_891e5e86a9744edaaf4ddef14b34eede",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/delivery_engineer",
+              "agentRunId": "delivery_engineer_d822851a66944375be899c87c5c6616f",
+              "platformAgentRunId": null
+            }
+          ],
+          "taskExecutions": [],
+          "delegatorAgentRunId": "project_task_manager_probe_ee0ec24d374740f88e4517680bd4654f",
+          "startedAt": "2026-10-13T06:39:58.643Z",
+          "source": {
+            "kind": "agent_team",
+            "teamDefinitionId": "software-engineering-team-probe",
+            "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+            "members": [
+              {
+                "address": "/software_engineering_team_probe/solution_designer",
+                "agentDefinitionId": "solution-designer"
+              },
+              {
+                "address": "/software_engineering_team_probe/architecture_reviewer",
+                "agentDefinitionId": "architecture-reviewer"
+              },
+              {
+                "address": "/software_engineering_team_probe/implementation_engineer",
+                "agentDefinitionId": "implementation-engineer"
+              },
+              {
+                "address": "/software_engineering_team_probe/code_reviewer",
+                "agentDefinitionId": "code-reviewer"
+              },
+              {
+                "address": "/software_engineering_team_probe/api_e2e_engineer",
+                "agentDefinitionId": "api-e2e-engineer"
+              },
+              {
+                "address": "/software_engineering_team_probe/delivery_engineer",
+                "agentDefinitionId": "delivery-engineer"
+              }
+            ],
+            "handoffs": [],
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/delegated-team-collapse-LHACkz/workspace"
+            },
+            "defaultLaunchSource": {
+              "origin": "inherited",
+              "fallbacks": []
+            }
+          }
+        },
+        {
+          "address": "/software_engineering_team_probe",
+          "teamRunId": "software_engineering_team_probe_c32e631b246a48f7baa7aaf9d1225c36",
+          "members": [
+            {
+              "address": "/software_engineering_team_probe/solution_designer",
+              "agentRunId": "solution_designer_29d6c028199d49edb4555fae5e0bdc5b",
+              "platformAgentRunId": "093d0c52-94e4-429f-8ba0-dad5cedfeed6"
+            },
+            {
+              "address": "/software_engineering_team_probe/architecture_reviewer",
+              "agentRunId": "architecture_reviewer_8639fd9d7dac40b6bef4dae663e1de7d",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/implementation_engineer",
+              "agentRunId": "implementation_engineer_52931f33881e4678be1158e3ef03e21f",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/code_reviewer",
+              "agentRunId": "code_reviewer_31ad7f88ad0f4aee8274885e67131185",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/api_e2e_engineer",
+              "agentRunId": "api_e2e_engineer_f817033219284852854d780d1ed50642",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/software_engineering_team_probe/delivery_engineer",
+              "agentRunId": "delivery_engineer_4113cc1a7df04626977f5e445731ed90",
+              "platformAgentRunId": null
+            }
+          ],
+          "taskExecutions": [],
+          "delegatorAgentRunId": "project_task_manager_probe_ee0ec24d374740f88e4517680bd4654f",
+          "startedAt": "2026-10-13T06:39:58.865Z",
+          "source": {
+            "kind": "agent_team",
+            "teamDefinitionId": "software-engineering-team-probe",
+            "coordinatorAddress": "/software_engineering_team_probe/solution_designer",
+            "members": [
+              {
+                "address": "/software_engineering_team_probe/solution_designer",
+                "agentDefinitionId": "solution-designer"
+              },
+              {
+                "address": "/software_engineering_team_probe/architecture_reviewer",
+                "agentDefinitionId": "architecture-reviewer"
+              },
+              {
+                "address": "/software_engineering_team_probe/implementation_engineer",
+                "agentDefinitionId": "implementation-engineer"
+              },
+              {
+                "address": "/software_engineering_team_probe/code_reviewer",
+                "agentDefinitionId": "code-reviewer"
+              },
+              {
+                "address": "/software_engineering_team_probe/api_e2e_engineer",
+                "agentDefinitionId": "api-e2e-engineer"
+              },
+              {
+                "address": "/software_engineering_team_probe/delivery_engineer",
+                "agentDefinitionId": "delivery-engineer"
+              }
+            ],
+            "handoffs": [],
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/delegated-team-collapse-LHACkz/workspace"
+            },
+            "defaultLaunchSource": {
+              "origin": "inherited",
+              "fallbacks": []
+            }
+          }
+        }
+      ],
+      "stack": "Error: Representative workload must be seven six-member Teams\n    at assert (file:///home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs:49:69)\n    at seed (file:///home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs:180:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs:288:11"
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:45195",
+    "frontendUrl": "http://127.0.0.1:41679",
+    "dataRoot": "/tmp/delegated-team-collapse-LHACkz"
+  },
+  "result": "Fail",
+  "errors": [],
+  "requests": [],
+  "commands": [],
+  "frames": []
+}

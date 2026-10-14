@@ -63,7 +63,21 @@
           @change="(key, change) => emit('change-member', key, change)"
         />
 
-        <RunDelegatedLaunchList v-if="delegated.length" :rows="delegated" />
+        <!-- REQ-007 (SR-006, SR-007): collaborators and copies as member rows, collapsed until opened. A stopped
+             copy's model and its settings are edited like a stopped run's member; a running one has a stop icon. -->
+        <RunMembersSection
+          v-if="delegated.length"
+          test-id="run-delegated-launches"
+          :title="$t('runSettings.delegated.title')"
+          :description="$t('runSettings.delegated.description')"
+          :nodes="delegated"
+          :locked="DELEGATED_LOCKED"
+          runtime-locked
+          :locked-models-for="delegatedLockedModelsFor"
+          read-only
+          @change="(key, change) => emit('change-delegated', key, change)"
+          @stop="emit('stop-delegated', $event)"
+        />
       </div>
     </div>
 
@@ -102,9 +116,7 @@ import { Icon } from '@iconify/vue'
 import { useLocalization } from '~/composables/useLocalization'
 import type { ChatModelOption } from '~/composables/chat/useChatModelCatalog'
 import type { RunMemberSettingChange, RunSettingFlags, RunSettingsValues } from '~/types/runSettings/RunSettings'
-import type { RunMemberNode } from '~/utils/runSettings/runMemberTree'
-import type { DelegatedLaunchRow } from '~/utils/runSettings/delegatedLaunchRows'
-import RunDelegatedLaunchList from './RunDelegatedLaunchList.vue'
+import type { RunMemberDelegatedFacts, RunMemberNode } from '~/utils/runSettings/runMemberTree'
 import RunMembersSection from './RunMembersSection.vue'
 import RunSettingsCard from './RunSettingsCard.vue'
 import RunSubjectHeader from './RunSubjectHeader.vue'
@@ -127,26 +139,34 @@ const props = withDefaults(defineProps<{
   rootModelUnavailable?: boolean
   members?: readonly RunMemberNode[]
   lockedModelsFor?: ((key: string) => readonly ChatModelOption[] | null) | null
-  /** Collaborators and open delegated copies, read-only (REQ-007). */
-  delegated?: readonly DelegatedLaunchRow[]
+  /** Collaborators and open delegated copies (REQ-007); a row's own locks say whether its model can change. */
+  delegated?: readonly RunMemberNode[]
+  delegatedLockedModelsFor?: ((key: string) => readonly ChatModelOption[] | null) | null
+  /** The outcome of a copy's Stop when it needs saying (a failure, or older copies it could not stop). */
+  delegatedNotice?: Readonly<{ tone: 'info' | 'error'; text: string }> | null
   dirty: boolean
   canSave: boolean
   saving: boolean
   saved: boolean
   /** A failed save, surfaced as is. */
   saveError?: string | null
-}>(), { rootLockedModels: null, rootModelUnavailable: false, members: () => [], lockedModelsFor: null, delegated: () => [], saveError: null })
+}>(), { rootLockedModels: null, rootModelUnavailable: false, members: () => [], lockedModelsFor: null, delegated: () => [],
+  delegatedLockedModelsFor: null, delegatedNotice: null, saveError: null })
 
 const emit = defineEmits<{
   (event: 'stop'): void
   (event: 'refresh'): void
   (event: 'change-root', change: RunMemberSettingChange): void
   (event: 'change-member', key: string, change: RunMemberSettingChange): void
+  (event: 'change-delegated', key: string, change: RunMemberSettingChange): void
+  (event: 'stop-delegated', reference: NonNullable<RunMemberDelegatedFacts['stop']>): void
   (event: 'cancel'): void
   (event: 'save'): void
 }>()
 
 const { t } = useLocalization()
+/** A copy row without its own locks is fully locked; rows say themselves when their model can change. */
+const DELEGATED_LOCKED: RunSettingFlags = { workspace: true, model: true, thinking: true, approval: true }
 
 const rootLocked = computed<RunSettingFlags>(() => ({ workspace: true, approval: true, model: !props.canEdit, thinking: !props.canEdit }))
 const memberLocked = computed<RunSettingFlags>(() => ({
@@ -157,9 +177,10 @@ const memberLocked = computed<RunSettingFlags>(() => ({
 }))
 
 const note = computed(() => {
-  if (props.state === 'refresh_required') return { tone: 'warning', text: t('runSettings.existing.refreshNote'), refresh: true }
+  if (props.state === 'refresh_required') return { tone: 'warning', text: props.saveError ?? t('runSettings.existing.refreshNote'), refresh: true }
   if (props.stop.error) return { tone: 'error', text: props.stop.error, refresh: false }
   if (props.saveError) return { tone: 'error', text: props.saveError, refresh: false }
+  if (props.delegatedNotice) return { ...props.delegatedNotice, refresh: false }
   if (props.state === 'read_only' && !props.isActive) return { tone: 'info', text: t('runSettings.existing.readOnlyNote'), refresh: false }
   return null
 })

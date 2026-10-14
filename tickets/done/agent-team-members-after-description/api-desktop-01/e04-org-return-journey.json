@@ -1,0 +1,29 @@
+{
+  "startedAt": "2026-10-13T04:08:24.199Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [
+    {
+      "name": "GetAgentOrgEndpointCatalog",
+      "query": "agentOrgEndpointCatalog(id: $id) {"
+    },
+    {
+      "name": "GetAgentOrgEndpointCatalog",
+      "query": "agentOrgEndpointCatalog(id: $id) {"
+    }
+  ],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-edit&id=api-desktop-verification-org"
+    }
+  ],
+  "details": {
+    "orgUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-detail&id=api-desktop-verification-org",
+    "teamUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-detail&id=api-desktop-engineering-team&returnToOrg=api-desktop-verification-org",
+    "agentUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=detail&id=api-implementer&returnToTeam=api-desktop-engineering-team&returnToOrg=api-desktop-verification-org",
+    "returnedToSameOrg": true
+  },
+  "result": "Pass",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-detail&id=api-desktop-verification-org",
+  "finishedAt": "2026-10-13T04:08:24.775Z"
+}

@@ -134,3 +134,25 @@ export interface TokenUsageRunSummary {
 
 type TeamTokenUsageMessage = Extract<TeamStreamServerMessage, { type: 'TOKEN_USAGE_UPDATED' }>;
 export type TeamTokenUsageDetails = TeamTokenUsageMessage['payload'];
+
+/** Identity reported by this exact AgentRun, never the selected configuration or cost roll-up. */
+export interface TokenUsageThroughputIdentity {
+  runId: string;
+  turnId: string;
+  runtimeKind: string;
+  modelProvider: string | null;
+  modelIdentifier: string | null;
+  modelValue: string | null;
+}
+
+export type TokenUsageThroughputState =
+  | { status: 'collecting'; reason: 'waitingForReports' | 'matchingReport' | 'continuity' }
+  | { status: 'unavailable'; reason: 'selectAgent' | 'noReports' | 'invalidReport' | 'invalidInterval' | 'missingSummary' }
+  | {
+      status: 'ready';
+      identity: TokenUsageThroughputIdentity;
+      observedAt: string;
+      outputTokens: number;
+      elapsedSeconds: number;
+      tokensPerSecond: number;
+    };

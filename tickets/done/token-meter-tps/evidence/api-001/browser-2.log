@@ -1,0 +1,5 @@
+
+> autobyteus@1.5.3-beta.4 test:e2e:token-meter-tps /home/autobyteus/workspace/.codex/worktrees/token-meter-tps/autobyteus-web
+> node tests/e2e/token-meter-tps-probe.mjs --output-dir /home/autobyteus/workspace/.codex/worktrees/token-meter-tps/tickets/in-progress/token-meter-tps/evidence/api-001/browser-2
+
+/home/autobyteus/workspace/.codex/worktrees/token-meter-tps/tickets/in-progress/token-meter-tps/evidence/api-001/browser-2 pass

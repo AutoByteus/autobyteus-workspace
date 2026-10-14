@@ -1,0 +1,18 @@
+{
+  "ownedPrivateCommandHome": "/tmp/prisma-discovery-impl-home.8rLF27",
+  "homeRemoved": true,
+  "removedOwnedGlobalUnitDatabaseFiles": [
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+  ],
+  "nativeFixtureRemoved": "native-local.log records true",
+  "retainedBuildOutputs": [
+    "node_modules (worktree-local)",
+    "autobyteus-ts/dist (generated)",
+    "autobyteus-server-ts/dist (current built server)",
+    "autobyteus-application-backend-sdk/dist (untracked generated)",
+    "autobyteus-application-sdk-contracts/dist (untracked generated)"
+  ],
+  "dockerContainersCreated": 0,
+  "userNodesProbedOrMutated": 0,
+  "notes": "Cleanup only owner-created private command home and exact global-unit SQLite fixture files; no resource prune or other worktree/user changes."
+}

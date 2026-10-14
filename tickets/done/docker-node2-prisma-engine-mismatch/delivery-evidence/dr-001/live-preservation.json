@@ -1,0 +1,65 @@
+{
+  "node2AndAllControlsIdentityStartImageMountsUnchanged": true,
+  "node2EightSiblingPidsUnchanged": true,
+  "otherNodeSupervisorPidsUnchanged": true,
+  "settingsAndRootKeyUnchanged": true,
+  "protected": {
+    "/home/autobyteus/data/.env": {
+      "sha256": "5e34f6b68d992eec6c97eba0c4a86bea2ad8b0f68bb1967ae0a40f2326c9adc5",
+      "bytes": 679,
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o644"
+    },
+    "/home/autobyteus/data/db/production.db.secret.key": {
+      "sha256": "aa235acb080babb33ded905be00bf7e40d51b53c7f9646744c2d50abb3e7eef2",
+      "bytes": 32,
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o600"
+    }
+  },
+  "health8001": {
+    "status": 200,
+    "body": {
+      "status": "ok",
+      "message": "Server is running"
+    }
+  },
+  "node2LeftRunning": true,
+  "backupKept": "/Users/normy/autobyteus_org/autobyteus-private-backups/docker-node2-prisma-o1-_p9x5ye3",
+  "pinLifetime": "Same container restart only; recreation from unfixed image loses it; O2 still required",
+  "backendPid": "2002",
+  "effectivePair": {
+    "PRISMA_QUERY_ENGINE_LIBRARY": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-3.0.x.so.node",
+    "PRISMA_SCHEMA_ENGINE_BINARY": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-linux-arm64-openssl-3.0.x"
+  },
+  "readiness8003": [
+    {
+      "utc": "2026-10-13T13:36:47.292037+00:00",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "message": "Server is running"
+      }
+    },
+    {
+      "utc": "2026-10-13T13:36:49.315981+00:00",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "message": "Server is running"
+      }
+    },
+    {
+      "utc": "2026-10-13T13:36:51.333290+00:00",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "message": "Server is running"
+      }
+    }
+  ],
+  "supervisorWholeStatus": "Actual node2 RUNNING siblings/browser; startup helper EXITED, not all-program Pass",
+  "dataByteIdentityNotClaimed": "Normal shipped startup/migration writes allowed; no records/ledger/reset/migration bypass"
+}

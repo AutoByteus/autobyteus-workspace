@@ -1,0 +1,22 @@
+{
+  "head": "cd685b6407cd847db52b4a2d7a45b486287fac52",
+  "status": "M package.json\n M tests/e2e/delegated-launch-defaults-probe.mjs\n?? ../autobyteus-application-backend-sdk/dist/\n?? ../autobyteus-application-sdk-contracts/dist/\n?? tests/e2e/fixtures/settings-refresh-desktop.mjs\n?? tests/e2e/settings-saved-model-refresh-cases.mjs\n?? ../tickets/in-progress/settings-saved-model-refresh/api-e2e-coverage-investigation.md\n?? ../tickets/in-progress/settings-saved-model-refresh/api-e2e-test-case-ledger.md\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-narrow.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-server-build.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-server-e2e.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-web-regression.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-01-driver.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-01/",
+  "instance": {
+    "instanceId": "iso-59252-bcc2",
+    "pid": 61902,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:59253",
+    "graphqlUrl": "http://127.0.0.1:59253/graphql",
+    "controlEndpoint": "http://127.0.0.1:59252",
+    "controlPort": 59252,
+    "serverPort": 59253,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-us9pNf",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-us9pNf/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-59252-bcc2.log"
+  },
+  "skipBuild": false,
+  "asar": "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+  "asarSha256": "55749a6189e5680f13bf5b2c254e50a6096a07ba1904dcc728055fab4116bc4b"
+}

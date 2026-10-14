@@ -766,6 +766,14 @@ stays clamped). A standalone run's panel shows its roll-up
 summary: each new host usage report refetches the roll-up. Usage reported only by
 children appears on the next host report or when the panel is opened again.
 
+The separate frontend **Output TPS** card derives a session-local estimate from
+two compatible live model-call reports: the later canonical output delta divided
+by their server observation interval. It is exact-AgentRun-only, not the
+standalone roll-up above. No accounting field or persisted timing history is
+added; fetched summaries cannot create a reading. Context-only updates and
+Claude turn-end reconciliation remain non-call observations. See
+[Output TPS](../../../autobyteus-web/docs/token_meter.md) for the method and limits.
+
 Settings > Token Statistics has two sibling views:
 
 - **Analytics** is the default. `tokenUsageAnalytics` owns one coherent selection
