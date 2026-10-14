@@ -118,6 +118,11 @@ not paid inference. Agent-run testing is not the user's verification.
     `HOME` gives a signed-out `agy`. For a signed-in one, copy only
     `antigravity-oauth-token` into the throwaway home; never symlink it or point at the
     user's real folder, because `agy` writes into that folder. Never print or commit it.
+    Known gap: `agy` 1.3.5 has no `antigravity-oauth-token` file, and a throwaway `HOME`
+    gives a signed-out `agy` (checked 2026-10-14). No isolated signed-in recipe is known for
+    that version yet. Until one is, live AGY suites run on the host login with the real
+    `HOME`; each run adds its own conversations to the user's `agy` history. Say so in your
+    report.
   - **Isolated desktop instances.** The embedded server receives only a system-baseline
     environment. Of the CLI homes, only `CODEX_HOME` passes through, so start (and
     `restart`) the instance with it set. Other runtime variables reach only in-process

@@ -6,6 +6,7 @@ import {
   type InputTokenSemantic,
 } from "../../token-usage/domain/token-usage-component-basis.js";
 import type { TokenUsageUnitPrices } from "../../token-usage/domain/token-usage-unit-price-summary.js";
+import { acceptModelCallThroughput, type ModelCallThroughput } from "./model-call-throughput.js";
 import { isClaudeSdkResultIdentity, isClaudeSdkModelUsageArray, type ClaudeSdkModelUsage, type ClaudeSdkSelectedMatchState, type ClaudeSdkQueryKind } from "./claude-sdk-usage.js";
 
 export type TokenUsageScope = "per_call" | "per_turn" | "cumulative_snapshot";
@@ -162,6 +163,8 @@ export interface TokenUsageUpdatedPayload {
   effective_context_window_tokens: number | null;
   context_window_usage_percent: number | null;
   context_compaction_threshold_tokens: number | null;
+  /** This model call's TPS as its adapter measured it, or null (not a model call, none reported, too small). */
+  output_throughput: ModelCallThroughput | null;
   raw_usage_json: Record<string, unknown> | null;
   raw_event_json: Record<string, unknown> | null;
   quality_flags: string[];
@@ -307,6 +310,7 @@ export const createTokenUsageUpdatedPayload = (input: {
   const sdkMatchedRow = sdkMatchState === "matched"
     ? sdkRows.find((row) => row.rawModelId === sdkResolvedRawId) : null;
   const sdkModelIdentifier = sdkMatchedRow ? sdkMatchedRow.canonicalModel ?? sdkMatchedRow.rawModelId : null;
+  const reportsModelCall = source.reports_model_call === true;
   return {
     usage_event_id: usageEventId,
     idempotency_key: idempotencyKey,
@@ -339,7 +343,7 @@ export const createTokenUsageUpdatedPayload = (input: {
     ...(isSdk && source.claude_sdk_series_restart === true ? { claude_sdk_series_restart: true as const } : {}),
     ingestion_kind: ingestionKind,
     usage_scope: usageScope,
-    reports_model_call: source.reports_model_call === true,
+    reports_model_call: reportsModelCall,
     snapshot_series_key: asString(source.snapshot_series_key),
     previous_snapshot_event_id: asString(source.previous_snapshot_event_id),
     input_token_semantic: inputTokenSemantic,
@@ -392,6 +396,7 @@ export const createTokenUsageUpdatedPayload = (input: {
     effective_context_window_tokens: asNonNegativeInt(source.effective_context_window_tokens),
     context_window_usage_percent: asFiniteNumber(source.context_window_usage_percent),
     context_compaction_threshold_tokens: asNonNegativeInt(source.context_compaction_threshold_tokens),
+    output_throughput: acceptModelCallThroughput({ reportsModelCall, value: source.output_throughput }),
     raw_usage_json: isSdk ? null : asJsonRecord(source.raw_usage_json) ?? asJsonRecord(usage?.raw_usage_json),
     raw_event_json: isSdk || isSdkCall ? null : asJsonRecord(source.raw_event_json) ?? asJsonRecord(source),
     quality_flags: Array.from(qualityFlags),

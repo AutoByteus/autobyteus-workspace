@@ -1,0 +1,23 @@
+{
+  "types": {
+    "agent-package-definitions connected": 1,
+    "agent CONNECTED": 1,
+    "agent AGENT_STATUS": 1,
+    "agent AGENT_INPUT_STATE": 1,
+    "agent-org CONNECTED": 1,
+    "agent-org ROOT_EXECUTION_VIEW_SNAPSHOT": 1,
+    "agent-org ROOT_LIFECYCLE": 1,
+    "agent-team CONNECTED": 1,
+    "agent-team TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "agent-team TEAM_RUN_LIFECYCLE": 1,
+    "terminal output": 2,
+    "agent-org ROOT_EXECUTION_EVENT": 285,
+    "agent-org AGENT_COMMAND_ACK": 1
+  },
+  "usage": [
+    {
+      "url": "ws://127.0.0.1:50467/ws/agent-org/tps_desktop_org_308e737ba9814f5cb55d70558982988c",
+      "head": "{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"tps_desktop_org_308e737ba9814f5cb55d70558982988c\",\"change_sequence\":1802,\"event\":{\"kind\":\"agent_presentation\",\"member_address\":\"/lead\",\"agent_run_id\":\"tps_coordinator_d196defc0f48462c8b9239a6d4ae08a6\",\"message\":{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"usage_event_id\":\"9c47a139-6c59-48a6-a0b4-a0451903c418\",\"idempotency_key\":\"tps_coordinator_d196defc0f48462c8b9239a6d4ae08a6:turn_0002:llm:1\",\"observed_at\":\"2026-10-14T09:39:57.675Z\",\"turn_id\":\"turn_0002\",\"llm_call_id\":\"turn_0002:llm:1\",\"model_provider\":\"DEEPS"
+    }
+  ]
+}

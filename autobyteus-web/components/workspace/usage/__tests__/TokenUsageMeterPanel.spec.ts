@@ -305,7 +305,7 @@ describe('TokenUsageMeterPanel', () => {
     vi.clearAllMocks();
   });
 
-  it('shows TPS before totals load, then a frozen exact-run reading independent of rolled-up totals', async () => {
+  it('shows the newest TPS of the exact selected run, independent of totals, and "—" otherwise (AC-006)', async () => {
     const contexts = useAgentContextsStore();
     const selection = useAgentSelectionStore();
     const meter = useTokenUsageMeterStore();
@@ -316,33 +316,36 @@ describe('TokenUsageMeterPanel', () => {
     vi.mocked(getApolloClient).mockReturnValue({ query: vi.fn().mockResolvedValue({ data: {} }) } as any);
     const wrapper = mountPanel();
     expect(wrapper.find('[data-test="token-usage-primary"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="throughput-state"]').text()).toBe('Collecting');
-    for (const [revision, seconds] of [[1, 0], [2, 10]]) {
+    expect(wrapper.get('[data-test="throughput-empty"]').text()).toBe('—');
+    const call = (revision: number, outputThroughput: { method: 'generation'; output_tokens: number; duration_ms: number } | null) =>
       meter.applyTokenUsageUpdated({
         usage_event_id: `report-${revision}`, idempotency_key: `report-${revision}`, run_id: 'run-1',
         turn_id: 'turn', model_identifier: 'exact-reported-model', reports_model_call: true,
-        observed_at: `2026-10-13T10:00:${String(seconds).padStart(2, '0')}.000Z`, meter_delta_output_tokens: 200,
+        observed_at: '2026-10-13T10:00:00.000Z', output_throughput: outputThroughput,
         run_summary_after_event: buildSummaryDto(buildSummary({ revision, usageReportCount: revision })),
       });
-    }
+    call(1, { method: 'generation', output_tokens: 1200, duration_ms: 10_000 });
     await nextTick();
-    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('20.0 tokens/s');
-    expect(wrapper.get('[data-test="throughput-identity"]').text()).toContain('exact-reported-model');
+    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('120.0 tokens/s');
+    expect(wrapper.get('[data-test="throughput-model"]').text()).toBe('exact-reported-model');
+    call(2, null); // a 12-token tool call carries no TPS
     meter.upsertRecordBackedStandaloneRunSummary({ runId: 'run-1', summary: buildSummary({
       outputTokens: 99999, latestModelIdentifier: 'child-model', revision: 500,
     }) });
     context.config.llmModelIdentifier = 'changed-model';
     context.state.currentStatus = AgentStatus.Offline;
     await nextTick();
-    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('20.0 tokens/s');
-    expect(wrapper.get('[data-test="throughput-identity"]').text()).toContain('exact-reported-model');
-    expect(wrapper.get('[data-test="throughput-qualification"]').text()).toBe('Estimated · Last reported');
+    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('120.0 tokens/s');
+    expect(wrapper.get('[data-test="throughput-model"]').text()).toBe('exact-reported-model');
     expect(wrapper.get('[data-test="token-usage-primary"]').text()).toContain('child-model');
     contexts.runs.set('new-run', buildAgentContext('new-run', 'Other Agent'));
     selection.setRunSelection('new-run', 'agent');
     await nextTick();
     expect(wrapper.find('[data-test="throughput-value"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="throughput-state"]').text()).toBe('— Unavailable');
+    expect(wrapper.get('[data-test="throughput-empty"]').text()).toBe('—');
+    selection.setRunSelection('run-1', 'agent');
+    await nextTick();
+    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('120.0 tokens/s');
     wrapper.unmount();
   });
 

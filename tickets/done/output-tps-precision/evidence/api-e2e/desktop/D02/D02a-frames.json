@@ -1,0 +1,904 @@
+{
+  "journey": "D02a team send",
+  "errors": [],
+  "frames": [
+    {
+      "t": 1791966591141,
+      "url": "ws://127.0.0.1:63602/ws/agent-team/tps_desktop_team_59070180912f47158c7d60197672fdbc",
+      "row": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "b58742d5-b2cb-4065-b1ef-80ac04086fc6",
+          "idempotency_key": "codex_token_usage:tps_coordinator_0ffc914e69254b9c95b49a02e08e506a:01a13988-2d48-77f3-a226-a005541df5fa:01a13988-2d88-7e91-b383-3e4683ab0f03:cumulative_snapshot:11121:5888:63:27:11184:11184",
+          "observed_at": "2026-10-14T08:29:51.125Z",
+          "turn_id": "01a13988-2d88-7e91-b383-3e4683ab0f03",
+          "llm_call_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "cumulative_snapshot",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 5233,
+          "cache_miss_input_tokens": 5233,
+          "cache_read_input_tokens": 5888,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 27,
+          "billable_output_tokens": 63,
+          "meter_delta_input_tokens": 11121,
+          "meter_delta_output_tokens": 63,
+          "meter_delta_total_tokens": 11184,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.00116436,
+          "estimated_api_standard_input_cost": 0.0010466,
+          "estimated_api_cache_read_input_cost": 0.00011776,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0000756,
+          "estimated_api_reasoning_output_cost": 0.000032399999999999995,
+          "estimated_api_total_cost": 0.00123996,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 11184,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 4.3281733746130024,
+          "context_compaction_threshold_tokens": null,
+          "reports_model_call": true,
+          "output_throughput": {
+            "method": "end_to_end",
+            "output_tokens": 63,
+            "duration_ms": 1633
+          },
+          "run_summary_after_event": {
+            "run_id": "tps_coordinator_0ffc914e69254b9c95b49a02e08e506a",
+            "root_team_run_id": "tps_desktop_team_59070180912f47158c7d60197672fdbc",
+            "agent_definition_id": "tps-coordinator",
+            "workspace_id": "agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d",
+            "gross_input_tokens": 11121,
+            "standard_input_tokens": 5233,
+            "cache_miss_input_tokens": 5233,
+            "cache_read_input_tokens": 5888,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 63,
+            "reasoning_output_tokens": 27,
+            "billable_output_tokens": 63,
+            "total_tokens": 11184,
+            "cache_read_input_token_rate": 0.529448790576387,
+            "standard_input_token_rate": 0.470551209423613,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.00116436,
+            "estimated_api_standard_input_cost": 0.0010466,
+            "estimated_api_cache_read_input_cost": 0.00011776,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.0000756,
+            "estimated_api_reasoning_output_cost": 0.00003239999999999999,
+            "estimated_api_total_cost": 0.00123996,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "selected_pricing_tier_id": "standard_le_272k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.02
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 1.2
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 1.2
+              }
+            },
+            "latest_prompt_tokens": 11184,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 4.328173374613002,
+            "context_compaction_threshold_tokens": null,
+            "latest_model_provider": "OPENAI",
+            "latest_model_identifier": "gpt-5.6-luna",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false,
+            "latest_runtime_kind": "codex_app_server",
+            "usage_report_count": 1,
+            "revision": 1,
+            "updated_at": "2026-10-14T08:29:51.125Z"
+          },
+          "quality_flags": [
+            "first_cumulative_snapshot_baselined_from_provider_delta"
+          ],
+          "change_sequence": 22,
+          "agent_run_id": "tps_coordinator_0ffc914e69254b9c95b49a02e08e506a"
+        }
+      }
+    },
+    {
+      "t": 1791966592880,
+      "url": "ws://127.0.0.1:63602/ws/agent-team/tps_desktop_team_59070180912f47158c7d60197672fdbc",
+      "row": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "5e4fb924-5f8f-48bf-b4a7-8259b892865a",
+          "idempotency_key": "codex_token_usage:tps_coordinator_0ffc914e69254b9c95b49a02e08e506a:01a13988-2d48-77f3-a226-a005541df5fa:01a13988-2d88-7e91-b383-3e4683ab0f03:cumulative_snapshot:24261:15872:146:46:24407:13223",
+          "observed_at": "2026-10-14T08:29:52.861Z",
+          "turn_id": "01a13988-2d88-7e91-b383-3e4683ab0f03",
+          "llm_call_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "cumulative_snapshot",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 3156,
+          "cache_miss_input_tokens": 3156,
+          "cache_read_input_tokens": 9984,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 19,
+          "billable_output_tokens": 83,
+          "meter_delta_input_tokens": 13140,
+          "meter_delta_output_tokens": 83,
+          "meter_delta_total_tokens": 13223,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.0008308800000000001,
+          "estimated_api_standard_input_cost": 0.0006312000000000001,
+          "estimated_api_cache_read_input_cost": 0.00019968,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0000996,
+          "estimated_api_reasoning_output_cost": 0.000022800000000000002,
+          "estimated_api_total_cost": 0.0009304800000000001,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 13223,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 5.117260061919505,
+          "context_compaction_threshold_tokens": null,
+          "reports_model_call": true,
+          "output_throughput": {
+            "method": "end_to_end",
+            "output_tokens": 83,
+            "duration_ms": 1736
+          },
+          "run_summary_after_event": {
+            "run_id": "tps_coordinator_0ffc914e69254b9c95b49a02e08e506a",
+            "root_team_run_id": "tps_desktop_team_59070180912f47158c7d60197672fdbc",
+            "agent_definition_id": "tps-coordinator",
+            "workspace_id": "agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d",
+            "gross_input_tokens": 24261,
+            "standard_input_tokens": 8389,
+            "cache_miss_input_tokens": 8389,
+            "cache_read_input_tokens": 15872,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 146,
+            "reasoning_output_tokens": 46,
+            "billable_output_tokens": 146,
+            "total_tokens": 24407,
+            "cache_read_input_token_rate": 0.6542187049173571,
+            "standard_input_token_rate": 0.34578129508264294,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.00199524,
+            "estimated_api_standard_input_cost": 0.0016778,
+            "estimated_api_cache_read_input_cost": 0.00031744,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.0001752,
+            "estimated_api_reasoning_output_cost": 0.00005519999999999999,
+            "estimated_api_total_cost": 0.00217044,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "selected_pricing_tier_id": "standard_le_272k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.02
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 1.2
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 1.2
+              }
+            },
+            "latest_prompt_tokens": 13223,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 5.117260061919505,
+            "context_compaction_threshold_tokens": null,
+            "latest_model_provider": "OPENAI",
+            "latest_model_identifier": "gpt-5.6-luna",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false,
+            "latest_runtime_kind": "codex_app_server",
+            "usage_report_count": 2,
+            "revision": 2,
+            "updated_at": "2026-10-14T08:29:52.861Z"
+          },
+          "quality_flags": [],
+          "change_sequence": 56,
+          "agent_run_id": "tps_coordinator_0ffc914e69254b9c95b49a02e08e506a"
+        }
+      }
+    },
+    {
+      "t": 1791966595793,
+      "url": "ws://127.0.0.1:63602/ws/agent-team/tps_desktop_team_59070180912f47158c7d60197672fdbc",
+      "row": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "9a669e65-7076-4059-ba6c-dbc94f8da185",
+          "idempotency_key": "codex_token_usage:tps_coordinator_0ffc914e69254b9c95b49a02e08e506a:01a13988-2d48-77f3-a226-a005541df5fa:01a13988-2d88-7e91-b383-3e4683ab0f03:cumulative_snapshot:37616:27904:207:46:37823:13416",
+          "observed_at": "2026-10-14T08:29:55.778Z",
+          "turn_id": "01a13988-2d88-7e91-b383-3e4683ab0f03",
+          "llm_call_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "cumulative_snapshot",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 1323,
+          "cache_miss_input_tokens": 1323,
+          "cache_read_input_tokens": 12032,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 61,
+          "meter_delta_input_tokens": 13355,
+          "meter_delta_output_tokens": 61,
+          "meter_delta_total_tokens": 13416,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.00050524,
+          "estimated_api_standard_input_cost": 0.0002646,
+          "estimated_api_cache_read_input_cost": 0.00024064,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.00007319999999999999,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.0005784399999999999,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 13416,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 5.191950464396284,
+          "context_compaction_threshold_tokens": null,
+          "reports_model_call": true,
+          "output_throughput": {
+            "method": "end_to_end",
+            "output_tokens": 61,
+            "duration_ms": 2917
+          },
+          "run_summary_after_event": {
+            "run_id": "tps_coordinator_0ffc914e69254b9c95b49a02e08e506a",
+            "root_team_run_id": "tps_desktop_team_59070180912f47158c7d60197672fdbc",
+            "agent_definition_id": "tps-coordinator",
+            "workspace_id": "agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d",
+            "gross_input_tokens": 37616,
+            "standard_input_tokens": 9712,
+            "cache_miss_input_tokens": 9712,
+            "cache_read_input_tokens": 27904,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 207,
+            "reasoning_output_tokens": 46,
+            "billable_output_tokens": 207,
+            "total_tokens": 37823,
+            "cache_read_input_token_rate": 0.741811994895789,
+            "standard_input_token_rate": 0.25818800510421097,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.00250048,
+            "estimated_api_standard_input_cost": 0.0019424,
+            "estimated_api_cache_read_input_cost": 0.00055808,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.0002484,
+            "estimated_api_reasoning_output_cost": 0.00005519999999999999,
+            "estimated_api_total_cost": 0.00274888,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "selected_pricing_tier_id": "standard_le_272k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.02
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 1.2
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 1.2
+              }
+            },
+            "latest_prompt_tokens": 13416,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 5.191950464396284,
+            "context_compaction_threshold_tokens": null,
+            "latest_model_provider": "OPENAI",
+            "latest_model_identifier": "gpt-5.6-luna",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false,
+            "latest_runtime_kind": "codex_app_server",
+            "usage_report_count": 3,
+            "revision": 3,
+            "updated_at": "2026-10-14T08:29:55.778Z"
+          },
+          "quality_flags": [],
+          "change_sequence": 85,
+          "agent_run_id": "tps_coordinator_0ffc914e69254b9c95b49a02e08e506a"
+        }
+      }
+    },
+    {
+      "t": 1791966597199,
+      "url": "ws://127.0.0.1:63602/ws/agent-team/tps_desktop_team_59070180912f47158c7d60197672fdbc",
+      "row": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "1f8be1ea-0b66-4119-99a7-18e3ed73af92",
+          "idempotency_key": "codex_token_usage:tps_worker_ea3414c2787541bc824ac37f902da6d5:01a13988-3f08-76b3-9118-1316b6d6f263:01a13988-3f55-79d1-b75d-0c4f4788e4a0:cumulative_snapshot:11094:5888:223:65:11317:11317",
+          "observed_at": "2026-10-14T08:29:57.189Z",
+          "turn_id": "01a13988-3f55-79d1-b75d-0c4f4788e4a0",
+          "llm_call_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "cumulative_snapshot",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 5206,
+          "cache_miss_input_tokens": 5206,
+          "cache_read_input_tokens": 5888,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 65,
+          "billable_output_tokens": 223,
+          "meter_delta_input_tokens": 11094,
+          "meter_delta_output_tokens": 223,
+          "meter_delta_total_tokens": 11317,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.00115896,
+          "estimated_api_standard_input_cost": 0.0010412,
+          "estimated_api_cache_read_input_cost": 0.00011776,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0002676,
+          "estimated_api_reasoning_output_cost": 0.00007799999999999999,
+          "estimated_api_total_cost": 0.00142656,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 11317,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 4.379643962848298,
+          "context_compaction_threshold_tokens": null,
+          "reports_model_call": true,
+          "output_throughput": {
+            "method": "end_to_end",
+            "output_tokens": 223,
+            "duration_ms": 2860
+          },
+          "run_summary_after_event": {
+            "run_id": "tps_worker_ea3414c2787541bc824ac37f902da6d5",
+            "root_team_run_id": "tps_desktop_team_59070180912f47158c7d60197672fdbc",
+            "agent_definition_id": "tps-worker",
+            "workspace_id": "agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d",
+            "gross_input_tokens": 11094,
+            "standard_input_tokens": 5206,
+            "cache_miss_input_tokens": 5206,
+            "cache_read_input_tokens": 5888,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 223,
+            "reasoning_output_tokens": 65,
+            "billable_output_tokens": 223,
+            "total_tokens": 11317,
+            "cache_read_input_token_rate": 0.5307373354966649,
+            "standard_input_token_rate": 0.46926266450333515,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.00115896,
+            "estimated_api_standard_input_cost": 0.0010412,
+            "estimated_api_cache_read_input_cost": 0.00011776,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.0002676,
+            "estimated_api_reasoning_output_cost": 0.00007799999999999999,
+            "estimated_api_total_cost": 0.00142656,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "selected_pricing_tier_id": "standard_le_272k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.02
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 1.2
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 1.2
+              }
+            },
+            "latest_prompt_tokens": 11317,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 4.379643962848298,
+            "context_compaction_threshold_tokens": null,
+            "latest_model_provider": "OPENAI",
+            "latest_model_identifier": "gpt-5.6-luna",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false,
+            "latest_runtime_kind": "codex_app_server",
+            "usage_report_count": 1,
+            "revision": 1,
+            "updated_at": "2026-10-14T08:29:57.189Z"
+          },
+          "quality_flags": [
+            "first_cumulative_snapshot_baselined_from_provider_delta"
+          ],
+          "change_sequence": 557,
+          "agent_run_id": "tps_worker_ea3414c2787541bc824ac37f902da6d5"
+        }
+      }
+    },
+    {
+      "t": 1791966597203,
+      "url": "ws://127.0.0.1:63602/ws/agent-team/tps_desktop_team_59070180912f47158c7d60197672fdbc",
+      "row": {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "turn_id": "01a13988-3f55-79d1-b75d-0c4f4788e4a0",
+          "reason": null,
+          "change_sequence": 561,
+          "agent_run_id": "tps_worker_ea3414c2787541bc824ac37f902da6d5"
+        }
+      }
+    },
+    {
+      "t": 1791966599140,
+      "url": "ws://127.0.0.1:63602/ws/agent-team/tps_desktop_team_59070180912f47158c7d60197672fdbc",
+      "row": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "8bbcb04a-9a75-479b-9a07-e77b4d5ef763",
+          "idempotency_key": "codex_token_usage:tps_coordinator_0ffc914e69254b9c95b49a02e08e506a:01a13988-2d48-77f3-a226-a005541df5fa:01a13988-2d88-7e91-b383-3e4683ab0f03:cumulative_snapshot:51232:40960:364:66:51596:13773",
+          "observed_at": "2026-10-14T08:29:59.129Z",
+          "turn_id": "01a13988-2d88-7e91-b383-3e4683ab0f03",
+          "llm_call_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "cumulative_snapshot",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 560,
+          "cache_miss_input_tokens": 560,
+          "cache_read_input_tokens": 13056,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 20,
+          "billable_output_tokens": 157,
+          "meter_delta_input_tokens": 13616,
+          "meter_delta_output_tokens": 157,
+          "meter_delta_total_tokens": 13773,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.00037312,
+          "estimated_api_standard_input_cost": 0.000112,
+          "estimated_api_cache_read_input_cost": 0.00026112,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0001884,
+          "estimated_api_reasoning_output_cost": 0.000024,
+          "estimated_api_total_cost": 0.00056152,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 13773,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 5.330108359133127,
+          "context_compaction_threshold_tokens": null,
+          "reports_model_call": true,
+          "output_throughput": {
+            "method": "end_to_end",
+            "output_tokens": 157,
+            "duration_ms": 3351
+          },
+          "run_summary_after_event": {
+            "run_id": "tps_coordinator_0ffc914e69254b9c95b49a02e08e506a",
+            "root_team_run_id": "tps_desktop_team_59070180912f47158c7d60197672fdbc",
+            "agent_definition_id": "tps-coordinator",
+            "workspace_id": "agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d",
+            "gross_input_tokens": 51232,
+            "standard_input_tokens": 10272,
+            "cache_miss_input_tokens": 10272,
+            "cache_read_input_tokens": 40960,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 364,
+            "reasoning_output_tokens": 66,
+            "billable_output_tokens": 364,
+            "total_tokens": 51596,
+            "cache_read_input_token_rate": 0.7995003123048094,
+            "standard_input_token_rate": 0.2004996876951905,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.0028736,
+            "estimated_api_standard_input_cost": 0.0020544,
+            "estimated_api_cache_read_input_cost": 0.0008192,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.0004368,
+            "estimated_api_reasoning_output_cost": 0.0000792,
+            "estimated_api_total_cost": 0.0033104,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "selected_pricing_tier_id": "standard_le_272k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.02
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 1.2
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 1.2
+              }
+            },
+            "latest_prompt_tokens": 13773,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 5.330108359133127,
+            "context_compaction_threshold_tokens": null,
+            "latest_model_provider": "OPENAI",
+            "latest_model_identifier": "gpt-5.6-luna",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false,
+            "latest_runtime_kind": "codex_app_server",
+            "usage_report_count": 4,
+            "revision": 4,
+            "updated_at": "2026-10-14T08:29:59.129Z"
+          },
+          "quality_flags": [],
+          "change_sequence": 971,
+          "agent_run_id": "tps_coordinator_0ffc914e69254b9c95b49a02e08e506a"
+        }
+      }
+    },
+    {
+      "t": 1791966599144,
+      "url": "ws://127.0.0.1:63602/ws/agent-team/tps_desktop_team_59070180912f47158c7d60197672fdbc",
+      "row": {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "turn_id": "01a13988-2d88-7e91-b383-3e4683ab0f03",
+          "reason": null,
+          "change_sequence": 975,
+          "agent_run_id": "tps_coordinator_0ffc914e69254b9c95b49a02e08e506a"
+        }
+      }
+    },
+    {
+      "t": 1791966601825,
+      "url": "ws://127.0.0.1:63602/ws/agent-team/tps_desktop_team_59070180912f47158c7d60197672fdbc",
+      "row": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "9396ddd8-030e-4e9d-9844-708658732cc4",
+          "idempotency_key": "codex_token_usage:tps_worker_92e79b2ad7c949b3aeabb1b361cf53c9:01a13988-4a73-79d3-a7ea-320cc9c6e67e:01a13988-4aa4-7a11-a7c5-74ef4d443ad4:cumulative_snapshot:11090:5888:222:43:11312:11312",
+          "observed_at": "2026-10-14T08:30:01.773Z",
+          "turn_id": "01a13988-4aa4-7a11-a7c5-74ef4d443ad4",
+          "llm_call_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "cumulative_snapshot",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 5202,
+          "cache_miss_input_tokens": 5202,
+          "cache_read_input_tokens": 5888,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 43,
+          "billable_output_tokens": 222,
+          "meter_delta_input_tokens": 11090,
+          "meter_delta_output_tokens": 222,
+          "meter_delta_total_tokens": 11312,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.00115816,
+          "estimated_api_standard_input_cost": 0.0010404000000000001,
+          "estimated_api_cache_read_input_cost": 0.00011776,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.00026639999999999997,
+          "estimated_api_reasoning_output_cost": 0.0000516,
+          "estimated_api_total_cost": 0.00142456,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 11312,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 4.377708978328173,
+          "context_compaction_threshold_tokens": null,
+          "reports_model_call": true,
+          "output_throughput": {
+            "method": "end_to_end",
+            "output_tokens": 222,
+            "duration_ms": 4708
+          },
+          "run_summary_after_event": {
+            "run_id": "tps_worker_92e79b2ad7c949b3aeabb1b361cf53c9",
+            "root_team_run_id": "tps_desktop_team_59070180912f47158c7d60197672fdbc",
+            "agent_definition_id": "tps-worker",
+            "workspace_id": "agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d",
+            "gross_input_tokens": 11090,
+            "standard_input_tokens": 5202,
+            "cache_miss_input_tokens": 5202,
+            "cache_read_input_tokens": 5888,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 222,
+            "reasoning_output_tokens": 43,
+            "billable_output_tokens": 222,
+            "total_tokens": 11312,
+            "cache_read_input_token_rate": 0.5309287646528404,
+            "standard_input_token_rate": 0.4690712353471596,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.00115816,
+            "estimated_api_standard_input_cost": 0.0010404,
+            "estimated_api_cache_read_input_cost": 0.00011776,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.0002664,
+            "estimated_api_reasoning_output_cost": 0.0000516,
+            "estimated_api_total_cost": 0.00142456,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "selected_pricing_tier_id": "standard_le_272k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.02
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 1.2
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 1.2
+              }
+            },
+            "latest_prompt_tokens": 11312,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 4.377708978328173,
+            "context_compaction_threshold_tokens": null,
+            "latest_model_provider": "OPENAI",
+            "latest_model_identifier": "gpt-5.6-luna",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false,
+            "latest_runtime_kind": "codex_app_server",
+            "usage_report_count": 1,
+            "revision": 1,
+            "updated_at": "2026-10-14T08:30:01.773Z"
+          },
+          "quality_flags": [
+            "first_cumulative_snapshot_baselined_from_provider_delta"
+          ],
+          "change_sequence": 1511,
+          "agent_run_id": "tps_worker_92e79b2ad7c949b3aeabb1b361cf53c9"
+        }
+      }
+    },
+    {
+      "t": 1791966601829,
+      "url": "ws://127.0.0.1:63602/ws/agent-team/tps_desktop_team_59070180912f47158c7d60197672fdbc",
+      "row": {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "turn_id": "01a13988-4aa4-7a11-a7c5-74ef4d443ad4",
+          "reason": null,
+          "change_sequence": 1515,
+          "agent_run_id": "tps_worker_92e79b2ad7c949b3aeabb1b361cf53c9"
+        }
+      }
+    }
+  ],
+  "sentAt": 1791966588223,
+  "runsWithReadings": [
+    "tps_coordinator_0ffc914e69254b9c95b49a02e08e506a",
+    "tps_worker_ea3414c2787541bc824ac37f902da6d5",
+    "tps_worker_92e79b2ad7c949b3aeabb1b361cf53c9"
+  ],
+  "status": "captured"
+}

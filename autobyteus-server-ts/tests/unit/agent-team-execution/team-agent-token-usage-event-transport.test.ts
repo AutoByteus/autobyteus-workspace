@@ -1,5 +1,8 @@
-import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { createAgentOrgRootExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { parseTeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
+import { agentPresentationMessageSchema } from "@autobyteus/agent-presentation-contracts";
+import { AgentRunPresentationAdapter } from "../../../src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.js";
+import { projectAgentPresentationMessage } from "../../../src/agent-collaboration/execution/events/agent-presentation-message-projector.js";
 import { describe, expect, it } from "vitest";
 import {
   createTokenUsageUpdatedPayload,
@@ -207,5 +210,37 @@ describe("Team token usage cumulative snapshot transport", () => {
       code: "TEAM_AGENT_EVENT_ADMISSION_FAILED",
       message: expect.stringContaining("root_team_run_id is invalid"),
     });
+  });
+});
+
+describe("per-call TPS on the Team and Org/collaboration routes", () => {
+  const reading = { method: "end_to_end", output_tokens: 1762, duration_ms: 16940 } as const;
+
+  it("carries output_throughput through Team adaptation and the strict Team projection", () => {
+    const execution = executionBinding();
+    for (const value of [reading, null]) {
+      const fixture = productionFixture();
+      fixture.event.payload.output_throughput = value;
+      const adapted = new TeamAgentEventAdapter(() => execution).adapt(fixture.event);
+      if (adapted.kind !== "publish") throw new Error("Expected the token event to be admitted.");
+      const projected = parseTeamStreamServerMessage(projectTeamAgentEventMessage(execution, adapted.event, 3));
+      if (projected.type !== "TOKEN_USAGE_UPDATED") throw new Error("Expected a projected token event.");
+      expect(projected.payload.output_throughput).toEqual(value);
+    }
+  });
+
+  it("carries output_throughput through the collaboration presentation adapter and strict DTO", () => {
+    const identity = {
+      root: createAgentOrgRootExecutionIdentity("org-run-1"), memberAddress: "/member", agentRunId: "member-run-1",
+    };
+    const fixture = productionFixture();
+    const payload = { ...fixture.event.payload, root_team_run_id: null, run_summary_after_event: null, output_throughput: reading };
+    const adapted = new AgentRunPresentationAdapter(() => identity as never).adapt({ ...fixture.event, payload });
+    if (adapted.kind !== "publish") throw new Error(`Expected admission: ${JSON.stringify(adapted)}`);
+    const message = agentPresentationMessageSchema.parse(projectAgentPresentationMessage(adapted.event));
+    if (message.type !== "TOKEN_USAGE_UPDATED") throw new Error("Expected a token presentation message.");
+    expect(message.payload.output_throughput).toEqual(reading);
+    expect(() => agentPresentationMessageSchema.parse({ ...message,
+      payload: { ...message.payload, output_throughput: { ...reading, duration_ms: 16940.5 } } })).toThrow();
   });
 });

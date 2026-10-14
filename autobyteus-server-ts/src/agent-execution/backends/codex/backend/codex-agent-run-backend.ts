@@ -262,6 +262,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
         effective_context_window_tokens: usage.effective_context_window_tokens,
         context_window_usage_percent: usage.context_window_usage_percent,
         context_compaction_threshold_tokens: usage.context_compaction_threshold_tokens,
+        output_throughput: usage.output_throughput,
         raw_usage_json: usage.raw_usage_json,
         raw_event_json: usage.raw_event_json,
         quality_flags: usage.quality_flags,

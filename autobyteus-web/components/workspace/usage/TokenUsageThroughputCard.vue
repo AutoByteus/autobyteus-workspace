@@ -1,47 +1,39 @@
 <template>
   <section class="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" data-test="throughput-card" :aria-labelledby="headingId">
-    <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-      <h3 :id="headingId" class="text-sm font-semibold text-slate-900">{{ t('shell.tokenUsage.throughput.title') }}</h3>
-      <span class="text-xs text-slate-500">{{ t('shell.tokenUsage.throughput.exactAgent') }}</span>
-    </div>
-    <template v-if="state.status === 'ready'">
+    <h3 :id="headingId" class="text-sm font-semibold text-slate-900">{{ t('shell.tokenUsage.throughput.title') }}</h3>
+    <template v-if="tps">
       <p class="mt-2 break-all text-2xl font-semibold tabular-nums text-slate-950" data-test="throughput-value">
-        {{ decimal(state.tokensPerSecond) }} <span class="text-xs font-medium text-slate-500">{{ t('shell.tokenUsage.throughput.unit') }}</span>
+        {{ decimal(tokensPerSecond(tps), 1) }} <span class="text-xs font-medium text-slate-500">{{ t('shell.tokenUsage.throughput.unit') }}</span>
       </p>
-      <p class="mt-1 text-xs font-medium text-blue-700" data-test="throughput-qualification">{{ t('shell.tokenUsage.throughput.lastReported') }}</p>
-      <p class="mt-2 break-words text-xs text-slate-700 [overflow-wrap:anywhere]" data-test="throughput-identity">
-        {{ state.identity.runtimeKind }} · {{ state.identity.modelIdentifier || state.identity.modelValue }}
-      </p>
-      <time class="mt-1 block break-words text-xs text-slate-500" :datetime="state.observedAt" :title="state.observedAt" data-test="throughput-time">{{ timestamp(state.observedAt) }}</time>
-      <p class="mt-1 text-xs tabular-nums text-slate-500" data-test="throughput-interval">
-        {{ t('shell.tokenUsage.throughput.interval', { tokens: integer(state.outputTokens), seconds: decimal(state.elapsedSeconds) }) }}
+      <p v-if="tps.model || tps.method === 'end_to_end'" class="mt-1 break-words text-xs text-slate-500 [overflow-wrap:anywhere]" data-test="throughput-model">
+        <span v-if="tps.model">{{ tps.model }}</span>
+        <span v-if="tps.model && tps.method === 'end_to_end'"> · </span>
+        <span v-if="tps.method === 'end_to_end'" data-test="throughput-end-to-end">{{ t('shell.tokenUsage.throughput.endToEndQualifier') }}</span>
       </p>
     </template>
-    <template v-else>
-      <p class="mt-2 text-lg font-semibold text-slate-700" data-test="throughput-state">{{ t(`shell.tokenUsage.throughput.${state.status}`) }}</p>
-      <p class="mt-1 text-xs text-slate-500" data-test="throughput-reason">{{ t(`shell.tokenUsage.throughput.${state.reason}`) }}</p>
-    </template>
+    <p v-else class="mt-2 text-2xl font-semibold text-slate-400" data-test="throughput-empty">—</p>
     <details class="mt-3 text-xs text-slate-500" data-test="throughput-help">
       <summary class="w-fit cursor-pointer rounded text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500">{{ t('shell.tokenUsage.throughput.helpTitle') }}</summary>
-      <p class="mt-2 leading-relaxed">{{ t('shell.tokenUsage.throughput.help') }}</p>
-      <p class="mt-2 leading-relaxed">{{ t('shell.tokenUsage.throughput.lifetimeHelp') }}</p>
-      <p class="mt-2 leading-relaxed">{{ t('shell.tokenUsage.throughput.claudeHelp') }}</p>
+      <p v-if="tps" class="mt-2 leading-relaxed" data-test="throughput-method-help">
+        {{ t(tps.method === 'generation' ? 'shell.tokenUsage.throughput.generationHelp' : 'shell.tokenUsage.throughput.endToEndHelp', {
+          tokens: integer(tps.outputTokens), seconds: decimal(tps.durationMs / 1000, 2),
+        }) }}
+      </p>
+      <p class="mt-2 leading-relaxed">{{ t('shell.tokenUsage.throughput.generalHelp') }}</p>
     </details>
   </section>
 </template>
 
 <script setup lang="ts">
 import { useId } from 'vue';
-import type { TokenUsageThroughputState } from '~/types/tokenUsageMeter';
+import type { TokenUsageTps } from '~/types/tokenUsageMeter';
 
-defineProps<{ state: TokenUsageThroughputState }>();
+defineProps<{ tps: TokenUsageTps | null }>();
 const { t, resolvedLocale } = useLocalization();
 const headingId = useId();
-const decimal = (value: number): string => new Intl.NumberFormat(resolvedLocale.value, {
-  minimumFractionDigits: 1, maximumFractionDigits: 1,
+const tokensPerSecond = (tps: TokenUsageTps): number => tps.outputTokens / (tps.durationMs / 1000);
+const decimal = (value: number, maximumFractionDigits: number): string => new Intl.NumberFormat(resolvedLocale.value, {
+  minimumFractionDigits: 1, maximumFractionDigits,
 }).format(value);
 const integer = (value: number): string => new Intl.NumberFormat(resolvedLocale.value).format(value);
-const timestamp = (value: string): string => new Intl.DateTimeFormat(resolvedLocale.value, {
-  dateStyle: 'medium', timeStyle: 'medium',
-}).format(new Date(value));
 </script>

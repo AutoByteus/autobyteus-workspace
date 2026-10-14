@@ -2,53 +2,58 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import TokenUsageThroughputCard from '../TokenUsageThroughputCard.vue';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
-import type { TokenUsageThroughputState } from '~/types/tokenUsageMeter';
+import type { TokenUsageTps } from '~/types/tokenUsageMeter';
 
-const sample: TokenUsageThroughputState = {
-  status: 'ready', tokensPerSecond: 20, outputTokens: 200, elapsedSeconds: 10,
-  observedAt: '2026-10-13T10:00:10.000Z', identity: {
-    runId: 'run', turnId: 'turn', runtimeKind: 'codex_app_server', modelIdentifier: 'reported-model', modelValue: null, modelProvider: 'OPENAI',
-  },
-};
+const generation: TokenUsageTps = { method: 'generation', outputTokens: 1762, durationMs: 16_940, model: 'claude-opus-5-5' };
+const endToEnd: TokenUsageTps = { method: 'end_to_end', outputTokens: 300, durationMs: 4_000, model: 'gpt-6-luna' };
+const removedWords = ['Output TPS', 'Selected agent only', 'Estimated', 'Last reported', 'claude_agent_sdk', 'output tokens /', 'Collecting'];
+
 beforeEach(async () => { await localizationRuntime.setPreference('en'); });
 
 describe('TokenUsageThroughputCard', () => {
-  it('labels an estimate, exact agent, last report, identity/time and counted interval', () => {
-    const wrapper = mount(TokenUsageThroughputCard, { props: { state: sample } });
-    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('20.0 tokens/s');
-    expect(wrapper.text()).toContain('Selected agent only');
-    expect(wrapper.text()).toContain('Estimated · Last reported');
-    expect(wrapper.get('[data-test="throughput-identity"]').text()).toBe('codex_app_server · reported-model');
-    expect(wrapper.get('time').attributes()).toMatchObject({ datetime: sample.observedAt, title: sample.observedAt });
-    expect(wrapper.get('[data-test="throughput-interval"]').text()).toBe('200 output tokens / 10.0 s');
-    expect(wrapper.get('summary').text()).toBe('How output TPS is estimated');
-    expect(wrapper.get('details').text()).toContain('not model-inference speed');
-    expect(wrapper.get('details').text()).toContain('not restored after reload');
-    expect(wrapper.get('details').text()).toContain('main-loop calls only');
+  it('shows only TPS, the value and the model for a generation reading (AC-002, AC-007)', () => {
+    const wrapper = mount(TokenUsageThroughputCard, { props: { tps: generation } });
+    expect(wrapper.get('h3').text()).toBe('TPS');
+    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('104.0 tokens/s');
+    expect(wrapper.get('[data-test="throughput-model"]').text()).toBe('claude-opus-5-5');
+    expect(wrapper.find('[data-test="throughput-end-to-end"]').exists()).toBe(false);
+    expect(wrapper.find('time').exists()).toBe(false);
+    for (const word of removedWords) expect(wrapper.text()).not.toContain(word);
+    expect(wrapper.get('details').attributes('open')).toBeUndefined();
+    expect(wrapper.get('summary').text()).toBe('How TPS is measured');
   });
 
-  it.each([
-    { status: 'collecting', reason: 'waitingForReports' },
-    { status: 'collecting', reason: 'matchingReport' },
-    { status: 'unavailable', reason: 'noReports' },
-    { status: 'unavailable', reason: 'invalidInterval' },
-    { status: 'unavailable', reason: 'selectAgent' },
-  ] as const)('renders nonnumeric %j', (state) => {
-    const wrapper = mount(TokenUsageThroughputCard, { props: { state } });
+  it('explains the method and numbers of the reading in the help (AC-008)', () => {
+    const generationHelp = mount(TokenUsageThroughputCard, { props: { tps: generation } }).get('[data-test="throughput-method-help"]').text();
+    expect(generationHelp).toContain('first streamed output');
+    expect(generationHelp).toContain('1,762 tokens in 16.94 s');
+    const wrapper = mount(TokenUsageThroughputCard, { props: { tps: endToEnd } });
+    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('75.0 tokens/s');
+    expect(wrapper.get('[data-test="throughput-model"]').text()).toBe('gpt-6-luna · incl. time to first token');
+    expect(wrapper.get('[data-test="throughput-method-help"]').text()).toContain('sending the request');
+    expect(wrapper.get('[data-test="throughput-method-help"]').text()).toContain('300 tokens in 4.0 s');
+    expect(wrapper.get('details').text()).toContain('Not kept after reload');
+  });
+
+  it('shows "—" only without a reading', () => {
+    const wrapper = mount(TokenUsageThroughputCard, { props: { tps: null } });
+    expect(wrapper.get('[data-test="throughput-empty"]').text()).toBe('—');
     expect(wrapper.find('[data-test="throughput-value"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="throughput-state"]').text()).toBe(state.status === 'collecting' ? 'Collecting' : '— Unavailable');
-    expect(wrapper.get('[data-test="throughput-reason"]').text()).not.toContain('shell.');
+    expect(wrapper.find('[data-test="throughput-model"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="throughput-method-help"]').exists()).toBe(false);
+    for (const word of removedWords) expect(wrapper.text()).not.toContain(word);
   });
 
-  it('renders true zero, changes on new props only, and localizes all help', async () => {
-    const wrapper = mount(TokenUsageThroughputCard, { props: { state: { ...sample, tokensPerSecond: 0, outputTokens: 0 } } });
-    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('0.0 tokens/s');
+  it('keeps an end-to-end qualifier without a model, and localizes zh-CN', async () => {
+    const wrapper = mount(TokenUsageThroughputCard, { props: { tps: { ...endToEnd, model: null } } });
+    expect(wrapper.get('[data-test="throughput-model"]').text()).toBe('incl. time to first token');
     await localizationRuntime.setPreference('zh-CN');
-    await wrapper.setProps({ state: { ...sample, tokensPerSecond: 30, elapsedSeconds: 5, outputTokens: 150 } });
-    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('30.0 词元/秒');
-    expect(wrapper.text()).toContain('估算 · 最近上报');
-    expect(wrapper.text()).toContain('150 个输出词元 / 5.0 秒');
-    expect(wrapper.get('summary').text()).toBe('输出 TPS 如何估算');
+    await wrapper.setProps({ tps: generation });
+    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('104.0 词元/秒');
+    expect(wrapper.get('summary').text()).toBe('TPS 如何计算');
+    expect(wrapper.get('[data-test="throughput-method-help"]').text()).toContain('16.94 秒内 1,762 个词元');
+    await wrapper.setProps({ tps: endToEnd });
+    expect(wrapper.get('[data-test="throughput-model"]').text()).toContain('含首词元等待时间');
     expect(wrapper.text()).not.toContain('shell.');
   });
 });

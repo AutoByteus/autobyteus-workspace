@@ -2,8 +2,7 @@ import { computed, reactive, watch } from 'vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
 import type { TokenUsageTeamMemberIdentity } from '~/composables/tokenUsageTeamMemberRows';
-import type { TokenUsageRunSummary, TokenUsageThroughputState } from '~/types/tokenUsageMeter';
-import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { TokenUsageRunSummary, TokenUsageTps } from '~/types/tokenUsageMeter';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
 
 export interface TokenUsageTeamMemberRow {
@@ -47,16 +46,7 @@ export function useTokenUsageWorkspaceScope() {
     : null);
   const focusedAgentRunId = computed(() => target.value?.context.state.runId ?? null);
   // All workspace target variants expose the exact context, including delegated/collaborator copies.
-  const throughput = computed<TokenUsageThroughputState>(() => {
-    const current = target.value;
-    if (!current) return { status: 'unavailable', reason: 'selectAgent' };
-    const sample = meter.getRunThroughput(current.context.state.runId);
-    if (sample) return sample;
-    return current.context.state.currentStatus === AgentStatus.Running
-      || current.context.state.currentStatus === AgentStatus.Initializing
-      ? { status: 'collecting', reason: 'waitingForReports' }
-      : { status: 'unavailable', reason: 'noReports' };
-  });
+  const tps = computed<TokenUsageTps | null>(() => meter.getRunTps(target.value?.context.state.runId));
   const scopeKey = computed(() => {
     const current = target.value;
     if (!current) return '';
@@ -207,7 +197,7 @@ export function useTokenUsageWorkspaceScope() {
   }, { immediate: true });
 
   return {
-    throughput,
+    tps,
     isTeamContext,
     primaryError,
     primaryLoading,

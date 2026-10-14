@@ -1,0 +1,11 @@
+=== R01-server-typecheck: pnpm -C autobyteus-server-ts typecheck (11:04:29)
+=== R01-server-typecheck exit=0 (11:04:42)
+=== R02-server-codex-tps-unit: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex tests/unit/agent-execution/domain/model-call-throughput.test.ts tests/unit/agent-execution/backends/shared tests/unit/token-usage/projections/token-usage-model-call-fold.test.ts --no-watch (11:04:42)
+=== R02-server-codex-tps-unit exit=0 (11:05:15)
+=== R03-server-unit: pnpm -C autobyteus-server-ts test:unit (11:07:43)
+=== R03-server-unit exit=0 (11:15:27)
+=== R04a-integration-prepare: pnpm -C autobyteus-server-ts test:integration:prepare (11:15:27)
+=== R04a-integration-prepare exit=0 (11:15:52)
+=== R04-server-integration: pnpm -C autobyteus-server-ts test:integration (11:15:52)
+=== R04-server-integration exit=1 (11:19:08)
+DONE

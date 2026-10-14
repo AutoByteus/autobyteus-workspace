@@ -295,6 +295,7 @@ export const legacyRowToCurrentPayload = (
       ? null : asSafeInt(row.effective_context_window_tokens, "effective_context_window_tokens"),
     context_window_usage_percent: claudeSdkReading ? null : row.context_window_usage_percent,
     context_compaction_threshold_tokens: null,
+    output_throughput: null,
     raw_usage_json: null,
     raw_event_json: null,
     quality_flags: stringArray(row.quality_flags_json),

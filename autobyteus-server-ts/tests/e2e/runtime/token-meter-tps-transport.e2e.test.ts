@@ -1,4 +1,5 @@
-/** TPS-TRANSPORT / R1 AC-002–005,007,008. Scripted AGY subprocess -> real canonical fold/
+/** TPS-TRANSPORT / output-tps-precision AC-001,004–007. Scripted AGY subprocess -> per-call TPS on
+ * the run's canonical usage event -> real canonical fold/
  * persistence -> real WebSocket -> production browser AgentStreamingService -> meter -> card.
  * NOT paid/live provider inference. Run in a clean env with a private HOME; Prisma test setup
  * owns tests/.tmp in this worktree. Prereqs: server prebuild, web dependencies/nuxt prepare, Chromium.
@@ -20,7 +21,7 @@ import { rootPrismaClient } from 'repository_prisma';
 import { appConfigProvider } from '../../../src/config/app-config-provider.js';
 import { startStudioE2eRuntimeServer } from '../helpers/studio-runtime-test-server.js';
 const suite = process.env.RUN_TOKEN_TPS_E2E === '1' ? describe : describe.skip;
-suite('same-turn output TPS across real server and browser', () => {
+suite('per-call TPS across real server and browser', () => {
   let dataDir = '', runId = '', definitionId = '';
   let app: FastifyInstance | undefined;
   let url: URL;
@@ -65,7 +66,7 @@ suite('same-turn output TPS across real server and browser', () => {
       await fs.writeFile(outputDir + '-cleanup.json', JSON.stringify(cleanup, null, 2));
     }
   });
-  it('renders exact-run estimates from three compatible calls and a real tool gap', async () => {
+  it('renders the newest qualifying model-call TPS of the exact run', async () => {
     const root = path.resolve('..');
     const { code, output } = await new Promise<{ code: number | null; output: string }>((resolve, reject) => {
       const child = spawn(process.execPath, [path.join(root, 'autobyteus-web/tests/e2e/token-meter-tps-probe.mjs'),
@@ -83,7 +84,7 @@ suite('same-turn output TPS across real server and browser', () => {
     expect(receipt.errors).toEqual([]);
     expect(receipt.cleanup).toMatchObject({ browserClosed: true, nuxtStopped: true, routeRemoved: true });
     const summary = (await graphql('query($runId: String!) { getAgentRunTokenUsageSummary(runId: $runId) { runId outputTokens usageReportCount latestRuntimeKind latestModelIdentifier } }', { runId })).getAgentRunTokenUsageSummary;
-    expect(summary).toMatchObject({ runId, outputTokens: 1349, usageReportCount: 3,
+    expect(summary).toMatchObject({ runId, outputTokens: 1211, usageReportCount: 3,
       latestRuntimeKind: 'antigravity_cli', latestModelIdentifier: 'gemini-3.8-flash-low' });
     await fs.writeFile(path.join(outputDir, 'persisted-summary.json'), JSON.stringify(summary, null, 2));
   }, 180000);
