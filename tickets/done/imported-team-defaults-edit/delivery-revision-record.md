@@ -19,3 +19,6 @@
   - Beta release (AC-007 needs a beta).
   - The user's AC-007 check is requested after publishing.
 - Outcome: in `release-deployment-report.md`.
+- AC-007 user check: "checked works" (2026-10-14), after beta `v1.5.4-beta.2` was published.
+- Release: `v1.5.4-beta.2` completed (four of four workflows, 17 assets, Docker `:beta`). Merge `3e9f62d2cd`, release commit `50b7436229`. Cleanup completed.
+- Terminal return to `/solution_designer`: `Sent` after this record commit is pushed.

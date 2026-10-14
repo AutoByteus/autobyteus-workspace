@@ -11,7 +11,7 @@
     - `git status` shows only `team-config.json`, `team.md`, `org-config.json` and `org.md` (`ui-package-copy-git-status-final.txt`).
     - All 39 definition links stay relative.
     - Run prefills claude-sonnet-5-5 · Claude SDK · Xhigh.
-- **AC-007 ("The user checks on a beta")** is the user's own check, written into the approved requirements. It is asked after the beta is published.
+- **AC-007 ("The user checks on a beta")**: done. After beta `v1.5.4-beta.2` was published, the user checked it and wrote on 2026-10-14: "checked works".
 - Release decision: **beta**. AC-007 requires a beta, and the package came marked "URGENT, beta release is waiting".
 
 ## State
