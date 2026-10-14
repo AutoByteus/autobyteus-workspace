@@ -61,6 +61,15 @@ sources, but they still cannot contain Teams.
 sources. A folder the disk will not write still fails with "… is read-only at
 source path …". An Org-owned Team is still changed only through its Org's save.
 
+The atomic save (`collaboration-definition-admission/providers/definition-package-transaction.ts`)
+copies the definition folder to a staging folder, writes there, then renames it
+into place behind a backup. It copies symlinks verbatim (`verbatimSymlinks: true`),
+so relative links inside a package stay relative after a save. The first save
+writes the files the app owns in their normalized form. For example, it drops a
+legacy `refType` and the trailing newline of `team.md`, so a package checkout
+shows a one-time diff. A process whose working directory is inside the swapped
+folder is left in the replaced directory.
+
 Org-owned Team exact reads and their Team-local Agent reads share the indexed
 owner/source lookup. An unavailable owner does not fall back to a same-named
 shared Team, and org-owned Teams never enter the public Team list. See
