@@ -45,5 +45,11 @@
   },
   "singleRecipient": true,
   "reason": "Confirmed runtime selected-reference incompatibility; design selects Ganesha4.3-family and current Linux reference. Technical compatibility selection needs upstream recovery, not a demonstrated Go reader or fixture fix.",
-  "sendReceipt": null
+  "sendReceipt": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /software_engineering_team/solution_designer.",
+    "target_agent_run_id": "solution_designer_ff9bb51075be4fdbbcd1b6eceba5ccdf"
+  },
+  "reviewCommit": "0b67d81fad"
 }
