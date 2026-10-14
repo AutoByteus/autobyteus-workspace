@@ -20,5 +20,8 @@
   "ownedNewDirectory": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-008",
   "noProductionOrDurableTestChanges": true,
   "noResourcesCreated": true,
-  "receiptPending": true
+  "receiptPending": false,
+  "receiptConfirmed": true,
+  "reviewCommit": "89bbedc47ec0fdbf407d6831c2b9d1f199b965be",
+  "stagedWhitespaceRC": 0
 }
