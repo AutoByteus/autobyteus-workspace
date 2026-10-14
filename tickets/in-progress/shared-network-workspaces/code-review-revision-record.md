@@ -210,3 +210,9 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
 - Routing: apply fresh most-specific implementation-owned Local Fix rule;
   exact rule/receipt in CRR006 routing evidence. Only its returned recipient is
   notified; no duplicate informational handoff, API advancement or Delivery Pass.
+
+- **Confirmed routing receipt:** review commit28775788db delivered to
+  `/software_engineering_team/implementation_engineer`, AgentRun
+  `implementation_engineer_2c60a2b9fdf1490c818f25289337aa21`; accepted=true/DELIVERED.
+  Only the most-specific source Local Fix recipient notified,411 references.
+  No duplicate notification, API forwarding or polling.
