@@ -1,6 +1,6 @@
 # API/E2E Test Case Ledger — imported-team-defaults-edit
 
-Round `API-001` (IR-001, `b5caa04c45`). Status: `Pass` / `Fail` / `Not run` with the reason.
+Rounds: `API-001` (IR-001, `b5caa04c45`) — Fail; **`API-002` (IR-002, `3936c29b8b`) — Pass** (see the API-002 rows at the end). Status: `Pass` / `Fail` / `Not run` with the reason.
 
 | ID | Requirement / AC | Layer | Scenario | Expected | Status | Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -23,3 +23,13 @@ Round `API-001` (IR-001, `b5caa04c45`). Status: `Pass` / `Fail` / `Not run` with
 | REPO-003 | all | Repository | Server `test:integration` | Pass, except the known `agent-status-websocket` exception | Pass (73 passed; only the 2 known-exception cases fail) | `api-e2e-evidence/integration-suite.log` |
 | BASE-001 | — | Pre-existing | `agent-team-definitions-graphql.e2e.test.ts` | Fails 5/6 on the branch, unchanged by it; stale since flat Orgs | Reported as follow-up (Rule 9: too large) | `api-e2e-coverage-investigation.md` |
 | AC-007 | — | User | Beta check | — | Not run (user-owned) | — |
+
+## API-002 re-validation (IR-002, `3936c29b8b`)
+
+| ID | Requirement / AC | Layer | Scenario | Expected | Status | Evidence (`api-e2e-evidence/api-002/`) |
+| --- | --- | --- | --- | --- | --- | --- |
+| RPE-001..008 | AC-001..AC-006, UC-003 | Server E2E | Full file | 8/8 | Pass (2 runs); RPE-008 link unchanged | `server-e2e-run{1,2}.log` |
+| UI-001r | AC-001 | Rebuilt isolated instance, real UI | Package copy restored to baseline; SE Team default Claude Agent SDK / Sonnet 5.5 / xhigh; Save | Success; only `team-config.json`, `team.md` change; links stay relative | Pass | `ui-04-se-team-saved.png`, `ui-package-copy-git-status.txt` |
+| UI-002r | AC-005 | Real UI | Run the Team | Prefilled with the saved default | Pass | run-script output |
+| UI-003r | AC-002 | Real UI | Org description save | Only `org-config.json`, `org.md` added to the diff | Pass | `ui-07-org-saved.png`, `ui-package-copy-git-status-final.txt` |
+| REPO-001r..003r | all | Repository | Typecheck; unit + architecture; integration | Green except the known exception | Pass (698 unit files; 73 integration files) | `typecheck.log`, `unit-suite.log`, `integration-suite.log` |
