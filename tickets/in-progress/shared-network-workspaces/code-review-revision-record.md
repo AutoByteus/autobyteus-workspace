@@ -140,3 +140,73 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
 - Next: fresh **“When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision.”** selects only `/software_engineering_team/solution_designer`; exact rules/receipt recorded in CRR005 routing evidence. Complete failure chain travels; no successful-test or Delivery forwarding. After recovered design and any correction: applicable source review -> API-F002 public create/reconnect first -> remaining approved matrix. Main Task open; API002 Fail57.14% remains authoritative.
 
 - **Confirmed handoff receipt:** CRR005 package commit0b67d81fad delivered to `/software_engineering_team/solution_designer`, AgentRun`solution_designer_ff9bb51075be4fdbbcd1b6eceba5ccdf`; tool accepted=true/codeDELIVERED. Single outcome recipient,306 cumulative references; no duplicate forwarding or polling.
+
+### CRR-006 — SR020 source recovery accepted; retained-candidate publication path needs a local fix
+
+- Date2026-10-14; canonical [code-review-report.md](code-review-report.md) updated
+  to **Fail / Local Fix (implementation-owned)**. Entry **Implementation Review**,
+  round6, **Full Re-Audit**, not failure-origin-only or successful test-code review.
+  Trigger IR005 after ReadySR020/ARCH004; typed Release shape and source/build/
+  embed/install/publication spine changed across26 paths. All mandatory structural
+  checks and ten categories reconsidered, not a targeted directory-reader audit.
+- Reviewed HEAD3655801628e18032fe345db7a7058b618e921554;
+  source9992ffb30d4fbaab4852b87b2495738f1b5be908;
+  inputd1aceecc4888fe8b1d58be898337473cd4be8243. **Large/High Reviewed** retained.
+  Relevant chain **Approved SR018 / Ready SR020 / ARCH-REV004 / IR005 /
+  API-REV002**; DR **N/A — not performed**. Prior CRR005 Fail/Design Impact and
+  all earlier histories preserved, never inferred as Pass from a missing result.
+
+#### Prior Finding Resolution
+
+| Finding | Prior status | Current status | Verification |
+| --- | --- | --- | --- |
+| CR-003 / API-F002 | Open P1 / Design Impact, CRR005 | **Design/source remedy accepted; API resolution pending** | SR020/ARCH004 accepted two-field backport; IR005 actual distinct-version source/package manifests, embedded exact pair/install-owner and Docker parity; independent reviewer hashes/source-archive/forward caller review. Confined reader/kernel/protocol unchanged. Designer preinstalled-engine prototype and IR005 package helper do not substitute public setup/reconnect |
+| CR-002 / API-F001 | Scoped independent resolution | **Remains resolved at tested nativeMac cold-create scope** | Apple startup byte-identical, API002 two actual fresh creates retained; no peer/reboot/physical claim |
+| CR-001 | Resolved | **Remains resolved** | New-directory exact mode/trust code unchanged; prior actual077/nonroot installation proof retained |
+| FUP001 | Separate PM custody | **Unchanged out-of-scope follow-up** | No duplicate notice/task/patch/penalty; original Nuxt/Electron failures and candidate-only green distinction retained |
+
+- New **CR-004 P2 open / CAND008**, implementation-owned publication control-flow
+  defect at `.github/workflows/release-nfs.yml:122–124` and downstream166–168,
+  239–241. Supported operator after qualification uses manual publish=true with
+  valid candidate run: engine-packages deliberately skips; engine-inputs continues
+  via explicit status condition; later jobs still apply implicit success over the
+  transitive skipped dependency. Primary GitHub needs contract and publisher issue
+  confirm this shape; static source/contract evidence, **not hosted execution**.
+  Correct downstream status/success/cancellation gates without unconditional publish
+  or rebuilding qualified package bytes; add focused nonpublishing branch regression.
+  No design/requirements reopening or new lifecycle owner needed.
+- Score **9.6/10,96/100**: eight structural/cleanup categories10, readiness8 and
+  correctness8 solely for CR004. Below9 categories and actual finding fail review
+  regardless of mean. Prior CRR005 had no aggregate; CRR004100/100 is historical.
+  Source quality is not API confidence, broad runtime proof or release approval.
+- Personal proof:1030 prior source/authority/history paths input-equal;26 deltas,
+  all397 refs and11 retained candidate files checked; actual corresponding source
+  recipe/backport/distro tar/changelog/notices inspected.109 source/config entries
+  recounted, max473/no>500; only cumulative workflow config+277 requires structural
+  review (round+91), no split. Current Python12enum/11pass/1Go-child-only skip,
+  source hash and deliberate unqualified publish refusal. No reviewer Go/VM/hosted
+  workflow/root/Docker/provider execution. Reviewed IR005 full Go/build/mutation
+  and actual arm64 native-package/container proof at narrow scopes, not rerun.
+- First reviewer audit root calculation failed assertion before resources; corrected
+  script completed; `initial-check-path-error.json` retained as harness-only failure.
+  Owned test HOME/TMPDIR removed, subprocesses completed. Retained ignored IR005
+  candidate and five prior generated dist trees untouched. No production/durable
+  test fix, delegation, background job, user-resource mutation, merge/push/release.
+- Evidence [CRR006 checks](code-review-evidence/crr-006/checks-and-limits.md),
+  [source audit](code-review-evidence/crr-006/source-audit.json),
+  [source sizes](code-review-evidence/crr-006/source-size-audit.json),
+  [commands](code-review-evidence/crr-006/checks-result.json),
+  [workflow path](code-review-evidence/crr-006/workflow-path-audit.json), cleanup
+  and complete cumulative package index. Default production hash302cdaf6b87e0ec4b0456376a2adba66be1b7294306c01f4f3df93ef285d4a1c.
+- API002 **Fail57.14%/broader Required unchanged**. After workflow correction and
+  source Pass, fresh public Ubuntu create/reconnect **first** without engine
+  preinstallation or confined-reader bypass, then full approved matrix. Retain
+  both-OS native/managedDocker clients, Linux native/Docker storage, physical,
+  native-runtime/assets/restore/modes, mounted healthy previews, peer/lifecycle/
+  preservation, docs/finalization/user-verification/release gates. Only MacDocker
+  STORAGE deferred; separate peer NAT environment limit remains. D001/DEC015
+  deferred/not fixed, IMP-D001 current private links/independent source Update-Remove/
+  AGY/local unchanged. No complete-testing or Task Done claim.
+- Routing: apply fresh most-specific implementation-owned Local Fix rule;
+  exact rule/receipt in CRR006 routing evidence. Only its returned recipient is
+  notified; no duplicate informational handoff, API advancement or Delivery Pass.
