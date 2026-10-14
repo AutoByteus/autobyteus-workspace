@@ -1,0 +1,206 @@
+{
+  "vm": "ab-nfs-api002-linux-25fc064c",
+  "binary": {
+    "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/autobyteus-nfs-linux",
+    "sha256": "9aae4944c680e3be1331f760f2c07794695a2dbea6327858ca87007b77111fd3"
+  },
+  "metadata": {
+    "version": "v1.5.3-beta.2",
+    "sourceHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1",
+      "nfs-ganesha": "4.3-8ubuntu1",
+      "nfs-ganesha-vfs": "4.3-8ubuntu1"
+    },
+    "engineImage": "",
+    "qualifiedTargets": []
+  },
+  "source": "/home/admin/ab-nfs-api002-linux-25fc064c-source",
+  "mountRoot": "/Volumes/autobyteus-shared",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api002-linux-25fc064c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; id; test \"$(findmnt -no FSTYPE /)\" = ext4; test ! -e /var/lib/autobyteus-nfs; test ! -e /etc/autobyteus-nfs; test ! -e /Volumes/autobyteus-shared; sudo -n true; mkdir -m 755 /home/admin/ab-nfs-api002-linux-25fc064c-source; mkdir -m 755 /home/admin/ab-nfs-api002-linux-25fc064c-source/project; printf ORIGINAL_API002_LINUX > /home/admin/ab-nfs-api002-linux-25fc064c-source/project/preexisting.txt; stat -c \"%d:%i:%u:%g:%a\" /home/admin/ab-nfs-api002-linux-25fc064c-source; sha256sum /home/admin/ab-nfs-api002-linux-25fc064c-source/project/preexisting.txt; ip -4 -j addr show scope global"
+      ],
+      "rc": 0,
+      "seconds": 0.426,
+      "stdout": "uid=1000(admin) gid=109(admin) groups=109(admin)\n64769:577877:1000:109:755\nca408b84600659e3878b8bcdb27362694d8494fc85df5ecf41c8bde880c103e7  /home/admin/ab-nfs-api002-linux-25fc064c-source/project/preexisting.txt\n[{\"ifindex\":2,\"ifname\":\"enp0s1\",\"flags\":[\"BROADCAST\",\"MULTICAST\",\"UP\",\"LOWER_UP\"],\"mtu\":1500,\"qdisc\":\"fq_codel\",\"operstate\":\"UP\",\"group\":\"default\",\"txqlen\":1000,\"addr_info\":[{\"family\":\"inet\",\"local\":\"192.168.64.4\",\"prefixlen\":24,\"metric\":100,\"broadcast\":\"192.168.64.255\",\"scope\":\"global\",\"dynamic\":true,\"label\":\"enp0s1\",\"valid_life_time\":3509,\"preferred_life_time\":3509}]}]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api002-linux-25fc064c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "stat -c \"%d:%i:%u:%g:%a\" /home/admin/ab-nfs-api002-linux-25fc064c-source"
+      ],
+      "rc": 0,
+      "seconds": 0.029,
+      "stdout": "64769:577877:1000:109:755\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api002-linux-25fc064c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "ip -4 -j addr show scope global"
+      ],
+      "rc": 0,
+      "seconds": 0.038,
+      "stdout": "[{\"ifindex\":2,\"ifname\":\"enp0s1\",\"flags\":[\"BROADCAST\",\"MULTICAST\",\"UP\",\"LOWER_UP\"],\"mtu\":1500,\"qdisc\":\"fq_codel\",\"operstate\":\"UP\",\"group\":\"default\",\"txqlen\":1000,\"addr_info\":[{\"family\":\"inet\",\"local\":\"192.168.64.4\",\"prefixlen\":24,\"metric\":100,\"broadcast\":\"192.168.64.255\",\"scope\":\"global\",\"dynamic\":true,\"label\":\"enp0s1\",\"valid_life_time\":3509,\"preferred_life_time\":3509}]}]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "-i",
+        "ab-nfs-api002-linux-25fc064c",
+        "/bin/sh",
+        "-c",
+        "umask 077; cat > /home/admin/ab-nfs-api002-linux-25fc064c-binary; chmod 755 /home/admin/ab-nfs-api002-linux-25fc064c-binary"
+      ],
+      "rc": 0,
+      "seconds": 0.129,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api002-linux-25fc064c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sha256sum /home/admin/ab-nfs-api002-linux-25fc064c-binary; /home/admin/ab-nfs-api002-linux-25fc064c-binary version"
+      ],
+      "rc": 0,
+      "seconds": 0.076,
+      "stdout": "9aae4944c680e3be1331f760f2c07794695a2dbea6327858ca87007b77111fd3  /home/admin/ab-nfs-api002-linux-25fc064c-binary\nv1.5.3-beta.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api002-linux-25fc064c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "umask 077; exec /home/admin/ab-nfs-api002-linux-25fc064c-binary create --source /home/admin/ab-nfs-api002-linux-25fc064c-source --backend ganesha-native --endpoint 192.168.64.4 --allow 192.168.64.4 --nodes none --yes --json"
+      ],
+      "rc": 1,
+      "seconds": 17.258,
+      "stdout": "",
+      "stderr": "Detected private addresses: 192.168.64.4\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS plan:\n - Ganesha NFSv4.1 TCP2049 only; persistent private recovery state\n - Export chosen source in place: /home/admin/ab-nfs-api002-linux-25fc064c-source\n - Map ALL clients to nonroot 1000:109; no recursive ownership change\n - Trust private hosts/subnets: 192.168.64.4\n - Attach 192.168.64.4:/autobyteus/a294c758-b1f7-40c9-84e5-6b9124671ae1 at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\n - Install exact Ubuntu NFS package versions from this release, if needed\nAutoByteus NFS incomplete: nonroot storage check incomplete: exit status 1: AutoByteus NFS incomplete: openat .autobyteus-nfs/storage.json: remote I/O error\n\nAutoByteus NFS incomplete: exit status 1\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api002-linux-25fc064c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "id; findmnt; sudo -n systemctl status autobyteus-nfs.service autobyteus-nfs-ganesha.service --no-pager; sudo -n cat /var/lib/autobyteus-nfs/ganesha/engine.log; sudo -n ls -la /var/lib/autobyteus-nfs; sudo -n cat /etc/autobyteus-nfs/attachment.json; sha256sum /home/admin/ab-nfs-api002-linux-25fc064c-source/project/preexisting.txt; dpkg-query -W nfs-common nfs-ganesha nfs-ganesha-vfs; apt-cache policy nfs-common nfs-ganesha nfs-ganesha-vfs"
+      ],
+      "rc": 0,
+      "seconds": 0.14,
+      "stdout": "uid=1000(admin) gid=109(admin) groups=109(admin)\nTARGET                         SOURCE                                                        FSTYPE      OPTIONS\n/                              /dev/vda1                                                     ext4        rw,relatime,discard,errors=remount-ro,commit=30\n|-/sys                         sysfs                                                         sysfs       rw,nosuid,nodev,noexec,relatime\n| |-/sys/firmware/efi/efivars  efivarfs                                                      efivarfs    rw,nosuid,nodev,noexec,relatime\n| |-/sys/kernel/security       securityfs                                                    securityfs  rw,nosuid,nodev,noexec,relatime\n| |-/sys/fs/cgroup             cgroup2                                                       cgroup2     rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot\n| |-/sys/fs/pstore             none                                                          pstore      rw,nosuid,nodev,noexec,relatime\n| |-/sys/fs/bpf                bpf                                                           bpf         rw,nosuid,nodev,noexec,relatime,mode=700\n| |-/sys/kernel/debug          debugfs                                                       debugfs     rw,nosuid,nodev,noexec,relatime\n| |-/sys/kernel/tracing        tracefs                                                       tracefs     rw,nosuid,nodev,noexec,relatime\n| |-/sys/fs/fuse/connections   fusectl                                                       fusectl     rw,nosuid,nodev,noexec,relatime\n| `-/sys/kernel/config         configfs                                                      configfs    rw,nosuid,nodev,noexec,relatime\n|-/proc                        proc                                                          proc        rw,nosuid,nodev,noexec,relatime\n| `-/proc/sys/fs/binfmt_misc   systemd-1                                                     autofs      rw,relatime,fd=32,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=5542\n|   `-/proc/sys/fs/binfmt_misc binfmt_misc                                                   binfmt_misc rw,nosuid,nodev,noexec,relatime\n|-/dev                         udev                                                          devtmpfs    rw,nosuid,relatime,size=1676988k,nr_inodes=419247,mode=755,inode64\n| |-/dev/pts                   devpts                                                        devpts      rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000\n| |-/dev/shm                   tmpfs                                                         tmpfs       rw,nosuid,nodev,inode64\n| |-/dev/hugepages             hugetlbfs                                                     hugetlbfs   rw,nosuid,nodev,relatime,pagesize=2M\n| `-/dev/mqueue                mqueue                                                        mqueue      rw,nosuid,nodev,noexec,relatime\n|-/run                         tmpfs                                                         tmpfs       rw,nosuid,nodev,noexec,relatime,size=398976k,mode=755,inode64\n| |-/run/lock                  tmpfs                                                         tmpfs       rw,nosuid,nodev,noexec,relatime,size=5120k,inode64\n| `-/run/rpc_pipefs            sunrpc                                                        rpc_pipefs  rw,relatime\n|-/boot                        /dev/vda16                                                    ext4        rw,relatime\n| `-/boot/efi                  /dev/vda15                                                    vfat        rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro\n`-/Volumes/autobyteus-shared   192.168.64.4:/autobyteus/a294c758-b1f7-40c9-84e5-6b9124671ae1 nfs4        rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,fatal_neterrors=none,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=192.168.64.4,local_lock=none,addr=192.168.64.4\n* autobyteus-nfs-ganesha.service - AutoByteus private Ganesha NFS engine\n     Loaded: loaded (/etc/systemd/system/autobyteus-nfs-ganesha.service; enabled; preset: enabled)\n     Active: active (running) since Wed 2026-10-14 04:27:05 UTC; 266ms ago\n   Main PID: 2219 (ganesha.nfsd)\n      Tasks: 19 (limit: 4107)\n     Memory: 27.3M (peak: 27.3M)\n        CPU: 10ms\n     CGroup: /system.slice/autobyteus-nfs-ganesha.service\n             `-2219 /usr/bin/ganesha.nfsd -F -f /var/lib/autobyteus-nfs/ganesha/ganesha.conf -L /var/lib/autobyteus-nfs/ganesha/engine.log -p /var/lib/autobyteus-nfs/ganesha/ganesha.pid\n\nOct 14 04:27:05 ubuntu systemd[1]: Started autobyteus-nfs-ganesha.service - AutoByteus private Ganesha NFS engine.\nOct 14 04:27:05 ubuntu ganesha.nfsd[2219]: libnfsidmap: Unable to determine the NFSv4 domain; Using 'localdomain' as the NFSv4 domain which means UIDs will be mapped to the 'Nobody-User' user defined in /etc/idmapd.conf\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] main :MAIN :EVENT :ganesha.nfsd Starting: Ganesha Version 4.3\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] load_rados_config :CONFIG :WARN :Missing RADOS URLs backend library\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_set_param_from_conf :NFS STARTUP :EVENT :Configuration file successfully parsed\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] init_fds_limit :INODE LRU :EVENT :Setting the system-imposed limit on FDs to 524288.\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] init_server_pkgs :NFS STARTUP :EVENT :Initializing ID Mapper.\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] init_server_pkgs :NFS STARTUP :EVENT :ID Mapper successfully initialized.\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_start_grace :STATE :EVENT :NFS Server Now IN GRACE, duration 90\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_start_grace :STATE :EVENT :grace reload client info completed from backend\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_try_lift_grace :STATE :EVENT :check grace:reclaim complete(0) clid count(0)\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_lift_grace_locked :STATE :EVENT :NFS Server Now NOT IN GRACE\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] client_commit :CONFIG :WARN :A protocol is specified for a CLIENT block that is not enabled in NFS_CORE_PARAM, fixing up\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] lower_my_caps :NFS STARTUP :EVENT :CAP_SYS_RESOURCE was successfully removed for proper quota management in FSAL\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] lower_my_caps :NFS STARTUP :EVENT :currently set capabilities are: =ep cap_sys_resource-ep\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Init_svc :DISP :CRIT :Cannot acquire credentials for principal nfs\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Init_admin_thread :NFS CB :EVENT :Admin thread initialized\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] find_keytab_entry :NFS CB :WARN :Configuration file does not specify default realm while getting default realm name\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] gssd_refresh_krb5_machine_credential :NFS CB :CRIT :ERROR: gssd_refresh_krb5_machine_credential: no usable keytab entry found in keytab /etc/krb5.keytab for connection with host localhost\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_rpc_cb_init_ccache :NFS STARTUP :WARN :gssd_refresh_krb5_machine_credential failed (-1765328160:22)\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Start_threads :THREAD :EVENT :Starting delayed executor.\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Start_threads :THREAD :EVENT :gsh_dbusthread was started successfully\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Start_threads :THREAD :EVENT :admin thread was started successfully\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Start_threads :THREAD :EVENT :reaper thread was started successfully\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Start_threads :THREAD :EVENT :General fridge was started successfully\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_start :NFS STARTUP :EVENT :             NFS SERVER INITIALIZED\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\ntotal 28\ndrwx------  3 root root 4096 Oct 14 04:27 .\ndrwxr-xr-x 43 root root 4096 Oct 14 04:26 ..\n-rw-------  1 root root  332 Oct 14 04:27 attachment.json\n-rw-------  1 root root   19 Oct 14 04:27 docker-endpoint.json\ndrwx------  3 root root 4096 Oct 14 04:27 ganesha\n-rw-------  1 root root  352 Oct 14 04:27 hosted-filesystem.json\n-rw-------  1 root root    0 Oct 14 04:26 operation.lock\n-rw-------  1 root root 1622 Oct 14 04:27 pending-setup.json\n{\n  \"storageId\": \"a294c758-b1f7-40c9-84e5-6b9124671ae1\",\n  \"endpoint\": \"192.168.64.4\",\n  \"export\": \"/autobyteus/a294c758-b1f7-40c9-84e5-6b9124671ae1\",\n  \"protocol\": \"4.1\",\n  \"mountRoot\": \"/Volumes/autobyteus-shared\"\n}\nca408b84600659e3878b8bcdb27362694d8494fc85df5ecf41c8bde880c103e7  /home/admin/ab-nfs-api002-linux-25fc064c-source/project/preexisting.txt\nnfs-common\t1:2.6.4-3ubuntu5.1\nnfs-ganesha\t4.3-8ubuntu1\nnfs-ganesha-vfs:arm64\t4.3-8ubuntu1\nnfs-common:\n  Installed: 1:2.6.4-3ubuntu5.1\n  Candidate: 1:2.6.4-3ubuntu5.1\n  Version table:\n *** 1:2.6.4-3ubuntu5.1 500\n        500 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Packages\n        100 /var/lib/dpkg/status\n     1:2.6.4-3ubuntu5 500\n        500 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages\nnfs-ganesha:\n  Installed: 4.3-8ubuntu1\n  Candidate: 4.3-8ubuntu1\n  Version table:\n *** 4.3-8ubuntu1 500\n        500 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages\n        100 /var/lib/dpkg/status\nnfs-ganesha-vfs:\n  Installed: 4.3-8ubuntu1\n  Candidate: 4.3-8ubuntu1\n  Version table:\n *** 4.3-8ubuntu1 500\n        500 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Packages\n        100 /var/lib/dpkg/status\n",
+      "stderr": "Unit autobyteus-nfs.service could not be found.\n"
+    }
+  ],
+  "cases": [
+    {
+      "name": "fresh Ubuntu24 ext4/nonroot/source preflight",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api002-linux-25fc064c",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; id; test \"$(findmnt -no FSTYPE /)\" = ext4; test ! -e /var/lib/autobyteus-nfs; test ! -e /etc/autobyteus-nfs; test ! -e /Volumes/autobyteus-shared; sudo -n true; mkdir -m 755 /home/admin/ab-nfs-api002-linux-25fc064c-source; mkdir -m 755 /home/admin/ab-nfs-api002-linux-25fc064c-source/project; printf ORIGINAL_API002_LINUX > /home/admin/ab-nfs-api002-linux-25fc064c-source/project/preexisting.txt; stat -c \"%d:%i:%u:%g:%a\" /home/admin/ab-nfs-api002-linux-25fc064c-source; sha256sum /home/admin/ab-nfs-api002-linux-25fc064c-source/project/preexisting.txt; ip -4 -j addr show scope global"
+        ],
+        "rc": 0,
+        "seconds": 0.426,
+        "stdout": "uid=1000(admin) gid=109(admin) groups=109(admin)\n64769:577877:1000:109:755\nca408b84600659e3878b8bcdb27362694d8494fc85df5ecf41c8bde880c103e7  /home/admin/ab-nfs-api002-linux-25fc064c-source/project/preexisting.txt\n[{\"ifindex\":2,\"ifname\":\"enp0s1\",\"flags\":[\"BROADCAST\",\"MULTICAST\",\"UP\",\"LOWER_UP\"],\"mtu\":1500,\"qdisc\":\"fq_codel\",\"operstate\":\"UP\",\"group\":\"default\",\"txqlen\":1000,\"addr_info\":[{\"family\":\"inet\",\"local\":\"192.168.64.4\",\"prefixlen\":24,\"metric\":100,\"broadcast\":\"192.168.64.255\",\"scope\":\"global\",\"dynamic\":true,\"label\":\"enp0s1\",\"valid_life_time\":3509,\"preferred_life_time\":3509}]}]\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.426
+    },
+    {
+      "name": "one public native Ganesha create from nonempty original source",
+      "status": "Fail",
+      "error": "RuntimeError('Detected private addresses: 192.168.64.4\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS plan:\\n - Ganesha NFSv4.1 TCP2049 only; persistent private recovery state\\n - Export chosen source in place: /home/admin/ab-nfs-api002-linux-25fc064c-source\\n - Map ALL clients to nonroot 1000:109; no recursive ownership change\\n - Trust private hosts/subnets: 192.168.64.4\\n - Attach 192.168.64.4:/autobyteus/a294c758-b1f7-40c9-84e5-6b9124671ae1 at /Volumes/autobyteus-shared\\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\\n - Install exact Ubuntu NFS package versions from this release, if needed\\nAutoByteus NFS incomplete: nonroot storage check incomplete: exit status 1: AutoByteus NFS incomplete: openat .autobyteus-nfs/storage.json: remote I/O error\\n\\nAutoByteus NFS incomplete: exit status 1\\n')",
+      "seconds": 17.258
+    }
+  ],
+  "sourceIdentityBefore": "64769:577877:1000:109:755",
+  "endpoint": "192.168.64.4",
+  "result": "Fail",
+  "fatal": "RuntimeError('Detected private addresses: 192.168.64.4\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS plan:\\n - Ganesha NFSv4.1 TCP2049 only; persistent private recovery state\\n - Export chosen source in place: /home/admin/ab-nfs-api002-linux-25fc064c-source\\n - Map ALL clients to nonroot 1000:109; no recursive ownership change\\n - Trust private hosts/subnets: 192.168.64.4\\n - Attach 192.168.64.4:/autobyteus/a294c758-b1f7-40c9-84e5-6b9124671ae1 at /Volumes/autobyteus-shared\\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\\n - Install exact Ubuntu NFS package versions from this release, if needed\\nAutoByteus NFS incomplete: nonroot storage check incomplete: exit status 1: AutoByteus NFS incomplete: openat .autobyteus-nfs/storage.json: remote I/O error\\n\\nAutoByteus NFS incomplete: exit status 1\\n')",
+  "diagnostics": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api002-linux-25fc064c",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "id; findmnt; sudo -n systemctl status autobyteus-nfs.service autobyteus-nfs-ganesha.service --no-pager; sudo -n cat /var/lib/autobyteus-nfs/ganesha/engine.log; sudo -n ls -la /var/lib/autobyteus-nfs; sudo -n cat /etc/autobyteus-nfs/attachment.json; sha256sum /home/admin/ab-nfs-api002-linux-25fc064c-source/project/preexisting.txt; dpkg-query -W nfs-common nfs-ganesha nfs-ganesha-vfs; apt-cache policy nfs-common nfs-ganesha nfs-ganesha-vfs"
+    ],
+    "rc": 0,
+    "seconds": 0.14,
+    "stdout": "uid=1000(admin) gid=109(admin) groups=109(admin)\nTARGET                         SOURCE                                                        FSTYPE      OPTIONS\n/                              /dev/vda1                                                     ext4        rw,relatime,discard,errors=remount-ro,commit=30\n|-/sys                         sysfs                                                         sysfs       rw,nosuid,nodev,noexec,relatime\n| |-/sys/firmware/efi/efivars  efivarfs                                                      efivarfs    rw,nosuid,nodev,noexec,relatime\n| |-/sys/kernel/security       securityfs                                                    securityfs  rw,nosuid,nodev,noexec,relatime\n| |-/sys/fs/cgroup             cgroup2                                                       cgroup2     rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot\n| |-/sys/fs/pstore             none                                                          pstore      rw,nosuid,nodev,noexec,relatime\n| |-/sys/fs/bpf                bpf                                                           bpf         rw,nosuid,nodev,noexec,relatime,mode=700\n| |-/sys/kernel/debug          debugfs                                                       debugfs     rw,nosuid,nodev,noexec,relatime\n| |-/sys/kernel/tracing        tracefs                                                       tracefs     rw,nosuid,nodev,noexec,relatime\n| |-/sys/fs/fuse/connections   fusectl                                                       fusectl     rw,nosuid,nodev,noexec,relatime\n| `-/sys/kernel/config         configfs                                                      configfs    rw,nosuid,nodev,noexec,relatime\n|-/proc                        proc                                                          proc        rw,nosuid,nodev,noexec,relatime\n| `-/proc/sys/fs/binfmt_misc   systemd-1                                                     autofs      rw,relatime,fd=32,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=5542\n|   `-/proc/sys/fs/binfmt_misc binfmt_misc                                                   binfmt_misc rw,nosuid,nodev,noexec,relatime\n|-/dev                         udev                                                          devtmpfs    rw,nosuid,relatime,size=1676988k,nr_inodes=419247,mode=755,inode64\n| |-/dev/pts                   devpts                                                        devpts      rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000\n| |-/dev/shm                   tmpfs                                                         tmpfs       rw,nosuid,nodev,inode64\n| |-/dev/hugepages             hugetlbfs                                                     hugetlbfs   rw,nosuid,nodev,relatime,pagesize=2M\n| `-/dev/mqueue                mqueue                                                        mqueue      rw,nosuid,nodev,noexec,relatime\n|-/run                         tmpfs                                                         tmpfs       rw,nosuid,nodev,noexec,relatime,size=398976k,mode=755,inode64\n| |-/run/lock                  tmpfs                                                         tmpfs       rw,nosuid,nodev,noexec,relatime,size=5120k,inode64\n| `-/run/rpc_pipefs            sunrpc                                                        rpc_pipefs  rw,relatime\n|-/boot                        /dev/vda16                                                    ext4        rw,relatime\n| `-/boot/efi                  /dev/vda15                                                    vfat        rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro\n`-/Volumes/autobyteus-shared   192.168.64.4:/autobyteus/a294c758-b1f7-40c9-84e5-6b9124671ae1 nfs4        rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,fatal_neterrors=none,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=192.168.64.4,local_lock=none,addr=192.168.64.4\n* autobyteus-nfs-ganesha.service - AutoByteus private Ganesha NFS engine\n     Loaded: loaded (/etc/systemd/system/autobyteus-nfs-ganesha.service; enabled; preset: enabled)\n     Active: active (running) since Wed 2026-10-14 04:27:05 UTC; 266ms ago\n   Main PID: 2219 (ganesha.nfsd)\n      Tasks: 19 (limit: 4107)\n     Memory: 27.3M (peak: 27.3M)\n        CPU: 10ms\n     CGroup: /system.slice/autobyteus-nfs-ganesha.service\n             `-2219 /usr/bin/ganesha.nfsd -F -f /var/lib/autobyteus-nfs/ganesha/ganesha.conf -L /var/lib/autobyteus-nfs/ganesha/engine.log -p /var/lib/autobyteus-nfs/ganesha/ganesha.pid\n\nOct 14 04:27:05 ubuntu systemd[1]: Started autobyteus-nfs-ganesha.service - AutoByteus private Ganesha NFS engine.\nOct 14 04:27:05 ubuntu ganesha.nfsd[2219]: libnfsidmap: Unable to determine the NFSv4 domain; Using 'localdomain' as the NFSv4 domain which means UIDs will be mapped to the 'Nobody-User' user defined in /etc/idmapd.conf\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] main :MAIN :EVENT :ganesha.nfsd Starting: Ganesha Version 4.3\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] load_rados_config :CONFIG :WARN :Missing RADOS URLs backend library\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_set_param_from_conf :NFS STARTUP :EVENT :Configuration file successfully parsed\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] init_fds_limit :INODE LRU :EVENT :Setting the system-imposed limit on FDs to 524288.\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] init_server_pkgs :NFS STARTUP :EVENT :Initializing ID Mapper.\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] init_server_pkgs :NFS STARTUP :EVENT :ID Mapper successfully initialized.\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_start_grace :STATE :EVENT :NFS Server Now IN GRACE, duration 90\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_start_grace :STATE :EVENT :grace reload client info completed from backend\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_try_lift_grace :STATE :EVENT :check grace:reclaim complete(0) clid count(0)\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_lift_grace_locked :STATE :EVENT :NFS Server Now NOT IN GRACE\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] client_commit :CONFIG :WARN :A protocol is specified for a CLIENT block that is not enabled in NFS_CORE_PARAM, fixing up\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] lower_my_caps :NFS STARTUP :EVENT :CAP_SYS_RESOURCE was successfully removed for proper quota management in FSAL\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] lower_my_caps :NFS STARTUP :EVENT :currently set capabilities are: =ep cap_sys_resource-ep\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Init_svc :DISP :CRIT :Cannot acquire credentials for principal nfs\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Init_admin_thread :NFS CB :EVENT :Admin thread initialized\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] find_keytab_entry :NFS CB :WARN :Configuration file does not specify default realm while getting default realm name\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] gssd_refresh_krb5_machine_credential :NFS CB :CRIT :ERROR: gssd_refresh_krb5_machine_credential: no usable keytab entry found in keytab /etc/krb5.keytab for connection with host localhost\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_rpc_cb_init_ccache :NFS STARTUP :WARN :gssd_refresh_krb5_machine_credential failed (-1765328160:22)\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Start_threads :THREAD :EVENT :Starting delayed executor.\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Start_threads :THREAD :EVENT :gsh_dbusthread was started successfully\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Start_threads :THREAD :EVENT :admin thread was started successfully\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Start_threads :THREAD :EVENT :reaper thread was started successfully\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_Start_threads :THREAD :EVENT :General fridge was started successfully\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_start :NFS STARTUP :EVENT :             NFS SERVER INITIALIZED\n14/10/2026 04:27:05 : epoch 6acf0499 : ubuntu : ganesha.nfsd-2219[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\ntotal 28\ndrwx------  3 root root 4096 Oct 14 04:27 .\ndrwxr-xr-x 43 root root 4096 Oct 14 04:26 ..\n-rw-------  1 root root  332 Oct 14 04:27 attachment.json\n-rw-------  1 root root   19 Oct 14 04:27 docker-endpoint.json\ndrwx------  3 root root 4096 Oct 14 04:27 ganesha\n-rw-------  1 root root  352 Oct 14 04:27 hosted-filesystem.json\n-rw-------  1 root root    0 Oct 14 04:26 operation.lock\n-rw-------  1 root root 1622 Oct 14 04:27 pending-setup.json\n{\n  \"storageId\": \"a294c758-b1f7-40c9-84e5-6b9124671ae1\",\n  \"endpoint\": \"192.168.64.4\",\n  \"export\": \"/autobyteus/a294c758-b1f7-40c9-84e5-6b9124671ae1\",\n  \"protocol\": \"4.1\",\n  \"mountRoot\": \"/Volumes/autobyteus-shared\"\n}\nca408b84600659e3878b8bcdb27362694d8494fc85df5ecf41c8bde880c103e7  /home/admin/ab-nfs-api002-linux-25fc064c-source/project/preexisting.txt\nnfs-common\t1:2.6.4-3ubuntu5.1\nnfs-ganesha\t4.3-8ubuntu1\nnfs-ganesha-vfs:arm64\t4.3-8ubuntu1\nnfs-common:\n  Installed: 1:2.6.4-3ubuntu5.1\n  Candidate: 1:2.6.4-3ubuntu5.1\n  Version table:\n *** 1:2.6.4-3ubuntu5.1 500\n        500 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Packages\n        100 /var/lib/dpkg/status\n     1:2.6.4-3ubuntu5 500\n        500 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages\nnfs-ganesha:\n  Installed: 4.3-8ubuntu1\n  Candidate: 4.3-8ubuntu1\n  Version table:\n *** 4.3-8ubuntu1 500\n        500 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages\n        100 /var/lib/dpkg/status\nnfs-ganesha-vfs:\n  Installed: 4.3-8ubuntu1\n  Candidate: 4.3-8ubuntu1\n  Version table:\n *** 4.3-8ubuntu1 500\n        500 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Packages\n        100 /var/lib/dpkg/status\n",
+    "stderr": "Unit autobyteus-nfs.service could not be found.\n"
+  }
+}

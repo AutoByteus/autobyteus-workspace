@@ -7,6 +7,7 @@ Canonical current truth: [coverage investigation](api-e2e-coverage-investigation
 | Revision | Trigger | Related upstream | Prior result/confidence | Current result/confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | code_reviewer / CRR002 Pass / first API execution | Approved SR018, Ready SR019, ARCH-REV003, IR003, CRR002; IR001/002 and CRR001 history retained | N/A | **Fail / 57.14%** |
+| API-REV-002 | code_reviewer / CRR004 Pass / IR004 re-entry | Approved SR018, Ready SR019, ARCH-REV003; all prior rounds retained | Fail /57.14% | **Fail /57.14%** |
 
 ## API-REV-001 — nativeMac first-use failure exposed through actual VM execution
 
@@ -30,3 +31,28 @@ None from a prior API/E2E round (prior result/confidence N/A). CR001 permission 
 - Remaining scope: V02 later operations/native and Mac managedDocker clients/identity/preservation/normal restart; V03 Ubuntu/ext4/Ganesha/native+DockerLinux storage/Linux clients and independent physical peers; V04 current isolated desktop mounted previews/Guide; V05 actual native tools, support assets, peer close/restore, standalone/Team/Org/source policies. No user-only waiver. Default unqualified release retained; no published installer claim. DEC015 outage isolation remains deferred, not a new gate.
 - Cleanup: all four exact owned clones/processes absent; own scratch/toolchain/data/binary removed; public VM cache and preexisting generated dist retained. No user app, node, data or credentials touched. Evidence under `evidence/api-e2e/api-rev-001/` retained for failure-origin review.
 - Main Task stays open. Delivery/merge/push/release/user-verification not performed. Fresh rules select the next exact recipient; current Fail requests focused failure-origin review, not successful-test review.
+
+## API-REV-002 — prior Mac failure resolved; new nativeLinux readiness failure
+
+- Trigger: CRR004 source Pass on IR004; input82dd5d9d53e2e4f5e022ff3f6f0e196ebd3602d8, source174e480bd0cfaee29f22fd46b1922afbb274e56b; ApprovedSR018/ReadySR019/ARCH003 unchanged. No delivery re-entry.
+- Read cumulative package, initialized Round2 plan/ledger before execution. Personal execution only. No source/durable test edits, no delegated worker, release or finalization. E1 API-owned af9f23 REST test unchanged.
+
+### Prior failure resolution — before new failure evaluation
+
+| Prior reference | Previous classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| API-F001 / V02 / V02-repro / CR002 | API001 Unclear; CRR003 Implementation Local Fix | **Resolved at tested nativeMac first-create scope**, rechecked first after build prerequisite: two fresh current-source creates11.571s/22.772s, no manual reconnect, same original identity/bytes/UUID and correct modes/live job | E2/prior-failure-resolution.json, V02-repro-result.json, V01-result.json |
+
+Prior API001 Fail57.14%, implementation's failed candidates and source history remain retained. Resolution is not complete matrix/physical/published-installer qualification.
+
+### Execution and new failure delta
+
+- Current N01: all7Go race/vet packages pass, Python42enumerated/39pass/3explicit skips; official privateGo1.27.2 download succeeds. Reviewer prior download interruption is not a product/test failure. Carry unchanged E1 TS/UI/socket/scripted evidence, not an invented rerun.
+- Post-repository confidence57.14%, broaderRequired. V02 server create passes; actual native peer connect times out while routeREJECT/pingHost is down. RawFail retained, healthy peer proof **Blocked by environment**, not API-F001 recurrence or a new product outage finding. LAN guest permission asked; not used.
+- V03 uses separate fresh public Ubuntu24.04.5/ext4/kernel7.0.0-38 guests and real1000:109/root install. Normal build-only release.py metadata in disposable source copy supplies unchanged reference pins, qualifiedTargets[], no publication/tracked metadata change. Productionhash497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da; Linuxbinary9aae4944c680e3be1331f760f2c07794695a2dbea6327858ca87007b77111fd3.
+- **API-F002**: two fresh public nativeGanesha creates fail17.258s/16.252s after pinned apt succeeds, activeGanesha4.3 and actualNFS4.1 mount. Nonroot marker openat remoteI/Oerror; no false ready/attachment job. Public reconnect also fails. Ordinary mounted reads succeed. Corrected installed-binary strace under exact1000:109/clearedgroups passes on source but fails on mounted directory openat EREMOTEIO. Root cause not established; no production workaround.
+- Initial diagnostic guessed wrong installed path; preserved raw evidence shows trace never ran there. Separate corrected trace uses /usr/libexec/autobyteus-nfs/autobyteus-nfs. No overwriting failure output.
+- Canonical investigation/report/ledger updated; all20AC proof table and seven-category scorecard current. Final **Fail/57.14%** (50/50/50/50/50/75/75;400/7), same score because critical gaps remain despite stronger twoOS evidence. No user-only waiver. New openAPI-F002; API-F001 resolved. Preliminary **Unclear**; request focused failure-origin review, recommended focus nativeLinux implementation integration, reviewer confirms owner.
+- Stop remaining V02/V03/V04/V05 after new reproduced finding. Remaining native/managedDocker clients on bothOS, LinuxDocker storage, independentphysicalMac/Linux/Docker, exactselectednode preservation/restart/detach, realnative tools/assets/peerclose/restore/Standalone-Team-Org/sourcepolicies, mounted desktoppreviews/Git remain required. OnlyMacDockerSTORAGE deferred. D001/DEC015 remains deferred notfixed/notnewgate. FUP001 retained with current-source non-green/candidate-only distinction, no repeated notice.
+- Cleanup E2/cleanup.json: all6ownedclones/processes absent, ownscratch/toolchain/candidate/Linuxcache removed; priorpublicMaccache and5untrackeddist dirs retained. No userhost/network/node/credential mutation. MainTask open, no merge/push/release/delivery/userverificationPass.
+- Complete cumulative package at E2/package-index.json; E2=evidence/api-e2e/api-rev-002. Latest canonicalreport governs; fresh rules select Fail/focusedfailureorigin handoff, not successful-testreview.
