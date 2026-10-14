@@ -1,0 +1,4 @@
+clone ab-nfs-crr005-d5103a0c
+install exact guest dependencies
+RuntimeError('mount.nfs: mounting 192.168.64.4:/autobyteus/4e631794-d643-4d0c-98e2-95573112afdb failed, reason given by server: No such file or directory\n')
+{"result": "Diagnostic Incomplete", "cleanup": true}

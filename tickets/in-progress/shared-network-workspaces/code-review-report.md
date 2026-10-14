@@ -1,153 +1,93 @@
 # Code Review Report
 
-## Review Round Meta / Latest Authoritative Result
+## Latest Authoritative Result / Review Meta
 
-**CRR-004 — Pass (Implementation Review). CR-002 resolved; CR-001 remains resolved.** Source Pass permits API/E2E re-entry only. **API-REV001 remains Fail / confidence57.14% / broader validation Required** until the API owner updates its own authority.
+**CRR-005 — Fail / Design Impact. CR-003 P1 open (API-F002): the selected Linux NFS reference has a demonstrated directory-access compatibility failure.** This is **API/E2E Failure-Origin Review**, round5, scope **N/A — focused origin**. No full source audit/ten-category scorecard or successful-test review is issued. **API-REV002 remains Fail / confidence57.14% / broader validation Required.**
 
-- Date2026-10-14; round4; **Targeted Delta Review**, returning IR004 Local Fix after CRR003/API-F001. Task `shared-network-workspaces` / `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`. **Large / High, Reviewed** retained.
-- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`; branch `codex/shared-network-workspaces`; finalization `origin/personal`. Input `e1081e95db56c8f4b4a028404ab0365b70ad8308`; fix `174e480bd0cfaee29f22fd46b1922afbb274e56b`; prior review receipt `4ed9a12720e04daa2fad0c5d3b8d20b5ceb62c79`.
-- Current [implementation handoff](implementation-handoff.md)/[revision history](implementation-revision-record.md) **IR004**, cumulative IR001–003 preserved. Their CRR003 Fail references describe the incoming gate; this canonical CRR004 now governs source review.
-- Approved intended behavior: [requirements](requirements-doc.md) **SR018**, [approval018](approval-record-sr018.md), [approval017](approval-record-sr017.md), [scope feedback](architecture-review-scope-feedback.md). Design context: [Ready SR019 design](design-spec.md), [investigation](investigation-notes.md), [solution history](solution-revision-record.md), [complete solution handoff](solution-design-handoff.md), [design review](design-review-report.md), [architecture history](architecture-review-revision-record.md) **ARCH-REV003 Pass**. No renewed intended-behavior decision required.
-- Triggering [API investigation](api-e2e-coverage-investigation.md), [execution report](api-e2e-execution-coverage-report.md), [API history](api-e2e-revision-record.md), [case ledger](api-e2e-test-case-ledger.md): API-F001 / SCN001/011/013, normal fresh native-Mac create failed before own mounted verification/job install. [CRR003 failure evidence](code-review-evidence/crr-003/checks-and-limits.md) and [cumulative code-review history](code-review-revision-record.md) preserve exact commands, classification, review gap and earlier results.
-- Complete still-relevant supplements retained through [IR004 package index](implementation-evidence/ir-004/package-index.json), [API001 cumulative index](evidence/api-e2e/api-rev-001/package-index.json) and solution handoff: feasibility/selection/native/private-runtime/roundtrip reports, SR018/019 audits, original IMP-D001 source-lease correction, IR002/003, CRR001/002, all original API failure and IR004 intermediate results. No historical experiment reclassified as current full-product proof.
-- Delivery revision **N/A — not yet performed**. Successful API/E2E test-code review **not entered**; API’s prior REST fixture correction remains for that later entry point, not a test-review Pass here.
+- Date2026-10-14. Task `shared-network-workspaces` / `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`; **Large / High / Reviewed** unchanged; main Task open.
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`, branch `codex/shared-network-workspaces`, finalization `origin/personal`. Reviewed HEAD`57480943efcf6a4bd060953b48bafde7da616319`; API input`82dd5d9d53e2e4f5e022ff3f6f0e196ebd3602d8`; IR004 source`174e480bd0cfaee29f22fd46b1922afbb274e56b` unchanged. Production aggregate`497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da` independently recomputed.
+- Authority: [Approved SR018 requirements](requirements-doc.md), [approval018](approval-record-sr018.md), [approval017](approval-record-sr017.md), [scope feedback](architecture-review-scope-feedback.md); [Ready SR019 design](design-spec.md), [investigation](investigation-notes.md), [solution history](solution-revision-record.md), [solution handoff](solution-design-handoff.md), [design review](design-review-report.md), [ARCH-REV003 history](architecture-review-revision-record.md); [IR004 handoff](implementation-handoff.md) and [IR001–004 history](implementation-revision-record.md).
+- Trigger: API owner’s [API002 execution report](api-e2e-execution-coverage-report.md), [investigation](api-e2e-coverage-investigation.md), [revision history](api-e2e-revision-record.md), [case ledger](api-e2e-test-case-ledger.md). Complete still-relevant chain indexed by [API002 package](evidence/api-e2e/api-rev-002/package-index.json), including all prior feasibility/selection/source-policy/IR/CRR/API evidence. [Review history](code-review-revision-record.md) preserves CRR001–004; CRR004 was source Pass, not API qualification. DR **N/A — not performed**.
+- Root DESIGN.md/TESTING.md and reviewer scenario gate apply; no closer NFS instructions. No production/durable-test change after CRR004 or by this reviewer. Scope excludes general test-suite review, unrelated source, source-size re-audit and the remaining executable matrix.
 
-## Scope And Routing Classification
+## Prior Finding Resolution — Rechecked First
 
-Four production files and one new backend regression file, all within CR002’s Apple activation/setup paths. Source signatures add the already validated selected endpoint to two internal backend operations; no public CLI, shared JSON shape, persistence model or owner change. Bounded internal startup sequencing is not a new cross-subsystem spine. **Targeted Delta Review** is proportionate; no Full Re-Audit trigger. Independent [delta audit](code-review-evidence/crr-004/delta-audit.json) verifies five delta paths and906 unaffected source/authority/history paths against prior receipt/current bytes. Unaffected CRR001/002 structural evidence is carried, not asserted rerun.
-
-Rechecked CR002 first, CR001 preservation, all affected callers/lock/command/mount boundaries, new durable test and current native evidence. Root DESIGN.md/TESTING.md/shared principles apply; no closer NFS instructions. No source/test patch by reviewer. Large/High classification unchanged; this source fix does not bypass independent executable validation.
-
-## Upstream Behavior And Production-Path Basis Confirmation
-
-**Behavior basis Confirmed** at source-review level; no new or unclear intended behavior. The approved normal first command and engine-before-mount contract independently justify startup observation; tests reproduce it, not create it.
-
-| Behavior | Status / implementation and lifecycle evidence |
+| Finding | Current disposition / evidence |
 | --- | --- |
-| BEH001 | **Confirmed — revalidated.** Public create -> validated plan/consent/root install -> source qualification/intended config -> ApplyApple activation -> TCP v3 registration and actual NULL replies -> existing one-shot mount/nonroot probe -> selected nodes/job -> ready. IR004 two fresh full VM successes support CR002 resolution |
-| BEH004 | Confirmed — affected path revalidated. Activation/invalid RPC/unknown failures remain immediate; only known startup conditions observed again; final error stays incomplete. Actual mount/marker/nonroot access still decides readiness; no local fallback |
-| BEH005 | Confirmed — affected preservation revalidated. Same locks, exact OS ownership/config blocks, source UUID/inode/permissions, pending intent and private/public modes. CR001 untouched; no force/unmount/source adoption |
-| BEH002/003 | Confirmed — carried. Private runtime links/current-source policies and filesystem/Git/lock contract unchanged; new RPC checks do not enable distributed locking |
-| BEH006/007 | Confirmed — carried. Healthy content readers and Nodes guide unchanged; no new rendered/UI claim; release remains unqualified/Guide unavailable |
+| CR-002 / API-F001, Apple cold-start boundary | **Resolved independently at tested native-Mac cold-create scope.** API002 V02-repro11.571s and separate V01 22.772s pass with actual guest root077/nonroot501:20, original/mounted identity/bytes/private modes and running job; no manual reconnect. [Resolution receipt](evidence/api-e2e/api-rev-002/prior-failure-resolution.json). Not peer/reboot/physical/released-installer qualification |
+| CR-001, restrictive-mask new-directory modes | **Remains resolved.** Source unchanged; actual Mac installation/nonroot traversal passes. Linux failure is later, after installed binary, source probe, engine and mount |
+| FUP001, baseline updater classification | **Unchanged out-of-scope follow-up, PM custody.** Current Nuxt/Electron failures retained; removed candidate green logs not current-source proof. No repeat notification, Task, patch or score penalty |
 
-Primary DS001/002 span remains CLI -> setup owner -> Apple adapter/platform OS -> mounted nonroot verification -> managed service. Existing reconnect/supervisor calls the same Apple owner with validated saved endpoint. New bounded internal path is registration -> explicit-port serving observation -> return/error; it owns no daemon, persistent state, mount or app action. DS003–005 unchanged.
+## Supported Scenario / Forward Production Path
 
-## Supported Scenario And Candidate Finding / Mechanism Gate
+**Independent basis:** an owner with an ordinary nonempty ext4 project wants one-command native Ubuntu sharing, consents to its own installation, and expects a usable mounted path plus managed service. REQ001/003/004/006/014/017/018/019, AC012/018/019, SCN001/011/013; BEH001/004/005. Approved scope includes native Linux and ordinary directory operations; design §“Supported reference matrix” selects Ubuntu24.04, Ganesha VFS4.3 lineage and NFSv4.1. No kernel ceiling is specified. These are qualification targets, not already-published combinations. The actual guest is Ubuntu24.04.5 with Ubuntu kernel7.0.0-38-generic, not an injected outage or a contradictory workflow.
 
-| Scenario / actor / independent trigger | Supported surface, lifecycle, expected consequence | Validity / use |
+**Forward path:** public `create` -> ordinary sudo/root installation and consented plan -> `setup/apply.go` pinned Ubuntu packages -> nonroot original-source marker/health and file-handle qualification -> `backend/ganesha_native.go`/`ganesha.go` selected engine/config -> `platform.EnsureMount` hard TCP NFSv4.1 self-mount -> exact nonroot `service.NonrootProbe` -> `config.ReadMarker` confined directory traversal -> EREMOTEIO -> truthful incomplete/pending, before attachment job/hostReady. Normal public reconnect repeats the mounted probe and also fails. No peer network is required to reach this state.
+
+- **BEH001 contradicted** at Linux reference first-use completion; **BEH004 confirmed** truthful incomplete/no local substitute, not proof of successful retry; **BEH005 source preservation confirmed at observed scope**, broader preservation tests remain.
+- Original ext4 probe succeeds and regular mounted `cat` reads work. This is **not all reads failing**, a missing package, wrong UUID, root-mode regression or a demonstrated application confinement bug.
+- Mac peer `mount_nfs60` timeout is separately accompanied by default-NAT routeREJECT/ping failure. No healthy-peer product defect or API-F001 recurrence is established. That environment limitation stays with API validation; no bridge/host network change is authorized here.
+
+## Candidate Finding And Mechanism Gate
+
+| Candidate / independent basis | Lifecycle, consequence and evidence | Disposition |
 | --- | --- | --- |
-| SCN001/011/013; owner wants one shared original project on a fresh supported Mac; REQ006/013/018/019, AC012/018/019 | Public create and normal OS approval -> engine activation -> usable own mount and managed service in one invocation | **Supported Normal Scenario / Use** for CR002 resolution; approved requirements/design and actual prior cold failures, no forced concurrent action or outage |
-| REQ014/SCN013; owner repeats/reconnects or managed service restarts on healthy storage | Saved intended source/UUID -> existing Reconnect/EnsureApple -> verified same mount | **Supported Normal / Explicit Edge / Use** to inspect shared owner integration; full restart proof still downstream |
-| BEH005/REQ009/010/017; owner authorizes selected setup while preserving original/private/unrelated data | Same consent/lock/source/config/private-mode ownership through setup/retry/error | **Supported contract / Use** to verify no weakening or resource duplication |
-| MP001/002 / DEC015 | Established hard-NFS outage may stall app/file IO | Reachable but **explicitly deferred** hardening; no new v1 worker/probe/stream guarantee |
-| MP003/004 / IMP-D001 | Supported Sources Update/Remove independently retire bytes; profiles own only links | Confirmed/carried contract, no new source retention |
+| CAND007: selected Linux backend/client reference cannot reliably perform required ordinary directory access | Supported normal first create above; two API public failures after real mount. Corrected product strace locates repeated directory open EREMOTEIO. Independent Python replay on same image/kernel/packages/config reproduces without Go; guest-only delegation control removes and restoration returns the failure | **Promote — CR-003, this ticket.** Blocks native Linux qualification/AC012/018/019; not an unrelated upstream follow-up |
+| Blame `os.Root`, its no-follow flags, credentials or marker contents from error text alone | Source probe passes; Python with equivalent flags also fails remotely; same identity/config/data pass with the diagnostic client feature disabled | **Reject that defect attribution.** Keep confinement/identity verification; no unsafe path fallback or weakened success assertion |
+| Exact historical API packets proved GET_DIR_DELEGATION/OP_ILLEGAL mismatch | Upstream V4.3 dispatch, Linux decoder and accepted upstream fix support this mechanism, but API has no wire capture and reviewer capture contains no packet data | **Hold exact wire attribution.** Strong explanatory inference, not observed packet proof; no required workaround based solely on it |
+| Blind retry, global kernel-policy change, protocol downgrade or outage isolation now required | No approved mechanism follows from the diagnostic success. Normal healthy directory access is the demonstrated obligation, not outage/deadline behavior | **Reject as prescribed machinery.** Designer must establish a compatible reference; D001/DEC015 remains deferred |
 
-| Candidate | Forward path, evidence and consequence | Disposition |
-| --- | --- | --- |
-| CAND006 / CR002 startup boundary | Earlier activation-command success -> mount74 occurred in normal first use. Current adapter waits for selected-endpoint TCP NFSv3/MOUNTv3 registrations and real NULL successes, then unchanged real mount/verification. Narrow observation/fatal-error tests, mutations, actual current fresh VM successes | **Resolved / mechanism supported.** Existing backend owns only serial startup observation; no blind sleep as readiness, activation or mount retry framework |
-| RPC table alone establishes ready | Table says registered, not necessarily serving or source access. New code additionally probes both explicit ports; actual mount/nonroot marker/IO still follows | **Rejected assumption**; no missing verification finding |
-| Remote-lock error requires statd/NLM/changed local-lock policy | Earlier diagnostic not lock-mode-specific; explicit NFS/MOUNT probes do not involve status/lock programs | **Rejected attribution/prescription retained**; approved local-lock policy unchanged |
-| Deferred outage/source-retention mechanisms should now be introduced | Not the trigger of CR002; explicit authority unchanged | **Reject as required machinery**; no deduction or expansion |
+## CR-003 — P1: Selected Linux Reference Needs Compatibility Recovery
 
-No held candidate, unresolved scenario ambiguity or new actionable finding. Review does not demand artificial simultaneous contradictory operations or an outage guarantee. Additional material-premise validation: **None new**; MP001–004 dispositions retained.
+**Finding / scope:** normal native Linux setup using the selected Ubuntu/Ganesha reference cannot complete because ordinary directory access on the mounted filesystem intermittently returns EREMOTEIO. This is inherent to the ticket, not a pre-existing unrelated bug to waive. The implementation installs the exact reviewed pins; no after-review source change caused it. Current design selects a4.3-family engine and Linux kernel client without a demonstrated compatible disposition for this observed reference.
 
-## CR002 Resolution And Evidence
+**Confirmed origin:** runtime NFS server/client interoperability at directory-delegation handling, exposed by the readiness reader. It is reproducible outside Go. **Classification: Design Impact**, owned by Solution Designer for selected-reference/dependency compatibility recovery. This is not an instruction to patch `ReadMarker`, remove its check or silently tune every host. The requirement for one-command ordinary shared files is clear; the technical reference needs recovery. No need to invent a new behavior or outage contract.
 
-`backend/apple_startup.go` owns registration parsing/serving checks and a30s observation window with250ms pauses **after unsuccessful known startup observations**; commands use rpcinfo2s request timeout. This is not a hard OS wall-clock/file-operation deadline. `platform.Commands` fixes C locale, trusted absolute executable and inherited administrative lock. Table parsing requires TCP v3 ports and refuses invalid/duplicate relevant ports. Explicit `-n` avoids the implicit-lookup wrong-port path observed in rejected candidates. Authentication/version/procedure/unknown errors are not retried. Existing source config/UUID/activation policy, hard/local-lock mount and nonroot/job order stay intact.
+### Primary public evidence
 
-[IR004 investigation](implementation-evidence/ir-004/startup-investigation.md) retains the baseline reproduction, three rejected candidates and packet distinction. Real NULL calls at ports2049/20048 are corroborated by inspected matching RPC replies in [packet proof](implementation-evidence/ir-004/ports-trace-null-proof.json). They establish serving, not export access; that is why subsequent mount/nonroot verification remains. Exact baseline guest kernel scheduling cause is not claimed solved by diagnosis, only the demonstrated application startup boundary corrected.
+Two fresh real guest creates, exact packages `nfs-common1:2.6.4-3ubuntu5.1`, `nfs-ganesha4.3-8ubuntu1`, `nfs-ganesha-vfs4.3-8ubuntu1`, nonroot1000:109, active Ganesha and successful NFSv4.1 mount, exit1 at marker probe in17.258s/16.252s. First exact command:
 
-[Independent evidence review](code-review-evidence/crr-004/execution-evidence-review.json): final `ports-plain` and `ports-confirm-trace` full harnesses **Pass**, public command13.406s/11.495s (case13.407s/11.496s), no manual reconnect, same original/mounted bytes and UUID, original source identity/owner/mode, installed binary identity, root private0700/0600 and running job. Both use production hash `497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da` and binary `e8c88d75a1ce43fcffd78f831dbfde38e8f4c11af06274251b600ea7bd5535c1`. Built precommit from the exact audited delta, not from unchanged receipt HEAD alone. Development-unqualified, not a published release.
+```sh
+umask 077
+exec /home/admin/ab-nfs-api002-linux-25fc064c-binary create \
+  --source /home/admin/ab-nfs-api002-linux-25fc064c-source \
+  --backend ganesha-native --endpoint 192.168.64.4 --allow 192.168.64.4 \
+  --nodes none --yes --json
+```
 
-All eight attempts remain recorded at actual outcomes: baseline failure; candidate1 pass then failure; candidate2/3 failures; final-source `ports-trace` create success but **overall harness Fail** from irrelevant GID0 assertion; two subsequent full fresh passes after harness-only correction. No overwritten negative, warm reconnect substitution or universal first-start guarantee. Original API001 V01 success and V02/repro failures stay intact.
+Second fresh suffix5336c36d/self endpoint192.168.64.5. [First result](evidence/api-e2e/api-rev-002/linux-native-result.json), [second result](evidence/api-e2e/api-rev-002/linux-native-repro-result.json), [reconnect/read contrast](evidence/api-e2e/api-rev-002/linux-native-focused.json), [corrected strace](evidence/api-e2e/api-rev-002/linux-native-trace-corrected.json). Product error: `openat .autobyteus-nfs/storage.json: remote I/O error`; trace actually fails reopening **the directory**, not opening a regular JSON file as a directory. Source bytes/identity and mounted ordinary reads remain intact. Initial wrong-executable-path diagnostic remains explicitly invalid, not a create cause.
 
-## Structural / Design Checks
+[Linux candidate provenance](evidence/api-e2e/api-rev-002/linux-candidate-build.json) uses documented build-only metadata with exact reference pins in an otherwise identical copy. Only copied `release.json` changed; qualifiedTargets empty. Candidate/installed SHA`9aae4944c680e3be1331f760f2c07794695a2dbea6327858ca87007b77111fd3`. No public qualification or release claim; this is a legitimate configured qualification candidate, not a fixture disabling production verification.
 
-Carried rows refer to independently unchanged prior full-source evidence; affected paths below were revalidated.
+### Personally executed bounded diagnosis
 
-| Check | Result / evidence | Required action |
-| --- | --- | --- |
-| Design health / posture | Pass — missing startup invariant corrected in existing adapter, no new owner | None |
-| Approved supplements | Pass — Approved018/Ready019/ARCH003 unchanged, evidence limits retained | None |
-| Data-flow inventory | Pass — DS001/002 full path and bounded startup detail explicit; DS003–005 carried | None |
-| Ownership boundaries | Pass — setup uses backend operations, no direct RPC orchestration | None |
-| Off-spine concern clarity | Pass — Apple-specific registration/serving observation serves backend only | None |
-| Existing subsystem reuse | Pass — same backend/Runner/lock, no parallel service implementation | None |
-| Reusable owned structures | Pass — both activation paths use one private observation owner | None |
-| Shared data-model tightness | Pass — fixed local two-port result, no new persistent/shared shape | None |
-| Repeated coordination ownership | Pass — loop resides in backend, not copied into setup/supervisor | None |
-| Empty indirection | Pass — wrapper binds production clock/pause; activation helper owns command order | None |
-| Separation/file responsibility | Pass —98-line startup concern separate from exact OS apply/detach | None |
-| Dependency direction | Pass — backend -> platform Runner; no reverse/test production dependency | None |
-| Authoritative Boundary Rule | Pass — setup never calls private RPC observer/parser; callers retain backend boundary | None |
-| File placement | Pass — Apple RPC details under backend, setup only passes endpoint | None |
-| Flat/over-split layout | Pass — one concrete concern file, no framework/excess modules | None |
-| Interface clarity | Pass — selected endpoint explicit; no ambiguous ID/data or public API migration | None |
-| Naming | Pass — startup/observe/TCP ports describe concern and limits | None |
-| Duplication | Pass — shared observer/retry policy, no duplicated RPC loops | None |
-| Patch complexity | Pass — rejected implicit lookup candidates absent; one final port strategy, no fallback ladder | None |
-| Dead code | Pass — all new functions used; old unconditional return replaced, no obsolete candidate paths | None |
-| Requirement-aligned tests | Pass — order/partial registration/real serving/error preservation; boundary and native proof separated | None |
-| Fixture structure | Pass — shared fake runner and deterministic clock, coherent single concern | None |
-| Stale/compat-only tests | Pass — no suppressed product failure; mutation controls deliberately separate | None |
-| API/E2E readiness | Pass for re-entry — CR002 source correction and narrow actual current proof; mandatory independent rerun remains | API owner rerun API-F001 then remaining matrix |
+[Diagnostic summary](code-review-evidence/crr-005/diagnostic-summary.json) and [full command receipt](code-review-evidence/crr-005/linux-dir-diagnostic.json): fresh owned Ubuntu image identical to API002, actual kernel7.0.0-38, same pinned packages, current Ganesha config template, hard TCP4.1 mount and exact1000:109/no supplementary groups. Manual diagnostic setup replays the observed open/stat/close/reopen sequence with Python, **not a new public CLI run or product fix**.
 
-## Source Size And Structure Audit
-
-Only production sources use thresholds; new165-nonempty-line test is excluded. Independent counts compare CRR003 receipt -> IR004; module did not exist on `origin/personal` for these introduced files, so feature-base counts are0. [Delta audit](code-review-evidence/crr-004/delta-audit.json); prior full [size inventory](code-review-evidence/crr-001/source-size-audit.md) carried for unaffected source, CRR002 commands.go correction retained.
-
-| File under autobyteus-nfs/internal | Prior -> current nonempty | >500 / >220 delta | Ownership / placement |
-| --- | ---: | --- | --- |
-| backend/apple_apply.go | 129 ->136 | Pass / Pass | Exact Apple apply/start/detach, backend |
-| backend/apple_startup.go | 0 ->98 | Pass / Pass | Concrete registration/serving startup concern, backend |
-| setup/apply.go | 185 ->185 | Pass / Pass | Same setup transaction flow, validated endpoint passed |
-| setup/lifecycle.go | 143 ->143 | Pass / Pass | Same reconnect/detach owner, validated endpoint passed |
-
-No forced split, source threshold violation or size finding.
-
-## Legacy / Cleanup / Docs Verdict
-
-| Check | Result |
+| Guest setting / same mounted source | Three Python trials |
 | --- | --- |
-| No new compatibility mechanism or old behavior retention | Pass — final explicit port strategy only; rejected candidates exist only as evidence |
-| Dead code removed in touched scope | Pass — no obsolete/unused new function or flag identified |
-| Persisted transition | Pass — **Not Affected**, same attachment/source/intent records, no migration |
-| No version-specific dual runtime shape / fallback | Pass — no new schema/version dispatch or implicit-lookup fallback |
-| Transition safety matches design | Pass — same source identity/UUID/permissions and exact resource ownership |
+| Original `directory_delegations=Y` | 2 EREMOTEIO (first/second directory opens),1 success |
+| Diagnostic-only `N` | 3 successes |
+| Restored original `Y` | Same2 EREMOTEIO,1 success |
+| Original local ext4 control | 3 successes |
 
-Dead/obsolete/legacy removal list: **None identified**. Docs impact: overall feature still needs Delivery sync; no new intended user behavior/guide/locking policy from this correction. Backend comments and IR004 evidence clearly limit startup-window claims; no new outage bound or published qualification.
+Thus Go is not necessary to trigger the defect, and not every open fails. No blanket retry is validated. Setting restored before disposal; no host kernel/network policy changed. First diagnostic attempt omitted the product's competing-default-unit mask and failed manual mount against an active distribution daemon; it is retained as a **reviewer harness failure**, not API-F002 evidence. Corrected second attempt masks that unit in its own new guest. [Attempts](code-review-evidence/crr-005/diagnostic-attempts.md).
 
-## Checks And Limits
+**Limit:** passive packet capture produced only its header, zero packet records; capture stop rc5 after SIGINT is retained. The decoder's zero result is **not wire proof**. Upstream [V4.3 dispatch](https://github.com/nfs-ganesha/nfs-ganesha/blob/V4.3/src/Protocols/NFS/nfs4_Compound.c), [Linux v7 decoder](https://github.com/torvalds/linux/blob/v7.0/fs/nfs/nfs4xdr.c) and [accepted Ganesha correction](https://github.com/nfs-ganesha/nfs-ganesha/commit/98eb77c4fd94effa6882b214698a77752ec79f6e) support an inferred illegal-operation/expected-operation mismatch. [Primary contracts](code-review-evidence/crr-005/primary-contracts.md) distinguish that inference from executed evidence; no patched/new engine was installed or qualified.
 
-[Reviewer checks](code-review-evidence/crr-004/checks-and-limits.md) distinguish personally performed source/hash/caller/test/evidence/packet/manual review from supplied executions. Optional reviewer Go rerun **did not execute**: both official-toolchain download connections stalled and were interrupted; `commands: []`, owned roots cleaned, no reviewer test Pass. This does not establish a product failure. Retained IR004 seven-package race/vet, Python6pass/1child-only skip (Go parent executes it), four builds/native smoke, three mutation assertion failures and two current fresh VM passes were reviewed, **not rerun**.
+### Proportionate Required Outcome / Review Accountability
 
-No reviewer VM, privileged OS/mount/export/Docker/UI/provider action, delegation, source/test fix, merge/push/release or user verification. Five preexisting generated dist directories untouched; no owned reviewer process/root remains. No all-green repository claim: FUP001 current Nuxt4258pass/3fail/5skip and Electron188pass/3fail/1skip remain, candidate-only green logs not substituted.
+Solution Designer should establish an evidence-backed compatible Linux engine/client/package reference and update affected authoritative design/investigation/history. Preserve one-command setup, ordinary files, nonroot squash/allowlists, confinement, source identity and existing supported roles. If resolution changes intended support/behavior, obtain renewed approval rather than silently excluding this reference. Do not treat the diagnostic sysctl toggle as an approved shipped policy. No specific replacement version, backport, kernel downgrade, retry framework or reader fallback is prescribed by this review.
 
-## Review Scorecard
+The Go source correctly exposes an underlying error and refuses false readiness. This cross-stack behavior was **not reasonably inferable as a local Go source defect** from the reviewed calls alone; no new source-review mistake is asserted. Prior review deliberately left real Linux qualification to executable validation. What is now contradicted is the selected reference's compatibility premise. CRR004's100/100 remains historical source scoring, not current qualification; **no aggregate score/deduction is generated at this failure-only entry point**.
 
-**10.0/10 (100/100), simple average**, for current source-review findings only. Historical CRR002 aggregate100; CRR003 failure-only review had no new aggregate and superseded correctness/readiness rationale. Those affected rows are now revalidated for IR004; other categories carried/revalidated as indicated. Scores are not completion confidence, perfection or an API/physical/release waiver.
+## Checks, Limits, Cleanup And Remaining Gates
 
-| Priority / category | Score | Why / concrete weakness / expected improvement |
-| --- | ---: | --- |
-| 1 Data-Flow Spine Inventory and Clarity | 10 | Full setup-to-ready and bounded startup flow explicit; no promoted weakness; keep same owner path |
-| 2 Ownership Clarity and Boundary Encapsulation | 10 | RPC details stay inside backend, same lock/Runner; no promoted weakness; preserve boundary |
-| 3 API / Interface / Query / Command Clarity | 10 | Validated selected endpoint explicit, no shared shape change; no promoted weakness; retain exact endpoint/port use |
-| 4 Separation of Concerns and File Placement | 10 | Small Apple startup file under backend, setup remains orchestration; no promoted weakness; no framework needed |
-| 5 Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 10 | One observer for both activation entries, no persisted readiness state; no promoted weakness; preserve reuse |
-| 6 Naming Quality and Local Readability | 10 | Meaningful Apple RPC startup/parsing names and deadline limitation; no promoted weakness; retain truthful comments |
-| 7 API/E2E Readiness | 10 | CR002 regression plus exact current cold native proof support independent re-entry; no known source blocker; API must still rerun and complete matrix |
-| 8 Runtime Correctness And Behavioral Fidelity | 10 | CR002 addressed without dropping mount/nonroot proof or masking invalid setup; no remaining promoted defect; preserve original errors/identity |
-| 9 No Backward-Compatibility / No Legacy Retention | 10 | No migration/dual mode/implicit fallback, prior policies preserved; no promoted weakness; keep clean final strategy |
-| 10 Cleanup Completeness | 10 | New functions used, negatives retained, eight implementation clones and reviewer scratch removed; no promoted weakness; preserve unrelated outputs |
+[Focused audit](code-review-evidence/crr-005/focused-audit.json):29 relevant source/authority/history paths identical to API input before report update; all56 API002 manifest files match;276 unique referenced paths exist; no non-ticket source/test delta. [Checks and limits](code-review-evidence/crr-005/checks-and-limits.md) separates reviewed API execution from personal diagnostic. No repository suites rerun, source/durable-test fix, delegation, host-root/mount/network/Docker/user-data/provider action, merge/push/release or Task closure.
 
-## Findings / Follow-ups / Remaining Gates
+Both reviewer-owned clones/processes/private Ubuntu caches/scratch roots removed and rechecked absent; [cleanup](code-review-evidence/crr-005/cleanup.json), first-attempt cleanup and diagnostic-summary record exact ownership. Public prior Mac Tart cache and five generated SDK/BriefStudio dist directories retained untouched. No VM is left to inspect.
 
-**No open in-scope finding. CR002 resolved at source-review boundary, CR001 remains resolved**; resolution table in CRR004 revision entry. Successful API test-code review has not occurred. FUP001 stays in existing `/project_task_manager` custody awaiting separate user Task approval; no duplicate notification, repair, scoring penalty, task or worker.
+Current Nuxt/Electron remain non-green due FUP001 (three baseline updater failures each); candidate-only passes are not current source. IMP-D001 private links/source Update/Remove/AGY/local policies unchanged; D001/DEC015 outage hardening deferred/not fixed. Default unqualified release/Guide unavailable deliberate. Remaining both-OS native/managed-Docker clients, Linux native/Docker storage, healthy peers/normal operations/restart/detach/preservation, actual native tools/assets/peer-close/restore/Standalone-Team-Org, mounted desktop previews, independent physicalMac/Linux/Docker, docs/finalization/explicit user verification/authorized release remain gates. Only MacDocker STORAGE deferred. VM evidence alone does not complete testing.
 
-API owner must rerun API-F001 fresh current public create, then the remaining approved native/managed Docker clients on **both** Mac/Linux, Linux native/Docker storage, peer operations/restart/detach/preservation, current real native tools/assets/peerclose/restore/Standalone-Team-Org, mounted healthy desktop previews, independent physical Mac/Linux/Docker. Only Mac-Docker **storage hosting** is deferred. Docs/finalization, explicit user verification and authorized release remain gates. Main Task open.
+## Routing / Next Action
 
-D001/DEC015 still deferred/not fixed; no per-action outage workers/probes/stream leases/cwd trampolines/local fallback. IMP-D001/MP003004 independent source Update/Remove, private linked profiles, AGY/local policy unchanged; no pin/copy/refcount/retirement redesign. Default release unqualified/Guide unavailable deliberate. VM evidence does not complete physical or full runtime acceptance.
-
-## Classification / Routing
-
-Review decision **Pass**; scenario/material-premise gates **Pass**; failure classification **N/A** after CR002 resolution. **Large/High retained.** Fresh rule **“When implementation review passes and the cumulative package is ready for API, end-to-end, and executable coverage work.”** selects only `/software_engineering_team/api_e2e_engineer` ([routing](code-review-evidence/crr-004/routing.json)); no same-outcome secondary notification under the active single-recipient instruction. Complete cumulative source/failure/evidence package accompanies the handoff; no direct Delivery/release forwarding.
+**Fail / Design Impact -> `/software_engineering_team/solution_designer`**. Fresh rule: “When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision.” Exact rules/receipt retained in CRR005 routing evidence. Only this outcome recipient is selected. Complete cumulative failure package travels with this report/history. No successful-test or Delivery forwarding. After design recovery and any implementation correction, require applicable source review and API-F002 public-create/reconnect revalidation first, then remaining approved matrix; do not replace failures with diagnostic-only successes.
