@@ -282,3 +282,56 @@ record does not imply an earlier Pass or completed implementation.
   release/merge/push or Task Done. D001/DEC015 deferral and IMP-D001 source/AGY/local
   policy unchanged. FUP001 PM custody and old Nuxt/Electron non-green retained;
   separate peer-network environment limit remains, not a product-test pass.
+
+## IR-006 — Preserve gated publication across the skipped engine rebuild
+
+- Recorded2026-10-14. Trigger `/software_engineering_team/code_reviewer`, **CRR006
+  Fail / implementation-owned Local Fix / CR-004 P2**. Review28775788db8d1a3d1d54b86a29ebfac34e1a463b,
+  receiptb1747fbdc3fe41f8aa8413f7e110a42ce9687704. Prior IR005 Implementation Complete
+  led to CRR006 accepting CR003 remedy at source boundary but identifying this
+  permitted publication-path defect. Not a new engine/runtime/API failure.
+- Current result **Local Fix Complete — source re-review required**. Large/High
+  confirmed. Approved018/Ready020/ARCH004 unchanged. CRR006 Fail and API002
+  Fail57.14%/broader Required remain independent authorities; API-F002 still open.
+  DR N/A. IR001–005 and all old failures/scoped resolutions preserved.
+- Affected BEH001 distribution and preserved BEH004/005; SR020 one-command
+  release/qualification contract, REQ012/019, AC011/019/020. Valid future authorized
+  publish intentionally skips engine rebuild, so downstream default success
+  gates skipped the candidate/image/binary/release chain. This is not authorization
+  to publish or a failure of the correctly unqualified lock.
+- Source commit **eb7934072a1f98832b7b6330a1bc6a7f348fd93d**. Only
+  `.github/workflows/release-nfs.yml` and new
+  `scripts/tests/test_nfs_release_workflow.py`. Four explicit !cancelled() job gates
+  require every applicable direct prerequisite success; engine-inputs accepts only
+  build-only+successful rebuild OR publish+exact skipped rebuild. Publication also
+  requires intent and successful binary/signing matrix. Existing qualification,
+  candidate identity, signer/notary and archive bounds untouched; no unconditional
+  jobs, continue-on-error, qualified-pair rebuild, new owner or changed requirement.
+- New stdlib source-expression/needs regression executes in prepare. Personal
+  checks:17 Python tests/16 pass/1 existing standalone Go-child skip (not rerun via
+  Go this round); actionlint1.7.11 syntax/expressions pass; default publication
+  refuses as required. Five focused methods cover build-only/existing-candidate
+  success, failed/cancelled/skipped prerequisites, cancellation and required
+  identity/qualification/signing. Baseline10 assertion failures retained; six
+  controls fail on intended assertions, not parser errors. All13 command receipts
+  expected. No hosted runner/signing/publication executed; model is not that proof.
+- Workflow277 ->283 nonempty lines,8 added/2 removed; test132 nonempty. No Go/
+  engine/recipe/package/runtime/UI change; no migration/compatibility/dead fallback.
+  1115 prior source/authority/history paths and11 ignored candidate files unchanged.
+  Initial audit stopped because reviewer receipt appeared after incoming commit;
+  corrected parent baseline retained, no source defect/data change hidden.
+- Current default hash4568593b99bb3dff263e9824ceb7176e04a95ec90e3cd14a9f7421b4e43055ac;
+  current aggregate with retained engine inputs5563645d23aaac13aaa26948490d68dfc12fef31775bb66156185f9052ab0acc.
+  Workflow is hashed, so old IR005 CLI/metadata is a prior aggregate, not a current
+  qualification. Reuse unchanged exact engine bytes but rebuild current CLI/metadata
+  and record identities before API public tests. No new artifact build/qualification.
+- All work personal/no delegation; only owned local temp copies/home used and
+  removed, all subprocesses complete. No VM/container/mount/app/node/credentials/
+  provider/hosted workflow/push/release/Task Done. Prior actual IR005 package/Go/
+  Docker proof remains historical, not rerun. Frontend unchanged: rendered N/A.
+- Return via fresh Large/High Local Fix rule to source reviewer. After Pass,
+  API-F002 public fresh create/reconnect without engine preinstall first, then all
+  remaining approved modes/clients/storage/peer/runtime/healthy preview/physical/
+  user/docs/finalization/release gates. CR001/CR002 scopes, D001/DEC015 deferral,
+  IMP-D001 independent source deletion/AGY/local policy, FUP001 PM custody and
+  separate peer-network limit unchanged. No broad tests relabelled current pass.

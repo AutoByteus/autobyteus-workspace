@@ -1,0 +1,253 @@
+[
+  {
+    "name": "actionlint-version",
+    "argv": [
+      "/opt/homebrew/bin/actionlint",
+      "-version"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.015
+  },
+  {
+    "name": "actionlint",
+    "argv": [
+      "/opt/homebrew/bin/actionlint",
+      "-shellcheck=",
+      "-pyflakes=",
+      ".github/workflows/release-nfs.yml"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.006
+  },
+  {
+    "name": "python-packaging",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "scripts/tests/test_nfs_release_workflow.py",
+      "scripts/tests/test_nfs_engine_packaging.py",
+      "scripts/tests/test_nfs_installer_fixture.py",
+      "scripts/tests/test_nfs_packaging_and_launcher.py",
+      "-v"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 0,
+    "expected": 0,
+    "seconds": 4.615
+  },
+  {
+    "name": "publish-refusal",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "autobyteus-nfs/packaging/release.py",
+      "--check-publish"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.269
+  },
+  {
+    "name": "source-hash",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "autobyteus-nfs/packaging/release.py",
+      "--source-hash"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.27
+  },
+  {
+    "name": "candidate-input-source-hash",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "autobyteus-nfs/packaging/release.py",
+      "--source-hash",
+      "--engine-manifest",
+      "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-005/built-engine-manifest.json"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.268
+  },
+  {
+    "name": "baseline-status-gating",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-c",
+      "import pathlib,unittest; from scripts.tests import test_nfs_release_workflow as t; t.WORKFLOW=pathlib.Path('/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/baseline-status-gating.yml'); r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(t.ReleaseWorkflowGatesTest)); raise SystemExit(not r.wasSuccessful())"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.142
+  },
+  {
+    "name": "mutation-unconditional-engine",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-c",
+      "import pathlib,unittest; from scripts.tests import test_nfs_release_workflow as t; t.WORKFLOW=pathlib.Path('/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/mutation-unconditional-engine.yml'); r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(t.ReleaseWorkflowGatesTest)); raise SystemExit(not r.wasSuccessful())"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.143
+  },
+  {
+    "name": "mutation-ignore-binary-signing-result",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-c",
+      "import pathlib,unittest; from scripts.tests import test_nfs_release_workflow as t; t.WORKFLOW=pathlib.Path('/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/mutation-ignore-binary-signing-result.yml'); r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(t.ReleaseWorkflowGatesTest)); raise SystemExit(not r.wasSuccessful())"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.138
+  },
+  {
+    "name": "mutation-ignore-cancellation",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-c",
+      "import pathlib,unittest; from scripts.tests import test_nfs_release_workflow as t; t.WORKFLOW=pathlib.Path('/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/mutation-ignore-cancellation.yml'); r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(t.ReleaseWorkflowGatesTest)); raise SystemExit(not r.wasSuccessful())"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.143
+  },
+  {
+    "name": "mutation-publish-on-build-only",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-c",
+      "import pathlib,unittest; from scripts.tests import test_nfs_release_workflow as t; t.WORKFLOW=pathlib.Path('/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/mutation-publish-on-build-only.yml'); r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(t.ReleaseWorkflowGatesTest)); raise SystemExit(not r.wasSuccessful())"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.146
+  },
+  {
+    "name": "mutation-accept-failed-rebuild",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-c",
+      "import pathlib,unittest; from scripts.tests import test_nfs_release_workflow as t; t.WORKFLOW=pathlib.Path('/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/mutation-accept-failed-rebuild.yml'); r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(t.ReleaseWorkflowGatesTest)); raise SystemExit(not r.wasSuccessful())"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.144
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "environment": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir006-uc25hjni/tmp",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.262
+  }
+]
