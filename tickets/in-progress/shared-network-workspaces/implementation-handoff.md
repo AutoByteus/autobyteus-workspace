@@ -1,334 +1,211 @@
-# Implementation Handoff — IR-004
+# Implementation Handoff — IR-005
 
-## Current result
+## Current result and authority
 
-**Local Fix Complete — CR-002 / API-F001 addressed; independent source re-review required.**
-Latest source-review authority remains **CRR-003 Fail**; **API-REV001 Fail** and
-confidence57.14% remain unchanged pending independent retest. Historical CRR002
-source Pass and CR001 resolution are preserved, not reopened.
-IR004 corrects Apple activation-to-mount startup sequencing through registered-port
-and actual NFSv3/MOUNTv3 serving checks in the existing backend. Two complete fresh
-native Mac VM checks pass; failed candidates and one harness-only false assertion
-remain recorded. Implementation and local checks performed personally, no delegation.
+**Implementation Complete — SR020 dependency recovery; independent source review
+required.** Implementation and all checks in this round were performed personally,
+without delegation. **Large / High** retained. This is not a completed product,
+API/E2E Pass, physical qualification, delivery or release.
 
-IR002's full-suite results remain historical local evidence for unchanged areas,
-not an all-green repository result: the same3 baseline updater failures remain.
-No API/E2E forwarding is authorized until independent review passes this correction.
+The approved Ganesha correction is now implemented in the release recipe, typed
+manifest, embedded Linux package pair, existing Ubuntu install owner and Docker
+image build. Actual arm64 production-recipe build, clean package-owner install and
+same-pair Docker packaging checks pass. **Public NFS create/reconnect was not run
+in IR005.** Source review must precede API-F002 and the remaining product matrix.
 
-This is not delivery, release, physical-system qualification or API/E2E signoff.
-Current code and this handoff are authoritative; preserve IR-001's design finding
-history instead of rewriting it into an earlier implementation pass.
+Current independent authorities remain **ARCH-REV004 Pass / Ready SR020 /
+Approved SR018**, **CRR005 Fail / Design Impact CR-003**, **API-REV002
+Fail /57.14% / broader Required / API-F002**. Implementation does not overwrite
+those owners' findings. CRR004's prior source Pass and API002's resolution of
+CR002/API-F001 nativeMac cold create remain valid only at their recorded scopes.
+CR001 permissions and IMP-D001 source ownership corrections are preserved.
 
 ## Upstream artifact package
 
 Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`.
-Branch: `codex/shared-network-workspaces`; base/finalization: `origin/personal`.
-Task: `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.
-Ticket root (all ticket-relative artifacts below live here):
+Branch `codex/shared-network-workspaces`; base/finalization `origin/personal`.
+Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.
+All ticket-relative references below live at
 `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces`.
+Production paths are worktree-relative. Complete absolute reference index:
+`implementation-evidence/ir-005/package-index.json`.
 
-- `solution-design-handoff.md`: full cumulative upstream index, not superseded by
-  this implementation summary. `investigation-notes.md` is the full supplement/raw
-  evidence inventory; read its still-relevant links, limitations and historical failures.
-- `requirements-doc.md`: unchanged **Approved SR018**; approvals
-  `approval-record-sr018.md`, `approval-record-sr017.md`, user direction in
-  `architecture-review-scope-feedback.md`.
-- `design-spec.md`: **Ready SR019**, reviewed design commit `4c28e7865b`.
-- `solution-revision-record.md`: cumulative requirements/design history.
-- `design-review-report.md`, `architecture-review-revision-record.md`:
-  **ARCH-REV-003 Pass**, review commit `65b0e6e57a`; independent architecture review
-  applies. ARCH-REV-002's source-lease acceptance is superseded, ARCH-REV-001/D-001
-  remains historical. No production behavior is qualified by those reviews.
-- `implementation-revision-record.md`: IR-001/002/003 preserved plus current **IR-004**.
-  Current trigger **CRR-003 / CR-002 P1 / API-F001**. Historical **IMP-D001**, detailed original evidence
-  `implementation-evidence/ir-001/source-lease-design-impact.md` and `source-audit.json`.
-- Retained feasibility supplements under `evidence/feasibility/`:
-  `sr019-artifact-audit.json`, `sr018-artifact-audit.json`, `sr017-selection-report.md`,
-  `experiment-index.json` and all indexed raw FR001–057 receipts, `feasibility-report.md`,
-  `macos-vm-feasibility-report.md`, `native-folder-hosting-report.md`,
-  `backend-correctness-report.md`, `private-runtime-skill-report.md`,
-  `native-private-readiness-report.md`, `real-agent-roundtrip-report.md`.
-  These are historical experiments, not current-product qualification.
-- UI reference: `evidence/ui-reference/docker-guide-user.png`; no separate
-  Product-owned behavior supplement was requested (N/A — not applicable).
-- Current local-fix evidence: `implementation-evidence/ir-004/checks-and-limits.md`,
-  `startup-investigation.md`, `source-audit.json`, `local-checks-result.json`,
-  `vm-summary.json`, `run-mac-cold.py`, raw8 VM attempts and `cleanup.json`.
-  `package-index.json` inventories IR004 receipts; `final-source-check.json` verifies
-  source/history preservation. `packaging-check.json` records untouched raw-log
-  whitespace warnings; source and authored artifact whitespace checks pass.
-  IR003 permission fix/evidence remains under `implementation-evidence/ir-003/`.
-- IR002 implementation evidence index:
-  `implementation-evidence/ir-002/checks-and-limits.md`; historical source hashes,
-  expanded check receipts, native metadata discovery, rendered artifacts and all
-  earlier failures reside alongside it. `progress.md` is historical checkpoint context.
-- `code-review-report.md`, `code-review-revision-record.md`: **CRR-003 Fail / Local Fix**;
-  `code-review-evidence/crr-003/` contains source contracts, focused hashes, execution
-  summary, routing and limits. Review commit164e871e55, receipt4ed9a12720.
-  Historical CRR002 Pass (3b7dd9a289) and CRR001/CR001 permission finding retained,
-  with all `code-review-evidence/crr-001/` and `crr-002/` receipts.
+- `requirements-doc.md`, `approval-record-sr018.md`, `approval-record-sr017.md` and
+  `architecture-review-scope-feedback.md`: unchanged approved intended behavior.
+- `solution-design-handoff.md`: complete cumulative package. `investigation-notes.md`
+  is the full supplement/raw evidence inventory, including original requests,
+  approvals, node-path tables, failed experiments and scoped evidence limitations.
+- `design-spec.md`: **Ready SR020**, reviewed design957b052f4b222b7ddb14e148fd5439ba10122379.
+  `solution-revision-record.md`: cumulative requirements/design history.
+- `design-review-report.md`, `architecture-review-revision-record.md`,
+  `architecture-review-evidence/arch-rev-004/review-checks.json`: ARCH004 Pass,
+  commitc7f0376db65d09bcab93feeb3adb9288ece9d58a. Incoming receipt/input
+  d1aceecc4888fe8b1d58be898337473cd4be8243. Duplicate ARCH004 delivery deduplicated.
+- `code-review-report.md`, `code-review-revision-record.md` and
+  `code-review-evidence/crr-001/` through `crr-005/`: current CR003 origin/review,
+  all prior source findings and scoped resolutions. Not superseded by this handoff.
 - `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`,
-  `api-e2e-revision-record.md`, `api-e2e-test-case-ledger.md`: **API-REV001 Fail**,
-  API-F001; `evidence/api-e2e/api-rev-001/package-index.json` indexes actual V01 Pass,
-  V02/single-VM Fail, public reconnect limits, source identity, executed harnesses
-  and cleanup. API evidence1009ce87e5; API-owned REST fixture correctionaf9f23 unchanged.
-  Reviewer did not rerun that API evidence. This fix does not overwrite its result.
-- DR: **N/A — not yet performed**, not waived or marked passed.
+  `api-e2e-test-case-ledger.md`, `api-e2e-revision-record.md`,
+  `evidence/api-e2e/api-rev-001/` and `api-rev-002/`: current Fail and raw execution,
+  negative cases, environment constraints, source identity and cleanup receipts.
+- `evidence/design-recovery/sr020/`: accepted dependency selection, actual prototype
+  attempts and failures; `package-index.json` supplies328 incoming references.
+  Prototype manually preinstalled packages support design only. No prototype
+  package hashes/attribution/timestamps are relabelled as production artifacts.
+- `implementation-revision-record.md`: IR001–004 unchanged plus IR005. Prior
+  `implementation-evidence/ir-001/` through `ir-004/` retained in full. IR001
+  IMP-D001 was a real design finding, not an earlier implementation Pass.
+- `evidence/feasibility/` reports/index/raw FR001–057, UI reference
+  `evidence/ui-reference/docker-guide-user.png`, original setup/application-node/
+  agent feasibility contexts and approvals remain indexed. No historical
+  experiment result is current-product qualification.
+- Current evidence: `implementation-evidence/ir-005/checks-and-limits.md`,
+  `source-audit.json`, `final-source-check.json`, `local-checks-result.json`,
+  `go-race-final.log`, `engine-build-result.json`, `built-engine-manifest.json`,
+  `source-artifact-check.json`, `install-result.json`, executed scripts, all raw
+  logs, cleanup receipts and `retained-candidate.json`.
+- Product-owned supplemental design: **N/A — not applicable**, none requested.
+  Independent architecture/source reviews apply. DR: **N/A — not yet performed**.
 
 ## Current implementation summary
 
-- Cycle: Implementation-owned **Local Fix** after API failure-origin review; revision **IR-004**.
-- Related revisions: SR-019 / Approved SR-018; ARCH-REV-003, retained preceding history.
-  **CRR-003 / CR-002 / API-REV001 / API-F001** current trigger; DR N/A. IMP-D001 historical resolution retained.
-- IR004 fix: **`174e480bd0cfaee29f22fd46b1922afbb274e56b`**; `backend/apple_apply.go`,
-  new `apple_startup.go` + durable unit regression, and selected-endpoint arguments
-  in `setup/apply.go`/`lifecycle.go`. Existing Apple owner waits for TCP registrations
-  AND NULL replies at explicit ports before returning to the one-shot mount/probe.
-  Narrow startup conditions only; invalid setup/procedure/auth errors remain fatal.
-  No implicit-lookup fallback, daemon policy, mount retry, OS ownership or state change.
-- IR003 fix (retained, CR001 independently resolved by CRR002): **`dfeac830f468994255fdafc31f66cdbeee1852cc`**: one production owner
-  `autobyteus-nfs/internal/platform/commands.go`; durable Go directory/installer
-  regression and existing Python bootstrap fixture extended. Only newly created
-  directories receive exact requested modes, including recursive0755 parents;
-  private0700, root trust, unsafe-existing refusal and installer077 remain.
-  No data/source chmod, global umask change, private-source retention or new scenario.
-- IR002 production/source tests/docs: `c57ab71c90930a0c98e1310d07b0808d28dfbd14`.
-  Separate baseline fixes: launcher quoting `6717bcb221`; isolated-core traversal
-  fixture `f34fc81aa2` (full core rerun:298 files/2,019 tests pass).
-- Standalone Go service, installer/release plumbing, selected managed-node adapter,
-  optional launcher reference, lazy application binding and scoped Git child env,
-  private linked runtime profiles and Nodes NFS Guide are implemented.
-- **IMP-D001 resolution implemented:** catalog lookup is not source acquisition.
-  Exact private process/profile cleanup owns wrappers/links only. Source Update/
-  Remove keeps its independent deletion policy; no source-byte pin/refcount,
-  snapshot, copy fallback or retirement queue. AGY's capsule/manifest restore policy
-  and ordinary local materialization/collision/runtime permissions remain unchanged.
-- Source files, node private volumes/auth state and healthy REST streams are not
-  moved into another storage layer. No outage worker/stream lease/cwd trampoline.
+- Cycle **Rework after architecture-reviewed Design Impact recovery**; IR-005;
+  SR020 technical correction, unchanged Approved018 and SR019 profile policy;
+  ARCH004; CRR005/CR-003; API002/API-F002; DR N/A.
+- Source commit **9992ffb30d4fbaab4852b87b2495738f1b5be908**:26 source/test/docs paths.
+  `packaging/engine/` locks exact Noble4.3-8ubuntu1 source/distro patches/rules plus
+  accepted98eb77c two-field dispatch correction. Distinct4.3-8ubuntu1+autobyteus1
+  main/VFS pair, complete corresponding modified source, notices/build inventory.
+- Release manifest owns exact source/recipe/patch/name/version/architecture/SHA/size.
+  Native Linux CLI embeds only matching architecture pair; Mac embeds no debs.
+  Generated packages are not checked into source. Missing/mismatched bundle refuses
+  before package mutation, no arbitrary user URL/path/sidecar or stock fallback.
+- `backend.InstallUbuntuPackages` retains consent/apply/admin-lock/mask ownership;
+  private0700 directory/0600 exact files, local APT arguments plus distro client/
+  runtime dependencies, exact installed-status/version requery and cleanup.
+  No new lifecycle owner or automatic package upgrade on normal reconnect.
+- Docker installs the same release-owned pair, not another independent engine
+  build. CI build-only produces native arm64/amd64 artifacts once; publication
+  fetches an explicit previous candidate run and verifies locked identities rather
+  than rebuilding engine bytes under old qualification. Changed inputs invalidate
+  qualification. Existing four-member/100MiB installer limits remain.
+- Entire prior IR002 feature and IR003/004 fixes retained: standalone service,
+  selected-node preservation, launcher reference, lazy shared binding, scoped child
+  Git environment, private current-source skill profiles and Nodes NFS Guide.
+  Public guide/release remains unavailable by default, not a shipped command.
 
-## Routing classification
+## Classification and design health
 
-- `task_size: Large`; `architectural_risk: High` — **confirmed**, no downgrade.
-- Design section: Task Size And Architectural Risk. Multiple privileged OS engines,
-  persistent storage identity, destructive-boundary Docker preservation, runtime
-  lifecycle and release surfaces confirm the original scope/blast radius.
-- Selected completion route: **Code Review**, per refreshed handoff rules for completed
-  implementation-owned Local Fix on an existing Large/High package, exact recipient `/software_engineering_team/code_reviewer`.
-  Request that review after this cumulative package is persisted. This is not
-  delegation of implementation or execution of testing to another team.
-- Direct-route lightweight review: N/A — independent source review is required.
-- New design-impact/requirement escalation: None identified. Additional independent
-  evidence and release gates remain outstanding, not silently converted to a design
-  waiver or called completed implementation validation.
+- `task_size: Large`, `architectural_risk: High` — **Confirmed**, no downgrade.
+  Design classification and privileged package/release/source identity ownership
+  justify independent source review despite the bounded delta.
+- Selected route: **Code Review**, fresh completion rule for Large or High;
+  recipient `/software_engineering_team/code_reviewer`. This is existing-role
+  source review, not delegated implementation/testing or a new team.
+- Direct-route lightweight review: **Not Applicable**. New design-impact or
+  requirement escalation: **None identified** in this implemented recovery.
+- Reviewed posture: demonstrated dependency/protocol compatibility defect in a
+  supported normal path. Existing filesystem/confined reader is not the defective
+  owner. Narrow release/bundle responsibility is implemented; no broad app
+  refactor, new filesystem engine or runtime compatibility service. **Matches
+  SR020 health assessment**. Original failed wire sequence remains inference.
+- Scope Guardrail respected: **Yes**. Default directory delegationsY, reference
+  kernel, hard4.1, confined nonroot marker access/squash/allowlist, source/UUID,
+  selected-node/private state and consent/rollback preserved; no global tuning,
+  unsafe reader, stock fallback, protocol downgrade or blind read retry.
 
 ## Reviewed behavior implementation trace
 
-Production paths below are relative to the worktree root.
+| ID | Actual production owner/path | IR005 outcome and evidence boundary |
+| --- | --- | --- |
+| BEH001 | `autobyteus-nfs/packaging/engine/`, `packaging/release.py`, workflow; `internal/backend/engine_bundle.go`, `engine_staging.go`, `ubuntu_packages.go`; `internal/setup/apply.go`, `service.go` | Corrected release pair delivered through existing one-command setup spine. Actual build/package installation checked; public create/reconnect not executed in this round. IR003 modes and IR004 Apple startup barrier untouched. |
+| BEH002 | server `shared-run-workspace-admission.ts`, shared-workspace binding, runtime-skill-profile/private preparation/native adapters and exact process owners | Unchanged. No intentional shared local fallback. Private linked current-source discovery, support assets/normal peer close/restore and Standalone-Team-Org proof still required. |
+| BEH003 | Go backend Apple/Ganesha, platform mounts/nonroot qualification; server scoped-project-git-environment and core terminal-child-environment | Direct OS NFS and scoped Git trust unchanged. Corrected dependency not a copy/sync/data proxy. Actual peer/locks/Git/full-mode semantics remain downstream. |
+| BEH004 | `setup/lifecycle.go`, status/service and lazy server binding check | Untouched ordinary reconnect/service path: no package install/upgrade, no per-file/per-turn probe. Missing prerequisites/bad bundle/setup remain truthful failures; outages may stall. |
+| BEH005 | existing package install/mask owner, private staging; setup plan/apply/detach, Docker snapshot/recreate/recovery/ownership, source/config/private probe | Same administrative ownership and consent. Clean package-owner helper under077 verifies exact pair/mask/staging cleanup. This is not public consent flow or real selected-node mutation/rollback proof. |
+| BEH006 | existing workspace/run-artifact REST authorization/path/projection/MIME/errors/streams | Unchanged. Historical fixture results retained, not rerun. Healthy mounted desktop media/HTML/relative asset/completed-artifact previews remain mandatory. |
+| BEH007 | NodeManager/NodeManagerTabs/NfsGuideCard/nfsLauncherCommands/en+zh-CN | Unchanged guide and truthful unavailable release; no new UI delta. Prior rendered evidence retained, no new UI verification claimed. |
 
-| Behavior | Approved change / preserved outcome | Actual owner and key paths | Implementation result / evidence limit |
-| --- | --- | --- | --- |
-| BEH001 | One app-independent guided service, selected original source and same mapping across reconnect | `autobyteus-nfs/cmd/autobyteus-nfs`; `internal/cli`, `setup`, `config`, `service`, `platform/jobs.go`; `scripts/public/nfs/install.sh`; release workflow/packaging | Implemented normal create/connect/status/reconnect/detach and pending-state ownership. IR003 new-directory modes retained; IR004 Apple serving barrier corrects CR002. Two fresh current native-Mac VM creates under077 verify source/mounted bytes/UUID and live job; not physical/peer/reboot/published-installer qualification. |
-| BEH002 | Standalone/Team/Org/restore normal tools/cwd, configured skills, no intentional shared temp fallback | server `agent-execution/services/shared-run-workspace-admission.ts` via `agent-run-manager.ts`; `workspaces/shared-workspace-binding.ts`; native helper/resolvers; shared `runtime-skill-profile.ts` and `prepare-private-runtime-skills.ts`; Claude/Codex/Grok exact discovery adapters/process owners | Shared activation check central, private linked profiles/process close implemented; ordinary local branch retained as a distinct supported mode. Unit and native signed-out discovery proof, not real native tool/support-asset/peer-turn proof. |
-| BEH003 | Same filesystem bytes and documented concurrency/Git behavior | Go `backend/apple*`, `ganesha*`, `platform/mounts.go`, filesystem/file-handle qualification; server `runtime-management/shared/scoped-project-git-environment.ts`; core `tools/terminal/terminal-child-environment.ts` and existing PTY/process owners | Hard TCP NFS3/NFS4.1 mapping, source nonroot map-all, child-only exact-project Git trust preserving indices. No merge/sync/cache substitute; mounted filesystem/concurrent peer semantics await actual matrix. |
-| BEH004 | Known bad new-run binding not ready, ordinary healthy reconnect, no local substitute | Go `setup/status.go`, `lifecycle.go`, `service/supervisor.go`; server lazy descriptor/mount/source/UUID/access checker | No global workspace startup scan or per-turn/file checks. Actual bad binding rejected, status host/node distinctions retained. Checks may stall; no outage deadline. |
-| BEH005 | Explicit consent/trust/nonroot source, preserve exact selected nodes and all private state | Go `setup/plan.go`, `apply.go`, `detach_nodes.go`; Docker `snapshot.go`, `recreate.go`, `recovery.go`, `ownership.go`, probe receipts; root/private config, Apple exact blocks; launcher `nfs-attachment.sh`, `container-config.sh` | Immutable selected-node image/config/private/anonymous volumes/ports/network aliases preserved, no general launcher reuse or node image pull. Pre-start rollback vs new-drain-after-possible-work distinction; fake transport tests. No real nodes were modified. |
-| BEH006 | Healthy explorer reload/media/HTML/relative assets/completed artifacts use existing contracts | Existing `api/rest/workspaces.ts`, `api/rest/run-file-changes.ts` and projection/stream readers **unchanged**; extended `tests/unit/api/rest/workspaces.test.ts` and existing completed-artifact tests | Local byte/MIME/static/missing/projection/no-store regressions pass. No new authorization/path/stream policy. Actual mounted UI and broader API proof remain downstream. |
-| BEH007 | Nodes NFS Guide, truthful copy/download availability, existing settings pattern | web `NodeManager.vue`, `NodeManagerTabs.vue`, `NfsGuideCard.vue`, pure `utils/nfsLauncherCommands.ts`, en/zh-CN settings strings | Actual components rendered; route, keyboard, responsive English/Chinese, unavailable release, fixture copy success/failure checked. Default release is null; no invented/published command or automatic execution. |
+## Key files, boundaries, compatibility and state
 
-Scope Guardrail respected: **Yes**. Windows, Mac-Docker storage hosting, public
-multi-tenant/secure internet NFS, sync/HA/distributed Git conflict resolution and
-bounded-outage isolation were not added. Native/managed Docker **clients on both
-Mac/Linux** remain included; Docker-on-Linux storage is separate from Mac hosting.
+`source-audit.json` lists exact26 deltas and1030 unchanged paths against the reviewed
+input. New runtime files are cohesive backend bundle/staging owners; release-only
+recipe/manifest stays in packaging. Setup passes typed engine metadata, not a
+second public extraction service or caller-selected package path.
 
-## Design health, ownership and implementation decisions
+Obsolete stock-engine package pins/install arguments removed; no in-scope legacy
+fallback, dual current/old behavior, compatibility shim or dead path retained.
+Existing stock-engine dependencies not silently purged on detach. No additional
+out-of-scope dead-code finding. Shared structures remain tight; full release
+manifest equality includes engine fields. Canonical shared/design guidance
+reapplied. Changed production files below500 effective nonempty lines and per-file
+deltas below220; no hard-limit exception or compensating abstraction.
 
-Reviewed posture Larger Requirement / Missing Invariant / Boundary Or Ownership
-Issue confirmed. Narrow refactor needed now is implemented for process-private
-skill links, known shared activation and selected-node preservation. The design's
-source-lease premise was already corrected through IR-001/SR019/ARCH-REV-003; this
-round follows the corrected contract rather than implementing a new source owner.
-Existing registry, filesystem, PTY and REST stream owners remain authoritative.
+Persisted state decision follows design: **Not Affected** by SR020; existing app
+state/profile/source policies remain **Directly Usable — No Migration**. Engine
+manifest is release metadata, not a workspace schema. No released pre-backport
+product state exists to migrate; no source/attachment/UUID/data migration, schema
+version compatibility branch or reconnection-triggered dependency replacement.
 
-Normal partial preparation/close ownership is explicit: register profile before
-awaits; native close must complete before deleting only its profile. Failed close
-retains the profile for retry; source bytes and peer profiles are not cleanup targets.
-Existing source Update/Remove may break links. Neither current catalog resolution
-nor metadata-only native discovery proves retention of source support files.
+## Personal local implementation checks
 
-Service configuration uses fixed root-owned private directories and a separately
-traversable fixed libexec binary for nonroot probes. Per-node public opt-in reference
-is a typed root-owned record, not a root-sourced launcher `.env`. A descriptor
-**directory** is bound read-only, avoiding old atomic-file inode binds. Pending
-setup/recreation and disposable probes have exact-resource receipts; no generic
-workflow engine, per-action pool or watchdog. External edits cause refusal or a
-retained-settings report, not blind overwrite. Cleanup preserves source/marker,
-recovery and named volumes; the guarded empty mount directory is conservatively
-retained rather than recursively removing filesystem parents.
+Detailed commands/results/limits: `implementation-evidence/ir-005/checks-and-limits.md`.
 
-## Legacy / compatibility / size checks
+- Full7 Go packages race pass; final rerun after final release-equality test pass.
+  Vet pass; four OS/arch compile targets and native version smoke pass.
+- Python12 enumerated:11 pass/1 standalone Go-child fixture skip; the child actually
+  executes via Go parent. Three disposable mutations fail required assertions
+  (digest/version requery/stock install). Unqualified publishing correctly refused.
+- Actual corrected arm64 source build on owned Ubuntu24.04.5/kernel7.0.0-38 VM pass;
+  full corresponding modified source/recipe/notices inspected against actual bytes.
+- Separate clean VM: corrupt bundle rejected before package mutation; actual
+  production install owner under077/admin lock passes16.840s, already-installed
+  check0.097s. No candidate engine/compiler preinstalled. Exact mask/staging cleanup.
+- Docker image built38.796s from identical pair; network-disabled container inspection
+  confirms exact package identity and identical native/container engine executable.
+  These are package-boundary checks: **no public create, NFS export/mount or peer**.
+- No new frontend change: rendered-result check **Not Applicable**. Historical UI
+  evidence is not repeated or promoted to mounted desktop qualification.
+- All work personal. Both owned VMs/processes/private caches and scratch removed;
+  no user mounts/nodes/private data/credentials/providers touched. Five older dist
+  directories untouched. Exact unqualified local candidate deliberately retained
+  under ignored `autobyteus-nfs/out/ir005-local-candidate/`, hash inventory attached.
 
-- No compatibility shim, dual persisted shape or source copy fallback introduced.
-  Configured shared vs ordinary local are the two approved modes, not old/new
-  versions. Registered shared resolver failures propagate instead of falling back.
-- Touched dead code removed/not introduced: obsolete shell helper placement moved
-  to its current owner; no duplicate legacy implementation retained. No unrelated
-  dead-code cleanup or established out-of-scope dead-code finding.
-- Shared structures kept tight: specialized private runtime profile/adapter and
-  optional per-session child env; no general global filesystem abstraction.
-- Canonical design guidance reapplied. No changed implementation file exceeds
-  500 effective nonempty lines; new Go owner files <=220 nonempty after decomposition.
-  Existing launcher runtime shrank 497 ->450. Source audit records size pressure;
-  test files are outside the hard implementation-file limit.
+Default source hash `302cdaf6b87e0ec4b0456376a2adba66be1b7294306c01f4f3df93ef285d4a1c`;
+measured-arm64 candidate source hash
+`588a8826111e970bee40f59fe62163d56c730f965d35fe15971dfe99a54e33b6` differs only through
+actual locked package identities. Compiled11,033,781-byte candidate CLI SHA256
+`20022a9e553ce3d898531e66e48a843d9fd10fb2fd044474f1a471ed070b219e` is retained but was
+not executed as public create. No amd64 package identity or qualification invented.
 
-## Persisted data transition
+## Risks, preserved limitations and downstream order
 
-Approved decisions followed: existing workspace/run/launcher references **Directly
-Usable — No Migration**; execution-private profile files **Discard or Rebuild**
-under their exact owner; new service subjects have new typed records. Known-field
-readers tolerate additive fields; no schemaVersion, startup migration, history
-scan, source retarget queue or version-specific runtime fallback was introduced.
-AGY keeps its existing capsule manifest and missing-source warn/skip restore.
+1. **Source re-review first**. CR003/API-F002 are not independently closed by this
+   handoff. Then API-F002 fresh public create/reconnect on specified Ubuntu24.04.5/
+   ext4/kernel7.0.0-38/defaultY, nonroot1000:109/no groups, original nonempty source,
+   hard4.1, UUID/content/modes/managed job; **no manual engine preinstallation**.
+   Use retained exact candidate bytes or record new build identities, not prototype.
+2. Native amd64 corrected engine and both-arch release workflow/runtime dependencies,
+   signed/notarized bootstrap and authorized publication remain unexecuted. Actual
+   package bytes invalidate previous qualification; build-only is not release.
+3. Full remaining approved native/managed Docker clients on **both Mac/Linux**, Linux
+   native/Docker storage, healthy peer/network/restart/detach/preservation/lock/Git
+   matrix, native skills/tool/support-assets/peer close/restore/Standalone-Team-Org,
+   mounted healthy desktop previews, independent physicalMac/Linux/Docker, docs,
+   finalization and explicit user verification remain. Only MacDocker **storage**
+   hosting is deferred; physical proof is a delivery gate, not implementation prerequisite.
+4. **D001/DEC015 deferred NOT fixed**: hard NFS outages may stall previews/file/terminal/
+   unrelated work. No workers/per-action probes/stream leases/cwd trampolines/outage
+   deadline or intentional shared local fallback. Trusted-LAN plaintext policy unchanged.
+5. **IMP-D001**: current catalog lookup is not source acquisition. Private links and
+   exact wrapper/profile cleanup only; source Update/Remove independent. No source
+   pin/refcount/snapshot/copy/retirement queue. AGY capsule/manifest missing-source
+   warn/skip restore and ordinary local behavior unchanged.
+6. Separate peer-NAT/hardened-LAN environment limitation preserved. FUP001 remains
+   PM-owned, no duplicate task/notification/patch. IR002 historical Nuxt/Electron
+   non-green and candidate-only green distinction retained; not rerun here and not
+   called current-source pass. All old attempts/failures remain indexed.
 
-## Local implementation checks and frontend feedback
-
-### IR004 current local-fix checks
-
-`implementation-evidence/ir-004/checks-and-limits.md` is the detailed current evidence
-index. Go7 packages race/vet pass, Python6 pass plus child fixture invoked through
-Go,4 target builds pass, native version and unqualified-publication refusal pass.
-Three mutation controls fail on expected assertions: command-only activation,
-one-shot observation, blanket retry. Five durable startup-test groups cover RPC
-registration/actual serving, partial startup, exact targets/ports, invalid setup
-and bounded unsuccessful observation with original errors preserved.
-
-Two separate fresh native-Mac VM complete harnesses pass13.407s/11.496s under077,
-without manual reconnect. Original source inode/device/owner/mode and bytes remain;
-mounted bytes/UUID match; private0700/0600, exact root binary and live launchd job
-verified. A third current-source create passed but its expanded harness incorrectly
-required GID0 instead of root ownership and private modes; that false assertion is
-retained and corrected in the two subsequent runs. Baseline and three rejected
-candidate failures are also retained. Packet evidence refines RPC startup/implicit-
-lookup diagnosis; not a statd/NLM feature prescription or blanket retry.
-
-All8 exact disposable clones and owned toolchain/scratch cleaned. No host shares,
-credentials, providers, user node or host mount. This is narrow implementation
-regression requested by CRR003, not broad API/E2E coverage, physical proof or release.
-No rendered UI delta: new-round frontend feedback N/A; IR002 render proof retained.
-
-### IR003 carried local-fix checks (historical)
-
-`implementation-evidence/ir-003/checks-and-limits.md` and `final-checks.json` record
-all7 Go packages race/vet passing,7 Python cases (6 pass plus the child fixture that
-runs through Go), and the real-bootstrap-to-Go fixture covering077 inheritance,
-Mac/Linux private/executable/public/node directory layouts, all new ancestors,
-0644 descriptors, private0600 receipts and actual nonroot fixture exec/read.
-Three mutation controls fail as expected for old mkdir-only behavior, missing node
-mode, and missing intermediate-parent mode. Four OS/architecture targets compile;
-native version/unqualified-release refusal pass. No privileged/root install was
-claimed in IR003: fixture trust is substituted inside an owned temp root, not actual sudo
-or a different-UID root-owned traversal. No OS resources or user data touched in IR003.
-
-Production owner78 ->86 nonempty lines,137 other IR002 audited paths unchanged;
-no source-size trigger. New tests excluded from production-file limit. No dead
-code/compatibility path or persisted transition added. This is a bounded approved
-BEH001/005 / SCN001/011/013 / AC012/018/019 correctness fix, not design recovery.
-No rendered UI delta in IR003; previous rendered proof retained.
-
-### IR002 carried checks (not re-executed in this local-fix round)
-
-Read `implementation-evidence/ir-002/checks-and-limits.md` for commands, final logs,
-retained failures, native metadata-only receipts and explicit untested layers.
-Server: 686 files/5,402 tests passed, four files/seven tests skipped; production
-build/typecheck pass. Initial terminal scope109 and guide scope21 pass. Go seven
-test packages/race/vet and four-target cross-compile pass; only native version/
-unqualified-release refusal was executed. Fake launcher38 run/two skips; installer/
-packaging six tests pass. Full core rerun:298 files/2,019 tests pass. Web production
-build and normal integration preparation pass; changed-boundary integration9 files/
-52 tests pass, without provider gates. Full original Nuxt:611 files pass/1 fail/
-2 skip;4,258 tests pass/3 fail/5 skip. Full original Electron:35 files pass/1 fail/
-1 skip;188 tests pass/3 fail/1 skip. Both failures are the same baseline updater
-classification issue, not NFS regressions. Candidate experiment results are not a
-substitute for these authoritative suite outcomes.
-
-Frontend loop: existing Docker Guide/settings components and approved screenshot
-informed the design. Actual Nuxt NodeManager/NfsGuideCard rendered in an owned
-browser on a task-only page with fake definition WebSocket and clipboard. Desktop
-1280x1000, mobile390x844; en/zh-CN, actual route and keyboard navigation, no-release
-disabled actions, fixture release copy-success and copy-error states inspected.
-Responsive pill wrapping and keyboard focus/selection were implemented. Eight
-assertions pass, no browser errors; screenshots plus direct interactions recorded.
-The fixture URL is `.invalid`, real clipboard untouched. First cleanup-race failure
-is retained; second run confirms browser/dev/page/home cleanup. This is not a full
-application, Electron-shell, live mount, user verification or API/E2E pass.
-
-## Environment, dependencies and limitations
-
-Node22.23.1/pnpm workspace tools; installed shared-package dependencies and rebuilt
-current outputs. Go1.27.2 official Darwin-arm64 archive checksum verified in a
-**task-owned temporary toolchain**, not a global Go installation; removed after
-checks with a cleanup receipt. Native installed
-CLI metadata-only discovery: Claude SDK0.3.280, Codex0.162.1, Grok1.0.52, signed-out
-throwaway homes, no provider prompts/keys. No user CLI config was edited.
-
-Source/tests/docs are development commits only. Generated SDK dist outputs remain
-untracked and deliberately unstaged. No merge, push, tag, publication, codesigning,
-Docker engine build/pull, live user-node disruption or provider inference was
-performed. IR004 used authorized credential-free disposable Mac guests for actual
-guest root install/export/mount/job startup only; no host/user resource mutation. Release pins derive from the
-reviewed reference inventory; current publication qualification is deliberately
-empty. The UI must remain unavailable until actual qualified publication.
-
-**DEC015/D-001 remains deferred, not repaired:** hard NFS may stall file operations,
-previews, startup, terminals and unrelated work. Local component tests cannot prove
-actual physical network semantics or prompt/tool behavior. IR004 narrows only the
-fresh native-Mac setup gap with current guest execution. Peer/reboot/Docker/Linux/
-physical and real runtime/preview gates remain; previous numeric unit coverage is
-not replaced by an all-path claim from these focused checks.
-
-## Out-of-scope finding and testing ownership
-
-`implementation-evidence/ir-002/updater-follow-up.md` records the unchanged updater's
-stack-path false positive. A diagnostic candidate patch and its separate rerun are
-preserved **only as evidence, not applied to current source**. The reviewer has delivered FUP001 to `/project_task_manager`; CRR001 records
-durable custody and pending approval for a separate Task. No new task/worker was
-spawned by this implementation. Root
-TESTING.md rule9 distinguishes small baseline repairs from separate product-change
-follow-ups; the implementation skill's Scope Guardrail also excludes unrelated
-production behavior. The in-scope launcher defect and fixture-only core correction remain separate development
-commits; updater production changes were not bundled with NFS.
-
-The user's request for full personal testing was honored within this role's
-permitted local-check scope; no tests were delegated. The implementation skill
-reserves API/E2E authoring/execution and broad system validation for the independent
-validation role. This round executes only the specifically requested narrow
-native-Mac startup reproduction/regression, not that broader matrix/signoff. The main
-project Task remains open, not Done or Cancelled. The two previously cancelled
-sub-work copies reported no edits, children or processes; no remaining delegated
-implementation work is being awaited.
-
-## Required downstream coverage / delivery gates
-
-1. Independent Large/High source re-review of IR004 / CR002 first; then API owner
-   reruns API-F001 cold case and continues the remaining matrix. Preserve prior
-   source-review coverage of exact root-resource ownership,
-   partial setup, native child/profile cleanup, selected-node daemon identity,
-   consent/rollback, source Update/Remove and launcher attachment retention.
-2. Current-build selected modes: native Mac APFS/Apple; native Ubuntu24.04 ext4/
-   Ganesha; Docker-on-Linux storage; native and managed Docker clients on **both**
-   Mac/Linux. Original nonempty source/identity, wrong/occupied target refusal,
-   nonroot/root-squash, normal reconnect/restart and safe detach.
-3. Real selected Docker Config/HostConfig/image/private volume/auth/ports/aliases
-   preservation, requested IP mappings, pending/accepted-work recovery, stopped
-   nodes, unavailable daemon and general launcher recreate/upgrade retention.
-4. Normal standalone/Team/Org and all selected runtimes: actual native discovery
-   and canonical paths, **previously unread support assets through native tools**,
-   separate live peer stop, restore, source Update/Remove, partial setup/exact close,
-   AGY capsule and ordinary local policies, scoped Git and explicit cwd semantics.
-5. Healthy current-product explorer/media/HTML/relative assets/completed-artifact
-   streams with unchanged auth/path/projection/MIME/errors/cache behavior. No claim
-   of outage isolation or cancellation deadlines.
-6. Independent physical Mac/Linux/Docker topology proof is mandatory **before
-   delivery**, not retroactively an implementation prerequisite. API/E2E owns
-   independent executable coverage; Delivery owns docs sync, finalization/merge,
-   explicit user verification, approved release/signing/public assets and cleanup.
-   Existing approvals do not authorize live user resources or paid provider use.
+No merge/push/tag/release, new Task, Task closure, live user-resource authorization
+or finished user verification inferred. Current code and this handoff govern;
+cumulative revision/history indexes aid review but are not proof of closure.

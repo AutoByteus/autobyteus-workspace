@@ -217,3 +217,68 @@ record does not imply an earlier Pass or completed implementation.
   previews, independent physicalMac/Linux/Docker, docs/finalization/user verification
   and authorized release remain gates. FUP001 stays PM-owned, no duplicate task or
   patch; Nuxt/Electron baseline failures and candidate-only green distinction remain.
+
+## IR-005 — Productize the reviewed corrected Noble engine dependency
+
+- Recorded2026-10-14. Trigger `/software_engineering_team/architecture_reviewer`,
+  **ARCH-REV004 Pass / Ready SR020**, unchanged Approved SR018, resolving the design
+  response to **CRR005 Fail / Design Impact CR-003 P1 / API002 API-F002**. Design
+  957b052f4b222b7ddb14e148fd5439ba10122379; reviewc7f0376db65d09bcab93feeb3adb9288ece9d58a;
+  incoming receiptd1aceecc4888fe8b1d58be898337473cd4be8243. Duplicate ARCH004 handoff
+  deduplicated, not new work. Prior IR004 Local Fix Complete was accepted by CRR004
+  and nativeMac cold create confirmed at API002's recorded scope; Linux dependency
+  finding is separate. CR001/CR002/IMP-D001 scopes and all IR001–004 history retained.
+- Current result: **Implementation Complete — SR020 recovery; independent source
+  review required**. Not Code Reviewer Pass/API Pass/delivery. CRR005/API002
+  Fail57.14%/broader Required remain current until their owners replace them.
+  **Large/High confirmed**, no downgrade. DR N/A, not yet performed.
+- Approved behaviors BEH001/004/005; SCN001/011/013, AC012/018/019 and preserved
+  BEH002/003/006/007. Correct dependency at existing build/install boundary rather
+  than weakening confined marker/nonroot reader, kernel/reference/defaultY,
+  hard4.1/squash/allowlist/source identity or adding retries/fallback.
+- Source commit **9992ffb30d4fbaab4852b87b2495738f1b5be908**,26 paths. New exact Noble
+  source/distro-delta recipe, accepted98eb77c backport with production provenance,
+  distinct4.3-8ubuntu1+autobyteus1 main/VFS pair, per-architecture typed manifest,
+  actual corresponding modified source/build inventory/notices. Runtime embed
+  validates fixed package identity/size/hash before mutation; existing Ubuntu
+  install owner stages0700/0600 under admin lock, installs exact local pair plus
+  distro deps, requeries installed state/version and cleans owned files/mask.
+- `packaging/engine/`, backend engine_bundle/engine_staging/ubuntu_packages,
+  setup Release/Apply, packaging/release/Dockerfile and release workflow are the
+  changed owners. Same exact pair used native/Docker. Candidate artifacts built
+  once and reused by publication via explicit candidate-run selection and lock
+  match; changed identities invalidate qualification. No prototype hash inputs,
+  host compiler/PPA/user extra command/caller sidecar/stock hosting fallback.
+  Normal reconnect installs/upgrades nothing. Default release stays unqualified.
+- Personal tests: full7-package Go race/vet; final race rerun includes complete
+  engine metadata equality test. Python11 pass/1 standalone child skip (actually
+  run via Go parent);4-target compile/native smoke/refusal;3 meaningful mutation
+  failures. Actual production recipe arm64 build passes in one owned Ubuntu VM;
+  actual package owner on a separate clean VM under077/admin lock passes16.840s,
+  corrupt payload refused before mutation; already-installed0.097s. Same-pair
+  Docker build38.796s and network-disabled inspection pass, exact executable hash
+  native/container matches. **No public create/reconnect/export/mount in IR005**;
+  narrow package-owner helper is not full CLI consent/setup proof.
+- Real arm64 package/output identities in `implementation-evidence/ir-005/` are
+  new production-recipe bytes, not designer manually preinstalled prototype.
+  Full modified source/notices inspected. No amd64 package build/hosted workflow/
+  product runtime/physical/UI signoff. Existing frontend unchanged, rendered loop
+  N/A this delta. Detailed commands/scripts/logs/limits/cleanup/hash audit retained.
+- `source-audit.json`:1030 prior source/authority/history paths byte-identical;
+  all26 deltas hashed, no production file>500 nonempty or delta>220. Stock engine
+  old path removed, no migration/version fallback/new source ownership. Main
+  handoff updated; prior revision-record prefix byte-preserved. No source/API/
+  design authority edited by implementation.
+- Default source hash302cdaf6b87e0ec4b0456376a2adba66be1b7294306c01f4f3df93ef285d4a1c;
+  tested-arm64 manifest source hash588a8826111e970bee40f59fe62163d56c730f965d35fe15971dfe99a54e33b6.
+  Difference is actual package identities. Exact candidate retained ignored at
+  `autobyteus-nfs/out/ir005-local-candidate/`; all11 files hashed in receipt. No
+  committed deb/published artifact. Both owned VMs/processes/private caches and
+  scratch/toolchain removed; no user resources/keys/nodes/providers touched.
+- Next: fresh Large/High completion rule -> Code Reviewer, then API-F002 **fresh
+  public create/reconnect without manual engine preinstallation first**, followed
+  by full native/Docker/peer/current-tool/assets/restore/modes/healthy-preview/
+  physical/user-verification/docs/finalization/release matrix. No delegation,
+  release/merge/push or Task Done. D001/DEC015 deferral and IMP-D001 source/AGY/local
+  policy unchanged. FUP001 PM custody and old Nuxt/Electron non-green retained;
+  separate peer-network environment limit remains, not a product-test pass.
