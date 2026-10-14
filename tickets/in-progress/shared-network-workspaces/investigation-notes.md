@@ -1,6 +1,47 @@
 # Investigation Notes — Shared Network Workspaces
 
-## Current SR019 — IMP-D001 Source Ownership Correction
+## Current SR020 — CR003 / API-F002 Linux Dependency Recovery
+
+2026-10-14; **Architecture Design Complete / Ready SR020, Large/High**, unchanged ApprovedSR018/approval018+017. Incoming CRR0050b67d81fad and attached canonical report/history/checks/primary contracts/API002 indices read before acting. Source174e480bd0cfaee29f22fd46b1922afbb274e56b, production aggregate497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da. The implemented current service, package installer, trusted binary installer, config, Ganesha native/image, release metadata/workflow and CLI create/reconnect production paths were personally traced. Role/phase gates already read in this conversation; root DESIGN/TESTING revisited in full, no closer NFS AGENTS. No source/requirements/specialist artifact edits or repository validation suite by this recovery.
+
+### Factual finding and supported path
+
+Native Ubuntu owner chooses nonempty ext4 source -> public create -> exact distro package install with default-unit mask -> original nonroot source probe and handles -> current Ganesha -> actual hard4.1 self-mount -> nonroot confined marker directory traversal -> EREMOTEIO before attachment job. API002 two fresh failures and reconnect failures, CRR005 Python Y/N/Y control, ordinary mounted cat/source preservation and exact missing packet limitation are retained. This is normal SCN001/011/013/BEH001/004/005/AC012/018/019, not outage, peer routing or invented source-schema behavior. No demonstrated Go confinement defect; current kernel7.0.0-38 reference cannot be silently discarded. CR001 modes and CR002 nativeMac cold-create independently resolved at their actual scopes; no reopening or generalizing their passes.
+
+Primary upstream98eb77c (2026-04-10) changes only recognized GET_DIR_DELEGATION dispatch/free handlers to existing NOTSUPP; V4.3 already supplies that handler preserving requested operation number. Original API packet sequence remains inferred, not captured. Official source/package discovery and exact `.dsc`/tar/delta hashes are persisted in evidence/design-recovery/sr020/compatibility-report.md and public-source-discovery.json. Bounded PPA lookup found Noble7.0 from2025, not a ready corrected package; it does not prove absence everywhere. Related9.x upstream issue confirmation is not product VFS qualification.
+
+### Personally executed dependency prototype — evidence, not implementation
+
+Three fresh isolated Ubuntu24.04.5/aarch64/ext4/kernel7.0.0-38 VMs on this Mac, each private Tart cache/HOME; no host mounts/security/network change, copied credentials/provider calls or user nodes/data. Original Noble4.3-8ubuntu1 source/distro patches/rules plus only upstream's two dispatch substitutions, built as4.3-8ubuntu1+autobyteus1. Unchanged current CLI source in private copy, only release.json has candidate pins/qualifiedTargets[]; manual **preinstallation** bounds this to dependency feasibility, not clean one-command installer proof.
+
+- Attempt1 `ab-nfs-sr020-0c98a83d`: missing fakeroot build prerequisite in designer harness; no engine/create result. Disposed, raw retained.
+- Attempt2 `ab-nfs-sr020-025c6aff`: corrected build prerequisites, real public create succeeds1.207s/defaultY/hard4.1. Source/UUID/private modes/jobs observed; later designer assertion incorrectly expected only two UUID occurrences despite mount-source line. Overall Incomplete retained; no operation/reconnect coverage.
+- Attempt3 `ab-nfs-sr020-34a15a0e`: fix only assertion, separate fresh source. **Create1.154s; reconnect0.445s/0.619s;60 exact nonroot1000:109/no-groups directory replays and ordinary write/fsync/rename/relative-symlink/source-read pass**. Source `/home/admin/ab-sr020-source/project`, mounted `/Volumes/autobyteus-shared/project`; UUIDcb50f1bd-1e05-489f-9792-a17b5822ec00, source identity/bytes preserved, root-owned private0700/0600 and public0644 observed, engine/job active. All results/commands/hashes in raw receipt; no kernel parameter writes.
+
+All three exact VMs/PIDs/private roots removed and absence-checked. Sequential self-mounts are not a physical LAN/peer topology, Docker/amd64, native-agent/current-UI or release test. Generated quilt template metadata and changing experimental package hashes are explicitly not shippable provenance or proof of reproducibility. Full table/script/source+binary hashes/limits are in compatibility-report.md. Final prototype Pass is not a new API-REV, reviewer Pass or final confidence score.
+
+### Technical decision and approved-intent boundary
+
+Select the minimal upstream backport on the same distro4.3 source, OS, default client and4.1 protocol. Existing setup/backend package owner installs release-bundled matching-architecture corrected main+VFS pair; existing CI verifies source/diff/provenance and exact candidate hashes, embeds native payloads and uses identical packages in Docker image. Corresponding modified source/notices must ship. No PPA/user compiler/new package registry/user command; no stock-engine fallback, kernel toggle/downgrade, unsafe reader or blanket retry. Bigger upstream9.x transition would broaden unqualified engine/dependency changes; choose scoped backport while explicitly owning maintenance. These are technical selection/distribution decisions under unchanged intended support, not a new security mode/requirement. No renewed user questionnaire or approval record needed.
+
+Canonical design replaces stock engine pin/install contract, adds narrow package byte/provenance owner to DS001, updates reference matrix/interface/file/removal/sequence/validation and keeps DS002 direct NFS unchanged. Requirements/approval remain byte-identical. No user-data/source/attachment migration; only release metadata and generated payload. D001/DEC015 deferral, IMP-D001 private links/source deletion/AGY/local and all normal source/private-state/consent/physical/user gates unchanged.
+
+### Complete cumulative inventory and next gate
+
+| Artifact | Owner / applicability | Current status |
+| --- | --- | --- |
+| evidence/design-recovery/sr020/compatibility-report.md; attempts.md; input-audit/final-audit/package-index.json; raw script/results/cleanup and attempt-1/attempt-2 | SD, focused selection/prototype/source provenance, exact node/path/result limits | Completed recovery, not implementation/qualification |
+| requirements-doc.md; approval018/017; architecture-review-scope-feedback.md | Intended behavior/user direction | Unchanged Approved018 |
+| design-spec.md; solution-design-handoff.md; solution-revision-record.md | SD technical authority/context/history | Ready020 / Architecture Design Complete Large/High; re-review required |
+| code-review-report.md; code-review-revision-record.md; code-review-evidence/crr-005/package-index.json | Code Reviewer, CR003 origin and full306-reference chain | Current CRR005 Fail/Design Impact preserved |
+| api-e2e-* canonical reports/ledger/history; evidence/api-e2e/api-rev-002/package-index.json | API owner, complete prior/current system/repo/probe evidence | API002 Fail57.14% / broader Required preserved |
+| implementation-handoff/revision-record.md; IR001–004 evidence through cumulative indices | Implementation owner | Actual implemented IR004 source; not original no-implementation status |
+| design-review-report/revision record; original57-round reports/index/raw failures, selection/runtime reports and screenshot | Respective owners, still-relevant architecture/history/limitations | ARCH003 historical Pass019; feasibility not product qualification |
+| Delivery/finalization/external Product spec | N/A | Not performed / Product support not requested |
+
+Next configured architecture re-review, then implementation/source review, then API-F002 public create/reconnect **without manual preinstallation first** and the complete remaining matrix. Separate peer-NAT environment limitation/hardened private-LAN test environment still downstream; no bridge workaround. FUP001 baseline updater remains PM custody; no duplicate followup. Main Task open; no user command/publication/merge/delivery/100% claim. See current handoff for full goal/constraints/route; historical SR019 and earlier evidence below retain their actual scope.
+
+## Historical SR019 — IMP-D001 Source Ownership Correction
 
 2026-10-13. Read implementation-handoff.md, implementation-revision-record.md, implementation-evidence/ir-001/source-lease-design-impact.md and source-audit.json at06df5ffc40 before acting. IR-001 is **Design Impact / IMP-D001**, not production implementation. Reviewed full current solution package and ARCH-REV-002 Pass on SR018 (d27df8ff65); that prior Pass remains its actual result, not a pass on the correction. Current requirements/approval remain **Approved SR018**, byte-for-byte unchanged. Scope/ACs do not require retained skill-source generations; no new user question or approval record is needed for this technical correction. New design **Ready SR019 / Architecture Design Complete**, Large/High retained.
 

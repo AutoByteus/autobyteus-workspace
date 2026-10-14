@@ -1,0 +1,8 @@
+prepare verified toolchain and copied current CLI
+clone fresh owned VM ab-nfs-sr020-025c6aff
+fetch authenticated exact Ubuntu source and build dependencies in guest
+build two-field upstream backport as local prototype Debian packages
+preinstall prototype packages without distribution daemon; public create remains fresh
+current public create with candidate packages and default directory delegations
+AssertionError()
+{"result": "Prototype Incomplete", "cleanup": true}

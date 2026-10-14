@@ -1,0 +1,42 @@
+{
+  "stop": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "stop",
+      "ab-nfs-sr020-34a15a0e"
+    ],
+    "cwd": null,
+    "rc": 0,
+    "seconds": 0.331,
+    "stdout": "",
+    "stderr": ""
+  },
+  "vmExitCode": 0,
+  "delete": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "delete",
+      "ab-nfs-sr020-34a15a0e"
+    ],
+    "cwd": null,
+    "rc": 0,
+    "seconds": 0.117,
+    "stdout": "",
+    "stderr": ""
+  },
+  "list": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "list",
+      "--format",
+      "json"
+    ],
+    "cwd": null,
+    "rc": 0,
+    "seconds": 0.027,
+    "stdout": "[\n  {\n    \"Disk\" : 20,\n    \"Source\" : \"OCI\",\n    \"Name\" : \"ghcr.io\\/cirruslabs\\/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e\",\n    \"Size\" : 5,\n    \"Accessed\" : \"2026-10-14T05:30:56Z\",\n    \"Running\" : false,\n    \"State\" : \"stopped\"\n  }\n]\n",
+    "stderr": ""
+  },
+  "scratchAbsent": true,
+  "vmProcessAbsent": true
+}

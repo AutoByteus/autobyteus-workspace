@@ -1,3 +1,58 @@
+# Current Result — SR020 Linux Reference Compatibility Recovery
+
+**Architecture Design Complete — Ready SR020; independent re-review required.** Package `shared-network-workspaces`, Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`. Owner `/software_engineering_team/solution_designer`; original requester `/project_task_manager`, AgentRun`project_task_manager_a5f6d9d306e54970bafdad895bdf731d`. Intended behavior **Approved SR018**, approval-record-sr018.md plus retained SR017 choices; no changed REQ/AC or new user choice. **Large/High** remains the actual architecture scope/risk. This is Design Impact recovery from CRR005/CR003/API-F002, not a new task, implementation delivery or terminal receipt.
+
+## Original outcome and preserved direction
+
+A user/nontechnical desktop operator runs one supported install/start invocation, chooses an ordinary persistent source (or connects to it), gives necessary OS/password/disruption consent, and receives the usable shared path. Projects remain normal folders; real native agents/CLI tools use ordinary file operations and other connected computers see the same storage without copying. Default root `/Volumes/autobyteus-shared`, example project `/Volumes/autobyteus-shared/project`, including selected managed Docker agent nodes. One command per participating computer handles selected local nodes; no manual commands inside agent containers. Names: AutoByteus NFS / `autobyteus-nfs`; same superrepo, existing release pipeline, Nodes NFS Guide patterned after Docker Guide.
+
+Native Mac Apple nfsd/APFS/NFS3, native Ubuntu/ext4 and Docker-on-Linux Ganesha/NFS4.1 storage remain. Native Mac/Linux and managed Docker agent clients on either OS remain. **Only Docker-on-Mac storage hosting of a Mac source folder is deferred**, not Mac Docker agent clients. Trusted-LAN plaintext explicit allowlists/nonroot squash and private state/data preservation remain; no public service/SDK, Windows, individual accounts/encryption/HA, project-copy fallback or parked cross-node collaboration task. Git is normal workspace compatibility, not the sharing mechanism. No automatic agent notification/context ingestion. Existing source UUID, exact selected-node image/ports/volumes/auth, normal rollback/detach and consent preserved.
+
+Approved working-first DEC015 still defers advanced outage isolation; hard NFS can stall ordinary file/preview/runtime work. D001 is deferred, not fixed. SR019 IMP-D001 remains private current-source links/exact profile cleanup, independent confirmed source Update/Remove and unchanged AGY missing-source restore/local behavior; no retained-generation/snapshot promise. Physical Mac+independent Linux+Docker, actual native agent/current-build UI proof, docs/merge/explicit user verification/authorized release and cleanup remain completion gates. This recovery does not require another product questionnaire or authorize live user changes.
+
+## Incoming completed results — do not overwrite or inflate
+
+Input review commit`0b67d81fad`, production IR004`174e480bd0cfaee29f22fd46b1922afbb274e56b`, aggregate`497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da`. ARCH-REV003 historically **Pass** on ReadySR019/ApprovedSR018; CRR004 source Pass is historical, not product qualification. **API-REV002 Fail57.14% / broader Required** and **CRR005 Fail / Design Impact CR003 P1** are the current completed downstream results. They are not changed to Pass by designer evidence.
+
+- CR001 restrictive-mask directory modes remain resolved. CR002/API-F001 Apple cold activation independently passes two fresh nativeMac creates11.571s/22.772s, no manual reconnect. Do not reopen or expand this into peer/reboot/physical/installer qualification.
+- API-F002: original nonempty ext4 source -> exact stock Noble4.3 engine -> actual hard4.1 mount -> exact nonroot confined directory traversal EREMOTEIO; two fresh creates17.258s/16.252s and reconnects fail. Current Ubuntu24.04.5/kernel7.0.0-38 is not silently excluded. Reviewer Python Y/N/Y diagnosis confirms interoperability, not a Go-specific reader defect. Original exact packet cause remains inference, not captured wire proof.
+- Separate Mac peer default-NAT routeREJECT remains an API environment limit. Hardened private-LAN VM testing still needs its authorized environment; no bridge/network bypass done here. FUP001 baseline updater failures remain with PM; no duplicate follow-up or candidate-green/current-source substitution.
+
+## Recovered technical selection and productization
+
+Keep Noble distro source4.3-8ubuntu1, distro patches/rules and pinned client; apply only accepted upstream commit98eb77c4fd94effa6882b214698a77752ec79f6e's two GET_DIR_DELEGATION handler substitutions. Distinct package revision **4.3-8ubuntu1+autobyteus1**. Native/DockerLinux consume the identical corrected per-architecture pair. No kernel toggle, kernel/protocol downgrade, arbitrary major upgrade, weakened marker/confinement/UID/allowlist or blind retry. The current supported normal setup drives the fix; no outage machinery returns.
+
+The existing release pipeline builds and locks source/patch/package identities, supplies complete corresponding modified source/notices, embeds only the matching Linux pair in the verified CLI and installs via the existing consented/root-owned package owner with its exact default-unit mask/cleanup. The same artifacts build the Docker storage image. Ordinary distro client/runtime dependencies remain; no new public repository/PPA, user compiler, sidecar privilege path, additional command or general package manager. Stock engine pins/install fallback are removed for hosting; reconnect does not upgrade packages. Design-spec.md contains exact owner/spine/interface/file/removal/qualification contracts; this handoff is context, not a competing spec.
+
+Final prototype: two fresh patched native creates1.207s/1.154s; the latter completes reconnects0.445s/0.619s and60 exact-nonroot directory replays/normal write-fsync-rename-relative-link checks, defaultY/hard4.1 unchanged. Source/UUID/private modes/jobs preserved at observed scope. Attempt1 missing fakeroot and Attempt2 post-create UUID-count assertion are retained harness failures; no entire-result Pass fabricated. All three exact VMs/PIDs/private roots cleaned and checked.
+
+Evidence `evidence/design-recovery/sr020/compatibility-report.md`, raw results/attempts and audit distinguish (a) actual evidence, (b) selected design and (c) still-unimplemented package distribution. Designer prototypes preinstall candidate packages, so they cannot qualify the new one-command installer. Current source/requirements/specialist artifacts remain unchanged.
+
+## Workspace and complete cumulative package
+
+Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`; branch `codex/shared-network-workspaces`; resolved base `origin/personal@f13bdd0eb79aacc63dffa5995b9c86f359001468`; finalization `origin/personal`. Main checkout untouched. Five preexisting untracked SDK/application dist directories are not part of this revision. All new experiments are isolated owned VM/self-mount fixtures, not user nodes/mounts/provider credentials.
+
+Canonical absolute ticket root **/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces**. Relative names below are under that root:
+- `requirements-doc.md`, `approval-record-sr018.md`, `approval-record-sr017.md`, reviewer-owned `architecture-review-scope-feedback.md`: unchanged approval/direction.
+- `investigation-notes.md`, `design-spec.md` SR020, `solution-revision-record.md`, this `solution-design-handoff.md`: current evidence, technical authority and cumulative history/result.
+- `evidence/design-recovery/sr020/compatibility-report.md`, `attempts.md`, `backport-prototype.json`, `run-backport-prototype.py`, `cleanup.json`, public-source-discovery/input/final audits and retained attempt-1/attempt-2: new designer evidence, not source/API signoff. Full new inventory in package-index.json.
+- `code-review-report.md`, `code-review-revision-record.md`, **`code-review-evidence/crr-005/package-index.json`**: current CRR005 finding, personally executed diagnosis and full cumulative references.
+- `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-coverage-investigation.md`, `api-e2e-test-case-ledger.md`, **`evidence/api-e2e/api-rev-002/package-index.json`**: current API002 and complete previous raw/public failures, nativeMac resolution, source/audit/test limits.
+- `implementation-handoff.md`, `implementation-revision-record.md`, IR001–004 full evidence via the above indices; `design-review-report.md`, `architecture-review-revision-record.md`: historical source/design reviews at actual scope.
+- Original feasibility57-round index/reports/raw failures, SR017 selection, nativeMac hosting/backend correctness, real-agent/private-runtime/native-private-readiness reports, SR018/019 audits, screenshot and historical setup/handoff/transcript/approval context remain linked in the cumulative indices and investigation inventory. No supplement discarded or elevated beyond its evidence.
+- Delivery/finalization/receipt: **N/A — not yet performed**. External Product-owned specification: **N/A — not requested/applicable**. No review artifact is N/A merely because a newer review is needed.
+
+## Next expected work / gates
+
+Independent architecture re-review of SR020 on unchanged ApprovedSR018, Large/High. Review the evidence-backed selected engine backport and complete bounded distribution path, not a request to repeat old product choices or restart implemented work. After Pass, implementation owns package/source recipe/bundle/native-install/image correction and focused checks; applicable source review follows. API-F002 public clean native create/reconnect with defaultY and no manual package preinstall **first**, then full remaining matrix. No direct implementation bypass or duplicate forwarding of old Pass.
+
+Broader duties remain both architectures, Linux native/Docker storage, native/managedDocker clients on both OSes, peer operations/locks/Git/restart/detach/preservation, current native runtime/linked assets/peer-close/restore/Standalone-Team-Org, healthy mounted desktop previews, independent physicalMac/Linux/Docker and user verification. Delivery owns docs/finalization/allowed release/cleanup and returns Delivery Completed for receipt verification. Main Task remains open; no final user command, published package, release or100% claim.
+
+**Route (fresh get_handoff_rules,2026-10-14):** the single applicable completed/revised Architecture Design Complete / Large OR High rule selects exact **/software_engineering_team/architecture_reviewer**. ApprovedSR018/current SR020 cumulative package aligned. Other routes (Small/Medium+Low direct implementation, returned-delivery receipt gap) do not apply. Send this same absolute handoff in message and reference_files with the complete cumulative package; only actual tool receipt proves delivery. Stop after required handoff, no direct implementation/PM duplicate or delegation bypass.
+
+---
+# Historical solution handoffs — preserved at their actual reviewed scope; current SR020 above supersedes current-status statements below
+
 # Solution Design Handoff — Architecture Design Complete / SR019
 
 ## Identity, request and current result

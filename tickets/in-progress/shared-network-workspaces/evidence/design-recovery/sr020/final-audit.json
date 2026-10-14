@@ -1,0 +1,109 @@
+{
+  "scope": "SD authoring/prototype audit, not product validation",
+  "protected": {
+    "tickets/in-progress/shared-network-workspaces/requirements-doc.md": {
+      "expected": "62ea50f35b12843a61b287602b843b5050a88b4261de2999d70381bb6755470d",
+      "actual": "62ea50f35b12843a61b287602b843b5050a88b4261de2999d70381bb6755470d",
+      "equal": true
+    },
+    "tickets/in-progress/shared-network-workspaces/approval-record-sr018.md": {
+      "expected": "64399a81bda50aadd8f883930fa9c9fef1c6a3dd46c87fe74e2ed5b38223e249",
+      "actual": "64399a81bda50aadd8f883930fa9c9fef1c6a3dd46c87fe74e2ed5b38223e249",
+      "equal": true
+    },
+    "tickets/in-progress/shared-network-workspaces/approval-record-sr017.md": {
+      "expected": "dc033fc3641b80e13d3de052eed4e289ee4a3f36b9870f317a72ed102660ebbf",
+      "actual": "dc033fc3641b80e13d3de052eed4e289ee4a3f36b9870f317a72ed102660ebbf",
+      "equal": true
+    },
+    "tickets/in-progress/shared-network-workspaces/code-review-report.md": {
+      "expected": "ff71c798490207296cbcbda6a7b2bb309d8c6ab34e5930ab2f89f85dd5c946d9",
+      "actual": "ff71c798490207296cbcbda6a7b2bb309d8c6ab34e5930ab2f89f85dd5c946d9",
+      "equal": true
+    },
+    "tickets/in-progress/shared-network-workspaces/code-review-revision-record.md": {
+      "expected": "8bc6243e147f59637040b7c33808bd467f472fe79c88b36dc8bd26e4a18c446c",
+      "actual": "8bc6243e147f59637040b7c33808bd467f472fe79c88b36dc8bd26e4a18c446c",
+      "equal": true
+    },
+    "tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md": {
+      "expected": "ecaf990c9d5c988ca52f9a7f2225f85a9cdb8a2f3beb2786d47ba0fcc8ad604b",
+      "actual": "ecaf990c9d5c988ca52f9a7f2225f85a9cdb8a2f3beb2786d47ba0fcc8ad604b",
+      "equal": true
+    },
+    "tickets/in-progress/shared-network-workspaces/implementation-handoff.md": {
+      "expected": "81d28f4c9d55bb7a67b1062bd7817c701de236d4c359a393a609d723f2bc1562",
+      "actual": "81d28f4c9d55bb7a67b1062bd7817c701de236d4c359a393a609d723f2bc1562",
+      "equal": true
+    },
+    "tickets/in-progress/shared-network-workspaces/design-review-report.md": {
+      "expected": "fb1687991301bafee18e68c7fd1f1aea583acc9814fd235acdd52f9f934a2f5e",
+      "actual": "fb1687991301bafee18e68c7fd1f1aea583acc9814fd235acdd52f9f934a2f5e",
+      "equal": true
+    }
+  },
+  "resources": [
+    {
+      "vm": "ab-nfs-sr020-0c98a83d",
+      "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-sr020-e_zw16b9",
+      "scratchAbsent": true,
+      "pid": 42736,
+      "stopRC": 0,
+      "deleteRC": 0,
+      "recordedProcessAbsent": true,
+      "pidNowAbsent": true,
+      "pidCommandIfReused": ""
+    },
+    {
+      "vm": "ab-nfs-sr020-025c6aff",
+      "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-sr020-xcd_dj6u",
+      "scratchAbsent": true,
+      "pid": 48712,
+      "stopRC": 0,
+      "deleteRC": 0,
+      "recordedProcessAbsent": true,
+      "pidNowAbsent": true,
+      "pidCommandIfReused": ""
+    },
+    {
+      "vm": "ab-nfs-sr020-34a15a0e",
+      "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-sr020-qaciifqq",
+      "scratchAbsent": true,
+      "pid": 61397,
+      "stopRC": 0,
+      "deleteRC": 0,
+      "recordedProcessAbsent": true,
+      "pidNowAbsent": true,
+      "pidCommandIfReused": ""
+    }
+  ],
+  "syntax": [
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr020/run-backport-prototype.py",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr020/attempt-1/run-backport-prototype.py",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr020/attempt-2/run-backport-prototype.py",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr020/public-source-discovery.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr020/backport-prototype.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr020/cleanup.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr020/input-audit.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr020/attempt-1/backport-prototype.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr020/attempt-1/cleanup.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr020/attempt-2/backport-prototype.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr020/attempt-2/cleanup.json"
+  ],
+  "limits": [
+    "No production code/durable tests/reviewer/API/implementation artifacts changed",
+    "No repository suites/provider/physical/peer/Docker/amd64/clean installer qualification"
+  ],
+  "productionHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da",
+  "incomingAndNewReferenceCount": 325,
+  "trackedDelta": [
+    "tickets/in-progress/shared-network-workspaces/design-spec.md",
+    "tickets/in-progress/shared-network-workspaces/investigation-notes.md",
+    "tickets/in-progress/shared-network-workspaces/solution-design-handoff.md",
+    "tickets/in-progress/shared-network-workspaces/solution-revision-record.md"
+  ],
+  "boundedSecretPatternHits": [],
+  "result": "Pass \u2014 bounded artifact/cleanup consistency only",
+  "finalCumulativeReferenceCount": 328,
+  "authoringNote": "First combined route/commit command rejected before execution by rm-style guard; retried without forbidden shell deletion, no data/resource or git failure."
+}
