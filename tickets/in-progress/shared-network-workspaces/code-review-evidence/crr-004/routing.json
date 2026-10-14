@@ -6,5 +6,13 @@
   "result": "CRR-004 Pass / CR002 source resolution",
   "apiAuthority": "API-REV001 Fail / 57.14% unchanged",
   "singleOutcomeRecipient": true,
-  "deliveryStatus": "pending send_message_to"
+  "deliveryStatus": "DELIVERED",
+  "receipt": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /software_engineering_team/api_e2e_engineer.",
+    "target_agent_run_id": "api_e2e_engineer_4b3516b0eb7d448586471bee29383f50"
+  },
+  "reviewCommit": "24b6955897",
+  "additionalOutcomeRecipients": []
 }
