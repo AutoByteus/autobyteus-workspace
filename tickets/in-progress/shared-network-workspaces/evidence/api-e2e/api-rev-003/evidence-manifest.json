@@ -1,0 +1,850 @@
+{
+  "scope": "All substantive E3 evidence and canonical API artifacts. Excludes this manifest and mutable routing/audit/reference-index metadata to avoid circular hashes; raw evidence remains unchanged.",
+  "files": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md",
+      "size": 43789,
+      "sha256": "6e3b32efc608038e45fb0623253a7e82c78f8b84addbd2a00fdb1828556d0d59"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md",
+      "size": 24529,
+      "sha256": "a022f6811583ce06281ea12851fee7275d9460f5a9b0e6c11a16418f00d8b207"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md",
+      "size": 13895,
+      "sha256": "3bd21e6d40e69cb49230364ca0c41f7b2987eb209e9f45c6d92fdadb704b7bca"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md",
+      "size": 47976,
+      "sha256": "41606e9dd02517e5d097c61f16eb0ef420b6400e823c53d8e41905a146d9e2b3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/audit-artifacts.py",
+      "size": 7002,
+      "sha256": "ec311b4b06f1f00579f1fa2da647b760b0956094f4119c599c61c22962ddd73d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/audit-server-image.py",
+      "size": 1537,
+      "sha256": "6f6688eedde35d4cf93031da9bd106d2df5d9cd7065e78af1f7daf45aff019d1"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/build-docker-result.json",
+      "size": 7190,
+      "sha256": "fc9e66c8437accc4452641e56ad955d5c5ab26a092bae6ff395b257ef2efd7c7"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/build-docker-variant.py",
+      "size": 1758,
+      "sha256": "e18d6573ec91800fe6478045358ed614e091e696428328a2c84c6e23dfdc88c0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/build-result.json",
+      "size": 14555,
+      "sha256": "0996db57020838d23cb6296db6ee4f324290890148c49ad46a5da99ec9f0c18d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/build-server-image-v2.py",
+      "size": 3077,
+      "sha256": "57bc28d372642ba03a2bb4d1e388438f32903a5c7c5172096289f9d65c83d51c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/build-server-image.py",
+      "size": 2310,
+      "sha256": "4135f22e9845bfa0c548e5e9e3b1d77593ff9e8548c97b44c741939bc3130e3b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/cleanup-console.log",
+      "size": 152,
+      "sha256": "dc40e2caf1bfffaf32a6a47a0291bd73161a59a5e199132957169d3f09d4617c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/cleanup-managed-detach.py",
+      "size": 3340,
+      "sha256": "04e429064dbc965565208018f67221da931a873b984548a09e0a0571ae6c34c3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/cleanup-owned.py",
+      "size": 4023,
+      "sha256": "d1d62190ca08d1d5fe5a8716947e3395db8f5681b139b3b32163b2db89152ffc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/cleanup.json",
+      "size": 11351,
+      "sha256": "ced3044c8de58437bb4ce7307218483ce532037dfa268437fca8224664da1e04"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/client-capacity-confirm.json",
+      "size": 4547,
+      "sha256": "82b2be1cd09d875b3b53ff4424c11582754405b4b89b83e432ff195e2b8aff22"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/client-capacity-result.json",
+      "size": 10188,
+      "sha256": "644ea14c072156f9b6c97bda372ef5ff55b341008f939af17ef2ecdac91914e0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/confirm-managed-detach.py",
+      "size": 3633,
+      "sha256": "9cc79f51472d12dc8d3ea34567bd6d91e18be23defcd82e581571947818306a6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-add-remote.json",
+      "size": 1014,
+      "sha256": "18bd0ece61c2686ec2647551383fd764e511d72c2797ba6415a0171601f12e04"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-asset-list.json",
+      "size": 1275,
+      "sha256": "157c2038b8aa44aa60f4d3c476f8804c8f497616bcd60bb3f82901b2952a2742"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-assets-click.json",
+      "size": 752,
+      "sha256": "e22f3657f1f972f955e42f58e011a4a993ac018b7cbdc076cfb65624166c98f3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-browser.py",
+      "size": 798,
+      "sha256": "73e6c8d11b83005520db1e72c73fcccd78a833d978cbd49ee89169eed46c5793"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-build.log",
+      "size": 82974,
+      "sha256": "42318b105a021e7abd99f655a9d851a8fb24bfc88f4fdb466962c2515b2b25bf"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-deliberate-reload.json",
+      "size": 802,
+      "sha256": "738ed8daf57119e7d59008a25c255f567e26a3cb80b3bbbf17b8640487bc4c14"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-dom1.json",
+      "size": 11829,
+      "sha256": "d7884bc60506504518213fcdfd14a6e887ece2b83663e935892ae05182d3f9e4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-external-change.json",
+      "size": 3972,
+      "sha256": "f3e06794be9b34540869efee87040a0d2aff9d59d81316273d4b0d663867b1a7"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-external-text-assert.json",
+      "size": 845,
+      "sha256": "8714b68127479e53be97329902985641117325195cbe2215b7d67840538e545d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-external-text-open.json",
+      "size": 776,
+      "sha256": "b2dca1bfc12d6e1cc1a67802571931b3c95b0de246a55d8ede4c226cb847a781"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-files-click.json",
+      "size": 750,
+      "sha256": "6d4a3a20668ea5051054b148980dcff4345b3514ee5987f22148f8e489d3318d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-files-dom.json",
+      "size": 3737,
+      "sha256": "f217e88ca4a788fc08de5325d84fda12f7dc7abb80f6258bca6095a538663217"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-files-read.json",
+      "size": 3347,
+      "sha256": "df5395fae0dc07f05fc75c7fa08a453a993e9f793e167c86add314b11f10ba78"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-guide-assert.json",
+      "size": 1235,
+      "sha256": "10f2b91a066632a69203c9fcf0718fde3d0289befeb854485282c0a510482c78"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-guide-click.json",
+      "size": 759,
+      "sha256": "9c998dc405cdf5d7bb6479cf162d06714601748f90d7a4b39a9a2acf890c4aad"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-guide-proof.json",
+      "size": 3218,
+      "sha256": "41e8e1380b5d98062cab64cd8263667f16907c7c169e1dee3334445294ea4111"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-guide-shot.json",
+      "size": 966,
+      "sha256": "fd192153cbcb14cb5511eb033851c0609927bc816c392b07cf5857670fb61a6e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-guide.png",
+      "size": 404885,
+      "sha256": "78792ee060b8808366174c06dcdefb4553aa6707c86223475b898d66c191c231"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-health.json",
+      "size": 360,
+      "sha256": "1a2e85dc36a02e5d962069ef33e4a78caa8fa1ada8cc22c7663e33c2112b0f9d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-html-click.json",
+      "size": 760,
+      "sha256": "7cc8d3ad9c4e2e09d79f18481c21ee9e000947eb6df312a36d570e6df4037ad6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-html-fixture-result.json",
+      "size": 4718,
+      "sha256": "b0d77d827e94f04752ba15ed3afb2714d9b91348813724b536bd16ba2ff252eb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-html-frame-dom.json",
+      "size": 1077,
+      "sha256": "ef6d6fce1ef0516b1eac4e0f6c98230895e0060a7c892f13aed17b7ba0ffb0a2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-html-listen.json",
+      "size": 1095,
+      "sha256": "863c4e7eb0ac79cb0f1f1076deb1fbb9e406451f02c5bf734f2c637907991a84"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-html-render-assert.json",
+      "size": 1414,
+      "sha256": "6e5d39306f659f07b3b4e9f61d8d4daae3f97ccf60a80b28c836ef5d8c344de2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-html-reopen.json",
+      "size": 819,
+      "sha256": "bc9f2f673daa1904e7564d7c5b8e7975ee80b823c0d3513d23ed82e62965ddf0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-html-shot.json",
+      "size": 979,
+      "sha256": "4c9e4d7dcc3be59f5219083de70bc0808cda9a1fbdd7c0752e5888f7e4908596"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-html-state.json",
+      "size": 4208,
+      "sha256": "d780a47fd45795e6d3f46568409f5e3b3b5dba1b7073e44fcc709d5db513d4a0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-image-click.json",
+      "size": 770,
+      "sha256": "1dfb4406b40437fae2839075fd1a0ecfe4a257f03297ab5ab6439765562fc25f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-image-proof.json",
+      "size": 1352,
+      "sha256": "7d28782e047952344794ccc6b46f7a38a95a3a930731a903ab7e7427c651f85c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-mounted-html.png",
+      "size": 145487,
+      "sha256": "36b200c5f9d3093d6e9a0b609a2ad908949a2061f2c424c5e8d5162f8fcbad08"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-nodes-click.json",
+      "size": 751,
+      "sha256": "e71c2bbf30c861cc38e05693852c60daf2322a18698c033b9001851a87fa3044"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-nodes-dom.json",
+      "size": 10419,
+      "sha256": "d2f1f61fe0460f035e6c4a98be1b11ab230c81634cb711171d1c8b256834c3a6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-reload-assert.json",
+      "size": 981,
+      "sha256": "c701f058bd4be0214440e0829f7fba54a407bd26d807a3149bddc1daf8c41b1a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-remote-dom.json",
+      "size": 13212,
+      "sha256": "b6c50df5b38bc0db47c91ca0b2b6bd0067b201601a3d593c5f779d7934c8943d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-remote-node-dom.json",
+      "size": 2608,
+      "sha256": "7b8fb734cc0722f3138c471f35bb7ea229efe7823abc1376bb1f015e44eee613"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-remote-open.json",
+      "size": 765,
+      "sha256": "d53a869afd9f44a5c6a4c943f7b8f073ff12e503e4b1733673828929b9beb931"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-remote-tabs.json",
+      "size": 814,
+      "sha256": "e8abebcf864219805908926a7cb7ad334afddd233454986218366bbaf76da47a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-script-help.json",
+      "size": 1335,
+      "sha256": "0808d3c89e75597f7dc6b36198ce5ec8d2bfae631cb4a46459d8ee135d3ae6e6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-start-result.json",
+      "size": 3210,
+      "sha256": "da5a2041a6a62d003796c401e921fddff232ad8e77021eafee56434ab10a4c5e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-start.log",
+      "size": 1030,
+      "sha256": "5fe2ef3c379802df2705262d8eff61fdb6290a9cfb8960f13d4b793af1680fd2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-tabs.json",
+      "size": 541,
+      "sha256": "2bf95e48ca106348338ad1c84375f36741ac41a0f03138632045655c32362bc1"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-tools-dom.json",
+      "size": 3650,
+      "sha256": "23a78b93f5fc1276f31a9afeb490e9bb4dee578f9019cf6134b1abead57ecc19"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-validation-result.json",
+      "size": 4077,
+      "sha256": "fd83c6092de36e7df91dd2e0fe1e01160b7142629752c84021d9eca5f9b85479"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-watcher-observe.json",
+      "size": 1150,
+      "sha256": "bdf99bfe86c178b9322183ec113941ed47d5e3a46367570383d449c5fb500a64"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-workspace-choose-dom.json",
+      "size": 1577,
+      "sha256": "cea3a17efced3d71e99ee94d3833bc283abdd360ac1a1e8e05838358e612aed1"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-workspace-choose.json",
+      "size": 826,
+      "sha256": "7bb907c28acc73b17a48094911e3daf0118362c305cd563613ac2a977cbde342"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-workspace-click.json",
+      "size": 764,
+      "sha256": "598a361de2834c73d24378410c022a7bf974f590c34d7185ca4cfbab8d00b8ca"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-workspace-dom.json",
+      "size": 13734,
+      "sha256": "99002d37637eb4a898d4cd9b157893c93bf86989a4c5a228f73488368bc6dc7b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-workspace-select.json",
+      "size": 1015,
+      "sha256": "a7525cd161dc57951cfef039115fcb71e2ee1fe8b2da51a0401ff0ce6257fe81"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-workspace-select2.json",
+      "size": 954,
+      "sha256": "9b3f4a86c8ebd55813bc744f045054229237b57dccaf21e37c3f983f051b1eaa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/diagnose-managed-reboot.py",
+      "size": 1791,
+      "sha256": "3addffd11c41e626f941c582a7df0cfb735cdf1153e4e942470d835809ee1cc0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/finish-desktop-checks.py",
+      "size": 3255,
+      "sha256": "36429e4c354dc8bcc46798f94932a53dab787901215d1f8363a7bb05281c5b4e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/go-race.log",
+      "size": 15669,
+      "sha256": "7507f6c132bf5925127563fe0af960ce0c5d2e3b39c3630514192f6104f4b5e4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/go-vet.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/guest-loopback-tunnel-result.json",
+      "size": 4450,
+      "sha256": "09b20100605fb1e39543ba2934602b9b13db945c6a3a63316f65077634902ad0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/guest-loopback-tunnel-v2-result.json",
+      "size": 4790,
+      "sha256": "c4ae33d834004ca1cbf2f4105c3e8c34866c7a8758ba2de1354401030df534ca"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/guest-loopback-tunnel-v2.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/guest-ssh-readiness.json",
+      "size": 4778,
+      "sha256": "d8884da2cc30e40df1195506f2752e137b30f6ac213bfbd2a9a5c4fbf5a944d5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/initial-vms-cleanup.json",
+      "size": 1397,
+      "sha256": "ccdf54013583ce5bb73e16d10847116a22ca0dc9ed202059c445264419ce81b4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/input-audit.json",
+      "size": 617,
+      "sha256": "218421bea9365180a8afaa33f07dff5bc2390d30bda886c8a7c6d7f951aa4164"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-boot.log",
+      "size": 15,
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-client-capacity-boot.log",
+      "size": 15,
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-confirm-boot.log",
+      "size": 15,
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-confirm-download.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-confirm-resource.json",
+      "size": 759,
+      "sha256": "72c84644ef5a32955455e1d1d02521f27178a9bf12e29b28cf086873728f7943"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-confirm-start.json",
+      "size": 3948,
+      "sha256": "a31ed8c279f3551506148da121428a4c37a94075340bba77c6a70ac56f2d6d2d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-docker-lifecycle-result.json",
+      "size": 21285,
+      "sha256": "504887b54b35c19bfcc62c2e6b05f5b7b2ea34b92f4619b835eae07809ae0e97"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-docker-lifecycle-resume-result.json",
+      "size": 19912,
+      "sha256": "3d590018e0414086388636142b1bbdeb5ffd36347d8ff09d5039afb33856430c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-docker-prepare-result.json",
+      "size": 85466,
+      "sha256": "c1c6e664822cbf6e9d420278eae8741dddcfc99229fcd3667fc11ce0de8cb1ef"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-docker-public-result.json",
+      "size": 23944,
+      "sha256": "0199758fcdd1761bf67efeca77d6bba39595d6389b8d8a33679e86fe37cbcb07"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-download.log",
+      "size": 971,
+      "sha256": "e3e44ff6c3a4d94d0c71ec1d979755d4fd674a623c287c003a9fbba6325c0efe"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-final-boot.log",
+      "size": 38,
+      "sha256": "ca6ee74c5a73374422f6151521dbb41f539e9f2d57198249acbbeea5eeca15e7"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-final-download.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-final-resource.json",
+      "size": 759,
+      "sha256": "b3b9a7ccc0202e6fe0cf01192e411e5ee46dde739ac9fb7cb7209e90bca15c13"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-final-start.json",
+      "size": 3948,
+      "sha256": "2dfd2a4641fc6b983b22ba413fe7c5aedc30c34c9f72dd074c839b0de78ad235"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-lifecycle-result.json",
+      "size": 23793,
+      "sha256": "d400cd6dfafde870e211e84af20936565a8a1f71021d588515f999d618995739"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-lifecycle-resume-result.json",
+      "size": 19428,
+      "sha256": "2a1b2dfd4da5bd8e007ba5cd129f2cad6233cacc7706424c7c7fcd2088663d94"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-managed-client-confirm-result.json",
+      "size": 75532,
+      "sha256": "9ef7e3f78c728ce70e681ca63f926bc72f830fbcb4c83ef60ab2e397ee6972ed"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-managed-client-result.json",
+      "size": 49316,
+      "sha256": "c0ba751f6196509cbad6a4d4b46a0c20f4de2d86c5e9951b471274b1fe03af89"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-public-confirm-result.json",
+      "size": 43757,
+      "sha256": "b977c87664eb5a712c3299eb4881d89649c16660a7780cbe4d351e1ed607b653"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-public-final-result.json",
+      "size": 36154,
+      "sha256": "dfa9f99a1fee9e9cc4ea839b99ed4dabbbd7828cd58f63ce4a0a54079bef1d90"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-public-result.json",
+      "size": 36412,
+      "sha256": "7e4a0eef8765a3fac18927f424f22b5e5562162adcc8c5c1b8a9f1956f1d92e6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-resource.json",
+      "size": 759,
+      "sha256": "cc723438fa35521c7213e7173835b4c735e2f54f124f9a0dedcf09d893d58e02"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/linux-start.json",
+      "size": 3948,
+      "sha256": "e9b18d834b73e5160596f77ae764e89cadec02a0d1d0dab284afa44c49cf1bfb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/managed-client-harness-delta.json",
+      "size": 457,
+      "sha256": "3112165f977c4ca694d3bd0cfa55f1e13f418211abd48425177ee8525cbad96d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/managed-client-image-result.json",
+      "size": 33681,
+      "sha256": "95de2bc3ed90e35b4d1e18c2bc42ceb5cd4bdd207da5b1b88f9309d9d48fa401"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/managed-detach-cleanup-console.log",
+      "size": 54,
+      "sha256": "7971c84ca39a9a77fc3d3b52a37fda6e6df08d114089445903b70c50e5257252"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/managed-detach-cleanup-result.json",
+      "size": 86232,
+      "sha256": "add67e7c7f5b05fbcdb89b0906293a2cc80b881a5592a12cb1fdee6c0bb9c9c8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/managed-detach-confirm-result.json",
+      "size": 57334,
+      "sha256": "c2aa82b6062b155da42d409ae477ca914b1c50985bd95a078f08da2d378b2847"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/managed-lifecycle-result.json",
+      "size": 191876,
+      "sha256": "e46c9f706f7b5888faa2ee69df2b4e1a88f360eafdf82d2a83479e1b5bee3c28"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/managed-nodes-prepare-result.json",
+      "size": 80003,
+      "sha256": "ba7d6044f98e7d979315ad365a074f201703e7ee5f7daee6847fbc7c72261e0a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/managed-nodes-restricted-result.json",
+      "size": 65517,
+      "sha256": "5e30eaad709dae49b3da5d4211f6a3bbd4eedfd8321e12cbe569b02c7788e5bb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/managed-reboot-diagnostic.json",
+      "size": 153926,
+      "sha256": "c2839e12d4fc518dabd57d9a27b0b31b705e6fce814e18374f8f11cb4a8af2cc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/managed-reboot-repro-console.log",
+      "size": 996,
+      "sha256": "f97b160e57bf89b7880e3a4cfb140d678963f7a705810a7093a3e7320df11b28"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/managed-reboot-repro-result.json",
+      "size": 739257,
+      "sha256": "b1ac6b758768473817e00951ccf6a38a792b1b5c1ff674841009f33c285457de"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/mounted-api-client-v2.mjs",
+      "size": 4858,
+      "sha256": "11ca767219de79b2d551f6e5df0db36079f3cd7a14aa08eba3c9139c92ca66fb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/mounted-api-client.mjs",
+      "size": 4857,
+      "sha256": "526fc1f56973f36e836eec2b2b83cd314f6d30971594fe333d8d8014718cafea"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/mounted-api-harness-delta.json",
+      "size": 419,
+      "sha256": "d820cffa8e87c4dc71596e2b6c931dba10962cf9eeabc6d07ec61bc6020439af"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/mounted-api-mutations-result.json",
+      "size": 15455,
+      "sha256": "b620cb456ec614e404af5cd3707b47988ed30f9e625898ad384ba87187dae77a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/mounted-api-result.json",
+      "size": 14318,
+      "sha256": "1bcc89e34e70ad71db296bf3dbe2341a0884fbd85bbc91f76d453e67d7af2147"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/mounted-api-resume-result.json",
+      "size": 7093,
+      "sha256": "93013fa4e23dbfd1517c884c360e5f610992df5425ea193cfed5afd90806056f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/mounted-lock-holder.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/mounted-lock-result.json",
+      "size": 8688,
+      "sha256": "8d45f3ed642e24cae933b626fa43b406352c951aa4fe747bcb52b80b90ba43e4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/narrow-checks-result.json",
+      "size": 1206,
+      "sha256": "ab47d382713e1c8d8aefd4264598b313fc56e8dc8daf5d540b707f7831a57051"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/new-failure-summary.json",
+      "size": 7062,
+      "sha256": "d51ca1fbd10d00eeab4c54d505a46980e829ed468a957ed8d6bb4596f8b367ff"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/packaging-check.json",
+      "size": 6469,
+      "sha256": "5ee057cba8afcfd9f110cf1d13f6a4cf8402daf75828a240f59c1b3dc3940798"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/pre-client-resources.json",
+      "size": 4075,
+      "sha256": "334d8acdd64e843d7a1c75a4eac593cd1c0b080379b052680c42e3d8538c96dd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/prepare-candidate.py",
+      "size": 3523,
+      "sha256": "4334879d6e1c7cb68005a4b4bd0a1c6440be532f2aed60838bd054e5dd18b2ff"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/prepare-client-capacity.py",
+      "size": 1701,
+      "sha256": "296aeea521174b6c663bd83588d746f95af40505c45f952abc98943fd36c2a93"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/prepare-linux-confirm.py",
+      "size": 1282,
+      "sha256": "477a1843788feabf8e68943f933bd8d1cbbbd46509c2b42ea895a200e0d2bcdb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/prepare-linux-docker.py",
+      "size": 6477,
+      "sha256": "0f4db4b2f5c74ce2f7ae05ba1da7b6459609f29ef6d807cb22fe4959811c3d33"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/prepare-linux-final.py",
+      "size": 1278,
+      "sha256": "6b215bd9b6389965b5cd1c4b1d7c5b2b1c433ced66e00dbc16d2ccda41cfefd2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/prepare-linux-resource.py",
+      "size": 1266,
+      "sha256": "df83263b4c6e753d0e19a1e81ac4abbc46c933afd8c47f8c754a7197f5899f60"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/prepare-managed-client-image.py",
+      "size": 3212,
+      "sha256": "01576aaf071f18178b54995318dc41aa01c43485c14e7d1712194f78e7881a21"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/prepare-managed-nodes.py",
+      "size": 3496,
+      "sha256": "52e5faa84cfdc788e7282d55082dc0f37bb25c278324949535071206472c891d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/prior-failure-resolution.json",
+      "size": 2109,
+      "sha256": "41c4e6ce0ea7db321614c2a8251ecfc3166b8dc43055a9d62020dd129b5f0e5b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/progress.md",
+      "size": 1132,
+      "sha256": "f29aa56f379401afd0fb05a59504971de4ebefa61110d592cbf58e90a1415338"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/python-bootstrap-launcher.log",
+      "size": 8431,
+      "sha256": "bcdf2db0dfaabb4450dbc55fb74a7b2e73c9d6d4e41a61c533658f6148ddeeae"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/reproduce-managed-reboot.py",
+      "size": 3237,
+      "sha256": "5f55514f6ce4461ee5b9b06a6364e5d23d961f0b5dcabae284dea86204bbf10e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/restrict-managed-node-ports.py",
+      "size": 4109,
+      "sha256": "75e3e583774f009a6f89e0df9634b61866acef1b01307cf63d9e14e3c3513a41"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/retire-initial-vms.py",
+      "size": 1309,
+      "sha256": "7b22792802cee763c205540403fccd9bbf8aa31c8781963b57bc7188b980f700"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-linux-docker-lifecycle-resume.py",
+      "size": 6292,
+      "sha256": "e1399dc21696f5710ce572d32ac772ef552f3c4b1af176335ccf63d8a341db88"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-linux-docker-lifecycle.py",
+      "size": 8550,
+      "sha256": "23006ff2d9a974f7d4c839ae987c9c723dbb2a7f45edaad7568dc22cbeb1cc3b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-linux-docker-public.py",
+      "size": 6519,
+      "sha256": "8d033443409e21d747a1aa00ceb5ff5b888ca02e0f3380c7b67d6c6744b0bd46"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-linux-lifecycle-resume.py",
+      "size": 6159,
+      "sha256": "b27620c57a27d97c48e19417befb2e9100dac9945be6c2b3e3b937f27fa1a006"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-linux-lifecycle.py",
+      "size": 8413,
+      "sha256": "6fc429fbf63f918cb7c41f7e71cb07cdb974abed24aad68275f5e61090e9db0f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-linux-managed-client-confirm.py",
+      "size": 4669,
+      "sha256": "35edfb2e22f679572effe520de62d71698d16844be6c0cbc3adc0861d82689ef"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-linux-managed-client.py",
+      "size": 4766,
+      "sha256": "a60675d4a9441dbe926c6c9267df38f48ac1622cf4f41f311ee1c6cad2ee5794"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-linux-public-confirm.py",
+      "size": 7986,
+      "sha256": "9a16d7f054d7080a063536185b4178d6ebefe29f42cd7f29c4124182168639ef"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-linux-public-final.py",
+      "size": 8007,
+      "sha256": "fd36e4ca793f17fc686b7be2eb96e54745708c122c449cb9ef3cfdce3dd33354"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-linux-public.py",
+      "size": 7964,
+      "sha256": "d259f67be0080417b94f24936264c2ad9077a2895f3aa38b3c3b7187ee9aa737"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-managed-lifecycle.py",
+      "size": 5984,
+      "sha256": "71a8ba61fbebfc33307dd95cf1f03312326e2b350a486ce75c7d2b514af7fc35"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-mounted-api-mutations.py",
+      "size": 3677,
+      "sha256": "6dea50e4c00f1de286598f3d6a62f49232751a3214c965c965d6ee65052a083d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-mounted-api-resume.py",
+      "size": 1664,
+      "sha256": "4878330061cc052110ad72de14f28b1c8aef5eefdb0bc2cdd6e06fbafd398ff8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-mounted-api.py",
+      "size": 1922,
+      "sha256": "9ce048a09df9823ebe6899611a06d784623b72b2b303caa74a28c1852e68bee9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-mounted-lock.py",
+      "size": 2848,
+      "sha256": "8bc898fb8950de09911bd53a2903f62011cec56f6f207885b60374f8cff80721"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/run-narrow-checks.py",
+      "size": 1538,
+      "sha256": "6157b20b540ab76a637b8ac4467ad7185c1aedaad2d13d34fcef61c281a6b85a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/scratch-path.txt",
+      "size": 72,
+      "sha256": "abee0567e69d2cac7ba8e7fd16e37fecb55d3c4e125cfa7ff9c0671849d57ca3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/server-build-initial-guard.json",
+      "size": 329,
+      "sha256": "71d8fdc99aba9cc2a5698d942bf6d6172604e16eb9f470db967635e5d15dc13c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/server-build-v2-result.json",
+      "size": 8999,
+      "sha256": "867cd8f4e3d2b2ad188afe87b19220b2acd55f8d0c059af31caf4603712e422e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/server-build-v2.log",
+      "size": 86095,
+      "sha256": "8e021b858f1b37a31c6fc8d677a24a8106a62b0c8926378641b232f7dba17a6e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/server-image-audit.json",
+      "size": 1274554,
+      "sha256": "61cfd920e17dabd731d5f3e16444bed3d62d62213c8f62ef9ef1ad4e397020b0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/server-image-delta-scope.json",
+      "size": 12617,
+      "sha256": "cafd8ddee494eb716d60d113d215a6c5dbb264ceeabed52da0d333a5d71f48c7"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/server-image-transfer.log",
+      "size": 43,
+      "sha256": "09149df17a0e64bfb3b1846228b07002ab5e93bd7d4620d6149f0552f52607f8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/start-guest-loopback-tunnel-v2.py",
+      "size": 2459,
+      "sha256": "2f26b5cbdcd99ed1d74d7e6cce90c7b1bb05961e166885432d4df0b54edcb0a0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/start-guest-loopback-tunnel.py",
+      "size": 2596,
+      "sha256": "0780b3c3597df13891e5e16452131abd7a406c9f025f6952a8a45635aa86b9ed"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/start-isolated-desktop.py",
+      "size": 1264,
+      "sha256": "8a2d1100cf64587beb231a49940920b694a753150d1acb9da0b61b0428584b59"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/start-linux-confirm.py",
+      "size": 2135,
+      "sha256": "24174a39ae7c3d03bcb8771568fd732b4a00e98e10fdb07413c27708d1ea5da5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/start-linux-final.py",
+      "size": 2129,
+      "sha256": "ae6b88c1f31bed9a5da350871df75d3fefd135c8e76ae0c66f613adf0f872a3a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/start-linux.py",
+      "size": 2111,
+      "sha256": "5ba37a70e9dc3767e7967374e1ef05170375fac6cbddd422e9932b7e91bc122a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/upstream-package-index.json",
+      "size": 79215,
+      "sha256": "58eb287c410cd9ec50085a1d4ff9296b3744b979af0ec87f8d95bb55f7279d0d"
+    }
+  ]
+}

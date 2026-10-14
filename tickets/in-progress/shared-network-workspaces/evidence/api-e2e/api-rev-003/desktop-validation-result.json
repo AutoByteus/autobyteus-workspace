@@ -1,0 +1,95 @@
+{
+  "instance": {
+    "instanceId": "iso-59463-bab4",
+    "pid": 65865,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:59464",
+    "graphqlUrl": "http://127.0.0.1:59464/graphql",
+    "controlEndpoint": "http://127.0.0.1:59463",
+    "controlPort": 59463,
+    "serverPort": 59464,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api003-cc7rp5vo/desktop-tmp/autobyteus-isolated-root-3Vdfx3",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api003-cc7rp5vo/desktop-tmp/autobyteus-isolated-root-3Vdfx3/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api003-cc7rp5vo/desktop-tmp/autobyteus-isolated-app/iso-59463-bab4.log"
+  },
+  "result": "Pass scoped desktop checks; remaining matrix required",
+  "checks": {
+    "guide-assert": {
+      "result": "Pass",
+      "disabledCopyButtons": 2,
+      "unqualifiedRelease": true,
+      "stallWarning": true,
+      "macDockerClientSupport": true
+    },
+    "html-render-assert": {
+      "result": "Pass",
+      "renderReceipt": {
+        "origin": "http://127.0.0.1:59278",
+        "kind": "API003_RENDERED",
+        "heading": "API003 mounted HTML",
+        "imageURL": "http://127.0.0.1:59278/rest/workspaces/agent_ws_49a8721c7fadf351e28d59eec0601bb05deb303d6c8eb6c880dc1f83c32ce54b/static/assets/diagram%20one.png",
+        "complete": true,
+        "width": 1,
+        "height": 1
+      },
+      "proof": "actual iframe fixture load/image decode, no renderer mocking"
+    },
+    "image-proof": {
+      "result": "Pass",
+      "image": {
+        "src": "http://127.0.0.1:59278/rest/workspaces/agent_ws_49a8721c7fadf351e28d59eec0601bb05deb303d6c8eb6c880dc1f83c32ce54b/content?path=assets%2Fdiagram%20one.png",
+        "alt": "Image content",
+        "complete": true,
+        "width": 1,
+        "height": 1
+      },
+      "viewport": {
+        "width": 1200,
+        "height": 768
+      }
+    },
+    "reload-assert": {
+      "result": "Pass",
+      "freshTree": "assets\ndiagram one.png\napi003-lock.txt\ndesktop-remote.txt\nindex.html"
+    },
+    "external-text-assert": {
+      "result": "Pass",
+      "freshMountedText": true
+    }
+  },
+  "watcher": {
+    "observedAt": 1791963436986,
+    "visibleBeforeDeliberateReload": false,
+    "tree": "assets\ndiagram one.png\napi003-lock.txt\nindex.html",
+    "limit": "one storage-side write observation, not guaranteed notifications"
+  },
+  "limits": [
+    "Current Mac desktop remote-window to current Linux managedDocker NFS client; SSH HTTP forward only, not NFS peer routing",
+    "Original storage-side changes, not independent physical peer",
+    "No completed-agent artifacts or paid/native-runtime turns",
+    "One image/HTML-relative-asset/text scenario, no exhaustive media formats/unsaved-buffer proof",
+    "One watcher observation did not update until documented Files visibility refresh"
+  ],
+  "buildIdentities": {
+    "Contents/MacOS/AutoByteus": "c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0",
+    "Contents/Resources/app.asar": "26cc496f7156f293afc5a2936775e2f1df0f5b7cf0c19166cf91b7de415934e5"
+  },
+  "stop": {
+    "argv": [
+      "pnpm",
+      "--silent",
+      "isolated-app",
+      "stop",
+      "iso-59463-bab4"
+    ],
+    "rc": 0,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"ok\": true,\n  \"command\": \"stop\",\n  \"result\": {\n    \"instanceId\": \"iso-59463-bab4\",\n    \"wasRunning\": true,\n    \"forced\": false,\n    \"dataRoot\": \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api003-cc7rp5vo/desktop-tmp/autobyteus-isolated-root-3Vdfx3\",\n    \"dataRootRemoved\": true,\n    \"controlPortReleased\": true,\n    \"serverPortReleased\": true,\n    \"logPath\": null\n  }\n}\n",
+    "stderr": ""
+  },
+  "tunnelCleanup": {
+    "pid": 57800,
+    "absent": true
+  }
+}

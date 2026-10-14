@@ -212,3 +212,326 @@ Diagnostic limitation: linux-native-trace.json used wrong guessed /usr/local/bin
 All6ownedclones/processes absent; ownscratch/candidate/Go/Linuxcache removed; publicMaccache retained, no userresources changed. No running/interrupted case remains. Final **Fail/57.14%**, new **API-F002/Unclear**, priorAPI-F001 resolved. Full canonicalreport/AC matrix current. Focusedfailureorigin routing, not successful-testreview. FUP001/D001 dispositions preserved.
 
 - 2026-10-14T04:37:39Z **Round2 Completed** — API-REV-002 Fail57.14%; reports and cases reconciled, resources retired, focused failure-origin review required.
+
+## Round 3 / API-REV-003 — initialized before execution
+Prior result002 Fail57.14% retained. PriorAPI-F002 unresolved; API-F001 scoped resolution remains.
+
+| Case | Expected | Initial status |
+| --- | --- | --- |
+| V03-repro | Fresh public bundled nativeUbuntu create/reconnect defaultY; original identity/bytes/UUID/modes/job intact | Not Tested |
+| V03 | Remaining nativeLinux/DockerLinux storage/clients/operations/restart/detach/preservation | Not Tested |
+| N01 | Current bundle/package/workflow/Go/bootstrap regressions | Not Tested |
+| V01/V02 | Mac regression as affected; healthy native+managedDocker peers and lifecycle | Not Tested |
+| V04 | Mounted current desktop previews/Guide | Not Tested |
+| V05 | Authorized actualnative tools/supportassets/peerclose/restore/Standalone-Team-Org | Not Tested |
+
+- Round3 setup started: exact retained engine verification/current metadata build and fresh owned Ubuntu resource are prerequisites, not API-F002 resolution.
+
+- 2026-10-14T06:58:08Z **Round3 V03 Started setup** — own Ubuntu24.04 public-image clone, private Tart root; no host bridge/root/credentials.
+
+- 2026-10-14T06:58:24Z **Round3 V03-repro** — Started fresh reference preflight and nonempty original source
+
+- 2026-10-14T06:58:25Z **Round3 V03-repro** — fresh reference preflight and nonempty original source: Pass
+
+- 2026-10-14T06:58:25Z **Round3 V03-repro** — Started one public bundled create under077 exact nonroot identity
+
+- 2026-10-14T06:58:41Z **Round3 V03-repro** — one public bundled create under077 exact nonroot identity: Pass
+
+- 2026-10-14T06:58:41Z **Round3 V03-repro** — Started original source identity and mounted bytes UUID defaultY
+
+- 2026-10-14T06:58:42Z **Round3 V03-repro** — original source identity and mounted bytes UUID defaultY: Fail
+
+- 2026-10-14T06:58:42Z **Round3 V03-repro** — Fail/incomplete RuntimeError('Traceback (most recent call last):\n  File "<string>", line 5, in <module>\n  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text\n    with self.open(mode=\'r\', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/usr/lib/python3.12/pathlib.py", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: \'/sys/module/nfs/parameters/directory_delegations\'\n')
+
+- Round3 first V03-repro: public createPass; overall harnessFail because wrong nfs versus nfsv4 sysfs path, reconnect not reached. Retain linux-public-result.json. New V03-confirm fresh clone planned with corrected diagnostic path only.
+
+- 2026-10-14T06:59:22Z **Round3 V03 Started setup** — own Ubuntu24.04 public-image clone, private Tart root; no host bridge/root/credentials.
+
+- 2026-10-14T06:59:31Z **Round3 V03-confirm** — Started fresh reference preflight and nonempty original source
+
+- 2026-10-14T06:59:32Z **Round3 V03-confirm** — fresh reference preflight and nonempty original source: Pass
+
+- 2026-10-14T06:59:32Z **Round3 V03-confirm** — Started one public bundled create under077 exact nonroot identity
+
+- 2026-10-14T06:59:48Z **Round3 V03-confirm** — one public bundled create under077 exact nonroot identity: Pass
+
+- 2026-10-14T06:59:48Z **Round3 V03-confirm** — Started original source identity and mounted bytes UUID defaultY
+
+- 2026-10-14T06:59:48Z **Round3 V03-confirm** — original source identity and mounted bytes UUID defaultY: Pass
+
+- 2026-10-14T06:59:48Z **Round3 V03-confirm** — Started installed exact engine private modes mask staging cleanup managed jobs
+
+- 2026-10-14T06:59:48Z **Round3 V03-confirm** — installed exact engine private modes mask staging cleanup managed jobs: Pass
+
+- 2026-10-14T06:59:48Z **Round3 V03-confirm** — Started public reconnect 1
+
+- 2026-10-14T06:59:49Z **Round3 V03-confirm** — public reconnect 1: Pass
+
+- 2026-10-14T06:59:49Z **Round3 V03-confirm** — Fail/incomplete KeyError('status')
+
+- Round3 V03-confirm: create/identity/defaultY/modes/jobs and first public reconnect Pass; overall harnessFail at wrong wrapped-response assertion. linux-public-confirm-result.json retained. V03-final new fresh case planned with direct Status assertion.
+
+- 2026-10-14T07:00:25Z **Round3 V03 Started setup** — own Ubuntu24.04 public-image clone, private Tart root; no host bridge/root/credentials.
+
+- 2026-10-14T07:00:35Z **Round3 V03-final** — Started fresh reference preflight and nonempty original source
+
+- 2026-10-14T07:00:35Z **Round3 V03-final** — fresh reference preflight and nonempty original source: Pass
+
+- 2026-10-14T07:00:35Z **Round3 V03-final** — Started one public bundled create under077 exact nonroot identity
+
+- 2026-10-14T07:00:52Z **Round3 V03-final** — one public bundled create under077 exact nonroot identity: Pass
+
+- 2026-10-14T07:00:52Z **Round3 V03-final** — Started original source identity and mounted bytes UUID defaultY
+
+- 2026-10-14T07:00:53Z **Round3 V03-final** — original source identity and mounted bytes UUID defaultY: Pass
+
+- 2026-10-14T07:00:53Z **Round3 V03-final** — Started installed exact engine private modes mask staging cleanup managed jobs
+
+- 2026-10-14T07:00:53Z **Round3 V03-final** — installed exact engine private modes mask staging cleanup managed jobs: Pass
+
+- 2026-10-14T07:00:53Z **Round3 V03-final** — Started public reconnect 1
+
+- 2026-10-14T07:00:53Z **Round3 V03-final** — public reconnect 1: Pass
+
+- 2026-10-14T07:00:53Z **Round3 V03-final** — Started public reconnect 2
+
+- 2026-10-14T07:00:54Z **Round3 V03-final** — public reconnect 2: Pass
+
+- 2026-10-14T07:00:54Z **Round3 V03-final** — Started post reconnect original source and mounted identity preserved
+
+- 2026-10-14T07:00:54Z **Round3 V03-final** — post reconnect original source and mounted identity preserved: Pass
+
+- 2026-10-14T07:00:54Z **Round3 V03-final** — API-F002 resolved at fresh public nativeUbuntu create/reconnect scope; broader matrix still required
+
+- 2026-10-14T07:01:37Z **Round3 Prior failure resolved FIRST** — API-F002 public create/reconnect corrected nativeUbuntu scopePass, two harness errors retained; N01 begins next.
+
+- 2026-10-14T07:01:37Z **Round3 N01** — Starting go-race
+
+- 2026-10-14T07:01:54Z **Round3 N01** — go-race: Pass
+
+- 2026-10-14T07:01:54Z **Round3 N01** — Starting go-vet
+
+- 2026-10-14T07:01:59Z **Round3 N01** — go-vet: Pass
+
+- 2026-10-14T07:01:59Z **Round3 N01** — Starting python-bootstrap-launcher
+
+- 2026-10-14T07:02:40Z **Round3 N01** — python-bootstrap-launcher: Pass
+
+- Round3 N01 complete; postrepository57.14% broaderRequired. Planned V03-life: ordinary mounted operations, normal reboot/autoremount and drained detach preserving source/marker/private recovery. Not Tested until execution.
+
+- 2026-10-14T07:03:24Z **Round3 V03-life** — Started normal mounted file operations and directory traversal
+
+- 2026-10-14T07:03:25Z **Round3 V03-life** — normal mounted file operations and directory traversal: Pass
+
+- 2026-10-14T07:03:25Z **Round3 V03-life** — Started normal guest reboot automatically restores same managed attachment
+
+- 2026-10-14T07:04:02Z **Round3 V03-life** — normal guest reboot automatically restores same managed attachment: Fail
+
+- 2026-10-14T07:04:02Z **Round3 V03-life** — Fail/incomplete RuntimeError('AutoByteus NFS incomplete: administrator setup declined\n')
+
+- 2026-10-14T07:05:05Z **Round3 V03-life** — Started post normal reboot same managed attachment without manual reconnect
+
+- 2026-10-14T07:05:05Z **Round3 V03-life** — post normal reboot same managed attachment without manual reconnect: Pass
+
+- 2026-10-14T07:05:05Z **Round3 V03-life** — Started public drained detach
+
+- 2026-10-14T07:05:06Z **Round3 V03-life** — public drained detach: Pass
+
+- 2026-10-14T07:05:06Z **Round3 V03-life** — Started detach preserves original source marker bytes and recovery
+
+- 2026-10-14T07:05:06Z **Round3 V03-life** — detach preserves original source marker bytes and recovery: Pass
+
+- 2026-10-14T07:05:06Z **Round3 V03-life** — Native Linux self-client lifecycle passed with original operations plus corrected status invocation; not peer/physical/Docker proof
+
+- Round3 V03-life reconciled Pass using original fileops + lifecycle-resume postboot/status/detach evidence. V03-docker-storage planned, own detached LinuxVM/source/image/registry only; no published artifact.
+
+- 2026-10-14T07:06:27Z **Round3 V03-Docker prepare** — Started test-owned Docker prerequisite in owned detached LinuxVM
+
+- 2026-10-14T07:06:41Z **Round3 V03-Docker prepare** — test-owned Docker prerequisite in owned detached LinuxVM: Pass
+
+- 2026-10-14T07:06:42Z **Round3 V03-Docker prepare** — Started build storage image from exact retained engine pair
+
+- 2026-10-14T07:07:22Z **Round3 V03-Docker prepare** — build storage image from exact retained engine pair: Pass
+
+- 2026-10-14T07:07:22Z **Round3 V03-Docker prepare** — Started clean image package and manifest verification
+
+- 2026-10-14T07:07:23Z **Round3 V03-Docker prepare** — clean image package and manifest verification: Pass
+
+- 2026-10-14T07:07:23Z **Round3 V03-Docker prepare** — Started VM-loopback private test registry
+
+- 2026-10-14T07:07:27Z **Round3 V03-Docker prepare** — VM-loopback private test registry: Pass
+
+- 2026-10-14T07:07:27Z **Round3 V03-Docker prepare** — Started retain image under actual local-registry immutable digest
+
+- 2026-10-14T07:07:28Z **Round3 V03-Docker prepare** — retain image under actual local-registry immutable digest: Pass
+
+- 2026-10-14T07:07:28Z **Round3 V03-Docker prepare** — Docker storage image ready, test-only loopback digest recorded; no public create yet
+
+- 2026-10-14T07:08:54Z **Round3 V03-Docker storage** — Started distinct nonempty ext4 source after drained native detach
+
+- 2026-10-14T07:08:55Z **Round3 V03-Docker storage** — distinct nonempty ext4 source after drained native detach: Pass
+
+- 2026-10-14T07:08:55Z **Round3 V03-Docker storage** — Started public Docker storage create from same immutable engine artifact
+
+- 2026-10-14T07:08:56Z **Round3 V03-Docker storage** — public Docker storage create from same immutable engine artifact: Pass
+
+- 2026-10-14T07:08:56Z **Round3 V03-Docker storage** — Started Docker-backed mounted same source identity UUID bytes nonroot/defaultY
+
+- 2026-10-14T07:08:57Z **Round3 V03-Docker storage** — Docker-backed mounted same source identity UUID bytes nonroot/defaultY: Pass
+
+- 2026-10-14T07:08:57Z **Round3 V03-Docker storage** — Started public Docker storage reconnect
+
+- 2026-10-14T07:08:58Z **Round3 V03-Docker storage** — public Docker storage reconnect: Pass
+
+- 2026-10-14T07:08:58Z **Round3 V03-Docker storage** — Docker-on-Linux storage create/reconnect native self-client Pass; managedDocker client not yet executed
+
+- 2026-10-14T07:15:10Z **Round3 V03-Docker-life** — Started normal mounted file operations and directory traversal
+
+- 2026-10-14T07:15:10Z **Round3 V03-Docker-life** — normal mounted file operations and directory traversal: Pass
+
+- 2026-10-14T07:15:11Z **Round3 V03-Docker-life** — Started normal guest reboot automatically restores same managed attachment
+
+- 2026-10-14T07:15:48Z **Round3 V03-Docker-life** — normal guest reboot automatically restores same managed attachment: Fail
+
+- 2026-10-14T07:15:48Z **Round3 V03-Docker-life** — Fail/incomplete RuntimeError('AutoByteus NFS incomplete: another administrative operation is checking/incomplete; restore storage and wait: resource temporarily unavailable\nAutoByteus NFS incomplete: exit status 1\n')
+
+- 2026-10-14T07:16:28Z **Round3 V03-Docker-life** — Started post normal reboot same managed attachment without manual reconnect
+
+- 2026-10-14T07:16:28Z **Round3 V03-Docker-life** — post normal reboot same managed attachment without manual reconnect: Pass
+
+- 2026-10-14T07:16:28Z **Round3 V03-Docker-life** — Started public drained detach
+
+- 2026-10-14T07:16:29Z **Round3 V03-Docker-life** — public drained detach: Pass
+
+- 2026-10-14T07:16:29Z **Round3 V03-Docker-life** — Started detach preserves original source marker bytes and recovery
+
+- 2026-10-14T07:16:29Z **Round3 V03-Docker-life** — detach preserves original source marker bytes and recovery: Pass
+
+- 2026-10-14T07:16:29Z **Round3 V03-Docker-life** — Docker storage self-client lifecycle passed after prior startup reconciliation completed; no manual reconnect; not peer/physical/managedDocker-client proof
+
+- Round3 V03-Docker-life reconciled Pass: raw first postboot status met the documented administrative lock during the service nonroot probe one second after startup; separate resume observed finished reconciliation and actual readiness with no manual reconnect, then drained detach/source preservation Pass. Original raw failure retained, not suppressed.
+
+- 2026-10-14T07:21:04Z **Round3 V03-Docker storage** — Current full-source server image built/transferred unchanged to owned Linux guest; local registry digest, isolated launcher home, loopback port policy ready
+
+- 2026-10-14T07:21:24Z **Round3 V03-Docker storage** — Started actual current launcher first ordinary node
+
+- 2026-10-14T07:21:27Z **Round3 V03-Docker storage** — actual current launcher first ordinary node: Pass
+
+- 2026-10-14T07:21:27Z **Round3 V03-Docker storage** — Started real server health before NFS selection
+
+- 2026-10-14T07:21:43Z **Round3 V03-Docker storage** — real server health before NFS selection: Pass
+
+- 2026-10-14T07:21:43Z **Round3 V03-Docker storage** — Started actual current launcher second unselected node
+
+- 2026-10-14T07:21:46Z **Round3 V03-Docker storage** — actual current launcher second unselected node: Pass
+
+- 2026-10-14T07:21:57Z **Round3 V03-Docker storage** — Started seed synthetic private auth/data/browser sentinel bytes
+
+- 2026-10-14T07:21:58Z **Round3 V03-Docker storage** — seed synthetic private auth/data/browser sentinel bytes: Pass
+
+- 2026-10-14T07:21:58Z **Round3 V03-Docker storage** — Started ordinary custom network alias setup
+
+- 2026-10-14T07:21:58Z **Round3 V03-Docker storage** — ordinary custom network alias setup: Pass
+
+- 2026-10-14T07:21:59Z **Round3 V03-Docker storage** — Node setup incomplete AssertionError([{'HostIp': '0.0.0.0', 'HostPort': '5908'}, {'HostIp': '::', 'HostPort': '5908'}])
+
+- 2026-10-14T07:23:06Z **Round3 V03-Docker storage** — Managed node fixture corrected before NFS: explicit loopback published bindings verified, current image/launcher private volumes retained; unselected stopped
+
+- 2026-10-14T07:23:10Z **Round3 V03-Docker storage** — Started public create with exact chosen managed Docker client
+
+- 2026-10-14T07:23:21Z **Round3 V03-Docker storage** — public create with exact chosen managed Docker client: Pass
+
+- 2026-10-14T07:23:21Z **Round3 V03-Docker storage** — Started exact chosen image config private state ports aliases and unselected preservation
+
+- 2026-10-14T07:23:22Z **Round3 V03-Docker storage** — exact chosen image config private state ports aliases and unselected preservation: Fail
+
+- 2026-10-14T07:23:22Z **Round3 V03-Docker storage** — ManagedDocker client Fail/incomplete AssertionError()
+
+- 2026-10-14T07:23:59Z **Round3 V03-Docker storage** — Started exact chosen image config private state ports aliases and unselected preservation
+
+- 2026-10-14T07:23:59Z **Round3 V03-Docker storage** — exact chosen image config private state ports aliases and unselected preservation: Pass
+
+- 2026-10-14T07:23:59Z **Round3 V03-Docker storage** — Started same original nonempty source and native mount identity preserved
+
+- 2026-10-14T07:23:59Z **Round3 V03-Docker storage** — same original nonempty source and native mount identity preserved: Pass
+
+- 2026-10-14T07:23:59Z **Round3 V03-Docker storage** — Started public reconnect with real managed node readiness
+
+- 2026-10-14T07:24:00Z **Round3 V03-Docker storage** — public reconnect with real managed node readiness: Pass
+
+- 2026-10-14T07:24:00Z **Round3 V03-Docker storage** — Linux managedDocker client create/reconnect exact preservation Pass; mounted file/API journeys next, not Mac/physical/paid-native proof
+
+- 2026-10-14T07:26:13Z **Round3 V03-Docker storage** — Started seed original source project files and Git as actual selected nonroot user
+
+- 2026-10-14T07:26:13Z **Round3 V03-Docker storage** — seed original source project files and Git as actual selected nonroot user: Pass
+
+- 2026-10-14T07:26:13Z **Round3 V03-Docker storage** — Started actual running product HTTP GraphQL image HTML and PTY Git
+
+- 2026-10-14T07:26:28Z **Round3 V03-Docker storage** — actual running product HTTP GraphQL image HTML and PTY Git: Fail
+
+- 2026-10-14T07:26:28Z **Round3 V03-Docker storage** — Mounted API case Fail/incomplete RuntimeError('file:///app/[eval1]:22\n let combined=\'\';const receipt=new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error(\'terminal receipt timeout: \'+combined.slice(-1200))),15000);socket.on(\'message\',raw=>{let p;try{p=JSON.parse(raw.toString());}catch{return;}if(p.type===\'error\'){clearTimeout(timer);reject(Error(JSON.stringify(p)));return;}if(p.type!==\'output\')return;combined+=Buffer.from(p.data,\'base64\').toString();const m=combined.match(/(?:^|\\r?\\n)API003_RECEIPT:(\\{[^\\r\\n]*\\})/);if(m){clearTimeout(timer);resolve(JSON.parse(m[1]));}});});\n                                                                                                ^\n\nError: terminal receipt timeout: \x1b[?2004h/Volumes/autobyteus-shared/api-scenario $ python3 -c \'import os,subprocess,json; p=subprocess.run([\'\\\'\'git\'\\\'\',\'\\\'\'status\'\\\'\',\'\\\'\'--porcelain\'\\\'\'],capture_output=True,text=True); g=subprocess.run([\'\\\'\'git\'\\\'\',\'\\\'\'rev-parse\'\\\'\',\'\\\'\'--show-toplevel\'\\\'\'],capture_output=True,text=True); print(\'\\\'\'API003_\'\\\'\'+\'\\\'\'RECEIPT:\'\\\'\'+json.dumps({\'\\\'\'cwd\'\\\'\':os.getcwd(),\'\\\'\'uid\'\\\'\':os.getuid(),\'\\\'\'gitRc\'\\\'\':p.returncode,\'\\\'\'gitErr\'\\\'\':p.stderr,\'\\\'\'gitTop\'\\\'\':g.stdout.strip(),\'\\\'\'count\'\\\'\':os.getenv(\'\\\'\'GIT_CONFIG_COUNT\'\\\'\'),\'\\\'\'key0\'\\\'\':os.getenv(\'\\\'\'GIT_CONFIG_KEY_0\'\\\'\'),\'\\\'\'value0\'\\\'\':os.getenv(\'\\\'\'GIT_CONFIG_VALUE_0\'\\\'\')}))\'\r\n\x1b[?2004l\rAPI003_RECEIPT:{"cwd": "/Volumes/autobyteus-shared/api-scenario", "uid": 0, "gitRc": 0, "gitErr": "", "gitTop": "/Volumes/autobyteus-shared/api-scenario", "count": "1", "key0": "safe.directory", "value0": "/Volumes/autobyteus-shared/api-scenario"}\r\n\x1b[?2004h/Volumes/autobyteus-shared/api-scenario $ \n    at Timeout._onTimeout (file:///app/[eval1]:22:97)\n    at listOnTimeout (node:internal/timers:585:17)\n    at process.processTimers (node:internal/timers:521:7)\n\nNode.js v22.23.3\n')
+
+- 2026-10-14T07:26:52Z **Round3 V03-Docker storage** — Started actual running product HTTP GraphQL image HTML and PTY Git
+
+- 2026-10-14T07:26:53Z **Round3 V03-Docker storage** — actual running product HTTP GraphQL image HTML and PTY Git: Pass
+
+- 2026-10-14T07:26:53Z **Round3 V03-Docker storage** — Mounted HTTP/GraphQL/relative static bytes and actual WebSocket PTY exact scoped Git/cwd Pass; not desktop rendering/model tools/independent peer
+
+- 2026-10-14T07:27:20Z **Round3 V03-Docker storage** — Owned loopback tunnel incomplete RuntimeError('ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMW0sY8Cm8J1z/uKEE1W8Y8KBT2LSAQPWJsLZmxaF0wO root@ubuntu\ninactive\n')
+
+- 2026-10-14T07:28:20Z **Round3 V03-Docker storage** — Host-to-owned-guest SSH loopback HTTP forwarding verified using own ephemeral key and guest-read host key; no VM peer route/bridge workaround
+
+- 2026-10-14T07:29:44Z **Round3 V03-Docker storage** — Started ordinary public API create/write/rename/read/delete reaches original source and all-squash owner
+
+- 2026-10-14T07:29:44Z **Round3 V03-Docker storage** — ordinary public API create/write/rename/read/delete reaches original source and all-squash owner: Pass
+
+- 2026-10-14T07:29:44Z **Round3 V03-Docker storage** — Started healthy mounted static route reopens externally replaced and deleted file
+
+- 2026-10-14T07:29:44Z **Round3 V03-Docker storage** — healthy mounted static route reopens externally replaced and deleted file: Pass
+
+- 2026-10-14T07:29:44Z **Round3 V03-Docker storage** — Mounted API CRUD/rename/delete and original-source external replacement/deletion freshness Pass; no independent peer claimed
+
+- 2026-10-14T07:30:18Z **Round3 V03-Docker storage** — Started native host NFS lock excludes managedDocker NFS volume client
+
+- 2026-10-14T07:30:18Z **Round3 V03-Docker storage** — native host NFS lock excludes managedDocker NFS volume client: Pass
+
+- 2026-10-14T07:30:18Z **Round3 V03-Docker storage** — Started managedDocker client acquires same lock after ordinary host release
+
+- 2026-10-14T07:30:18Z **Round3 V03-Docker storage** — managedDocker client acquires same lock after ordinary host release: Pass
+
+- 2026-10-14T07:30:18Z **Round3 V03-Docker storage** — Real native-host and Docker-volume NFS mount clients serialize POSIX record locks; same kernel/VM, not independent physical peer certification
+
+- 2026-10-14T07:38:26Z **Round3 V04 partial Pass** — new isolated current-worktree Mac desktop, current Linux Docker NFS client: actual Nodes Guide unavailable/copy-disabled/warnings, registered remote node, Files workspace selection, mounted HTML+relative image decoded (fixture postMessage exact origin/frame), native image preview1x1, source-side external text invisible before refresh but visible/current after Files reopen. No provider turn or completed-agent artifact. Own desktop stopped and SSH tunnel retired; VM/node remain for lifecycle. Evidence desktop-validation-result.json and desktop-* raw actions/screenshots.
+
+- 2026-10-14T07:39:21Z **Round3 V03-Docker storage** — Started normal selected Docker node restart
+
+- 2026-10-14T07:39:24Z **Round3 V03-Docker storage** — normal selected Docker node restart: Pass
+
+- 2026-10-14T07:39:24Z **Round3 V03-Docker storage** — Started same node automatically healthy after Docker restart
+
+- 2026-10-14T07:39:28Z **Round3 V03-Docker storage** — same node automatically healthy after Docker restart: Pass
+
+- 2026-10-14T07:39:28Z **Round3 V03-Docker storage** — Started Docker restart preserves exact image node config private mounts ports aliases and unselected node
+
+- 2026-10-14T07:39:30Z **Round3 V03-Docker storage** — Docker restart preserves exact image node config private mounts ports aliases and unselected node: Pass
+
+- 2026-10-14T07:39:30Z **Round3 V03-Docker storage** — Started normal whole guest reboot restores host and selected managedDocker client without reconnect
+
+- 2026-10-14T07:42:42Z **Round3 V03-Docker storage** — normal whole guest reboot restores host and selected managedDocker client without reconnect: Fail
+
+- 2026-10-14T07:42:42Z **Round3 V03-Docker storage** — Managed lifecycle Fail/incomplete RuntimeError('No healthy automatic managed node and host readiness within observation window; no reconnect performed')
+
+
+## Round3 final reconciliation — API-REV-003
+
+- V03 prior API-F002 **resolved first** at fresh native public create/reconnect scope; all3 fresh create commands pass, final full assertion case Pass. Earlier wrong sysfs/status-shape harness failures retained.
+- N01 **Pass with3 explicit skips**:7 Go packages/race/vet, Python52enumerated/49pass. Postrepository57.14%, broaderRequired.
+- V03 native and DockerLinux storage/native self-client file operations, normal reboot/remount and drained detach **Pass** with corrected status invocation/timing; raw initial harness refusals retained.
+- V03 Linux managedDocker create/reconnect/private/image/config/volumes/ports/alias/unselected preservation, actual mounted APIs/PTYGit/record locks **Pass at stated scope**. Mounts-order and PTY bareCR parser corrections preserve raw results. Same VM/kernel, not independent physical peers.
+- V04 **Partial Pass**: actual current isolated Mac remote desktop Guide/HTML-relative image/image/text after visibility refresh. No completed-agent artifact, all media or unsaved-buffer proof; no automatic watcher guarantee. Desktop/tunnel retired.
+- V03 selected node `docker restart` and exact preservation **Pass**; normal whole-host `systemctl reboot` **Fail API-F003**. Read-only diagnostics before manual repair; public reconnect leaves stopped. Diagnostic-only manual start restores exact node; second ordinary reboot **reproduces Fail**. AC007/014/018/019, SCN009/013. This is not deferred outage isolation or healthy-peer routing.
+- V01/V02 remaining Mac clients/peer/physical scenarios and V05 actual native runtimes/assets/close/restore/Standalone-Team-Org **Not Tested this round**; carried peer environment blocker remains. No user-only waiver/paid inference/host-network authorization inferred.
+- Other setup-only raw errors: tracked-public-env filename guard, redundant growpart after successful autoexpansion, guest Docker defaultbinding assumption corrected before NFS, socket-versus-service ssh readiness, one UI selector miss. No product findings from these; all retained.
+- Final round **Fail57.14%, broaderRequired**; new API-F003 preliminaryUnclear, focused failure-origin review required. No successful test-code/Delivery qualification. Cleanup receipts reconciled separately; raw snapshot-only Running metadata is not a live unfinished case.
+
+- **Round3 cleanup complete** — public detach rc0 and stopped-state/private/source preservation confirmed read-only. Initial cleanup assertion error preserved (Docker pre-boot Dns:null vs post-boot Dns:[], already present before detach; expected owned recreation label). All3 LinuxVM clones/processes, own desktop/tunnel, host image tag/audit container and scratch absent. Public cache/IR005candidate/five generated trees retained. Final API003 Fail57.14%; no running test case.

@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "3D8792D7B8A94729330CFD62530A7B49",
+    "--script",
+    "async () => {await __abDemo.click({text:\"Manage Nodes\"});await __abDemo.type({selector:\"input[placeholder=\\\"Node Name\\\"]\"},\"API003 Linux NFS\");await __abDemo.type({selector:\"input[placeholder=\\\"http://host:port\\\"]\"},\"http://127.0.0.1:59278\");return await __abDemo.click({text:\"Add Node\"});}"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"3D8792D7B8A94729330CFD62530A7B49\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes\",\"output_mode\":\"inline\",\"result\":{\"ok\":true,\"action\":\"click\",\"target\":{\"text\":\"Add Node\"}}}}\n",
+  "stderr": ""
+}
