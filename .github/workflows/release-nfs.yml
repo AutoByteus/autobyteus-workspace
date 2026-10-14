@@ -33,6 +33,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.release_tag || github.ref }}
+      - name: Check release job gates without publishing
+        run: python3 -m unittest scripts/tests/test_nfs_release_workflow.py -v
       - id: meta
         env:
           TAG: ${{ inputs.release_tag || github.ref_name }}
@@ -86,7 +88,8 @@ jobs:
           path: ${{ runner.temp }}/engine-output/
   engine-inputs:
     needs: [prepare, engine-packages]
-    if: ${{ always() && needs.prepare.result == 'success' && (needs.engine-packages.result == 'success' || needs.prepare.outputs.publish == 'true') }}
+    # Only publication may skip the rebuild; failures/cancellation never qualify.
+    if: ${{ !cancelled() && needs.prepare.result == 'success' && ((needs.prepare.outputs.publish != 'true' && needs.engine-packages.result == 'success') || (needs.prepare.outputs.publish == 'true' && needs.engine-packages.result == 'skipped')) }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -121,6 +124,8 @@ jobs:
           path: engine-candidate/
   engine:
     needs: [prepare, engine-inputs]
+    # Explicit status checks carry the legitimate skipped ancestor through needs.
+    if: ${{ !cancelled() && needs.prepare.result == 'success' && needs.engine-inputs.result == 'success' }}
     runs-on: ubuntu-24.04
     permissions:
       packages: write
@@ -165,6 +170,7 @@ jobs:
           path: /tmp/autobyteus-nfs-engine.tar
   binaries:
     needs: [prepare, engine-inputs, engine]
+    if: ${{ !cancelled() && needs.prepare.result == 'success' && needs.engine-inputs.result == 'success' && needs.engine.result == 'success' }}
     strategy:
       matrix:
         include:
@@ -238,7 +244,7 @@ jobs:
           path: artifacts/*
   publish:
     needs: [prepare, engine-inputs, engine, binaries]
-    if: needs.prepare.outputs.publish == 'true'
+    if: ${{ !cancelled() && needs.prepare.outputs.publish == 'true' && needs.prepare.result == 'success' && needs.engine-inputs.result == 'success' && needs.engine.result == 'success' && needs.binaries.result == 'success' }}
     runs-on: ubuntu-24.04
     permissions:
       contents: write
