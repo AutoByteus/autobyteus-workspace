@@ -11,6 +11,7 @@ record does not imply an earlier Pass or completed implementation.
 | IR-001 | Architecture Reviewer / current report / round 2 | N/A | Design Impact (initial baseline) | SR-018, ARCH-REV-002; CRR/API-REV/DR N/A | Preparation stopped for IMP-D001; no production change |
 | IR-002 | Architecture Reviewer / current report / round 3 | IMP-D001 | Implementation Complete | SR-019 / Approved SR-018, ARCH-REV-003; CRR/API-REV/DR N/A | Source implemented; personal local checks complete with unrelated baseline frontend failure; ready for source review |
 | IR-003 | Code Reviewer / CRR-001 / round1 | CR-001 P1 | Local Fix Complete | SR-019 / Approved SR-018, ARCH-REV-003, CRR-001; API-REV/DR N/A | Restrictive-mask new-directory modes corrected; pending source re-review |
+| IR-007 | Architecture Reviewer / ARCH005 / round5 | CR005 / API-F003 | Implementation Complete (reviewed design recovery) | SR021 / ApprovedSR018, ARCH005, CRR008, API003; DR N/A | Bounded same-ID failed-start completion implemented; local checks complete; source review required |
 
 ## IR-001 — Correct the source-generation lease reuse premise
 
@@ -335,3 +336,54 @@ record does not imply an earlier Pass or completed implementation.
   user/docs/finalization/release gates. CR001/CR002 scopes, D001/DEC015 deferral,
   IMP-D001 independent source deletion/AGY/local policy, FUP001 PM custody and
   separate peer-network limit unchanged. No broad tests relabelled current pass.
+
+## IR-007 — Complete selected Docker NFS startup after dependency proof
+
+- Trigger `/software_engineering_team/architecture_reviewer`, ARCH-REV005 Pass
+  on ReadySR021 / unchanged ApprovedSR018, review4cd2aae49b6e628084bc4d63fd6ef3b2719c3fc2;
+  actual input50d9c9d0c883e1ad8d3a1808b9e980a7df4f132b adds only receipt/history.
+  Findings CRR008/CR005 P1 / API003/API-F003. SR019/020 preserved; DR N/A.
+- Prior implementation IR006 LocalFixComplete (subsequently CRR007 Pass); current
+  independent authority CRR008 Fail / DesignImpact, API003 Fail57.14%/broaderRequired.
+  API-F002 independently resolved at API003 fresh public no-preinstall nativeUbuntu
+  create/reconnect scope. Current IR007 result **Implementation Complete, pending
+  source review**, not a replacement for independent failure/runtime authority.
+- Source `d318bd9db935affdf16d141ef4e88a6c0e4939b5`,15 scoped paths. BEH003,
+  SCN009/013, REQ014/019, AC007/014/018/019 and preservation AC009/017.
+  Existing locked Reconnect -> host proof -> selected-set coordinator -> current
+  exact daemon/container/ownedvolume/policy/qualifiederror -> current-image daemon
+  probe -> reinspection -> atomic bounded consumed incarnation -> same-ID Start
+  -> actual API/sharedbinding/currentstate verification. No recreation/pull/
+  configuration/policy/source/private-data/extra-job/outage-machinery changes.
+- New docker/start_observation.go, start_recovery.go, volume.go; setup/reconnect_nodes.go.
+  Snapshot only publicstate fields; shared readonly volume validator and existing
+  Probe/VerifyStarted/Store reused. Status observational, one discovery per pass.
+  Current mutable error/policy excluded from record key. Malformed/consumed fails
+  closed; confirmed public reconnect retries once but never overrides restart=no.
+  Safe detach removes exact attempts after attachment removal. No migration.
+- Launcher/README distinguish ordinary running Stop from already-failed no-op;
+  existing docker update --restart=no is durable veto, always-policy semantics
+  unchanged. No invented manualStopped field/private veto. Opaque config exact;
+  inspect Mounts array ordering alone ignored, actual entries unchanged.
+- Personal final checks:7 Go packages race,51 top-level/105 subcases pass; vet;
+  Python18/17pass/1 standalone Go-child skip with child executed via Go; shell
+  guidance/syntax; four compile targets; empty-qualification publication refusal;
+  seven intended mutation failures. No actual Docker/VM/root/mount/frontend/API run.
+  Initial volume-negative assertion failures fixed/retained; pre-polish passing
+  candidate and version-output harness error retained, no failures erased.
+- Current binaries/metadata rebuilt with unchanged IR005 engine pair, no engine
+  rebuild. Defaultsource968f6d000d4b6c2cc3c66cd3add5845cb30385cdad752fe831b564823db9b764;
+  sameengine aggregate51f81cd187caf269ecffa83fecc35a4f665b70942716d7858fa7d964d3b335ed.
+  Ignored ir007-local-candidate4-file inventory in build-result.json;11 old files
+  unchanged.1350 prior active-package files verified unchanged,62634 total other
+  tracked files matched input. Changed productionmax267/nonempty, no>220 delta.
+- Large/High confirmed. Fresh primary completed-Large/High rule -> existing
+  `/software_engineering_team/code_reviewer` only. After sourcePass API-F003
+  fresh public setup + two ordinary whole-host reboots FIRST without manualStart/
+  reconnect, same-object/API/bytes/UUID/private/source and normalStop/policyNo/
+  unselected controls. Full remaining current-product/native-agent/physical/bothOS/
+  preview/user/docs/finalization/release matrix retained. No150s SLA/outagegate.
+- D001/DEC015 deferred NOTfixed; IMP-D001 sourceUpdateRemove/AGY/local retained;
+  FUP001 PMcustody and peerNAT limit unchanged. Only MacDocker STORAGE deferred.
+  No provider/liveuser resources/merge/push/release/TaskDone. Full artifacts and
+  historical IR006 handoff retained; current canonical handoff/code authoritative.
