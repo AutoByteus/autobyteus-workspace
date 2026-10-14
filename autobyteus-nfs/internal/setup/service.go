@@ -30,11 +30,12 @@ type Plan struct {
 	Summary      []string
 }
 type Release struct {
-	SourceHash       string            `json:"sourceHash"`
-	QualifiedTargets []string          `json:"qualifiedTargets"`
-	Version          string            `json:"version"`
-	Packages         map[string]string `json:"ubuntuPackages"`
-	EngineImage      string            `json:"engineImage"`
+	Engine           *backend.EngineManifest `json:"engine,omitempty"`
+	SourceHash       string                  `json:"sourceHash"`
+	QualifiedTargets []string                `json:"qualifiedTargets"`
+	Version          string                  `json:"version"`
+	Packages         map[string]string       `json:"ubuntuPackages"`
+	EngineImage      string                  `json:"engineImage"`
 }
 type Service struct {
 	Lock    *os.File

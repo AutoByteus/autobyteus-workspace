@@ -39,7 +39,7 @@ func (s *Service) Apply(p Plan, consented bool) error {
 		return err
 	}
 	if runtime.GOOS == "linux" {
-		if err := backend.InstallUbuntuPackages(s.Runner, s.Release.Packages, p.Hosted != nil && p.Hosted.Backend == "ganesha-native", s.Store.Directory); err != nil {
+		if err := backend.InstallUbuntuPackages(s.Runner, s.Release.Packages, s.Release.Engine, p.Hosted != nil && p.Hosted.Backend == "ganesha-native", s.Store.Directory); err != nil {
 			return err
 		}
 	}

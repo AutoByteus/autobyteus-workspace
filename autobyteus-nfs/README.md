@@ -14,7 +14,7 @@ claim that this product has passed the physical/runtime matrix.
 | Storage computer | Export engine | Source | Protocol |
 | --- | --- | --- | --- |
 | Native Mac | Apple system nfsd | local APFS | NFSv3/TCP |
-| Native Ubuntu 24.04 | Ganesha 4.3/VFS | local ext4 | NFSv4.1/TCP |
+| Native Ubuntu 24.04 | corrected Ganesha 4.3/VFS | local ext4 | NFSv4.1/TCP |
 | Docker on a Linux computer | same Ganesha/VFS image, host networking | explicitly selected ext4 bind | NFSv4.1/TCP |
 
 Native Mac/Linux clients and **managed Docker agent clients on both Mac and
@@ -23,6 +23,11 @@ native Mac hosting instead. Windows, public/multi-tenant service, offline sync,
 HA, automatic remote notifications and arbitrary custom Docker nodes are not
 included. Release metadata advertises only independently qualified CPU/OS targets;
 compilation for a target is not qualification.
+
+Linux engine delivery uses the reviewed Noble backport `4.3-8ubuntu1+autobyteus1`,
+not unpatched stock4.3. The matching packages are embedded in Linux release
+binaries and shared with the Docker image; users need no compiler/PPA or extra
+package command. This distribution path is still under validation.
 
 ## Intended first-use journey
 

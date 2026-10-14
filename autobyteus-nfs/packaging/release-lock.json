@@ -1,13 +1,12 @@
 {
   "ubuntuBaseImage": "ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55",
   "ubuntuPackages": {
-    "nfs-common": "1:2.6.4-3ubuntu5.1",
-    "nfs-ganesha": "4.3-8ubuntu1",
-    "nfs-ganesha-vfs": "4.3-8ubuntu1"
+    "nfs-common": "1:2.6.4-3ubuntu5.1"
   },
   "qualifiedTargets": [],
   "qualifiedSourceHash": "",
   "physicalEvidence": [],
   "userVerified": false,
-  "note": "Reference pins come from architecture feasibility, NOT current-product or physical qualification. Delivery populates qualification only from new evidence. No public NFS release exists."
+  "note": "SR020 corrected engine identities are populated from actual candidate artifacts by packaging/engine/manifest.py lock. No stock engine fallback, release or qualification. Changed artifact identities invalidate qualification.",
+  "engine": null
 }

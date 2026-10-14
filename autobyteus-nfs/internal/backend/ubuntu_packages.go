@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"runtime"
 	"strings"
 
 	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/config"
@@ -12,25 +13,46 @@ import (
 
 // Installation is explicit, pinned and separate from reconnect. The temporary
 // default-unit mask prevents package postinst from starting a second export engine.
-func InstallUbuntuPackages(r platform.Runner, packages map[string]string, hosting bool, stateRoot string) (result error) {
-	names := []string{"nfs-common"}
+func InstallUbuntuPackages(r platform.Runner, packages map[string]string, engine *EngineManifest, hosting bool, stateRoot string) error {
+	var payload []enginePayload
 	if hosting {
-		names = append(names, "nfs-ganesha", "nfs-ganesha-vfs")
+		var err error
+		payload, err = readEngineBundle(engine, runtime.GOARCH, engineAssets)
+		if err != nil {
+			return err
+		}
 	}
-	args := []string{"install", "--yes", "--no-install-recommends"}
+	if err := platform.TrustedPath(stateRoot, true); err != nil {
+		return err
+	}
+	info, err := os.Stat(stateRoot)
+	if err != nil {
+		return err
+	}
+	if info.Mode().Perm() != 0700 {
+		return errors.New("package staging requires private0700 state")
+	}
+	return installUbuntuPackages(r, packages, payload, hosting, config.Store{Directory: stateRoot, Owner: 0}, "/etc/systemd/system/nfs-ganesha.service")
+}
+
+func installUbuntuPackages(r platform.Runner, packages map[string]string, payload []enginePayload, hosting bool, store config.Store, mask string) (result error) {
+	version := packages["nfs-common"]
+	if version == "" || strings.ContainsAny(version, " \n\r\t\x00") || strings.HasPrefix(version, "-") {
+		return errors.New("release lacks a pinned nfs-common package")
+	}
+	versions := map[string]string{"nfs-common": version}
+	names := []string{"nfs-common"}
+	for _, p := range payload {
+		names = append(names, p.identity.Name)
+		versions[p.identity.Name] = p.identity.Version
+	}
 	needed := false
 	for _, name := range names {
-		version := packages[name]
-		if version == "" || strings.ContainsAny(version, " \n\r\t\x00") || strings.HasPrefix(version, "-") {
-			return fmt.Errorf("release lacks a pinned %s package", name)
-		}
-		b, err := r.Run("/usr/bin/dpkg-query", "-W", "-f=${Version}", name)
-		if err != nil || strings.TrimSpace(string(b)) != version {
+		if !installedVersion(r, name, versions[name]) {
 			needed = true
 		}
-		args = append(args, name+"="+version)
 	}
-	store := config.Store{Directory: stateRoot, Owner: 0}
+
 	var receipt struct {
 		MaskedDefaultUnit bool `json:"maskedDefaultUnit"`
 	}
@@ -45,7 +67,6 @@ func InstallUbuntuPackages(r platform.Runner, packages map[string]string, hostin
 		if _, err := r.Run("/usr/bin/systemctl", "is-active", "--quiet", "nfs-ganesha.service"); err == nil {
 			return errors.New("unrelated Ganesha is active; package changes refused")
 		}
-		const mask = "/etc/systemd/system/nfs-ganesha.service"
 		if info, err := os.Lstat(mask); err == nil {
 			target, e := os.Readlink(mask)
 			if !receipt.MaskedDefaultUnit || e != nil || target != "/dev/null" || info.Mode()&os.ModeSymlink == 0 {
@@ -71,11 +92,27 @@ func InstallUbuntuPackages(r platform.Runner, packages map[string]string, hostin
 	if !needed {
 		return nil
 	}
+	args := []string{"install", "--yes", "--no-install-recommends", "nfs-common=" + version}
+	if hosting {
+		paths, cleanup, err := stageEngine(store.Directory, payload)
+		if err != nil {
+			return err
+		}
+		defer func() { result = errors.Join(result, cleanup()) }()
+		args = append(args, paths...)
+	}
 	if _, err := r.Run("/usr/bin/apt-get", "update"); err != nil {
 		return err
 	}
-	_, err := r.Run("/usr/bin/apt-get", args...)
-	return err
+	if _, err := r.Run("/usr/bin/apt-get", args...); err != nil {
+		return err
+	}
+	for _, name := range names {
+		if !installedVersion(r, name, versions[name]) {
+			return fmt.Errorf("installed %s differs from release pin", name)
+		}
+	}
+	return nil
 }
 
 // Keep the receipt whenever cleanup is uncertain; never report a completed install
@@ -114,4 +151,9 @@ func RemoveOwnedPackageMask(r platform.Runner, stateRoot string) error {
 		return errors.New("invalid package-mask receipt")
 	}
 	return removePackageMask(r, store, "/etc/systemd/system/nfs-ganesha.service")
+}
+
+func installedVersion(r platform.Runner, name, version string) bool {
+	b, err := r.Run("/usr/bin/dpkg-query", "-W", "-f=${Status} ${Version}", name)
+	return err == nil && strings.TrimSpace(string(b)) == "install ok installed "+version
 }

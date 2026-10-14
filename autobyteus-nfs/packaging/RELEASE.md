@@ -41,3 +41,37 @@ package inventory and license notices. Review Docker/OS package lifecycle on eac
 qualified reference rather than treating unit fakes as proof.
 
 No release has been published or authorized by the implementation work.
+
+## SR020 corrected engine candidate lifecycle
+
+The build-only workflow builds the exact source recipe in `engine/` on native
+arm64/amd64 Ubuntu builders. It assembles one `nfs-engine-candidate` artifact with
+both measured pairs, manifest, corresponding modified source and build inventory.
+Native Linux CLIs embed only their matching pair; Docker uses these SAME artifacts.
+Mac CLIs carry metadata, not engine bytes. Installed binary limit remains100MiB;
+package members are bounded at40MiB each. Existing four-member archives stay.
+
+Candidate qualification must use those exact artifacts, not freshly rebuilt
+packages. Download the candidate, verify with `engine/manifest.py verify`, then
+use its `lock` operation to record actual identities in release-lock.json; that
+operation clears prior qualification. It never creates a release or approval.
+A different recipe, source, package SHA/size, inventory or source archive changes
+the production hash and invalidates qualification. Do not copy prototype hashes.
+No candidate identities are invented for an architecture not actually built.
+
+Publication requires an explicit manual workflow dispatch with `candidate_run_id`
+pointing to the retained build-only run, plus all existing source/physical/user/
+release gates. Publication downloads and verifies that exact candidate against
+the reviewed lock; it does NOT rebuild the package pair. A tag push without this
+reference refuses publication. Artifact expiration is a missing-input failure,
+not permission to rebuild under an old Pass. Preserve candidate artifacts through
+qualification and authorized publication. Current default lock remains unqualified.
+
+Published source archives include complete modified source, exact Ubuntu origin,
+backport provenance/build instructions and notices, rather than only a URL. The
+image/native package inventory identifies distro runtime dependencies. Users do
+not need a compiler, PPA, package download URL or additional shell command. Setup
+validates embedded bytes before staging, uses private0700/0600 scratch under the
+existing consent/admin lock and distribution-unit mask, requeries actual installed
+versions/status and removes only its own scratch. No stock hosting fallback or
+package upgrade during ordinary reconnect; a missing bundle fails incomplete.
