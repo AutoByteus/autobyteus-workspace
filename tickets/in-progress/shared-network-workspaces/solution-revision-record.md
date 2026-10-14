@@ -304,3 +304,69 @@ SR-016 route decision: fresh rules cover completed architecture size/risk and re
 2026-10-14: read returned `design-review-report.md`, cumulative `architecture-review-revision-record.md` and `architecture-review-evidence/arch-rev-004/review-checks.json` at reviewer commit `c7f0376db65d09bcab93feeb3adb9288ece9d58a`. **Pass — ARCH-REV-004 / Ready SR020 / unchanged Approved SR018**, Large/High retained. CR003/API-F002 scoped dependency recovery is accepted in design; production correction and independent API closure remain pending. API002 Fail57.14%/broader Required and CRR005 Design Impact remain their owners' authoritative results; manually preinstalled prototype packages do not prove the new installer. Fresh no-preinstall public create/reconnect is first downstream revalidation, then the remaining full matrix/current-product/physical/user/release gates. D001/DEC015 deferral and IMP-D001/current-source/AGY/local policies retained.
 
 Reviewer explicitly confirms primary cumulative handoff **DELIVERED** to `/software_engineering_team/implementation_engineer`, the same ARCH-REV-004 delivery-recovery copy after a truncated prior receipt, not a new task. Informational receipt only: no duplicate forwarding, new solution round, requirements/design revision, source/test/live operation or delivery claim. Stop per informational-Pass workflow; implementation continues with the receiving owner.
+
+
+## SR-021 — CR005 / API-F003 Selected Docker Startup Completion Recovery
+
+- Date2026-10-14. Trigger CRR008 Fail/Design Impact89bbedc47e plus receiptf540ab9bde,
+  API003 Fail57.14% / broader Required. **Architecture Design Complete / Ready
+  SR021, Large/High**. Previous ReadySR020/ARCH004 and IR005/006 implementation
+  retained at actual scope; no repeated feature bootstrap or direct API handoff.
+- Approval **Approved SR018 unchanged**, approval018/017 byte-preserved. SCN009/013,
+  BEH001/004/005, REQ014/019, AC007/014/018/019 already require ordinary restart;
+  REQ010/AC009/017 preserve node/private/source state. No new REQ/AC or product
+  questionnaire, no scope/security/hosting/physical-gate change.
+- Personally read canonical failure handoff/history/raw API003 before action;
+  traced existing CLI/job/admin lock/supervisor/Reconnect/volume/probe/recreate/
+  status/current launcher Stop and Docker primary source. Two ordinary boots
+  leave client exited after its NFS mount precedes Ganesha readiness; later same-ID
+  diagnostic Start restores API/config. No app entrypoint can fix pre-process
+  mount failure. Prior reviewed engine/host-only owner lacked the required step.
+- Selected design: existing SetupService reconnect -> current selected exact
+  daemon/container/volume/policy/recognized failed-start state -> fresh daemon
+  image/UUID/access probe -> reinspection -> consume failed-incarnation record ->
+  one same-ID Start + current API/shared binding verification. Docker retains
+  process restart/policy ownership; background never recreates/pulls/stops peers
+  or changes Config/HostConfig. Status stays read-only. Normal stopped/disabled/
+  unselected/ambiguous/unknown-error targets are not started. Explicit reconnect
+  can retry a consumed eligible attempt, never override current policy=no.
+- Intent nuance discovered: public Docker inspect exposes no manually-stopped
+  flag; Stop on an already-failed non-running node is a no-op with no new event.
+  Do not infer intention from old setup running state or invent a field. Current
+  restart-policy control is a durable veto. Existing launcher forwarding/docs
+  must not imply a no-op Stop changed that policy. Rejected private stop-veto
+  draft because Docker own restore can still start the node on the next boot;
+  no such incomplete cancellation subsystem is selected. Normal Stop on a
+  successfully running node remains preserved and mandatory negative coverage.
+- New persisted subject is bounded consumed-attempt metadata, not desiredRunning,
+  READY, Config/auth copy or a migration. Existing attachment/source/marker/node/
+  runtime records unchanged; use existing atomic0600 store. At most32 selected
+  entries; safe detach removes exact entries. No broad event/history/retry/outage
+  framework, daemon-private DB, global unit edit, fixed sleep or volume plugin.
+- Evidence scope: new source/raw observation/primary-doc investigation and authoring
+  audits ONLY. No fresh VM/container/mount/runtime/UI/Go/provider experiment or
+  production/durable-test edit; no prototype Pass fabricated. Current API003 raw
+  states are extracted with original source reference. Two existing boot failures
+  and diagnostic repair support selection; implemented/public negative controls
+  and full acceptance remain downstream, not claimed from source tracing.
+- Prior resolutions: API-F002 independently resolved by API003 fresh no-engine-
+  preinstall native Ubuntu create16.778s and reconnect0.508s/0.605s; CR001 modes,
+  CR004 release gates retained. CR002/API-F001 remains earlier nativeMac cold-create
+  scope. D001/DEC015 deferred NOT fixed; IMP-D001 private current links/independent
+  source UpdateRemove/AGY/local unchanged. FUP001 PM custody and non-green current
+  Nuxt/Electron baseline remain, no duplicate follow-up.
+- Canonical changes: design basis/current path/DS006 primary+bounded local spine,
+  ownership/eligibility/inhibition/interface/state/file/removal/validation maps;
+  investigation inventory, this history and complete solution handoff. Full641
+  incoming reference chain retained plus SR021 evidence. Requirements/approvals,
+  specialist reports/history/tests,11 ignored engine candidate files and5 old
+  untracked dist trees preserved. No task completion/release/user verification.
+- Next: configured architecture re-review, implementation correction, independent
+  source review, **API-F003 fresh selected public setup/two ordinary reboots first**
+  without manual Start/reconnect; normal-stop/policy-disabled/unselected controls,
+  exact config/private/source/UUID and current API proof. Continue full remaining
+  bothOS native/managedDocker/native-agent assets/peerclose/restore/modes/preview/
+  independent physical/user/docs/finalization/authorized-release gates. No new
+ 150s SLA or deferred outage test obligation. ARCH004 does not approve SR021;
+  API003 and CRR008 remain authoritative until independently superseded.
+- Route: fresh get_handoff_rules selects the single completed/revised Architecture Design Complete Large OR High rule -> exact /software_engineering_team/architecture_reviewer. Direct Low-risk implementation and Delivery-gap rules do not apply. Full667-reference package retains all641 incoming paths;637 protected paths and11 retained candidate files audit unchanged. Actual send_message_to confirmation alone establishes delivery. Existing roles only, no delegation/spawning or duplicate same-outcome notification; stop after successful handoff.

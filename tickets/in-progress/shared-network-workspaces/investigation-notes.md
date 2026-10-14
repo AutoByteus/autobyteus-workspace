@@ -1,6 +1,109 @@
 # Investigation Notes — Shared Network Workspaces
 
-## Current SR020 — CR003 / API-F002 Linux Dependency Recovery
+## Current SR021 — CR005 / API-F003 selected-client restart recovery
+
+2026-10-14; **Architecture Design Complete / Ready SR021, Large/High** on unchanged
+**Approved SR018**. Incoming CRR008 report/history/package was read before action;
+review89bbedc47e plus receipt f540ab9bde90c77f468f7cd90d85ae1fb9248772. API003 report
+f76cf11a519c8f22fd89e5acc946802c5d23259f; actual build inpute8ed5627da; production
+source eb7934072a1f98832b7b6330a1bc6a7f348fd93d. Canonical detailed evidence:
+[evidence/design-recovery/sr021/lifecycle-investigation.md](evidence/design-recovery/sr021/lifecycle-investigation.md).
+Facts, intended behavior and selected design remain separate.
+
+### Evidence and independent work
+
+- Supported SCN009/013 normal whole-host restart after successful setup, not
+  DEC015 outage expansion. API003 two ordinary Linux boots leave same selected
+  unless-stopped client exited after local-driver NFS volume connection refused.
+  Storage/native mount later healthy, public reconnect host-only, API unavailable.
+  Same-ID diagnostic Start restores real API/shared bytes with unchanged opaque
+  configuration; this is a repair experiment, NOT automatic recovery Pass.
+- Personally traced current CLI/service/admin lock/Reconnect/jobs/volume/engine/
+  recreation/status, public launcher stop and exact raw inspect states. The prior
+  design expressly ended supervisor ownership at engine/host readiness; first-use
+  ordering + restart policy did not cover daemon-restore dependency failure.
+- Fresh versioned Moby start/restore/state/stop/kill/local-volume/restart-policy
+  primary sources inspected. Current Error records the mount-start failure and
+  successful start clears it; public inspect has no manually-stopped flag. Stop
+  on an already stopped failed start is a no-op without a state/event update;
+  no event watcher can recover intent that Docker did not record. Current
+  restart-policy=no is an observable veto. Ordinary successful-running stop has
+  no eligible NFS startup error. These are dependency semantics, not broad run
+  intent inferred from old setup receipts. Unknown versions/diagnostics remain
+  incomplete and need evidence, not heuristic retry.
+- No new VM/runtime/product suite/provider call or source edit. Existing runtime
+  evidence is adequate to select this owner and same-ID action; negative-control
+  derivation/public qualification remains required after implementation.
+- Authorities reread: solution-designer skill/architecture-design/design-principles,
+  root AGENTS/DESIGN/TESTING, approved SR018+approval018, applicable design and
+  migration policy, canonical handoff/history and CRR008/API003 evidence. Prior
+  full template/phase gates in this conversation retained. No closer NFS/script
+  AGENTS found, no principle conflict. Initial path lookups for task-local skills
+  and nonexistent setup/nodes.go returned not found; authoritative skills root
+  and actual setup files used. Read-only lookup mistakes, no product operations.
+
+### Technical decision and approval impact
+
+Extend existing SetupService reconnect after source/engine/host identity/access
+with an exact selected-client NFS failed-start completion boundary. Current
+selected ref/daemon/container/volume/policy/error -> isolated current-image daemon
+probe -> reinspection -> record one consumed failed process incarnation -> one
+same-ID Start + real API/shared binding check. No broad process supervisor,
+recreation/pull/settings/policy change, event replay/private daemon DB, fixed
+sleep/global Docker override or all-stopped-node start. A bounded consumed-attempt record is dedup ONLY, never desiredRunning/READY.
+Current launcher Stop also forwards Docker no-op on an already-failed start;
+docs/output must not describe that as a durable restart-policy veto. Rejected a
+private stop-veto file because it cannot stop Docker own restore on later boot.
+No new Stop controller or policy rewrite; current policy=no is the observable
+veto. Explicit reconnect may retry a consumed attempt but cannot override that
+policy. Background cycles cannot repeatedly start the same consumed failure.
+Normal stopped/disabled/unselected/unknown nodes remain untouched. The no-op stop
+of an already non-running failed start cannot publish new intent; current policy
+veto is disclosed, not hidden behind a nonexistent inspect flag. Full exact
+contract/negative cases are canonical design-spec.md SR021, not this summary.
+
+Approved REQ014/019 already require normal restart; REQ010/AC009 preservation
+continues. No new intended behavior or revised approval, no repeated choice
+question. Native Mac/Linux/Docker hosting/client roles, source/nonroot trust,
+NFS semantics, private profiles/current-source UpdateRemove/AGY and DEC015 remain.
+No live-action/release/TaskDone authorization. CR001/002/003/004 scopes retained;
+API-F002 now independently resolved by API003 fresh public native Ubuntu create
+16.778s/reconnect0.508s+0.605s without manual engine preinstallation. API003
+Fail57.14% and CRR008 Fail remain; ARCH004 applies only to SR020 until new review.
+
+### Supplement inventory and limits — complete cumulative chain
+
+| Artifact | Owner / purpose / current scope | Approval applicability |
+| --- | --- | --- |
+| code-review-report.md, code-review-revision-record.md; code-review-evidence/crr-008/package-index.json | Code Reviewer; latest Fail/Design Impact and all641 incoming refs, CRR001–008/history/raw audits | Evidence, unchanged; not a new product requirement |
+| api-e2e-execution-coverage-report.md, coverage investigation, ledger/history; evidence/api-e2e/api-rev-003/package-index.json | API owner; Fail57.14%, raw boot/setup/UI/source/cleanup and complete earlier rounds | Scoped execution, not full acceptance |
+| implementation-handoff.md/history; IR005/006 package indices | Implementation owner; current engine bundle and release gating, source/checks/recovery context | Preserved; not overwritten by design |
+| evidence/design-recovery/sr021/lifecycle-investigation.md | Designer; exact current source/path/primary contracts, option rationale, limits and node/path table | Evidence only; technical authority in canonical design |
+| evidence/design-recovery/sr021/observed-start-states.json | Designer extraction of3 distinct API003 actual states, original raw source linked | Inherited observations, NOT fresh execution |
+| evidence/design-recovery/sr021/primary-sources.json and moby-*.txt | Designer primary fetch/identities and pinned source text | Corroboration, not all-distro equivalence or new public API guarantee |
+| evidence/design-recovery/sr021/input-audit.json, final-audit.json, package-index.json, routing.json | Designer authoring/integrity and complete outgoing chain | Not a product test or confidence score |
+| All earlier approval/design/review/runtime/feasibility/source audit/raw attempts, screenshot and handoff context | Original owners; included through641 incoming references and previous inventory below | Historical scopes/approvals retained; no discarded supplements or erased failures |
+
+### Remaining work and safe boundary
+
+Configured architecture re-review -> implementation correction -> independent
+source review -> API-F003 public selected setup/two ordinary reboot/normal stop
+controls FIRST -> full remaining bothOS/native/managedDocker/native-agent/linked
+assets/healthy previews/physical/user/docs/finalization/authorized release gates.
+No force-timing or new outage matrix. Native amd64 engine/hosted release/signing/
+published installer unqualified; Guide unavailable intentional. Separate peerNAT
+limit remains; hardened private-LAN resource request not silently fulfilled by
+host bridge changes. FUP001 stays PM custody, no duplicate notification; historical
+Nuxt/Electron failures versus candidate-only green still distinct. API cleaned
+all owned resources; no live failing VM to reuse. This round creates only ticket
+artifacts, no source/build changes, live resources, host mounts/network/auth or
+provider usage.11 retained ignored IR005 artifacts and5 preexisting dist dirs
+remain untouched.
+
+---
+## Historical SR020 investigation — preserved at original scope
+
+## SR020 — CR003 / API-F002 Linux Dependency Recovery
 
 2026-10-14; **Architecture Design Complete / Ready SR020, Large/High**, unchanged ApprovedSR018/approval018+017. Incoming CRR0050b67d81fad and attached canonical report/history/checks/primary contracts/API002 indices read before acting. Source174e480bd0cfaee29f22fd46b1922afbb274e56b, production aggregate497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da. The implemented current service, package installer, trusted binary installer, config, Ganesha native/image, release metadata/workflow and CLI create/reconnect production paths were personally traced. Role/phase gates already read in this conversation; root DESIGN/TESTING revisited in full, no closer NFS AGENTS. No source/requirements/specialist artifact edits or repository validation suite by this recovery.
 

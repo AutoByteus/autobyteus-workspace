@@ -1,3 +1,155 @@
+# Solution Design Handoff — SR021 / Architecture Design Complete
+
+## Current result and request
+
+Package **shared-network-workspaces / AutoByteus NFS**; Task
+`project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`. Owner
+`/software_engineering_team/solution_designer`; original requester
+`/project_task_manager`, AgentRun project_task_manager_a5f6d9d306e54970bafdad895bdf731d.
+**Ready SR021 / unchanged Approved SR018; task_size Large, architectural_risk High.**
+Narrow design recovery for **CRR008 / CR005 P1 / API-F003**, not a new Task,
+delegation or reopening of settled product choices. Independent revised architecture
+review is required before dependent implementation. No new user question is pending.
+
+Original outcome: one easy install/start command per computer creates or joins a
+persistent shared filesystem; ordinary agent/CLI/project IO reads/writes the same
+source from native Mac/Linux and selected managed Docker nodes, without file-copy
+APIs or per-container setup. Chosen existing folder is actual storage. Preferred
+common root `/Volumes/autobyteus-shared`, project `/Volumes/autobyteus-shared/project`.
+Nodes NFS Guide reuses Docker Guide download/run/copy pattern. Whole projects/Git
+remain supported compatibility workloads; Git is not the sharing mechanism.
+
+## Incoming finding and recovered design
+
+CRR008 review89bbedc47ec0fdbf407d6831c2b9d1f199b965be, receiptf540ab9bde90c77f468f7cd90d85ae1fb9248772;
+API003f76cf11a519c8f22fd89e5acc946802c5d23259f, actual buildinpute8ed5627da2afa646c9ab89c6ce69b3a0bc0826c;
+sourceeb7934072a1f98832b7b6330a1bc6a7f348fd93d. Reports, canonical chain, affected
+source and raw public reboot/inspect/diagnostic evidence read before revision.
+
+Two ordinary Linux boots after successful selected-node setup leave the same
+unless-stopped client exited255, NFS volume connection refused before Ganesha is
+ready; host later ready, node API unavailable. Public reconnect is host-only.
+Same-ID manual Start after saved diagnosis restores exact config and API but is
+NOT automatic recovery proof. This is approved normal SCN009/013, REQ014/019,
+AC007/014/018/019 with AC009/017 preservation, not DEC015 outage machinery.
+
+**Smallest chosen correction:** extend existing SetupService reconnect, after
+storage/host proof, with a cohesive Docker selected-failed-start completion owner.
+Current selected reference + daemon + exact immutable container + owned volume +
+current automatic policy + narrowly recognized exact-volume connection-refused
+startup diagnostic -> fresh isolated daemon-side current-image UUID/UID/read-write
+probe -> current reinspection -> persist one consumed failed-incarnation record ->
+one Start of SAME ID -> real API/shared-binding verification. No all-stopped
+restart, new desired-running catalog, app-entrypoint workaround, recreation/pull/
+policy/config/image/port/private-state change, global Docker unit/network edit,
+fixed sleep, event replay/private daemon DB or generalized outage watchdog.
+
+Normal manually stopped/never-started, disabled-policy, unselected, ambiguous or
+unknown-error nodes are ineligible. Old apply running state is NOT current intent.
+Status remains read-only; existing Docker runtime restart policy remains owner.
+At most32 consumed-attempt records, private0600 under existing0700 root, no config/
+auth/READY; persisted before one Start to avoid background repeated requests.
+Explicit reconnect may retry a consumed eligible failure but cannot override policy.
+
+Important public-control distinction: Docker Stop on an already-failed non-running
+node is a no-op, also through the existing launcher; inspect/events do not record
+new manual intent. Current restart-policy=no is the observable durable veto. Normal
+Stop of a successfully running node is preserved. Documentation/output must explain
+this rather than promise no-op cancellation. A private Stop-veto draft was rejected
+because Docker own restore could still start the node later; no hidden incomplete
+cancellation subsystem is proposed. Canonical design gives exact eligibility,
+policy/identity recheck, attempt, status, files/removal/transition and test contracts.
+
+**Evidence versus implementation:** this round personally traced current source,
+raw API003 observations and versioned primary Moby contracts. No new VM/product
+suite/provider/runtime/UI experiment and no production/test code changes. Existing
+normal boot failures and same-ID diagnostic repair substantiate the mechanism;
+implemented automatic recovery and negative controls remain unproven. No finished
+command, confidence upgrade, source/API Pass, Delivery or100% claim.
+
+## Retained authorities and boundaries
+
+Requirements **Approved SR018**, approval018/017 unchanged. DEC012 native Mac
+Apple/APFS/NFS3; native Linux and DockerLinux Ganesha VFS corrected4.3/NFS4.1/ext4;
+native and managedDocker clients on BOTH host OSes. Only **Mac Docker storage**
+export of a Mac folder is deferred, not Mac Docker clients. DEC013 trusted-private-
+LAN plaintext with explicit allowlist/nonroot all-squash/mapall/private state; no
+public/wildcard/root/worldwrite shortcuts. DEC014 independent physical Mac+Linux+
+Docker before delivery; DEC015 advanced outage isolation deferred/not fixed.
+Source UUID/contents/ownership, private auth/volumes/config/ports/aliases and normal
+OS/disruption consent preserved. No live user mount/node/security change authorized.
+
+SR019/IMP-D001 current-source private skill links, exact profile/process cleanup,
+independent source UpdateRemove and AGY/local restore policy unchanged; no pin/copy/
+lease/refcount/retirement guarantee. Healthy mounted previews/normal private skill
+peer-stop correctness remain mandatory. Parked cross-node messaging task stays parked.
+
+SR020/ARCH004/IR005 engine correction and IR006/CR004 release gate retained.
+**API-F002 independently resolved** in API003 fresh public nativeUbuntu create
+16.778s/reconnect0.508s+0.605s, no manual engine preinstall, defaultY/nonroot/hard4.1
+and same source/UUID/private modes/jobs. CR001 modes and scoped CR002/API-F001
+nativeMac cold-create retained; no fresh Mac create claim. **API003 remains
+Fail57.14%/broader Required; CRR008 remains Fail/Design Impact.** ARCH004 only covers
+SR020. FUP001 current Nuxt/Electron baseline failures remain PM-owned, candidate-only
+green not current source. No duplicate follow-up. Existing peerNAT environment
+limit/hardened test-LAN resource request is not silently resolved.
+
+## Workspace and complete package
+
+Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`,
+branch `codex/shared-network-workspaces`, base
+`origin/personal@f13bdd0eb79aacc63dffa5995b9c86f359001468`, finalization `origin/personal`.
+Main checkout untouched. Production default aggregate remains
+4568593b99bb3dff263e9824ceb7176e04a95ec90e3cd14a9f7421b4e43055ac.
+Five old untracked dist trees and11 ignored IR005 candidate files retained.
+
+Absolute canonical ticket root:
+**/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces**.
+- requirements-doc.md, approval-record-sr018.md/017, architecture-review-scope-feedback.md:
+  approved intent, unchanged.
+- design-spec.md SR021, investigation-notes.md/current inventory,
+  solution-revision-record.md SR021, this solution-design-handoff.md: current owned
+  technical package, not duplicate authority.
+- evidence/design-recovery/sr021/lifecycle-investigation.md, observed-start-states.json,
+  primary-sources.json/moby source fetches, input/final audit, package-index.json,
+  routing.json: source/observation evidence and outgoing inventory; no new runtime.
+- code-review-report.md/history; **code-review-evidence/crr-008/package-index.json**:
+  current finding and full641 incoming paths, all retained in outgoing index.
+- API report/investigation/ledger/history and **evidence/api-e2e/api-rev-003/package-index.json**:
+  current Fail, raw normal-reboot cases, prior resolution, scoped UI/file/lifecycle
+  success and attempts/build/cleanup; all earlier API001/002 remain.
+- implementation-handoff/history and IR001–006; ARCH001–004 report/history; SR020
+  prototypes and all original feasibility/runtime/approval/setup/screenshot context:
+  full cumulative references retained via outgoing index and canonical inventory.
+- Delivery/finalization/receipt **N/A — not yet performed**. External Product
+  specification **N/A — not requested/applicable**. Review artifacts are present,
+  not N/A merely because a new review is needed.
+
+## Next expected work
+
+Review SR021 bounded lifecycle decision on unchanged ApprovedSR018, retaining
+Large/High. After Pass: implementation-owned correction/negative controls and
+focused checks -> independent source review -> **API-F003 public selected setup
+and two normal whole-host reboots first**, no manual Start/reconnect, real API/
+mounted bytes/same identity and normal-stop/policy-disabled/unselected controls.
+Then remaining bothOS native/managedDocker/storage/peer/operations/restart/detach/
+private preservation, current native tools/linked unread assets/peerclose/restore/
+Standalone-Team-Org, completed artifacts/remaining healthy previews, independent
+physical topology, docs/finalization/explicit user verification/authorized release.
+A passed API package still requires proportional successful test-code review.
+
+No engine rebuild for this lifecycle delta; reuse verified pair/source artifacts
+but rebuild actual CLI/release metadata from corrected source. Nativeamd64engine,
+hosted workflow/signing/public bootstrap still unqualified; emptyqualifiedTargets
+and Guide unavailable remain intentional. No final user install command yet.
+No new150s requirement or forced-outage test gate. All test-owned API resources
+were disposed; new owned resources are needed, not live user storage/nodes.
+
+Fresh get_handoff_rules selected the single **Architecture Design Complete / Large OR High** rule -> exact **/software_engineering_team/architecture_reviewer**. Independent SR021 review is requested. Direct Low-risk implementation and Delivery-gap rules do not apply. Complete outgoing index has667 references, retaining all641 incoming paths; final authoring audit confirms637 protected paths and11 retained candidate files unchanged. Actual message receipt, not this routing decision, establishes delivery. No direct implementation/API bypass or duplicate notification; existing roles, **no delegation/spawning**.
+
+---
+# Historical solution handoffs — SR020 and earlier, preserved at original scope
+
 # Current Result — SR020 Linux Reference Compatibility Recovery
 
 **Architecture Design Complete — Ready SR020; independent re-review required.** Package `shared-network-workspaces`, Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`. Owner `/software_engineering_team/solution_designer`; original requester `/project_task_manager`, AgentRun`project_task_manager_a5f6d9d306e54970bafdad895bdf731d`. Intended behavior **Approved SR018**, approval-record-sr018.md plus retained SR017 choices; no changed REQ/AC or new user choice. **Large/High** remains the actual architecture scope/risk. This is Design Impact recovery from CRR005/CR003/API-F002, not a new task, implementation delivery or terminal receipt.
