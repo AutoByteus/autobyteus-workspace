@@ -1,0 +1,10 @@
+{
+  "initial": "Immediate warmed-export-root chmod000 followed in0.301s by successful actual probe; harness expected instant denial and failed.",
+  "diagnostic": "Later both source and mounted native reads denied; publicStatus hostReadyfalse and Reconnect refused. Original mode restored.",
+  "validity": "Approved normal permission refusal and honest observed readiness, not instantaneous remote permission invalidation. New control waits until real fresh nonroot mounted read observes denial before status/reconnect assertion; no product change or cacheflush/remount.",
+  "rawEvidence": [
+    "mac-controls-result.json",
+    "mac-permission-observation.json"
+  ],
+  "resolutionEvidence": "mac-controls-confirm-result.json"
+}

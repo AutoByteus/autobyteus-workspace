@@ -1358,3 +1358,307 @@ Fresh Mac create Pass; first reboot currently unready with repeated explicit sou
 
 ### Round5 final reconciliation — API-REV-005 Fail57.14%, broaderRequired
 N01 Passwith3Pythonskips+standaloneGochildskip; V03/API-F004 native+Dockerpublicfresh/reconnect80actualreaderchecks Pass≤5s/scopedresolved. V03files/API/Git+Linux2boots/Stop/policyVeto/nodeRestart/upgrade/currentref/safedetach Pass. V01freshMaccreate Pass; V01-MAC-IDENTITY **Fail/API-F005** across3ordinaryboots, samevalidAPFSUUID/sourceinode/bytes/marker but devnumberschange; automatic+explicitsourceidentityrefusal/no mount. SafeMacdetach cleanup Pass only, notrepair. V04currentlocalGuide/shell Passnarrow; remoteactualpreviewnotexecuted afterfinding, priorE3/E4scopedproofretained. V02independentpeer/V05nativeagents/fullphysical/bothOSclient matrixNotTested/dependency-limited; no manufacturedPass. Preparedmounted-lock scriptnotrun. ExistingLinuxcontrolsequence alreadyunderway completed; no newgeneralexpansion afterMacfinding. Fullnew-failure-summary/visibility-summary/currentreportACtable/cleanup/index govern. No production/durabletestchange/delegation/merge/push/release/TaskDone/userverification.
+
+## Round6 planned cases — API-REV006
+
+- N01: current pinned Go race/vet/packaging — Not Tested.
+- V01/API-F005: fresh public Mac create, >=2 ordinary boots witnessing real device change, mounted nonroot RW automatically, explicit reconnect — Not Tested.
+- V01 replacement/privacy/permission/new-source/safe-detach controls — Not Tested.
+- V03 proportionate Linux source/config/lifecycle regressions — Not Tested.
+- V02/V04/V05 full client/physical/runtime/preview matrix — Not Tested; existing authorization/network prerequisites retained.
+
+- 2026-10-15T12:06:27Z **Round6 N01** — Starting go-race
+
+- 2026-10-15T12:07:01Z **Round6 N01** — go-race: Pass
+
+- 2026-10-15T12:07:01Z **Round6 N01** — Starting go-vet
+
+- 2026-10-15T12:07:07Z **Round6 N01** — go-vet: Pass
+
+- 2026-10-15T12:07:07Z **Round6 N01** — Starting python-bootstrap-launcher
+
+- 2026-10-15T12:07:52Z **Round6 N01** — python-bootstrap-launcher: Pass
+
+- 2026-10-15T12:08:00Z **Round6 V01** — Started fresh owned nonempty APFS source
+
+- 2026-10-15T12:08:00Z **Round6 V01** — fresh owned nonempty APFS source: Pass
+
+- 2026-10-15T12:08:00Z **Round6 V01** — Started public current nativeMac create under077
+
+- 2026-10-15T12:08:01Z **Round6 V01** — public current nativeMac create under077: Pass
+
+- 2026-10-15T12:08:02Z **Round6 V01** — Started initial real nonroot mounted RW private/job/exports
+
+- 2026-10-15T12:08:02Z **Round6 V01** — initial real nonroot mounted RW private/job/exports: Pass
+
+- 2026-10-15T12:08:02Z **Round6 V01** — Started ordinary automatic whole-host boot 1
+
+- 2026-10-15T12:08:55Z **Round6 V01** — ordinary automatic whole-host boot 1: Pass
+
+- 2026-10-15T12:08:55Z **Round6 V01** — Started ordinary automatic whole-host boot 2
+
+- 2026-10-15T12:09:46Z **Round6 V01** — ordinary automatic whole-host boot 2: Pass
+
+- 2026-10-15T12:09:46Z **Round6 V01** — Started separately labelled explicit public reconnect
+
+- 2026-10-15T12:09:46Z **Round6 V01** — separately labelled explicit public reconnect: Pass
+
+- 2026-10-15T12:09:46Z **Round6 V01** — Started explicit reconnect mounted RW
+
+- 2026-10-15T12:09:47Z **Round6 V01** — explicit reconnect mounted RW: Pass
+
+- 2026-10-15T12:09:47Z **Round6 V01** — API-F005 automatic first gate Pass with actual raw device change; replacement controls and broader matrix pending
+
+- 2026-10-15T12:09:55Z **Round6 V01** — Started replace owned directory at same path with copied marker/content
+
+- 2026-10-15T12:09:56Z **Round6 V01** — replace owned directory at same path with copied marker/content: Pass
+
+- 2026-10-15T12:09:57Z **Round6 V01** — Started public reconnect rejects actual new directory despite copied marker
+
+- 2026-10-15T12:09:57Z **Round6 V01** — public reconnect rejects actual new directory despite copied marker: Pass
+
+- 2026-10-15T12:09:57Z **Round6 V01** — Started restore exact original directory
+
+- 2026-10-15T12:09:57Z **Round6 V01** — restore exact original directory: Pass
+
+- 2026-10-15T12:09:58Z **Round6 V01** — Started restored original public reconnect
+
+- 2026-10-15T12:09:58Z **Round6 V01** — restored original public reconnect: Pass
+
+- 2026-10-15T12:09:58Z **Round6 V01** — Started restored original mounted nonroot RW
+
+- 2026-10-15T12:09:58Z **Round6 V01** — restored original mounted nonroot RW: Pass
+
+- 2026-10-15T12:09:58Z **Round6 V01** — Started replace path with symlink to exact original
+
+- 2026-10-15T12:09:58Z **Round6 V01** — replace path with symlink to exact original: Pass
+
+- 2026-10-15T12:09:58Z **Round6 V01** — Started public reconnect rejects symlink source
+
+- 2026-10-15T12:09:59Z **Round6 V01** — public reconnect rejects symlink source: Pass
+
+- 2026-10-15T12:09:59Z **Round6 V01** — Started restore source after symlink control
+
+- 2026-10-15T12:09:59Z **Round6 V01** — restore source after symlink control: Pass
+
+- 2026-10-15T12:09:59Z **Round6 V01** — Started symlink restore reconnect
+
+- 2026-10-15T12:09:59Z **Round6 V01** — symlink restore reconnect: Pass
+
+- 2026-10-15T12:09:59Z **Round6 V01** — Started remove source access permission without ownership change
+
+- 2026-10-15T12:09:59Z **Round6 V01** — remove source access permission without ownership change: Pass
+
+- 2026-10-15T12:09:59Z **Round6 V01** — Started public reconnect rejects nonroot write denial
+
+- 2026-10-15T12:09:59Z **Round6 V01** — public reconnect rejects nonroot write denial: Fail
+
+- 2026-10-15T12:09:59Z **Round6 V01** — controls failure AssertionError({'argv': ['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-nfs-api006-mac-a0000f39', '/usr/bin/sudo', '-n', '-u', 'admin', '/usr/bin/env', '-i', 'HOME=/Users/admin', 'PATH=/usr/bin:/bin:/usr/sbin:/sbin', 'LANG=C', '/bin/sh', '-c', '/Users/admin/ab-nfs-api006-mac-a0000f39-binary reconnect --yes --json'], 'rc': 0, 'seconds': 0.301, 'stdout': '{\n  "storageId": "4ff085b0-3304-4023-a5c2-9834e38aec72",\n  "mountRoot": "/Volumes/autobyteus-shared",\n  "hostReady": true,\n  "nodes": {},\n  "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"\n}\n', 'stderr': 'Checking saved source and reconnecting; hard NFS may wait for storage.\nChecking actual host and selected-node readiness; this may wait for storage.\n'})
+
+- 2026-10-15T12:11:44Z **Round6 V01** — Started restored mode nonroot mounted RW
+
+- 2026-10-15T12:11:44Z **Round6 V01** — restored mode nonroot mounted RW: Pass
+
+- 2026-10-15T12:14:13Z **Round6 V03 Started setup** — own Ubuntu24.04 public-image clone, private Tart root; no host bridge/root/credentials.
+
+- 2026-10-15T12:15:13Z **Round6 V01** — Started actual denied nonroot access yields not-ready public status
+
+- 2026-10-15T12:15:13Z **Round6 V01** — actual denied nonroot access yields not-ready public status: Pass
+
+- 2026-10-15T12:15:13Z **Round6 V01** — Started actual denied nonroot access yields reconnect refusal
+
+- 2026-10-15T12:15:13Z **Round6 V01** — actual denied nonroot access yields reconnect refusal: Pass
+
+- 2026-10-15T12:15:14Z **Round6 V01** — Started restored mode nonroot mounted RW
+
+- 2026-10-15T12:15:14Z **Round6 V01** — restored mode nonroot mounted RW: Pass
+
+- 2026-10-15T12:15:14Z **Round6 V01** — Started public drained original detach
+
+- 2026-10-15T12:15:15Z **Round6 V01** — public drained original detach: Pass
+
+- 2026-10-15T12:15:15Z **Round6 V01** — Started original detached source bytes marker modes preserved
+
+- 2026-10-15T12:15:15Z **Round6 V01** — original detached source bytes marker modes preserved: Pass
+
+- 2026-10-15T12:15:15Z **Round6 V01** — Started private-home source refused before setup
+
+- 2026-10-15T12:15:15Z **Round6 V01** — private-home source refused before setup: Pass
+
+- 2026-10-15T12:15:15Z **Round6 V01** — Started private auth-named tree refused before setup
+
+- 2026-10-15T12:15:15Z **Round6 V01** — private auth-named tree refused before setup: Pass
+
+- 2026-10-15T12:15:15Z **Round6 V01** — Started symlink ancestor refused before setup
+
+- 2026-10-15T12:15:15Z **Round6 V01** — symlink ancestor refused before setup: Pass
+
+- 2026-10-15T12:15:15Z **Round6 V01** — Started public absent-source create under077 actual privileged child and bound save
+
+- 2026-10-15T12:15:16Z **Round6 V01** — public absent-source create under077 actual privileged child and bound save: Fail
+
+- 2026-10-15T12:15:16Z **Round6 V01** — new source failure AssertionError({'argv': ['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-nfs-api006-mac-a0000f39', '/usr/bin/sudo', '-n', '-u', 'admin', '/usr/bin/env', '-i', 'HOME=/Users/admin', 'PATH=/usr/bin:/bin:/usr/sbin:/sbin', 'LANG=C', '/bin/sh', '-c', 'umask 077; exec /Users/admin/ab-nfs-api006-mac-a0000f39-binary create --source /Users/admin/ab-nfs-api006-mac-a0000f39-source-new --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json'], 'rc': 1, 'seconds': 0.208, 'stdout': '', 'stderr': 'Detected private addresses: 192.168.64.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS incomplete: required TCP 2049 is occupied; no existing service will be stopped\nAutoByteus NFS incomplete: exit status 1\n'})
+
+- 2026-10-15T12:16:07Z **Round6 V01** — Started stop solely-owned guest OS nfsd after verified public detach and no exports
+
+- 2026-10-15T12:16:08Z **Round6 V01** — stop solely-owned guest OS nfsd after verified public detach and no exports: Pass
+
+- 2026-10-15T12:16:08Z **Round6 V01** — Started public absent-source create under077 actual privileged child and bound save
+
+- 2026-10-15T12:16:09Z **Round6 V01** — public absent-source create under077 actual privileged child and bound save: Pass
+
+- 2026-10-15T12:16:10Z **Round6 V01** — new source failure AssertionError()
+
+- 2026-10-15T12:16:41Z **Round6 V01** — Started actual new source owner-private mode and nonroot mounted RW
+
+- 2026-10-15T12:16:42Z **Round6 V01** — actual new source owner-private mode and nonroot mounted RW: Pass
+
+- 2026-10-15T12:16:42Z **Round6 V01** — Started newsource public reconnect
+
+- 2026-10-15T12:16:42Z **Round6 V01** — newsource public reconnect: Pass
+
+- 2026-10-15T12:16:43Z **Round6 V01** — Started safe public detach does not require live source path
+
+- 2026-10-15T12:16:43Z **Round6 V01** — safe public detach does not require live source path: Pass
+
+- 2026-10-15T12:16:43Z **Round6 V01** — Started new source retained no attachment/job/mount
+
+- 2026-10-15T12:16:43Z **Round6 V01** — new source retained no attachment/job/mount: Pass
+
+- 2026-10-15T12:16:43Z **Round6 V01** — Started stop solely-owned guest OS nfsd after verified public detach and no exports
+
+- 2026-10-15T12:16:44Z **Round6 V01** — stop solely-owned guest OS nfsd after verified public detach and no exports: Pass
+
+- 2026-10-15T12:16:44Z **Round6 V01** — Started create actual original APFS volume
+
+- 2026-10-15T12:16:45Z **Round6 V01** — create actual original APFS volume: Pass
+
+- 2026-10-15T12:16:46Z **Round6 V01** — Started public APFS volume source create
+
+- 2026-10-15T12:16:46Z **Round6 V01** — public APFS volume source create: Pass
+
+- 2026-10-15T12:16:47Z **Round6 V01** — Started actual APFS volume mounted nonroot RW
+
+- 2026-10-15T12:16:48Z **Round6 V01** — actual APFS volume mounted nonroot RW: Pass
+
+- 2026-10-15T12:16:48Z **Round6 V01** — Started create different actual APFS volume
+
+- 2026-10-15T12:16:49Z **Round6 V01** — create different actual APFS volume: Pass
+
+- 2026-10-15T12:17:19Z **Round6** — Started fresh nonempty owned source and native prerequisites
+
+- 2026-10-15T12:17:19Z **Round6** — fresh nonempty owned source and native prerequisites: Pass
+
+- 2026-10-15T12:17:20Z **Round6** — Started public native create under077 nonroot clear-groups
+
+- 2026-10-15T12:17:40Z **Round6 V01** — Started original image absent after reboot
+
+- 2026-10-15T12:17:41Z **Round6 V01** — original image absent after reboot: Pass
+
+- 2026-10-15T12:17:41Z **Round6** — public native create under077 nonroot clear-groups: Pass
+
+- 2026-10-15T12:17:41Z **Round6** — Started native mounted bytes UUID source identity and nonroot RW
+
+- 2026-10-15T12:17:41Z **Round6 V01** — Started different volume identical marker and bytes at same source path
+
+- 2026-10-15T12:17:42Z **Round6** — native mounted bytes UUID source identity and nonroot RW: Pass
+
+- 2026-10-15T12:17:42Z **Round6** — Started actual installed engine jobs private modes manifest and client policy
+
+- 2026-10-15T12:17:42Z **Round6** — actual installed engine jobs private modes manifest and client policy: Pass
+
+- 2026-10-15T12:17:43Z **Round6 V01** — different volume identical marker and bytes at same source path: Pass
+
+- 2026-10-15T12:17:43Z **Round6 V01** — Started public reconnect refuses actual different APFS UUID
+
+- 2026-10-15T12:17:43Z **Round6 V01** — public reconnect refuses actual different APFS UUID: Pass
+
+- 2026-10-15T12:17:50Z **Round6 V01** — Started restore exact original APFS image public reconnect
+
+- 2026-10-15T12:17:51Z **Round6 V01** — restore exact original APFS image public reconnect: Pass
+
+- 2026-10-15T12:17:51Z **Round6 V01** — Started restored actual volume nonroot mounted RW
+
+- 2026-10-15T12:17:51Z **Round6 V01** — restored actual volume nonroot mounted RW: Pass
+
+- 2026-10-15T12:17:52Z **Round6 V01** — Started public drained detach original APFS volume
+
+- 2026-10-15T12:17:52Z **Round6 V01** — public drained detach original APFS volume: Pass
+
+- 2026-10-15T12:17:52Z **Round6 V01** — Started detached original preserved no mount job attachment
+
+- 2026-10-15T12:17:53Z **Round6 V01** — detached original preserved no mount job attachment: Pass
+
+- 2026-10-15T12:17:53Z **Round6 V01** — Started detach only owned disk image
+
+- 2026-10-15T12:18:01Z **Round6 V01** — detach only owned disk image: Pass
+
+- 2026-10-15T12:18:29Z **Round6** — Started ordinary boot automatic mounted nonroot RW before manual reconnect
+
+- 2026-10-15T12:18:30Z **Round6** — ordinary boot automatic mounted nonroot RW before manual reconnect: Pass
+
+- 2026-10-15T12:18:30Z **Round6** — Started separate explicit public reconnect
+
+- 2026-10-15T12:18:30Z **Round6** — separate explicit public reconnect: Fail
+
+- 2026-10-15T12:18:30Z **Round6** — native regression incomplete/fail RuntimeError('AutoByteus NFS incomplete: another administrative operation is checking/incomplete; restore storage and wait: resource temporarily unavailable\nAutoByteus NFS incomplete: exit status 1\n')
+
+- 2026-10-15T12:19:23Z **Round6** — Started separate explicit public reconnect
+
+- 2026-10-15T12:19:24Z **Round6** — separate explicit public reconnect: Pass
+
+- 2026-10-15T12:19:24Z **Round6** — Started same saved binding after explicit reconnect
+
+- 2026-10-15T12:19:24Z **Round6** — same saved binding after explicit reconnect: Pass
+
+- 2026-10-15T12:19:24Z **Round6** — Started public replacement directory copiedmarker refusal
+
+- 2026-10-15T12:19:24Z **Round6** — public replacement directory copiedmarker refusal: Pass
+
+- 2026-10-15T12:19:24Z **Round6** — Started restore exact original public reconnect
+
+- 2026-10-15T12:19:25Z **Round6** — restore exact original public reconnect: Pass
+
+- 2026-10-15T12:19:25Z **Round6** — Started restored original mounted RW
+
+- 2026-10-15T12:19:25Z **Round6** — restored original mounted RW: Pass
+
+- 2026-10-15T12:19:25Z **Round6** — Started public drained detach
+
+- 2026-10-15T12:19:26Z **Round6** — public drained detach: Pass
+
+- 2026-10-15T12:19:26Z **Round6** — Started original source preserved mount job attachment absent
+
+- 2026-10-15T12:19:26Z **Round6** — original source preserved mount job attachment absent: Pass
+
+- 2026-10-15T12:19:51Z **Round6** — Started public absent source create under077 nonroot clear-groups
+
+- 2026-10-15T12:19:53Z **Round6** — public absent source create under077 nonroot clear-groups: Pass
+
+- 2026-10-15T12:19:54Z **Round6** — Linux new source incomplete/fail AssertionError()
+
+- 2026-10-15T12:20:47Z **Round6** — Started new owned source actual mounted nonroot RW
+
+- 2026-10-15T12:20:47Z **Round6** — new owned source actual mounted nonroot RW: Pass
+
+- 2026-10-15T12:20:47Z **Round6** — Started newsource public reconnect
+
+- 2026-10-15T12:20:48Z **Round6** — newsource public reconnect: Pass
+
+- 2026-10-15T12:20:53Z **Round6** — Started public safe detach absent live source path
+
+- 2026-10-15T12:20:54Z **Round6** — public safe detach absent live source path: Pass
+
+- 2026-10-15T12:20:54Z **Round6** — Started new source original inode owner private mode content marker preserved
+
+- 2026-10-15T12:20:54Z **Round6** — new source original inode owner private mode content marker preserved: Pass
+
+## Round6 final reconciliation
+
+- N01 Pass with retained skips:7Go packages70top/212directsubcases; Python50/53,3skips. NestedGochildtranscript notextra cases.
+- V01 API-F005 scopedResolved: publiccreate→2automaticordinaryboots actualrawdevicechange→separatereconnect; realdirectory/symlink/private/permissioncontrols; actualAPFSvolume same-dev/inode differentUUID copiedmarker refusal; exactrestore; newsource/absentsourceDetach. Allcorrectedattempts named incanonicalreport; rawFail/Runningnoterased.
+- V03 Passscoped nativeLinuxcurrentbinding/setup/ordinaryboot/nonrootIO/reconnect/replacementrestore/detach/newsource0750/absentsourceDetach. Immediateadministrativelockcorrectlyrefused; laterseparatecommand succeeds, noautomaticproofrepair.
+- V02 Blocked independentphysical/privateLAN. CurrentTCP22timeout/2049no-route; actualLinuxselflistenerhealthy. Firstpeeroutertimeoutindeterminate, correctedprobeauthoritative.
+- V05 Blocked authenticatedtestprofiles/providerbudget; currentnativeagentmatrixNotTested. V04/fullmanagedUI/amd64/hostedmatrixNotTestedthisround; notblanketdeclaredimpossible. PriorAPI005/003/004scope retained.
+- Allownedresourcespubliclydetached then exactVM/PID/clones/scratchremoved; cleanupComplete. No running case remains; interrupted attempts resolved via namedconfirmations.
+- FinalAPI-REV006 **Blocked67.86%, broaderBlocked**, not failure-originrework orPass. See currentreportACproof and E6/blockers.json. No release/TaskDone/userverification; await exactexternaldependencies.

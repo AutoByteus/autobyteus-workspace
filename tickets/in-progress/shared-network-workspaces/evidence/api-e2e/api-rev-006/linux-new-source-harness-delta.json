@@ -1,0 +1,7 @@
+{
+  "raw": "linux-new-source-result.json",
+  "actualMode": "0750 owner1000:109",
+  "wrongAssertion": "copied Mac0700 exact mode, design permits private/group mode; internal-cli mkdir0750",
+  "correction": "confirm observed0750 no chmod/create repeat",
+  "prematureDependents": "first probe-peer-confirm and finish-linux-new-source precondition refused before any guest action; overwritten empty console files not executable evidence"
+}

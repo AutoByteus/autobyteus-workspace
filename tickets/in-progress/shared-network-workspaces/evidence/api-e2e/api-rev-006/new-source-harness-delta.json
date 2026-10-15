@@ -1,0 +1,10 @@
+{
+  "rawAttempt": "mac-new-source-result.json",
+  "classification": "fixture precondition: OS-owned nfsd intentionally retained by public detach; fresh create safety port refusal correct and no source created",
+  "evidence": [
+    "mac-detached-observation.json",
+    "autobyteus-nfs/internal/backend/apple_apply.go",
+    "design-spec.md DS lifecycle/cleanup"
+  ],
+  "resumption": "independent new-source case after explicit test-owned guest-only OS nfsd reset with no exports/no attachment/no live mount; not product automatic reset claim"
+}

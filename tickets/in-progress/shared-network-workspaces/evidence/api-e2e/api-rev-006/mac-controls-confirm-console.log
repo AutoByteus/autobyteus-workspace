@@ -1,0 +1,6 @@
+Started restored mode nonroot mounted RW
+restored mode nonroot mounted RW: Pass
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-006/confirm-mac-controls.py", line 9, in <module>
+    else:raise RuntimeError('denied access not observed in bounded observation')
+RuntimeError: denied access not observed in bounded observation

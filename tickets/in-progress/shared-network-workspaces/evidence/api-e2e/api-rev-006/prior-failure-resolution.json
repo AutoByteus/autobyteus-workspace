@@ -1,0 +1,174 @@
+{
+  "finding": "API-F005 / CR007",
+  "result": "Resolved at actual nativeMac public-create, two ordinary whole-host boot, separate reconnect and actual replacement-control scope",
+  "sourceCommit": "d3c88f37c30ee74a89a95a4f6906992667c9b875",
+  "binary": {
+    "guestPath": "/Users/admin/ab-nfs-api006-mac-a0000f39-binary",
+    "sha256": "c79e5ac05367d6657bc0be74f2e8f5b9eb504af8ade265e1afdf0334218d0cf1"
+  },
+  "source": "/Users/admin/ab-nfs-api006-mac-a0000f39-source",
+  "baseline": {
+    "label": "initial",
+    "bootID": "AF4F68C7-F354-42B5-90E9-1CA4B7FFD6A2",
+    "bootTime": "{ sec = 1792065984, usec = 302954 } Thu Oct 15 12:06:24 2026",
+    "stat": "16777228:507558:501:20:755",
+    "volume": {
+      "DeviceNode": "/dev/disk2s5",
+      "MountPoint": "/System/Volumes/Data",
+      "FilesystemType": "apfs",
+      "VolumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B"
+    },
+    "bindingBytes": "{\n  \"installationId\": \"5c211e63-7898-4c84-98b1-d58d2be466cf\",\n  \"storageId\": \"4ff085b0-3304-4023-a5c2-9834e38aec72\",\n  \"source\": \"/Users/admin/ab-nfs-api006-mac-a0000f39-source\",\n  \"identity\": {\n    \"volumeUuid\": \"a19fe379-be62-4297-9a39-3934cc88214b\",\n    \"inode\": 507558\n  },\n  \"backend\": \"apple\",\n  \"dataUid\": 501,\n  \"dataGid\": 20,\n  \"allowlist\": [\n    \"192.168.64.2\"\n  ]\n}\n",
+    "bindingSHA256": "7191d83482d19fc1ccc9c8c472454c445bd744a589a0d5e7b765754270550693",
+    "markerBytes": "{\"storageId\":\"4ff085b0-3304-4023-a5c2-9834e38aec72\"}\n",
+    "hashes": "cee91b4a65a25850de42b87aa5b58b813994b2c941185eefee2bd1bb8cac9353  /Users/admin/ab-nfs-api006-mac-a0000f39-source/project/preexisting.txt\n85a76f9bb2c521d6c68253fc13b72151861873ae53a41ba27c57c8f899468d0e  /Users/admin/ab-nfs-api006-mac-a0000f39-source/.autobyteus-nfs/storage.json\n"
+  },
+  "boots": [
+    {
+      "label": "boot1",
+      "before": "AF4F68C7-F354-42B5-90E9-1CA4B7FFD6A2",
+      "after": "0B4C3F0C-A620-4020-A8D8-03B7D5E87AFC",
+      "observedSeconds": 50.568
+    },
+    {
+      "label": "boot2",
+      "before": "0B4C3F0C-A620-4020-A8D8-03B7D5E87AFC",
+      "after": "193F98DC-86D8-4827-B479-69948ACC75DF",
+      "observedSeconds": 50.053
+    }
+  ],
+  "observations": [
+    {
+      "label": "initial",
+      "bootID": "AF4F68C7-F354-42B5-90E9-1CA4B7FFD6A2",
+      "bootTime": "{ sec = 1792065984, usec = 302954 } Thu Oct 15 12:06:24 2026",
+      "stat": "16777228:507558:501:20:755",
+      "volume": {
+        "DeviceNode": "/dev/disk2s5",
+        "MountPoint": "/System/Volumes/Data",
+        "FilesystemType": "apfs",
+        "VolumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B"
+      },
+      "bindingBytes": "{\n  \"installationId\": \"5c211e63-7898-4c84-98b1-d58d2be466cf\",\n  \"storageId\": \"4ff085b0-3304-4023-a5c2-9834e38aec72\",\n  \"source\": \"/Users/admin/ab-nfs-api006-mac-a0000f39-source\",\n  \"identity\": {\n    \"volumeUuid\": \"a19fe379-be62-4297-9a39-3934cc88214b\",\n    \"inode\": 507558\n  },\n  \"backend\": \"apple\",\n  \"dataUid\": 501,\n  \"dataGid\": 20,\n  \"allowlist\": [\n    \"192.168.64.2\"\n  ]\n}\n",
+      "bindingSHA256": "7191d83482d19fc1ccc9c8c472454c445bd744a589a0d5e7b765754270550693",
+      "markerBytes": "{\"storageId\":\"4ff085b0-3304-4023-a5c2-9834e38aec72\"}\n",
+      "hashes": "cee91b4a65a25850de42b87aa5b58b813994b2c941185eefee2bd1bb8cac9353  /Users/admin/ab-nfs-api006-mac-a0000f39-source/project/preexisting.txt\n85a76f9bb2c521d6c68253fc13b72151861873ae53a41ba27c57c8f899468d0e  /Users/admin/ab-nfs-api006-mac-a0000f39-source/.autobyteus-nfs/storage.json\n"
+    },
+    {
+      "label": "boot1",
+      "bootID": "0B4C3F0C-A620-4020-A8D8-03B7D5E87AFC",
+      "bootTime": "{ sec = 1792066090, usec = 128132 } Thu Oct 15 12:08:10 2026",
+      "stat": "16777229:507558:501:20:755",
+      "volume": {
+        "DeviceNode": "/dev/disk2s5",
+        "MountPoint": "/System/Volumes/Data",
+        "FilesystemType": "apfs",
+        "VolumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B"
+      },
+      "bindingBytes": "{\n  \"installationId\": \"5c211e63-7898-4c84-98b1-d58d2be466cf\",\n  \"storageId\": \"4ff085b0-3304-4023-a5c2-9834e38aec72\",\n  \"source\": \"/Users/admin/ab-nfs-api006-mac-a0000f39-source\",\n  \"identity\": {\n    \"volumeUuid\": \"a19fe379-be62-4297-9a39-3934cc88214b\",\n    \"inode\": 507558\n  },\n  \"backend\": \"apple\",\n  \"dataUid\": 501,\n  \"dataGid\": 20,\n  \"allowlist\": [\n    \"192.168.64.2\"\n  ]\n}\n",
+      "bindingSHA256": "7191d83482d19fc1ccc9c8c472454c445bd744a589a0d5e7b765754270550693",
+      "markerBytes": "{\"storageId\":\"4ff085b0-3304-4023-a5c2-9834e38aec72\"}\n",
+      "hashes": "cee91b4a65a25850de42b87aa5b58b813994b2c941185eefee2bd1bb8cac9353  /Users/admin/ab-nfs-api006-mac-a0000f39-source/project/preexisting.txt\n85a76f9bb2c521d6c68253fc13b72151861873ae53a41ba27c57c8f899468d0e  /Users/admin/ab-nfs-api006-mac-a0000f39-source/.autobyteus-nfs/storage.json\n"
+    },
+    {
+      "label": "boot2",
+      "bootID": "193F98DC-86D8-4827-B479-69948ACC75DF",
+      "bootTime": "{ sec = 1792066143, usec = 713901 } Thu Oct 15 12:09:03 2026",
+      "stat": "16777229:507558:501:20:755",
+      "volume": {
+        "DeviceNode": "/dev/disk2s5",
+        "MountPoint": "/System/Volumes/Data",
+        "FilesystemType": "apfs",
+        "VolumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B"
+      },
+      "bindingBytes": "{\n  \"installationId\": \"5c211e63-7898-4c84-98b1-d58d2be466cf\",\n  \"storageId\": \"4ff085b0-3304-4023-a5c2-9834e38aec72\",\n  \"source\": \"/Users/admin/ab-nfs-api006-mac-a0000f39-source\",\n  \"identity\": {\n    \"volumeUuid\": \"a19fe379-be62-4297-9a39-3934cc88214b\",\n    \"inode\": 507558\n  },\n  \"backend\": \"apple\",\n  \"dataUid\": 501,\n  \"dataGid\": 20,\n  \"allowlist\": [\n    \"192.168.64.2\"\n  ]\n}\n",
+      "bindingSHA256": "7191d83482d19fc1ccc9c8c472454c445bd744a589a0d5e7b765754270550693",
+      "markerBytes": "{\"storageId\":\"4ff085b0-3304-4023-a5c2-9834e38aec72\"}\n",
+      "hashes": "cee91b4a65a25850de42b87aa5b58b813994b2c941185eefee2bd1bb8cac9353  /Users/admin/ab-nfs-api006-mac-a0000f39-source/project/preexisting.txt\n85a76f9bb2c521d6c68253fc13b72151861873ae53a41ba27c57c8f899468d0e  /Users/admin/ab-nfs-api006-mac-a0000f39-source/.autobyteus-nfs/storage.json\n"
+    },
+    {
+      "label": "after-explicit",
+      "bootID": "193F98DC-86D8-4827-B479-69948ACC75DF",
+      "bootTime": "{ sec = 1792066143, usec = 713901 } Thu Oct 15 12:09:03 2026",
+      "stat": "16777229:507558:501:20:755",
+      "volume": {
+        "DeviceNode": "/dev/disk2s5",
+        "MountPoint": "/System/Volumes/Data",
+        "FilesystemType": "apfs",
+        "VolumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B"
+      },
+      "bindingBytes": "{\n  \"installationId\": \"5c211e63-7898-4c84-98b1-d58d2be466cf\",\n  \"storageId\": \"4ff085b0-3304-4023-a5c2-9834e38aec72\",\n  \"source\": \"/Users/admin/ab-nfs-api006-mac-a0000f39-source\",\n  \"identity\": {\n    \"volumeUuid\": \"a19fe379-be62-4297-9a39-3934cc88214b\",\n    \"inode\": 507558\n  },\n  \"backend\": \"apple\",\n  \"dataUid\": 501,\n  \"dataGid\": 20,\n  \"allowlist\": [\n    \"192.168.64.2\"\n  ]\n}\n",
+      "bindingSHA256": "7191d83482d19fc1ccc9c8c472454c445bd744a589a0d5e7b765754270550693",
+      "markerBytes": "{\"storageId\":\"4ff085b0-3304-4023-a5c2-9834e38aec72\"}\n",
+      "hashes": "cee91b4a65a25850de42b87aa5b58b813994b2c941185eefee2bd1bb8cac9353  /Users/admin/ab-nfs-api006-mac-a0000f39-source/project/preexisting.txt\n85a76f9bb2c521d6c68253fc13b72151861873ae53a41ba27c57c8f899468d0e  /Users/admin/ab-nfs-api006-mac-a0000f39-source/.autobyteus-nfs/storage.json\n"
+    }
+  ],
+  "replacementVolumes": [
+    {
+      "label": "original-volume",
+      "bootID": "193F98DC-86D8-4827-B479-69948ACC75DF",
+      "bootTime": "{ sec = 1792066143, usec = 713901 } Thu Oct 15 12:09:03 2026",
+      "stat": "16777241:16:501:20:755",
+      "volume": {
+        "DeviceNode": "/dev/disk8s1",
+        "MountPoint": "/Volumes/ab-nfs-api006-mac-a0000f39-volume",
+        "FilesystemType": "apfs",
+        "VolumeUUID": "4BAA1B01-8089-4F31-A0EB-C9803B59C828"
+      },
+      "bindingBytes": "{\n  \"installationId\": \"d3d0fda9-dafd-46d2-958a-53d951d98d09\",\n  \"storageId\": \"1fbed7b3-2c31-4365-a49a-87128db69f61\",\n  \"source\": \"/Volumes/ab-nfs-api006-mac-a0000f39-volume/source\",\n  \"identity\": {\n    \"volumeUuid\": \"4baa1b01-8089-4f31-a0eb-c9803b59c828\",\n    \"inode\": 16\n  },\n  \"backend\": \"apple\",\n  \"dataUid\": 501,\n  \"dataGid\": 20,\n  \"allowlist\": [\n    \"192.168.64.2\"\n  ]\n}\n",
+      "bindingSHA256": "7e5730fd56074420e3885824a31b879009c0b4f06e66767febce734e21b48599",
+      "markerBytes": "{\"storageId\":\"1fbed7b3-2c31-4365-a49a-87128db69f61\"}\n",
+      "hashes": "cee91b4a65a25850de42b87aa5b58b813994b2c941185eefee2bd1bb8cac9353  /Volumes/ab-nfs-api006-mac-a0000f39-volume/source/project/preexisting.txt\ncf7255608c4b22adf943142450d6bf4c4035c381c02ae9fe94e6e171c4b3ab88  /Volumes/ab-nfs-api006-mac-a0000f39-volume/source/.autobyteus-nfs/storage.json\n"
+    },
+    {
+      "label": "replacement",
+      "bootID": "A9ACAEA7-A101-490B-AFB5-39425E8DF6D7",
+      "bootTime": "{ sec = 1792066620, usec = 741004 } Thu Oct 15 12:17:00 2026",
+      "stat": "16777241:16:501:20:755",
+      "volume": {
+        "DeviceNode": "/dev/disk8s1",
+        "MountPoint": "/Volumes/ab-nfs-api006-mac-a0000f39-volume",
+        "FilesystemType": "apfs",
+        "VolumeUUID": "CF81E8A8-2593-44CF-99D6-0E53A04FB4B9"
+      },
+      "bindingBytes": "{\n  \"installationId\": \"d3d0fda9-dafd-46d2-958a-53d951d98d09\",\n  \"storageId\": \"1fbed7b3-2c31-4365-a49a-87128db69f61\",\n  \"source\": \"/Volumes/ab-nfs-api006-mac-a0000f39-volume/source\",\n  \"identity\": {\n    \"volumeUuid\": \"4baa1b01-8089-4f31-a0eb-c9803b59c828\",\n    \"inode\": 16\n  },\n  \"backend\": \"apple\",\n  \"dataUid\": 501,\n  \"dataGid\": 20,\n  \"allowlist\": [\n    \"192.168.64.2\"\n  ]\n}\n",
+      "bindingSHA256": "7e5730fd56074420e3885824a31b879009c0b4f06e66767febce734e21b48599",
+      "markerBytes": "{\"storageId\":\"1fbed7b3-2c31-4365-a49a-87128db69f61\"}\n",
+      "hashes": "cee91b4a65a25850de42b87aa5b58b813994b2c941185eefee2bd1bb8cac9353  /Volumes/ab-nfs-api006-mac-a0000f39-volume/source/project/preexisting.txt\ncf7255608c4b22adf943142450d6bf4c4035c381c02ae9fe94e6e171c4b3ab88  /Volumes/ab-nfs-api006-mac-a0000f39-volume/source/.autobyteus-nfs/storage.json\n"
+    },
+    {
+      "label": "restored-original-volume",
+      "bootID": "A9ACAEA7-A101-490B-AFB5-39425E8DF6D7",
+      "bootTime": "{ sec = 1792066620, usec = 741004 } Thu Oct 15 12:17:00 2026",
+      "stat": "16777241:16:501:20:755",
+      "volume": {
+        "DeviceNode": "/dev/disk8s1",
+        "MountPoint": "/Volumes/ab-nfs-api006-mac-a0000f39-volume",
+        "FilesystemType": "apfs",
+        "VolumeUUID": "4BAA1B01-8089-4F31-A0EB-C9803B59C828"
+      },
+      "bindingBytes": "{\n  \"installationId\": \"d3d0fda9-dafd-46d2-958a-53d951d98d09\",\n  \"storageId\": \"1fbed7b3-2c31-4365-a49a-87128db69f61\",\n  \"source\": \"/Volumes/ab-nfs-api006-mac-a0000f39-volume/source\",\n  \"identity\": {\n    \"volumeUuid\": \"4baa1b01-8089-4f31-a0eb-c9803b59c828\",\n    \"inode\": 16\n  },\n  \"backend\": \"apple\",\n  \"dataUid\": 501,\n  \"dataGid\": 20,\n  \"allowlist\": [\n    \"192.168.64.2\"\n  ]\n}\n",
+      "bindingSHA256": "7e5730fd56074420e3885824a31b879009c0b4f06e66767febce734e21b48599",
+      "markerBytes": "{\"storageId\":\"1fbed7b3-2c31-4365-a49a-87128db69f61\"}\n",
+      "hashes": "cee91b4a65a25850de42b87aa5b58b813994b2c941185eefee2bd1bb8cac9353  /Volumes/ab-nfs-api006-mac-a0000f39-volume/source/project/preexisting.txt\ncf7255608c4b22adf943142450d6bf4c4035c381c02ae9fe94e6e171c4b3ab88  /Volumes/ab-nfs-api006-mac-a0000f39-volume/source/.autobyteus-nfs/storage.json\n"
+    }
+  ],
+  "sameRawDeviceAndInodeDifferentUUID": true,
+  "evidence": [
+    "mac-native-result.json",
+    "mac-controls-result.json",
+    "mac-controls-confirm-v2-result.json",
+    "mac-permission-observation.json",
+    "mac-new-source-resume-result.json",
+    "mac-new-source-confirm-result.json",
+    "mac-volume-result.json"
+  ],
+  "limits": [
+    "Owned macOS VM actual OS/kernel, NOT independent physical qualification",
+    "No identity editing/synthetic device substitution/mock trusted helper/manual reconnect before automatic boot IO",
+    "New-source binding-before-effects ordering directly unit-tested; public path proves final bound actual source and IO, not instrumented mid-apply crash",
+    "Actual disk-image replacement control uses explicit image attach after separate ordinary reboot; NOT automatic disk-image startup proof",
+    "Permission mode propagation settles normally; no instant chmod propagation contract asserted",
+    "Raw harness failures and incomplete attempts retained with corrections; no production changes"
+  ]
+}

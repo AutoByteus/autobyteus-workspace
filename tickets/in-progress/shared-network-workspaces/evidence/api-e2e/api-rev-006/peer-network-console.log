@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-006/probe-peer.py", line 2, in <module>
+    r['peer']=m('route -n get '+ip+'; nc -z -v -w 3 '+ip+' 22; nc -z -v -w 3 '+ip+' 2049',15,False);r['result']='Reachable' if r['peer']['rc']==0 else 'Peer TCP2049 unavailable';save()
+  File "<string>", line 15, in m
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 507, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1134, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1980, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1178, in _check_timeout
+    raise TimeoutExpired(
+subprocess.TimeoutExpired: Command '['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-nfs-api006-mac-a0000f39', '/usr/bin/sudo', '-n', '-u', 'admin', '/usr/bin/env', '-i', 'HOME=/Users/admin', 'PATH=/usr/bin:/bin:/usr/sbin:/sbin', 'LANG=C', '/bin/sh', '-c', 'route -n get 192.168.64.4; nc -z -v -w 3 192.168.64.4 22; nc -z -v -w 3 192.168.64.4 2049']' timed out after 15 seconds
