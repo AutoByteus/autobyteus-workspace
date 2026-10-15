@@ -198,8 +198,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     )).createAgentTeamDefinition.id;
     ids.team = (await graphql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: `PCF Team ${suffix}`, description: "Team root", instructions: "Follow requests.", coordinatorMemberName: "manager",
-        nodes: [{ memberName: "manager", ref: ids.manager, refScope: "SHARED" }, { memberName: "worker", ref: ids.worker, refScope: "SHARED" },
-          { memberName: "helper", ref: ids.helper, refScope: "SHARED" }] } },
+        nodes: [{ memberName: "manager", ref: ids.manager, refScope: "SHARED" }] } },
     )).createAgentTeamDefinition.id;
     ids.org = (await graphql(`mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}`,
       { input: { name: `PCF Org ${suffix}`, description: "Org root", instructions: "Follow requests.", handoffs: [],
@@ -228,7 +227,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
   }, 120000);
 
   /** A root of one kind with the Manager and readers of its tree and conversations. */
-  const startRoot = async (kind: Kind, workerOverride: Record<string, unknown> = {}) => {
+  const startRoot = async (kind: Kind) => {
     let rootId: string, managerRunId: string;
     if (kind === "agent") {
       const created = (await graphql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
@@ -238,9 +237,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     } else if (kind === "team") {
       const created = (await graphql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
         { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: "/", ...config() }], memberConfigs: [
-          { memberAddress: "/manager", agentDefinitionId: ids.manager, ...config() },
-          { memberAddress: "/worker", agentDefinitionId: ids.worker, ...config(), ...workerOverride },
-          { memberAddress: "/helper", agentDefinitionId: ids.helper, ...config() }] } })).createAgentTeamRun;
+          { memberAddress: "/manager", agentDefinitionId: ids.manager, ...config() }] } })).createAgentTeamRun;
       expect(created.success, created.message).toBe(true);
       rootId = created.teamRunId;
       const tree = (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
@@ -426,27 +423,21 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     evidence.agent = { ...record, rootId: root.rootId, projectId, taskId, worker, helper: helper.agentRunId, root: task.root };
   }, 300000);
 
-  it("Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members", async () => {
-    // The /worker member is configured with a model its runtime does not offer: its copy cannot start (AC-007).
-    const root = await startRoot("team", { llmModelIdentifier: "pcf-no-such-model" });
+  it("Team root: a delegated catalog Agent copy is hosted by the Team root; a task Team root folds its members", async () => {
+    // A Team root delegates only to units outside its own Team (collaboration-model-contract): catalog Agents and Teams.
+    const root = await startRoot("team");
     const projectId = await createProject(`PCF team ${randomUUID().slice(0, 6)}`);
     const scope = { kind: "project", projectId };
     const taskId = await createTask(projectId, "Review the docs.");
-    const failed = await root.managerCalls(callTool("delegate_task", { recipient_address: "/worker", task_id: taskId }));
-    expect(failed.delegated ?? false).toBe(false);
-    let task = await settledTask(scope, taskId, "failed start", (t) => t.root?.start === "failed");
-    expect(task.status).toBe("TODO");
-    expect(task.root).toMatchObject({ kind: "agent", recipientAddress: "/worker", start: "failed", closed: false, status: "offline",
-      hostRoot: { kind: "agent_team", runId: root.rootId } });
-    expect(task.root.startError.code).toBe("TASK_DISPATCH_FAILED");
-    expect(task.root.startError.message).toMatch(/AGY_MODEL_UNAVAILABLE/);
-    const failedRoot = task.root;
-    // Re-delegation to a working member: the root is the new delegation only.
-    const redelegated = await root.managerCalls(callTool("delegate_task", { recipient_address: "/helper", task_id: taskId }));
-    task = await settledTask(scope, taskId, "re-delegated", (t) => t.root?.start === "started" && t.root?.status === "idle");
-    expect(task.root).toMatchObject({ kind: "agent", recipientAddress: "/helper", ingressAgentRunId: redelegated.target_agent_run_id,
-      startError: null, closed: false });
-    // A task Team root: kind team, the coordinator as ingress, the team's folded status.
+    const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.worker)}`, task_id: taskId }));
+    expect(delegated.delegated, JSON.stringify(delegated)).toBe(true);
+    const task = await settledTask(scope, taskId, "catalog copy root", (t) => t.root?.start === "started" && t.root?.status === "idle");
+    expect(task.root).toMatchObject({ kind: "agent", recipientAddress: `/${segment(names.worker)}`, ingressAgentRunId: delegated.target_agent_run_id,
+      startError: null, closed: false, hostRoot: { kind: "agent_team", runId: root.rootId } });
+    // The Team root refuses its own member: a configured teammate is messaged, not delegated.
+    const refused = await root.managerCalls(callTool("delegate_task", { recipient_address: "/manager", description: "Reply OK." }));
+    expect(JSON.stringify(refused)).toContain("COLLABORATION_SELF_TARGET_REJECTED");
+        // A task Team root: kind team, the coordinator as ingress, the team's folded status.
     const teamTaskId = await createTask(projectId, "Review with a team.");
     const teamDelegated = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.squad)}`, task_id: teamTaskId }));
     expect(teamDelegated.target_kind).toBe("team");
@@ -459,7 +450,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     await settledTask(scope, teamTaskId, "team DONE", (t) => t.root?.closed === true && t.root?.status === "offline");
     root.close();
     await terminate("team", root.rootId);
-    evidence.team = { rootId: root.rootId, projectId, failedRoot, redelegatedRoot: task.root, failed, teamRoot: teamTask.root };
+    evidence.team = { rootId: root.rootId, projectId, catalogCopyRoot: task.root, refused, teamRoot: teamTask.root };
   }, 300000);
 
   it("Org root: an Org-hosted root reports its worker's status and goes Offline at DONE", async () => {

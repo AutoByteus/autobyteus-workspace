@@ -5,9 +5,9 @@
 // text only, `<appData>/ad-hoc-tasks/<id>/`) and returns its task_id; when the work is finished the agent — on its
 // own after a report, or when the user says so — calls update_task({task_id, status: DONE}), a tool the probe's agents
 // select explicitly (no task tool is automatic), and the copy's row leaves the tree and stays out (live, after reload, Stop and a real backend
-// restart). Permanent delete removes the run's ad-hoc Tasks. Stored collaborators (now only from an agent's own
-// send_message_to to a catalog address) keep working. Covers standalone Agent, Team and Org runs, the first-send
-// mention, an ineligible mention, old traces and old data, and the Agent-root host-crash lifecycle.
+// restart). Permanent delete removes the run's ad-hoc Tasks. A send_message_to to an outside catalog address is not found
+// (collaboration-model-contract: messaging never brings anyone in; there are no collaborators). Covers standalone Agent, Team
+// and Org runs, the first-send mention, an ineligible mention, old traces and old data, and the Agent-root host-crash lifecycle.
 //
 // Real browser (Chrome via playwright-core) → real Nuxt dev → real backend (`dist/app.js`) → a real runtime
 // (default Claude Agent SDK, model `haiku`; also `--runtime codex_app_server`). Everything runs in an owned temp
@@ -713,67 +713,41 @@ defineCase('A06', 'AC-016 (prior feature): a stored delivery without a recorded 
   return r
 })
 
-defineCase('S01', 'AC-012 / SCN-007: a collaborator added by the agent\'s own first send_message_to to a catalog address (the remaining producer of collaborator entries) is stored; after Stop and reopen its row loads, direct chat restores it with the same run ID', async (page) => {
+defineCase('S01', 'AC-005 / SCN-004 (collaboration-model-contract): a send_message_to to an outside catalog address is not found and creates nothing; the guidance names delegate_task; delegating then starts a copy with an ad-hoc Task, reached by its run ID', async (page) => {
   const r = {}
   const runId = r.runId = await startStandaloneRun(page, 'Say hello in one short sentence.')
-  state.storedRunId = runId
-  await sendInComposer(page, `Use send_message_to with recipient_address ${REVIEWER_ADDRESS} to ask Code Reviewer to review the phrase "ok" and report back to you.`)
-  const view = await waitCollaborators(runId, 1, 'agent-initiated collaborator added')
-  const entry = collaboratorsOf(view)[0]
-  r.entry = { kind: entry.kind, address: entry.address, agentRunId: entry.agentRunId }
-  assert(entry.kind === 'agent' && entry.address === REVIEWER_ADDRESS, 'bring-in collaborator entry', r.entry)
-  await waitMessageFrom(runId, entry.agentRunId, 'collaborator report')
+  const tasksBefore = (await adHocTasks()).length
+  await sendInComposer(page, `Use send_message_to with recipient_address ${REVIEWER_ADDRESS} to ask Code Reviewer to review the phrase "ok". Make that one call and then tell me in one sentence what the tool answered; do not call any other tool.`)
+  // Only some runtimes show a tool result in the conversation (Claude does; Codex does not): where it is shown it must be the
+  // not-found answer; on every runtime the server facts below (nothing created) must hold. The live server suite
+  // agent-initiated-collaborators proves the not-found answer on each enabled runtime.
+  if (runtime === 'claude_agent_sdk') await waitFor('the not-found answer', async () => /COLLABORATION_TARGET_NOT_FOUND|is not in this run/.test(await conversationJson('agent', runId, runId)), 240000, 1500)
+  else await delay(20000)
   await waitHostIdle(page)
-  r.tasksForRun = (await adHocTasks()).filter((t) => t.resources.includes(entry.agentRunId)).map((t) => t.id)
-  assert(r.tasksForRun.length === 0, 'a collaborator brought in by send_message_to must not get an ad-hoc Task', r)
-  await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}', { id: runId })
-  await waitFor('host stopped', async () => (await agentRunActive(runId)) === false, 60000)
-  await page.reload({ waitUntil: 'domcontentloaded' }); await delay(3000)
-  await findAgentRunRow(page, runId)
-  r.rowsAfterReopen = await rowFacts(taskRowsUnder(page, runId))
-  assert(r.rowsAfterReopen.some((row) => /code reviewer/i.test(row.text) && isOffline(row)), 'stored collaborator row (Offline) after reopen', r.rowsAfterReopen)
-  await taskRowsUnder(page, runId).filter({ hasText: /code reviewer/i }).first().click(); await delay(3000)
-  await sendInComposer(page, 'Reply with the single word STORED-OK.')
-  await replyAppears(page, 'STORED-OK')
-  const after = await agentRootView(runId)
-  r.sameRunId = collaboratorsOf(after).find((c) => c.kind === 'agent')?.agentRunId === entry.agentRunId
-  r.hostActive = await agentRunActive(runId)
-  assert(r.sameRunId && r.hostActive === true, 'stored collaborator not restored with the same run ID', r)
-  // The host still messages it by address after the restore (AC-012).
-  await (await findAgentRunRow(page, runId)).click(); await delay(2000)
+  const afterMessage = await agentRootView(runId)
+  r.copiesAfterMessage = taskNodesIn(afterMessage?.execution_tree).length
+  r.tasksAfterMessage = (await adHocTasks()).length - tasksBefore
+  r.noCollaboratorsKey = !('collaborators' in (afterMessage?.execution_tree ?? {}))
+  assert(r.copiesAfterMessage === 0 && r.tasksAfterMessage === 0 && r.noCollaboratorsKey, 'a message to an outside address created something (AC-005)', r)
+  // Following the guidance: delegate_task starts the copy, with its own ad-hoc Task.
+  await sendInComposer(page, `Now use delegate_task with recipient_address ${REVIEWER_ADDRESS} and a short description asking Code Reviewer to review the phrase "ok". Make that one call and tell me in one sentence what it answered.`)
+  const copyNode = await waitFor('the delegated copy', async () => taskNodesIn((await agentRootView(runId))?.execution_tree)
+    .find((n) => n.delegatorAgentRunId === runId && n.address === REVIEWER_ADDRESS), 240000, 1500)
+  r.copy = { runId: copyNode.runId, address: copyNode.address }
+  await waitHostIdle(page)
+  r.tasksForCopy = (await adHocTasks()).filter((t) => t.resources.includes(copyNode.runId)).map((t) => t.id)
+  assert(r.tasksForCopy.length === 1, 'the delegated copy has no ad-hoc Task', r)
+  // The copy is reached by its run ID; the address still resolves to nothing for messaging.
   const before = (await agentRootView(runId))?.communication_messages.messages.length ?? 0
-  await sendInComposer(page, `Use send_message_to with recipient_address ${REVIEWER_ADDRESS} to ask Code Reviewer to review the phrase "again" and report back to you.`)
-  await waitFor('host message to the stored collaborator', async () => {
+  await sendInComposer(page, `Use send_message_to with target_agent_run_id ${copyNode.runId} to ask the copy to reply with the single word READY.`)
+  await waitFor('host message to the copy by run ID', async () => {
     const msgs = (await agentRootView(runId))?.communication_messages.messages ?? []
-    return msgs.length > before && msgs.slice(before).some((m) => m.senderAgentRunId === runId && m.receiverAgentRunId === entry.agentRunId)
+    return msgs.length > before && msgs.slice(before).some((m) => m.senderAgentRunId === runId && m.receiverAgentRunId === copyNode.runId)
   }, 300000, 1500)
-  r.collaboratorsAfter = collaboratorsOf(await agentRootView(runId)).map((c) => c.agentRunId)
-  assert(r.collaboratorsAfter.length === 1 && r.collaboratorsAfter[0] === entry.agentRunId, 'messaging by address created another collaborator', r)
   await waitHostIdle(page)
-  await shot(page, 'S01-stored-collaborator-restored')
-  // mention-candidates-in-run (the reported case): the agent's own collaborator is mentionable with `@`; the note marks it
-  // as already in this run and offers send_message_to or a separate copy; nothing is added (no duplicate collaborator).
-  await openMenu(page)
-  r.menuWithCollaborator = await menuOptions(page)
-  assert(r.menuWithCollaborator.includes(ids.reviewer) && !r.menuWithCollaborator.includes(ids.research), 'in-run collaborator not offered, or the host offered', r.menuWithCollaborator)
-  await page.keyboard.press('Escape')
-  const beforeInRun = (await agentRootView(runId))?.communication_messages.messages.length ?? 0
-  await mentionAndSend(page, 'please ask @', 'code', ids.reviewer, 'to reply with the single word READY.')
-  await waitFor('in-run mention note stored', async () => (await conversationJson('agent', runId, runId)).includes(`- Code Reviewer (Agent) at ${REVIEWER_ADDRESS}, already in this run`), 60000)
-  const inRunNote = await conversationJson('agent', runId, runId)
-  assert(inRunNote.includes('One already in this run can instead be messaged directly with send_message_to at its address, or use delegate_task for a separate copy.'), 'in-run guidance missing (REQ-003)', inRunNote.slice(-1500))
-  await page.locator(sel('user-message-mention')).last().waitFor({ timeout: 30000 })
-  assert(!(await conversationShowsNote(page)), 'the in-run note is shown as text instead of a chip (REQ-004)')
-  await waitHostIdle(page)
-  const afterInRun = await agentRootView(runId)
-  r.collaboratorsAfterInRunMention = collaboratorsOf(afterInRun).map((c) => c.agentRunId)
-  assert(r.collaboratorsAfterInRunMention.length === 1 && r.collaboratorsAfterInRunMention[0] === entry.agentRunId, 'the in-run mention added or replaced a collaborator (AC-006)', r)
-  const newMessages = (afterInRun?.communication_messages.messages ?? []).slice(beforeInRun)
-  r.hostChoice = newMessages.some((m) => m.senderAgentRunId === runId && m.receiverAgentRunId === entry.agentRunId) ? 'messaged the existing collaborator (send_message_to)'
-    : taskNodesIn(afterInRun?.execution_tree).some((n) => n.delegatorAgentRunId === runId && n.address === REVIEWER_ADDRESS) ? 'delegated a separate copy (delegate_task)' : 'neither'
-  note(`S01 in-run mention: the host ${r.hostChoice}`)
-  assert(r.hostChoice !== 'neither', 'the host neither messaged the in-run collaborator nor delegated a copy', r)
-  await shot(page, 'S01-in-run-mention')
+  r.copiesAfter = taskNodesIn((await agentRootView(runId))?.execution_tree).filter((n) => n.address === REVIEWER_ADDRESS).map((n) => n.runId)
+  assert(r.copiesAfter.length === 1 && r.copiesAfter[0] === copyNode.runId, 'messaging by run ID started another copy', r)
+  await shot(page, 'S01-outside-message-not-found-then-delegate')
   return r
 })
 
@@ -1107,7 +1081,7 @@ defineCase('L02', 'Host crash without delegated copies: Archive succeeds and the
   return r
 })
 
-defineCase('P01', 'Old data: Team and Org runs whose trees have no `collaborators` reopen, continue and offer `@`', async (page) => {
+defineCase('P01', 'Team and Org trees carry no `collaborators` (older releases and the current writer): they reopen, continue and offer `@`', async (page) => {
   const r = {}
   // Team run through the New chat quick path, then stopped.
   await newChat(page); await pickModel(page)
@@ -1129,8 +1103,6 @@ defineCase('P01', 'Old data: Team and Org runs whose trees have no `collaborator
   const teamJson = JSON.parse(await fs.readFile(teamTreePath, 'utf8'))
   const teamRoot = teamJson.rootTeam ?? teamJson.root_team
   r.teamHadCollaboratorsKey = Object.prototype.hasOwnProperty.call(teamRoot, 'collaborators')
-  delete teamRoot.collaborators
-  await fs.writeFile(teamTreePath, JSON.stringify(teamJson, null, 2))
   // Org run, stopped, same rewrite.
   const workspace = path.join(dataRoot, 'temp_workspace'); await fs.mkdir(workspace, { recursive: true })
   const org = await gql('mutation($input:CreateAgentOrgRunInput!){createAgentOrgRun(input:$input){success message agentOrgRunId}}', { input: { agentOrgDefinitionId: ids.org, rootConfiguration: { runtimeKind: runtime, llmModelIdentifier: state.model, llmConfig: null, autoExecuteTools: true, workspaceRootPath: workspace }, agentOverrides: [], teamOverrides: [] } })
@@ -1139,8 +1111,6 @@ defineCase('P01', 'Old data: Team and Org runs whose trees have no `collaborator
   const orgTreePath = path.join(dataRoot, 'memory', 'agent_orgs', orgRunId, 'agent_org_run_execution_tree.json')
   const orgJson = JSON.parse(await fs.readFile(orgTreePath, 'utf8'))
   r.orgHadCollaboratorsKey = Object.prototype.hasOwnProperty.call(orgJson.rootOrg, 'collaborators')
-  delete orgJson.rootOrg.collaborators
-  await fs.writeFile(orgTreePath, JSON.stringify(orgJson, null, 2))
   // Reopen the old-shape Team run from the tree, focus a member, check `@`, and continue.
   await page.goto(`${frontUrl}/workspace`, { waitUntil: 'domcontentloaded' }); await delay(3000)
   const teamRow = page.locator(sel(`workspace-team-row-${teamRunId}`))
@@ -1168,7 +1138,8 @@ defineCase('P01', 'Old data: Team and Org runs whose trees have no `collaborator
   await replyAppears(page, 'OLD-ORG-OK')
   const orgAfter = JSON.parse(await fs.readFile(orgTreePath, 'utf8'))
   r.orgCollaboratorsAfterContinue = orgAfter.rootOrg.collaborators
-  assert(r.teamHadCollaboratorsKey && r.orgHadCollaboratorsKey, 'new-build writer did not emit collaborators', r)
+  assert(!r.teamHadCollaboratorsKey && !r.orgHadCollaboratorsKey && r.teamCollaboratorsAfterContinue === undefined && r.orgCollaboratorsAfterContinue === undefined,
+    'the current writer emitted a collaborators key', r)
   return r
 })
 

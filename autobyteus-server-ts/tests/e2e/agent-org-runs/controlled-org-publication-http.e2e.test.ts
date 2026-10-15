@@ -19,7 +19,7 @@ suite('controlled agent drives Org publication through real public boundaries', 
   beforeAll(() => fixture.start(), 60000);
   afterAll(() => fixture.close(), 60000);
 
-  it('keeps collaborator/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore', async () => {
+  it('keeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore', async () => {
     const run = await fixture.create('org', 'linked_skills');
     const other = await fixture.create('org', 'linked_skills');
     const helperName = 'publication-helper-' + randomUUID();
@@ -51,30 +51,35 @@ suite('controlled agent drives Org publication through real public boundaries', 
       { id: run.rootId })).collaboratorMentionCandidates;
     expect(candidates.availability).toBe('AVAILABLE');
     expect(candidates.candidates).toContainEqual({ kind: 'agent', definitionId: helperId });
-    // An available Agent is brought in as a collaborator on its first `send_message_to` (an `@` mention adds none).
-    await call('send_message_to', { recipient_address: '/' + helperName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, ''), content: 'Reply OK.' });
+    // Messaging never brings anyone in (collaboration-model-contract): a message to an outside catalog address is not found and
+    // creates nothing; delegation starts a root-hosted copy, which is then reached by its run ID.
+    const helperAddress = '/' + helperName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    await call('send_message_to', { recipient_address: helperAddress, content: 'Reply OK.' });
+    expect(JSON.stringify((await fixture.projection(run)).conversation)).toContain('COLLABORATION_TARGET_NOT_FOUND');
+    expect((await read()).org.rootOrg.taskExecutions).toEqual([]);
+    expect(stream.frames.some(f => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'task_execution_started')).toBe(false);
+    await call('delegate_task', { recipient_address: helperAddress, description: 'Reply OK as a catalog copy.' });
     const admitted = await read();
-    const collaborator = admitted.org.rootOrg.collaborators.find((c: any) => c.agentDefinitionId === helperId);
-    expect(collaborator).toMatchObject({ kind: 'agent', addedViaAgentRunId: run.runId,
-      launchConfiguration: { runtimeKind: 'antigravity_cli', llmModelIdentifier: 'gemini-3.8-flash-low' } });
-    expect(collaborator.agentRunId).toMatch(/_[0-9a-f]{32}$/);
-    expect(stream.frames.some(f => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'collaborator_added'
-      && f.payload.event.collaborator.agentRunId === collaborator.agentRunId)).toBe(true);
+    const helperCopy = admitted.org.rootOrg.taskExecutions.find((c: any) => c.agentDefinitionId === helperId || c.address === helperAddress);
+    expect(helperCopy).toMatchObject({ address: helperAddress, delegatorAgentRunId: run.runId });
+    expect(helperCopy.agentRunId).toMatch(/_[0-9a-f]{32}$/);
+    expect(stream.frames.some(f => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'task_execution_started'
+      && JSON.stringify(f.payload.event.execution).includes(helperCopy.agentRunId))).toBe(true);
     const afterAdmission = await checkpoint();
     expect(afterAdmission.changeSequence).toBeGreaterThan(baseline.changeSequence);
     const remaining = (await fixture.graphql(`query($id:String!){collaboratorMentionCandidates(rootSubjectKind:"agent_org",rootRunId:$id){candidates{definitionId}}}`,
       { id: run.rootId })).collaboratorMentionCandidates.candidates;
-    // A definition already in the run stays an `@` candidate (mentioning it points to the in-run collaborator).
+    // A definition delegated as a copy is not in the run: it stays an `@` candidate.
     expect(remaining.some((c: any) => c.definitionId === helperId)).toBe(true);
 
     const reference = path.join(fixture.workspace, 'publication-reference.txt');
     await fs.writeFile(reference, 'REFERENCE-BYTES-7719\n');
-    await call('send_message_to', { target_agent_run_id: collaborator.agentRunId, content: 'Please read this owned reference.', reference_files: [reference] });
+    await call('send_message_to', { target_agent_run_id: helperCopy.agentRunId, content: 'Please read this owned reference.', reference_files: [reference] });
     const referenced = (f: any) => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'communication'
       && f.payload.event.message.referenceFiles?.length > 0;
     await until(() => stream.frames.some(referenced), 'real communication publication');
     const communication = stream.frames.find(referenced)!.payload.event.message;
-    expect(communication).toMatchObject({ senderAgentRunId: run.runId, receiverAgentRunId: collaborator.agentRunId });
+    expect(communication).toMatchObject({ senderAgentRunId: run.runId, receiverAgentRunId: helperCopy.agentRunId });
     expect(communication.referenceFiles).toEqual([reference]);
     const referenceId = createHash('sha256').update(`${communication.messageId}\0${reference}`).digest('hex');
     const referenceUrl = `/rest/agent-org-runs/${run.rootId}/communication/messages/${communication.messageId}/references/${referenceId}/content`;
@@ -85,20 +90,20 @@ suite('controlled agent drives Org publication through real public boundaries', 
     expect(wrongReference.status).toBe(404);
 
     await call('delegate_task', { recipient_address: '/direct', description: 'Reply OK as a separate copy.' });
+    // The sender is a member of the mounted `/team`: delegating its own mounted Team is refused and starts nothing.
     await call('delegate_task', { recipient_address: '/team', description: 'Reply OK as a separate Team copy.' });
+    expect(JSON.stringify((await fixture.projection(run)).conversation)).toContain('COLLABORATION_SELF_TARGET_REJECTED');
     const tasks = (await read()).org.rootOrg.taskExecutions;
     expect(tasks).toHaveLength(2);
     expect(tasks[0]).toHaveProperty('agentRunId');
-    expect(tasks[1]).toHaveProperty('teamRunId');
-    expect(tasks[1].members).toHaveLength(1);
+    expect(tasks[1]).toHaveProperty('agentRunId');
     const started = stream.frames.filter(f => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'task_execution_started');
     expect(started).toHaveLength(2);
     for (const task of tasks) {
       expect(task.delegatorAgentRunId).toBe(run.runId);
       expect(started.some(f => JSON.stringify(f.payload.event.execution).includes(task.agentRunId ?? task.teamRunId))).toBe(true);
     }
-    expect(tasks[0].agentRunId).not.toBe(run.tree.rootOrg.members.find((m: any) => m.address === '/direct').agentRunId);
-    expect(tasks[1].teamRunId).not.toBe(run.tree.rootOrg.members.find((m: any) => m.address === '/team').teamRunId);
+    expect(tasks[1].agentRunId).not.toBe(run.tree.rootOrg.members.find((m: any) => m.address === '/direct').agentRunId);
     const sequence = (await checkpoint()).changeSequence;
     expect(sequence).toBeGreaterThanOrEqual(Math.max(...started.map(f => f.payload.change_sequence)));
 
@@ -116,10 +121,11 @@ suite('controlled agent drives Org publication through real public boundaries', 
     stream.socket.close();
     const reconnected = await fixture.connect(run);
     const snapshot = reconnected.frames.find(f => f.type === 'ROOT_EXECUTION_VIEW_SNAPSHOT')!.payload.root_org;
-    expect(snapshot.execution_tree.rootOrg.collaborators.map((c: any) => c.agentRunId)).toContain(collaborator.agentRunId);
+    expect(snapshot.execution_tree.rootOrg).not.toHaveProperty('collaborators');
+    expect(snapshot.execution_tree.rootOrg.taskExecutions.map((c: any) => c.agentRunId)).toContain(helperCopy.agentRunId);
     expect(snapshot.execution_tree.rootOrg.taskExecutions).toEqual(tasks);
     expect(snapshot.communication_messages.messages).toContainEqual(communication);
-    const beforeStop = await fixture.projection({ ...run, runId: collaborator.agentRunId, address: collaborator.address });
+    const beforeStop = await fixture.projection({ ...run, runId: helperCopy.agentRunId, address: helperCopy.address });
     expect(JSON.stringify(beforeStop.conversation)).toContain('Please read this owned reference.');
     await fixture.terminate(run);
     const stopped = await read();
@@ -132,8 +138,8 @@ suite('controlled agent drives Org publication through real public boundaries', 
     fixture.runs.push(run);
     expect(await fs.readFile(treePath)).toEqual(bytes);
     expect((await read()).org.rootOrg.taskExecutions).toEqual(stopped.org.rootOrg.taskExecutions);
-    expect((await fixture.projection({ ...run, runId: collaborator.agentRunId, address: collaborator.address })).conversation).toEqual(beforeStop.conversation);
-    await fixture.save('org-publication-chain.json', { run, other, collaborator, tasks, communication, referenceUrl,
+    expect((await fixture.projection({ ...run, runId: helperCopy.agentRunId, address: helperCopy.address })).conversation).toEqual(beforeStop.conversation);
+    await fixture.save('org-publication-chain.json', { run, other, helperCopy, tasks, communication, referenceUrl,
       baseline, afterAdmission, sequence, frames: stream.frames, reconnectFrames: reconnected.frames, beforeStop, stopped, restore });
     await fixture.terminate(run);
     await fixture.terminate(other);

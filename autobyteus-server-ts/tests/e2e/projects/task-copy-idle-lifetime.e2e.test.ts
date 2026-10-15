@@ -192,7 +192,7 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
     )).createAgentTeamDefinition.id;
     ids.team = (await graphql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: `TIL Team ${suffix}`, description: "Team root", instructions: "Follow requests.", coordinatorMemberName: "manager",
-        nodes: [{ memberName: "manager", ref: ids.manager, refScope: "SHARED" }, { memberName: "worker", ref: ids.worker, refScope: "SHARED" }] } },
+        nodes: [{ memberName: "manager", ref: ids.manager, refScope: "SHARED" }] } },
     )).createAgentTeamDefinition.id;
     ids.org = (await graphql(`mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}`,
       { input: { name: `TIL Org ${suffix}`, description: "Org root", instructions: "Follow requests.", handoffs: [], members: [
@@ -239,8 +239,7 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
     } else if (kind === "team") {
       const created = (await graphql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
         { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: "/", ...config() }], memberConfigs: [
-          { memberAddress: "/manager", agentDefinitionId: ids.manager, ...config() },
-          { memberAddress: "/worker", agentDefinitionId: ids.worker, ...config() }] } })).createAgentTeamRun;
+          { memberAddress: "/manager", agentDefinitionId: ids.manager, ...config() }] } })).createAgentTeamRun;
       expect(created.success, created.message).toBe(true);
       rootId = created.teamRunId;
       const tree = (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
@@ -324,7 +323,8 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
   /** One root: every copy, its timeline and its assertions. */
   const rootScenario = async (kind: Kind) => {
     const root = await startRoot(kind);
-    const workerAddress = kind === "agent" ? `/${segment(names.worker)}` : "/worker";
+    // A Team-root member is not delegable by its own Team (collaboration-model-contract): the Team root delegates by catalog address, as the Agent root does; an Org keeps its sibling units.
+    const workerAddress = kind !== "org" ? `/${segment(names.worker)}` : "/worker";
     const teamAddress = kind === "org" ? "/squad" : `/${segment(names.squad)}`;
     const background = await delegate(root, workerAddress, `Agent background work. ${step(STEP_SECONDS, 3)}`);
     const team = await delegate(root, teamAddress, `Team background work. ${step(STEP_SECONDS)}`);
