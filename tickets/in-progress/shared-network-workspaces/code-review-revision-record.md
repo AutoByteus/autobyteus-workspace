@@ -595,3 +595,5 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
 - D001 deferredNOTfixed/IMP-D001 current-source/AGYlocal/FUP001/peerNAT limits
   preserved; only MacDockerSTORAGE deferred. No merge/push/tag/release/TaskDone.
   Confirmed handoff receipt is appended only after the tool accepts delivery.
+
+- **Confirmed handoff:** review da124edf1230a0cd4da2780766497c48f7a9723b delivered to `/software_engineering_team/api_e2e_engineer`, AgentRun `api_e2e_engineer_4b3516b0eb7d448586471bee29383f50`; accepted=true/DELIVERED,1122 cumulative references. Single most-specific primary source-Pass recipient only; no duplicate notification, polling or delegation.
