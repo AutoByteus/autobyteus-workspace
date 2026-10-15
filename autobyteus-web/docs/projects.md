@@ -422,7 +422,7 @@ fields and files persist. A mutation returns a compact recorded-status
 acknowledgement, not raw resource diagnostics or a work assessment (plus
 `attachedContextFiles` only when the call attached files). There is no batch tool
 and no separate attachment tool; files are never removed through agent tools. See the
-[server tool contract](../../autobyteus-server-ts/docs/modules/projects.md#exactly-four-agent-tools).
+[server tool contract](../../autobyteus-server-ts/docs/modules/projects.md#exactly-five-agent-tools).
 
 No Project manager agent is shipped with the app. Any Agent that selects the
 Project tools can manage Projects through existing Chat/`@`, for example the

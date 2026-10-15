@@ -37,7 +37,7 @@ The server ships no Project manager agent. Any Agent whose definition selects
 the Project tools can manage Projects through the existing Chat or `@`, for
 example the agent repository's **Project Task Manager** (`project-task-manager`,
 with its `project-task-management` skill) when that repository is configured as
-an agent package root. A managing Agent typically selects the four Project/Task
+an agent package root. A managing Agent typically selects the five Project/Task
 tools plus `list_available_agents`, `delegate_task` and `send_message_to`. It
 is not a Project-page panel or a scheduler. This feature does not guarantee
 worker completion reports, automatic DONE, scheduling, or a worker self-update

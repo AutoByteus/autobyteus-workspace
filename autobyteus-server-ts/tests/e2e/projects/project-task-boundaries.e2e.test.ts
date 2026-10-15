@@ -118,6 +118,8 @@ describe("Project Task production HTTP boundaries", () => {
     });
     const activate = (runId: string, selected: string[]) => authority.runSessions.activateForRun({ owner: { runId }, sender: buildAgentRunMessageSenderContext({ senderRunId: runId, senderName: runId }), runtimeExposure: buildRuntimeAgentToolExposure(selected) });
     expect(activate("unselected", []).kind).toBe("not_exposed");
+    // task-tool-split AC-007: a configuration that still lists the removed name gets no task tool and no launch error.
+    expect(activate("legacy-task-tool-name", ["create_or_update_task"]).kind).toBe("not_exposed");
     const selected = activate("selected", names); expect(selected.kind).toBe("active");
     if (selected.kind !== "active") throw new Error("Selected session absent"); mcpUrl = selected.descriptor.serverUrl;
     expect(selected.descriptor.enabledTools).toEqual(names);
@@ -150,6 +152,8 @@ describe("Project Task production HTTP boundaries", () => {
     expect(catalog.structuredContent).toEqual(JSON.parse(await new ListProjectsTool().execute(null, {})));
     expect((await rpc(mcpUrl, "initialize")).body.result.serverInfo.name).toBe("autobyteus_agent_tools");
     expect((await rpc(mcpUrl, "tools/list")).body.result.tools.map((t: { name: string }) => t.name)).toEqual(names);
+    expect((await rpc(mcpUrl, "tools/call", { name: "create_or_update_task", arguments: { project_id: projectId, description: "old name" } })).body.error).toBeDefined();
+    expect(await list(projectId)).toEqual([]);
     const created = (await call("create_task", { project_id: projectId, description: "  hello HTTP  " })).structuredContent.task;
     expect(created).toEqual({ projectId, taskId: expect.any(String), status: "TODO" });
     expect(created.taskId.trim()).not.toBe("");
