@@ -1,0 +1,366 @@
+{
+  "startedAt": "2026-10-15T17:33:26.461Z",
+  "node": "v22.23.1",
+  "cases": {
+    "PSD-001": {
+      "result": "Fail",
+      "name": "AC-001 real typing, Save held, real Ctrl/Cmd+Z back to original, release, Save again",
+      "error": "AssertionError [ERR_ASSERTION]: draft exists while pending\n\nfalse !== true\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-web/tests/e2e/file-explorer-pending-save-draft-probe.mjs:212:44\n    at async run (file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-web/tests/e2e/file-explorer-pending-save-draft-probe.mjs:150:36)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-web/tests/e2e/file-explorer-pending-save-draft-probe.mjs:208:3"
+    },
+    "PSD-002": {
+      "result": "Fail",
+      "name": "AC-001 variant: revert by retyping the original text",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'saved checkpoint'\n- 'draft-a original'\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-web/tests/e2e/file-explorer-pending-save-draft-probe.mjs:235:12\n    at async run (file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-web/tests/e2e/file-explorer-pending-save-draft-probe.mjs:150:36)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-web/tests/e2e/file-explorer-pending-save-draft-probe.mjs:231:3"
+    },
+    "PSD-003": {
+      "result": "Pass",
+      "name": "AC-002 clear-all while Save pending",
+      "details": {
+        "after": {
+          "content": "saved checkpoint",
+          "draft": "",
+          "hasDraft": true,
+          "saving": false,
+          "error": null
+        },
+        "payloads": [
+          "saved checkpoint",
+          ""
+        ]
+      }
+    },
+    "PSD-004": {
+      "result": "Pass",
+      "name": "AC-005 later edit different from both texts",
+      "details": {
+        "after": {
+          "content": "saved checkpoint",
+          "draft": "a different later edit",
+          "hasDraft": true,
+          "saving": false,
+          "error": null
+        },
+        "payloads": [
+          "saved checkpoint",
+          "a different later edit"
+        ]
+      }
+    },
+    "PSD-005": {
+      "result": "Pass",
+      "name": "AC-003 later input ends equal to the saved content",
+      "details": {
+        "after": {
+          "content": "saved checkpoint",
+          "hasDraft": false,
+          "saving": false,
+          "error": null
+        },
+        "payloads": [
+          "saved checkpoint"
+        ]
+      }
+    },
+    "PSD-006": {
+      "result": "Pass",
+      "name": "AC-004a failed Save with a differing later edit keeps draft + error, next Save submits it",
+      "details": {
+        "failed": {
+          "content": "draft-a original",
+          "draft": "saved checkpoint",
+          "hasDraft": true,
+          "saving": false,
+          "error": "PROBE-INJECTED-SAVE-FAILURE"
+        },
+        "payloads": [
+          [
+            "saved checkpoint",
+            "failed-by-probe"
+          ],
+          [
+            "a different later edit",
+            "passed"
+          ]
+        ]
+      }
+    },
+    "PSD-007": {
+      "result": "Pass",
+      "name": "AC-004b failed Save, input reverted to unchanged committed text becomes clean",
+      "details": {
+        "after": {
+          "content": "draft-a original",
+          "hasDraft": false,
+          "saving": false,
+          "error": "PROBE-INJECTED-SAVE-FAILURE"
+        },
+        "payloads": [
+          [
+            "saved checkpoint",
+            "failed-by-probe"
+          ]
+        ]
+      }
+    },
+    "PSD-008": {
+      "result": "Pass",
+      "name": "AC-008 ordinary Save with no later input: clean, no model replacement",
+      "details": {
+        "eventsAfterSave": 0,
+        "payloads": [
+          "saved checkpoint"
+        ]
+      }
+    },
+    "PSD-009": {
+      "result": "Pass",
+      "name": "AC-006 no Save pending: type then undo to committed text is clean",
+      "details": {
+        "after": {
+          "content": "draft-a original",
+          "hasDraft": false,
+          "saving": false,
+          "error": null
+        }
+      }
+    },
+    "PSD-010": {
+      "result": "Pass",
+      "name": "AC-004a Save pending, differing later edit, Save then FAILS: draft + error kept, next Save submits it",
+      "details": {
+        "failed": {
+          "content": "draft-a original",
+          "draft": "a different later edit",
+          "hasDraft": true,
+          "saving": false,
+          "error": "PROBE-INJECTED-SAVE-FAILURE"
+        },
+        "payloads": [
+          [
+            "saved checkpoint",
+            "held-then-failed-by-probe"
+          ],
+          [
+            "a different later edit",
+            "passed"
+          ]
+        ]
+      }
+    },
+    "PSD-011": {
+      "result": "Fail",
+      "name": "AC-004b Save pending, input reverted to unchanged committed text, Save then FAILS: clean, no draft",
+      "error": "AssertionError [ERR_ASSERTION]: held as draft while pending\n\nfalse !== true\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-web/tests/e2e/file-explorer-pending-save-draft-probe.mjs:325:12\n    at async run (file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-web/tests/e2e/file-explorer-pending-save-draft-probe.mjs:150:36)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-web/tests/e2e/file-explorer-pending-save-draft-probe.mjs:323:3"
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 34367
+    },
+    {
+      "label": "frontend",
+      "pid": 34400
+    }
+  ],
+  "writes": [
+    {
+      "case": "PSD-001",
+      "filePath": "psd001.txt",
+      "content": "saved checkpoint",
+      "mode": "hold",
+      "at": 1792085622289,
+      "heldAt": 1792085622297,
+      "outcome": "held-then-released"
+    },
+    {
+      "case": "PSD-002",
+      "filePath": "psd002.txt",
+      "content": "saved checkpoint",
+      "mode": "hold",
+      "at": 1792085622575,
+      "heldAt": 1792085622578,
+      "outcome": "held-then-released"
+    },
+    {
+      "case": "PSD-003",
+      "filePath": "psd003.txt",
+      "content": "saved checkpoint",
+      "mode": "hold",
+      "at": 1792085623715,
+      "heldAt": 1792085623717,
+      "outcome": "held-then-released"
+    },
+    {
+      "case": "PSD-003",
+      "filePath": "psd003.txt",
+      "content": "",
+      "mode": "pass",
+      "at": 1792085624659,
+      "outcome": "passed"
+    },
+    {
+      "case": "PSD-004",
+      "filePath": "psd004.txt",
+      "content": "saved checkpoint",
+      "mode": "hold",
+      "at": 1792085624901,
+      "heldAt": 1792085624903,
+      "outcome": "held-then-released"
+    },
+    {
+      "case": "PSD-004",
+      "filePath": "psd004.txt",
+      "content": "a different later edit",
+      "mode": "pass",
+      "at": 1792085625878,
+      "outcome": "passed"
+    },
+    {
+      "case": "PSD-005",
+      "filePath": "psd005.txt",
+      "content": "saved checkpoint",
+      "mode": "hold",
+      "at": 1792085626116,
+      "heldAt": 1792085626119,
+      "outcome": "held-then-released"
+    },
+    {
+      "case": "PSD-006",
+      "filePath": "psd006.txt",
+      "content": "saved checkpoint",
+      "mode": "fail",
+      "at": 1792085627231,
+      "outcome": "failed-by-probe"
+    },
+    {
+      "case": "PSD-006",
+      "filePath": "psd006.txt",
+      "content": "a different later edit",
+      "mode": "pass",
+      "at": 1792085627382,
+      "outcome": "passed"
+    },
+    {
+      "case": "PSD-007",
+      "filePath": "psd007.txt",
+      "content": "saved checkpoint",
+      "mode": "fail",
+      "at": 1792085627595,
+      "outcome": "failed-by-probe"
+    },
+    {
+      "case": "PSD-008",
+      "filePath": "psd008.txt",
+      "content": "saved checkpoint",
+      "mode": "pass",
+      "at": 1792085627862,
+      "outcome": "passed"
+    },
+    {
+      "case": "PSD-010",
+      "filePath": "psd010.txt",
+      "content": "saved checkpoint",
+      "mode": "holdfail",
+      "at": 1792085629096,
+      "heldAt": 1792085629096,
+      "outcome": "held-then-failed-by-probe"
+    },
+    {
+      "case": "PSD-010",
+      "filePath": "psd010.txt",
+      "content": "a different later edit",
+      "mode": "pass",
+      "at": 1792085629753,
+      "outcome": "passed"
+    },
+    {
+      "case": "PSD-011",
+      "filePath": "psd011.txt",
+      "content": "saved checkpoint",
+      "mode": "holdfail",
+      "at": 1792085629949,
+      "heldAt": 1792085629949,
+      "outcome": "held-then-failed-by-probe"
+    }
+  ],
+  "browserErrors": [],
+  "expectedFailedSaveConsoleErrors": [
+    {
+      "kind": "console",
+      "message": "Core file write operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=bbd441a9:59:28)\n    at http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=bbd441a9:129:47\n    at both (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:35:31)\n    at http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:24:24)\n    at Object.next (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:37:49)\n    at notifySubscription (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:132:18)\n    at onNotify (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:176:3)\n    at SubscriptionObserver.next (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:225:5)",
+      "case": "PSD-006"
+    },
+    {
+      "kind": "console",
+      "message": "Save operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=bbd441a9:59:28)\n    at http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=bbd441a9:129:47\n    at both (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:35:31)\n    at http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:24:24)\n    at Object.next (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:37:49)\n    at notifySubscription (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:132:18)\n    at onNotify (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:176:3)\n    at SubscriptionObserver.next (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:225:5)",
+      "case": "PSD-006"
+    },
+    {
+      "kind": "console",
+      "message": "Core file write operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=bbd441a9:59:28)\n    at http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=bbd441a9:129:47\n    at both (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:35:31)\n    at http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:24:24)\n    at Object.next (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:37:49)\n    at notifySubscription (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:132:18)\n    at onNotify (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:176:3)\n    at SubscriptionObserver.next (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:225:5)",
+      "case": "PSD-007"
+    },
+    {
+      "kind": "console",
+      "message": "Save operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=bbd441a9:59:28)\n    at http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=bbd441a9:129:47\n    at both (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:35:31)\n    at http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:24:24)\n    at Object.next (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:37:49)\n    at notifySubscription (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:132:18)\n    at onNotify (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:176:3)\n    at SubscriptionObserver.next (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:225:5)",
+      "case": "PSD-007"
+    },
+    {
+      "kind": "console",
+      "message": "Core file write operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=bbd441a9:59:28)\n    at http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=bbd441a9:129:47\n    at both (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:35:31)\n    at http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:24:24)\n    at Object.next (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:37:49)\n    at notifySubscription (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:132:18)\n    at onNotify (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:176:3)\n    at SubscriptionObserver.next (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:225:5)",
+      "case": "PSD-010"
+    },
+    {
+      "kind": "console",
+      "message": "Save operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=bbd441a9:59:28)\n    at http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=bbd441a9:129:47\n    at both (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:35:31)\n    at http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:24:24)\n    at Object.next (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=bbd441a9:37:49)\n    at notifySubscription (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:132:18)\n    at onNotify (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:176:3)\n    at SubscriptionObserver.next (http://127.0.0.1:58116/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=bbd441a9:225:5)",
+      "case": "PSD-010"
+    }
+  ],
+  "monacoCancellations": [
+    {
+      "kind": "pageerror",
+      "message": "Canceled",
+      "case": "PSD-002",
+      "at": 1792085622490
+    },
+    {
+      "kind": "pageerror",
+      "message": "Canceled",
+      "case": "PSD-008",
+      "at": 1792085627789
+    }
+  ],
+  "cleanup": {
+    "browserClosed": true,
+    "processes": [
+      {
+        "pid": 34400,
+        "exitCode": 0,
+        "signal": null,
+        "liveGroupMembers": 0
+      },
+      {
+        "pid": 34367,
+        "exitCode": 0,
+        "signal": null,
+        "liveGroupMembers": 0
+      }
+    ],
+    "fixturePageRemoved": true,
+    "ownedRootRemoved": true,
+    "baseClosed": true,
+    "frontClosed": true
+  },
+  "gitHead": "50f25f68d9cf80c0cdb1d0bf07f0332058e58bc8",
+  "gitStatusWeb": "M autobyteus-web/package.json\n M autobyteus-web/stores/fileExplorerContentActions.ts\n?? autobyteus-web/tests/e2e/file-explorer-pending-save-draft-probe.mjs\n?? autobyteus-web/tests/e2e/fixtures/file-explorer-pending-save-draft.page.vue",
+  "endpoints": {
+    "base": "http://127.0.0.1:58115",
+    "front": "http://127.0.0.1:58116"
+  },
+  "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-FlqbA2",
+  "workspaceId": "agent_ws_e2e9091f15d09b7ad00a0b1c2a7920d9c2176e8125bbadbb115586ac4cce7d32",
+  "browser": "155.0.8059.41",
+  "warmupErrors": [],
+  "finishedAt": "2026-10-15T17:33:56.315Z"
+}

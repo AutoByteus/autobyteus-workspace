@@ -129,13 +129,15 @@ visible without hiding the draft.
 
 Tab/workspace selection, reopening an already-open path, edit/preview switching,
 and Files/Zen remounts retain the draft. Previews (including read-only Event
-Monitor previews) use committed content, not unsubmitted edits. Successful Save
-clears a matching submitted draft; failed Save retains pending work, and a later
-differing draft is retained. A known pending-Save exception remains: entering text
-equal to the old committed snapshot while Save is in flight can clear the draft,
-so completion may lose that later edit. This exception is tracked separately;
-do not treat the peer-refresh correction as a guarantee for every Save race.
-Returning the editor to the current committed text otherwise makes it clean again. Explicit tab close retains its existing discard behavior;
+Monitor previews) use committed content, not unsubmitted edits. Input made
+while a Save is pending is always kept as a draft, including text equal to the
+pre-save committed content and empty text, because that committed content is about
+to be replaced. When the Save settles (success or failure), the draft is cleared
+only if it equals the committed content then in effect (the saved text after
+success, the unchanged text after failure). The editor therefore keeps the later
+input, shows the correct unsaved state, and the next Save submits it. A failed Save
+keeps differing input visible and Save-able. With no Save pending, returning the
+editor to the current committed text makes it clean again. Explicit tab close retains its existing discard behavior;
 reopening a closed file fetches committed content. Drafts are not persisted across
 application/page restarts. This does not add remote notifications, automatic
 merge, competing-write arbitration, or an outage-isolation guarantee.

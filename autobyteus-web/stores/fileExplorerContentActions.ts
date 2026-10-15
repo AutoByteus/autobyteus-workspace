@@ -268,10 +268,13 @@ export const fileExplorerContentActions = {
   },
 
   updateEditorDraft(this: any, workspaceId: string, filePath: string, content: string) {
-    const file = this._getWorkspaceState(workspaceId)?.openFiles
-      .find((entry: OpenFileState) => entry.path === filePath)
+    const wsState = this._getWorkspaceState(workspaceId)
+    const file = wsState?.openFiles.find((entry: OpenFileState) => entry.path === filePath)
     if (!file || file.type !== 'Text' || file.mode !== 'edit' || file.accessIntent?.readOnly) return
-    file.editorDraft = content === file.content ? undefined : { content }
+    // While a Save is pending, committed content is about to change, so input that matches
+    // it now is not clean. The draft is settled against the resulting content when Save ends.
+    const savePending = !!wsState.saveContentLoading[filePath]
+    file.editorDraft = !savePending && content === file.content ? undefined : { content }
   },
 
   invalidateFileContent(this: any, filePath: string, workspaceId: string) {
@@ -329,14 +332,15 @@ export const fileExplorerContentActions = {
     wsState.saveContentError[filePath] = null
     wsState.saveContentLoading[filePath] = true
     try {
-      const file = wsState.openFiles.find((entry: OpenFileState) => entry.path === filePath)
       await this._writeFileCore(workspaceId, filePath, content)
-      // A later keystroke while Save is in flight still belongs to the user.
-      if (file?.editorDraft?.content === content) file.editorDraft = undefined
     } catch (error) {
       wsState.saveContentError[filePath] = error instanceof Error ? error.message : 'An unknown error occurred'
       throw error
     } finally {
+      // Later input made while Save was in flight belongs to the user: keep it unless it
+      // equals the committed content now in effect (saved bytes on success, unchanged on failure).
+      const file = wsState.openFiles.find((entry: OpenFileState) => entry.path === filePath)
+      if (file?.editorDraft && file.editorDraft.content === file.content) file.editorDraft = undefined
       wsState.saveContentLoading[filePath] = false
     }
   },
