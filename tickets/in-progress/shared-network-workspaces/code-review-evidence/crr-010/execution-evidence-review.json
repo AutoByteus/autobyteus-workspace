@@ -1,0 +1,155 @@
+{
+  "result": "Fail confirmed / prior F003 scoped resolution accepted",
+  "evidenceType": "Independent audit of inherited real execution, not reviewer runtime rerun",
+  "trials": [
+    {
+      "file": "visibility-d3f108eedd3f48ebb44f9b86c3155066.bin",
+      "size": 1024,
+      "observations": 122,
+      "firstFreshSeconds": {
+        "native": 61.149,
+        "http": 61.149
+      },
+      "firstStaleBeyondFiveSeconds": {
+        "seconds": 5.053,
+        "nativeSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9",
+        "httpSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9"
+      },
+      "lastStale": {
+        "seconds": 60.644,
+        "nativeSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9",
+        "httpSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9"
+      },
+      "firstFresh": {
+        "seconds": 61.149,
+        "nativeSHA": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7",
+        "httpSHA": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7"
+      },
+      "sourceMtimeNsBefore": 1792052354148877476,
+      "sourceMtimeNsAfter": 1792052354188377912,
+      "sourceFileInodeUnchanged": true,
+      "sourceSHAAfter": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7",
+      "result": "Fail"
+    },
+    {
+      "file": "visibility-930e44580b2c41aeaf35874512eec797.bin",
+      "size": 1024,
+      "observations": 121,
+      "firstFreshSeconds": {
+        "native": 60.975,
+        "http": 60.975
+      },
+      "firstStaleBeyondFiveSeconds": {
+        "seconds": 5.051,
+        "nativeSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9",
+        "httpSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9"
+      },
+      "lastStale": {
+        "seconds": 60.467,
+        "nativeSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9",
+        "httpSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9"
+      },
+      "firstFresh": {
+        "seconds": 60.975,
+        "nativeSHA": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7",
+        "httpSHA": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7"
+      },
+      "sourceMtimeNsBefore": 1792052415349779814,
+      "sourceMtimeNsAfter": 1792052415378968604,
+      "sourceFileInodeUnchanged": true,
+      "sourceSHAAfter": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7",
+      "result": "Fail"
+    }
+  ],
+  "nativeConfig": "NFS_CORE_PARAM {\n Protocols = 4;\n NFS_Port = 2049;\n Enable_NLM = false;\n Enable_RQUOTA = false;\n Enable_UDP = false;\n}\nNFSv4 {\n Minor_Versions = 1;\n RecoveryBackend = fs;\n RecoveryRoot = \"/var/lib/autobyteus-nfs/ganesha/recovery\";\n}\nEXPORT {\n Export_Id = 1;\n Path = \"/home/admin/ab-nfs-api004-linux-9591ce1a-native-source\";\n Pseudo = \"/autobyteus/982e2025-961c-4b25-ab83-24ff06debcfa\";\n Protocols = 4;\n Transports = TCP;\n SecType = sys;\n Access_Type = None;\n Squash = All_Squash;\n Anonymous_uid = 1000;\n Anonymous_gid = 109;\n CLIENT {\n  Clients = 192.168.64.4, 192.168.64.2;\n  Access_Type = RW;\n  Squash = All_Squash;\n }\n FSAL { Name = VFS; }\n}",
+  "nativeCLIAndPackages": "0036ccef0bbb2a2510064f2e882b692687a2288eb25563d89f9c4ac9150c860c  /usr/libexec/autobyteus-nfs/autobyteus-nfs\nnfs-ganesha 4.3-8ubuntu1+autobyteus1 arm64\nnfs-ganesha-vfs 4.3-8ubuntu1+autobyteus1 arm64\n700:0:0:/var/lib/autobyteus-nfs\n600:0:0:/var/lib/autobyteus-nfs/attachment.json\nactive\nactive\nrw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,fatal_neterrors=none,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=192.168.64.4,local_lock=none,addr=192.168.64.4\n",
+  "nodeID": "c40d2221e0c821ea1a2c44cc9eba5c0fdf3a67179adeca98046ba7687a62a487",
+  "nodeImage": "sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb",
+  "source": "/home/admin/ab-nfs-api004-linux-9591ce1a-native-source",
+  "markers": {
+    "storageId": "982e2025-961c-4b25-ab83-24ff06debcfa"
+  },
+  "priorFailureClosure": {
+    "two-reboots-result.json": {
+      "sha256": "01a9c3357cb380f6389698a4fa6f49468428522f337d3bc04c0d15ae4c643ff1",
+      "cases": [
+        "ordinary whole-host reboot 1 automatic actual readiness",
+        "reboot 1 same ID/image/config/private/source/mounted API preservation",
+        "ordinary whole-host reboot 2 automatic actual readiness",
+        "reboot 2 same ID/image/config/private/source/mounted API preservation"
+      ]
+    },
+    "normal-stop-result.json": {
+      "sha256": "89da65a101b989c72df3ab38e028aadbc6588d5414acd57274022e4363ddc472",
+      "cases": [
+        "ordinary actual healthy state before Stop",
+        "current public launcher Stop on successfully running selected node",
+        "ordinary Stop state and read-only status",
+        "normal Stop preserved across service ticks",
+        "confirmed public reconnect does not override normal Stop",
+        "normal Stop preserved after confirmed reconnect",
+        "normal unless-stopped Stop remains stopped after whole-host reboot and ticks"
+      ]
+    },
+    "policy-veto-result.json": {
+      "sha256": "16af735d5de2fb376d79efd929a0ba9ac37ab1aeb118b0eecc4b4867d176ae0c",
+      "cases": [
+        "control only: hold owned attachment completion job for serial failed-start inspection",
+        "explicit user Start of normally stopped node to prepare distinct policy control",
+        "control starts from genuinely running healthy selected node",
+        "ordinary reboot with attachment job held for serial operator inspection",
+        "raw Stop on already-failed node is a Docker no-op",
+        "current launcher reports no-op/policy guidance, not cancellation promise",
+        "operator explicitly selects current restart=no durable veto",
+        "restore original owned attachment service with existing configuration",
+        "policy=no suppresses automatic completion while host becomes ready",
+        "confirmed public reconnect cannot override current policy=no",
+        "policy veto exact stopped-state preservation after explicit reconnect",
+        "ordinary reboot after durable veto with original attachment job enabled",
+        "policy=no remains veto across reboot and service ticks"
+      ]
+    },
+    "node-upgrade-result.json": {
+      "sha256": "73861ce563baac843c72d915f44cd84487c8e91da96f00fb0cb38ee8b415929d",
+      "cases": [
+        "explicit operator restores original unless-stopped policy and starts node for restart regression",
+        "restored explicit running state actual API ready",
+        "ordinary Docker node restart",
+        "ordinary node restart readiness",
+        "ordinary node restart exact original selected state preservation",
+        "test-only registry and isolated HOME current helper prerequisites",
+        "actual public launcher upgrade --all against same immutable current worktree image",
+        "explicitly stop unselected fixture again after requested upgrade --all",
+        "current replacement admitted by existing selected node reference",
+        "new current container private bytes mounted APIs source and exact state baseline",
+        "ordinary reboot resolves current replacement rather than old recreation receipt ID",
+        "replacement automatic boot same current ID private and mounted data preservation"
+      ]
+    },
+    "drained-detach-confirm-result.json": {
+      "sha256": "1f81dc904a7eb958c8171524827268b1ef2bf2e9a4b7df18b24941c7a3add908",
+      "cases": [
+        "drained detach current config private/source preservation and exact attempt removal"
+      ]
+    }
+  },
+  "boots": [
+    {
+      "oldBoot": "9a636284-fbe5-4dcd-b94f-a7793ef5a44a",
+      "newBoot": "00af6ecc-edd1-47e9-931a-c006e0acef2e",
+      "secondsToObservedReady": 60.879
+    },
+    {
+      "oldBoot": "00af6ecc-edd1-47e9-931a-c006e0acef2e",
+      "newBoot": "205e3fda-ddb8-4eeb-a3b2-ccd41c9fa8a0",
+      "secondsToObservedReady": 59.991
+    }
+  ],
+  "corrections": "API004 evidence-identity-corrections.json governs inherited helper envelopes; no fresh package absence credited.",
+  "limits": [
+    "Freshness timestamps measured after both serial reads, ~0.5s sampling, not exact instant per reader.",
+    "No packet/cache instrumentation or fix experiment; exact sole cause not established.",
+    "Native Linux storage reproduced. Shared config path is not Docker STORAGE reproduction.",
+    "No real-provider/physical/independent-peer proof inferred."
+  ]
+}

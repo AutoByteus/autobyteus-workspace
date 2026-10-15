@@ -471,3 +471,70 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   `api_e2e_engineer_4b3516b0eb7d448586471bee29383f50`; accepted=true/DELIVERED,
   774 cumulative references. Only the most-specific primary Pass recipient
   notified; no duplicate informational forwarding or polling.
+
+## CRR-010 — API004 healthy committed-file visibility failure-origin review
+
+- Entry **API/E2E Failure-Origin Review**, Review Scope **N/A**, round10;
+  prior CRR009 source Pass100/100; latest canonical **Fail / Design Impact**.
+  No repeated full source audit or new aggregate score. Large/High/Reviewed
+  retained; origin/personal, personal work/no delegation.
+- Input b5167131bfb4e93fc2a8d8216e83ac791d207cc7; API evidence41af4e7f82...;
+  source d318bd9db935affdf16d141ef4e88a6c0e4939b5 unchanged since review.
+  ApprovedSR018 / ReadySR021 / ARCH005 / IR007 / API-REV004;
+  Delivery N/A, Product-owned supplement N/A.
+
+### Prior finding resolution
+
+| Finding | Prior disposition | Current disposition / verification |
+| --- | --- | --- |
+| CR005 / API-F003 | Source/design resolved, independent reboot proof pending | **Resolved at API004 tested Linux arm64 Docker-storage/managed-client scope**: fresh public selected setup + two ordinary whole-host boots without manual Start/reconnect; current sameID/image/config/ports/aliases/private/source/mountedAPI, distinct bootIDs; separate normalStop/policyNo/upgrade-currentref/draineddetach controls audited. Not all-platform qualification |
+| CR003 / API-F002 | API003 fresh public nativeUbuntu scope resolved | Retained; API004 installed identity/regression, not fresh absence proof (misquoted original guard explicitly excluded) |
+| CR002 / API-F001 | Earlier scoped nativeMac cold-create resolution | Retained; API004 adds nativeMac ordinaryboot/reconnect/detach, not full client matrix |
+| CR001 / CR004 | Modes/release-gate scoped source resolutions | Retained; no changed production or contrary evidence |
+| FUP001 | Historical broad non-green in PM custody | Unchanged, no duplicate follow-up or deduction |
+
+- **CAND010 Promote / Supported Normal / Reachable -> CR006 P1**. Independent
+  SCN002/BEH002–003/REQ004/AC003/QR001: original source writer syncs/closes<=1MiB;
+  another participant's fresh open must see exact bytes<=5s. No unsupported
+  concurrency, heldFD/outage or new behavior. In-scope healthy coherence fails:
+  two unique1024byte files,122/121 observations, native+actualmanagedHTTP old at
+ 5.053/5.051s through60.644/60.467s, firstnew61.149/60.975s. Exactsourcehash,
+  mtimeNs change/sameinode/UUID/liveconfig/currentbinary confirmed from raw receipts.
+- Origin storage/data-plane integration, not renderer-only/HTTP-only/testerror,
+  stale build, API-F003 recurrence or D001. `ganesha.go:38–54` omits server expiry;
+  clientMountOptions uses actimeo1. Exact retained source default60/export
+  inheritance/MDCACHE-validity/returncached path independently inspected. Strong
+  causal explanation, **not sole-cause instrumentation or a validated setting**.
+  CAND010 repair-value sufficiency held as hypothesis, not required machinery.
+- **Design Impact**: reviewed DS002 policy specifies client cache bounds without
+  resolving server freshness for approved original-source writes; design's
+  normal-connected-incompatibility escalation applies. Solution Designer to
+  investigate/minimally recover backend/client cache and owned-config lifecycle
+  contract while preserving5s/reference/source/private/Stop guarantees. Bounded
+  config correction may suffice; no mandated engine replacement, proxy, retry,
+  cache-drop, outageworker or migration framework. Requirements remain clear.
+- Earlier integration review gap: should have reconciled selected server60s
+  default and direct-source write path with AC003 instead of treating client1s
+  as sufficient. Only Runtime Correctness/API-readiness rationale updated;
+  exact61s requires runtime evidence; unaffected CRR009 recovery review retained.
+- Personal evidence audit:992incomingrefs present, all15IR005/IR007 retained
+  files hash/size unchanged, production/durable-test delta absent,243rawrows and
+  prior reboot controls audited,6exact source members hashed/excerpted. Official
+  versioned primary contracts consulted. No new liveVM/root/mount/daemon/app/
+  provider/physical/network/enginebuild; no source/testfix. Read-only exploratory
+  wrong archive/REST paths and truncated output corrected, limits retained.
+- Canonical code-review-report.md authoritative; E10 input-audit.json,
+  execution-evidence-review.json, engine-source-audit.json, primary-contracts.md,
+  checks-and-limits.md, audit runner/log, final-checks.json and package-index.json
+  preserve complete cumulative chain. CRR001–009 prior bytes retained as prefix.
+  API004 Fail57.14%/broaderRequired remains independent; successful REST test
+  review still awaits passedpackage.
+- Next after accepted correction: source review, independent API-F004 FIRST,
+  then remaining full approvedmatrix/current native tools/assets/peerclose/
+  restore/Standalone-Team-Org/healthy completedpreviews/physical/docs/user/
+  finalization/authorizedrelease. OnlyMacDockerSTORAGEdeferred; no environment
+  waiver/permission inferred. D001 deferredNOTfixed/IMP-D001/AGYlocal/source
+  UpdateRemove/FUP001/peerNAT remain unchanged. No merge/push/tag/release/TaskDone.
+- Routing: fresh rules, single most-specific Design Impact recipient only;
+  full992-reference upstream chain plus current reviewer evidence. Confirmed
+  delivery recorded separately after the send succeeds.
