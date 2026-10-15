@@ -38,7 +38,7 @@ describe("reactivation of a closed assignment by its assigner (DS-L1)", () => {
   });
 
   it.each([
-    ["the Task is still DONE (AC-015)", "manager", "worker", false, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("Move it to TODO or IN_PROGRESS with create_or_update_task first") }],
+    ["the Task is still DONE (AC-015)", "manager", "worker", false, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("The run that assigned it can reopen the Task (move it to TODO or IN_PROGRESS)") }],
     ["another sender (AC-006)", "intruder", "worker", true, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("Only the run that assigned it") }],
     ["a Team member that is not the ingress (AC-007)", "manager", "member", true, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("message the copy's agent run ID (for a Team copy, its coordinator's)") }],
     ["a helper of the assignment (AC-005)", "manager", "helper", true, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("Only the run that assigned it") }],

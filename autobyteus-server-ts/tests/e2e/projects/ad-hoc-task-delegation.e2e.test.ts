@@ -18,7 +18,7 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 // is scripted: a message containing `CALL_TOOL:{...}` makes it call that actual agent tool and reply
 // `CALLED:<tool result>`. No provider inference. Covers mention-delegation-dismissal AC-001..AC-013 and AC-015
 // at the server/wire boundary for the standalone Agent, Agent Team and Agent Org roots. The host agents have
-// no Project tool selected, so every create_or_update_task call also proves its automatic exposure (AC-009).
+// select only the task tools create_task and update_task (no task tool is automatic); every call below uses them through the scoped MCP session.
 // Rendering, real runtimes and a real backend restart are covered by the cross-scope mentions live probe.
 const cli = process.env.ANTIGRAVITY_CLI_COMMAND ?? "";
 const enabled = process.env.RUN_AGY_FAILURE_E2E === "1"
@@ -100,8 +100,8 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     llmConfig: null, autoExecuteTools: true, runtimeKind: "antigravity_cli" });
   const agentDefinition = async (name: string) => (await graphql(
     `mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
-    // No Project tool is selected: create_or_update_task must arrive automatically with delegate_task (AC-009).
-    { input: { name, role: "assistant", description: `${name} (ad-hoc Task E2E)`, instructions: "Follow the user's request.", toolNames: [] } },
+    // Only the task tools are selected; delegate_task and send_message_to arrive automatically, task tools never do.
+    { input: { name, role: "assistant", description: `${name} (ad-hoc Task E2E)`, instructions: "Follow the user's request.", toolNames: ["create_task", "update_task"] } },
   )).createAgentDefinition.id as string;
   const connect = async (route: string, id: string, ready: (frames: Frame[]) => boolean) => {
     const socket = new WebSocket(`ws://${url.host}/ws/${route}/${id}`);
@@ -342,16 +342,16 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect(rejectedDelegation).not.toMatch(AD_HOC_ID);
     expect(await adHocTaskIds()).toEqual([...adHocBefore, adHocTaskId!].sort());
 
-    // 3. Strict create_or_update_task modes through the real MCP tool (AC-004..006).
-    const rejected = await managerCalls(callTool("create_or_update_task", { project_id: projectId, task_id: adHocTaskId, status: "DONE" }));
+    // 3. Strict create_task / update_task modes through the real MCP tool (AC-004..006).
+    const rejected = await managerCalls(callTool("update_task", { project_id: projectId, task_id: adHocTaskId, status: "DONE" }));
     expect(rejected).toContain("PROJECT_TOOL_ARGUMENT_INVALID");
     expect((await readAdHocTask(adHocTaskId!)).status).not.toBe("DONE");
-    const unknown = await managerCalls(callTool("create_or_update_task", { task_id: `ad_hoc_task_${randomUUID()}`, status: "DONE" }));
+    const unknown = await managerCalls(callTool("update_task", { task_id: `ad_hoc_task_${randomUUID()}`, status: "DONE" }));
     expect(unknown).toContain("TASK_NOT_FOUND");
-    const createWithoutProject = await managerCalls(callTool("create_or_update_task", { description: "No Project." }));
+    const createWithoutProject = await managerCalls(callTool("create_task", { description: "No Project." }));
     expect(createWithoutProject).toContain("PROJECT_TOOL_ARGUMENT_INVALID");
     expect(await adHocTaskIds()).toEqual([...adHocBefore, adHocTaskId!].sort());
-    const patched = await managerCalls(callTool("create_or_update_task", { task_id: projectTaskId, description: "Patched by id." }));
+    const patched = await managerCalls(callTool("update_task", { task_id: projectTaskId, description: "Patched by id." }));
     expect(patched).toContain(projectTaskId);
     expect((await projectTasks(projectId)).find((task) => task.taskId === projectTaskId)?.description).toBe("Patched by id.");
 
@@ -362,7 +362,7 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
 
     // 5. DONE by task_id alone (AC-004, AC-007): one live closure of exactly the copy and its sub-work, status DONE.
     const doneFrom = view.frames.length;
-    const done = await managerCalls(callTool("create_or_update_task", { task_id: adHocTaskId, status: "DONE" }));
+    const done = await managerCalls(callTool("update_task", { task_id: adHocTaskId, status: "DONE" }));
     expect(done).toContain(adHocTaskId!);
     expect(done).toMatch(/\\?"projectId\\?":null/);
     await until(() => view.frames.slice(doneFrom).some(closedFrame), "live task_executions_closed", 60_000);
@@ -376,7 +376,7 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect(calledResults(await conversationOf(copy.agentRunId!, copy.address)).length).toBeGreaterThanOrEqual(1);
     // Repeating DONE re-requests the stop and changes nothing else.
     const redoFrom = view.frames.length;
-    await managerCalls(callTool("create_or_update_task", { task_id: adHocTaskId, status: "DONE" }));
+    await managerCalls(callTool("update_task", { task_id: adHocTaskId, status: "DONE" }));
     await until(() => view.frames.slice(redoFrom).some(closedFrame), "repeated DONE closure", 60_000);
     expect(keys(closedRefsOf(view.frames.slice(redoFrom).find(closedFrame)!))).toEqual(keys(adHocRefs));
     expect(await adHocTaskIds()).toEqual([...adHocBefore, adHocTaskId!].sort());
@@ -428,11 +428,11 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
         pendingTaskId = AD_HOC_ID.exec(pendingDelegation)?.[0];
         expect(pendingTaskId, pendingDelegation).toBeTruthy();
         const pendingFrom = view.frames.length;
-        const pendingDone = await managerCalls(callTool("create_or_update_task", { task_id: pendingTaskId, status: "DONE" }));
+        const pendingDone = await managerCalls(callTool("update_task", { task_id: pendingTaskId, status: "DONE" }));
         expect(pendingDone).not.toContain("PROJECTS_MIGRATION_PENDING");
         await until(() => view.frames.slice(pendingFrom).some(closedFrame), "closure while migration is pending", 60_000);
         expect((await readAdHocTask(pendingTaskId!)).status).toBe("DONE");
-        const projectDuringPending = await managerCalls(callTool("create_or_update_task", { task_id: projectTaskId, status: "DONE" }));
+        const projectDuringPending = await managerCalls(callTool("update_task", { task_id: projectTaskId, status: "DONE" }));
         expect(projectDuringPending).toMatch(/PROJECTS_MIGRATION_PENDING|Projects data is being upgraded/);
       } finally {
         await fs.rm(released, { force: true });

@@ -8,7 +8,7 @@ its collaborators, their task copies, their messages, the run's lifecycle (start
 crash recovery, Stop, delete and archive) and the collaboration package. A user in a standalone
 run can type `@` to name a shared Agent or Agent Team; the message tells the focused agent to
 `delegate_task` to its address, and nothing is added at send time. A delegated copy belongs to a
-Task with no Project that the agent can mark DONE (`create_or_update_task`), which stops and hides
+Task with no Project that an agent with `update_task` can mark DONE, which stops and hides
 it. The root also hosts one instance per collaborator that an agent brings in by its first
 `send_message_to` to a catalog address (and the collaborators of stored runs); `delegate_task` to a
 collaborator address starts an extra copy. The host is still streamed on `/ws/agent/:runId`.
@@ -21,7 +21,7 @@ Collaborators, admission and the candidate policy are shared by all roots; see
 A standalone run has a root unless it is a server helper run (`launchPurpose: "server_helper"`,
 such as the skill improver) or an application-owned run (`applicationExecutionContext`). This one
 rule (`isCollaborationEligibleStandaloneRun`) decides both the root and the host's member context.
-An eligible host always has `send_message_to`, `delegate_task` and `create_or_update_task` from
+An eligible host always has `send_message_to` and `delegate_task` from
 its first turn and a short
 standalone collaboration section in its prompt
 (`agent-execution/prompt/standalone-collaboration-instruction.ts`, including the shared "Work

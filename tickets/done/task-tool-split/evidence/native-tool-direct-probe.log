@@ -1,0 +1,16 @@
+AgentFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.Z8aKbaeVSW
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+registered: ["list_projects","list_project_tasks","create_or_update_project","create_task","update_task"]
+old name present: false
+project {"project":{"projectId":"project_693f6102-7af3-4455-9d51-23c53cba774f","name":"ttsplit probe","description":"","workspaces":[]}}
+create_task {"task":{"projectId":"project_693f6102-7af3-4455-9d51-23c53cba774f","taskId":"project_task_30a35491-e8a4-4cd8-b1fd-aee074443f5a","status":"TODO"}}
+update_task DONE {"task":{"projectId":"project_693f6102-7af3-4455-9d51-23c53cba774f","taskId":"project_task_30a35491-e8a4-4cd8-b1fd-aee074443f5a","status":"DONE"}}
+create_task missing project_id {"thrown":"Error: {\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"project_id must be a non-empty string.\"}}"}
+update_task missing task_id {"thrown":"Error: {\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"task_id must be a non-empty string.\"}}"}

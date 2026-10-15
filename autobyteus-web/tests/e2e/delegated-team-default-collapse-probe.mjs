@@ -140,7 +140,7 @@ const seed = async () => {
   const names = ['Solution Designer', 'Architecture Reviewer', 'Implementation Engineer', 'Code Reviewer', 'API E2E Engineer', 'Delivery Engineer'];
   const ids = [];
   for (const name of names) ids.push(await agent(name, []));
-  const managerId = await agent('Project Task Manager Probe', ['list_projects', 'list_project_tasks', 'create_or_update_task']);
+  const managerId = await agent('Project Task Manager Probe', ['list_projects', 'list_project_tasks', 'create_task', 'update_task']);
   const createTeam = async (name) => (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}', { input: {
     name, description: name, instructions: 'Do the assigned task.', coordinatorMemberName: 'solution_designer',
     nodes: names.map((n, i) => ({ memberName: segment(n), ref: ids[i], refScope: 'SHARED' })) } })).createAgentTeamDefinition.id;
@@ -438,7 +438,7 @@ try {
         return state.target === member && ['idle', 'running'].includes(state.children?.find(c => c.id === member)?.status) && text.includes('Live exact-copy continuity marker');
       }, 60000);
       const liveMember = await storeState(page);
-      send(callTool('create_or_update_task', { task_id: task.taskId, status: 'DONE' }));
+      send(callTool('update_task', { task_id: task.taskId, status: 'DONE' }));
       await until('closed Task absent and host target restored', async () => (await teamsOf(page).count()) === 8 && (await storeState(page)).child === null, 60000);
       assert((await tasksFor(setup.projectId)).find(t => t.taskId === task.taskId).status === 'DONE', 'Real Task not closed');
       assert(frames.some(f => f.kind === 'task_execution_started') && frames.some(f => f.kind === 'collaborator_added') && frames.some(f => f.kind === 'task_executions_closed'), 'Missing production WS lifecycle events', frames);

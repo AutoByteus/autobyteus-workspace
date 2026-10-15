@@ -1,0 +1,5 @@
+typecheck exit 0
+unit exit 0
+integ-prepare exit 0
+integration exit 1
+presentation-contracts exit 0

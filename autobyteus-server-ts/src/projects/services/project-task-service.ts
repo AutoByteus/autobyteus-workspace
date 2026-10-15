@@ -369,7 +369,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
       }
     }
     throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED",
-      `This Task is ${task.status}. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.`);
+      `This Task is ${task.status}. The run that assigned it can reopen the Task (move it to TODO or IN_PROGRESS) and then message this run ID again.`);
   }
   /** A Task's metadata (with or without a Project); null when it (or its Project) was deleted. */
   private async readTaskAt(location: TaskLocation): Promise<{ status: ProjectTaskStatus } | null> {

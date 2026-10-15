@@ -43,9 +43,10 @@ It trims and deduplicates configured `AgentDefinition.toolNames`. For every
 run with a `MemberExecutionContext`, `automaticCollaborationToolNames(context)`
 then unions:
 
-- `send_message_to`, `delegate_task` and `create_or_update_task` for every
-  member context (`create_or_update_task` marks DONE the Task a description-only
-  delegation created; see [Projects](./projects.md#tasks-with-no-project-ad-hoc));
+- `send_message_to` and `delegate_task` for every member context (no task tool
+  is automatic: an agent that should close the Task a description-only delegation
+  created selects `update_task`; see
+  [Projects](./projects.md#tasks-with-no-project-ad-hoc));
 - `get_handoff_rules` only when the context is Team-scoped (`teamScoped: true`:
   Team and Org members, and members of a task Team in any root).
 
@@ -54,7 +55,7 @@ user-facing standalone run that can host collaborators (not a server helper
 run with `launchPurpose: "server_helper"`, not application-owned) gets a host
 member context from its Agent root (see
 [Standalone Agent Run Root](./standalone_agent_run_root.md)), so it has
-`send_message_to`, `delegate_task` and `create_or_update_task` from its first
+`send_message_to` and `delegate_task` from its first
 turn. Every runtime reads the same list (AutoByteus through `requestedToolNames`,
 Codex and Claude through `enabledProjectTaskToolNames` on the Agent Tools MCP
 surface). A task Agent directly
@@ -326,7 +327,7 @@ the creation call; the same packet must not be resent through
 `send_message_to`. The accepted result names the copy (see above), plus
 `task_id` when a description-only delegation from an agent that is not working
 on a Task created a Task with no Project for the copy; the caller marks it DONE
-with `create_or_update_task({task_id, status: "DONE"})` when the work is
+with `update_task({task_id, status: "DONE"})` (only if the agent selected `update_task`) when the work is
 finished, which stops the copy and hides it. After delegation, parent and child communicate only through
 `send_message_to` with run IDs, in both directions. A child that stays quiet is
 shut down after the grace period, but not while it has a running background

@@ -7,7 +7,9 @@ import {
 
 const productTeam = { name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" };
 const reviewer = { name: "Code Reviewer (v2)", kind: "agent", address: "/code_reviewer", presence: "not_in_run" };
-const GUIDANCE = "Delegate the work with delegate_task to its address; it returns a run ID to follow up with. If it also returns a task_id, call create_or_update_task with that task_id and status DONE when the work is finished; this stops it and removes it from the run.";
+const GUIDANCE = "Delegate the work with delegate_task to its address; it returns a run ID to follow up with.";
+// The delegate sentence composed until the tool-neutral release (frozen copy; never composed now).
+const PREVIOUS_RELEASE_GUIDANCE = `${GUIDANCE} If it also returns a task_id, call create_or_update_task with that task_id and status DONE when the work is finished; this stops it and removes it from the run.`;
 const IN_RUN_GUIDANCE = "One already in this run can instead be messaged directly with send_message_to at its address, or use delegate_task for a separate copy.";
 
 test("composes the note after the user's text, steering to delegate_task, and parses it back", () => {
@@ -90,14 +92,39 @@ test("a note whose guidance does not match its entries is not parsed", () => {
   assert.equal(collaboratorMentionNote.parse(notInRunWithInRunGuidance), null);
 });
 
-test("notes composed by the previous release still parse (in-run and not-in-run)", () => {
-  const previousInRun = `please\n\n[Mentioned collaborators]\n- Agent Package Creator (Agent) at /agent_package_creator, already in this run\n- Product Team (Agent Team) at /product_team\n${GUIDANCE} ${IN_RUN_GUIDANCE}`;
-  assert.deepEqual(collaboratorMentionNote.parse(previousInRun)?.collaborators.map((entry) => entry.presence), ["in_run", "not_in_run"]);
-  const previous = `please\n\n[Mentioned collaborators]\n- Product Team (Agent Team) at /product_team\n${GUIDANCE}`;
-  assert.deepEqual(collaboratorMentionNote.parse(previous), { text: "please", collaborators: [productTeam] });
+test("the composed note names no task tool and never tells the agent to close a task_id (AC-005)", () => {
+  const packageCreator = { name: "Agent Package Creator", kind: "agent", address: "/agent_package_creator", presence: "in_run" };
+  const content = collaboratorMentionNote.compose("x", [productTeam, packageCreator, projectTaskManager]);
+  assert.ok(!/create_or_update_task|update_task|create_task|task_id|DONE/.test(content));
 });
 
-test("a note with no in-run mention is byte-identical to the previous release (AC-004)", () => {
+test("notes composed by the previous release parse in every combination (AC-008)", () => {
+  const packageCreator = { name: "Agent Package Creator", kind: "agent", address: "/agent_package_creator", presence: "in_run" };
+  const entry = (c) => `- ${c.name} (${c.kind === "agent" ? "Agent" : "Agent Team"}) at ${c.address}${c.presence === "in_run" ? ", already in this run" : c.presence === "run_agent" ? ", the run's own agent" : ""}`;
+  const combinations = [
+    [productTeam],
+    [packageCreator, productTeam],
+    [productTeam, projectTaskManager],
+    [productTeam, projectTaskManager, packageCreator],
+    [projectTaskManager],
+  ];
+  for (const collaborators of combinations) {
+    const sentences = [
+      ...(collaborators.some((c) => c.presence !== "run_agent") ? [PREVIOUS_RELEASE_GUIDANCE] : []),
+      ...(collaborators.some((c) => c.presence === "in_run") ? [IN_RUN_GUIDANCE] : []),
+      ...collaborators.filter((c) => c.presence === "run_agent").map((c) => `Use send_message_to with recipient_address ${c.address} to message ${c.name}; delegate_task cannot target it.`),
+    ];
+    const saved = ["please", "", "[Mentioned collaborators]", ...collaborators.map(entry), sentences.join(" ")].join("\n");
+    assert.deepEqual(collaboratorMentionNote.parse(saved), { text: "please", collaborators }, saved);
+  }
+});
+
+test("a delegate sentence from neither release does not parse", () => {
+  const foreign = `x\n\n[Mentioned collaborators]\n- Product Team (Agent Team) at /product_team\n${GUIDANCE} Close it when done.`;
+  assert.equal(collaboratorMentionNote.parse(foreign), null);
+});
+
+test("a note with no in-run mention composes the current delegate sentence only (AC-004)", () => {
   const content = collaboratorMentionNote.compose("x", [reviewer]);
   assert.equal(content, `x\n\n[Mentioned collaborators]\n- Code Reviewer (v2) (Agent) at /code_reviewer\n${GUIDANCE}`);
   assert.ok(!content.includes("already in this run"));

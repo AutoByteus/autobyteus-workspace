@@ -19,7 +19,7 @@ import { ProjectChangeMessageSchema } from "../../../src/projects/changes/projec
 // and the AGY runtime, for the standalone Agent, Agent Team and Agent Org roots. Only the external AGY CLI is scripted:
 // a message containing `CALL_TOOL:{...}` makes that agent call the actual agent tool and reply `CALLED:<tool result>`;
 // `CALL_TOOLS:[...]` makes it issue several calls at once (parallel tool calls in one turn) and reply `CALLED_ALL:[...]`.
-// No provider inference. Every Task status change is the Manager's own create_or_update_task.
+// No provider inference. Every Task status change is the Manager's own update_task.
 // A real backend restart around the assignment (AC-011), damaged Task data (only detected at load) and the rendered
 // tree and board (REQ-008) are covered by `test:e2e:task-closure-tree` BR-012..BR-016.
 const cli = process.env.ANTIGRAVITY_CLI_COMMAND ?? "";
@@ -32,7 +32,7 @@ const suite = enabled ? describe : describe.skip;
 type Frame = { type: string; payload: Record<string, any> };
 type Kind = "agent" | "team" | "org";
 type TaskNode = Record<string, any> & { startedAt: string };
-const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_or_update_project", "create_or_update_task"];
+const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_or_update_project", "create_task", "update_task"];
 const ROOT_FIELDS = "kind recipientAddress ingressAgentRunId teamRunId hostRoot { kind runId } start startError { code message } closed status";
 const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
 const keyOf = (ref: Record<string, any>) => ref.teamRunId ?? ref.team_run_id ? `team:${ref.teamRunId ?? ref.team_run_id}` : `agent:${ref.agentRunId ?? ref.agent_run_id}`;
@@ -395,7 +395,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const busyTodo = await root.managerCalls(callTool("delegate_task", { target_team_run_id: team, task_id: taskB }));
     expect(busyTodo).toEqual({ delegated: false, message: `This copy still works on Task ${taskA} (TODO). Mark it DONE or CANCELLED first, `
       + `or delegate Task ${taskB} to a new copy with recipient_address.` });
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskA, status: "IN_PROGRESS" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskA, status: "IN_PROGRESS" }));
     files = await filesNow();
     const busyInProgress = await root.managerCalls(callTool("delegate_task", { target_team_run_id: team, task_id: taskB }));
     expect(busyInProgress.message).toMatch(new RegExp(`still works on Task ${taskA} \\(IN_PROGRESS\\)`));
@@ -405,7 +405,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
 
     // Task A DONE: the Team copy closes and its coordinator process stops.
     from = root.mark();
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskA, status: "DONE" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskA, status: "DONE" }));
     await until(() => root.closedSince(from).includes(teamKey), "closure of the Team copy at Task A DONE", 60_000);
     await until(() => !processLive(coordinator), "coordinator process stopped at Task A DONE", 30_000);
     const aEntryAtDone = await entriesOf(projectId, taskA, teamKey);
@@ -469,10 +469,10 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     record.nonAssigner = nonAssigner;
 
     // AC-009: Task B DONE, then CANCELLED, and an unknown Task: refused; nothing changes.
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskB, status: "DONE" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskB, status: "DONE" }));
     files = await filesNow();
     const bDone = await root.managerCalls(callTool("delegate_task", { target_team_run_id: team, task_id: taskB }));
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskB, status: "CANCELLED" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskB, status: "CANCELLED" }));
     files = await filesNow();
     const bCancelled = await root.managerCalls(callTool("delegate_task", { target_team_run_id: team, task_id: taskB }));
     const unknownTask = await root.managerCalls(callTool("delegate_task", { target_team_run_id: team, task_id: `project_task_${randomUUID()}` }));
@@ -484,7 +484,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     expect(unknownTask.message).toMatch(/must identify exactly one current node-local Task \(found 0\)/);
     expect(await filesNow()).toEqual(files);
     expect(root.reopenedSince(from)).toEqual([]);
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskB, status: "TODO" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskB, status: "TODO" }));
     record.taskRefusals = { bDone, bCancelled, unknownTask };
 
     // AC-002: Task B given to the Team copy by its team run ID: same IDs back; the copy is reopened, restored with its
@@ -544,7 +544,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const repeated: unknown[] = [];
     for (const status of ["DONE", "CANCELLED", "DONE"] as const) {
       from = root.mark();
-      const ack = await root.managerCalls(callTool("create_or_update_task", { task_id: taskA, status }));
+      const ack = await root.managerCalls(callTool("update_task", { task_id: taskA, status }));
       expect(ack).toMatchObject({ task: { taskId: taskA, status } });
       await sleep(2_000);
       expect(root.closedSince(from), `closure frames after Task A ${status}`).not.toContain(teamKey);
@@ -575,29 +575,29 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
 
     // AC-005: DONE of Task B closes and stops the copy as for any DONE.
     from = root.mark();
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskB, status: "DONE" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskB, status: "DONE" }));
     await until(() => root.closedSince(from).includes(teamKey), "closure of the Team copy at Task B DONE", 60_000);
     await until(() => !processLive(coordinator), "coordinator process stopped at Task B DONE", 30_000);
     expect(keys((await root.snapshot()).closed)).toContain(teamKey);
     const bFileAtDone = await fs.readFile(resourcesFile(projectId, taskB), "utf8");
 
     // AC-010: the Manager reopens Task A and messages the coordinator: refused; the hint names Task B and the next step.
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskA, status: "IN_PROGRESS" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskA, status: "IN_PROGRESS" }));
     files = await filesNow(); from = root.mark();
     const reopenHint = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: coordinator, content: "Back to A?" }));
     expect(reopenHint).toMatchObject({ accepted: false });
     expect(reopenHint.message).toContain(`This copy's current Task is ${taskB} (DONE); reopening Task ${taskA} does not reach it. `
       + `To have this copy continue Task ${taskA}, call delegate_task with target_team_run_id "${team}" and task_id "${taskA}".`);
     // AC-009: the copy's most recent assignment is already Task B: use reopen + message instead.
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskB, status: "TODO" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskB, status: "TODO" }));
     files = await filesNow();
     const alreadyB = await root.managerCalls(callTool("delegate_task", { target_team_run_id: team, task_id: taskB }));
     expect(alreadyB).toEqual({ delegated: false, message: `This copy's most recent assignment is already Task ${taskB}. To continue it, `
-      + `move Task ${taskB} to TODO or IN_PROGRESS with create_or_update_task, then message the copy (for a Team, its coordinator).` });
+      + `reopen Task ${taskB} (move it to TODO or IN_PROGRESS), then message the copy (for a Team, its coordinator).` });
     expect(await filesNow()).toEqual(files);
     expect(root.reopenedSince(from)).toEqual([]);
     expect(processLive(coordinator)).toBe(false);
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskB, status: "DONE" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskB, status: "DONE" }));
     await sleep(1_000);
     expect(await fs.readFile(resourcesFile(projectId, taskB), "utf8")).toBe(bFileAtDone);
     record.returnRefusals = { reopenHint, alreadyB };
@@ -631,7 +631,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     // AC-003: the Agent copy. Task C DONE closes the worker and its sub-work; Task D given to the worker by its agent run
     // ID reopens only the worker (the sub-work stays closed) and continues its conversation.
     from = root.mark();
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskC, status: "DONE" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskC, status: "DONE" }));
     await until(() => root.closedSince(from).includes(`agent:${worker}`), "closure of the worker at Task C DONE", 60_000);
     await until(() => !processLive(worker), "worker process stopped at Task C DONE", 30_000);
     from = root.mark(); argvFrom = await argvMark();
@@ -650,12 +650,12 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     expect((await taskOf(projectId, taskD)).root).toMatchObject({ kind: "agent", ingressAgentRunId: worker, teamRunId: null, closed: false });
     // AC-004 for the Agent copy: Task C DONE again does not stop it; AC-005 with CANCELLED: Task D CANCELLED does.
     from = root.mark();
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskC, status: "DONE" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskC, status: "DONE" }));
     await sleep(2_000);
     expect(root.closedSince(from)).not.toContain(`agent:${worker}`);
     expect(processLive(worker)).toBe(true);
     from = root.mark();
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskD, status: "CANCELLED" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskD, status: "CANCELLED" }));
     await until(() => root.closedSince(from).includes(`agent:${worker}`), "closure of the worker at Task D CANCELLED", 60_000);
     await until(() => !processLive(worker), "worker process stopped at Task D CANCELLED", 30_000);
     record.agentCopy = { assignedD, worker };
@@ -698,7 +698,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
       for (const offset of [0, 5, 7, 9, 11, 13, 15, 30, 60, 120, -20, -60]) {
         const next = await createTask(projectId, `Race ${copyKind} follow-up ${offset}.`);
         const [done, assigned] = await root.managerCallsAtOnce([
-          { name: "create_or_update_task", arguments: { task_id: current, status: "DONE" }, delayMs: offset < 0 ? -offset : 0 },
+          { name: "update_task", arguments: { task_id: current, status: "DONE" }, delayMs: offset < 0 ? -offset : 0 },
           { name: "delegate_task", arguments: { [idField]: copyId, task_id: next }, delayMs: offset > 0 ? offset : 0 },
         ]);
         expect(done, JSON.stringify(done)).toMatchObject({ task: { taskId: current, status: "DONE" } });
@@ -747,7 +747,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const delegated = await owner.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.squad)}`, task_id: taskA }));
     const team = delegated.target_team_run_id as string;
     const coordinator = delegated.target_team_coordinator_agent_run_id as string;
-    await owner.managerCalls(callTool("create_or_update_task", { task_id: taskA, status: "DONE" }));
+    await owner.managerCalls(callTool("update_task", { task_id: taskA, status: "DONE" }));
     const files = await projectFiles(projectId);
     // AC-012 from another root's agent: the directory finds the Team copy in its active root and names the coordinator.
     const toTeamRun = await other.managerCalls(callTool("send_message_to", { target_agent_run_id: team, content: "Hello from another root." }));
@@ -781,7 +781,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const listed = await root.managerCalls(callTool("list_project_tasks", { project_id: projectId }));
     const fAssignment = (listed.tasks as any[]).find((task) => task.taskId === taskF).assignments[0];
     expect(fAssignment).toMatchObject({ kind: "agent", assignedBy: root.managerRunId, outcome: "failed" });
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskF, status: "CANCELLED" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskF, status: "CANCELLED" }));
     const files = await projectFiles(projectId);
     const neverStarted = await root.managerCalls(callTool("delegate_task", { target_agent_run_id: fAssignment.agentRunId, task_id: taskG }));
     evidence.neverStarted = { failed, fAssignment, neverStarted };
@@ -801,7 +801,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const taskI = await createTask(projectId, "Follow-up for a copy whose conversation is gone.");
     const helper = (await root.managerCalls(callTool("delegate_task", { recipient_address: "/helper", task_id: taskH }))).target_agent_run_id as string;
     await root.waitForNodes("helper copy", (nodes) => nodes.some((n) => n.agentRunId === helper));
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskH, status: "DONE" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskH, status: "DONE" }));
     await until(() => !processLive(helper), "helper stopped at DONE", 30_000);
     const memoryDirs = spawnSync("find", [path.join(dataDir, "memory"), "-type", "d", "-name", helper], { encoding: "utf8" }).stdout.trim().split("\n").filter(Boolean);
     expect(memoryDirs.length, "the helper's memory folder").toBeGreaterThan(0);
@@ -832,7 +832,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const worker = delegated.target_agent_run_id as string;
     const node = (await root.waitForNodes("live worker", (nodes) => nodes.some((n) => n.agentRunId === worker))).find((n) => n.agentRunId === worker)!;
     await until(async () => /READY/.test(JSON.stringify(await root.conversationOf(worker, node.address))), "live worker answered READY", 180_000);
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskA, status: "DONE" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskA, status: "DONE" }));
     const assigned = await root.managerCalls(callTool("delegate_task", { target_agent_run_id: worker, task_id: taskB }));
     expect(assigned).toEqual({ delegated: true, target_kind: "agent", target_agent_run_id: worker });
     let conversation = "";

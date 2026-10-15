@@ -212,7 +212,7 @@ suite("Delegated copies and collaborators honor agent and team launch defaults i
     appConfigProvider.config.setCustomAppDataDir(dataDir);
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify; url = started.mainUrl;
-    await agentDefinition("manager", ["create_or_update_task"], null);
+    await agentDefinition("manager", ["create_task", "update_task"], null);
     await agentDefinition("worker", [], null);
     await agentDefinition("plain", [], null);
     await agentDefinition("engineer", [], { runtimeKind: GROK, llmModelIdentifier: GROK_MODEL });

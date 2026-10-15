@@ -3,8 +3,8 @@
 // sending with `@X` adds nothing to the run (no collaborator entry, no row); the stored message carries a note telling
 // the focused agent to delegate_task to X's address; the agent delegates, which creates an ad-hoc Task (no Project,
 // text only, `<appData>/ad-hoc-tasks/<id>/`) and returns its task_id; when the work is finished the agent — on its
-// own after a report, or when the user says so — calls create_or_update_task({task_id, status: DONE}), a tool it has
-// without selecting it, and the copy's row leaves the tree and stays out (live, after reload, Stop and a real backend
+// own after a report, or when the user says so — calls update_task({task_id, status: DONE}), a tool the probe's agents
+// select explicitly (no task tool is automatic), and the copy's row leaves the tree and stays out (live, after reload, Stop and a real backend
 // restart). Permanent delete removes the run's ad-hoc Tasks. Stored collaborators (now only from an agent's own
 // send_message_to to a catalog address) keep working. Covers standalone Agent, Team and Org runs, the first-send
 // mention, an ineligible mention, old traces and old data, and the Agent-root host-crash lifecycle.
@@ -115,7 +115,7 @@ const TOOL_HINT = {
   grok_build: ' AutoByteus tools such as send_message_to, delegate_task and get_handoff_rules are tools of the MCP server autobyteus_agent_tools: find them with search_tool and call them with use_tool.',
 }[runtime] ?? ''
 // mention-delegation-dismissal: the note itself tells the focused agent what to do with a mentioned collaborator
-// (delegate_task, then create_or_update_task with the returned task_id when the work is finished). An agent may close
+// (delegate_task, then update_task with the returned task_id when the work is finished). An agent may close
 // on its own once a copy reports (supported, SCN-002); the user-driven close is asserted with a copy that never
 // reports back (Note Taker).
 const HOST_RULE = 'When the user message ends with a "[Mentioned collaborators]" section, follow that section for each listed '
@@ -129,7 +129,7 @@ const REPORT_RULE = 'When another agent messages you or gives you work, do what 
   + 'When the user talks to you directly, just reply in one short sentence without tools.' + TOOL_HINT
 const ids = {}
 const createAgent = async (key, name, description, instructions) => {
-  const r = await gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}', { input: { name, description, instructions, toolNames: [] } })
+  const r = await gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}', { input: { name, description, instructions, toolNames: ['update_task'] } })
   ids[key] = r.createAgentDefinition.id
 }
 const seed = async () => {
@@ -353,7 +353,7 @@ const mentionAndSend = async (page, prefix, query, id, rest) => {
 
 // mention-delegation-dismissal helpers ---------------------------------------------------------
 // `@` adds nothing; the focused agent delegates; every described delegation by an unowned sender gets an ad-hoc
-// Task at <appData>/ad-hoc-tasks/<id>/ that the agent marks DONE with create_or_update_task(task_id) alone.
+// Task at <appData>/ad-hoc-tasks/<id>/ that the agent marks DONE with update_task(task_id) alone.
 const adHocDir = () => path.join(dataRoot, 'ad-hoc-tasks')
 const adHocTasks = async () => {
   const out = []
@@ -550,8 +550,8 @@ defineCase('A01', 'SCN-001 standalone run: menu (VIS-011, a11y), inline mention;
   r.reviewerClosedByAgent = await agentClosedOnItsOwn('agent', state.agentRunId, state.tasks.reviewer, state.children.reviewer)
   r.rowsAfterReport = await rowFacts(taskRowsUnder(page, state.agentRunId))
   if (r.reviewerClosedByAgent) {
-    assert(r.cards.some((c) => /create_or_update_task/.test(c.text) && !c.error) && !r.rowsAfterReport.some((row) => /code reviewer/i.test(row.text)),
-      'agent-initiated DONE: create_or_update_task card and the row gone (AC-007, AC-009)', r)
+    assert(r.cards.some((c) => /update_task/.test(c.text) && !c.error) && !r.rowsAfterReport.some((row) => /code reviewer/i.test(row.text)),
+      'agent-initiated DONE: update_task card and the row gone (AC-007, AC-009)', r)
     note('A01: the host marked the Code Reviewer work DONE on its own after the report (SCN-002, agent decides)')
   } else {
     assert(r.rowsAfterReport.some((row) => /code reviewer/i.test(row.text)), 'open Code Reviewer row missing', r.rowsAfterReport)
@@ -601,7 +601,7 @@ defineCase('A01', 'SCN-001 standalone run: menu (VIS-011, a11y), inline mention;
   return r
 })
 
-defineCase('A02', 'SCN-002 / AC-007 / AC-009: the user tells the host the notes are finished; the host (no Project tool selected) calls create_or_update_task by task_id alone; Task DONE, copy closed, its row leaves live; history kept', async (page) => {
+defineCase('A02', 'SCN-002 / AC-007 / AC-009: the user tells the host the notes are finished; the host (no Project tool selected) calls update_task by task_id alone; Task DONE, copy closed, its row leaves live; history kept', async (page) => {
   const r = {}
   await (await findAgentRunRow(page, state.agentRunId)).click(); await delay(1500)
   await markDone(page, 'Note Taker')
@@ -610,7 +610,7 @@ defineCase('A02', 'SCN-002 / AC-007 / AC-009: the user tells the host the notes 
   await waitFor('Note Taker row leaves the tree live', async () => !(await rowFacts(taskRowsUnder(page, state.agentRunId))).some((row) => /note taker/i.test(row.text)), 60000)
   await waitHostIdle(page); await delay(1500)
   r.cards = await toolCards(page, RUN_VIEW)
-  assert(r.cards.some((c) => /create_or_update_task/.test(c.text) && !c.error), 'expected a successful create_or_update_task card (AC-009)', r.cards)
+  assert(r.cards.some((c) => /update_task/.test(c.text) && !c.error), 'expected a successful update_task card (AC-009)', r.cards)
   const kept = await gql('query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}', { h: state.agentRunId, a: NOTE_TAKER_ADDRESS, r: state.children.notes })
   r.closedConversationEntries = kept.agentRunCollaborationMemberProjection?.conversation?.length ?? 0
   assert(r.closedConversationEntries > 0, 'the closed copy\'s conversation must be kept', r)
@@ -889,7 +889,7 @@ defineCase('T03', 'AC-007 / AC-009 Team member: the user has the researcher mark
   await waitFor('Note Taker row leaves', async () => !(await rowFacts(teamRows)).some((row) => /note taker/i.test(row.text)), 60000)
   await waitHostIdle(page); await delay(1500)
   r.cards = await toolCards(page)
-  assert(r.cards.some((c) => /create_or_update_task/.test(c.text) && !c.error), 'expected a create_or_update_task card from the Team member (AC-009)', r.cards)
+  assert(r.cards.some((c) => /update_task/.test(c.text) && !c.error), 'expected a update_task card from the Team member (AC-009)', r.cards)
   await page.reload({ waitUntil: 'domcontentloaded' }); await delay(4000)
   const teamRow = page.locator(sel(`workspace-team-row-${state.teamRunId}`))
   if (!(await teamRow.isVisible().catch(() => false))) await expandWorkspaces(page)

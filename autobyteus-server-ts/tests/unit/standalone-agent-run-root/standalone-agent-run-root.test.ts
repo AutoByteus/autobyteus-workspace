@@ -159,11 +159,11 @@ const hostContextOf = async (f: Awaited<ReturnType<typeof buildManager>>): Promi
 };
 
 describe("Agent root of a standalone run", () => {
-  it("gives eligible hosts send_message_to, delegate_task and create_or_update_task but no handoff rules; helpers and application runs get nothing", async () => {
+  it("gives eligible hosts send_message_to and delegate_task but no task tools and no handoff rules; helpers and application runs get nothing", async () => {
     const f = await buildManager();
     const context = await hostContextOf(f);
     expect(context?.identity).toMatchObject({ memberAddress: "/research_assistant", agentRunId: HOST, root: { rootSubjectKind: "agent" } });
-    expect(automaticCollaborationToolNames(context)).toEqual(["send_message_to", "delegate_task", "create_or_update_task"]);
+    expect(automaticCollaborationToolNames(context)).toEqual(["send_message_to", "delegate_task"]);
     await f.manager.stopRoot(HOST);
     expect(await context!.tasks.delegateToNewCopy(context!.identity, { recipient_address: "/x", description: "d" }))
       .toEqual({ delegated: false, message: "The collaboration root of this run is not active." });
@@ -725,7 +725,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     const send = () => root.deliverExactAgentMessage({ sender: { kind: "agent", identity: f.hostIdentity, displayName: "research_assistant" },
       targetAgentRunId: copy.agentRunId, content: "Next round", messageType: "agent_message", referenceFiles: [] });
     // Still DONE: refused with the reopen-first hint; nothing is published.
-    expect(await send()).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("Move it to TODO or IN_PROGRESS") });
+    expect(await send()).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("reopen the Task (move it to TODO or IN_PROGRESS)") });
     expect(events.some((entry) => entry.event.kind === "task_executions_reopened")).toBe(false);
 
     resources.setTaskOpen("A");

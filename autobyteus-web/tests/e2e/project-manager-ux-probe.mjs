@@ -146,7 +146,7 @@ const gql = async (query, variables = {}) => {
 };
 const workspace = () => path.join(stack.dataRoot, 'workspace');
 const config = () => ({ workspaceRootPath: workspace(), llmModelIdentifier: 'gemini-3.8-flash-low', llmConfig: null, autoExecuteTools: true, runtimeKind: 'antigravity_cli' });
-const MANAGER_TOOLS = ['list_projects', 'list_project_tasks', 'create_or_update_project', 'create_or_update_task'];
+const MANAGER_TOOLS = ['list_projects', 'list_project_tasks', 'create_or_update_project', 'create_task', 'update_task'];
 const createDefinitions = async (label) => {
   const s = `${label} ${randomUUID().slice(0, 4)}`;
   const agent = async (name, toolNames) => (await gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}',
@@ -304,7 +304,7 @@ const listAndBoardLive = async () => {
     await page.getByTestId(`project-card-${s.projectId}`).click();
     await row(page, s.taskA).waitFor({ timeout: 30000 });
     assert(await rootLine(page, s.taskA).count() === 0, 'an unassigned Task shows no root line');
-    s.input.send(callTool('create_or_update_task', { project_id: s.projectId, description: 'Agent-created follow-up' }));
+    s.input.send(callTool('create_task', { project_id: s.projectId, description: 'Agent-created follow-up' }));
     const arrived = await until('agent-created Task arrives', async () => {
       const rows = await page.locator('[data-live="arrived"]').evaluateAll((es) => es.map((e) => e.getAttribute('data-testid')));
       return rows.length ? rows : null;
@@ -331,7 +331,7 @@ const agentRootOnBoard = async () => {
     assert(['idle', 'running'].includes(live.state) && live.openable === 'true' && live.tag === 'BUTTON', 'live started root is an openable button', live);
     await shot(page, 'pmu-002-board-agent-root');
     // The manager moves the Task: the row moves live, highlighted.
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'IN_PROGRESS' }));
+    s.input.send(callTool('update_task', { task_id: s.taskA, status: 'IN_PROGRESS' }));
     await until('row moved to In progress, highlighted', async () => (await columnOf(page, s.taskA)) === 'project-task-column-IN_PROGRESS'
       && (await row(page, s.taskA).getAttribute('data-live')) === 'moved', 30000, 50);
     await shot(page, 'pmu-002-board-moved-highlight');
@@ -345,7 +345,7 @@ const agentRootOnBoard = async () => {
     // DONE: Offline, muted, no chevron.
     await page.goBack({ waitUntil: 'networkidle' });
     await row(page, s.taskA).waitFor({ timeout: 30000 });
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'DONE' }));
+    s.input.send(callTool('update_task', { task_id: s.taskA, status: 'DONE' }));
     const done = await until('DONE root is Offline, not openable', async () => {
       const r = await rootState(page, s.taskA);
       return (await columnOf(page, s.taskA)) === 'project-task-column-DONE' && r?.state === 'offline' && r.openable === 'false' ? r : null;
@@ -456,7 +456,7 @@ const tempTasksJourney = async () => {
     await page.getByTestId('temp-task-back').click();
     await page.getByTestId('temp-task-board').waitFor();
     // The agent closes it: it moves to Done live.
-    input.send(callTool('create_or_update_task', { task_id: temp.taskId, status: 'DONE' }));
+    input.send(callTool('update_task', { task_id: temp.taskId, status: 'DONE' }));
     await until('temp task moved to Done, highlighted', async () => (await columnOf(page, temp.taskId)) === 'temp-task-lane-done', 30000, 50);
     const moved = await row(page, temp.taskId).getAttribute('data-live');
     await shot(page, 'pmu-005-temp-board-done');
@@ -681,11 +681,11 @@ const tempReactivationAndChatDeletion = async () => {
     await until('row in Open, root openable', async () => (await columnOf(page, temp.taskId)) === 'temp-task-lane-open'
       && (await rootState(page, temp.taskId))?.openable === 'true', 60000);
     // DONE → Done lane, Offline, not openable.
-    input.send(callTool('create_or_update_task', { task_id: temp.taskId, status: 'DONE' }));
+    input.send(callTool('update_task', { task_id: temp.taskId, status: 'DONE' }));
     details.done = await until('Done, Offline', async () => { const r = await rootState(page, temp.taskId);
       return (await columnOf(page, temp.taskId)) === 'temp-task-lane-done' && r?.state === 'offline' && r.openable === 'false' ? r : null; }, 30000);
     // AC-023: the agent reopens → Open lane with the moved highlight; the root stays Offline and not openable.
-    input.send(callTool('create_or_update_task', { task_id: temp.taskId, status: 'TODO' }));
+    input.send(callTool('update_task', { task_id: temp.taskId, status: 'TODO' }));
     await until('reopened row moved back to Open', async () => (await columnOf(page, temp.taskId)) === 'temp-task-lane-open'
       && (await row(page, temp.taskId).getAttribute('data-live')) === 'moved', 30000, 50);
     await sleep(1500);
@@ -1026,7 +1026,7 @@ const projectsTab = async () => {
   await shot(page, 'pmu-015-tab-board');
   // The manager adds a Task while its chat stays in the center.
   const chatUrl = page.url();
-  input.send(callTool('create_or_update_task', { project_id: projectId, description: 'Agent-added from the chat' }));
+  input.send(callTool('create_task', { project_id: projectId, description: 'Agent-added from the chat' }));
   const added = await until('Task arrives in the tab live', async () => (await projectTasks(projectId)).find((t) => t.taskId !== existing)?.taskId, 30000);
   await panelRow(added).waitFor({ timeout: 15000 });
   assert(page.url() === chatUrl, 'the chat stays in the center');
@@ -1180,7 +1180,7 @@ const cancelledTasksJourney = async () => {
   try {
     input.send(callTool('delegate_task', { recipient_address: workerAddress, task_id: dropped }));
     await until('worker started on the Task to drop', async () => (await rootOf(projectId, dropped))?.start === 'started', 60000);
-    input.send(callTool('create_or_update_task', { task_id: finished, status: 'DONE' }));
+    input.send(callTool('update_task', { task_id: finished, status: 'DONE' }));
     await until('finished Task DONE', async () => (await statusOf(finished)) === 'DONE', 30000);
     await goto(page, '/projects');
     const card = page.getByTestId(`project-card-${projectId}`);
@@ -1192,7 +1192,7 @@ const cancelledTasksJourney = async () => {
     assert(await cancelledToggleState(page, 'project-tasks-cancelled-toggle') === null, 'no Cancelled toggle while nothing is Cancelled');
 
     // The agent drops the Task: it leaves the open lanes live, the toggle appears beside Refresh, the lane stays hidden.
-    input.send(callTool('create_or_update_task', { task_id: dropped, status: 'CANCELLED' }));
+    input.send(callTool('update_task', { task_id: dropped, status: 'CANCELLED' }));
     details.toggleHidden = await until('row hidden and toggle "Cancelled (1)" appears live', async () => {
       const toggle = await cancelledToggleState(page, 'project-tasks-cancelled-toggle');
       return (await row(page, dropped).count()) === 0 && toggle?.text === 'Cancelled (1)' ? toggle : null;
@@ -1273,7 +1273,7 @@ const cancelledTasksJourney = async () => {
     // The agent reopens it: back in To Do live with the moved highlight; the toggle disappears; the worker stays Offline.
     await page.getByTestId(`project-card-${projectId}`).click();
     await row(page, finished).waitFor({ timeout: 30000 });
-    input.send(callTool('create_or_update_task', { task_id: dropped, status: 'TODO' }));
+    input.send(callTool('update_task', { task_id: dropped, status: 'TODO' }));
     details.reopened = await until('reopened row back in To Do, highlighted, toggle gone', async () => (await columnOf(page, dropped)) === 'project-task-column-TODO'
       && (await row(page, dropped).getAttribute('data-live')) === 'moved' && (await cancelledToggleState(page, 'project-tasks-cancelled-toggle')) === null
       ? await rootState(page, dropped) : null, 30000, 50);
@@ -1288,7 +1288,7 @@ const cancelledTasksJourney = async () => {
     const linkCount = () => page.getByTestId('temp-tasks-link-count').innerText({ timeout: 1000 }).catch(() => '');
     const openBefore = await openTemps();
     await until('header counts the open Temp task', async () => (await linkCount()) === `${openBefore} open`, 15000);
-    input.send(callTool('create_or_update_task', { task_id: temp.taskId, status: 'CANCELLED' }));
+    input.send(callTool('update_task', { task_id: temp.taskId, status: 'CANCELLED' }));
     await until('Temp task CANCELLED on the server', async () => (await tempTasks()).find((t) => t.taskId === temp.taskId)?.status === 'CANCELLED', 30000);
     const openAfter = await openTemps();
     await until('header count drops live (Cancelled is not open)', async () => (await linkCount()) === (openAfter ? `${openAfter} open` : ''), 15000);
@@ -1320,7 +1320,7 @@ const cancelledTasksJourney = async () => {
     await panel.getByTestId('projects-panel-picker-select').selectOption(`project:${projectId}`);
     await panel.locator(`[data-testid="project-task-row-${dropped}"]`).waitFor({ timeout: 30000 });
     assert(await cancelledToggleState(panel, 'project-tasks-cancelled-toggle') === null, 'panel: no toggle while nothing is Cancelled');
-    input.send(callTool('create_or_update_task', { task_id: kept, status: 'CANCELLED' }));
+    input.send(callTool('update_task', { task_id: kept, status: 'CANCELLED' }));
     details.panelToggle = await until('panel: row hidden and toggle appears live', async () => {
       const toggle = await cancelledToggleState(panel, 'project-tasks-cancelled-toggle');
       return (await panel.locator(`[data-testid="project-task-row-${kept}"]`).count()) === 0 && toggle?.text === 'Cancelled (1)' ? toggle : null;

@@ -52,6 +52,13 @@ export type ParsedCollaboratorMentionNote = Readonly<{
 
 const NOTE_HEADING = "[Mentioned collaborators]";
 const NOTE_GUIDANCE =
+  "Delegate the work with delegate_task to its address; it returns a run ID to follow up with.";
+/**
+ * The delegate sentence composed until the release that made the note tool-neutral; still
+ * recognized, in every combination with the in-run and run-agent sentences, so saved history
+ * reads unchanged. Never composed.
+ */
+const PREVIOUS_RELEASE_NOTE_GUIDANCE =
   "Delegate the work with delegate_task to its address; it returns a run ID to follow up with. If it also returns a task_id, call create_or_update_task with that task_id and status DONE when the work is finished; this stops it and removes it from the run.";
 /** Added after the guidance only when at least one mentioned agent or team is already in the run. */
 const IN_RUN_GUIDANCE =
@@ -94,13 +101,12 @@ const runAgentGuidance = (collaborator: MentionedCollaborator): string =>
   `Use send_message_to with recipient_address ${collaborator.address} to message ${singleLine(collaborator.name, "Collaborator name")}; delegate_task cannot target it.`;
 
 /**
- * The guidance line for a note's entries, shared by compose and parse: the delegate_task
+ * The guidance line for a note's entries, shared by compose and parse: the given delegate_task
  * sentence when any entry is not the run agent, the in-run sentence when any entry is in the
- * run, then one send_message_to sentence per run-agent entry. Without run-agent entries it is
- * exactly the guidance of earlier releases.
+ * run, then one send_message_to sentence per run-agent entry.
  */
-const guidanceFor = (collaborators: readonly MentionedCollaborator[]): string => [
-  ...(collaborators.some((collaborator) => collaborator.presence !== "run_agent") ? [NOTE_GUIDANCE] : []),
+const guidanceFor = (collaborators: readonly MentionedCollaborator[], delegateSentence: string): string => [
+  ...(collaborators.some((collaborator) => collaborator.presence !== "run_agent") ? [delegateSentence] : []),
   ...(collaborators.some((collaborator) => collaborator.presence === "in_run") ? [IN_RUN_GUIDANCE] : []),
   ...collaborators.filter((collaborator) => collaborator.presence === "run_agent").map(runAgentGuidance),
 ].join(" ");
@@ -120,13 +126,14 @@ export const composeCollaboratorMentionNote = (
   collaborators: readonly MentionedCollaborator[],
 ): string => {
   if (collaborators.length === 0) return text;
-  const note = [NOTE_HEADING, ...collaborators.map(entryLine), guidanceFor(collaborators)].join("\n");
+  const note = [NOTE_HEADING, ...collaborators.map(entryLine), guidanceFor(collaborators, NOTE_GUIDANCE)].join("\n");
   return text.trim() ? `${text}\n\n${note}` : note;
 };
 
 /**
  * Recognizes only a note at the very end of the content, in exactly the composed form: its
- * guidance line is the one its entries compose to, or a guidance saved by an earlier release.
+ * guidance line is the one its entries compose to, the one the previous release
+ * composed, or a guidance saved by an earlier release.
  */
 export const parseCollaboratorMentionNote = (content: string): ParsedCollaboratorMentionNote | null => {
   const headingAt = content.startsWith(`${NOTE_HEADING}\n`)
@@ -149,7 +156,11 @@ export const parseCollaboratorMentionNote = (content: string): ParsedCollaborato
     }));
   }
   const guidance = lines[lines.length - 1]!;
-  if (guidance !== guidanceFor(collaborators) && !SAVED_NOTE_GUIDANCES.includes(guidance)) return null;
+  if (
+    guidance !== guidanceFor(collaborators, NOTE_GUIDANCE)
+    && guidance !== guidanceFor(collaborators, PREVIOUS_RELEASE_NOTE_GUIDANCE)
+    && !SAVED_NOTE_GUIDANCES.includes(guidance)
+  ) return null;
   return Object.freeze({
     text: noteStart === 0 ? "" : content.slice(0, headingAt),
     collaborators: Object.freeze(collaborators),

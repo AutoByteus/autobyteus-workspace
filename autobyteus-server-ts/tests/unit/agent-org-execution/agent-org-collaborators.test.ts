@@ -26,7 +26,8 @@ describe("`@` and collaborators of an AgentOrg run", () => {
     const posted = f.handles.get("director")!.handle.postMessage.mock.calls[0]![0] as { content: string };
     expect(collaboratorMentionNote.parse(posted.content)?.collaborators).toEqual([{ name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" }]);
     // REQ-002: the note tells the focused agent to delegate to the address.
-    expect(posted.content).toMatch(/\nDelegate the work with delegate_task to its address; .*create_or_update_task.*DONE/);
+    expect(posted.content).toMatch(/\nDelegate the work with delegate_task to its address; it returns a run ID to follow up with\.$/);
+    expect(posted.content).not.toMatch(/create_or_update_task|update_task|task_id/);
     const durable = await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId);
     expect(durable!.rootOrg.collaborators).toEqual([]);
     expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "accepted" } });

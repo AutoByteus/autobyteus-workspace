@@ -145,7 +145,7 @@ const createDefinitions = async (label) => {
   const names = { manager: `Manager ${s}`, worker: `Release Notes Writer ${s}`, helper: `Fact Checker ${s}`, assistant: `Researcher ${s}`,
     squad: `Docs Review Team ${s}`, team: `Delivery Team ${s}`, org: `Delivery Org ${s}` };
   const ids = {};
-  ids.manager = await agent(names.manager, ['list_projects', 'list_project_tasks', 'create_or_update_project', 'create_or_update_task']);
+  ids.manager = await agent(names.manager, ['list_projects', 'list_project_tasks', 'create_or_update_project', 'create_task', 'update_task']);
   ids.worker = await agent(names.worker, []); ids.helper = await agent(names.helper, []); ids.assistant = await agent(names.assistant, []);
   const team = async (name, coordinatorMemberName, nodes) => (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}',
     { input: { name, description: name, instructions: 'Deliver.', coordinatorMemberName, nodes } })).createAgentTeamDefinition.id;
@@ -346,7 +346,7 @@ const liveDone = async (kind, label) => {
     await shot(page, `${kind}-live-before`);
     await startSampler(page, aSel);
     const sentAt = Date.now();
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'DONE' }));
+    s.input.send(callTool('update_task', { task_id: s.taskA, status: 'DONE' }));
     await until('Task A rows gone', goneAll(page, aSel), 60000);
     const latencyMs = Date.now() - sentAt;
     await sleep(500);
@@ -369,7 +369,7 @@ const liveDone = async (kind, label) => {
     await until('Team tab message kept', async () => /Status of the release notes\?/.test(await page.locator('[data-test="workspace-right-panel"]').innerText()), 10000);
     await shot(page, `${kind}-team-tab-after`);
     // Reopen + delegate again: the new run appears; the closed ones stay hidden (AC-006).
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'IN_PROGRESS' }));
+    s.input.send(callTool('update_task', { task_id: s.taskA, status: 'IN_PROGRESS' }));
     await until('reopened', async () => (await taskStatus(s.projectId, s.taskA)) === 'IN_PROGRESS', 30000);
     const before = taskNodes(await storedTree(s.root)).map((n) => n.agentRunId ?? n.teamRunId);
     s.input.send(callTool('delegate_task', { recipient_address: s.at('worker', s.names.worker), task_id: s.taskA }));
@@ -385,7 +385,7 @@ const liveDone = async (kind, label) => {
     await (managerRow ?? runRow).click();
     await sleep(800);
     const composer = page.locator('[data-test="workspace-center-pane"] textarea').first();
-    await composer.fill(callTool('create_or_update_task', { task_id: s.taskB, status: 'DONE' }));
+    await composer.fill(callTool('update_task', { task_id: s.taskB, status: 'DONE' }));
     await startSampler(page, [bSel, ...memberSel]);
     await composer.press('Enter');
     await until('Task B Team and members gone', goneAll(page, [bSel, ...memberSel]), 60000);
@@ -410,7 +410,7 @@ const reducedMotion = async (kind, label) => {
     for (const sel of aSel) await page.locator(sel).waitFor({ state: 'visible', timeout: 30000 });
     await page.locator(aSel[0]).focus();
     await startSampler(page, aSel);
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'DONE' }));
+    s.input.send(callTool('update_task', { task_id: s.taskA, status: 'DONE' }));
     await until('rows gone', goneAll(page, aSel), 60000);
     await sleep(300);
     const leave = analyzeLeave(await page.evaluate(() => window.__samples));
@@ -437,7 +437,7 @@ const lastRows = async () => {
         rows: document.querySelectorAll('[data-test="workspace-team-transient-execution-row"]').length });
       if (performance.now() - t0 < 4000) requestAnimationFrame(tick); }; requestAnimationFrame(tick); });
     await startSampler(page, aSel);
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'DONE' }));
+    s.input.send(callTool('update_task', { task_id: s.taskA, status: 'DONE' }));
     await until('tree removed', async () => (await page.locator('[data-test="workspace-agent-run-task-tree"]').count()) === 0, 60000);
     await sleep(300);
     const leave = analyzeLeave(await page.evaluate(() => window.__samples));
@@ -579,14 +579,14 @@ const liveReactivation = async (kind, label) => {
     s.input.send(callTool('send_message_to', { target_agent_run_id: worker.agentRunId, content: 'Status of the release notes? PRE-DONE-7731' }));
     await sleep(2500); // The scripted worker answers at once; its conversation is asserted after the reactivation.
     // DONE: the Task A rows leave.
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'DONE' }));
+    s.input.send(callTool('update_task', { task_id: s.taskA, status: 'DONE' }));
     await until('Task A rows gone', goneAll(page, [workerSel, ...helperSel]), 60000);
     // Still DONE: the assigner's message is refused and nothing reappears (AC-015).
     s.input.send(callTool('send_message_to', { target_agent_run_id: worker.agentRunId, content: 'Too early?' }));
     await sleep(2000);
     assert(await page.locator(workerSel).count() === 0, 'worker row reappeared while the Task was DONE');
     // The agent reopens the Task: a status change alone shows nothing (AC-014).
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'IN_PROGRESS' }));
+    s.input.send(callTool('update_task', { task_id: s.taskA, status: 'IN_PROGRESS' }));
     await until('Task A reopened', async () => (await taskStatus(s.projectId, s.taskA)) === 'IN_PROGRESS', 30000);
     await sleep(1500);
     assert(await page.locator(workerSel).count() === 0, 'worker row reappeared on a status change alone');
@@ -610,9 +610,9 @@ const liveReactivation = async (kind, label) => {
     const members = teamMembersOf(tree, s.bRef.teamRunId);
     const coordinator = members.find((m) => /\/reviewer$/.test(m.address));
     assert(coordinator, 'task Team coordinator not found', { members });
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskB, status: 'DONE' }));
+    s.input.send(callTool('update_task', { task_id: s.taskB, status: 'DONE' }));
     await until('Task B Team row gone', goneAll(page, [teamSel]), 60000);
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskB, status: 'IN_PROGRESS' }));
+    s.input.send(callTool('update_task', { task_id: s.taskB, status: 'IN_PROGRESS' }));
     await until('Task B reopened', async () => (await taskStatus(s.projectId, s.taskB)) === 'IN_PROGRESS', 30000);
     s.input.send(callTool('send_message_to', { target_agent_run_id: coordinator.agentRunId, content: 'Docs review, second round. TEAM-REOPEN-5150' }));
     await page.locator(teamSel).waitFor({ state: 'visible', timeout: 60000 });
@@ -675,7 +675,7 @@ const reactivationAcrossRestart = async () => {
     await restoreRoot(r.root);
     const input = await managerInput(r.root);
     try {
-      input.send(callTool('create_or_update_task', { task_id: r.taskA, status: 'DONE' }));
+      input.send(callTool('update_task', { task_id: r.taskA, status: 'DONE' }));
       await until(`${kind}: Task A DONE again`, async () => (await taskStatus(r.projectId, r.taskA)) === 'DONE', 60000);
     } finally { input.close(); }
   }
@@ -691,7 +691,7 @@ const reactivationAcrossRestart = async () => {
       await openRoot(page, r.root, r.names);
       await sleep(1500);
       assert(await page.locator(rowSelector(kind, r.worker)).count() === 0, `${kind}: closed worker listed after restart`);
-      input.send(callTool('create_or_update_task', { task_id: r.taskA, status: 'IN_PROGRESS' }));
+      input.send(callTool('update_task', { task_id: r.taskA, status: 'IN_PROGRESS' }));
       await until(`${kind}: Task A reopened after restart`, async () => (await taskStatus(r.projectId, r.taskA)) === 'IN_PROGRESS', 60000);
       input.send(callTool('send_message_to', { target_agent_run_id: r.worker.agentRunId, content: 'After the restart. POST-RESTART-4242' }));
       await page.locator(rowSelector(kind, r.worker)).waitFor({ state: 'visible', timeout: 90000 });
@@ -759,7 +759,7 @@ const existingCopyAssignment = async (kind, label) => {
     s.input.send(callTool('send_message_to', { target_agent_run_id: worker.agentRunId, content: 'Release notes draft. PRE-A-6620' }));
     await sleep(2500);
     // Task B DONE: the Task Team row leaves.
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskB, status: 'DONE' }));
+    s.input.send(callTool('update_task', { task_id: s.taskB, status: 'DONE' }));
     await until('Task B Team row gone', goneAll(page, [teamSel]), 60000);
     // The follow-up Task to the same Team copy: the row returns live, without reload.
     const sentAt = Date.now();
@@ -784,7 +784,7 @@ const existingCopyAssignment = async (kind, label) => {
     // AC-004: DONE of B again (and CANCELLED) never removes the row or closes B2's root.
     await watchPresence(page, [teamSel]);
     for (const status of ['DONE', 'CANCELLED', 'DONE']) {
-      s.input.send(callTool('create_or_update_task', { task_id: s.taskB, status }));
+      s.input.send(callTool('update_task', { task_id: s.taskB, status }));
       await until(`Task B ${status}`, async () => (await taskStatus(s.projectId, s.taskB)) === status, 30000);
       await sleep(1500);
     }
@@ -805,11 +805,11 @@ const existingCopyAssignment = async (kind, label) => {
       assert(fresh.errors.length === 0, 'browser errors after reload', fresh.errors);
     } finally { await fresh.context.close(); }
     // AC-005: DONE of B2 closes the copy: the row leaves and B2's root goes offline.
-    s.input.send(callTool('create_or_update_task', { task_id: taskB2, status: 'DONE' }));
+    s.input.send(callTool('update_task', { task_id: taskB2, status: 'DONE' }));
     await until('Team row gone at B2 DONE', goneAll(page, [teamSel]), 60000);
     await until('B2 board root offline', async () => (await boardRoot(board.page, taskB2))?.state === 'offline', 30000);
     // AC-003: the Agent copy. A DONE removes the worker and its helpers; A2 by its agent run ID brings back only the worker.
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'DONE' }));
+    s.input.send(callTool('update_task', { task_id: s.taskA, status: 'DONE' }));
     await until('Task A rows gone', goneAll(page, [workerSel, ...helperSel]), 60000);
     s.input.send(callTool('delegate_task', { target_agent_run_id: worker.agentRunId, task_id: taskA2 }));
     await page.locator(workerSel).waitFor({ state: 'visible', timeout: 60000 });
@@ -819,7 +819,7 @@ const existingCopyAssignment = async (kind, label) => {
     await page.locator(workerSel).click();
     await until('continued worker conversation', async () => { const t = await centerText(page); return t.includes('PRE-A-6620') && t.includes(`New Task assigned to you: ${taskA2}`); }, 30000);
     await shot(page, `${kind}-existing-copy-agent-back`);
-    s.input.send(callTool('create_or_update_task', { task_id: taskA2, status: 'DONE' }));
+    s.input.send(callTool('update_task', { task_id: taskA2, status: 'DONE' }));
     await until('worker row gone at A2 DONE', goneAll(page, [workerSel]), 60000);
     assert(errors.length === 0 && board.errors.length === 0, 'browser errors', [...errors, ...board.errors]);
     assignedCopies[kind] = { root: s.root, names: s.names, projectId: s.projectId, teamRef: s.bRef, coordinator: coordinator.agentRunId,

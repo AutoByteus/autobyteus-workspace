@@ -223,11 +223,11 @@ relevant surviving files inside editable skill roots.
 Runtime adapters expose one logical `send_message_to` capability through their
 native tool surfaces when effective runtime exposure includes it. Standalone
 runs require explicit configuration; every valid team member context receives
-`get_handoff_rules`, `send_message_to`, `delegate_task` and `create_or_update_task`
+`get_handoff_rules`, `send_message_to` and `delegate_task`
 automatically (a member with no Team scope, such as a standalone host, gets all
-but `get_handoff_rules`), with duplicates removed. `create_or_update_task` is
-there so an agent can mark DONE the Task its delegation created (see
-[Collaborators](#collaborators)). The root topology resolver and active delivery binding
+but `get_handoff_rules`), with duplicates removed. No task tool is automatic: an
+agent that should close the Task its delegation created lists `update_task` in its
+definition (see [Collaborators](#collaborators)). The root topology resolver and active delivery binding
 still authorize each team-route call:
 
 - AutoByteus uses the server-owned local `BaseTool` wrapper.
@@ -399,9 +399,9 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   `AgentRunCommandCoordinator.post` → `StandaloneAgentRunRoot.postUserMessage` →
   `StandaloneRootMessageDelivery.postToHost`) appends a `[Mentioned collaborators]`
   note with each name, kind and address, telling the agent to `delegate_task` to
-  the address, follow up by the returned run ID and, when the result also has a
-  `task_id`, mark that Task DONE with `create_or_update_task` once the work is
-  finished. An entry already in the run reads `- Name (Agent) at /address, already
+  the address and follow up by the returned run ID. The note names no task tool
+  and says nothing about closing a Task; an agent with `update_task` learns that
+  from the tool's own description. An entry already in the run reads `- Name (Agent) at /address, already
   in this run`, and the guidance then adds that such an agent or team can instead
   be messaged directly with `send_message_to` at its address, or `delegate_task`
   used for a separate copy; a note with no in-run mention is unchanged. A
@@ -472,8 +472,8 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   clients remove it from their closed set, so it is listed again while its
   still-closed helpers stay hidden. The same holds for a Task with
   no Project: a description-only `delegate_task` by an unowned sender returns
-  its `task_id`, and `create_or_update_task({task_id, status: "DONE"})` closes,
-  stops and hides that copy and its sub-work (see
+  its `task_id`, and `update_task({task_id, status: "DONE"})` (for an agent that
+  selected `update_task`) closes, stops and hides that copy and its sub-work (see
   [Projects](projects.md#tasks-with-no-project-ad-hoc)).
 - **Discovery (REQ-001/002).** The opt-in tool `list_available_agents` (see
   [Agent Tools](./agent_tools.md)) asks the sender's root

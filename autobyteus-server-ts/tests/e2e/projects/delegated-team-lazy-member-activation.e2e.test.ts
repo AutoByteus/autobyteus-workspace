@@ -213,7 +213,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     app = started.fastify; url = started.mainUrl;
     const suffix = randomUUID().slice(0, 6);
     names.squad = `DTL Squad ${suffix}`;
-    ids.manager = await agentDefinition(`DTL Manager ${suffix}`, ["create_or_update_task"]);
+    ids.manager = await agentDefinition(`DTL Manager ${suffix}`, ["create_task", "update_task"]);
     ids.worker = await agentDefinition(`DTL Worker ${suffix}`, []);
     ids.squad = (await graphql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: names.squad, description: "Task Team", instructions: "Follow requests.", coordinatorMemberName: "lead",
@@ -522,9 +522,9 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     record.idleRestore = { launches: wakeLaunches };
 
     // DTL-006 (AC-005): Task DONE stops the copy; reopen and the Manager's message resume only the lead.
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskId!, status: "DONE" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskId!, status: "DONE" }));
     await until(() => offline(copy, MEMBERS), `${kind}: copy stopped by DONE`, 30_000);
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskId!, status: "TODO" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskId!, status: "TODO" }));
     const reopenFrom = (await launches()).length;
     const reopened = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copy.members.lead.agentRunId, content: "Reopened. Marker LEAD-REOPEN." }));
     expect(reopened, JSON.stringify(reopened)).toMatchObject({ accepted: true });

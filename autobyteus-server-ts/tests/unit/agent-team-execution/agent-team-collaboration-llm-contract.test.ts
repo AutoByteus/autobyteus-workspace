@@ -53,14 +53,14 @@ describe("approved AgentTeam collaboration LLM contract", () => {
       delegateReferences: sha256(DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION),
       collaborationPrompt: sha256(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION),
     }).toEqual({
-      sendTool: "6e8681d650e6100f5ac27866ab6294617f94797656d7933e02883bf176432ef6",
+      sendTool: "c9968c5dc5ad2ca6999d36b5a284df3cbc27202da144ca2d1ea5ff829d53972b",
       sendRecipient: "b9c340525eb1af6c31faaa12c1cb8ccb18d7110cec8577bef85df196dfd0b801",
       sendExactRun: "62e7add6181c1521f41ddaad05b9a87a0d3320f673bf6fc4bd851d4d9f9dc1c4",
-      delegateTool: "af4480693d3e0daffc9a4f3faf8482b30005426d31d55a3da39cf3e71e67fc5a",
+      delegateTool: "4de7936767fb1acd82a1c39f1f407ae0647159e9ed41b7e250bdeb615cbd4e82",
       delegateRecipient: "1b715bcac89ebc4a77e7fda6b63397b940358cd0a17f91317b26419909e43af5",
       delegateDescription: "a2165576362e49586aef4ccef6338288d5ba865fd50363d1fd65494b173ca49a",
       delegateReferences: "43d07f7e31b5b6f03e0327fa89f427fb70dc5da6a91ec098a3430cd56ccb2533",
-      collaborationPrompt: "061ff5a1ec46f5f49d11b85a46ea2d12be24a5eab744286c99516ebcda5ea37f",
+      collaborationPrompt: "35aa83224ee028cdf86f1a484d1aacb8791aa546408b5f4f60edb3587be92f62",
     });
   });
 
@@ -83,11 +83,16 @@ describe("approved AgentTeam collaboration LLM contract", () => {
     expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("brought in on first use");
     expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).toContain("a run ID never brings anything in");
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("On failure delegated is false\nand message explains why; nothing was started.");
-    // A description-only delegation that creates a Task returns its task_id; DONE (or CANCELLED) closes the copy.
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("that creates a\nTask also returns its task_id");
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("call create_or_update_task with that\ntask_id and status DONE");
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("status DONE (or CANCELLED if the work turned out not to be needed), which stops the\ncopy and removes it from the run.");
-    expect(prompt).toContain("`task_id`. When the work is finished, call `create_or_update_task` with that\n  `task_id` and status `DONE` (or `CANCELLED` if the work turned out not to be\n  needed); this stops the copy and removes it from the run.");
+    // A description-only delegation that creates a Task returns its task_id; no text tells the agent how to close it (AC-001).
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("that creates a\nTask also returns its task_id.");
+    expect(prompt).toContain("A description-only delegation that creates a Task also returns its\n  `task_id`.\n");
+  });
+
+  it("names no task tool anywhere: closing and reopening guidance lives only in update_task's description (AC-001, AC-004, AC-005)", () => {
+    for (const text of [SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION, DELEGATE_TASK_LLM_DESCRIPTION, DELEGATE_TASK_ID_DESCRIPTION, AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION]) {
+      expect(text).not.toMatch(/create_or_update_task|update_task|create_task/);
+      expect(text).not.toMatch(/call `?\w+`? with that/);
+    }
   });
 
   it("names every copy ID for what it is and describes delegating a follow-up Task to an existing copy (REQ-001/002/004/012, AC-015)", () => {
@@ -123,7 +128,7 @@ describe("approved AgentTeam collaboration LLM contract", () => {
     expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("A copy whose Task is DONE or CANCELLED is\nstopped");
     expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).toContain("A delegated copy whose Task is DONE or CANCELLED is reactivated only");
     expect(DELEGATE_TASK_ID_DESCRIPTION).toContain("Blank, unknown, ambiguous, DONE or CANCELLED Tasks fail.");
-    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("Task to TODO or IN_PROGRESS with create_or_update_task and then messaging the copy's agent\nrun ID");
+    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("Task to TODO or IN_PROGRESS and then messaging the copy's agent\nrun ID");
     expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).toContain("reactivated only by the run that assigned it, after it moves the Task to TODO or IN_PROGRESS");
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("On success it returns delegated: true and\ntarget_kind.");
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("To continue the same Task with the same copy later, move the\nTask to TODO or IN_PROGRESS first, then message the copy's agent run ID");
