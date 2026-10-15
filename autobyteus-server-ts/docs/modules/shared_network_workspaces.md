@@ -35,3 +35,15 @@ environments, preserving inherited `GIT_CONFIG_*` entries. No global gitconfig o
 Healthy file/media/HTML/relative-asset/completed-artifact previews use the existing
 REST authorization/path/projection/MIME/error/stream contracts. Local unit fixtures
 and source inspection are not current-product shared-mount or physical LAN proof.
+
+## Qualification boundary
+
+The delivered filesystem increment is validated with ordinary Linux commands in
+two generic containers sharing a real NFS mount in one Ubuntu VM, not through
+application acceptance. Native-Linux and Docker-Linux storage are sequential.
+This same-kernel/cache evidence does not qualify independent clients, physical
+hosts, Mac/cross-OS, external join or authenticated-agent behavior. Existing
+repository content/lifecycle regressions are supplementary, not proof of a new
+live editor journey. See the [service validation boundary](../../../autobyteus-nfs/README.md#validation-boundary).
+The service remains unpublished; neither an API regression Pass nor filesystem
+Pass changes the release lock or enables the Guide's install command.

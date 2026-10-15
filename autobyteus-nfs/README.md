@@ -3,11 +3,32 @@
 A standalone, app-independent service for sharing **one chosen project folder**
 between trusted computers. It does not sync, copy or back up projects.
 
-**Release status:** source implementation is under validation. No qualified public
+**Release status:** this source increment has bounded command-only Linux filesystem
+validation, not full product or platform qualification. No qualified public
 NFS installer/command is published. The Nodes NFS Guide intentionally disables
 command copy/download. Do not substitute a prototype command or invent a release
 URL. `packaging/release-lock.json` contains architecture-reference pins, not a
 claim that this product has passed the physical/runtime matrix.
+
+## Validation boundary
+
+The delivered validation increment uses Linux commands in two generic Docker
+containers bound to a proven real host NFS mount in **one Ubuntu VM**. Native
+Linux and Docker-on-Linux storage are exercised sequentially against the same
+original source. This proves the tested file operations, healthy fresh-open
+visibility, concurrency and safety controls at that boundary. Both containers
+share the host kernel/cache; this is not independent NFS-client or multi-host
+qualification. Visibility observations are not throughput/scalability benchmarks.
+
+The user selected command-only acceptance for this increment: application UI,
+editor and API journeys are not its acceptance dependency. Repository regression
+checks remain supplementary. Independent-kernel/physical/Mac/cross-OS/external
+join, authenticated-agent and publication qualification remain deferred or
+unproven; product targets below are not a qualified-support list. The live editor
+continuation was not completed, and no broader approval is implied. See the
+[archived delivery evidence](../tickets/done/shared-network-workspaces/handoff-summary.md)
+for fresh-versus-carried proof and known limitations. Publication still follows
+[packaging/RELEASE.md](packaging/RELEASE.md); the Guide remains unavailable.
 
 ## Supported design and qualification targets
 
@@ -184,10 +205,13 @@ is not whole-host reboot or mounted NFS qualification.
 
 Unit tests use temporary owned files and fake Docker HTTP responses; they do not
 mount/export/recreate real nodes. Cross-compilation and `version` smoke do not
-prove native NFS or installer behavior. Root `TESTING.md` applies. Current-build
-mode tests, clean-machine installation, healthy previews and native skill tool
+prove native NFS or installer behavior. Root `TESTING.md` applies. The bounded command-only
+increment above is distinct from broader product and publication qualification:
+clean-machine installation, healthy application previews and native skill tool
 reads/peer-stop/restore, independent physical Mac/Linux/Docker topology and
-explicit user verification remain downstream gates. Do not run privileged setup
+explicit publication user verification are not established by those checks.
+They are not additional acceptance gates for the user-selected command-only
+increment; the publication guide's gates remain unchanged. Do not run privileged setup
 or provider calls merely because a design review passed.
 
 See [packaging/RELEASE.md](packaging/RELEASE.md) for distribution gates and
