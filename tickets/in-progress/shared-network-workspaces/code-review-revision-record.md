@@ -852,3 +852,10 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   Mac/independent-kernel/physical/authenticated scopes notPassed. Successful test-
   review af9f23/current additions after green API; Delivery later. No release,
   merge/push/tag/deploy/TaskDone/userverify/delegation/duplicate informational route.
+
+- **Confirmed primary handoff:** review445a6905296a31918b02f44d602bc44a33769d26
+  delivered to /software_engineering_team/api_e2e_engineer, AgentRun
+  api_e2e_engineer_4b3516b0eb7d448586471bee29383f50; accepted=true/DELIVERED,
+  17 relevant references. One most-specific source-Pass recipient only, no duplicate
+  Implementation/Designer/Delivery notice. Separate user-requested PM follow-up
+  already created and durably attached; no delegation or recipient polling.
