@@ -591,3 +591,28 @@ Apply receiving-role rules; do not duplicate dispatch. The user's earlier immedi
 suggestion was qualified by their latest mandatory cross-node filesystem instruction.
 No additional API/CodeReviewer/Delivery message from this role for this outcome. Success
 is asserted only by subsequent send_message_to confirmation, not this pre-dispatch record.
+
+### ARCH-REV-008 receipt and user-directed API/E2E continuation — 2026-10-15
+
+ARCH008 acceptance/design-alignment Pass received at reviewer commit
+`ac5b25fd87dd2d6af421fd2cd76f70de7c33b67f`; read canonical report/history and
+review-checks/index/routing. Technical SR023/IR009 source unchanged; no new solution
+round, production work or approval. CRR013 source Pass100 and API006 Blocked67.86%
+remain separate authorities. Reviewer returned actionable context with no primary
+implementation/API dispatch because no reviewer rule matched validation continuation.
+
+User explicitly corrected the route: send directly to API/E2E to finish testing, not
+another architecture review. The extra acceptance review was unnecessary for testing-only
+work; it must not cause another review or implementation loop. Required IV-F01–F06 and
+deferred IV-D01–D03/unchanged IV-R01 stay as approved. No code changes requested; tests/
+harnesses may change and actual defects follow their normal origin route.
+
+Full current context/expected tests/authority boundaries in `validation-resume-handoff.md`;
+all1614 incoming references retained. No test outcome changed, no runtime or live-resource
+action, no specialist artifact edited. Fresh routing recorded after context persistence.
+
+SR024 continuation routing: fresh designer rules match none (review already complete, no
+implementation delta or delivery receipt). User explicitly names API/E2E; send the full
+persisted package ONLY to `/software_engineering_team/api_e2e_engineer` under the named-
+collaborator instruction. No further architecture/implementation or premature Delivery
+handoff. Receipt route evidence in `evidence/acceptance-revision/sr024/review-receipt/`.
