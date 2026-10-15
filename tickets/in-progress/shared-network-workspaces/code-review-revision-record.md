@@ -657,3 +657,71 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   `solution_designer_ff9bb51075be4fdbbcd1b6eceba5ccdf`; accepted=true/DELIVERED,
   1302 cumulative references. Single most-specific Design Impact recipient only;
   no duplicate notification, polling or delegation.
+
+## CRR-013 — IR009 Mac persistent source binding implementation review
+
+- 2026-10-15; canonical code-review-report.md; **Implementation Review / Pass**,
+  source acceptance only; API005Fail57.14% broaderRequired unchanged.
+- **Full Re-Audit** because shared persisted Identity/interface/setup lifecycle
+  changed, despite bounded19-path CR007 delta. All24 structural checks and ten
+  score categories rerun (10.0/10;100/100); affected end-to-end paths re-traced,
+  unchanged broader evidence byte-checked and retained at original scope.
+- Input2dfcffbb2fb7df6dfa8d2a672f6c5f3f7690b304;
+  sourced3c88f37c30ee74a89a95a4f6906992667c9b875;
+  implementationbase7b2db1b07beedfeac473b9e7ef367b7176338fde.
+  ApprovedSR018 / ReadySR023 / ARCH-REV007 / IR009 / CRR012 / API-REV005;
+  delivery and external Product N/A. Large/High/Reviewed confirmed.
+- MP011/012 Confirmed. CAND013 retained CR007; CAND015–017 implemented source
+  mechanisms supported by normal boot/preservation/partial-retry contracts.
+  CAND018 hypothetical migration requirement rejected without supported deployed
+  predecessor evidence; CAND014 marker/rebinding/retry substitutes remain rejected.
+  No invented concurrency, destructive transition or broader security machinery.
+
+### Prior finding resolution
+
+| Finding | Prior | Current / evidence |
+| --- | --- | --- |
+| CR007/API-F005 | CRR012Fail/DesignImpact; ARCH007 design accepted | **Source correction accepted; product closure pending**. Actual fd/APFS UUID+inode capture; config variants; bind-before-later-effects; bound retry reused. E13source-trace/tests, not public whole-host proof |
+| CR006/API-F004 | API005 scoped resolved | Retained Linuxnative+DockerSTORAGE/native+actualmanagedHTTP40fixtures80reads<=5s; not fullAC003; unchanged expiry0/engine |
+| CR005/API-F003 | API004/005 scoped resolved | Retained ordinaryboot plus separate Stop/policy/replacement/detach; no rawHostConfig equality beyond documented DNS normalization |
+| CR003/API-F002 | NativeUbuntu first-use scoped resolved | Retained exactIR005 enginepair/source, no rebuild |
+| CR002/API-F001 | NativeMac cold-create scoped resolved | Retained; do not conflate CR007 boot failure |
+| CR001/CR004 | Modes/release-gate source resolved | Retained, proportional regressions pass |
+| FUP001 | PM custody | Retained, no new duplicate follow-up |
+
+-12 production source files (<=210effective, deltas<=220),6test files+README.
+  No production/durable-test edits by reviewer. No backend/REST/runtime/UI/engine/
+  mount/restart-policy expansion; config/platform/setup boundaries and shared
+  Store/lock/Runner/qualifier preserved. Old Apple raw-device persistence and stale
+  bound-pending recapture removed; no compatibility/migration/fallback.
+- Personalchecks:12commands including race7packages70topPASS/212four-space
+  subcasePASS,vet,Python18/17pass1skip,expectedpublishrefusal,sourcehash,alltest
+  packagecrosscompiles3otherOS/archtargets,3copied mutations fail intendedtests.
+  Actualinstalledtrusteddiskutil read-only ownAPFSdirectory integration passed.
+  StandaloneGo-childskipnotPass,parent exerciseschild. Crosscompilesnotexecution.
+-3candidatecommands:version,unqualifiedverify-release refusalaftermetadataequality,
+  sameenginehash. ExactJSON embeddedbothcurrentCLIs; all1449incomingrefs,1379
+  protectedinputs,19oldartifacts,4currentfiles,286oldDist verified. Defaultsource
+  cc3556ce850bf20281e6b7e0411a6b01359ea863cac6cb22104808e9dc225354;
+  sameenginef0d71675d3d9b70d89969a8071b8de03287cff0676669ddab295f14568041c88.
+- HelperboundarytestdoesNOTproveprivilegedCreateSource/publicsetup; actualresumed
+  Applyfailsmissingtrustedprobe beforemarker/export. Plan/Detach fixtures stop
+  beforeglobalconfig/mount effects. No boot/VM/mount/volume/Docker/API/app/provider.
+  Raw4Go diagnostic whitespace lines retained; sourcecheckseparate. Toolingread/
+  aggregate-status limitations documented, upstreamfailedattemptsretained.
+- Ownscratch/toolchain/mutationcopies removed; fiveoldDisttrees untouched. E13
+  snapshot preserves priorcanonicalCRR012; CRR001–012 byte-prefix retained.
+- Next configured source-Pass recipient API/E2E: **API-F005 FIRST** currentPUBLIC
+  nativeMac create,>=2ordinarywholehostboots(moreforACTUALrawdevchange),automatic
+  mountednonrootRW beforemanualrepair/reconnect; thenpublicreconnect andactual
+  directory/volumereplacementrefusal. RemainingbothOS/managedclients/physical/
+  nativeactualtools+unreadlinkedassets+peerclose+restore/Standalone-Team-Org/
+  artifacts+previews/amd64engine/hostedworkflow/signing/bootstrap/docs/user/release
+  gatesretain. af9f23testreviewawaitsPassedAPIpackage. Oldownedfixtures use matching
+  OLDCLI detachbeforeinstall, neveridentityediting; realretainedsupportedinstall
+  evidence returnsupstreambeforecutover.
+- D001/DEC015deferredNOTfixed,IMP-D001currentlinks/independentUpdateRemove/AGYlocal,
+  FUP001physical/profile/inference/privateLAN/NATconstraints unchanged. OnlyMac
+  DockerSTORAGEdeferred. No merge/push/tag/release/deployment/TaskDone/userverify.
+  Singlemostspecificrecipient only; nodelegation/duplicateinformationalforwarding.
+  Confirmedhandoff appended only after successfultoolacceptance.
