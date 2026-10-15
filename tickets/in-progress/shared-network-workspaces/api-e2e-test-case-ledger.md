@@ -535,3 +535,402 @@ Prior result002 Fail57.14% retained. PriorAPI-F002 unresolved; API-F001 scoped r
 - Final round **Fail57.14%, broaderRequired**; new API-F003 preliminaryUnclear, focused failure-origin review required. No successful test-code/Delivery qualification. Cleanup receipts reconciled separately; raw snapshot-only Running metadata is not a live unfinished case.
 
 - **Round3 cleanup complete** — public detach rc0 and stopped-state/private/source preservation confirmed read-only. Initial cleanup assertion error preserved (Docker pre-boot Dns:null vs post-boot Dns:[], already present before detach; expected owned recreation label). All3 LinuxVM clones/processes, own desktop/tunnel, host image tag/audit container and scratch absent. Public cache/IR005candidate/five generated trees retained. Final API003 Fail57.14%; no running test case.
+
+## Round4 planned — API003 remains latest completed result
+| Case | Expected | Current |
+|---|---|---|
+| N01 | Current focused then full Go race/vet and Python launcher/packaging pass; explicit skips | Not Tested |
+| V03-F003 | Fresh public selected create and TWO ordinary full-host reboots recover automatically with exact preservation | Not Tested |
+| V03-controls | Normal Stop, policy=no, raw failed Stop/no-op guidance, unselected nodes preserved | Not Tested |
+| V03-regressions | Node restart/launcher upgrade/drained detach/native no-node paths | Not Tested |
+| V01/V02/V04/V05 remainder | Full approved supported matrix, authorized environments only | Not Tested |
+
+- 2026-10-15T07:34:23Z **Round4 N01** — Starting go-race
+
+- 2026-10-15T07:34:59Z **Round4 N01** — go-race: Pass
+
+- 2026-10-15T07:34:59Z **Round4 N01** — Starting go-vet
+
+- 2026-10-15T07:35:06Z **Round4 N01** — go-vet: Pass
+
+- 2026-10-15T07:35:06Z **Round4 N01** — Starting python-bootstrap-launcher
+
+- 2026-10-15T07:35:59Z **Round4 N01** — python-bootstrap-launcher: Pass
+
+- 2026-10-15T07:38:25Z **Round4 V03 Started setup** — own Ubuntu24.04 public-image clone, private Tart root; no host bridge/root/credentials.
+
+- 2026-10-15T07:38:34Z **Round4 V03-Docker prepare** — Started test-owned Docker prerequisite in owned detached LinuxVM
+
+- 2026-10-15T07:38:56Z **Round4 V03-Docker prepare** — test-owned Docker prerequisite in owned detached LinuxVM: Pass
+
+- 2026-10-15T07:38:57Z **Round4 V03-Docker prepare** — Started build storage image from exact retained engine pair
+
+- 2026-10-15T07:39:36Z **Round4 V03-Docker prepare** — build storage image from exact retained engine pair: Pass
+
+- 2026-10-15T07:39:36Z **Round4 V03-Docker prepare** — Started clean image package and manifest verification
+
+- 2026-10-15T07:39:38Z **Round4 V03-Docker prepare** — clean image package and manifest verification: Pass
+
+- 2026-10-15T07:39:38Z **Round4 V03-Docker prepare** — Started VM-loopback private test registry
+
+- 2026-10-15T07:39:43Z **Round4 V03-Docker prepare** — VM-loopback private test registry: Pass
+
+- 2026-10-15T07:39:43Z **Round4 V03-Docker prepare** — Started retain image under actual local-registry immutable digest
+
+- 2026-10-15T07:39:44Z **Round4 V03-Docker prepare** — retain image under actual local-registry immutable digest: Pass
+
+- 2026-10-15T07:39:44Z **Round4 V03-Docker prepare** — Docker storage image ready, test-only loopback digest recorded; no public create yet
+
+- 2026-10-15T07:41:58Z **Round4 V03-Docker storage** — Current full-source server image built/transferred unchanged to owned Linux guest; local registry digest, isolated launcher home, loopback port policy ready
+
+- 2026-10-15T07:41:58Z **Round4 V03-Docker storage** — Started actual current launcher first ordinary node
+
+- 2026-10-15T07:42:01Z **Round4 V03-Docker storage** — actual current launcher first ordinary node: Pass
+
+- 2026-10-15T07:42:01Z **Round4 V03-Docker storage** — Started real server health before NFS selection
+
+- 2026-10-15T07:42:20Z **Round4 V03-Docker storage** — real server health before NFS selection: Pass
+
+- 2026-10-15T07:42:20Z **Round4 V03-Docker storage** — Started actual current launcher second unselected node
+
+- 2026-10-15T07:42:23Z **Round4 V03-Docker storage** — actual current launcher second unselected node: Pass
+
+- 2026-10-15T07:42:34Z **Round4 V03-Docker storage** — Started seed synthetic private auth/data/browser sentinel bytes
+
+- 2026-10-15T07:42:35Z **Round4 V03-Docker storage** — seed synthetic private auth/data/browser sentinel bytes: Pass
+
+- 2026-10-15T07:42:35Z **Round4 V03-Docker storage** — Started ordinary custom network alias setup
+
+- 2026-10-15T07:42:35Z **Round4 V03-Docker storage** — ordinary custom network alias setup: Pass
+
+- 2026-10-15T07:42:36Z **Round4 V03-Docker storage** — Two exact current launcher nodes prepared; selected running/unselected stopped, loopback ports and synthetic private bytes recorded
+
+- 2026-10-15T07:42:36Z **Round4 V03-Docker storage** — Started fresh nonempty ext4 source before first public setup
+
+- 2026-10-15T07:42:36Z **Round4 V03-Docker storage** — fresh nonempty ext4 source before first public setup: Pass
+
+- 2026-10-15T07:42:36Z **Round4 V03-Docker storage** — Started one fresh public selected Docker create
+
+- 2026-10-15T07:42:57Z **Round4 V03-Docker storage** — one fresh public selected Docker create: Pass
+
+- 2026-10-15T07:42:57Z **Round4 V03-Docker storage** — Started exact chosen image config private state ports aliases and unselected preservation
+
+- 2026-10-15T07:42:58Z **Round4 V03-Docker storage** — exact chosen image config private state ports aliases and unselected preservation: Fail
+
+- 2026-10-15T07:42:58Z **Round4 V03-Docker storage** — ManagedDocker client Fail/incomplete AssertionError()
+
+- 2026-10-15T07:44:18Z **Round4 V03-Docker storage** — Started exact chosen image config private state ports aliases and unselected preservation
+
+- 2026-10-15T07:44:19Z **Round4 V03-Docker storage** — exact chosen image config private state ports aliases and unselected preservation: Pass
+
+- 2026-10-15T07:44:19Z **Round4 V03-Docker storage** — Started same original nonempty source and native mount identity preserved
+
+- 2026-10-15T07:44:19Z **Round4 V03-Docker storage** — same original nonempty source and native mount identity preserved: Pass
+
+- 2026-10-15T07:44:19Z **Round4 V03-Docker storage** — Started installed identity private modes and active managed job
+
+- 2026-10-15T07:44:19Z **Round4 V03-Docker storage** — installed identity private modes and active managed job: Pass
+
+- 2026-10-15T07:44:19Z **Round4 V03-Docker storage** — Fresh selected public create Pass; no reconnect performed; ordinary two whole-host reboots next
+
+- 2026-10-15T07:44:20Z **Round4 V03-Docker storage** — Started ordinary whole-host reboot 1 automatic actual readiness
+
+- 2026-10-15T07:45:20Z **Round4 V03-Docker storage** — ordinary whole-host reboot 1 automatic actual readiness: Pass
+
+- 2026-10-15T07:45:20Z **Round4 V03-Docker storage** — Started reboot 1 same ID/image/config/private/source/mounted API preservation
+
+- 2026-10-15T07:45:21Z **Round4 V03-Docker storage** — reboot 1 same ID/image/config/private/source/mounted API preservation: Pass
+
+- 2026-10-15T07:45:21Z **Round4 V03-Docker storage** — Started ordinary whole-host reboot 2 automatic actual readiness
+
+- 2026-10-15T07:46:21Z **Round4 V03-Docker storage** — ordinary whole-host reboot 2 automatic actual readiness: Pass
+
+- 2026-10-15T07:46:21Z **Round4 V03-Docker storage** — Started reboot 2 same ID/image/config/private/source/mounted API preservation
+
+- 2026-10-15T07:46:22Z **Round4 V03-Docker storage** — reboot 2 same ID/image/config/private/source/mounted API preservation: Pass
+
+- 2026-10-15T07:46:22Z **Round4 V03-Docker storage** — Two fresh ordinary full-host reboots automatic readiness and exact preservation PASS; no manual Start/reconnect. Controls still required.
+
+- 2026-10-15T07:46:42Z **Round4 V03-Docker storage** — Started ordinary actual healthy state before Stop
+
+- 2026-10-15T07:46:43Z **Round4 V03-Docker storage** — ordinary actual healthy state before Stop: Pass
+
+- 2026-10-15T07:46:43Z **Round4 V03-Docker storage** — Started current public launcher Stop on successfully running selected node
+
+- 2026-10-15T07:46:46Z **Round4 V03-Docker storage** — current public launcher Stop on successfully running selected node: Pass
+
+- 2026-10-15T07:46:46Z **Round4 V03-Docker storage** — Started ordinary Stop state and read-only status
+
+- 2026-10-15T07:46:47Z **Round4 V03-Docker storage** — ordinary Stop state and read-only status: Pass
+
+- 2026-10-15T07:46:47Z **Round4 V03-Docker storage** — Observe two existing30-second service ticks after normal Stop
+
+- 2026-10-15T07:47:52Z **Round4 V03-Docker storage** — Started normal Stop preserved across service ticks
+
+- 2026-10-15T07:47:52Z **Round4 V03-Docker storage** — normal Stop preserved across service ticks: Pass
+
+- 2026-10-15T07:47:52Z **Round4 V03-Docker storage** — Started confirmed public reconnect does not override normal Stop
+
+- 2026-10-15T07:47:53Z **Round4 V03-Docker storage** — confirmed public reconnect does not override normal Stop: Pass
+
+- 2026-10-15T07:47:53Z **Round4 V03-Docker storage** — Started normal Stop preserved after confirmed reconnect
+
+- 2026-10-15T07:47:53Z **Round4 V03-Docker storage** — normal Stop preserved after confirmed reconnect: Pass
+
+- 2026-10-15T07:49:34Z **Round4 V03-Docker storage** — Started normal unless-stopped Stop remains stopped after whole-host reboot and ticks
+
+- 2026-10-15T07:49:35Z **Round4 V03-Docker storage** — normal unless-stopped Stop remains stopped after whole-host reboot and ticks: Pass
+
+- 2026-10-15T07:49:35Z **Round4 V03-Docker storage** — Normal-running Stop / ticks / confirmed reconnect / ordinary reboot veto PASS. No failed-stop policy control inferred.
+
+- 2026-10-15T07:50:24Z **Round4 V03-Docker storage** — Started control only: hold owned attachment completion job for serial failed-start inspection
+
+- 2026-10-15T07:50:25Z **Round4 V03-Docker storage** — control only: hold owned attachment completion job for serial failed-start inspection: Pass
+
+- 2026-10-15T07:50:25Z **Round4 V03-Docker storage** — Started explicit user Start of normally stopped node to prepare distinct policy control
+
+- 2026-10-15T07:50:26Z **Round4 V03-Docker storage** — explicit user Start of normally stopped node to prepare distinct policy control: Pass
+
+- 2026-10-15T07:50:26Z **Round4 V03-Docker storage** — Started control starts from genuinely running healthy selected node
+
+- 2026-10-15T07:50:32Z **Round4 V03-Docker storage** — control starts from genuinely running healthy selected node: Pass
+
+- 2026-10-15T07:50:32Z **Round4 V03-Docker storage** — Started ordinary reboot with attachment job held for serial operator inspection
+
+- 2026-10-15T07:51:10Z **Round4 V03-Docker storage** — ordinary reboot with attachment job held for serial operator inspection: Pass
+
+- 2026-10-15T07:51:41Z **Round4 V03-Docker storage** — Captured real ordinary Docker NFS pre-process connection-refused start; job held, no synthetic state
+
+- 2026-10-15T07:51:41Z **Round4 V03-Docker storage** — Started raw Stop on already-failed node is a Docker no-op
+
+- 2026-10-15T07:51:41Z **Round4 V03-Docker storage** — raw Stop on already-failed node is a Docker no-op: Pass
+
+- 2026-10-15T07:51:41Z **Round4 V03-Docker storage** — Started current launcher reports no-op/policy guidance, not cancellation promise
+
+- 2026-10-15T07:51:41Z **Round4 V03-Docker storage** — current launcher reports no-op/policy guidance, not cancellation promise: Pass
+
+- 2026-10-15T07:51:41Z **Round4 V03-Docker storage** — Started operator explicitly selects current restart=no durable veto
+
+- 2026-10-15T07:51:41Z **Round4 V03-Docker storage** — operator explicitly selects current restart=no durable veto: Pass
+
+- 2026-10-15T07:51:41Z **Round4 V03-Docker storage** — Started restore original owned attachment service with existing configuration
+
+- 2026-10-15T07:51:41Z **Round4 V03-Docker storage** — restore original owned attachment service with existing configuration: Pass
+
+- 2026-10-15T07:52:46Z **Round4 V03-Docker storage** — Started policy=no suppresses automatic completion while host becomes ready
+
+- 2026-10-15T07:52:47Z **Round4 V03-Docker storage** — policy=no suppresses automatic completion while host becomes ready: Pass
+
+- 2026-10-15T07:52:47Z **Round4 V03-Docker storage** — Started confirmed public reconnect cannot override current policy=no
+
+- 2026-10-15T07:52:48Z **Round4 V03-Docker storage** — confirmed public reconnect cannot override current policy=no: Pass
+
+- 2026-10-15T07:52:48Z **Round4 V03-Docker storage** — Started policy veto exact stopped-state preservation after explicit reconnect
+
+- 2026-10-15T07:52:48Z **Round4 V03-Docker storage** — policy veto exact stopped-state preservation after explicit reconnect: Pass
+
+- 2026-10-15T07:52:48Z **Round4 V03-Docker storage** — Started ordinary reboot after durable veto with original attachment job enabled
+
+- 2026-10-15T07:53:25Z **Round4 V03-Docker storage** — ordinary reboot after durable veto with original attachment job enabled: Pass
+
+- 2026-10-15T07:54:30Z **Round4 V03-Docker storage** — Started policy=no remains veto across reboot and service ticks
+
+- 2026-10-15T07:54:31Z **Round4 V03-Docker storage** — policy=no remains veto across reboot and service ticks: Pass
+
+- 2026-10-15T07:54:31Z **Round4 V03-Docker storage** — Captured failed-start raw Stop no-op/guidance and current restart=no automatic/explicit/reboot veto PASS
+
+- 2026-10-15T07:54:42Z **Round4 V03-Docker storage** — Started explicit operator restores original unless-stopped policy and starts node for restart regression
+
+- 2026-10-15T07:54:43Z **Round4 V03-Docker storage** — explicit operator restores original unless-stopped policy and starts node for restart regression: Pass
+
+- 2026-10-15T07:54:43Z **Round4 V03-Docker storage** — Started restored explicit running state actual API ready
+
+- 2026-10-15T07:54:49Z **Round4 V03-Docker storage** — restored explicit running state actual API ready: Pass
+
+- 2026-10-15T07:54:49Z **Round4 V03-Docker storage** — Started ordinary Docker node restart
+
+- 2026-10-15T07:54:52Z **Round4 V03-Docker storage** — ordinary Docker node restart: Pass
+
+- 2026-10-15T07:54:52Z **Round4 V03-Docker storage** — Started ordinary node restart readiness
+
+- 2026-10-15T07:54:56Z **Round4 V03-Docker storage** — ordinary node restart readiness: Pass
+
+- 2026-10-15T07:54:56Z **Round4 V03-Docker storage** — Started ordinary node restart exact original selected state preservation
+
+- 2026-10-15T07:54:58Z **Round4 V03-Docker storage** — ordinary node restart exact original selected state preservation: Pass
+
+- 2026-10-15T07:54:58Z **Round4 V03-Docker storage** — Started test-only registry and isolated HOME current helper prerequisites
+
+- 2026-10-15T07:54:58Z **Round4 V03-Docker storage** — test-only registry and isolated HOME current helper prerequisites: Pass
+
+- 2026-10-15T07:54:58Z **Round4 V03-Docker storage** — Started actual public launcher upgrade --all against same immutable current worktree image
+
+- 2026-10-15T07:55:05Z **Round4 V03-Docker storage** — actual public launcher upgrade --all against same immutable current worktree image: Pass
+
+- 2026-10-15T07:55:05Z **Round4 V03-Docker storage** — Started explicitly stop unselected fixture again after requested upgrade --all
+
+- 2026-10-15T07:55:10Z **Round4 V03-Docker storage** — explicitly stop unselected fixture again after requested upgrade --all: Pass
+
+- 2026-10-15T07:55:11Z **Round4 V03-Docker storage** — Started current replacement admitted by existing selected node reference
+
+- 2026-10-15T07:55:11Z **Round4 V03-Docker storage** — current replacement admitted by existing selected node reference: Pass
+
+- 2026-10-15T07:55:11Z **Round4 V03-Docker storage** — Started new current container private bytes mounted APIs source and exact state baseline
+
+- 2026-10-15T07:55:12Z **Round4 V03-Docker storage** — new current container private bytes mounted APIs source and exact state baseline: Pass
+
+- 2026-10-15T07:55:12Z **Round4 V03-Docker storage** — Started ordinary reboot resolves current replacement rather than old recreation receipt ID
+
+- 2026-10-15T07:56:13Z **Round4 V03-Docker storage** — ordinary reboot resolves current replacement rather than old recreation receipt ID: Pass
+
+- 2026-10-15T07:56:13Z **Round4 V03-Docker storage** — Started replacement automatic boot same current ID private and mounted data preservation
+
+- 2026-10-15T07:56:14Z **Round4 V03-Docker storage** — replacement automatic boot same current ID private and mounted data preservation: Pass
+
+- 2026-10-15T07:56:14Z **Round4 V03-Docker storage** — Node restart and actual public launcher replacement/current-ref ordinary boot PASS. Upgrade-all has its documented own configuration policy, not unchanged opaque-config proof.
+
+- 2026-10-15T07:57:18Z **Round4 V03-Docker storage** — Started explicitly drain own selected test node before safe detach
+
+- 2026-10-15T07:57:22Z **Round4 V03-Docker storage** — explicitly drain own selected test node before safe detach: Pass
+
+- 2026-10-15T07:57:23Z **Round4 V03-Docker storage** — Started public detach --yes --drained through installed owner
+
+- 2026-10-15T07:57:24Z **Round4 V03-Docker storage** — public detach --yes --drained through installed owner: Pass
+
+- 2026-10-15T07:57:24Z **Round4 V03-Docker storage** — Started drained detach current config private/source preservation and exact attempt removal
+
+- 2026-10-15T07:57:24Z **Round4 V03-Docker storage** — drained detach current config private/source preservation and exact attempt removal: Fail
+
+- 2026-10-15T07:57:24Z **Round4 V03-Docker storage** — Detach regression Fail/incomplete AssertionError()
+
+- 2026-10-15T07:59:28Z **Round4 V03-Docker storage** — Started drained detach current config private/source preservation and exact attempt removal
+
+- 2026-10-15T07:59:30Z **Round4 V03-Docker storage** — drained detach current config private/source preservation and exact attempt removal: Pass
+
+- 2026-10-15T07:59:30Z **Round4 V03-Docker storage** — Selected drained detach preserves current opaque state/source/private bytes and removes exact bounded attempt PASS
+
+- 2026-10-15T07:59:30Z **Round4 V03-Docker storage** — Started native regression starts detached, no host Ganesha engine preinstallation
+
+- 2026-10-15T07:59:30Z **Round4 V03-Docker storage** — native regression starts detached, no host Ganesha engine preinstallation: Pass
+
+- 2026-10-15T07:59:30Z **Round4 V03-Docker storage** — Started public native storage create no selected nodes and exact Mac peer allowlist
+
+- 2026-10-15T07:59:40Z **Round4 V03-Docker storage** — public native storage create no selected nodes and exact Mac peer allowlist: Pass
+
+- 2026-10-15T07:59:40Z **Round4 V03-Docker storage** — Started native original identity bytes UUID and real nonroot defaultY
+
+- 2026-10-15T07:59:40Z **Round4 V03-Docker storage** — native original identity bytes UUID and real nonroot defaultY: Pass
+
+- 2026-10-15T07:59:40Z **Round4 V03-Docker storage** — Started public native no-node reconnect through current owner
+
+- 2026-10-15T07:59:41Z **Round4 V03-Docker storage** — public native no-node reconnect through current owner: Pass
+
+- 2026-10-15T07:59:41Z **Round4 V03-Docker storage** — Started native package private mode managed job and installed binary identity
+
+- 2026-10-15T07:59:41Z **Round4 V03-Docker storage** — native package private mode managed job and installed binary identity: Pass
+
+- 2026-10-15T07:59:41Z **Round4 V03-Docker storage** — Native/peer regression Fail/incomplete AssertionError()
+
+- 2026-10-15T08:00:31Z **Round4 V03-Docker storage** — Started native package private mode managed job and installed binary identity
+
+- 2026-10-15T08:00:32Z **Round4 V03-Docker storage** — native package private mode managed job and installed binary identity: Pass
+
+- 2026-10-15T08:00:32Z **Round4 V03-Docker storage** — Native current public no-node create/reconnect regression Pass; source identity/no preinstalled engine/defaultY retained
+
+- 2026-10-15T08:00:39Z **Round4 V03-Docker storage** — Ordinary shared-NAT Mac-to-Linux TCP2049 unreachable; no host bridge/router/firewall/ARP workaround authorized. No mount attempted on known unhealthy path.
+
+- 2026-10-15T08:02:04Z **Round4 V01 Mac-native** — Started fresh nonempty owned APFS source
+
+- 2026-10-15T08:02:05Z **Round4 V01 Mac-native** — fresh nonempty owned APFS source: Pass
+
+- 2026-10-15T08:02:05Z **Round4 V01 Mac-native** — Started one public nativeMac create under077 no selected nodes
+
+- 2026-10-15T08:02:17Z **Round4 V01 Mac-native** — one public nativeMac create under077 no selected nodes: Pass
+
+- 2026-10-15T08:02:17Z **Round4 V01 Mac-native** — Started Mac original/mounted identity bytes UUID private modes installed binary running job
+
+- 2026-10-15T08:02:17Z **Round4 V01 Mac-native** — Mac original/mounted identity bytes UUID private modes installed binary running job: Pass
+
+- 2026-10-15T08:02:53Z **Round4 V01 Mac-native** — Started nativeMac ordinary reboot automatically preserves exact source and job
+
+- 2026-10-15T08:03:07Z **Round4 V01 Mac-native** — nativeMac ordinary reboot automatically preserves exact source and job: Pass
+
+- 2026-10-15T08:03:07Z **Round4 V01 Mac-native** — Started explicit normal nativeMac reconnect
+
+- 2026-10-15T08:03:16Z **Round4 V01 Mac-native** — explicit normal nativeMac reconnect: Pass
+
+- 2026-10-15T08:03:16Z **Round4 V01 Mac-native** — Started reconnect preserves nativeMac source
+
+- 2026-10-15T08:03:17Z **Round4 V01 Mac-native** — reconnect preserves nativeMac source: Pass
+
+- 2026-10-15T08:03:17Z **Round4 V01 Mac-native** — Started nativeMac public drained detach
+
+- 2026-10-15T08:03:18Z **Round4 V01 Mac-native** — nativeMac public drained detach: Pass
+
+- 2026-10-15T08:03:18Z **Round4 V01 Mac-native** — Started nativeMac detach source preservation and no owned attachment/job
+
+- 2026-10-15T08:03:19Z **Round4 V01 Mac-native** — nativeMac detach source preservation and no owned attachment/job: Pass
+
+- 2026-10-15T08:03:19Z **Round4 V01 Mac-native** — Current nativeMac fresh create/ordinary reboot/reconnect/drained detach Pass; no independent peer/DockerDesktop/physical qualification
+
+- 2026-10-15T08:04:35Z **Round4 V03-Docker storage** — Started explicit start owned current node before native storage selection
+
+- 2026-10-15T08:04:36Z **Round4 V03-Docker storage** — explicit start owned current node before native storage selection: Pass
+
+- 2026-10-15T08:04:37Z **Round4 V03-Docker storage** — Started public native create selects existing current managed Docker client
+
+- 2026-10-15T08:04:37Z **Round4 V03-Docker storage** — public native create selects existing current managed Docker client: Fail
+
+- 2026-10-15T08:04:37Z **Round4 V03-Docker storage** — Native managed client Fail/incomplete RuntimeError('Detected private addresses: 192.168.64.4, 172.18.0.1, 172.17.0.1\nLocal managed Docker nodes: autobyteus-server-0, autobyteus-server-1\nAutoByteus NFS incomplete: already configured; use status/reconnect/detach\nAutoByteus NFS incomplete: exit status 1\n')
+
+- Round4 native-client setup correction: initial public create was correctly refused because the prior no-node attachment still existed (raw `native-client-result.json`). This is a harness journey error, not a supported idempotent-create defect. Use normal public detach then create with the same source and explicit selected node; retain UUID/source/private/config assertions (`native-client-harness-delta.json`).
+
+- 2026-10-15T08:08:32Z **Round4 V03-Docker storage** — Started explicit start owned current node before native storage selection
+
+- 2026-10-15T08:08:32Z **Round4 V03-Docker storage** — explicit start owned current node before native storage selection: Pass
+
+- 2026-10-15T08:08:33Z **Round4 V03-Docker storage** — Started public detach existing no-node attachment before changing selected set
+
+- 2026-10-15T08:08:33Z **Round4 V03-Docker storage** — public detach existing no-node attachment before changing selected set: Pass
+
+- 2026-10-15T08:08:33Z **Round4 V03-Docker storage** — Started public native create selects existing current managed Docker client
+
+- 2026-10-15T08:08:45Z **Round4 V03-Docker storage** — public native create selects existing current managed Docker client: Pass
+
+- 2026-10-15T08:08:46Z **Round4 V03-Docker storage** — Linux native-storage managedDocker client actual public admission and current private/source/config preservation Pass; no peer/physical claim
+
+- 2026-10-15T08:09:27Z **Round4 V03-Docker storage** — V04 deterministic healthy mounted fixtures bytes verified in actual managed node; no actual-agent completed artifact claim
+
+- 2026-10-15T08:09:29Z **Round4 V03-Docker storage** — Host-to-owned-guest SSH loopback HTTP forwarding verified using own ephemeral key and guest-read host key; no VM peer route/bridge workaround
+
+- Round4 API-F003 scoped resolution: independently fresh public selected setup and TWO ordinary full Linux guest reboots pass without manual Start/reconnect; exact identity/private/source/API proofs, normal Stop, captured rawStop/restart=no veto, current-ref launcher replacement and safe detach are recorded in `evidence/api-e2e/api-rev-004/prior-failure-resolution.json`. API-REV003 remains historical Fail; current overall round result is not yet finalized. This does not qualify unexecuted Mac Docker/physical/peer/native-runtime/release paths.
+
+- 2026-10-15T08:18:05Z **Round4 V03-Docker storage** — V04 external-change check AssertionError('healthy binary update not visible within approved5s after source close/fsync')
+
+- Round4 V04 / candidate API-F004: first source-actor synced/closed135-byte PNG modification remained old at20 fresh mounted HTTP opens through5.010s (`preview-external-change-result.json`). AC-003/REQ-004/QR-001 explicitly require exact<=1MiB committed bytes within5s; unlike the invalidRange assertion this is an approved contract. No outage, no kernel/network policy edit. Reproduce unique fixtures and inspect actual cache/mount/engine configuration before routing; no unsupported timing race. Unsaved editor buffer remains visible, but immediate tree reload lacked source-created entry, so full reload proof is not yet Pass.
+
+- 2026-10-15T08:21:16Z **Round4 V03-Docker storage** — V04 unique-fixture healthy visibility reproduction Fail
+
+- 2026-10-15T08:23:02Z **Round4 V03-Docker storage** — Started explicitly drain own selected test node before safe detach
+
+- 2026-10-15T08:23:06Z **Round4 V03-Docker storage** — explicitly drain own selected test node before safe detach: Pass
+
+- 2026-10-15T08:23:06Z **Round4 V03-Docker storage** — Started public detach --yes --drained through installed owner
+
+- 2026-10-15T08:23:07Z **Round4 V03-Docker storage** — public detach --yes --drained through installed owner: Pass
+
+- 2026-10-15T08:23:07Z **Round4 V03-Docker storage** — Started drained detach current config private/source preservation and exact attempt removal
+
+- 2026-10-15T08:23:08Z **Round4 V03-Docker storage** — drained detach current config private/source preservation and exact attempt removal: Pass
+
+- 2026-10-15T08:23:08Z **Round4 V03-Docker storage** — Selected drained detach preserves current opaque state/source/private bytes and removes exact bounded attempt PASS
+
+
+## API-REV-004 final reconciliation
+
+- N01 Pass with3skips; N02–N04 historicalnotrerun. V01 nativeMac freshcreate/reboot/reconnect/detach Pass scoped. V02 independentpeer Blocked ordinaryNAT. V03 selectedDockerstorage/client fresh2boots/Stop/veto/nodeRestart/upgrade/currentref/detach Pass:API-F003 resolvedatthisscope. V03nativeLinux no-node/selectedclient/safedetach Pass withno freshengineabsenceguardcredit.
+- V04 currentdesktop mountedPNG/audio/video/PDF/Markdown/HTMLrelative/static/GraphQL Passscoped. Unsavedbufferpreservedthroughlaterexplicitreload andcurrentexternalnotes afterdeliberatediscard; originalearlytree/content stalechecks retained. Noactualcompletedagentartifact/nativeproviderturn. SyntheticbrowserEditContextinput nottrustedOSkeystrokes.
+- **V03/V04 API-F004 Fail**: original135bytePNG oldthrough5.010s; two1024byteunique sourcefsync/close trials nativeNFS+realDockerHTTP firstexactnewbytes61.149s/60.975s. LaterfreshnessNOTPassfor5sAC003. Matchingsource60sdefault clue, originUnclear. Stopremainingmatrixexpansion forfocusedreview.
+- V05/nativeactualtools/unreadassets/peerclose/restore/Standalone-Team-Org, MacmanagedDockerclient, independentphysical/healthyprivatepeer/release surfaces remainNotTested/dependency-limited; onlyMacDockerSTORAGEdeferred. No user-onlywaiver.
+- Generic helper `V03-Docker storage` event label later includes explicitlyidentifiednative/UI probes; rawenvelopeidentity corrected in evidence-identity-corrections.json, actualargv/installedhash/sourceUUID govern. Allharnessfailuresretained, notproductfindings exceptAPI-F004.
+- CleanupComplete: mac-cleanup.json, native-detach-result.json, desktop-validation-result.json, cleanup.json. No case leftRunning; allownedVM/app/tunnel/tag/scratch removed. Fullcurrentreport confidence57.14% Fail/broaderRequired; no TaskDone/release/userverification.

@@ -1,0 +1,110 @@
+{
+  "result": "Pass",
+  "inputHead": "902638e584d8e669b632cf81bcc0a95074892403",
+  "referenceCount": 990,
+  "incomingReferencesPreserved": 774,
+  "missing": [],
+  "trackedChangedPaths": [
+    "tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md"
+  ],
+  "noProductionOrDurableTestChange": true,
+  "historicalPrefixes": {
+    "api-e2e-revision-record.md": {
+      "beforeSHA256": "3bd21e6d40e69cb49230364ca0c41f7b2987eb209e9f45c6d92fdadb704b7bca",
+      "prefixPreserved": true
+    },
+    "api-e2e-test-case-ledger.md": {
+      "beforeSHA256": "41606e9dd02517e5d097c61f16eb0ef420b6400e823c53d8e41905a146d9e2b3",
+      "prefixPreserved": true
+    },
+    "api-e2e-coverage-investigation.md": {
+      "beforeSHA256": "6e3b32efc608038e45fb0623253a7e82c78f8b84addbd2a00fdb1828556d0d59",
+      "prefixPreserved": true
+    }
+  },
+  "retainedCandidates": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/autobyteus-nfs-linux-arm64",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/autobyteus-nfs-darwin-arm64",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/release.json",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/README.txt",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/README.txt",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/autobyteus-nfs-linux-arm64",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/COPYRIGHT",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/SHA256SUMS",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-build-arm64.txt",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-manifest.json",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/engine-manifest.json",
+      "same": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/release.json",
+      "same": true
+    }
+  ],
+  "criticalResults": {
+    "selected-create-confirm-result.json": "Pass",
+    "two-reboots-result.json": "Pass",
+    "normal-stop-result.json": "Pass",
+    "policy-veto-result.json": "Pass",
+    "node-upgrade-result.json": "Pass",
+    "drained-detach-confirm-result.json": "Pass",
+    "mac-native-result.json": "Pass",
+    "native-client-v2-result.json": "Pass",
+    "native-detach-result.json": "Pass",
+    "preview-http-current-contract-result.json": "Pass",
+    "preview-external-change-result.json": "Fail",
+    "visibility-repro-result.json": "Fail"
+  },
+  "jsonErrors": [],
+  "pythonSyntaxErrors": [],
+  "unsafeNames": [],
+  "sensitiveKeyPatternHits": [],
+  "cleanupResult": "Complete",
+  "limits": "Artifact audit is not product qualification or test pass; failing runtime evidence remains Fail. No fresh full-source review claimed."
+}

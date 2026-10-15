@@ -1,0 +1,480 @@
+2026-10-15T08:09:15.610Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260624090000_add_token_usage_ledger_events`
+[2026-10-15T08:09:15.613Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[2026-10-15T08:09:15.620Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260629120000_add_token_usage_display_fields`
+[2026-10-15T08:09:15.623Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260702093000_token_usage_execution_address`
+[2026-10-15T08:09:15.624Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260726090000_add_secret_vault`
+[2026-10-15T08:09:15.626Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260730090000_add_token_usage_provider_name`
+[2026-10-15T08:09:15.628Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260801090000_token_usage_member_display_name`
+[2026-10-15T08:09:15.630Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260814090000_team_run_execution_tree_v1`
+[2026-10-15T08:09:15.631Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260819090000_add_token_usage_run_records`
+[2026-10-15T08:09:15.633Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260820090000_redesign_app_data_migration_summary`
+[2026-10-15T08:09:15.636Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260822090000_add_token_usage_analytics`
+[2026-10-15T08:09:15.638Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260923130000_add_claude_sdk_usage_state`
+[2026-10-15T08:09:15.640Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260924120000_remove_external_channel_tables`
+[2026-10-15T08:09:15.641Z] [INFO] [electron.embedded-server.stdout] Applying migration `20261009120000_token_meter_context_readings`
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout] The following migration(s) have been applied:
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout] migrations/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260203074245_init/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260208094000_add_external_channel_tables/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209213000_remove_agent_conversation_tables/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210101500_add_agent_avatar/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210192000_add_agent_team_avatar/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260212070000_remove_workflow_definition/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260309103000_add_channel_binding_launch_preset/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331102000_remove_channel_bindings_table/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260517090000_add_app_data_migration_records/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260624090000_add_token_usage_ledger_events/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260625193000_token_usage_component_pricing_explainability/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260629120000_add_token_usage_display_fields/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260702093000_token_usage_execution_address/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260726090000_add_secret_vault/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260730090000_add_token_usage_provider_name/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260801090000_token_usage_member_display_name/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260814090000_team_run_execution_tree_v1/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260819090000_add_token_usage_run_records/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260820090000_redesign_app_data_migration_summary/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260822090000_add_token_usage_analytics/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260923130000_add_claude_sdk_usage_state/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20260924120000_remove_external_channel_tables/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]   └─ 20261009120000_token_meter_context_readings/
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-15T08:09:15.644Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-10-15T08:09:15.660Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-10-15T08:09:15.669Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-15T08:09:15.822Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 19 predefined settings
+[2026-10-15T08:09:15.836Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-15T08:09:15.837Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-15T08:09:15.905Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-10-15T08:09:15.906Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-10-15T08:09:15.906Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api004-ih_oeijo/desktop-tmp/autobyteus-isolated-root-cX2WkW/server-data/temp_workspace
+[2026-10-15T08:09:15.906Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api004-ih_oeijo/desktop-tmp/autobyteus-isolated-root-cX2WkW/server-data/temp_workspace.
+[2026-10-15T08:09:15.906Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api004-ih_oeijo/desktop-tmp/autobyteus-isolated-root-cX2WkW/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-10-15T08:09:15.906Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-10-15T08:09:15.906Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-10-15T08:09:15.906Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-10-15T08:09:15.906Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-10-15T08:09:15.907Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-10-15T08:09:15.907Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-10-15T08:09:15.907Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-10-15T08:09:15.907Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-10-15T08:09:15.907Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-10-15T08:09:15.907Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-10-15T08:09:15.907Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-10-15T08:09:15.907Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-10-15T08:09:15.907Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-10-15T08:09:15.907Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-10-15T08:09:15.907Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-10-15T08:09:15.907Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-10-15T08:09:15.907Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-10-15T08:09:15.908Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-15T08:09:15.908Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-10-15T08:09:15.908Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-10-15T08:09:15.908Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-10-15T08:09:15.908Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-10-15T08:09:15.919Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-10-15T08:09:15.919Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agents'
+[2026-10-15T08:09:15.919Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-10-15T08:09:15.919Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-10-15T08:09:15.919Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-10-15T08:09:15.919Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-10-15T08:09:15.919Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-10-15T08:09:15.919Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Discovery Tools
+[2026-10-15T08:09:15.919Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_projects'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_project_tasks'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_project'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_task'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Project Task Tools
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-10-15T08:09:15.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-10-15T08:09:15.921Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-10-15T08:09:15.922Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-10-15T08:09:15.926Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-15T08:09:15.926Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-10-15T08:09:15.939Z] [INFO] [electron.embedded-server.stdout] Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+[2026-10-15T08:09:15.940Z] [INFO] [electron.embedded-server.stdout] Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+[2026-10-15T08:09:15.946Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1792051755945,"pid":32074,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:61377"}
+[2026-10-15T08:09:15.967Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1792051755967,"pid":32074,"hostname":"MacBookPro","msg":"Server listening at http://0.0.0.0:61322"}
+[2026-10-15T08:09:15.967Z] [INFO] [electron.embedded-server.stdout] [2026-10-15T08:09:15.967Z] [INFO] [server.runtime] Server listening on 0.0.0.0:61322
+[2026-10-15T08:09:15.968Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-10-15T08:09:15.970Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-10-15T08:09:15.971Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-10-15T08:09:15.971Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-10-15T08:09:15.971Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-10-15T08:09:15.971Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-10-15T08:09:15.971Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-10-15T08:09:15.971Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-10-15T08:09:15.971Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-10-15T08:09:15.971Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-10-15T08:09:15.971Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-10-15T08:09:15.971Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-10-15T08:09:15.972Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-10-15T08:09:15.972Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 35 LLM models into cache.
+[2026-10-15T08:09:15.972Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-10-15T08:09:15.972Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 audio models into cache.
+[2026-10-15T08:09:15.972Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-10-15T08:09:15.972Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-10-15T08:09:15.994Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-10-15T08:09:15.994Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-10-15T08:09:15.994Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:09:16.099Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[2026-10-15T08:09:17.124Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:09:17.126Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:09:18.391Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:09:18.393Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:09:22.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:09:22.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:09:27.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:09:27.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:09:32.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:09:32.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:09:37.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:09:37.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:09:42.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:09:42.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:09:47.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:09:47.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:09:52.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:09:52.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:09:57.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:09:57.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:10:02.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:10:02.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:10:07.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:10:07.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:10:12.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:10:12.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:10:17.172Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:10:17.173Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:10:18.261Z] [INFO] [electron] Creating node-bound window for nodeId=remote-8242b875-dc9e-4ae5-8a24-657f80f8b63b; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+[2026-10-15T08:10:22.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:10:22.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:10:27.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:10:27.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:10:32.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:10:32.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:10:37.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:10:37.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:10:42.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:10:42.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:10:47.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:10:47.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:10:52.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:10:52.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:10:57.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:10:57.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:11:02.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:11:02.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:11:07.172Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:11:07.173Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:11:12.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:11:12.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:11:17.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:11:17.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:11:22.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:11:22.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:11:27.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:11:27.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:11:32.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:11:32.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:11:37.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:11:37.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:11:42.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:11:42.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:11:47.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:11:47.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:11:52.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:11:52.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:11:57.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:11:57.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:12:02.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:12:02.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:12:07.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:12:07.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:12:12.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:12:12.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:12:17.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:12:17.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:12:22.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:12:22.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:12:27.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:12:27.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:12:32.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:12:32.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:12:37.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:12:37.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:12:42.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:12:42.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:12:47.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:12:47.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:12:52.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:12:52.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:12:57.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:12:57.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:13:02.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:13:02.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:13:07.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:13:07.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:13:12.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:13:12.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:13:17.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:13:17.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:13:22.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:13:22.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:13:27.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:13:27.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:13:32.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:13:32.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:13:37.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:13:37.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:13:42.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:13:42.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:13:47.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:13:47.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:13:52.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:13:52.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:13:57.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:13:57.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:14:02.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:14:02.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:14:07.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:14:07.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:14:12.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:14:12.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:14:17.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:14:17.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:14:22.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:14:22.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:14:27.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:14:27.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:14:32.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:14:32.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:14:37.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:14:37.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:14:42.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:14:42.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:14:47.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:14:47.178Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:14:52.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:14:52.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:14:57.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:14:57.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:15:02.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:15:02.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:15:07.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:15:07.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:15:12.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:15:12.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:15:17.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:15:17.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:15:22.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:15:22.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:15:27.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:15:27.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:15:32.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:15:32.178Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:15:37.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:15:37.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:15:42.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:15:42.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:15:47.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:15:47.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:15:52.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:15:52.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:15:57.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:15:57.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:16:02.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:16:02.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:16:07.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:16:07.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:16:12.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:16:12.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:16:17.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:16:17.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:16:22.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:16:22.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:16:27.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:16:27.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:16:32.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:16:32.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:16:37.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:16:37.178Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:16:42.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:16:42.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:16:47.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:16:47.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:16:52.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:16:52.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:16:57.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:16:57.178Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:17:02.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:17:02.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:17:07.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:17:07.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:17:12.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:17:12.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:17:17.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:17:17.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:17:22.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:17:22.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:17:27.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:17:27.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:17:32.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:17:32.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:17:37.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:17:37.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:17:42.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:17:42.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:17:47.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:17:47.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:17:52.178Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:17:52.182Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:17:57.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:17:57.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:18:02.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:18:02.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:18:07.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:18:07.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:18:12.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:18:12.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:18:17.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:18:17.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:18:22.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:18:22.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:18:27.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:18:27.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:18:32.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:18:32.179Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:18:37.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:18:37.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:18:42.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:18:42.178Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:18:47.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:18:47.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:18:52.178Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:18:52.181Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:18:57.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:18:57.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:19:02.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:19:02.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:19:07.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:19:07.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:19:12.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:19:12.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:19:17.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:19:17.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:19:22.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:19:22.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:19:27.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:19:27.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:19:32.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:19:32.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:19:37.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:19:37.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:19:42.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:19:42.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:19:47.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:19:47.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:19:52.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:19:52.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:19:57.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:19:57.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:20:02.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:20:02.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:20:07.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:20:07.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:20:12.176Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:20:12.179Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:20:17.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:20:17.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:20:22.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:20:22.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:20:27.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:20:27.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:20:32.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:20:32.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:20:37.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:20:37.178Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:20:42.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:20:42.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:20:47.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:20:47.178Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:20:52.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:20:52.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:20:57.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:20:57.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:21:02.180Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:21:02.183Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:21:07.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:21:07.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:21:12.178Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:21:12.181Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:21:17.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:21:17.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:21:22.177Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:21:22.180Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:21:27.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:21:27.180Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:21:32.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:21:32.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:21:37.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:21:37.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:21:42.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:21:42.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:21:47.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:21:47.178Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:21:52.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:21:52.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:21:57.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:21:57.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:22:02.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:22:02.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:22:07.174Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:22:07.175Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:22:12.175Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:22:12.176Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-15T08:22:17.173Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-15T08:22:17.174Z] [INFO] [electron] ServerStatusManager: Emitting status change: running

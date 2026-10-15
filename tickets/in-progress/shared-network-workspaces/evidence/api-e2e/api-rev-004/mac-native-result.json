@@ -1,0 +1,603 @@
+{
+  "vm": "ab-nfs-api004-mac-5427b9a1",
+  "source": "/Users/admin/ab-nfs-api004-mac-5427b9a1-source",
+  "binary": {
+    "guestPath": "/Users/admin/ab-nfs-api004-mac-5427b9a1-binary",
+    "sha256": "64085e451774b99666ae272c78111d3f3c3972a619aa4cf7e4da657abb79df04"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; test ! -e /etc/autobyteus-nfs/attachment.json; mkdir -m 755 /Users/admin/ab-nfs-api004-mac-5427b9a1-source; mkdir -m 755 /Users/admin/ab-nfs-api004-mac-5427b9a1-source/project; printf ORIGINAL_API004_MAC > /Users/admin/ab-nfs-api004-mac-5427b9a1-source/project/preexisting.txt; stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api004-mac-5427b9a1-source"
+      ],
+      "rc": 0,
+      "seconds": 0.971,
+      "stdout": "16777229:512870:501:20:755\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "umask 077; exec /Users/admin/ab-nfs-api004-mac-5427b9a1-binary create --source /Users/admin/ab-nfs-api004-mac-5427b9a1-source --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json"
+      ],
+      "rc": 0,
+      "seconds": 11.243,
+      "stdout": "{\n  \"connection\": {\n    \"storageId\": \"1e973b1f-381a-416c-9314-32a6ec72fdc7\",\n    \"endpoint\": \"192.168.64.2\",\n    \"export\": \"/Users/admin/ab-nfs-api004-mac-5427b9a1-source\",\n    \"protocol\": \"3\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"1e973b1f-381a-416c-9314-32a6ec72fdc7\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n",
+      "stderr": "Detected private addresses: 192.168.64.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS plan:\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\n# BEGIN AutoByteus NFS 9d9cb53c-9933-4b87-85f9-c568c0a626d7\n\"/Users/admin/ab-nfs-api004-mac-5427b9a1-source\" -mapall=501:20 192.168.64.2\n# END AutoByteus NFS 9d9cb53c-9933-4b87-85f9-c568c0a626d7\n# BEGIN AutoByteus NFS 9d9cb53c-9933-4b87-85f9-c568c0a626d7\nnfs.server.mount.port=20048\nnfs.server.bonjour=0\nnfs.server.udp=0\nnfs.server.mount.require_resv_port=0\n# END AutoByteus NFS 9d9cb53c-9933-4b87-85f9-c568c0a626d7\n\n - Export chosen source in place: /Users/admin/ab-nfs-api004-mac-5427b9a1-source\n - Map ALL clients to nonroot 501:20; no recursive ownership change\n - Trust private hosts/subnets: 192.168.64.2\n - Attach 192.168.64.2:/Users/admin/ab-nfs-api004-mac-5427b9a1-source at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\nChecking actual host and selected-node readiness; this may wait for storage.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api004-mac-5427b9a1-source; test \"$(cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/project/preexisting.txt)\" = ORIGINAL_API004_MAC; test \"$(cat /Volumes/autobyteus-shared/project/preexisting.txt)\" = ORIGINAL_API004_MAC; cmp /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json /Volumes/autobyteus-shared/.autobyteus-nfs/storage.json; cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json; sudo -n stat -f \"%Lp:%u:%g:%N\" /Library/\"Application Support\"/AutoByteusNFS /Library/\"Application Support\"/AutoByteusNFS/attachment.json; shasum -a 256 /Library/AutoByteusNFS/libexec/autobyteus-nfs; sudo -n launchctl print system/com.autobyteus.nfs"
+      ],
+      "rc": 0,
+      "seconds": 0.318,
+      "stdout": "16777229:512870:501:20:755\n{\"storageId\":\"1e973b1f-381a-416c-9314-32a6ec72fdc7\"}\n700:0:80:/Library/Application Support/AutoByteusNFS\n600:0:80:/Library/Application Support/AutoByteusNFS/attachment.json\n64085e451774b99666ae272c78111d3f3c3972a619aa4cf7e4da657abb79df04  /Library/AutoByteusNFS/libexec/autobyteus-nfs\nsystem/com.autobyteus.nfs = {\n\tactive count = 1\n\tpath = /Library/LaunchDaemons/com.autobyteus.nfs.plist\n\ttype = LaunchDaemon\n\tstate = running\n\n\tprogram = /Library/AutoByteusNFS/libexec/autobyteus-nfs\n\targuments = {\n\t\t/Library/AutoByteusNFS/libexec/autobyteus-nfs\n\t\tservice\n\t}\n\n\tstdout path = /Library/Application Support/AutoByteusNFS/service.log\n\tstderr path = /Library/Application Support/AutoByteusNFS/service.log\n\tdefault environment = {\n\t\tPATH => /usr/bin:/bin:/usr/sbin:/sbin\n\t}\n\n\tenvironment = {\n\t\tOSLogRateLimit => 64\n\t\tXPC_SERVICE_NAME => com.autobyteus.nfs\n\t}\n\n\tdomain = system\n\tminimum runtime = 30\n\texit timeout = 5\n\truns = 1\n\tpid = 1057\n\timmediate reason = speculative\n\tforks = 1\n\texecs = 1\n\tinitialized = 1\n\ttrampolined = 1\n\tstarted suspended = 0\n\tproxy started suspended = 0\n\tchecked allocations = 0 (queried = 1)\n\tchecked allocations reason = no host\n\tchecked allocations flags = 0x0\n\tlast exit code = (never exited)\n\n\tresource coalition = {\n\t\tID = 1098\n\t\ttype = resource\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tjetsam coalition = {\n\t\tID = 1099\n\t\ttype = jetsam\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tspawn type = daemon (3)\n\tjetsam priority = 40\n\tjetsam memory limit (active) = (unlimited)\n\tjetsam memory limit (inactive) = (unlimited)\n\tjetsamproperties category = daemon\n\tjetsam thread limit = 32\n\tcpumon = default\n\n\tproperties = keepalive | runatload | inferred program | system service | tle system\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/sysctl -n kern.boottime"
+      ],
+      "rc": 0,
+      "seconds": 0.161,
+      "stdout": "{ sec = 1792050738, usec = 666173 } Thu Oct 15 07:52:18 2026\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n shutdown -r now"
+      ],
+      "timeout": 10
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/sysctl -n kern.boottime"
+      ],
+      "timeout": 5
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/sysctl -n kern.boottime"
+      ],
+      "timeout": 5
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/sysctl -n kern.boottime"
+      ],
+      "timeout": 5
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/sysctl -n kern.boottime"
+      ],
+      "rc": 0,
+      "seconds": 1.719,
+      "stdout": "{ sec = 1792051344, usec = 954991 } Thu Oct 15 08:02:24 2026\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/Users/admin/ab-nfs-api004-mac-5427b9a1-binary status --yes --json"
+      ],
+      "rc": 0,
+      "seconds": 0.713,
+      "stdout": "{\n  \"storageId\": \"1e973b1f-381a-416c-9314-32a6ec72fdc7\",\n  \"mountRoot\": \"/Volumes/autobyteus-shared\",\n  \"hostReady\": true,\n  \"nodes\": {},\n  \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n}\n",
+      "stderr": "Checking actual host and selected-node readiness; this may wait for storage.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api004-mac-5427b9a1-source; test \"$(cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/project/preexisting.txt)\" = ORIGINAL_API004_MAC; test \"$(cat /Volumes/autobyteus-shared/project/preexisting.txt)\" = ORIGINAL_API004_MAC; cmp /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json /Volumes/autobyteus-shared/.autobyteus-nfs/storage.json; cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json; sudo -n stat -f \"%Lp:%u:%g:%N\" /Library/\"Application Support\"/AutoByteusNFS /Library/\"Application Support\"/AutoByteusNFS/attachment.json; shasum -a 256 /Library/AutoByteusNFS/libexec/autobyteus-nfs; sudo -n launchctl print system/com.autobyteus.nfs"
+      ],
+      "rc": 0,
+      "seconds": 13.924,
+      "stdout": "16777229:512870:501:20:755\n{\"storageId\":\"1e973b1f-381a-416c-9314-32a6ec72fdc7\"}\n700:0:80:/Library/Application Support/AutoByteusNFS\n600:0:80:/Library/Application Support/AutoByteusNFS/attachment.json\n64085e451774b99666ae272c78111d3f3c3972a619aa4cf7e4da657abb79df04  /Library/AutoByteusNFS/libexec/autobyteus-nfs\nsystem/com.autobyteus.nfs = {\n\tactive count = 1\n\tpath = /Library/LaunchDaemons/com.autobyteus.nfs.plist\n\ttype = LaunchDaemon\n\tstate = running\n\n\tprogram = /Library/AutoByteusNFS/libexec/autobyteus-nfs\n\targuments = {\n\t\t/Library/AutoByteusNFS/libexec/autobyteus-nfs\n\t\tservice\n\t}\n\n\tstdout path = /Library/Application Support/AutoByteusNFS/service.log\n\tstderr path = /Library/Application Support/AutoByteusNFS/service.log\n\tdefault environment = {\n\t\tPATH => /usr/bin:/bin:/usr/sbin:/sbin\n\t}\n\n\tenvironment = {\n\t\tOSLogRateLimit => 64\n\t\tXPC_SERVICE_NAME => com.autobyteus.nfs\n\t}\n\n\tdomain = system\n\tminimum runtime = 30\n\texit timeout = 5\n\truns = 1\n\tpid = 309\n\timmediate reason = speculative\n\tforks = 16\n\texecs = 1\n\tinitialized = 1\n\ttrampolined = 1\n\tstarted suspended = 0\n\tproxy started suspended = 0\n\tchecked allocations = 0 (queried = 1)\n\tchecked allocations reason = no host\n\tchecked allocations flags = 0x0\n\tlast exit code = (never exited)\n\n\tresource coalition = {\n\t\tID = 325\n\t\ttype = resource\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tjetsam coalition = {\n\t\tID = 326\n\t\ttype = jetsam\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tspawn type = daemon (3)\n\tjetsam priority = 40\n\tjetsam memory limit (active) = (unlimited)\n\tjetsam memory limit (inactive) = (unlimited)\n\tjetsamproperties category = daemon\n\tjetsam thread limit = 32\n\tcpumon = default\n\n\tproperties = keepalive | runatload | inferred program | system service | managed LWCR | has LWCR | tle system\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/Users/admin/ab-nfs-api004-mac-5427b9a1-binary reconnect --yes --json"
+      ],
+      "rc": 0,
+      "seconds": 8.53,
+      "stdout": "{\n  \"storageId\": \"1e973b1f-381a-416c-9314-32a6ec72fdc7\",\n  \"mountRoot\": \"/Volumes/autobyteus-shared\",\n  \"hostReady\": true,\n  \"nodes\": {},\n  \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n}\n",
+      "stderr": "Checking saved source and reconnecting; hard NFS may wait for storage.\nChecking actual host and selected-node readiness; this may wait for storage.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api004-mac-5427b9a1-source; test \"$(cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/project/preexisting.txt)\" = ORIGINAL_API004_MAC; test \"$(cat /Volumes/autobyteus-shared/project/preexisting.txt)\" = ORIGINAL_API004_MAC; cmp /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json /Volumes/autobyteus-shared/.autobyteus-nfs/storage.json; cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json; sudo -n stat -f \"%Lp:%u:%g:%N\" /Library/\"Application Support\"/AutoByteusNFS /Library/\"Application Support\"/AutoByteusNFS/attachment.json; shasum -a 256 /Library/AutoByteusNFS/libexec/autobyteus-nfs; sudo -n launchctl print system/com.autobyteus.nfs"
+      ],
+      "rc": 0,
+      "seconds": 1.149,
+      "stdout": "16777229:512870:501:20:755\n{\"storageId\":\"1e973b1f-381a-416c-9314-32a6ec72fdc7\"}\n700:0:80:/Library/Application Support/AutoByteusNFS\n600:0:80:/Library/Application Support/AutoByteusNFS/attachment.json\n64085e451774b99666ae272c78111d3f3c3972a619aa4cf7e4da657abb79df04  /Library/AutoByteusNFS/libexec/autobyteus-nfs\nsystem/com.autobyteus.nfs = {\n\tactive count = 1\n\tpath = /Library/LaunchDaemons/com.autobyteus.nfs.plist\n\ttype = LaunchDaemon\n\tstate = running\n\n\tprogram = /Library/AutoByteusNFS/libexec/autobyteus-nfs\n\targuments = {\n\t\t/Library/AutoByteusNFS/libexec/autobyteus-nfs\n\t\tservice\n\t}\n\n\tstdout path = /Library/Application Support/AutoByteusNFS/service.log\n\tstderr path = /Library/Application Support/AutoByteusNFS/service.log\n\tdefault environment = {\n\t\tPATH => /usr/bin:/bin:/usr/sbin:/sbin\n\t}\n\n\tenvironment = {\n\t\tOSLogRateLimit => 64\n\t\tXPC_SERVICE_NAME => com.autobyteus.nfs\n\t}\n\n\tdomain = system\n\tminimum runtime = 30\n\texit timeout = 5\n\truns = 1\n\tpid = 309\n\timmediate reason = speculative\n\tforks = 16\n\texecs = 1\n\tinitialized = 1\n\ttrampolined = 1\n\tstarted suspended = 0\n\tproxy started suspended = 0\n\tchecked allocations = 0 (queried = 1)\n\tchecked allocations reason = no host\n\tchecked allocations flags = 0x0\n\tlast exit code = (never exited)\n\n\tresource coalition = {\n\t\tID = 325\n\t\ttype = resource\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tjetsam coalition = {\n\t\tID = 326\n\t\ttype = jetsam\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tspawn type = daemon (3)\n\tjetsam priority = 40\n\tjetsam memory limit (active) = (unlimited)\n\tjetsam memory limit (inactive) = (unlimited)\n\tjetsamproperties category = daemon\n\tjetsam thread limit = 32\n\tcpumon = default\n\n\tproperties = keepalive | runatload | inferred program | system service | managed LWCR | has LWCR | tle system\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/Users/admin/ab-nfs-api004-mac-5427b9a1-binary detach --yes --drained --json"
+      ],
+      "rc": 0,
+      "seconds": 0.664,
+      "stdout": "",
+      "stderr": "Owned export/settings removed; Apple nfsd remains OS-owned and was not disabled\nDetached; source, marker, named volumes and private receipts preserved.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; test ! -e /etc/autobyteus-nfs/attachment.json; test ! -e /Library/LaunchDaemons/com.autobyteus.nfs.plist; ! mount | grep \" on /Volumes/autobyteus-shared \"; stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api004-mac-5427b9a1-source; cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/project/preexisting.txt; cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json"
+      ],
+      "rc": 0,
+      "seconds": 0.812,
+      "stdout": "16777229:512870:501:20:755\nORIGINAL_API004_MAC{\"storageId\":\"1e973b1f-381a-416c-9314-32a6ec72fdc7\"}\n",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "fresh nonempty owned APFS source",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api004-mac-5427b9a1",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; test ! -e /etc/autobyteus-nfs/attachment.json; mkdir -m 755 /Users/admin/ab-nfs-api004-mac-5427b9a1-source; mkdir -m 755 /Users/admin/ab-nfs-api004-mac-5427b9a1-source/project; printf ORIGINAL_API004_MAC > /Users/admin/ab-nfs-api004-mac-5427b9a1-source/project/preexisting.txt; stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api004-mac-5427b9a1-source"
+        ],
+        "rc": 0,
+        "seconds": 0.971,
+        "stdout": "16777229:512870:501:20:755\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.972
+    },
+    {
+      "name": "one public nativeMac create under077 no selected nodes",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api004-mac-5427b9a1",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "umask 077; exec /Users/admin/ab-nfs-api004-mac-5427b9a1-binary create --source /Users/admin/ab-nfs-api004-mac-5427b9a1-source --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json"
+        ],
+        "rc": 0,
+        "seconds": 11.243,
+        "stdout": "{\n  \"connection\": {\n    \"storageId\": \"1e973b1f-381a-416c-9314-32a6ec72fdc7\",\n    \"endpoint\": \"192.168.64.2\",\n    \"export\": \"/Users/admin/ab-nfs-api004-mac-5427b9a1-source\",\n    \"protocol\": \"3\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"1e973b1f-381a-416c-9314-32a6ec72fdc7\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n",
+        "stderr": "Detected private addresses: 192.168.64.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS plan:\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\n# BEGIN AutoByteus NFS 9d9cb53c-9933-4b87-85f9-c568c0a626d7\n\"/Users/admin/ab-nfs-api004-mac-5427b9a1-source\" -mapall=501:20 192.168.64.2\n# END AutoByteus NFS 9d9cb53c-9933-4b87-85f9-c568c0a626d7\n# BEGIN AutoByteus NFS 9d9cb53c-9933-4b87-85f9-c568c0a626d7\nnfs.server.mount.port=20048\nnfs.server.bonjour=0\nnfs.server.udp=0\nnfs.server.mount.require_resv_port=0\n# END AutoByteus NFS 9d9cb53c-9933-4b87-85f9-c568c0a626d7\n\n - Export chosen source in place: /Users/admin/ab-nfs-api004-mac-5427b9a1-source\n - Map ALL clients to nonroot 501:20; no recursive ownership change\n - Trust private hosts/subnets: 192.168.64.2\n - Attach 192.168.64.2:/Users/admin/ab-nfs-api004-mac-5427b9a1-source at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\nChecking actual host and selected-node readiness; this may wait for storage.\n"
+      },
+      "status": "Pass",
+      "seconds": 11.244
+    },
+    {
+      "name": "Mac original/mounted identity bytes UUID private modes installed binary running job",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api004-mac-5427b9a1",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api004-mac-5427b9a1-source; test \"$(cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/project/preexisting.txt)\" = ORIGINAL_API004_MAC; test \"$(cat /Volumes/autobyteus-shared/project/preexisting.txt)\" = ORIGINAL_API004_MAC; cmp /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json /Volumes/autobyteus-shared/.autobyteus-nfs/storage.json; cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json; sudo -n stat -f \"%Lp:%u:%g:%N\" /Library/\"Application Support\"/AutoByteusNFS /Library/\"Application Support\"/AutoByteusNFS/attachment.json; shasum -a 256 /Library/AutoByteusNFS/libexec/autobyteus-nfs; sudo -n launchctl print system/com.autobyteus.nfs"
+        ],
+        "rc": 0,
+        "seconds": 0.318,
+        "stdout": "16777229:512870:501:20:755\n{\"storageId\":\"1e973b1f-381a-416c-9314-32a6ec72fdc7\"}\n700:0:80:/Library/Application Support/AutoByteusNFS\n600:0:80:/Library/Application Support/AutoByteusNFS/attachment.json\n64085e451774b99666ae272c78111d3f3c3972a619aa4cf7e4da657abb79df04  /Library/AutoByteusNFS/libexec/autobyteus-nfs\nsystem/com.autobyteus.nfs = {\n\tactive count = 1\n\tpath = /Library/LaunchDaemons/com.autobyteus.nfs.plist\n\ttype = LaunchDaemon\n\tstate = running\n\n\tprogram = /Library/AutoByteusNFS/libexec/autobyteus-nfs\n\targuments = {\n\t\t/Library/AutoByteusNFS/libexec/autobyteus-nfs\n\t\tservice\n\t}\n\n\tstdout path = /Library/Application Support/AutoByteusNFS/service.log\n\tstderr path = /Library/Application Support/AutoByteusNFS/service.log\n\tdefault environment = {\n\t\tPATH => /usr/bin:/bin:/usr/sbin:/sbin\n\t}\n\n\tenvironment = {\n\t\tOSLogRateLimit => 64\n\t\tXPC_SERVICE_NAME => com.autobyteus.nfs\n\t}\n\n\tdomain = system\n\tminimum runtime = 30\n\texit timeout = 5\n\truns = 1\n\tpid = 1057\n\timmediate reason = speculative\n\tforks = 1\n\texecs = 1\n\tinitialized = 1\n\ttrampolined = 1\n\tstarted suspended = 0\n\tproxy started suspended = 0\n\tchecked allocations = 0 (queried = 1)\n\tchecked allocations reason = no host\n\tchecked allocations flags = 0x0\n\tlast exit code = (never exited)\n\n\tresource coalition = {\n\t\tID = 1098\n\t\ttype = resource\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tjetsam coalition = {\n\t\tID = 1099\n\t\ttype = jetsam\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tspawn type = daemon (3)\n\tjetsam priority = 40\n\tjetsam memory limit (active) = (unlimited)\n\tjetsam memory limit (inactive) = (unlimited)\n\tjetsamproperties category = daemon\n\tjetsam thread limit = 32\n\tcpumon = default\n\n\tproperties = keepalive | runatload | inferred program | system service | tle system\n}\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.319
+    },
+    {
+      "name": "nativeMac ordinary reboot automatically preserves exact source and job",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api004-mac-5427b9a1",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api004-mac-5427b9a1-source; test \"$(cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/project/preexisting.txt)\" = ORIGINAL_API004_MAC; test \"$(cat /Volumes/autobyteus-shared/project/preexisting.txt)\" = ORIGINAL_API004_MAC; cmp /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json /Volumes/autobyteus-shared/.autobyteus-nfs/storage.json; cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json; sudo -n stat -f \"%Lp:%u:%g:%N\" /Library/\"Application Support\"/AutoByteusNFS /Library/\"Application Support\"/AutoByteusNFS/attachment.json; shasum -a 256 /Library/AutoByteusNFS/libexec/autobyteus-nfs; sudo -n launchctl print system/com.autobyteus.nfs"
+        ],
+        "rc": 0,
+        "seconds": 13.924,
+        "stdout": "16777229:512870:501:20:755\n{\"storageId\":\"1e973b1f-381a-416c-9314-32a6ec72fdc7\"}\n700:0:80:/Library/Application Support/AutoByteusNFS\n600:0:80:/Library/Application Support/AutoByteusNFS/attachment.json\n64085e451774b99666ae272c78111d3f3c3972a619aa4cf7e4da657abb79df04  /Library/AutoByteusNFS/libexec/autobyteus-nfs\nsystem/com.autobyteus.nfs = {\n\tactive count = 1\n\tpath = /Library/LaunchDaemons/com.autobyteus.nfs.plist\n\ttype = LaunchDaemon\n\tstate = running\n\n\tprogram = /Library/AutoByteusNFS/libexec/autobyteus-nfs\n\targuments = {\n\t\t/Library/AutoByteusNFS/libexec/autobyteus-nfs\n\t\tservice\n\t}\n\n\tstdout path = /Library/Application Support/AutoByteusNFS/service.log\n\tstderr path = /Library/Application Support/AutoByteusNFS/service.log\n\tdefault environment = {\n\t\tPATH => /usr/bin:/bin:/usr/sbin:/sbin\n\t}\n\n\tenvironment = {\n\t\tOSLogRateLimit => 64\n\t\tXPC_SERVICE_NAME => com.autobyteus.nfs\n\t}\n\n\tdomain = system\n\tminimum runtime = 30\n\texit timeout = 5\n\truns = 1\n\tpid = 309\n\timmediate reason = speculative\n\tforks = 16\n\texecs = 1\n\tinitialized = 1\n\ttrampolined = 1\n\tstarted suspended = 0\n\tproxy started suspended = 0\n\tchecked allocations = 0 (queried = 1)\n\tchecked allocations reason = no host\n\tchecked allocations flags = 0x0\n\tlast exit code = (never exited)\n\n\tresource coalition = {\n\t\tID = 325\n\t\ttype = resource\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tjetsam coalition = {\n\t\tID = 326\n\t\ttype = jetsam\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tspawn type = daemon (3)\n\tjetsam priority = 40\n\tjetsam memory limit (active) = (unlimited)\n\tjetsam memory limit (inactive) = (unlimited)\n\tjetsamproperties category = daemon\n\tjetsam thread limit = 32\n\tcpumon = default\n\n\tproperties = keepalive | runatload | inferred program | system service | managed LWCR | has LWCR | tle system\n}\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 13.924
+    },
+    {
+      "name": "explicit normal nativeMac reconnect",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api004-mac-5427b9a1",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "/Users/admin/ab-nfs-api004-mac-5427b9a1-binary reconnect --yes --json"
+        ],
+        "rc": 0,
+        "seconds": 8.53,
+        "stdout": "{\n  \"storageId\": \"1e973b1f-381a-416c-9314-32a6ec72fdc7\",\n  \"mountRoot\": \"/Volumes/autobyteus-shared\",\n  \"hostReady\": true,\n  \"nodes\": {},\n  \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n}\n",
+        "stderr": "Checking saved source and reconnecting; hard NFS may wait for storage.\nChecking actual host and selected-node readiness; this may wait for storage.\n"
+      },
+      "status": "Pass",
+      "seconds": 8.546
+    },
+    {
+      "name": "reconnect preserves nativeMac source",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api004-mac-5427b9a1",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api004-mac-5427b9a1-source; test \"$(cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/project/preexisting.txt)\" = ORIGINAL_API004_MAC; test \"$(cat /Volumes/autobyteus-shared/project/preexisting.txt)\" = ORIGINAL_API004_MAC; cmp /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json /Volumes/autobyteus-shared/.autobyteus-nfs/storage.json; cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json; sudo -n stat -f \"%Lp:%u:%g:%N\" /Library/\"Application Support\"/AutoByteusNFS /Library/\"Application Support\"/AutoByteusNFS/attachment.json; shasum -a 256 /Library/AutoByteusNFS/libexec/autobyteus-nfs; sudo -n launchctl print system/com.autobyteus.nfs"
+        ],
+        "rc": 0,
+        "seconds": 1.149,
+        "stdout": "16777229:512870:501:20:755\n{\"storageId\":\"1e973b1f-381a-416c-9314-32a6ec72fdc7\"}\n700:0:80:/Library/Application Support/AutoByteusNFS\n600:0:80:/Library/Application Support/AutoByteusNFS/attachment.json\n64085e451774b99666ae272c78111d3f3c3972a619aa4cf7e4da657abb79df04  /Library/AutoByteusNFS/libexec/autobyteus-nfs\nsystem/com.autobyteus.nfs = {\n\tactive count = 1\n\tpath = /Library/LaunchDaemons/com.autobyteus.nfs.plist\n\ttype = LaunchDaemon\n\tstate = running\n\n\tprogram = /Library/AutoByteusNFS/libexec/autobyteus-nfs\n\targuments = {\n\t\t/Library/AutoByteusNFS/libexec/autobyteus-nfs\n\t\tservice\n\t}\n\n\tstdout path = /Library/Application Support/AutoByteusNFS/service.log\n\tstderr path = /Library/Application Support/AutoByteusNFS/service.log\n\tdefault environment = {\n\t\tPATH => /usr/bin:/bin:/usr/sbin:/sbin\n\t}\n\n\tenvironment = {\n\t\tOSLogRateLimit => 64\n\t\tXPC_SERVICE_NAME => com.autobyteus.nfs\n\t}\n\n\tdomain = system\n\tminimum runtime = 30\n\texit timeout = 5\n\truns = 1\n\tpid = 309\n\timmediate reason = speculative\n\tforks = 16\n\texecs = 1\n\tinitialized = 1\n\ttrampolined = 1\n\tstarted suspended = 0\n\tproxy started suspended = 0\n\tchecked allocations = 0 (queried = 1)\n\tchecked allocations reason = no host\n\tchecked allocations flags = 0x0\n\tlast exit code = (never exited)\n\n\tresource coalition = {\n\t\tID = 325\n\t\ttype = resource\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tjetsam coalition = {\n\t\tID = 326\n\t\ttype = jetsam\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tspawn type = daemon (3)\n\tjetsam priority = 40\n\tjetsam memory limit (active) = (unlimited)\n\tjetsam memory limit (inactive) = (unlimited)\n\tjetsamproperties category = daemon\n\tjetsam thread limit = 32\n\tcpumon = default\n\n\tproperties = keepalive | runatload | inferred program | system service | managed LWCR | has LWCR | tle system\n}\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 1.15
+    },
+    {
+      "name": "nativeMac public drained detach",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api004-mac-5427b9a1",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "/Users/admin/ab-nfs-api004-mac-5427b9a1-binary detach --yes --drained --json"
+        ],
+        "rc": 0,
+        "seconds": 0.664,
+        "stdout": "",
+        "stderr": "Owned export/settings removed; Apple nfsd remains OS-owned and was not disabled\nDetached; source, marker, named volumes and private receipts preserved.\n"
+      },
+      "status": "Pass",
+      "seconds": 0.665
+    },
+    {
+      "name": "nativeMac detach source preservation and no owned attachment/job",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api004-mac-5427b9a1",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; test ! -e /etc/autobyteus-nfs/attachment.json; test ! -e /Library/LaunchDaemons/com.autobyteus.nfs.plist; ! mount | grep \" on /Volumes/autobyteus-shared \"; stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api004-mac-5427b9a1-source; cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/project/preexisting.txt; cat /Users/admin/ab-nfs-api004-mac-5427b9a1-source/.autobyteus-nfs/storage.json"
+        ],
+        "rc": 0,
+        "seconds": 0.812,
+        "stdout": "16777229:512870:501:20:755\nORIGINAL_API004_MAC{\"storageId\":\"1e973b1f-381a-416c-9314-32a6ec72fdc7\"}\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.821
+    }
+  ],
+  "result": "Pass",
+  "sourceIdentity": "16777229:512870:501:20:755",
+  "connection": {
+    "storageId": "1e973b1f-381a-416c-9314-32a6ec72fdc7",
+    "endpoint": "192.168.64.2",
+    "export": "/Users/admin/ab-nfs-api004-mac-5427b9a1-source",
+    "protocol": "3",
+    "mountRoot": "/Volumes/autobyteus-shared"
+  },
+  "beforeBoot": "{ sec = 1792050738, usec = 666173 } Thu Oct 15 07:52:18 2026\n",
+  "afterBoot": "{ sec = 1792051344, usec = 954991 } Thu Oct 15 08:02:24 2026\n",
+  "automaticStatus": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api004-mac-5427b9a1",
+      "/usr/bin/sudo",
+      "-n",
+      "-u",
+      "admin",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/Users/admin",
+      "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "/Users/admin/ab-nfs-api004-mac-5427b9a1-binary status --yes --json"
+    ],
+    "rc": 0,
+    "seconds": 0.713,
+    "stdout": "{\n  \"storageId\": \"1e973b1f-381a-416c-9314-32a6ec72fdc7\",\n  \"mountRoot\": \"/Volumes/autobyteus-shared\",\n  \"hostReady\": true,\n  \"nodes\": {},\n  \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n}\n",
+    "stderr": "Checking actual host and selected-node readiness; this may wait for storage.\n"
+  }
+}

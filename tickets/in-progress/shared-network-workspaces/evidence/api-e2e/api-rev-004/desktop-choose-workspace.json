@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "F39CBF24AEE7CEC3D3F97A2834E38841",
+    "--script",
+    "async () => await __abDemo.click({text:\"Temp workspace\"})"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"F39CBF24AEE7CEC3D3F97A2834E38841\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"output_mode\":\"inline\",\"result\":{\"ok\":true,\"action\":\"click\",\"target\":{\"text\":\"Temp workspace\"}}}}\n",
+  "stderr": ""
+}
