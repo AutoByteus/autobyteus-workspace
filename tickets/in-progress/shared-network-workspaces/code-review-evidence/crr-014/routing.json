@@ -47,11 +47,19 @@
       ]
     }
   },
-  "outcome": "Fail — CR008/API-F007-UNSAVED; implementation-owned Local Fix",
+  "outcome": "Fail \u2014 CR008/API-F007-UNSAVED; implementation-owned Local Fix",
   "selectedRule": {
     "when": "When API/E2E failure-origin review confirms that the owning problem is an implementation defect.",
     "recipient_address": "/software_engineering_team/implementation_engineer"
   },
   "reason": "Supported AC010 unsaved-preservation defect confirmed; baseline-existing but blocks active acceptance. Not a coverage-only failure, design revision or source-Pass dispatch.",
-  "dispatch": "Pending"
+  "dispatch": "Confirmed",
+  "receipt": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /software_engineering_team/implementation_engineer.",
+    "target_agent_run_id": "implementation_engineer_2c60a2b9fdf1490c818f25289337aa21"
+  },
+  "reviewCommit": "d07417906c28f206d49930259dd264063e1c8a26",
+  "referenceCount": 56
 }
