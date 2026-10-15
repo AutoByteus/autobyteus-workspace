@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { MultipartFile } from "@fastify/multipart";
 import type {
   ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionResourcePort, TaskExecutionReleaseRequest, TaskExecutionReopenInput,
-  TaskExecutionReopenResult, TaskExecutionRole,
+  TaskExecutionReopenResult,
 } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -272,7 +272,6 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   markFailed(execution: TaskExecutionReference, error: { code: string; message: string }): Promise<void> { return this.resources.markFailed(execution, error); }
   ownerOf(chain: readonly TaskExecutionReference[]) { return this.resources.ownerOf(chain); }
   isOpen(execution: TaskExecutionReference): boolean { return this.resources.isOpen(execution); }
-  openTaskExecutions(taskId: string, role: TaskExecutionRole) { return this.resources.openTaskExecutions(taskId, role); }
   closedTaskExecutionsIn(hostRoot: RootExecutionIdentity) { return this.resources.closedTaskExecutionsIn(hostRoot); }
   assertResourceDataReadable(): void { this.resources.assertAllReadable(); }
   /** Marks the Tasks whose root is one of these task executions; the status is read later. Never throws. */
@@ -369,7 +368,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
       }
     }
     throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED",
-      `This Task is ${task.status}. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.`);
+      `This Task is ${task.status}. The run that assigned it can reopen the Task (move it to TODO or IN_PROGRESS) and then message this run ID again.`);
   }
   /** A Task's metadata (with or without a Project); null when it (or its Project) was deleted. */
   private async readTaskAt(location: TaskLocation): Promise<{ status: ProjectTaskStatus } | null> {

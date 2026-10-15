@@ -1,0 +1,36 @@
+IR-002 cleanup receipt 2026-10-12; no API/E2E/stack/ports started.
+removed /tmp/autobyteus-file-explorer-HEcSyb
+removed /tmp/autobyteus-file-explorer-NMuQVW
+removed /tmp/autobyteus-file-explorer-YlgMD1
+removed /tmp/autobyteus-file-explorer-avIQpC
+removed /tmp/autobyteus-file-explorer-dMH7nG
+removed /tmp/autobyteus-file-explorer-sqvKbz
+removed /tmp/autobyteus-file-explorer-vyQ01t
+removed /tmp/autobyteus-file-explorer-xoE4wp
+removed /tmp/autobyteus-rename-boundary-5XR0iW
+removed /tmp/autobyteus-rename-leaf-75xI0C
+removed /tmp/autobyteus-search-17iSkX
+removed /tmp/autobyteus-search-6LEibF
+removed /tmp/autobyteus-search-EwbQrp
+removed /tmp/autobyteus-search-locators-0ijrv0
+removed /tmp/autobyteus-search-locators-BKUhlM
+removed /tmp/autobyteus-search-locators-MNz3HW
+removed /tmp/autobyteus-search-locators-Qs2iy8
+removed /tmp/autobyteus-search-locators-cdIx2F
+removed /tmp/autobyteus-server-ts-2fWX32
+removed /tmp/autobyteus-server-ts-ANgit4
+removed /tmp/autobyteus-server-ts-avM3vm
+removed /tmp/autobyteus-server-ts-hOygxn
+removed /tmp/autobyteus-server-ts-index-1FC9g0
+removed /tmp/autobyteus-server-ts-index-OdiO4C
+removed /tmp/autobyteus-server-ts-mhIHpd
+removed /tmp/autobyteus-server-ts-plg20J
+removed /tmp/watcher-runtime-unit-NkGBVv
+removed /tmp/watcher-runtime-unit-cANK5T
+removed owned autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+removed owned autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal
+removed owned Corepack shim/cache/home /tmp/resume-preview-ir002.EF0Fzw
+Build/check processes exited; current dependencies/local build prerequisites/worktree retained; upstream dirty notification not edited/staged.
+7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5  /home/autobyteus/workspace/autobyteus-investor-applications/job-applications/bit-capital-ai-engineer-2026/Yu_Zheng_Resume_2026_Application.pdf
+  PID COMMAND
+   61 node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data

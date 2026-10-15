@@ -1,0 +1,20 @@
+{
+  "revision": "DR-002",
+  "requirements": "R2 Approved / SR-003; SR-002 technical geometry unchanged",
+  "acceptanceAuthority": "evidence/solution-acceptance-r2.md; user continue to explicitly proposed source-only finalization, no release/update/restart",
+  "sourceVerification": "Complete — source evidence Sufficient and unchanged, prior integrated relevant146 tests and browser4/4 plus current primary recheck",
+  "currentHead": "9e270f51f0009303a13e4b784fcde1d38fe266b4",
+  "freshBase": "e22245f097c208e66065302cfc30814cc5ffd14f",
+  "baseAdvancedSinceDr001": false,
+  "integration": "Already current — no integration/checkpoint needed; delivery edits preserved",
+  "newProductDeltaSinceValidatedIntegration": false,
+  "sourceHashesMatchApiEvidence": true,
+  "noAdditionalRerunRationale": "Fresh remote target unchanged, acceptance-only six solution-owned context files added. No source/design/test/dependency/runtime changes; reuse completed integrated executable evidence rather than replay for acceptance disposition only.",
+  "userClientIdentity": "Unconfirmed",
+  "installedMacOSVerification": "Deferred — user-approved source-only, not Passed or Updated",
+  "release": "No release; source-only user assent excludes publishing/install/update/restart",
+  "AC-001-006": "Proven from actual browser/native/repository evidence; primary evidence revisited with identity/result/cleanup assertions",
+  "AC-007": "Accepted for source-only — exact commands/build/runtime separation/deferred client facts/durable final paths and cleanup required, remaining repository gates next",
+  "priorEvidenceJudgement": "evidence/delivery/verification.json (DR-001 historical)",
+  "liveApp8001UserDataTouched": false
+}

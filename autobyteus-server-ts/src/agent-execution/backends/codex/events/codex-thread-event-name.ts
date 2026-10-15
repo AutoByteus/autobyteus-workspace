@@ -15,6 +15,8 @@ export enum CodexThreadEventName {
   ITEM_FILE_CHANGE_OUTPUT_DELTA = "item/fileChange/outputDelta",
   ITEM_FILE_CHANGE_REQUEST_APPROVAL = "item/fileChange/requestApproval",
   RAW_RESPONSE_ITEM_COMPLETED = "rawResponseItem/completed",
+  /** One per model call (raw events enabled); `params.usage.outputTokens` is that call's output. */
+  RAW_RESPONSE_COMPLETED = "rawResponse/completed",
   LOCAL_TOOL_APPROVAL_REQUESTED = "codex/local/toolApprovalRequested",
   LOCAL_TOOL_APPROVED = "codex/local/toolApproved",
   LOCAL_MCP_TOOL_EXECUTION_COMPLETED = "codex/local/mcpToolExecutionCompleted",

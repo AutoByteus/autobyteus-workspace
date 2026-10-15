@@ -1,0 +1,1323 @@
+{
+  "checkedAt": "2026-10-13T06:07:14.561599+00:00",
+  "runs": [
+    {
+      "conclusion": "success",
+      "databaseId": 38351985841,
+      "headBranch": "v1.5.3-beta.3",
+      "headSha": "8d52dc4eb378609ae2dca6089eb62678eeafe803",
+      "jobs": [
+        {
+          "completedAt": "2026-10-13T05:34:09Z",
+          "conclusion": "success",
+          "databaseId": 115146215428,
+          "name": "Resolve Android Release Metadata",
+          "startedAt": "2026-10-13T05:33:20Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Resolve release metadata",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout release ref",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Check licensing consistency",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Validate workspace package versions match release tag",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Resolve release commit SHA",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Summarize Android release plan",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout release ref",
+              "number": 14,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 15,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985841/job/115146215428"
+        },
+        {
+          "completedAt": "2026-10-13T05:38:02Z",
+          "conclusion": "success",
+          "databaseId": 115146441275,
+          "name": "Build Android APK",
+          "startedAt": "2026-10-13T05:34:11Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout workspace",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Set up Java",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Set up Android SDK",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Install Android SDK platform",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Build APK",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Upload Android APK workflow artifact",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Set up Java",
+              "number": 13,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout workspace",
+              "number": 14,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 15,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985841/job/115146441275"
+        },
+        {
+          "completedAt": "2026-10-13T05:39:03Z",
+          "conclusion": "success",
+          "databaseId": 115147504269,
+          "name": "Publish Android APK To GitHub Release",
+          "startedAt": "2026-10-13T05:38:04Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout workspace",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Download Android APK artifact",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Validate publishable APK artifact",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Resolve release notes mode",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "skipped",
+              "name": "Publish Android APK asset with curated notes",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Publish Android APK asset with generated notes fallback",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout workspace",
+              "number": 14,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 15,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985841/job/115147504269"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985841",
+      "workflowName": "Android APK Release"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 38351985837,
+      "headBranch": "v1.5.3-beta.3",
+      "headSha": "8d52dc4eb378609ae2dca6089eb62678eeafe803",
+      "jobs": [
+        {
+          "completedAt": "2026-10-13T05:34:08Z",
+          "conclusion": "success",
+          "databaseId": 115146215587,
+          "name": "Resolve Release Metadata",
+          "startedAt": "2026-10-13T05:33:20Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Resolve release metadata",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout release ref",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Check repository artifact hygiene",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Check licensing consistency",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Validate workspace package versions match release tag",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Resolve release commit SHA",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout release ref",
+              "number": 14,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 15,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985837/job/115146215587"
+        },
+        {
+          "completedAt": "2026-10-13T05:37:45Z",
+          "conclusion": "success",
+          "databaseId": 115146440491,
+          "name": "Build Linux x64",
+          "startedAt": "2026-10-13T05:34:10Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout workspace + submodules",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Setup pnpm",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Setup Node",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Install Linux build deps",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Install workspace dependencies",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Build Electron Linux x64",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Verify Linux x64 AppImage and updater metadata",
+              "number": 8,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Verify Linux x64 Prisma engines",
+              "number": 9,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Verify Linux x64 packaged server startup",
+              "number": 10,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Upload Linux x64 artifacts",
+              "number": 11,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Setup Node",
+              "number": 20,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Setup pnpm",
+              "number": 21,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout workspace + submodules",
+              "number": 22,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 23,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985837/job/115146440491"
+        },
+        {
+          "completedAt": "2026-10-13T05:53:56Z",
+          "conclusion": "success",
+          "databaseId": 115146440504,
+          "name": "Build macOS ARM64",
+          "startedAt": "2026-10-13T05:34:17Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout workspace + submodules",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Setup pnpm",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Setup Node",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Install workspace dependencies",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Install Python setuptools for node-gyp",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Import Apple code signing certificate",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Build Electron macOS ARM64",
+              "number": 8,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Verify bundled Prisma ARM64 engine target",
+              "number": 9,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Verify packaged terminal runtime ARM64",
+              "number": 10,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Verify macOS signing policy ARM64",
+              "number": 11,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Upload macOS artifacts",
+              "number": 12,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Setup Node",
+              "number": 22,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Setup pnpm",
+              "number": 23,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout workspace + submodules",
+              "number": 24,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 25,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985837/job/115146440504"
+        },
+        {
+          "completedAt": "2026-10-13T05:55:45Z",
+          "conclusion": "success",
+          "databaseId": 115146440523,
+          "name": "Build macOS Intel x64",
+          "startedAt": "2026-10-13T05:34:16Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout workspace + submodules",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Setup pnpm",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Setup Node",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Install workspace dependencies",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Install Python setuptools for node-gyp",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Import Apple code signing certificate",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Build Electron macOS Intel x64",
+              "number": 8,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Verify bundled Prisma x64 engine target",
+              "number": 9,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Verify packaged terminal runtime x64",
+              "number": 10,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Verify macOS signing policy x64",
+              "number": 11,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Upload macOS Intel artifacts",
+              "number": 12,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Setup Node",
+              "number": 22,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Setup pnpm",
+              "number": 23,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout workspace + submodules",
+              "number": 24,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 25,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985837/job/115146440523"
+        },
+        {
+          "completedAt": "2026-10-13T05:48:36Z",
+          "conclusion": "success",
+          "databaseId": 115146440607,
+          "name": "Build Windows x64",
+          "startedAt": "2026-10-13T05:34:11Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout workspace + submodules",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Setup pnpm",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Setup Node",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Install workspace dependencies",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Install Python setuptools for node-gyp",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Build Electron Windows x64",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Upload Windows artifacts",
+              "number": 8,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Setup Node",
+              "number": 14,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Setup pnpm",
+              "number": 15,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout workspace + submodules",
+              "number": 16,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 17,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985837/job/115146440607"
+        },
+        {
+          "completedAt": "2026-10-13T05:38:22Z",
+          "conclusion": "success",
+          "databaseId": 115146440613,
+          "name": "Build Linux ARM64",
+          "startedAt": "2026-10-13T05:34:12Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout workspace + submodules",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Setup pnpm",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Setup Node",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Install Linux build deps",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Install workspace dependencies",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Build Electron Linux ARM64",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Verify Linux ARM64 AppImage and updater metadata",
+              "number": 8,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Verify Linux ARM64 Prisma engines",
+              "number": 9,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Verify Linux ARM64 packaged server startup",
+              "number": 10,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Upload Linux ARM64 artifacts",
+              "number": 11,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Setup Node",
+              "number": 20,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Setup pnpm",
+              "number": 21,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout workspace + submodules",
+              "number": 22,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 23,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985837/job/115146440613"
+        },
+        {
+          "completedAt": "2026-10-13T05:59:01Z",
+          "conclusion": "success",
+          "databaseId": 115152340276,
+          "name": "Publish GitHub Release",
+          "startedAt": "2026-10-13T05:55:48Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout workspace + submodules",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Download build artifacts",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Merge macOS updater metadata",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Validate merged macOS updater metadata",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Validate Linux updater metadata",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Resolve release notes mode",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "skipped",
+              "name": "Publish release assets with curated notes",
+              "number": 8,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Publish release assets with generated notes fallback",
+              "number": 9,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout workspace + submodules",
+              "number": 18,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 19,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985837/job/115152340276"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985837",
+      "workflowName": "Desktop Release"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 38351985828,
+      "headBranch": "v1.5.3-beta.3",
+      "headSha": "8d52dc4eb378609ae2dca6089eb62678eeafe803",
+      "jobs": [
+        {
+          "completedAt": "2026-10-13T05:34:12Z",
+          "conclusion": "success",
+          "databaseId": 115146215648,
+          "name": "Resolve iOS Release Metadata",
+          "startedAt": "2026-10-13T05:33:20Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout workflow helper scripts",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Resolve release metadata",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout release ref",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Check licensing consistency",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Resolve release commit SHA",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Summarize iOS release plan",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout release ref",
+              "number": 13,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout workflow helper scripts",
+              "number": 14,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 15,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985828/job/115146215648"
+        },
+        {
+          "completedAt": "2026-10-13T05:43:56Z",
+          "conclusion": "success",
+          "databaseId": 115146458355,
+          "name": "Build And Test iOS App",
+          "startedAt": "2026-10-13T05:34:20Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout workspace",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Select Xcode 26 or newer",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Install XcodeGen",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Select available iOS simulator",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Generate, build, and run implementation checks",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Write publish secret readiness summary",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Upload iOS build/test artifacts",
+              "number": 8,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout workspace",
+              "number": 16,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 17,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985828/job/115146458355"
+        },
+        {
+          "completedAt": "2026-10-13T05:44:49Z",
+          "conclusion": "success",
+          "databaseId": 115149109918,
+          "name": "Validate iOS Publish Secrets",
+          "startedAt": "2026-10-13T05:43:58Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout workspace",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Fail fast when iOS publish secrets are incomplete",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout workspace",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 7,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985828/job/115149109918"
+        },
+        {
+          "completedAt": "2026-10-13T05:48:47Z",
+          "conclusion": "success",
+          "databaseId": 115149348259,
+          "name": "Archive And Upload To App Store Connect",
+          "startedAt": "2026-10-13T05:44:56Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout workspace",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Select Xcode 26 or newer",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Install XcodeGen",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Initialize temporary publish paths",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Import iOS distribution certificate into temporary keychain",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Decode, verify, and install App Store provisioning profiles",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Generate project and ExportOptions.plist",
+              "number": 8,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Archive and export signed IPA",
+              "number": 9,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Upload IPA to App Store Connect/TestFlight",
+              "number": 10,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Summarize iOS TestFlight upload",
+              "number": 11,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Cleanup iOS signing material",
+              "number": 12,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Upload iOS publish artifacts",
+              "number": 13,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout workspace",
+              "number": 26,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 27,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985828/job/115149348259"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985828",
+      "workflowName": "iOS App Store Connect Release"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 38351985796,
+      "headBranch": "v1.5.3-beta.3",
+      "headSha": "8d52dc4eb378609ae2dca6089eb62678eeafe803",
+      "jobs": [
+        {
+          "completedAt": "2026-10-13T05:33:22Z",
+          "conclusion": "success",
+          "databaseId": 115146215006,
+          "name": "Resolve Release Metadata",
+          "startedAt": "2026-10-13T05:33:20Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Resolve publish metadata",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Summarize publish plan",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 4,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985796/job/115146215006"
+        },
+        {
+          "completedAt": "2026-10-13T06:07:07Z",
+          "conclusion": "success",
+          "databaseId": 115146236083,
+          "name": "Build And Push Server Image",
+          "startedAt": "2026-10-13T05:33:24Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout workspace",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Check licensing consistency",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Free runner disk space",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Set up QEMU",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Set up Docker Buildx",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Login to Docker Hub",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Build and push default multi-arch image",
+              "number": 8,
+              "status": "completed"
+            },
+            {
+              "conclusion": "skipped",
+              "name": "Build and push zh multi-arch image",
+              "number": 9,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Publish summary",
+              "number": 10,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Move beta tag",
+              "number": 11,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Build and push default multi-arch image",
+              "number": 18,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Login to Docker Hub",
+              "number": 19,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Set up Docker Buildx",
+              "number": 20,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Set up QEMU",
+              "number": 21,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Checkout workspace",
+              "number": 22,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 23,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985796/job/115146236083"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38351985796",
+      "workflowName": "Server Docker Release"
+    }
+  ]
+}

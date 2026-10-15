@@ -1,0 +1,14 @@
+{
+  "instanceId": "iso-56609-2c4d",
+  "purpose": "Human verification setup only; not API/full-app/cache sign-off",
+  "dataPreparation": "Public isolated-backend API creates; no UI cache creation assertions or baseline repair",
+  "events": [],
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-detail&id=software-engineering-team-isolated-verification",
+  "headings": [
+    "Description",
+    "Members (6)",
+    "Instructions",
+    "Handoffs"
+  ],
+  "userConfirmation": "Pending, never inferred from page readiness"
+}

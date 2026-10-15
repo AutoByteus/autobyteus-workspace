@@ -30,6 +30,7 @@ const AgentDefinitionMutationFields = gql`
       runtimeKind
       llmConfig
     }
+    loadIssue { code reason definitionPath packageRoot }
   }
 `
 

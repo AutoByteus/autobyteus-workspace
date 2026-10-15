@@ -1,0 +1,13 @@
+{
+  "command": [
+    "docker",
+    "exec",
+    "api-prisma-90067e31-699-recreated",
+    "supervisorctl",
+    "pid",
+    "autobyteus_server"
+  ],
+  "exit": 0,
+  "stdout": "58\n",
+  "stderr": ""
+}

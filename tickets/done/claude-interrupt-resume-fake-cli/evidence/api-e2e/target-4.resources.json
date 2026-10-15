@@ -1,0 +1,101 @@
+{
+  "seconds": 12.228,
+  "exit": 0,
+  "timedout": false,
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-claude-validation-1ca5uhme",
+  "privateStateEntryCountBeforeRemoval": 1330,
+  "privateTopLevelStateBeforeRemoval": [
+    "home",
+    "home/.cache",
+    "home/Library",
+    "tmp",
+    "tmp/node-compile-cache"
+  ],
+  "privateTmpNonCacheStateBeforeRemoval": [],
+  "ownedGroupRemaining": [],
+  "fixtureChildrenObserved": [
+    {
+      "pid": 70734,
+      "ppid": 70595,
+      "pgid": 70556,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    },
+    {
+      "pid": 70746,
+      "ppid": 70595,
+      "pgid": 70556,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    }
+  ],
+  "ownedProcessesObserved": [
+    {
+      "pid": 70556,
+      "ppid": 69943,
+      "pgid": 70556,
+      "command": "(node)"
+    },
+    {
+      "pid": 70574,
+      "ppid": 70556,
+      "pgid": 70556,
+      "command": "(node)"
+    },
+    {
+      "pid": 70582,
+      "ppid": 70574,
+      "pgid": 70556,
+      "command": "(esbuild)"
+    },
+    {
+      "pid": 70585,
+      "ppid": 70574,
+      "pgid": 70556,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/node_modules/prisma/build/index.js migrate reset --force --skip-generate"
+    },
+    {
+      "pid": 70591,
+      "ppid": 70585,
+      "pgid": 70556,
+      "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64 -d /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/prisma/schema.prisma"
+    },
+    {
+      "pid": 70595,
+      "ppid": 70574,
+      "pgid": 70556,
+      "command": "/Users/normy/.hermes/node/bin/node --conditions node --conditions development --experimental-import-meta-resolve --require /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/suppress-warnings.cjs /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/workers/forks.js"
+    },
+    {
+      "pid": 70721,
+      "ppid": 70595,
+      "pgid": 70556,
+      "command": "(node)"
+    },
+    {
+      "pid": 70729,
+      "ppid": 70595,
+      "pgid": 70556,
+      "command": "(node)"
+    },
+    {
+      "pid": 70734,
+      "ppid": 70595,
+      "pgid": 70556,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    },
+    {
+      "pid": 70735,
+      "ppid": 70595,
+      "pgid": 70556,
+      "command": "(node)"
+    },
+    {
+      "pid": 70746,
+      "ppid": 70595,
+      "pgid": 70556,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    }
+  ],
+  "privateRootRemoved": true,
+  "unhandledErrorMarker": false,
+  "testWorkspaceRemnants": []
+}

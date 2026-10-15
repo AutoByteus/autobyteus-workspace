@@ -1,0 +1,43 @@
+{
+  "layer": "Implementation rendered self-check; fixture reports, not E2E/runtime validation",
+  "source": "d3d034a2b26a2c73537f9c7787aee8274c33bb9a",
+  "errors": [
+    {
+      "kind": "console",
+      "text": "WebSocket connection to 'ws://127.0.0.1:42003/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "console",
+      "text": "WebSocket connection to 'ws://127.0.0.1:42003/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "console",
+      "text": "WebSocket connection to 'ws://127.0.0.1:42003/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "checks": [],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtStopped": true,
+    "routeRemoved": true
+  },
+  "hashes": {
+    "components/workspace/usage/TokenUsageThroughputCard.vue": "8cf1d023e04bb9af3b8b8ee003f67e1337e59ccb14164d6fbd4cee13b2937eee",
+    "components/workspace/usage/TokenUsageMeterPanel.vue": "8cc51bd23d54f5ffdaeefcb2a8704bd02aa15f9777bc89829a9f70f78125836b",
+    "stores/tokenUsageThroughput.ts": "a4f027f1c2590db3f243ac99c21197a5b47d230b2b626d3d848798441a716106",
+    "stores/tokenUsageMeterStore.ts": "ee184df2dc66527c99d0f6823b862c0d969c28262c73ff5f5ad16fae3d583218",
+    "composables/useTokenUsageWorkspaceScope.ts": "8f76e1af43d19ed24b59fa37b003929c00b354426176654e7dc22aa05ba69cb2"
+  },
+  "ports": {
+    "uiPort": 42123,
+    "backendPort": 42003
+  },
+  "nuxtPid": 22747,
+  "geometry": {
+    "client": 286,
+    "scroll": 286,
+    "width": 288
+  },
+  "status": "fail",
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     kind: 'console',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:42003/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'console',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:42003/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'console',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:42003/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   }\n+ ]\n- []\n\n    at file:///home/autobyteus/workspace/.codex/worktrees/token-meter-tps/tickets/in-progress/token-meter-tps/implementation-evidence/ir-001/preview.mjs:91:10"
+}

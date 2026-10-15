@@ -2,7 +2,6 @@ import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-te
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { AgentLaunchConfiguration } from "./team-run-config.js";
 import type {
-  CollaboratorEntry,
   ConfiguredAgentExecutionNode,
   IsoTimestamp,
   TaskExecution,
@@ -10,10 +9,6 @@ import type {
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
 export type {
-  CollaboratorAgentEntry,
-  CollaboratorEntry,
-  CollaboratorTeamEntry,
-  CollaboratorTeamMember,
   ConfiguredAgentExecutionNode,
   IsoTimestamp,
   TaskAgentExecution,
@@ -35,8 +30,6 @@ export type RootConfiguredTeamExecutionNode = Readonly<{
   coordinatorAddress: AgentTeamAddress;
   defaultLaunchConfiguration: AgentLaunchConfiguration;
   members: readonly ConfiguredAgentExecutionNode[];
-  /** Shared definitions brought into this run with `@`; no run IDs (runs stay in `taskExecutions`). */
-  collaborators: readonly CollaboratorEntry[];
   taskExecutions: readonly TaskExecution[];
 }>;
 

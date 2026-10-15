@@ -1,0 +1,163 @@
+{
+  "layer": "Local implementation rendered self-check; fixture contexts and intercepted HTTP only",
+  "states": {
+    "agent-unselected": {
+      "rest": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "hover": {
+        "color": "rgb(220, 38, 38)",
+        "background": "rgb(254, 242, 242)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "leave": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      }
+    },
+    "agent-selected": {
+      "rest": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "hover": {
+        "color": "rgb(220, 38, 38)",
+        "background": "rgb(254, 242, 242)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "leave": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      }
+    },
+    "agent-focus": {
+      "color": "rgb(153, 153, 153)",
+      "background": "rgba(0, 0, 0, 0)",
+      "transition": "0.15s",
+      "focus": true,
+      "shadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+    },
+    "agent-pending": {
+      "label": "Stopping Writer copy…",
+      "disabled": true,
+      "iconClasses": "iconify iconify--heroicons h-3.5 w-3.5 animate-pulse motion-reduce:animate-none"
+    },
+    "team-unselected": {
+      "rest": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "hover": {
+        "color": "rgb(220, 38, 38)",
+        "background": "rgb(254, 242, 242)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "leave": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      }
+    },
+    "team-selected": {
+      "rest": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "hover": {
+        "color": "rgb(220, 38, 38)",
+        "background": "rgb(254, 242, 242)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      },
+      "leave": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "transition": "0.15s",
+        "focus": false,
+        "shadow": "none"
+      }
+    },
+    "team-focus": {
+      "color": "rgb(153, 153, 153)",
+      "background": "rgba(0, 0, 0, 0)",
+      "transition": "0.15s",
+      "focus": true,
+      "shadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+    },
+    "team-pending": {
+      "label": "Stopping Review Team copy…",
+      "disabled": true,
+      "iconClasses": "iconify iconify--heroicons h-3.5 w-3.5 animate-pulse motion-reduce:animate-none"
+    }
+  },
+  "requests": [
+    {
+      "rootKind": "AGENT",
+      "rootRunId": "host-run",
+      "agentRunId": "writer-run"
+    },
+    {
+      "rootKind": "AGENT",
+      "rootRunId": "host-run",
+      "teamRunId": "review-team"
+    }
+  ],
+  "errors": [],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtStopped": true,
+    "routeRemoved": true,
+    "homeRemoved": true,
+    "portsReleased": true
+  },
+  "home": "/tmp/stop-style-preview-home-P3KgPE",
+  "ports": [
+    39421,
+    40403
+  ],
+  "nuxtPid": 7506,
+  "browser": "153.0.8010.52",
+  "referenceRest": {
+    "color": "rgb(153, 153, 153)",
+    "background": "rgba(0, 0, 0, 0)",
+    "transition": "0.15s",
+    "focus": false,
+    "shadow": "none"
+  },
+  "referenceHover": {
+    "color": "rgb(220, 38, 38)",
+    "background": "rgb(254, 242, 242)",
+    "transition": "0.15s",
+    "focus": false,
+    "shadow": "none"
+  },
+  "result": "PASS — local preview only"
+}

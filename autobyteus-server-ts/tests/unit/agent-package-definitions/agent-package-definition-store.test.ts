@@ -10,7 +10,7 @@ import type {
 const location: DefinitionFolderLocation = {
   packageRoot: "/pkg",
   folderDir: "/pkg/agents/a",
-  sourceClass: "external_read_only",
+  sourceClass: "registered_package",
 };
 
 const agent = (id: string, instructions = "v1") => new AgentDefinition({

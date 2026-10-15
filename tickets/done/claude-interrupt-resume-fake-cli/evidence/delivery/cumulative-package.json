@@ -1,0 +1,1010 @@
+{
+  "package": "claude-interrupt-resume-fake-cli",
+  "task_size": "Small",
+  "architectural_risk": "Low",
+  "approvedRequirements": "SR-001",
+  "readyDesign": "SR-002",
+  "implementation": "IR-001",
+  "review": "CRR-002 Pass, API-F001 Resolved; CRR-001 historical",
+  "apiE2e": "API-REV-002 Pass 97.5% upstream reported",
+  "deliveryRevisions": [
+    "DR-001",
+    "DR-002"
+  ],
+  "route": "Initial direct low-risk, then required proportional post-failure repair test review",
+  "notApplicableIndependentReviews": {
+    "design-review-report.md": "N/A \u2014 not applicable",
+    "architecture-review-revision-record.md": "N/A \u2014 not applicable",
+    "initialIndependentSourceReview": "N/A \u2014 not applicable; code-review-report.md is CRR-001 historical failure-origin, not initial source Pass"
+  },
+  "repoPath": "tickets/done/claude-interrupt-resume-fake-cli",
+  "persistentArtifactRoot": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli",
+  "finalPublicationReceipt": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/final-repository-state.json",
+  "terminalReceipt": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/terminal-handoff-receipt.json",
+  "historicalAbsolutePaths": "preserved as provenance; use this current manifest for accessible artifacts",
+  "sourceSnapshots": [
+    {
+      "repoPath": "autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+      "sha256": "f2657a9d7c350025e4a5f9648ad1cf8d60cf018bc9a17bedf2dbd67734b46b38"
+    },
+    {
+      "repoPath": "autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs",
+      "sha256": "d408306b1decad92e9ddade8817c1768164a34791f94d25e6e4204ffcedd3933"
+    }
+  ],
+  "allCumulativeArtifacts": [
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/api-e2e-coverage-investigation.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/api-e2e-coverage-investigation.md",
+      "sha256": "a8e51455e5d63d13363b635bbcc7933d6992f3b9934acdc5d156f5da5967cc4c"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/api-e2e-execution-coverage-report.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/api-e2e-execution-coverage-report.md",
+      "sha256": "4e3b5eac3832a34ccca80e34541bb16bb367c0dd82c416481c13dbae7b34a7a9"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/api-e2e-revision-record.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/api-e2e-revision-record.md",
+      "sha256": "e08cce28f674c952958c934ae3fcacb971ae00d3df4f7d4807f78ad7ab10640a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/api-e2e-test-case-ledger.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/api-e2e-test-case-ledger.md",
+      "sha256": "537a101231fd9d9589d2de4a586b53d0325b1332ab725ccc6e2e8b0c7acae813"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/api-e2e-test-review-report.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/api-e2e-test-review-report.md",
+      "sha256": "db4c24b48a11f477ef9e7fe5d99864b54c875e028eb6b92b3248e7537de0102d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/code-review-report.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/code-review-report.md",
+      "sha256": "6b2d54863a038d13698bd45c05c06a897f2594f07215e6c93a2b1767f3cbe578"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/code-review-revision-record.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/code-review-revision-record.md",
+      "sha256": "b4ded3e6c85cd1e4c85d34d574b3c697bfdf59a3c201a34a067dcebf929bfa3d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/delivery-revision-record.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/delivery-revision-record.md",
+      "sha256": "c00d40f22f57aa8f14ee9e31d163b00d16143c2ce177650211fd1b4b10938df8"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/design-spec.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/design-spec.md",
+      "sha256": "43d0c696ecded9bdf899d5c2a6614b700330669dbf20bb6afc20cbadc29a9d4a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/docs-sync-report.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/docs-sync-report.md",
+      "sha256": "22037bb4da96ab1ad52f8386103c8b1b12e151c3311fcb014e494eecc9b1338d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/api-f001-repair.patch",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/api-f001-repair.patch",
+      "sha256": "eccb763290abc30198fc86b9af1108979f29e3187abc946fdcfaf3ba43eb8506"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/case-reporter.mjs",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/case-reporter.mjs",
+      "sha256": "67485445e321ba21a06377f39fe160d2c8a3c0e0f0416bd951cb5463be5f7dd7"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/failure-origin-source.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/failure-origin-source.md",
+      "sha256": "ba930f61cc7196e20cfde6e590c7b3d2d7052fd05687f256e5821dccc6756dc8"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/focused-types-r2.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/focused-types-r2.command.json",
+      "sha256": "95d5e3b5183db776b88e31d4c3812f4a957c5a1b61bee642e7ef1e0d6b0fd351"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/focused-types-r2.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/focused-types-r2.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/focused-types-r2.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/focused-types-r2.log",
+      "sha256": "7dc884dbd551a6a05690f8d88024d906e29f9885a1e289afe578a63bef9ac970"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/focused-types-r2.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/focused-types-r2.resources.json",
+      "sha256": "60554a9f19cc684244ab94fbd0baa20b0fb0b312b7f65777ffec48c8748730cb"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes-rerun.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes-rerun.command.json",
+      "sha256": "53272eaecec4a8ccdaf8bc68efd620d4a59f2330067aa78f7c3810df6cb6c104"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes-rerun.events.jsonl",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes-rerun.events.jsonl",
+      "sha256": "35499f91fd381699d239843a45a3a9a2fe4cab4dece1cc5d888f88ed18be47a4"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes-rerun.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes-rerun.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes-rerun.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes-rerun.log",
+      "sha256": "c2f5cedd56014ef9e288dbd84f4334b8d951dda4ceb7311e69e6899e51121897"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes-rerun.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes-rerun.resources.json",
+      "sha256": "bcefa94a615dc531c75a05587ec97daabc88b0efd0c73644758778a8302838be"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes.command.json",
+      "sha256": "53272eaecec4a8ccdaf8bc68efd620d4a59f2330067aa78f7c3810df6cb6c104"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes.events.jsonl",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes.events.jsonl",
+      "sha256": "f1cf2167eeb7f2935dc0e5c734e79cea5910f71c0cd61e79b106af2e11069cfb"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes.log",
+      "sha256": "edb451ba3c6fc49a119671df26c1afffecc130744c9905707b887367f3577536"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-probes.resources.json",
+      "sha256": "848cea53b319668b3367d01c04538366fb7ee9c96c1308477411b3a87bb06c67"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-setup-rerun.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-setup-rerun.command.json",
+      "sha256": "5b9c4f14815d46a178e5314637883adbb700c8126ead52f469e21ba65305ef07"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-setup-rerun.events.jsonl",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-setup-rerun.events.jsonl",
+      "sha256": "6f76ba2d41525fc0f3bdf05ee5efa7c0b75544daea885556196697b6ede75ce6"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-setup-rerun.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-setup-rerun.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-setup-rerun.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-setup-rerun.log",
+      "sha256": "c3ef54ce56b26d2d4c730e547ea1fdbcd44fa40d51a98e52ff886c3580a01bf1"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-setup-rerun.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/harness-setup-rerun.resources.json",
+      "sha256": "c2c1e31ab4a32d21acbfc47b5428cea0c48004ac30cf4efab2629e7e41458013"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle-r2.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle-r2.command.json",
+      "sha256": "c98ee4053b31a47f7d7c1fa59d0e57733ab92bab156553f288a72689e1b78c23"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle-r2.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle-r2.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle-r2.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle-r2.log",
+      "sha256": "8fb146c68adb81ddfca16b6b5d03faaf008dd1b45e29d26221cd5417838723dc"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle-r2.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle-r2.resources.json",
+      "sha256": "626cf989e89ef2377bd650cf3644c818c114fdf9cebafe436da5f04dd0d64bfa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle.command.json",
+      "sha256": "c98ee4053b31a47f7d7c1fa59d0e57733ab92bab156553f288a72689e1b78c23"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle.log",
+      "sha256": "48e73a55be4f257fa8030e1f64407eb17cc027dc760b95ccb9f0a5aea4e12e42"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/lifecycle.resources.json",
+      "sha256": "14dca4f879ee14521d55ecb010d48d2b9318453708464e31f5fc8b66391d2e09"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/make-harness-probe.py",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/make-harness-probe.py",
+      "sha256": "388dbe7097232bdcb29d98306716b8fb859811cb7da505540c63c9c4de6ea696"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/regressions.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/regressions.command.json",
+      "sha256": "06b39afc63b911cfc4884d01b2e9db555b9a8689d4fe461f6d6a9274ae8c2f31"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/regressions.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/regressions.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/regressions.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/regressions.log",
+      "sha256": "e28e0d731431aada4b1115673c8845e4b2a8e8711e3fb22896cf5b0dc17b9647"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/regressions.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/regressions.resources.json",
+      "sha256": "695588d91e23c62822e2c42bcf5f434c241f4449ad598a5b6d6f9e8f3d007e93"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/repair-preservation.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/repair-preservation.json",
+      "sha256": "c3a2ff09265cd3912f844e1fafc1d57d533af9be41e1c2651fab57098a7e567b"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/round-2-summary.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/round-2-summary.json",
+      "sha256": "6065859c6fe948fe4e9bd5edcc82107efffef7bfb8ab4ea1e600b94f57b15f19"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/run-isolated.py",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/run-isolated.py",
+      "sha256": "21b6f4be6da199afb5abc88875e97b0bafc6af52858dceb3c751c8e7e290b228"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1-frames/API-CL01.json",
+      "sha256": "a8067ffdd7b3bfb1c4d55331c38cc11e8de56bf44212fb1d19c465d08caeee5a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1-frames/API-CL02.json",
+      "sha256": "ae1556d84c68541faaf43e752dde651c1cb3aecc8c45407942116cb18193730f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1-frames/API-CL03.json",
+      "sha256": "5e73c5035dbc525f8b391f18b549b8ad6bffc036769b720c4001c4b88bb40542"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1-frames/API-CL04.json",
+      "sha256": "da87cf3726c8e4e0bd2434b04ef4cadf7e1c7b6acbbce6a7f3ff25f18a40dc60"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1.command.json",
+      "sha256": "15c520ef0a1437a063d3d7320e93ccd3387aacf0a8c319fb6122ff010c6eb2e4"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1.events.jsonl",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1.events.jsonl",
+      "sha256": "32b1f6c14b6960db08c7478523a0f4b59ef1bad619e47658fb989c6b54c8deaa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1.failure-summary.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1.failure-summary.json",
+      "sha256": "a13e87014a3eb8bc33fcd540abe0005d1c64f1f6b1be6a16d669a9ffb3b4d1af"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1.log",
+      "sha256": "4a49afd209234202602d5c88488b46f0fe09c40fc64dfefada8b91fbad869438"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-1.resources.json",
+      "sha256": "3ea9bdcbfed20c75ac73f59ce099d56b37fce3932a4758c1b3d70ae584039bb9"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2-frames/API-CL01.json",
+      "sha256": "de8b72c8b4a6c3f9738d0c93107fa3f2611f6029757327ed13251d7e057cc897"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2-frames/API-CL02.json",
+      "sha256": "ea9476664c47544959f9fa38ce719468f39e275d92d10bf2f584db27eb445182"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2-frames/API-CL03.json",
+      "sha256": "8a784e4f6e064e730e5e2e15687532532f6b99538f2288d3e7ae2f46bc66cfc6"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2-frames/API-CL04.json",
+      "sha256": "c0f8dabfc65ed7503234676f2a9ace500cd3914df3f0aca679aa9412e2ecf0e9"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2.command.json",
+      "sha256": "15c520ef0a1437a063d3d7320e93ccd3387aacf0a8c319fb6122ff010c6eb2e4"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2.events.jsonl",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2.events.jsonl",
+      "sha256": "61e12caeb20707f97417e0fff85bf42a560a8fff2038d66bbbeb348ad1fb48b0"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2.failure-summary.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2.failure-summary.json",
+      "sha256": "a13e87014a3eb8bc33fcd540abe0005d1c64f1f6b1be6a16d669a9ffb3b4d1af"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2.log",
+      "sha256": "74d42ee7119440851d66b42b889e30016bda5710240039c904b07b15dd0d951e"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-2.resources.json",
+      "sha256": "f0b77c18e2c5e8c4b95500a645e13b5c1171997c159d87520acabb90a81ff7c3"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3-frames/API-CL01.json",
+      "sha256": "e592b5b4b153fa7ec546697907095d0748c68a84165e61537d6cffa916e26658"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3-frames/API-CL02.json",
+      "sha256": "347e66fc7cede3922793131960c6d9171cd13f676581e251cf1a57cdd9444349"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3-frames/API-CL03.json",
+      "sha256": "d25147b86399168ae4f17faef22ff61755bed0c15aba76ba2f09d80730bbba64"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3-frames/API-CL04.json",
+      "sha256": "f9a0aefffd17cdc7f9487b3c628f70866fcab0fe4f80d6958221b145f2ab5f2e"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3.command.json",
+      "sha256": "15c520ef0a1437a063d3d7320e93ccd3387aacf0a8c319fb6122ff010c6eb2e4"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3.events.jsonl",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3.events.jsonl",
+      "sha256": "7d5f901db43fb2d1325ec2bd5f55befa699a10cac21c2311b044771928c4f1d1"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3.log",
+      "sha256": "51e2aea388efb6ac183d4709f61bc4c6e5ca76ef53a603bc4d29a026b43e6289"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-3.resources.json",
+      "sha256": "30390ccf4ac67cec7fd1d3865e225eda5601e4cbb4d7f7ab4fb00d104f775bdc"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4-frames/API-CL01.json",
+      "sha256": "f5e6ace5bcc39cde8f550ceede056b833159affeb45f22dd022e834c6c34ca89"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4-frames/API-CL02.json",
+      "sha256": "529b78bbb169a21de27d52fa88762237bc35b18d6c1596b7138c7b0baa6824da"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4-frames/API-CL03.json",
+      "sha256": "365f45161a6ca4fcae2faf85aa923f53a9d44c06a2b5442eaa9eed8422596fad"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4-frames/API-CL04.json",
+      "sha256": "ea793f7563c26fd1ecb3208c91c211be1623e74aabb3144bebcb94ac8fbb41c1"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4.command.json",
+      "sha256": "15c520ef0a1437a063d3d7320e93ccd3387aacf0a8c319fb6122ff010c6eb2e4"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4.events.jsonl",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4.events.jsonl",
+      "sha256": "05e89fc754fa467c57f9477a13aa8f6e59d33cc63e99e777534ea2ae8c1e83a6"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4.log",
+      "sha256": "9311751ae6bb1fa28d794b1109a05cda8c50b53ebb105c974058cc86ece4c3a8"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-4.resources.json",
+      "sha256": "0f1848d776a1bd264abdcf7f88c58d738004e847c558dedd659d12785cc56f44"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5-frames/API-CL01.json",
+      "sha256": "a17a909a0e8fe5eff2f3049f7b8f9b556873f9356007043fac4adada922a6140"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5-frames/API-CL02.json",
+      "sha256": "0dfe9969d78ae6098560c8900414ac87725daf377a5407721850539a196690e6"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5-frames/API-CL03.json",
+      "sha256": "64d92ff5c82da676bad869492e1345591c83e4bdd161c89d121f4c24107afdd4"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5-frames/API-CL04.json",
+      "sha256": "4027b82434b85abe9c419a9c89a53d9ac9fa3ebe32603267fa254d7cf5dafeb7"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5.command.json",
+      "sha256": "5ae8d137784f93cfab8afdceecebb196cfc8daf524f0cb0813f156130d501f52"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5.log",
+      "sha256": "746dbfd5909407a5cffd1c0e55f9434363e5f2d330ce362c1703b324c36e4362"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/target-5.resources.json",
+      "sha256": "2f67c86be903c6aaf6da61b5d132cfa19039d47056e05937a73392de7ea9f3c4"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/typecheck.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/typecheck.command.json",
+      "sha256": "fe52b927ad67f1d250fc87334c1ed8b365997c35cefe84ebe1bd38e719505682"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/typecheck.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/typecheck.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/typecheck.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/typecheck.log",
+      "sha256": "350df5150299d2195f4f334c8691340ff6dd4ff0cd9bcea036d59535a72f2f1a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/typecheck.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/api-e2e/typecheck.resources.json",
+      "sha256": "d6b8f14b35628467f448f398bc47f274a0e5b3a967a4cd040782f4c64632a7d9"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/code-review/crr-001-origin-check.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/code-review/crr-001-origin-check.json",
+      "sha256": "22220380ed3c566ede35ca8f040f10aff89028de605a0966ebddbe46c166892f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/code-review/crr-002-repair-review-check.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/code-review/crr-002-repair-review-check.json",
+      "sha256": "de73773a1227b9c0abbc9ca1b6ad1be5f1d57a4099d289217d444a6a2acccea3"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/current-base-interrupt-resume.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/current-base-interrupt-resume.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/current-base-interrupt-resume.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/current-base-interrupt-resume.log",
+      "sha256": "e2a6c90bc0bafa4a9201b5a1293ee75ea172609dacf17d65e77846f1697212b4"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/archive-preservation.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/archive-preservation.json",
+      "sha256": "6c2be3dc3f2a2063577f8eb3370883bda95eb8c5a4edef143b87e1601d21b1c1"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/execution-ledger.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/execution-ledger.md",
+      "sha256": "a7d54d6aa019c4fd7013cb0e7d7b5756543bb0dbbd14804d40ec198032a3a3d7"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/final-index-hygiene.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/final-index-hygiene.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/final-index-hygiene.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/final-index-hygiene.log",
+      "sha256": "3083fb4f2179576ca0bb67b0bb36f6bffd785688e45851642c35289272b8d5f6"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/finalization-plan.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/finalization-plan.json",
+      "sha256": "26ad0c24446ea1d6d981cffdbc6e8b8499a9ec8168e54e7dd55aa22b8de9cb35"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/hygiene.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/hygiene.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/hygiene.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/hygiene.log",
+      "sha256": "e113d5a8e646fc9e4f22b3c9dcaaa697cefd46f13a264b6585dfb65bf7eb52d0"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/integrated-validation-summary.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/integrated-validation-summary.json",
+      "sha256": "3c8bbc3f5b6ea68dca4a940c08e7c167b49a1e90cd9e7e9997f884776a5dd069"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/licensing.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/licensing.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/licensing.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/licensing.log",
+      "sha256": "b8449abc52fe04168566a0009ee390907cebd965b22cd32f1cc224807ca3f588"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/lifecycle.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/lifecycle.command.json",
+      "sha256": "ed84b4afea760e917fc49d72c89dbc04195d850239aca8ae4813eaee8b6654e8"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/lifecycle.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/lifecycle.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/lifecycle.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/lifecycle.log",
+      "sha256": "a9d164d2192dec1d5c6ad5941c0d02aa720df13e580bea8d11bf2eacadc39cec"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/lifecycle.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/lifecycle.resources.json",
+      "sha256": "a7a21c80da461900ef8ffc34a38288756e2888a83a979786bc9b538ecf77fc3f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/local-branch-cleanup.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/local-branch-cleanup.log",
+      "sha256": "7e706504c37f552637286df0ac10a35f5a5a80a3b22a886cc5a5fb3fbcfd291b"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/merged-hygiene.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/merged-hygiene.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/merged-hygiene.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/merged-hygiene.log",
+      "sha256": "acd52ac21195263f844221a300a079f78b3169f69f637baa3ecd16f9ae3bdaa2"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/merged-licensing.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/merged-licensing.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/merged-licensing.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/merged-licensing.log",
+      "sha256": "b8449abc52fe04168566a0009ee390907cebd965b22cd32f1cc224807ca3f588"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/merged-validation-summary.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/merged-validation-summary.json",
+      "sha256": "1e8a09a2464be04d206f3d5bcee3b822b944e46e04657835cbfb02cfc8b19a81"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/no-ff-merge.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/no-ff-merge.log",
+      "sha256": "ab224e88dead516ddd1cb9bb7826bff592bb70b2536175609889622763193677"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/personal-push.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/personal-push.log",
+      "sha256": "a256db2f32b5bf57910da7f720a38c3b978f9a9b4f8c8680167b274d1737fa49"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/post-finalization-cleanup.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/post-finalization-cleanup.json",
+      "sha256": "03d8cdfcfcf17db34a2c7c4295a52ac035180b5dfb2045252224d2e3cec1e4be"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/post-personal-push-fetch.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/post-personal-push-fetch.log",
+      "sha256": "e77843f813a0e367edf47bbf8290693fbe2c280973d2f41499885cabc39fa655"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/pre-personal-push-fetch.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/pre-personal-push-fetch.log",
+      "sha256": "e77843f813a0e367edf47bbf8290693fbe2c280973d2f41499885cabc39fa655"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/receipt-hygiene.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/receipt-hygiene.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/receipt-hygiene.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/receipt-hygiene.log",
+      "sha256": "65dbf40110b5b88c0b694f26f73f0d3c2ddb18b5f7c808f16184d665f606d509"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/regressions.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/regressions.command.json",
+      "sha256": "fdb06106d80361ae11e4568b46ebf907889a0dfb6c6956b5b6d936c7ecea91dd"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/regressions.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/regressions.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/regressions.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/regressions.log",
+      "sha256": "8e082ef3e43f6b848f9c50052a682d2553d9b982683bed132cedf580b2578b28"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/regressions.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/regressions.resources.json",
+      "sha256": "43d15d43cf2cf49f4d7a7cd9484d76e852842df82f4c5f7b53954d487606255d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/repository-finalization-receipt.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/repository-finalization-receipt.json",
+      "sha256": "cc040f9d8612d5c014af82a3649d66f23aec51b71cf19b457d5f4c174b9b8183"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/run-isolated.py",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/run-isolated.py",
+      "sha256": "1a205fdd5193f458fd4ecdb97ecc245478cbaa3c9364f82536516c36ffdb56c2"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1-frames/API-CL01.json",
+      "sha256": "80d422240db7dbcaa629a8d9e6aa6373ef0ac789b2e8836b1ccfbaa90bb9776d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1-frames/API-CL02.json",
+      "sha256": "7c9c26839f245e9ed6f79dfe1de27af514392120414b18bf40da2d05a8f6e641"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1-frames/API-CL03.json",
+      "sha256": "f360b908fb8807bb9e68671ad3c01bc32d48cfb02dd80f91af15c1ac30d1b46e"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1-frames/API-CL04.json",
+      "sha256": "74971ddefa93a9d1250739ea13edc9339ef387cc253ee322e6d7783948fe4369"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1.command.json",
+      "sha256": "ca8d26ebd2f28c70a75a1e363decf9bd2d46e0868fbc07c0c4b6c13a0ce9d3af"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1.log",
+      "sha256": "a2bf058e3557544e6a7785238a7f5276a2ea628fcfc120cff2453e07319dbc7f"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-1.resources.json",
+      "sha256": "377fa440995e90044b76af2b7f1d80ca161cbe1c7937cb59a57b0d09dc5c44c6"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2-frames/API-CL01.json",
+      "sha256": "6f760917897d289c19c53d3f6eaa5f5ecb9819d80755e976ea264781829dfec2"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2-frames/API-CL02.json",
+      "sha256": "d286f66241c40cbae5c4b8dc86229d1d6481aefe65899f25ffffbce598bdac69"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2-frames/API-CL03.json",
+      "sha256": "bdbe60ae30055e207d1a00b06ce45782637bb83e6e526ab50a359335a719c62d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2-frames/API-CL04.json",
+      "sha256": "7d3f4456f48c2327aa99fa7b3a5a6f0410fad1bd2d2a4b0bfd89e7d88fa5f322"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2.command.json",
+      "sha256": "ca8d26ebd2f28c70a75a1e363decf9bd2d46e0868fbc07c0c4b6c13a0ce9d3af"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2.log",
+      "sha256": "93b85ca421c18065884e1e3cfc3864a07e7c1a194389a45c801521348d597220"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-2.resources.json",
+      "sha256": "761ca1c82e2a9ac4e0263cb674e1f42ca188d639cbe11d6437299fd97d0a3257"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final-frames/API-CL01.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final-frames/API-CL01.json",
+      "sha256": "42f46c5bcbd182ae32a1c15ea874bccd63af3e8a8d2418dde00e318c1bfb01aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final-frames/API-CL02.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final-frames/API-CL02.json",
+      "sha256": "1d027a2050df5a4590b1a8f0cd68a514888e2a3784ba5968b8ab2e94799026ed"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final-frames/API-CL03.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final-frames/API-CL03.json",
+      "sha256": "9040ccf13a64c4a19b82f40d14ee3dda1f5ad5aff34c4dc2399cd565f6598cef"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final-frames/API-CL04.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final-frames/API-CL04.json",
+      "sha256": "d3c3e9070f765fcb75b5d24ed30833a931739f95b1e1a0db6179fe72ebe13050"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final.command.json",
+      "sha256": "b4ce2c0fa150b0241dafa7223847540429c4cc3ab8fb86bd7733a71c3f155d7a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final.log",
+      "sha256": "a172e8d29efa2689bbb427354101549fc6eadeaaccfffa97ef07ab281ff96ef5"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/target-final.resources.json",
+      "sha256": "4aebb0f5ba02d37d7820c9d877669fe79ebab4427dfbe06baff1713fa4c615cc"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/ticket-push.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/ticket-push.log",
+      "sha256": "e0ca072da60699b87fa55a5c4440ea1e96f7ac2e558957eab7a19ac92e705865"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/typecheck.command.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/typecheck.command.json",
+      "sha256": "9844f544f88078b0a1968e631d1801837792705bc5a493adad8d2a9541410b11"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/typecheck.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/typecheck.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/typecheck.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/typecheck.log",
+      "sha256": "350df5150299d2195f4f334c8691340ff6dd4ff0cd9bcea036d59535a72f2f1a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/typecheck.resources.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/typecheck.resources.json",
+      "sha256": "b6753e968368006e62a8cfd148b6957092af4d607dee23fcfa9f8a40205c1ea6"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/user-verification.json",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/user-verification.json",
+      "sha256": "bf1c2e874bf8ecbc187900ab1d72193319d8a6dc1faa54d6373502c56652fa9d"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/worktree-prune.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/worktree-prune.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/worktree-remove.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/delivery/worktree-remove.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/dependency-install.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/dependency-install.log",
+      "sha256": "bb6ad7ed6607f53c9db22cf8eefd67c37ded8fe978b5851bba1658a76226e750"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/assertion-inventory.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/assertion-inventory.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/assertion-inventory.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/assertion-inventory.log",
+      "sha256": "2a1123995e1934e6b4bc53a7136d143ffc9b7379bbc4481c65274d3750067a91"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/check-target-types.cjs",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/check-target-types.cjs",
+      "sha256": "71bca4645e5f2ad8c7d3fa89216ba9350205b44f1fe281512e0e8079d70b442c"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/lifecycle-unit.command",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/lifecycle-unit.command",
+      "sha256": "c424e12397d3585a384a36e960b56666445bbc7760fb9900de971b4ec90745cc"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/lifecycle-unit.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/lifecycle-unit.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/lifecycle-unit.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/lifecycle-unit.log",
+      "sha256": "0ce29b8c1747ae82c9480ce0f473ae8e8f0730718d100ce7ad659a3b855d1eeb"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/production-typecheck.command",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/production-typecheck.command",
+      "sha256": "3fb5a002d24565bad329d5442dcf2b7819d74ff7596d4e35a2ca223dda6aaf3b"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/production-typecheck.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/production-typecheck.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/production-typecheck.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/production-typecheck.log",
+      "sha256": "350df5150299d2195f4f334c8691340ff6dd4ff0cd9bcea036d59535a72f2f1a"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/self-review.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/self-review.log",
+      "sha256": "3e8d74607ebe1b2d296c2697de64a2355a738e1c00ee68715e7baca1a29c51c2"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/target-types-initial.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/target-types-initial.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/target-types-initial.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/target-types-initial.log",
+      "sha256": "753a21ea19cba1bdfa35c8757f20d019f2c15ef397767b8f65cbdebfa98622ec"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/target-types.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/target-types.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/target-types.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/implementation/target-types.log",
+      "sha256": "1e0d778062695a51a7980848bdf25ae66e292f2216d9fa237950901a88a38324"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/prebuild.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/prebuild.log",
+      "sha256": "efef1a81c249a75bf6db9dc07b6487b3c46386be6e2e2fe86fadd5c1bf4b4551"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/production-lifecycle-investigation.exit",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/production-lifecycle-investigation.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/evidence/production-lifecycle-investigation.log",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/evidence/production-lifecycle-investigation.log",
+      "sha256": "ec59872a061c65dad3eca976e222618d705a1314841a3ac2f44203f1fea7f6a4"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/handoff-architecture-design-complete.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/handoff-architecture-design-complete.md",
+      "sha256": "6040a4aa625bc11dc2e9db40814a887db677c3ee51c88d6061f6f9a3fdf58be7"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/handoff-summary.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/handoff-summary.md",
+      "sha256": "3ad61f6170b0fa1622ed1f45c3a155fdb92d21fcd99d8f733a569acc39a5c349"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/implementation-checks.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/implementation-checks.md",
+      "sha256": "b25924183a92ae15edf0e57da229328d9bce619687cac58c9d8731526034d627"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/implementation-handoff.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/implementation-handoff.md",
+      "sha256": "56bc964d788a4e3fe5da18bccd71c3fe4d763b1b3f348956153cba45a29f908c"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/implementation-revision-record.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/implementation-revision-record.md",
+      "sha256": "c9910f15cbb27303da41799186eafcb67fd58c7796caef4ed0b506f2e0a8f400"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/investigation-notes.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/investigation-notes.md",
+      "sha256": "e2ce4a5ee64844971e6507fa1e5763b5c3b29eec38f6ab7c15f4350c3b6cc311"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/release-deployment-report.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/release-deployment-report.md",
+      "sha256": "8ed8c4d5dcb51c58be9aab4c785779c6af96ac858d6058d39652efafbe3eb0c0"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/requirements-doc.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/requirements-doc.md",
+      "sha256": "76bec85011316c5a016a60178abe282a56af235325e46d86b0b90ef1d409c7dd"
+    },
+    {
+      "repoPath": "tickets/done/claude-interrupt-resume-fake-cli/solution-revision-record.md",
+      "persistentPath": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli/tickets/done/claude-interrupt-resume-fake-cli/solution-revision-record.md",
+      "sha256": "5f8048b44a97d771c1c550c12683715fa359577a373de9a67d7b6e629fc05671"
+    }
+  ],
+  "inventoryNote": "Every archived ticket file except this self-describing manifest; no self-referential checksum."
+}

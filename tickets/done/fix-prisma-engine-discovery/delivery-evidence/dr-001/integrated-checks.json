@@ -1,0 +1,12 @@
+[
+  {
+    "name": "focused",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/startup tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/standalone-application-host tests/unit/secret-management --no-watch",
+    "exit": 0
+  },
+  {
+    "name": "typecheck",
+    "command": "pnpm -C autobyteus-server-ts typecheck",
+    "exit": 0
+  }
+]

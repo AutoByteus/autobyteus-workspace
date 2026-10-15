@@ -18,7 +18,7 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 // is scripted: a message containing `CALL_TOOL:{...}` makes it call that actual agent tool and reply
 // `CALLED:<tool result>`. No provider inference. Covers mention-delegation-dismissal AC-001..AC-013 and AC-015
 // at the server/wire boundary for the standalone Agent, Agent Team and Agent Org roots. The host agents have
-// no Project tool selected, so every create_or_update_task call also proves its automatic exposure (AC-009).
+// select only the task tools create_task and update_task (no task tool is automatic); every call below uses them through the scoped MCP session.
 // Rendering, real runtimes and a real backend restart are covered by the cross-scope mentions live probe.
 const cli = process.env.ANTIGRAVITY_CLI_COMMAND ?? "";
 const enabled = process.env.RUN_AGY_FAILURE_E2E === "1"
@@ -50,20 +50,6 @@ const taskNodes = (tree: unknown): TaskNode[] => {
         delegatorAgentRunId: record.delegatorAgentRunId ?? record.delegator_agent_run_id });
     }
     Object.values(record).forEach(visit);
-  };
-  visit(tree);
-  return found;
-};
-/** Every collaborator entry of a root tree (camelCase or snake_case trees). */
-const collaboratorsIn = (tree: unknown): Record<string, any>[] => {
-  const found: Record<string, any>[] = [];
-  const visit = (value: unknown) => {
-    if (Array.isArray(value)) { value.forEach(visit); return; }
-    if (!value || typeof value !== "object") return;
-    for (const [key, child] of Object.entries(value as Record<string, any>)) {
-      if (key === "collaborators" && Array.isArray(child)) found.push(...child);
-      else visit(child);
-    }
   };
   visit(tree);
   return found;
@@ -100,8 +86,8 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     llmConfig: null, autoExecuteTools: true, runtimeKind: "antigravity_cli" });
   const agentDefinition = async (name: string) => (await graphql(
     `mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
-    // No Project tool is selected: create_or_update_task must arrive automatically with delegate_task (AC-009).
-    { input: { name, role: "assistant", description: `${name} (ad-hoc Task E2E)`, instructions: "Follow the user's request.", toolNames: [] } },
+    // Only the task tools are selected; delegate_task and send_message_to arrive automatically, task tools never do.
+    { input: { name, role: "assistant", description: `${name} (ad-hoc Task E2E)`, instructions: "Follow the user's request.", toolNames: ["create_task", "update_task"] } },
   )).createAgentDefinition.id as string;
   const connect = async (route: string, id: string, ready: (frames: Frame[]) => boolean) => {
     const socket = new WebSocket(`ws://${url.host}/ws/${route}/${id}`);
@@ -320,8 +306,8 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect(resources.length).toBeGreaterThan(0);
     await until(async () => (await fs.readFile(path.join(adHocRoot(), adHocTaskId!, "agent_run_resources.json"), "utf8"))
       .includes(subCopy.agentRunId ?? subCopy.teamRunId!), "sub-copy linked to the same ad-hoc Task", 30_000);
-    // `@` added nothing: no collaborator; the stored message carries the delegate_task note (AC-001, AC-002).
-    expect(collaboratorsIn(await liveTree())).toEqual([]);
+    // `@` added nothing to the run; the stored message carries the delegate_task note (AC-001, AC-002).
+    expect(taskNodes(await liveTree()).map(keyOf).sort()).toEqual(keys(nodes));
     const managerText = JSON.stringify(await managerConversation());
     expect(managerText).toContain("[Mentioned collaborators]");
     expect(managerText).toContain(`- ${names.reviewer} (Agent) at ${reviewerAddress}`);
@@ -342,16 +328,16 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect(rejectedDelegation).not.toMatch(AD_HOC_ID);
     expect(await adHocTaskIds()).toEqual([...adHocBefore, adHocTaskId!].sort());
 
-    // 3. Strict create_or_update_task modes through the real MCP tool (AC-004..006).
-    const rejected = await managerCalls(callTool("create_or_update_task", { project_id: projectId, task_id: adHocTaskId, status: "DONE" }));
+    // 3. Strict create_task / update_task modes through the real MCP tool (AC-004..006).
+    const rejected = await managerCalls(callTool("update_task", { project_id: projectId, task_id: adHocTaskId, status: "DONE" }));
     expect(rejected).toContain("PROJECT_TOOL_ARGUMENT_INVALID");
     expect((await readAdHocTask(adHocTaskId!)).status).not.toBe("DONE");
-    const unknown = await managerCalls(callTool("create_or_update_task", { task_id: `ad_hoc_task_${randomUUID()}`, status: "DONE" }));
+    const unknown = await managerCalls(callTool("update_task", { task_id: `ad_hoc_task_${randomUUID()}`, status: "DONE" }));
     expect(unknown).toContain("TASK_NOT_FOUND");
-    const createWithoutProject = await managerCalls(callTool("create_or_update_task", { description: "No Project." }));
+    const createWithoutProject = await managerCalls(callTool("create_task", { description: "No Project." }));
     expect(createWithoutProject).toContain("PROJECT_TOOL_ARGUMENT_INVALID");
     expect(await adHocTaskIds()).toEqual([...adHocBefore, adHocTaskId!].sort());
-    const patched = await managerCalls(callTool("create_or_update_task", { task_id: projectTaskId, description: "Patched by id." }));
+    const patched = await managerCalls(callTool("update_task", { task_id: projectTaskId, description: "Patched by id." }));
     expect(patched).toContain(projectTaskId);
     expect((await projectTasks(projectId)).find((task) => task.taskId === projectTaskId)?.description).toBe("Patched by id.");
 
@@ -362,7 +348,7 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
 
     // 5. DONE by task_id alone (AC-004, AC-007): one live closure of exactly the copy and its sub-work, status DONE.
     const doneFrom = view.frames.length;
-    const done = await managerCalls(callTool("create_or_update_task", { task_id: adHocTaskId, status: "DONE" }));
+    const done = await managerCalls(callTool("update_task", { task_id: adHocTaskId, status: "DONE" }));
     expect(done).toContain(adHocTaskId!);
     expect(done).toMatch(/\\?"projectId\\?":null/);
     await until(() => view.frames.slice(doneFrom).some(closedFrame), "live task_executions_closed", 60_000);
@@ -376,7 +362,7 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect(calledResults(await conversationOf(copy.agentRunId!, copy.address)).length).toBeGreaterThanOrEqual(1);
     // Repeating DONE re-requests the stop and changes nothing else.
     const redoFrom = view.frames.length;
-    await managerCalls(callTool("create_or_update_task", { task_id: adHocTaskId, status: "DONE" }));
+    await managerCalls(callTool("update_task", { task_id: adHocTaskId, status: "DONE" }));
     await until(() => view.frames.slice(redoFrom).some(closedFrame), "repeated DONE closure", 60_000);
     expect(keys(closedRefsOf(view.frames.slice(redoFrom).find(closedFrame)!))).toEqual(keys(adHocRefs));
     expect(await adHocTaskIds()).toEqual([...adHocBefore, adHocTaskId!].sort());
@@ -384,13 +370,23 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect(keys(reopened.closed)).toEqual(keys(adHocRefs));
     expect(keys(taskNodes(reopened.tree))).toEqual(keys(nodes));
 
-    // 6. An agent-initiated bring-in still adds a permanent collaborator (the producer of stored collaborators, AC-012).
-    const broughtIn = await managerCalls(callTool("send_message_to", { recipient_address: assistantAddress, content: "Reply OK." }));
-    expect(broughtIn).not.toMatch(/"isError":true/);
-    let collaborators: Record<string, any>[] = [];
-    await until(async () => { collaborators = collaboratorsIn(await liveTree()); return collaborators.length === 1; }, "bring-in collaborator", 30_000);
-    const collaboratorRunId = collaborators[0]!.agentRunId ?? collaborators[0]!.agent_run_id;
-    expect(collaboratorRunId).toBeTruthy();
+    // 6. Messaging never brings anyone in (collaboration-model-contract): `send_message_to` to an outside catalog address is
+    // not found and creates nothing; delegation is the way in, and the copy is then reached by its run ID.
+    const nodesBeforeMessage = taskNodes(await liveTree()).length;
+    const notFound = await managerCalls(callTool("send_message_to", { recipient_address: assistantAddress, content: "Reply OK." }));
+    expect(notFound).toContain("COLLABORATION_TARGET_NOT_FOUND");
+    expect(notFound).toContain("delegate_task");
+    expect(taskNodes(await liveTree()).length).toBe(nodesBeforeMessage);
+    expect(await adHocTaskIds()).toEqual([...adHocBefore, adHocTaskId!].sort());
+    const assistantDelegated = await managerCalls(callTool("delegate_task", { recipient_address: assistantAddress, description: "Reply OK." }));
+    expect(assistantDelegated).not.toMatch(/"isError":true/);
+    let assistantCopy: TaskNode | undefined;
+    await until(async () => { assistantCopy = taskNodes(await liveTree()).find((node) => node.address === assistantAddress); return Boolean(assistantCopy); },
+      "assistant copy started by delegation", 60_000);
+    const assistantRunId = assistantCopy!.agentRunId!;
+    expect(assistantRunId).toBeTruthy();
+    const assistantReached = await managerCalls(callTool("send_message_to", { target_agent_run_id: assistantRunId, content: "Reply OK." }));
+    expect(assistantReached).not.toMatch(/"isError":true|TASK_AGENT_RESOURCE/);
 
     // 6b. mention-candidates-in-run: definitions already in the run are mentionable (AC-001..003, AC-006).
     // The run's own definition is not; a Team/Org run's configured shared members are.
@@ -398,7 +394,7 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     // An Agent root answers for the focused agent: the host's own composer here.
     const candidates = ((await graphql(`query($k:String!,$id:String!,$f:String){collaboratorMentionCandidates(rootSubjectKind:$k,rootRunId:$id,focusedAgentRunId:$f){availability candidates{kind definitionId}}}`,
       { k: rootSubjectKind, id: rootId, f: kind === "agent" ? rootId : null })).collaboratorMentionCandidates.candidates as any[]).map((candidate) => candidate.definitionId);
-    expect(candidates).toContain(ids.assistant); // an in-run collaborator (the reported case)
+    expect(candidates).toContain(ids.assistant); // an outside definition stays mentionable (delegated, never in-run)
     if (kind === "agent") expect(candidates).not.toContain(ids.manager); // the standalone host's own definition
     else expect(candidates).toContain(ids.worker); // a configured shared member
     if (kind === "team") expect(candidates).not.toContain(ids.team);
@@ -406,14 +402,20 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     const inRunMentions = [{ kind: "agent" as const, definition_id: ids.assistant },
       ...(kind === "agent" ? [] : [{ kind: "agent" as const, definition_id: ids.worker }])];
     send("Reply OK.", inRunMentions);
-    const assistantEntry = `- ${names.assistant} (Agent) at ${assistantAddress}, already in this run`;
+    const assistantEntry = `- ${names.assistant} (Agent) at ${assistantAddress}`;
     let inRunText = "";
     await until(async () => { inRunText = JSON.stringify(await managerConversation()); return inRunText.includes(assistantEntry); },
       "in-run mention note stored", 30_000);
-    expect(inRunText).toContain(IN_RUN_GUIDANCE);
-    if (kind !== "agent") expect(inRunText).toContain(`- ${names.worker} (Agent) at /worker, already in this run`);
-    // Nothing is added: the in-run collaborator stays the single instance (no duplicate, AC-006).
-    expect(collaboratorsIn(await liveTree()).map((entry) => entry.agentRunId ?? entry.agent_run_id)).toEqual([collaboratorRunId]);
+    // The delegated assistant copy is not an in-run placement: no in-run marker for it, and the in-run guidance only
+    // when a configured member (Team/Org /worker) is mentioned too.
+    expect(inRunText).not.toContain(`${assistantEntry}, already in this run`);
+    if (kind === "agent") expect(inRunText).not.toContain(IN_RUN_GUIDANCE);
+    else {
+      expect(inRunText).toContain(IN_RUN_GUIDANCE);
+      expect(inRunText).toContain(`- ${names.worker} (Agent) at /worker, already in this run`);
+    }
+    // Nothing is added by a mention: the delegated assistant copy stays the single instance.
+    expect(taskNodes(await liveTree()).filter((node) => node.address === assistantAddress).map((node) => node.agentRunId)).toEqual([assistantRunId]);
     record.inRunCandidates = candidates;
 
     // 7. REQ-012 / AC-013: with the Projects migration pending, delegation and DONE still work; Projects reject.
@@ -428,11 +430,11 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
         pendingTaskId = AD_HOC_ID.exec(pendingDelegation)?.[0];
         expect(pendingTaskId, pendingDelegation).toBeTruthy();
         const pendingFrom = view.frames.length;
-        const pendingDone = await managerCalls(callTool("create_or_update_task", { task_id: pendingTaskId, status: "DONE" }));
+        const pendingDone = await managerCalls(callTool("update_task", { task_id: pendingTaskId, status: "DONE" }));
         expect(pendingDone).not.toContain("PROJECTS_MIGRATION_PENDING");
         await until(() => view.frames.slice(pendingFrom).some(closedFrame), "closure while migration is pending", 60_000);
         expect((await readAdHocTask(pendingTaskId!)).status).toBe("DONE");
-        const projectDuringPending = await managerCalls(callTool("create_or_update_task", { task_id: projectTaskId, status: "DONE" }));
+        const projectDuringPending = await managerCalls(callTool("update_task", { task_id: projectTaskId, status: "DONE" }));
         expect(projectDuringPending).toMatch(/PROJECTS_MIGRATION_PENDING|Projects data is being upgraded/);
       } finally {
         await fs.rm(released, { force: true });
@@ -440,7 +442,7 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
       record.pendingTaskId = pendingTaskId;
     }
 
-    // 8. Stop: stored reads keep the closure and the collaborator (AC-008, AC-012).
+    // 8. Stop: stored reads keep the closure and the open assistant copy (AC-008).
     view.socket.close();
     inputChannel?.socket.close();
     await terminate(kind, rootId);
@@ -451,9 +453,9 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     };
     const closedAfterStop = await storedClosed();
     for (const ref of adHocRefs) expect(keys(closedAfterStop)).toContain(keyOf(ref));
-    expect(collaboratorsIn(await liveTree()).map((entry) => entry.agentRunId ?? entry.agent_run_id)).toEqual([collaboratorRunId]);
+    expect(taskNodes(await liveTree()).map((node) => node.agentRunId)).toContain(assistantRunId);
 
-    // 9. Restore by sending: the stored collaborator still answers by address; the closed copy stays closed.
+    // 9. Restore by sending: the open assistant copy still answers by run ID (wake); the closed copy stays closed.
     // An Org view attaches only to an active Org; the product restores a stopped Org explicitly before its stream.
     if (kind === "org") {
       const restored = (await graphql(`mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`, { id: rootId })).restoreAgentOrgRun;
@@ -462,9 +464,9 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     if (kind === "agent") inputChannel = await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED"));
     view = await openView();
     active.push({ kind, rootId });
-    const again = await managerCalls(callTool("send_message_to", { recipient_address: assistantAddress, content: "Reply OK again." }));
+    const again = await managerCalls(callTool("send_message_to", { target_agent_run_id: assistantRunId, content: "Reply OK again." }));
     expect(again).not.toMatch(/"isError":true|TASK_AGENT_RESOURCE/);
-    expect(collaboratorsIn(await liveTree()).map((entry) => entry.agentRunId ?? entry.agent_run_id)).toEqual([collaboratorRunId]);
+    expect(taskNodes(await liveTree()).map((node) => node.agentRunId)).toContain(assistantRunId);
     const stillFenced = await managerCalls(callTool("send_message_to", { target_agent_run_id: copy.agentRunId, content: "Wake up." }));
     expect(stillFenced).toContain("TASK_AGENT_RESOURCE_CLOSED");
     expect(keys(snapshotOf(view.frames).closed)).toEqual(expect.arrayContaining(keys(adHocRefs)));
@@ -492,7 +494,7 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     await until(async () => !(await adHocTaskIds()).includes(otherTaskId!), "other root's ad-hoc Task deleted with its run", 30_000);
 
     Object.assign(record, { rootId, managerRunId, projectId, projectTaskId, adHocTaskId, copy, subCopy, closedPayload,
-      collaboratorRunId, storedAdHocTask: stored, delegated, rejectedDelegation, rejected, unknown, createWithoutProject, done, fenced,
+      assistantRunId, notFound, storedAdHocTask: stored, delegated, rejectedDelegation, rejected, unknown, createWithoutProject, done, fenced,
       closedAfterStop, otherTaskId });
     evidence[kind] = record;
   };

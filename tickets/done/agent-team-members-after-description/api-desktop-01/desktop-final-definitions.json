@@ -1,0 +1,188 @@
+{
+  "agentDefinitions": [
+    {
+      "id": "autobyteus-daily-assistant",
+      "name": "Daily Assistant",
+      "loadIssue": null
+    },
+    {
+      "id": "autobyteus-retrospective-skill-improver",
+      "name": "Retrospective Skill Improver",
+      "loadIssue": null
+    },
+    {
+      "id": "api-coordinator",
+      "name": "API Coordinator",
+      "loadIssue": null
+    },
+    {
+      "id": "api-architect",
+      "name": "API Architect",
+      "loadIssue": null
+    },
+    {
+      "id": "api-implementer",
+      "name": "API Implementer",
+      "loadIssue": null
+    },
+    {
+      "id": "api-reviewer",
+      "name": "API Reviewer",
+      "loadIssue": null
+    },
+    {
+      "id": "api-validator",
+      "name": "API Validator",
+      "loadIssue": null
+    },
+    {
+      "id": "api-delivery",
+      "name": "API Delivery",
+      "loadIssue": null
+    }
+  ],
+  "agentTeamDefinitions": [
+    {
+      "id": "api-desktop-engineering-team",
+      "name": "API Desktop Engineering Team",
+      "description": "A test-owned six-member Team for user-style validation of the reordered detail page.",
+      "instructions": "Instruction 1: preserve approved requirements and existing Team member navigation.\nInstruction 2: preserve approved requirements and existing Team member navigation.\nInstruction 3: preserve approved requirements and existing Team member navigation.\nInstruction 4: preserve approved requirements and existing Team member navigation.\nInstruction 5: preserve approved requirements and existing Team member navigation.\nInstruction 6: preserve approved requirements and existing Team member navigation.\nInstruction 7: preserve approved requirements and existing Team member navigation.\nInstruction 8: preserve approved requirements and existing Team member navigation.\nInstruction 9: preserve approved requirements and existing Team member navigation.\nInstruction 10: preserve approved requirements and existing Team member navigation.\nInstruction 11: preserve approved requirements and existing Team member navigation.\nInstruction 12: preserve approved requirements and existing Team member navigation.\nInstruction 13: preserve approved requirements and existing Team member navigation.\nInstruction 14: preserve approved requirements and existing Team member navigation.\nInstruction 15: preserve approved requirements and existing Team member navigation.\nInstruction 16: preserve approved requirements and existing Team member navigation.\nInstruction 17: preserve approved requirements and existing Team member navigation.\nInstruction 18: preserve approved requirements and existing Team member navigation.\nInstruction 19: preserve approved requirements and existing Team member navigation.\nInstruction 20: preserve approved requirements and existing Team member navigation.\nInstruction 21: preserve approved requirements and existing Team member navigation.\nInstruction 22: preserve approved requirements and existing Team member navigation.\nInstruction 23: preserve approved requirements and existing Team member navigation.\nInstruction 24: preserve approved requirements and existing Team member navigation.\nInstruction 25: preserve approved requirements and existing Team member navigation.\nInstruction 26: preserve approved requirements and existing Team member navigation.\nInstruction 27: preserve approved requirements and existing Team member navigation.\nInstruction 28: preserve approved requirements and existing Team member navigation.\nInstruction 29: preserve approved requirements and existing Team member navigation.\nInstruction 30: preserve approved requirements and existing Team member navigation.\nInstruction 31: preserve approved requirements and existing Team member navigation.\nInstruction 32: preserve approved requirements and existing Team member navigation.\nInstruction 33: preserve approved requirements and existing Team member navigation.\nInstruction 34: preserve approved requirements and existing Team member navigation.",
+      "coordinatorMemberName": "api_coordinator",
+      "nodes": [
+        {
+          "memberName": "api_coordinator",
+          "ref": "api-coordinator",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "api_architect",
+          "ref": "api-architect",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "api_implementer",
+          "ref": "api-implementer",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "api_reviewer",
+          "ref": "api-reviewer",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "api_validator",
+          "ref": "api-validator",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "api_delivery",
+          "ref": "api-delivery",
+          "refScope": "SHARED"
+        }
+      ],
+      "handoffs": [
+        {
+          "from": "/api_coordinator",
+          "to": "/api_architect",
+          "rules": [
+            "Handoff 1: when this stage completes, pass the cumulative package. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries.",
+            "Secondary rule 1: keep the displayed rule order unchanged."
+          ]
+        },
+        {
+          "from": "/api_architect",
+          "to": "/api_implementer",
+          "rules": [
+            "Handoff 2: when this stage completes, pass the cumulative package. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries.",
+            "Secondary rule 2: keep the displayed rule order unchanged."
+          ]
+        },
+        {
+          "from": "/api_implementer",
+          "to": "/api_reviewer",
+          "rules": [
+            "Handoff 3: when this stage completes, pass the cumulative package. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries.",
+            "Secondary rule 3: keep the displayed rule order unchanged."
+          ]
+        },
+        {
+          "from": "/api_reviewer",
+          "to": "/api_validator",
+          "rules": [
+            "Handoff 4: when this stage completes, pass the cumulative package. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries.",
+            "Secondary rule 4: keep the displayed rule order unchanged."
+          ]
+        },
+        {
+          "from": "/api_validator",
+          "to": "/api_delivery",
+          "rules": [
+            "Handoff 5: when this stage completes, pass the cumulative package. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries.",
+            "Secondary rule 5: keep the displayed rule order unchanged."
+          ]
+        },
+        {
+          "from": "/api_delivery",
+          "to": "/api_coordinator",
+          "rules": [
+            "Handoff 6: when this stage completes, pass the cumulative package. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries.",
+            "Secondary rule 6: keep the displayed rule order unchanged."
+          ]
+        },
+        {
+          "from": "/api_coordinator",
+          "to": "/api_implementer",
+          "rules": [
+            "Handoff 7: when this stage completes, pass the cumulative package. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries.",
+            "Secondary rule 7: keep the displayed rule order unchanged."
+          ]
+        },
+        {
+          "from": "/api_implementer",
+          "to": "/api_validator",
+          "rules": [
+            "Handoff 8: when this stage completes, pass the cumulative package. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries. Preserve requirements, evidence and ownership boundaries.",
+            "Secondary rule 8: keep the displayed rule order unchanged."
+          ]
+        }
+      ],
+      "loadIssues": []
+    },
+    {
+      "id": "api-desktop-research-team",
+      "name": "API Desktop Research Team",
+      "description": "A second disposable Team to verify universal ordering and empty handoffs.",
+      "instructions": "Research instructions remain below the roster.",
+      "coordinatorMemberName": "api_coordinator",
+      "nodes": [
+        {
+          "memberName": "api_coordinator",
+          "ref": "api-coordinator",
+          "refScope": "SHARED"
+        },
+        {
+          "memberName": "api_architect",
+          "ref": "api-architect",
+          "refScope": "SHARED"
+        }
+      ],
+      "handoffs": [],
+      "loadIssues": []
+    }
+  ],
+  "agentOrgDefinitions": [
+    {
+      "id": "api-desktop-verification-org",
+      "name": "API Desktop Verification Org",
+      "members": [
+        {
+          "memberName": "api_desktop_engineering_team",
+          "ref": "api-desktop-engineering-team",
+          "refType": "AGENT_TEAM",
+          "refScope": "SHARED"
+        }
+      ],
+      "loadIssues": []
+    }
+  ]
+}

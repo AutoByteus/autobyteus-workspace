@@ -63,6 +63,10 @@ export const configureE2eStudioApplicationApiServices = (
       ?? unavailableService<StudioApplicationApiServices["runModelConfigService"]>(
         "runModelConfigService",
       ),
+    delegatedLaunchSelectionService: overrides.delegatedLaunchSelectionService
+      ?? unavailableService<StudioApplicationApiServices["delegatedLaunchSelectionService"]>(
+        "delegatedLaunchSelectionService",
+      ),
     bundleService: overrides.bundleService
       ?? unavailableService<StudioApplicationApiServices["bundleService"]>("bundleService"),
     capabilityService: overrides.capabilityService

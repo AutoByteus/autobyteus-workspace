@@ -1,0 +1,75 @@
+{
+  "actualExit": 0,
+  "expectedExit": 0,
+  "seconds": 12.332,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 1080,
+      "ppid": 316,
+      "pgid": 1080,
+      "command": "(node)"
+    },
+    {
+      "pid": 1124,
+      "ppid": 1080,
+      "pgid": 1080,
+      "command": "(bash)"
+    },
+    {
+      "pid": 1125,
+      "ppid": 1124,
+      "pgid": 1080,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm prepare:shared"
+    },
+    {
+      "pid": 1174,
+      "ppid": 1125,
+      "pgid": 1080,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build"
+    },
+    {
+      "pid": 1226,
+      "ppid": 1174,
+      "pgid": 1080,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-application-sdk-contracts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 1258,
+      "ppid": 1174,
+      "pgid": 1080,
+      "command": "sh -c node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs"
+    },
+    {
+      "pid": 1263,
+      "ppid": 1258,
+      "pgid": 1080,
+      "command": "(node)"
+    },
+    {
+      "pid": 1267,
+      "ppid": 1258,
+      "pgid": 1080,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-ts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 1345,
+      "ppid": 1174,
+      "pgid": 1080,
+      "command": "(node)"
+    },
+    {
+      "pid": 1356,
+      "ppid": 1124,
+      "pgid": 1080,
+      "command": "(node)"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-fixture-types-zabps1u_",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

@@ -96,6 +96,29 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls through the backend active-runtime approval command; it is not a restore or turn-starting operation.
   - `closeAgent()`: Cleans up local state and unsubscribes.
 
+### `agentRunCollaborationStore.ts` (Standalone Agent-run children)
+
+This store owns collaboration contexts, exact child selection and ephemeral
+Team disclosure beneath standalone Agent runs. Disclosure is keyed by
+`hostRunId` and `teamRunId`, not a displayed name or shared logical address.
+An absent choice means collapsed. Stored inspection and stream publication never open member lists; explicit
+toggles retain their choices across same-session refresh/reselection. Fresh
+frontend sessions start collapsed again. There is no automatic-opening helper,
+suppression Set or policy callback.
+
+`AgentRunTaskRows` uses the existing exact disclosure/selection actions;
+`useTaskRootNavigation` deliberately reveals only its target Team and selects
+its coordinator. Status, closure recovery, conversations and execution remain
+separate from disclosure. Agent Team and Agent Org roots keep their own policies.
+
+Collapsing does not defer child hydration. Stored inspection and stream
+snapshots still stage complete child contexts before publication, fetching each
+child's projection and artifact state through the existing hydration owners.
+Compact rows are not evidence of fewer reads or a host-selection speedup;
+host selection, collaboration publication and member readiness are distinct
+boundaries. See [Projects](./projects.md#delegated-team-disclosure-under-agent-runs)
+for the user interaction contract.
+
 ### `agentTeamRunStore.ts` (Agent Teams)
 
 - **Role**: Owns Team launch, restore, exact execution focus, Team stream
@@ -455,7 +478,7 @@ ordinary tree-row style: no border or tint at rest, `gray-50` hover, a 2px
 `indigo-500` `:focus-visible` ring, and the same selected treatment as a member
 row. A transient task-Team row uses an unboxed 16px `slate-500` filled
 people-group icon (`heroicons:user-group-20-solid`) and a semibold name. Team
-identity uses this group glyph regardless of configured, collaborator or delegated
+identity uses this group glyph regardless of configured or delegated
 role; existing image-first Team avatars remain unchanged. Project/Temp Task Team
 workers and Memory Team groups use the same glyph, retaining their existing sizes
 and Memory task-role boxes/colors. Unrelated capability icons, including the model
@@ -467,6 +490,23 @@ direct delegated task-Agent or task-Team row ("Started by <delegator>",
 resolved through the tree) is kept in its aria-label only; a child without a
 recorded `delegatorAgentRunId` (created before the resource lifecycle) has no
 starter. Branch lines run straight through member and task rows.
+
+A delegated task-Agent or task-Team row in a live run has a small stop icon
+(`DelegatedStopButton`) while the copy runs. All actionable sidebar Stops—Agent,
+Team and Org roots as well as Agent and whole-Team copies—are red at rest
+(`text-red-500`, `#ef4444`), darker red on a pale-red background on hover
+(`hover:text-red-600 hover:bg-red-50`), and red again on pointer leave.
+Disabled/pending sidebar Stops are muted (`text-gray-400`, project `#999999`)
+with their existing reduced opacity and cursor; even on hover they remain gray
+on a transparent background. Each control keeps its existing transition and
+native button semantics: roots retain native focus, copies their focus-visible
+ring, pending pulse and reduced-motion override. This applies under Agent,
+Team and Org roots (`WorkspaceTransientExecutionRow`,
+`WorkspaceAgentOrgHistoryCollection`). It stops only that copy and the copies it
+started (`delegatedLaunchDraftStore.stop` → `stopDelegatedExecution`). The copy
+stays restorable and the run keeps running. Task-Team child rows have no icon,
+because a Team copy is stopped as a whole. Its Settings row has the same action.
+See [Settings → Existing Run Configuration](./settings.md#existing-run-configuration).
 
 In the AgentOrg Workspaces rows, a delegated task-Team row with children has the
 mounted-Team chevron and `aria-expanded`. It starts expanded, and a row click
@@ -1202,6 +1242,24 @@ intents. `existingRunConfigStore.discardChanges()` backs Cancel, and
 history lifecycle state may conservatively relock the current target but cannot
 unlock it or supersede the Settings-owned read.
 
+For a stopped standalone Agent, `readAgentCanonical` reads resume metadata and
+`readAgentRunCollaboration` through the existing read-only network client. The
+Settings draft retains only `execution_tree` and `closed_task_executions` as its
+`delegatedSnapshot`; it does not hydrate child conversations or attach a runtime.
+`ExistingRunConfigEditor` builds stopped delegated rows from that snapshot,
+not the cached live collaboration view. Active Agent rows retain their live-view
+owner; Team/Org rows retain their existing canonical tree path. Root-only Agent
+results preserve the same-root snapshot, never another run's snapshot.
+
+Delegated Save waits for `reloadCanonical(true)` before announcing success.
+The save lock covers mutation and readback, and same-target refresh preserves
+the mounted editor/disclosures. Failed writes retain edits; accepted writes
+with failed readback clear committed drafts but require read-only Refresh before
+more editing. Retry uses the same complete canonical read, including when the
+initial draft is unavailable. Request IDs and window-node binding revisions
+reject stale completions after root/node changes. No persistence format,
+launch-default policy, conversation identity or stop/resume contract changes.
+
 Existing-run editing is intentionally narrow. Runtime kind,
 workspace, automatic-tool policy, definition/provider identity, concrete run
 IDs, Team topology, and addresses are fixed presentation (shown with a lock
@@ -1415,7 +1473,7 @@ the UI must not imply improver completion proves downstream improvement.
 
 **+** on a run starts another run like it, through `useRunStart`:
 
-- **Agent** (the Chat run view, including an `@` collaborator child's view):
+- **Agent** (the Chat run view, including a delegated child's view):
   `copyAgentFromConfig(displayed config)` opens New chat for the agent on
   screen, prefilled with its workspace (temp when it has none), runtime, model,
   `llmConfig` (thinking and other model settings) and tool approval.
@@ -1721,13 +1779,14 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
 4.  **Token Usage Meter (`TokenUsageMeterStore`)**:
     - Listens to live `TOKEN_USAGE_UPDATED` events through the standalone/team handlers and hydrates reopened/focused subjects through current-run-record GraphQL summary queries. An individual live update becomes display-ready only from the strict post-persist `run_summary_after_event` cumulative snapshot; raw meter deltas are not treated as durable hydration.
     - The server summary builder narrows the broader statistics aggregate to the exact public cumulative-summary contract before either transport branches. Statistics-only `observed_*` diagnostics must never leak into standalone or Team events; strict transport parsing remains fail-closed rather than loosening the DTO to admit internal aggregate fields.
-    - Maintains record-backed standalone summaries by exact AgentRun id and Team-member summaries by the compound TeamRun/AgentRun identity. Missing, malformed, unsafe, or identity-mismatched cumulative snapshots are not admitted, so a partial live event cannot suppress the GraphQL fallback. Higher-only `usageReportCount` admission prevents an equal or older GraphQL/live result from replacing a newer cumulative summary.
+    - Maintains record-backed standalone summaries by exact AgentRun id and Team-member summaries by the compound TeamRun/AgentRun identity. Missing, malformed, unsafe, or identity-mismatched cumulative snapshots are not admitted, so a partial live event cannot suppress the GraphQL fallback. Higher-only `revision` admission for exact-run and Team-member summaries prevents an equal or older GraphQL/live result from replacing a newer cumulative summary; model-call count alone cannot order context-only updates.
     - Team aggregates use explicit `live_partial`, `refresh_required`, and `record_backed` states. Persisted Team events may extend a provisional aggregate before hydration; after a record-backed aggregate exists, a later event marks it refresh-required instead of blindly adding a delta to a result that may already include that event. The store permits at most one aggregate request at a time and repeats the GraphQL refresh sequentially until no Team event arrived during the request; only the stable response marks the Team total hydrated.
     - Preserves gross input, standard/uncached input, cache-read/cache-write input, cache state, cache hit rates, output/reasoning/billable output, nullable component costs, server-provided component `unitPrices`, `apiCostStatus` (`estimated`, `price_missing`, `partial_price_missing`, `local_no_api_bill`, or `mixed`), missing price dimensions, latest prompt/context-window fields, latest model/runtime, and `usageReportCount`.
     - Missing price data is rendered as price missing/partial rather than `$0`; local runtime rows are rendered as `Local / no API bill`; mixed-currency/provider aggregates keep token totals but no fake aggregate monetary total.
     - Powers the right-side `Token` tab (`TokenUsageMeterPanel.vue`). The internal tab id may remain `usage`; the user-visible label is token-oriented. Workspace headers intentionally do not render token/cost chips; token usage detail belongs in the Token tab rather than the agent/team top header.
-    - `useTokenUsageWorkspaceScope.ts` owns the Token tab subject boundary. Single-agent workspaces resolve the selected agent run as the primary summary; team workspaces resolve the focused leaf member's agent run as the primary summary. Team aggregates must not override a focused member primary summary; if a focused route is not a leaf run, the panel shows a focused-run unavailable state instead of falling back to the aggregate.
-    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the approved focused-run Token Meter hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and collapsed `Calculation details`) and never imports provider pricing metadata or recalculates model prices.
+    - `useTokenUsageWorkspaceScope.ts` owns the Token tab subject boundary. Single-agent workspaces display the selected host's standalone usage/cost roll-up, which may include its delegated copies; team workspaces resolve the focused leaf member's agent run as the primary summary. TPS uses the exact selected run separately, never that roll-up. Team aggregates must not override a focused member primary summary; if a focused route is not a leaf run, the panel shows a focused-run unavailable state instead of falling back to the aggregate.
+    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the `TPS` card independently of totals availability, followed by the existing hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and collapsed `Calculation details`). It never imports provider pricing metadata or recalculates model prices.
+    - TPS is a real-time fact of each model call, not accounting or a Team aggregate. The runtime integration measures the call and its usage event carries `output_throughput` (method, output tokens, integer duration ms), already accepted or nulled on the server. `tokenUsageThroughput.ts`, private to the meter, keeps the newest TPS per run: both live intakes record it right after the seen-key de-duplication (so Team's two effects record one value), independent of the summary. `getRunTps` and the scope composable use the selected target's exact `context.state.runId`, even where the cost summary rolls up other agents. The card shows "TPS", the value, the call's reported model and, for end-to-end readings only, "incl. time to first token"; with no received value (including after reload and for history) it shows "—". See [TPS](token_meter.md) for the methods per runtime. The unchanged empty Team summary builder lives in `tokenUsageTeamAggregate.ts`.
     - For Claude Agent SDK runs, the server's selected-model-only canonical and raw identity, configured API-equivalent estimate, and cache-write-rate assumption flow through the strict cumulative DTO into `TokenUsageMeterStore`. The panel labels this as a configured estimate rather than a subscription charge, shows the selected raw model, and visibly marks any cache writes priced at the assumed 1-hour rate. Auxiliary-model usage is not silently merged into the selected run meter; the browser does not recompute the price or infer the cache duration.
     - `TeamTokenUsageSummary.vue` renders the subordinate team comparison as one semantic grouped-metric table for team workspaces. The table keeps `Member`, `Gross input`, `Output`, and `Total` columns available at all widths; each metric cell pairs the token count with its matching API cost subline, the Team subtitle explains once that costs are estimated and that Total cost is input plus output cost, horizontal scrolling is scoped to the Team table region when the right-side panel is too narrow, visible focused-member state is preserved, and the explicitly labeled `Team total` aggregate remains the final row when available.
     - `Gross input` is cumulative input sent to provider context and may include discounted cache-hit tokens. It is distinct from `latestPromptTokens`, which is the latest model-call prompt/context size used for the latest prompt progress bar.

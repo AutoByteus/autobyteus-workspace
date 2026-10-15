@@ -1,0 +1,21 @@
+{
+  "recordedUtc": "2026-10-13T03:59:30.228837+00:00",
+  "ticketBranch": "codex/claude-interrupt-resume-fake-cli",
+  "ticketCommit": "df7ba8c14b4f607d65de2bc6c54d633e132a5677",
+  "ticketPush": "Completed",
+  "verifiedBase": "f13bdd0eb79aacc63dffa5995b9c86f359001468",
+  "noFfMerge": "26887250676ffc79f54c190936bbda7bc4fe1837",
+  "mergeParents": [
+    "f13bdd0eb79aacc63dffa5995b9c86f359001468",
+    "df7ba8c14b4f607d65de2bc6c54d633e132a5677"
+  ],
+  "mergedValidationEvidenceCommit": "fdf2ae7df6b44910bbd9efbdd7204e23f28379f7",
+  "personalPush": "Completed",
+  "confirmedOriginPersonal": "fdf2ae7df6b44910bbd9efbdd7204e23f28379f7",
+  "archive": "tickets/done/claude-interrupt-resume-fake-cli",
+  "cleanup": "Completed; post-finalization-cleanup.json",
+  "release": "Not required \u2014 explicitly no version release",
+  "metadataReceiptPublication": "Docs-only receipt follows cleanup; exact final publication commit and terminal message are in persistent final-repository-state.json / terminal-handoff-receipt.json; no implementation refinalization",
+  "persistentReceiptRoot": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fake-cli",
+  "sharedCheckoutFilesChangedByDelivery": false
+}

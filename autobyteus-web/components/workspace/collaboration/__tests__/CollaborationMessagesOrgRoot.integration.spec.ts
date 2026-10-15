@@ -57,7 +57,7 @@ const largeOrgView = (): AgentOrgExecutionViewDto => ({
   closed_task_executions: [], execution_tree: {
     subjectKind: 'agent_org', createdAt: timestamp(0), archivedAt: null, applicationBinding: null, handoffs: [],
     rootOrg: {
-      collaborators: [], address: '/', orgDefinitionId: 'org-def', orgDefinitionName: 'Org', orgRunId: 'org-run',
+      address: '/', orgDefinitionId: 'org-def', orgDefinitionName: 'Org', orgRunId: 'org-run',
       defaultLaunchConfiguration: launch, taskExecutions: [],
       members: [agent('/designer', 'agent-designer'), agent('/reviewer', 'agent-reviewer'), agent('/tester', 'agent-tester')],
     },

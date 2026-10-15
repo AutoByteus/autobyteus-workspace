@@ -1,0 +1,512 @@
+{
+  "startedAt": "2026-10-13T14:03:27.860Z",
+  "uid": 1000,
+  "platform": "linux-arm64",
+  "checkpoints": [
+    {
+      "at": "2026-10-13T14:03:36.587Z",
+      "msg": "Owned current Electron ready; launch alone is not journey proof"
+    },
+    {
+      "at": "2026-10-13T14:03:38.246Z",
+      "msg": "Real API/WS seeded conversations, documents, Task delegation and active background worker",
+      "details": {
+        "a": {
+          "id": "agent_ws_8d0aff9c313e04a95825088177d484ccfd3e1b77bb61bce9521c67c59d30b18e",
+          "dir": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-s5ViDn/Dock Alpha",
+          "name": "Dock Alpha"
+        },
+        "b": {
+          "id": "agent_ws_9560b662aba2b8979309fa97886f0ff5976164fb4cd6d6f0e7e423ea527068d4",
+          "dir": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-s5ViDn/Dock Beta",
+          "name": "Dock Beta"
+        },
+        "hostA": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+        "hostB": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+        "project": "project_cc88f4e7-7bf8-40a0-a5b2-8527399e731e",
+        "task": "project_task_dddc2206-63d1-4e09-b944-94a51c1fb19f",
+        "worker": "dock_worker_149b69be74ac49a28d495a4e2c59408d"
+      }
+    },
+    {
+      "at": "2026-10-13T14:03:38.377Z",
+      "msg": "Validation did not pass",
+      "details": {
+        "message": "cdpSession.send: Protocol error (Browser.getWindowForTarget): 'Browser.getWindowForTarget' wasn't found",
+        "stack": "cdpSession.send: Protocol error (Browser.getWindowForTarget): 'Browser.getWindowForTarget' wasn't found\n    at /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/desktop-journey.mjs:63:28"
+      }
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "operation": "GetServerSettings",
+      "variables": {}
+    }
+  ],
+  "frames": [
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "CONNECTED"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "CONNECTED"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "TURN_STARTED"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_COMMAND_ACK"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "TURN_STARTED"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "AGENT_COMMAND_ACK"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "SEGMENT_START"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "SEGMENT_CONTENT"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "SEGMENT_END"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "TURN_COMPLETED"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "SEGMENT_START"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "SEGMENT_CONTENT"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "SEGMENT_END"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "TURN_COMPLETED"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "TURN_STARTED"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_COMMAND_ACK"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "SEGMENT_START"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "SEGMENT_CONTENT"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "SEGMENT_END"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "TURN_COMPLETED"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "TURN_STARTED"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_COMMAND_ACK"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "SEGMENT_START"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "SEGMENT_CONTENT"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "SEGMENT_END"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "TURN_COMPLETED"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_STATUS"
+    },
+    {
+      "agent": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+      "type": "AGENT_INPUT_STATE"
+    }
+  ],
+  "cleanup": {
+    "stop": {
+      "instanceId": "iso-43391-a434",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-s5ViDn",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "list": {
+      "instances": []
+    },
+    "error": "Owned ports not free"
+  },
+  "source": "9848d80eec3f522e4a3b06d2a2834c294d023c1b",
+  "instance": {
+    "instanceId": "iso-43391-a434",
+    "pid": 20816,
+    "executablePath": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus",
+    "backendUrl": "http://127.0.0.1:37967",
+    "graphqlUrl": "http://127.0.0.1:37967/graphql",
+    "controlEndpoint": "http://127.0.0.1:43391",
+    "controlPort": 43391,
+    "serverPort": 37967,
+    "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-s5ViDn",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-s5ViDn/server-data/db/production.db",
+    "logPath": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-app/iso-43391-a434.log"
+  },
+  "build": {
+    "executableSha256": "23e010547985b386ee3fe4a311949a5dbecf5eeb41cbf8427b8a61cdf69840cb",
+    "serverEntrySha256": "e8229f8dcdd4d4109310653c20851ac9b293d42190efc9a7a949779a0c752fc4",
+    "currentServerEntrySha256": "e8229f8dcdd4d4109310653c20851ac9b293d42190efc9a7a949779a0c752fc4",
+    "appAsarSha256": "46c3448ee90bcaf6607ff6cd1bcdce99bb0bdb41c27dd08657af5ae5ec5119dd"
+  },
+  "workerDefinition": "dock-worker",
+  "seed": {
+    "a": {
+      "id": "agent_ws_8d0aff9c313e04a95825088177d484ccfd3e1b77bb61bce9521c67c59d30b18e",
+      "dir": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-s5ViDn/Dock Alpha",
+      "name": "Dock Alpha"
+    },
+    "b": {
+      "id": "agent_ws_9560b662aba2b8979309fa97886f0ff5976164fb4cd6d6f0e7e423ea527068d4",
+      "dir": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-s5ViDn/Dock Beta",
+      "name": "Dock Beta"
+    },
+    "hostA": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+    "hostB": "dock_engineer_f2a1a19811074dcda0cfd0fc2774be9e",
+    "project": "project_cc88f4e7-7bf8-40a0-a5b2-8527399e731e",
+    "task": "project_task_dddc2206-63d1-4e09-b944-94a51c1fb19f",
+    "worker": "dock_worker_149b69be74ac49a28d495a4e2c59408d"
+  },
+  "before": {
+    "alpha": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "PRESERVED_CONVERSATION_ALPHA",
+        "media": null,
+        "ts": 1791900216.9
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "OK",
+        "media": null,
+        "ts": 1791900216.904
+      },
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/dock_worker\",\"task_id\":\"project_task_dddc2206-63d1-4e09-b944-94a51c1fb19f\"}}",
+        "media": null,
+        "ts": 1791900216.924
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"delegated\\\": true,\\n  \\\"target_kind\\\": \\\"agent\\\",\\n  \\\"target_agent_run_id\\\": \\\"dock_worker_149b69be74ac49a28d495a4e2c59408d\\\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"dock_worker_149b69be74ac49a28d495a4e2c59408d\"}}",
+        "media": null,
+        "ts": 1791900217.842
+      },
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"target_agent_run_id\":\"dock_worker_149b69be74ac49a28d495a4e2c59408d\",\"content\":\"BACKGROUND_STEP:{\\\"seconds\\\":3600,\\\"exitCode\\\":0}\"}}",
+        "media": null,
+        "ts": 1791900217.871
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":true,\\\"code\\\":\\\"DELIVERED\\\",\\\"message\\\":\\\"Message delivered.\\\",\\\"target_agent_run_id\\\":\\\"dock_worker_149b69be74ac49a28d495a4e2c59408d\\\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"dock_worker_149b69be74ac49a28d495a4e2c59408d\"}}",
+        "media": null,
+        "ts": 1791900217.887
+      }
+    ],
+    "beta": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "PRESERVED_CONVERSATION_BETA",
+        "media": null,
+        "ts": 1791900216.902
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "OK",
+        "media": null,
+        "ts": 1791900216.906
+      }
+    ],
+    "task": [
+      {
+        "taskId": "project_task_dddc2206-63d1-4e09-b944-94a51c1fb19f",
+        "description": "PRESERVED_TASK: keep the active worker and this exact task intact.",
+        "status": "TODO",
+        "root": {
+          "kind": "agent",
+          "ingressAgentRunId": "dock_worker_149b69be74ac49a28d495a4e2c59408d",
+          "recipientAddress": "/dock_worker",
+          "start": "started",
+          "status": "idle",
+          "closed": false,
+          "hostRoot": {
+            "kind": "agent",
+            "runId": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0"
+          }
+        }
+      }
+    ],
+    "worker": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Task delegator address: /dock_engineer\nTask delegator AgentRun ID: dock_engineer_e1173ca0bb454ee5abb2599e96a326f0\n\nDescription:\nPRESERVED_TASK: keep the active worker and this exact task intact.",
+        "media": null,
+        "ts": 1791900217.832
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "OK",
+        "media": null,
+        "ts": 1791900217.835
+      },
+      {
+        "kind": "inter_agent_message",
+        "role": "user",
+        "senderAgentRunId": "dock_engineer_e1173ca0bb454ee5abb2599e96a326f0",
+        "senderAddress": "/dock_engineer",
+        "content": "You received a message from sender name: dock_engineer, sender address: /dock_engineer, sender id: dock_engineer_e1173ca0bb454ee5abb2599e96a326f0\nmessage:\nBACKGROUND_STEP:{\"seconds\":3600,\"exitCode\":0}",
+        "media": null,
+        "ts": 1791900217.885
+      },
+      {
+        "kind": "tool_call",
+        "invocationId": "agy-tool-bb0a06e3-c63f-410d-b765-7980aa26d84a-21",
+        "role": null,
+        "content": "",
+        "toolName": "run_command",
+        "toolArgs": {
+          "CommandLine": "sleep 3600 # background step 21",
+          "IsDaemon": true
+        },
+        "toolResult": {
+          "provider_state": "RUNNING",
+          "output": "Started as a background task; still running when the turn ended."
+        },
+        "toolError": null,
+        "media": null,
+        "ts": 1791900217.892
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "STARTED",
+        "media": null,
+        "ts": 1791900217.891
+      }
+    ],
+    "documents": [
+      "# PRESERVED_DOCUMENT_Dock Alpha\nExisting document must survive layout actions.\n",
+      "# PRESERVED_DOCUMENT_Dock Beta\nExisting document must survive layout actions.\n"
+    ],
+    "runtimeProcesses": [
+      {
+        "pid": 21117,
+        "startTicks": "39738131",
+        "command": "/usr/bin/node /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs --new-project --agent autobyteus-59fbfe067afa771c --add-dir /tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-s5ViDn/Dock Alpha --model gemini-3.8-flash-low --input-format stream-json --output-format stream-json --dangerously-skip-permissions "
+      },
+      {
+        "pid": 21138,
+        "startTicks": "39738142",
+        "command": "/usr/bin/node /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs --new-project --agent autobyteus-6455700285daf400 --add-dir /tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-s5ViDn/Dock Beta --model gemini-3.8-flash-low --input-format stream-json --output-format stream-json --dangerously-skip-permissions "
+      },
+      {
+        "pid": 21174,
+        "startTicks": "39738231",
+        "command": "/usr/bin/node /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs --new-project --agent autobyteus-84bccb992e06406e --add-dir /tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-s5ViDn/Dock Alpha --model gemini-3.8-flash-low --input-format stream-json --output-format stream-json --dangerously-skip-permissions "
+      }
+    ]
+  },
+  "browser": "148.0.7778.265",
+  "result": "Fail",
+  "error": {
+    "message": "cdpSession.send: Protocol error (Browser.getWindowForTarget): 'Browser.getWindowForTarget' wasn't found",
+    "stack": "cdpSession.send: Protocol error (Browser.getWindowForTarget): 'Browser.getWindowForTarget' wasn't found\n    at /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/desktop-journey.mjs:63:28"
+  },
+  "finishedAt": "2026-10-13T14:03:39.722Z"
+}

@@ -1,5 +1,4 @@
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
-import { messagePlacement } from "../../collaborators/message-recipient-resolution.js";
 import { dispatchTaskCopy, type TaskExecutionJoin } from "./root-task-dispatch.js";
 import { notACopyOfThisRun, resolveExistingCopy } from "./existing-copy-target.js";
 import { RootTaskExecutionResourceScope, asTaskDelegationError } from "./root-task-execution-resource-scope.js";
@@ -9,10 +8,10 @@ import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-cont
 import { resolveTaskExecutionIdleShutdownGraceMs } from "../../../config/task-execution-idle-shutdown-setting.js";
 import type { RootTaskExecutionAdapter, TaskExecutionTarget } from "./root-task-execution-adapter.js";
 import { RootTaskExecutionCommandQueue } from "./root-task-execution-command-queue.js";
+import { TaskExecutionLiveHolds } from "./task-execution-live-holds.js";
 import {
   TaskDelegationError,
   TaskDispatchIndeterminateError,
-  copyTargetOf,
   delegatedCopyOf,
   type AssignToExistingCopyInput,
   type SpawnTaskInput,
@@ -46,8 +45,16 @@ export type TaskExecutionAgentStatus = "offline" | "initializing" | "idle" | "ru
  */
 export type DeliverTaskWork = (ingressAgentRunId: string, content: string, referenceFiles: readonly string[]) => Promise<AgentOperationResult>;
 
-/** A Task's helper and, only when this call started it (or joined the attempt starting it), its launch notes. */
-export type TaskHelperResult = Readonly<{ target: TaskExecutionTarget; launchNotes?: readonly string[] }>;
+/** A user Stop of task copies (SR-006): those it stopped and those that were already offline. */
+export type TaskExecutionUserStopResult = Readonly<{
+  stopped: readonly TaskExecutionReference[];
+  alreadyStopped: readonly TaskExecutionReference[];
+}>;
+
+/** A step that runs only while the listed copies are stopped (AR-001); otherwise the running ones. */
+export type StoppedTaskExecutionsStep<T> =
+  | Readonly<{ ran: true; value: T }>
+  | Readonly<{ ran: false; running: readonly TaskExecutionReference[] }>;
 
 /**
  * Root-neutral resource lifecycle for delegated children (task executions) of
@@ -58,10 +65,10 @@ export type TaskHelperResult = Readonly<{ target: TaskExecutionTarget; launchNot
 export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaunchNotes> {
   private readonly queue = new RootTaskExecutionCommandQueue();
   private readonly schedule: TaskExecutionIdleShutdownSchedule;
-  private readonly leases = new Map<string, number>();
   private accepting = true;
   private readonly resourceScope: RootTaskExecutionResourceScope<TPlacement>;
-  private readonly helperAttempts = new Map<string, Promise<TaskHelperResult>>();
+  /** Live leases and user Stops in progress (SR-006). */
+  private readonly holds = new TaskExecutionLiveHolds();
 
   constructor(
     private readonly adapter: RootTaskExecutionAdapter<TPlacement>,
@@ -209,50 +216,11 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
 
   assertInputAllowed(agentRunId: string): void { this.resourceScope.assertInputAllowed(agentRunId); }
   assertMessageScope(sender: string, recipient: string): void { this.resourceScope.assertMessageScope(sender, recipient); }
-  /** The Task owning the copy that contains the agent, as an opaque key; `null` when unowned. */
-  taskOwnerOf(agentRunId: string): Readonly<{ taskId: string }> | null {
-    const owner = this.resourceScope.ownerOf(agentRunId);
-    return owner ? { taskId: owner.taskId } : null;
-  }
   releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
     return this.resourceScope.releaseTaskExecutions(executions);
   }
   /** Closed (Task DONE or CANCELLED) task executions of the root's current tree, for its package snapshot. */
   closedTaskExecutions(): readonly TaskExecutionReference[] { return this.resourceScope.closedTaskExecutions(); }
-
-  /**
-   * One seedless brought-in copy per Task/address among the Task's open helpers; rejects when it could not be
-   * started. Launch notes come only from this call's own dispatch (or the pending attempt it joined); an
-   * existing helper has none.
-   */
-  async ensureTaskHelper(context: TaskDelegationContext, address: string, placement: TPlacement): Promise<TaskHelperResult> {
-    const owner = this.resourceScope.ownerOf(context.identity.agentRunId);
-    if (!owner) throw new TaskDelegationError("TASK_AGENT_RESOURCES_UNAVAILABLE", "Helper bring-in requires a Task-owned sender.");
-    if (!owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CANCELLED).");
-    const existing = this.adapter.taskExecutionAt(address, this.resourceScope.port().openTaskExecutions(owner.taskId, "broughtIn"));
-    if (existing) return Object.freeze({ target: existing });
-    const key = `${owner.taskId}:${address}`;
-    const pending = this.helperAttempts.get(key);
-    if (pending) return pending;
-    const attempt = dispatchTaskCopy({ adapter: this.adapter, queue: this.queue, context, placement,
-      join: { role: "broughtIn", creator: owner.execution }, resources: this.resourceScope.port(),
-      assertAdmitting: () => this.assertAdmitting(context.identity),
-    }).then((outcome) => {
-      if (!outcome.delegated) throw new Error(outcome.message);
-      return Object.freeze({
-        target: Object.freeze({ root: this.adapter.root, ...copyTargetOf(outcome.copy) }),
-        ...(outcome.launchNotes ? { launchNotes: outcome.launchNotes } : {}),
-      });
-    });
-    this.helperAttempts.set(key, attempt);
-    try { return await attempt; } finally { if (this.helperAttempts.get(key) === attempt) this.helperAttempts.delete(key); }
-  }
-
-  helperPlacement(taskId: string, address: string) {
-    const helper = this.adapter.taskExecutionAt(address, this.resourceScope.port().openTaskExecutions(taskId, "broughtIn"));
-    return helper ? messagePlacement("agentRunId" in helper.execution ? "agent" : "agent_team", address,
-      { agentRunId: helper.ingressAgentRunId, address }) : null;
-  }
 
   /** Actual input fence shared by all root facades: wakes the chain and holds it live for the operation. */
   async withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
@@ -361,6 +329,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
     }
     // The Task side's loaded records are the authority: no durable read, closed stays closed after restart.
     this.resourceScope.assertInputAllowed(agentRunId);
+    this.assertNotStopping(agentRunId);
     return this.queue.submit({ kind: "wake", executeAtQueueHead: () => this.acquireAtHead(agentRunId) });
   }
 
@@ -370,6 +339,8 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
     }
     const assertOpen = () => this.resourceScope.assertInputAllowed(agentRunId);
     assertOpen();
+    // A wake queued before a Stop marked its chain is refused at the head, never restored.
+    this.assertNotStopping(agentRunId);
     const chain = this.adapter.taskExecutionChainFor(agentRunId);
     if (!chain.length) return Object.freeze({ assertOpen, release: () => undefined });
     this.adapter.assertRestorableChain(agentRunId);
@@ -386,19 +357,14 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
         { cause: error },
       );
     }
-    const keys = chain.map(taskExecutionReferenceKey);
-    keys.forEach((key) => this.leases.set(key, (this.leases.get(key) ?? 0) + 1));
+    const releaseHold = this.holds.lease(chain.map(taskExecutionReferenceKey));
     let released = false;
     return Object.freeze({
       assertOpen,
       release: () => {
         if (released) return;
         released = true;
-        for (const key of keys) {
-          const next = (this.leases.get(key) ?? 1) - 1;
-          if (next > 0) this.leases.set(key, next);
-          else this.leases.delete(key);
-        }
+        releaseHold();
         if (this.accepting) this.armLive(chain);
       },
     });
@@ -417,10 +383,75 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
 
   private async shutdownAtHead(reference: TaskExecutionReference): Promise<void> {
     if (!this.accepting) return;
-    if (this.leases.has(taskExecutionReferenceKey(reference))) return;
+    const key = taskExecutionReferenceKey(reference);
+    if (this.holds.isLeased(key) || this.holds.isStopping(key)) return;
     if (!this.adapter.isLive(reference)) return;
     // Not quiet: a later idle/offline/error status or lease release re-arms.
     await this.adapter.tryShutDownIfQuiet(reference);
+  }
+
+  /**
+   * User Stop of task copies (SR-006), `executions` innermost first (`delegatedStopSet`):
+   * 1. marks them stopping: from now on a live lease on any chain containing one is refused with
+   *    `TASK_EXECUTION_STOPPING`, before any queue step (deliveries into, from or by them are refused);
+   * 2. waits, outside the queue, for the leases already held on them to be released (in-flight
+   *    deliveries finish; their inner queue steps still run, since this never holds the queue head);
+   * 3. submits one non-waiting `stop` step per copy, innermost first, that releases a live copy into
+   *    the restorable idle-shutdown state;
+   * 4. clears the marks. An overlapping Stop first lets the earlier attempt settle.
+   */
+  async stopForUser(executions: readonly TaskExecutionReference[]): Promise<TaskExecutionUserStopResult> {
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting commands.");
+    const stop = await this.holds.beginStop([...new Set(executions.map(taskExecutionReferenceKey))]);
+    executions.forEach((reference) => this.schedule.cancel(reference));
+    try {
+      await stop.drained;
+      const stopped: TaskExecutionReference[] = [];
+      const alreadyStopped: TaskExecutionReference[] = [];
+      for (const reference of executions) {
+        const done = await this.queue.submit({ kind: "stop", executeAtQueueHead: () => this.stopAtHead(reference) });
+        (done ? stopped : alreadyStopped).push(reference);
+      }
+      return Object.freeze({ stopped: Object.freeze(stopped), alreadyStopped: Object.freeze(alreadyStopped) });
+    } finally {
+      stop.end();
+      this.resourceScope.taskExecutionsStatusChanged(executions);
+    }
+  }
+
+  /**
+   * AR-001: runs `operation` at the queue head only while every listed copy is stopped (not live,
+   * not held by a lease and not being stopped); wake, activation, idle shutdown and Stop cannot
+   * interleave with it. Otherwise nothing runs and the running copies are returned.
+   */
+  async whileTaskExecutionsStopped<T>(
+    references: readonly TaskExecutionReference[],
+    operation: () => Promise<T> | T,
+  ): Promise<StoppedTaskExecutionsStep<T>> {
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting commands.");
+    return this.queue.submit({
+      kind: "reconfigure",
+      executeAtQueueHead: async (): Promise<StoppedTaskExecutionsStep<T>> => {
+        const running = references.filter((reference) => {
+          const key = taskExecutionReferenceKey(reference);
+          return this.holds.isStopping(key) || this.holds.isLeased(key) || this.adapter.isLive(reference);
+        });
+        if (running.length) return Object.freeze({ ran: false, running: Object.freeze(running) });
+        return Object.freeze({ ran: true, value: await operation() });
+      },
+    });
+  }
+
+  /** Never awaits a lease: the Stop already drained them and refuses new ones. */
+  private async stopAtHead(reference: TaskExecutionReference): Promise<boolean> {
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting commands.");
+    if (!this.adapter.isLive(reference)) return false;
+    this.schedule.cancel(reference);
+    return this.adapter.shutDownForUser(reference);
+  }
+
+  private assertNotStopping(agentRunId: string): void {
+    this.holds.assertNotStopping(this.adapter.taskExecutionChainFor(agentRunId).map(taskExecutionReferenceKey));
   }
 
   private armLive(chain: readonly TaskExecutionReference[]): void {

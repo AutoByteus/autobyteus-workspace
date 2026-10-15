@@ -1,0 +1,193 @@
+{
+  "result": "Sufficient \u2014 current source verified",
+  "date": "2026-10-13T16:34:48.580665+00:00",
+  "candidate": "33b0242265604a568310dff5f6cce63b7b124ce5",
+  "base": "0c37f58d88220be3683a15da6e0956d6ab13c4db",
+  "basis": "Approved R1/SR-001, Ready SR-002, IR-001, API-REV-001",
+  "task_size": "Medium",
+  "architectural_risk": "Low",
+  "route": "Direct Low-Risk",
+  "confidence": 95,
+  "sevenCategoryScores": [
+    95,
+    95,
+    95,
+    95,
+    95,
+    95,
+    95
+  ],
+  "userCheckNeeded": false,
+  "postRefreshChecks": "71/71 tests in 6 suites; same candidate/current base; no new browser rerun needed",
+  "primaryEvidenceOpened": [
+    "api-browser-1/delegated-launch-defaults-evidence.json",
+    "api-unit-direct.log",
+    "api-unit-actions.log",
+    "api-build.log",
+    "api-browser-1.log",
+    "api-cleanup.json",
+    "implementation-old-token-negative.log",
+    "local-rendered-check.md",
+    "delivery/unit.log"
+  ],
+  "screenshotsInspected": [
+    "api-browser-1/DCP-001-parent-rest.png",
+    "api-browser-1/DCP-001-parent-hover.png",
+    "api-browser-1/DCP-001-copy-unselected-hover.png",
+    "api-browser-1/DCP-002-parent-rest.png",
+    "api-browser-1/DCP-002-parent-hover.png",
+    "api-browser-1/DCP-002-copy-unselected-hover.png",
+    "api-browser-1/DCP-003-parent-rest.png",
+    "api-browser-1/DCP-003-parent-hover.png",
+    "api-browser-1/DCP-001-parent-leave.png",
+    "api-browser-1/DCP-002-copy-unselected-leave.png",
+    "api-browser-1/DCP-003-parent-leave.png",
+    "api-browser-1/DCP-001-copy-keyboard-focus.png",
+    "api-browser-1/DCP-002-root-keyboard-focus.png",
+    "api-browser-1/DCP-003-root-disabled-hover.png",
+    "api-browser-1/DCP-002-copy-disabled-hover.png",
+    "api-browser-1/DCP-003-root-stopped-history.png"
+  ],
+  "cases": {
+    "DCP-001": {
+      "result": "Pass",
+      "selectedState": "true",
+      "rootTransition": "0.15s",
+      "copyTransition": "0.15s",
+      "rootOperation": "TerminateAgentRun",
+      "rootVariables": {
+        "agentRunId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30"
+      },
+      "rootHistoryAfter": {
+        "runId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30",
+        "isActive": false,
+        "terminatedAt": "2026-10-13T16:22:17.860Z"
+      },
+      "copyInput": {
+        "rootKind": "AGENT",
+        "rootRunId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30",
+        "agentRunId": "writer_088c_bae63df046134af497b977337b66784b"
+      },
+      "taskAfter": {
+        "taskId": "ad_hoc_task_ae781447-40c5-4598-8994-a4a090f8ad13",
+        "status": "TODO",
+        "root": {
+          "ingressAgentRunId": "writer_088c_bae63df046134af497b977337b66784b",
+          "teamRunId": null,
+          "closed": false,
+          "status": "offline"
+        }
+      },
+      "parentAfterCopyStop": {
+        "runId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30",
+        "isActive": true,
+        "terminatedAt": null
+      },
+      "resumedModels": [
+        "gemini-3.8-flash-low"
+      ],
+      "sidebarResumedModels": null,
+      "allPaletteFocusPendingTargetAssertionsRechecked": true
+    },
+    "DCP-002": {
+      "result": "Pass",
+      "selectedState": "false",
+      "rootTransition": "0.15s",
+      "copyTransition": "0.15s",
+      "rootOperation": "TerminateAgentTeamRun",
+      "rootVariables": {
+        "teamRunId": "home_team_e866_b43b7cc95e244419be8d866e46935a2e"
+      },
+      "rootHistoryAfter": {
+        "teamRunId": "home_team_e866_b43b7cc95e244419be8d866e46935a2e",
+        "isActive": false,
+        "terminatedAt": "2026-10-13T16:23:10.708Z"
+      },
+      "copyInput": {
+        "rootKind": "AGENT_TEAM",
+        "rootRunId": "home_team_e866_b43b7cc95e244419be8d866e46935a2e",
+        "teamRunId": "pair_team_fab0_bab89e0a48b44d9d83aa88b2a20814d8"
+      },
+      "taskAfter": {
+        "taskId": "ad_hoc_task_cb3fc745-55c5-4813-8015-daee89b57b56",
+        "status": "TODO",
+        "root": {
+          "ingressAgentRunId": "lead_06fe_3e46834c17e04b87ba058ca41319cef7",
+          "teamRunId": "pair_team_fab0_bab89e0a48b44d9d83aa88b2a20814d8",
+          "closed": false,
+          "status": "offline"
+        }
+      },
+      "parentAfterCopyStop": {
+        "teamRunId": "home_team_e866_b43b7cc95e244419be8d866e46935a2e",
+        "isActive": true,
+        "terminatedAt": null
+      },
+      "resumedModels": [
+        "gemini-3.8-flash-low"
+      ],
+      "sidebarResumedModels": null,
+      "allPaletteFocusPendingTargetAssertionsRechecked": true
+    },
+    "DCP-003": {
+      "result": "Pass",
+      "selectedState": "true",
+      "rootTransition": "0s",
+      "copyTransition": "0.15s",
+      "rootOperation": "TerminateAgentOrgRun",
+      "rootVariables": {
+        "agentOrgRunId": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a"
+      },
+      "rootHistoryAfter": {
+        "root_run_id": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a",
+        "is_active": false
+      },
+      "copyInput": {
+        "rootKind": "AGENT_ORG",
+        "rootRunId": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a",
+        "agentRunId": "writer_088c_6c86e034b5194905adc4c705d5304f81"
+      },
+      "taskAfter": {
+        "taskId": "ad_hoc_task_9d96f485-f5b7-4e74-ae4b-89d1ad1bb566",
+        "status": "TODO",
+        "root": {
+          "ingressAgentRunId": "writer_088c_6c86e034b5194905adc4c705d5304f81",
+          "teamRunId": null,
+          "closed": false,
+          "status": "offline"
+        }
+      },
+      "parentAfterCopyStop": {
+        "root_run_id": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a",
+        "is_active": true
+      },
+      "resumedModels": [
+        "gemini-3.8-flash-low"
+      ],
+      "sidebarResumedModels": [
+        "gemini-3.8-flash-low"
+      ],
+      "allPaletteFocusPendingTargetAssertionsRechecked": true
+    }
+  },
+  "ACProof": {
+    "AC-001": "All five enabled rest/hover/leave actual computed CSS, all three host compositions and representative screenshots; row/status styling unchanged source",
+    "AC-002": "Six real operations focus/native key/pending/muted actual hover/single request/unchanged row; copies pulse and reduced motion",
+    "AC-003": "Distinct exact root IDs and real success/inactive retained history, no confirmation; inactive Stop hidden assertions inspected in probe",
+    "AC-004": "Typed Agent/whole-Team copy ownership, real STOPPED/open same Task/parent active and resume, original Settings path retained",
+    "AC-005": "Final source/release/installed-app/cleanup receipt supplied by delivery reports, not claimed by API alone"
+  },
+  "sourceSHA256": {
+    "DelegatedStopButton.vue": "78e163bfa90926afd1c9b2f2d89f9e6b782f4c3a32a333c76c754d917b3e7e2f",
+    "WorkspaceHistoryWorkspaceSection.vue": "245b6a2a527671b62cfc8a3ce4c9a1a6fb5fbef84494025eefd4c5ad26832f5c",
+    "WorkspaceAgentOrgHistoryCollection.vue": "834762d0b0d1ec28a5b736b64dd400cfe89c6e8b43c3d2cd6fd171f6ca06ce2f"
+  },
+  "probeSHA256": "ae0b475aca9a72f36163fe775359cb3fa36490edeb51e4c682deb5a765946e66",
+  "limits": [
+    "Browser/web-equivalent, not Electron shell/full installed-product journey",
+    "Scripted inference only, no provider/credential use",
+    "Real backend request delayed then forwarded unchanged, never fabricated success",
+    "Team group expanded not selected=true; no exhaustive sibling-concurrency/network-failure matrix",
+    "Prior gray Task remains DONE; no prior pass imported; prior FUP excluded"
+  ]
+}

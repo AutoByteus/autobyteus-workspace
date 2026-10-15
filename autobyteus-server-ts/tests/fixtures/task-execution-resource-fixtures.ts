@@ -96,9 +96,6 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     return { taskId: innermost.taskId, execution: innermost.execution, open: innermost.open };
   }
   isOpen(execution: TaskExecutionReference): boolean { return this.entry(execution)?.open === true; }
-  openTaskExecutions(taskId: string, role: TaskExecutionRole): TaskExecutionReference[] {
-    return [...this.entries.values()].filter(e => e.taskId === taskId && e.role === role && e.open).map(e => e.execution);
-  }
   closedTaskExecutionsIn(hostRoot: RootExecutionIdentity): TaskExecutionReference[] {
     return [...this.entries.values()].filter(e => !e.open && !this.damaged.has(e.taskId)
       && rootExecutionIdentityKey(e.hostRoot) === rootExecutionIdentityKey(hostRoot)).map(e => e.execution);
@@ -110,7 +107,7 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     if (entry.start !== "started") throw rejection("TASK_REACTIVATION_UNAVAILABLE", "This assignment never started.");
     const task = this.tasks.get(entry.taskId);
     if (!task) throw rejection("TASK_NOT_FOUND", "The Task was deleted; its work cannot be reactivated.");
-    if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.");
+    if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "This Task is DONE. The run that assigned it can reopen the Task (move it to TODO or IN_PROGRESS) and then message this run ID again.");
   }
   async reopenAssignment(input: TaskExecutionReopenInput) {
     this.reopenRequests.push(input);

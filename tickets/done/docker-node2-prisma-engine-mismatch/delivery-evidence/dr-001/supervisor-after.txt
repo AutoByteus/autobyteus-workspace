@@ -1,0 +1,10 @@
+autobyteus_server                RUNNING   pid 2002, uptime 0:00:06
+chrome                           RUNNING   pid 49, uptime 1:23:19
+copyq                            RUNNING   pid 43, uptime 1:23:19
+dbus                             RUNNING   pid 34, uptime 1:23:19
+disable_screensaver              EXITED    Oct 13 12:13 PM
+fcitx                            RUNNING   pid 37, uptime 1:23:19
+socat                            RUNNING   pid 51, uptime 1:23:19
+tigervnc                         RUNNING   pid 35, uptime 1:23:19
+websockify                       RUNNING   pid 54, uptime 1:23:19
+xfce                             RUNNING   pid 36, uptime 1:23:19

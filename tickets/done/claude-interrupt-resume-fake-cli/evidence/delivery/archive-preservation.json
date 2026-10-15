@@ -1,0 +1,13 @@
+{
+  "sourceRevision": "fdf2ae7df6b44910bbd9efbdd7204e23f28379f7",
+  "ticketFileCount": 181,
+  "allTicketFilesPreserved": true,
+  "archivedTicket": "tickets/done/claude-interrupt-resume-fake-cli",
+  "targetAndFixtureArchived": true,
+  "archiveSha256": "4d19725164e32e5b3386a8e7227c47b5c3379131c2b758877bd19b9d01b51849",
+  "onlyUntracked": [
+    "autobyteus-application-backend-sdk/dist/",
+    "autobyteus-application-sdk-contracts/dist/"
+  ],
+  "cleanupSafe": true
+}

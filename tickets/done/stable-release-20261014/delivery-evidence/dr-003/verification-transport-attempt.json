@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-14T07:10:35.680163+00:00",
+  "result": "Read-only publication verification incomplete: default urllib Docker public HTTP transport delayed; only owned verifier stopped, no release or live resource altered",
+  "attemptPid": 88092,
+  "completedFiles": [
+    "github-release.json",
+    "updater-checksum-metadata.json",
+    "run-38522146302.json",
+    "run-38522146304.json",
+    "run-38522146322.json",
+    "run-38522146372.json"
+  ],
+  "next": "Repeat read-only verification with bounded curl transport for Docker registry; token in memory/stdin only"
+}

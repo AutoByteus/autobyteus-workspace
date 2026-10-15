@@ -4,7 +4,7 @@ import { delegationTargetUnavailableMessage } from "../../agent-collaboration/co
 import { resolveDelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
 import {
   resolveMessageRecipient,
-  type MessageRecipientResult,
+  type CollaborationMessagePlacement,
 } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { StandaloneRootExecutionIndex } from "./standalone-root-execution-index.js";
@@ -12,34 +12,29 @@ import type { StandaloneRootCollaborators } from "./standalone-root-collaborator
 import type { StandaloneRootPlacement } from "./standalone-root-task-execution-adapter.js";
 
 /**
- * Resolves Agent-root addresses by subject (DS-002, DS-003). Called inside the root operation
- * gate, so a catalog bring-in never re-enters it. The first bring-in or catalog delegation
- * creates the run's collaboration package (REQ-008); resolving alone never writes.
+ * Resolves Agent-root addresses by subject (DS-001, DS-002). Called inside the root operation
+ * gate. The first catalog delegation creates the run's collaboration package (REQ-008); resolving
+ * alone never writes.
  */
 export class StandaloneRootRecipientResolver {
   constructor(private readonly options: Readonly<{
-    taskScope(sender: CollaborationMemberExecutionIdentity): NonNullable<Parameters<typeof resolveMessageRecipient>[0]["taskScope"]>;
     getIndex(): StandaloneRootExecutionIndex;
     collaborators: StandaloneRootCollaborators;
   }>) {}
 
   /**
-   * The one instance a message reaches: within the sender's own Team instance first
-   * (REQ-007), then the host, a collaborator (a Team through its coordinator) or a
-   * collaborator-Team member, then a catalog bring-in.
+   * The one standing instance a message reaches: within the sender's own Team instance first
+   * (REQ-007), then the host; anything else is not found (messaging never creates a run).
    */
-  resolveMessageRecipient(sender: CollaborationMemberExecutionIdentity, addressInput: string): Promise<MessageRecipientResult> {
+  resolveMessageRecipient(sender: CollaborationMemberExecutionIdentity, addressInput: string): CollaborationMessagePlacement {
     return resolveMessageRecipient({
-      taskScope: this.options.taskScope(sender),
       port: () => this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
       address: this.requireAddress(addressInput),
-      catalog: { bringIn: (address) => this.options.collaborators.bringInAt({ address, senderRunId: sender.agentRunId }) },
-      notFoundMessage: (address) => `Collaboration target '${address}' was not found in this Agent run.`,
     });
   }
 
-  /** A catalog teammate, a collaborator (an extra copy, REQ-013), then a catalog copy. */
+  /** CM-1 refusal first, then a catalog copy (an Agent root has no other delegation target). */
   resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string): Promise<StandaloneRootPlacement> {
     const address = this.requireAddress(addressInput);
     return resolveDelegationPlacement({
@@ -52,13 +47,6 @@ export class StandaloneRootRecipientResolver {
   }
 
   private resolveInRunDelegationPlacement(address: AgentTeamAddress): StandaloneRootPlacement {
-    const index = this.options.getIndex();
-    const collaborator = index.getCollaborator(address);
-    if (collaborator?.kind === "agent_team") {
-      return Object.freeze({ kind: "agent_team", address: collaborator.address, coordinatorAddress: collaborator.coordinatorAddress });
-    }
-    const placement = index.getMessagePlacement(address);
-    if (placement?.kind === "agent" && address !== index.hostAddress) return Object.freeze({ kind: "agent", address });
     throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", delegationTargetUnavailableMessage(address));
   }
 

@@ -1,0 +1,9 @@
+
+> autobyteus@1.5.3-beta.1 test:e2e:search-pdf-preview /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web
+> node tests/e2e/search-pdf-preview-probe.mjs --output-dir ../tickets/in-progress/resume-pdf-search-preview/evidence/api-browser-run02 --ledger-file /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-test-case-ledger.md
+
+API-002: Started
+API-002: Pass
+API-003: Started
+API-003: Pass
+{"cases":{"API-002":"Pass","API-003":"Pass"},"cleanup":{"browserClosed":true,"processes":[{"pid":24238,"exitCode":null,"signal":"SIGTERM","liveGroupMembers":0},{"pid":24115,"exitCode":0,"signal":null,"liveGroupMembers":0}],"fixturePageRemoved":true,"ownedRootRemoved":true,"baseClosed":true,"frontClosed":true}}

@@ -1,0 +1,27 @@
+{
+  "recordedUtc": "2026-10-13T05:19:22.510100+00:00",
+  "package": "claude-interrupt-resume-fixture-types",
+  "projectTask": "project_task_11c75527-3875-4664-a49c-d1c871064d5c",
+  "ticketBranch": "codex/claude-interrupt-resume-fixture-types",
+  "ticketCommit": "8a727df388497844308543a8aff64083767ad0e2",
+  "ticketPush": "Completed",
+  "checkedPostVerificationBase": "2614fc38c26248998e0eb563bfcd7ebe2f72fcbe",
+  "noFfMerge": "07a079dc3eeabdd6a21a78d60245f2d730fe5700",
+  "mergeParents": [
+    "2614fc38c26248998e0eb563bfcd7ebe2f72fcbe",
+    "8a727df388497844308543a8aff64083767ad0e2"
+  ],
+  "mergedEvidenceCommit": "dc2695cf968d15939b4b945a015fe465eb249605",
+  "personalPush": "Completed",
+  "confirmedOriginPersonal": "dc2695cf968d15939b4b945a015fe465eb249605",
+  "newUserVerification": "user-verification.json",
+  "targetAdvancedAfterSignal": true,
+  "protectedReintegration": "13f4af7c402462d5c6dacd9f6f8a8465f09e6b0c",
+  "renewedVerificationRequired": false,
+  "renewedRationale": "Unrelated UI/doc net base delta only; relevant source/config/graph unchanged and current checks rerun",
+  "cleanup": "Completed; post-finalization-cleanup.json",
+  "release": "Not required \u2014 explicitly no new version",
+  "lastDocsOnlyPublicationReceipt": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/final-repository-state.json",
+  "terminalReceipt": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/terminal-handoff-receipt.json",
+  "persistentPackage": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/tickets/done/claude-interrupt-resume-fixture-types"
+}

@@ -1,0 +1,37 @@
+{
+  "at": "2026-10-13T06:45:48.495122+00:00",
+  "head": "3ff08e15cd931dd778ba10d1d12f70b7bcaf16db",
+  "base": "6473e269471cf5ad62abb4f70de63c47f48df485",
+  "command": "pnpm --silent isolated-app start --build",
+  "exitCode": 0,
+  "freshIntegratedBuild": true,
+  "notAPIOrOldUiBinary": true,
+  "appAsarPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+  "appAsarSHA256": "bc606207d9db161fbf0489bf531ab28c14e519509a10626fef9b8822dbaf5e7a",
+  "marker": {
+    "isolatedLaunchContract": 1
+  },
+  "packageVersion": "1.5.3-beta.3",
+  "sourceBlobs": {
+    "autobyteus-web/graphql/mutations/agentDefinitionMutations.ts": "c655d8e3cdf76f04be74100196abafef302883f7",
+    "autobyteus-web/graphql/mutations/agentOrgDefinitionMutations.ts": "2817cb65d523a03c9a97d96b38415b5808d6e30f"
+  },
+  "instance": {
+    "instanceId": "iso-61565-91a4",
+    "pid": 38517,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:61566",
+    "graphqlUrl": "http://127.0.0.1:61566/graphql",
+    "controlEndpoint": "http://127.0.0.1:61565",
+    "controlPort": 61565,
+    "serverPort": 61566,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8HQ8NV",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8HQ8NV/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61565-91a4.log"
+  },
+  "localBuildNotPublication": true,
+  "userAcceptance": "Pending / own NEW Task",
+  "trackedBuildTimeDelta": "Docs-only agent_management.md and agent_orgs.md; no production changes"
+}

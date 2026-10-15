@@ -50,7 +50,6 @@ function fixture(kind: RootKind) {
     }),
     registrationFor: ref => 'agentRunId' in ref ? registrations.get(ref.agentRunId) ?? null : null,
     ownershipChainFor: agentRunId => committed.has(agentRunId) || registrations.has(agentRunId) ? [{ agentRunId }] : [],
-    taskExecutionAt: () => null,
     taskExecutionTargetOf: ref => 'agentRunId' in ref && committed.has(ref.agentRunId) ? { root, execution: ref, ingressAgentRunId: ref.agentRunId } : null,
     cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async ref => committed.has('agentRunId' in ref ? ref.agentRunId : '')
       ? { accepted: true } : { accepted: false, code: 'EXACT_RELEASE_AUTHORITY_UNAVAILABLE' }),

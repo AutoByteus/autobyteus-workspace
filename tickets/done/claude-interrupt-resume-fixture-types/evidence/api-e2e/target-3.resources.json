@@ -1,0 +1,81 @@
+{
+  "actualExit": 0,
+  "expectedExit": 0,
+  "seconds": 7.502,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 26115,
+      "ppid": 25510,
+      "pgid": 26115,
+      "command": "(node)"
+    },
+    {
+      "pid": 26138,
+      "ppid": 26115,
+      "pgid": 26115,
+      "command": "(node)"
+    },
+    {
+      "pid": 26145,
+      "ppid": 26138,
+      "pgid": 26115,
+      "command": "(esbuild)"
+    },
+    {
+      "pid": 26147,
+      "ppid": 26138,
+      "pgid": 26115,
+      "command": "(node)"
+    },
+    {
+      "pid": 26149,
+      "ppid": 26147,
+      "pgid": 26115,
+      "command": "(schema-engine-da)"
+    },
+    {
+      "pid": 26156,
+      "ppid": 26138,
+      "pgid": 26115,
+      "command": "/Users/normy/.hermes/node/bin/node --conditions node --conditions development --experimental-import-meta-resolve --require /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/suppress-warnings.cjs /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/workers/forks.js"
+    },
+    {
+      "pid": 26229,
+      "ppid": 26156,
+      "pgid": 26115,
+      "command": "(node)"
+    },
+    {
+      "pid": 26234,
+      "ppid": 26156,
+      "pgid": 26115,
+      "command": "(node)"
+    },
+    {
+      "pid": 26237,
+      "ppid": 26156,
+      "pgid": 26115,
+      "command": "(node)"
+    },
+    {
+      "pid": 26240,
+      "ppid": 26156,
+      "pgid": 26115,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    },
+    {
+      "pid": 26242,
+      "ppid": 26156,
+      "pgid": 26115,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-fixture-types-ff1y4lex",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

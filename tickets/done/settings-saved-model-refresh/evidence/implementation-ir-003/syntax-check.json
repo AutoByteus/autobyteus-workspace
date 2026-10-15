@@ -1,0 +1,17 @@
+[
+  {
+    "command": "node --check autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+    "exitCode": 0,
+    "output": ""
+  },
+  {
+    "command": "node --check autobyteus-web/tests/e2e/settings-saved-model-refresh-cases.mjs",
+    "exitCode": 0,
+    "output": ""
+  },
+  {
+    "command": "node --check autobyteus-web/tests/e2e/fixtures/settings-refresh-desktop.mjs",
+    "exitCode": 0,
+    "output": ""
+  }
+]

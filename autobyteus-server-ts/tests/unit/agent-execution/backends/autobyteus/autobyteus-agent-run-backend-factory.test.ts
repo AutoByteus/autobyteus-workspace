@@ -294,7 +294,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     );
   });
 
-  it("filters mixed task-management tools, composes server team prompts, and injects primitive team context", async () => {
+  it("composes server team prompts, and injects primitive team context", async () => {
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
@@ -302,7 +302,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
             id: "agent-1",
             name: "Professor",
             description: "Coordinates work.",
-            toolNames: ["send_message_to", "assign_task_to"],
+            toolNames: ["send_message_to"],
           }),
         ),
       } as any,

@@ -1,6 +1,13 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const shellMessages = {
+  'shell.tokenUsage.throughput.title': "TPS",
+  'shell.tokenUsage.throughput.unit': "tokens/s",
+  'shell.tokenUsage.throughput.endToEndQualifier': "incl. time to first token",
+  'shell.tokenUsage.throughput.helpTitle': "How TPS is measured",
+  'shell.tokenUsage.throughput.generationHelp': "Output tokens of the latest model call ÷ time from its first streamed output to its end ({tokens} tokens in {seconds} s). Waiting for the first token and tool time are excluded.",
+  'shell.tokenUsage.throughput.endToEndHelp': "Output tokens of the latest model call ÷ time from sending the request to its end ({tokens} tokens in {seconds} s). Includes waiting for the first token, so it reads lower than pure generation speed.",
+  'shell.tokenUsage.throughput.generalHelp': "Updates after each model call. Very short calls are skipped. Not kept after reload.",
   'shell.pages.index.redirecting_to_chat': 'Opening Chat...',
   'shell.navigation.chat': 'Chat',
   'shell.components.AppLeftPanel.new_chat': 'New chat',

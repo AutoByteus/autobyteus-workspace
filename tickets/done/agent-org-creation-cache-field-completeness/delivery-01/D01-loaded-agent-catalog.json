@@ -1,0 +1,743 @@
+{
+  "startedAt": "2026-10-13T06:45:47.657Z",
+  "label": "D01-loaded-agent-catalog",
+  "instanceId": "iso-61565-91a4",
+  "purpose": "Integrated delivery smoke and human-check setup; NOT human acceptance",
+  "events": [],
+  "operations": [
+    {
+      "at": "2026-10-13T06:45:47.817Z",
+      "request": {
+        "operationName": "GetDefinitionProblems",
+        "variables": {
+          "kind": "AGENT"
+        },
+        "query": "query GetDefinitionProblems($kind: DefinitionKind!) {\n  definitionProblems(kind: $kind) {\n    kind\n    definitionId\n    code\n    reason\n    definitionPath\n    packageRoot\n    usingLastGood\n    dependencyChain\n    __typename\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "definitionProblems": []
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:45:47.818Z",
+      "request": {
+        "operationName": "GetServerSettings",
+        "variables": {},
+        "query": "query GetServerSettings {\n  getServerSettings {\n    __typename\n    key\n    value\n    description\n    isEditable\n    isDeletable\n  }\n  getEffectiveStreamingContentFlushIntervalMs\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "getServerSettings": [
+            {
+              "__typename": "ServerSetting",
+              "key": "APP_ENV",
+              "value": "production",
+              "description": "Custom user-defined setting",
+              "isEditable": true,
+              "isDeletable": true
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "AUTOBYTEUS_MEMORY_DIR",
+              "value": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8HQ8NV/server-data/memory",
+              "description": "Custom user-defined setting",
+              "isEditable": true,
+              "isDeletable": true
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID",
+              "value": "autobyteus-retrospective-skill-improver",
+              "description": "Agent definition id for the Retrospective Skill Improver. Blank runtime/model fields on the selected improver inherit from the target run.",
+              "isEditable": true,
+              "isDeletable": false
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "AUTOBYTEUS_SERVER_HOST",
+              "value": "http://127.0.0.1:61566",
+              "description": "Public URL of this server. Managed at startup by the launch environment and not editable here.",
+              "isEditable": false,
+              "isDeletable": false
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "DATABASE_URL",
+              "value": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8HQ8NV/server-data/db/production.db",
+              "description": "Custom user-defined setting",
+              "isEditable": true,
+              "isDeletable": true
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "DB_TYPE",
+              "value": "sqlite",
+              "description": "Custom user-defined setting",
+              "isEditable": true,
+              "isDeletable": true
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "ENABLE_APPLICATIONS",
+              "value": "false",
+              "description": "Controls whether the Applications module is available for this node at runtime.",
+              "isEditable": true,
+              "isDeletable": false
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "LOG_LEVEL",
+              "value": "INFO",
+              "description": "Custom user-defined setting",
+              "isEditable": true,
+              "isDeletable": true
+            }
+          ],
+          "getEffectiveStreamingContentFlushIntervalMs": 500
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:45:47.857Z",
+      "request": {
+        "operationName": "ReloadAgentPackageDefinitions",
+        "variables": {},
+        "query": "mutation ReloadAgentPackageDefinitions {\n  reloadAgentPackageDefinitions\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "reloadAgentPackageDefinitions": true
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:45:47.858Z",
+      "request": {
+        "operationName": "GetServerSettings",
+        "variables": {},
+        "query": "query GetServerSettings {\n  getServerSettings {\n    __typename\n    key\n    value\n    description\n    isEditable\n    isDeletable\n  }\n  getEffectiveStreamingContentFlushIntervalMs\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "getServerSettings": [
+            {
+              "__typename": "ServerSetting",
+              "key": "APP_ENV",
+              "value": "production",
+              "description": "Custom user-defined setting",
+              "isEditable": true,
+              "isDeletable": true
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "AUTOBYTEUS_MEMORY_DIR",
+              "value": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8HQ8NV/server-data/memory",
+              "description": "Custom user-defined setting",
+              "isEditable": true,
+              "isDeletable": true
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID",
+              "value": "autobyteus-retrospective-skill-improver",
+              "description": "Agent definition id for the Retrospective Skill Improver. Blank runtime/model fields on the selected improver inherit from the target run.",
+              "isEditable": true,
+              "isDeletable": false
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "AUTOBYTEUS_SERVER_HOST",
+              "value": "http://127.0.0.1:61566",
+              "description": "Public URL of this server. Managed at startup by the launch environment and not editable here.",
+              "isEditable": false,
+              "isDeletable": false
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "DATABASE_URL",
+              "value": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8HQ8NV/server-data/db/production.db",
+              "description": "Custom user-defined setting",
+              "isEditable": true,
+              "isDeletable": true
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "DB_TYPE",
+              "value": "sqlite",
+              "description": "Custom user-defined setting",
+              "isEditable": true,
+              "isDeletable": true
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "ENABLE_APPLICATIONS",
+              "value": "false",
+              "description": "Controls whether the Applications module is available for this node at runtime.",
+              "isEditable": true,
+              "isDeletable": false
+            },
+            {
+              "__typename": "ServerSetting",
+              "key": "LOG_LEVEL",
+              "value": "INFO",
+              "description": "Custom user-defined setting",
+              "isEditable": true,
+              "isDeletable": true
+            }
+          ],
+          "getEffectiveStreamingContentFlushIntervalMs": 500
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:45:47.864Z",
+      "request": {
+        "operationName": "GetAgentDefinitions",
+        "variables": {},
+        "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssue {\n      code\n      reason\n      definitionPath\n      packageRoot\n      __typename\n    }\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "agentDefinitions": [
+            {
+              "__typename": "AgentDefinition",
+              "id": "autobyteus-daily-assistant",
+              "name": "Daily Assistant",
+              "role": "General Agent",
+              "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+              "instructions": "You are Daily Assistant, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+              "category": null,
+              "avatarUrl": null,
+              "toolNames": [
+                "run_bash",
+                "read_file",
+                "read_url",
+                "search_web",
+                "close_tab",
+                "dom_snapshot",
+                "list_tabs",
+                "navigate_to",
+                "open_tab",
+                "run_script",
+                "screenshot",
+                "get_process_output",
+                "start_background_process",
+                "stop_background_process",
+                "download_media",
+                "edit_image",
+                "generate_image",
+                "generate_speech",
+                "read_media_file",
+                "list_available_agents"
+              ],
+              "inputProcessorNames": [],
+              "llmResponseProcessorNames": [],
+              "toolExecutionResultProcessorNames": [],
+              "toolInvocationPreprocessorNames": [],
+              "lifecycleProcessorNames": [],
+              "skillNames": [],
+              "skillScope": "ALL_INSTALLED",
+              "ownershipScope": "SHARED",
+              "ownerTeamId": null,
+              "ownerTeamName": null,
+              "ownerApplicationId": null,
+              "ownerApplicationName": null,
+              "ownerPackageId": null,
+              "ownerLocalApplicationId": null,
+              "defaultLaunchConfig": null,
+              "loadIssue": null
+            },
+            {
+              "__typename": "AgentDefinition",
+              "id": "autobyteus-retrospective-skill-improver",
+              "name": "Retrospective Skill Improver",
+              "role": "retrospective skill improver",
+              "description": "Improves configured durable skill packages from target run work-trace evidence.",
+              "instructions": "You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\n\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\n\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\n\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\n\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\n\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\n",
+              "category": "skill-improvement",
+              "avatarUrl": null,
+              "toolNames": [
+                "run_bash",
+                "send_message_to"
+              ],
+              "inputProcessorNames": [],
+              "llmResponseProcessorNames": [],
+              "toolExecutionResultProcessorNames": [],
+              "toolInvocationPreprocessorNames": [],
+              "lifecycleProcessorNames": [],
+              "skillNames": [
+                "retrospective-skill-improver"
+              ],
+              "skillScope": "CONFIGURED",
+              "ownershipScope": "SHARED",
+              "ownerTeamId": null,
+              "ownerTeamName": null,
+              "ownerApplicationId": null,
+              "ownerApplicationName": null,
+              "ownerPackageId": null,
+              "ownerLocalApplicationId": null,
+              "defaultLaunchConfig": null,
+              "loadIssue": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:45:47.864Z",
+      "request": {
+        "operationName": "GetAgentTeamDefinitions",
+        "variables": {},
+        "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "agentTeamDefinitions": []
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:45:47.867Z",
+      "request": {
+        "operationName": "GetAgentOrgDefinitions",
+        "variables": {},
+        "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n    __typename\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "agentOrgDefinitions": []
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:45:47.869Z",
+      "request": {
+        "operationName": "GetDefinitionProblems",
+        "variables": {
+          "kind": "AGENT"
+        },
+        "query": "query GetDefinitionProblems($kind: DefinitionKind!) {\n  definitionProblems(kind: $kind) {\n    kind\n    definitionId\n    code\n    reason\n    definitionPath\n    packageRoot\n    usingLastGood\n    dependencyChain\n    __typename\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "definitionProblems": []
+        }
+      }
+    }
+  ],
+  "pages": {
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+    "headings": [
+      "Daily Assistant"
+    ],
+    "buttons": [
+      "Chat",
+      "",
+      "",
+      "Agents",
+      "Agent Teams",
+      "Agent Orgs",
+      "Projects",
+      "Skills",
+      "Memory",
+      "Nodes",
+      "",
+      "Temp Workspace",
+      "Settings",
+      "Daily Assistant",
+      "Context Files (0)(drag, paste, or upload)",
+      "",
+      "Temp workspace",
+      "Auto-approve",
+      "claude-fable-5AutoByteus",
+      "Off",
+      "",
+      ""
+    ],
+    "links": [],
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nDaily Assistant\n\nAll your skills are available. Type / to use a skill, or @ to delegate to an agent or team.\n\nContext Files (0)\n(drag, paste, or upload)\nTemp workspace\nAuto-approve\nclaude-fable-5\nAutoByteus\nOff"
+  },
+  "details": {
+    "catalog": {
+      "cached": {
+        "agentDefinitions": [
+          {
+            "__typename": "AgentDefinition",
+            "id": "autobyteus-daily-assistant",
+            "name": "Daily Assistant",
+            "role": "General Agent",
+            "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+            "instructions": "You are Daily Assistant, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+            "category": null,
+            "avatarUrl": null,
+            "toolNames": [
+              "run_bash",
+              "read_file",
+              "read_url",
+              "search_web",
+              "close_tab",
+              "dom_snapshot",
+              "list_tabs",
+              "navigate_to",
+              "open_tab",
+              "run_script",
+              "screenshot",
+              "get_process_output",
+              "start_background_process",
+              "stop_background_process",
+              "download_media",
+              "edit_image",
+              "generate_image",
+              "generate_speech",
+              "read_media_file",
+              "list_available_agents"
+            ],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [],
+            "skillScope": "ALL_INSTALLED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          },
+          {
+            "__typename": "AgentDefinition",
+            "id": "autobyteus-retrospective-skill-improver",
+            "name": "Retrospective Skill Improver",
+            "role": "retrospective skill improver",
+            "description": "Improves configured durable skill packages from target run work-trace evidence.",
+            "instructions": "You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\n\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\n\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\n\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\n\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\n\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\n",
+            "category": "skill-improvement",
+            "avatarUrl": null,
+            "toolNames": [
+              "run_bash",
+              "send_message_to"
+            ],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [
+              "retrospective-skill-improver"
+            ],
+            "skillScope": "CONFIGURED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          }
+        ]
+      },
+      "cacheFirst": {
+        "agentDefinitions": [
+          {
+            "__typename": "AgentDefinition",
+            "id": "autobyteus-daily-assistant",
+            "name": "Daily Assistant",
+            "role": "General Agent",
+            "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+            "instructions": "You are Daily Assistant, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+            "category": null,
+            "avatarUrl": null,
+            "toolNames": [
+              "run_bash",
+              "read_file",
+              "read_url",
+              "search_web",
+              "close_tab",
+              "dom_snapshot",
+              "list_tabs",
+              "navigate_to",
+              "open_tab",
+              "run_script",
+              "screenshot",
+              "get_process_output",
+              "start_background_process",
+              "stop_background_process",
+              "download_media",
+              "edit_image",
+              "generate_image",
+              "generate_speech",
+              "read_media_file",
+              "list_available_agents"
+            ],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [],
+            "skillScope": "ALL_INSTALLED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          },
+          {
+            "__typename": "AgentDefinition",
+            "id": "autobyteus-retrospective-skill-improver",
+            "name": "Retrospective Skill Improver",
+            "role": "retrospective skill improver",
+            "description": "Improves configured durable skill packages from target run work-trace evidence.",
+            "instructions": "You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\n\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\n\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\n\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\n\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\n\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\n",
+            "category": "skill-improvement",
+            "avatarUrl": null,
+            "toolNames": [
+              "run_bash",
+              "send_message_to"
+            ],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [
+              "retrospective-skill-improver"
+            ],
+            "skillScope": "CONFIGURED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          }
+        ]
+      },
+      "store": {
+        "agentDefinitions": [
+          {
+            "__typename": "AgentDefinition",
+            "id": "autobyteus-daily-assistant",
+            "name": "Daily Assistant",
+            "role": "General Agent",
+            "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+            "instructions": "You are Daily Assistant, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+            "category": null,
+            "avatarUrl": null,
+            "toolNames": [
+              "run_bash",
+              "read_file",
+              "read_url",
+              "search_web",
+              "close_tab",
+              "dom_snapshot",
+              "list_tabs",
+              "navigate_to",
+              "open_tab",
+              "run_script",
+              "screenshot",
+              "get_process_output",
+              "start_background_process",
+              "stop_background_process",
+              "download_media",
+              "edit_image",
+              "generate_image",
+              "generate_speech",
+              "read_media_file",
+              "list_available_agents"
+            ],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [],
+            "skillScope": "ALL_INSTALLED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          },
+          {
+            "__typename": "AgentDefinition",
+            "id": "autobyteus-retrospective-skill-improver",
+            "name": "Retrospective Skill Improver",
+            "role": "retrospective skill improver",
+            "description": "Improves configured durable skill packages from target run work-trace evidence.",
+            "instructions": "You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\n\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\n\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\n\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\n\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\n\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\n",
+            "category": "skill-improvement",
+            "avatarUrl": null,
+            "toolNames": [
+              "run_bash",
+              "send_message_to"
+            ],
+            "inputProcessorNames": [],
+            "llmResponseProcessorNames": [],
+            "toolExecutionResultProcessorNames": [],
+            "toolInvocationPreprocessorNames": [],
+            "lifecycleProcessorNames": [],
+            "skillNames": [
+              "retrospective-skill-improver"
+            ],
+            "skillScope": "CONFIGURED",
+            "ownershipScope": "SHARED",
+            "ownerTeamId": null,
+            "ownerTeamName": null,
+            "ownerApplicationId": null,
+            "ownerApplicationName": null,
+            "ownerPackageId": null,
+            "ownerLocalApplicationId": null,
+            "defaultLaunchConfig": null,
+            "loadIssue": null
+          }
+        ],
+        "loading": false,
+        "error": null,
+        "deleteResult": null
+      },
+      "normalized": {
+        "AgentDefinition:autobyteus-daily-assistant": {
+          "__typename": "AgentDefinition",
+          "id": "autobyteus-daily-assistant",
+          "name": "Daily Assistant",
+          "role": "General Agent",
+          "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+          "instructions": "You are Daily Assistant, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+          "category": null,
+          "avatarUrl": null,
+          "toolNames": [
+            "run_bash",
+            "read_file",
+            "read_url",
+            "search_web",
+            "close_tab",
+            "dom_snapshot",
+            "list_tabs",
+            "navigate_to",
+            "open_tab",
+            "run_script",
+            "screenshot",
+            "get_process_output",
+            "start_background_process",
+            "stop_background_process",
+            "download_media",
+            "edit_image",
+            "generate_image",
+            "generate_speech",
+            "read_media_file",
+            "list_available_agents"
+          ],
+          "inputProcessorNames": [],
+          "llmResponseProcessorNames": [],
+          "toolExecutionResultProcessorNames": [],
+          "toolInvocationPreprocessorNames": [],
+          "lifecycleProcessorNames": [],
+          "skillNames": [],
+          "skillScope": "ALL_INSTALLED",
+          "ownershipScope": "SHARED",
+          "ownerTeamId": null,
+          "ownerTeamName": null,
+          "ownerApplicationId": null,
+          "ownerApplicationName": null,
+          "ownerPackageId": null,
+          "ownerLocalApplicationId": null,
+          "defaultLaunchConfig": null,
+          "loadIssue": null
+        },
+        "AgentDefinition:autobyteus-retrospective-skill-improver": {
+          "__typename": "AgentDefinition",
+          "id": "autobyteus-retrospective-skill-improver",
+          "name": "Retrospective Skill Improver",
+          "role": "retrospective skill improver",
+          "description": "Improves configured durable skill packages from target run work-trace evidence.",
+          "instructions": "You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\n\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\n\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\n\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\n\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\n\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\n",
+          "category": "skill-improvement",
+          "avatarUrl": null,
+          "toolNames": [
+            "run_bash",
+            "send_message_to"
+          ],
+          "inputProcessorNames": [],
+          "llmResponseProcessorNames": [],
+          "toolExecutionResultProcessorNames": [],
+          "toolInvocationPreprocessorNames": [],
+          "lifecycleProcessorNames": [],
+          "skillNames": [
+            "retrospective-skill-improver"
+          ],
+          "skillScope": "CONFIGURED",
+          "ownershipScope": "SHARED",
+          "ownerTeamId": null,
+          "ownerTeamName": null,
+          "ownerApplicationId": null,
+          "ownerApplicationName": null,
+          "ownerPackageId": null,
+          "ownerLocalApplicationId": null,
+          "defaultLaunchConfig": null,
+          "loadIssue": null
+        }
+      }
+    },
+    "page": {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=list",
+      "headings": [
+        "Individual agents"
+      ],
+      "buttons": [
+        "Chat",
+        "",
+        "",
+        "Agents",
+        "Agent Teams",
+        "Agent Orgs",
+        "Projects",
+        "Skills",
+        "Memory",
+        "Nodes",
+        "",
+        "Temp Workspace",
+        "Settings",
+        " Reload",
+        "Create Agent",
+        "Run",
+        "View Details→",
+        "Run",
+        "View Details→"
+      ],
+      "links": [],
+      "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nReload\nCreate Agent\nIndividual agents\n2 agents\nDA\nDaily Assistant\n\nGeneral-purpose agent for practical tasks, with awareness of available specialist agents and teams.\n\nTools 20\nrun_bash\nread_file\nread_url\n+17\nSkills\nAll installed skills\nRun\nView Details\n→\nRS\nRetrospective Skill Improver\n\nImproves configured durable skill packages from target run work-trace evidence.\n\nTools 2\nrun_bash\nsend_message_to\nSkills 1\nretrospective-skill-improver\nRun\nView Details\n→"
+    }
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-13T06:45:48.512Z",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=list"
+}

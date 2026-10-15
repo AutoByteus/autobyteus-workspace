@@ -1,0 +1,997 @@
+{
+  "startedAt": "2026-10-15T14:32:53.020Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/fixtures/existing-run-model-config.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/pages/api-e2e-existing-run-model-config.vue",
+  "routePath": "/api-e2e-existing-run-model-config",
+  "graphqlOperations": [
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "DelegatedLaunchModelOptions",
+      "variables": {
+        "rootKind": "AGENT",
+        "rootRunId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "DelegatedLaunchModelOptions",
+      "variables": {
+        "rootKind": "AGENT",
+        "rootRunId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetAgentRunCollaboration",
+      "variables": {
+        "runId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "DelegatedLaunchModelOptions",
+      "variables": {
+        "rootKind": "AGENT_TEAM",
+        "rootRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "TeamRunModelOptions",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "UpdateStoppedTeamRunModelConfigs",
+      "variables": {
+        "input": {
+          "teamRunId": "team-run-browser-1",
+          "patches": [
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/reviewer",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": {
+                "reasoning_effort": "high",
+                "reasoning_summary": "auto"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationName": "TeamRunModelOptions",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "DelegatedLaunchModelOptions",
+      "variables": {
+        "rootKind": "AGENT",
+        "rootRunId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetAgentRunCollaboration",
+      "variables": {
+        "runId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "DelegatedLaunchModelOptions",
+      "variables": {
+        "rootKind": "AGENT",
+        "rootRunId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetAgentRunCollaboration",
+      "variables": {
+        "runId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "DelegatedLaunchModelOptions",
+      "variables": {
+        "rootKind": "AGENT_TEAM",
+        "rootRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "TeamRunModelOptions",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "UpdateStoppedTeamRunModelConfigs",
+      "variables": {
+        "input": {
+          "teamRunId": "team-run-browser-1",
+          "patches": [
+            {
+              "scopeKind": "CONFIGURED_TEAM",
+              "scopeAddress": "/",
+              "llmModelIdentifier": "browser-larger-model",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/coordinator",
+              "llmModelIdentifier": "browser-larger-model",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/lead",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": {
+                "reasoning_effort": "high",
+                "reasoning_summary": "auto"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "TeamRunModelOptions",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    }
+  ],
+  "scenarios": {
+    "API-E2E-004-A": {
+      "id": "API-E2E-004-A",
+      "description": "Agent Settings loads network-fresh, locks runtime identity, and saves a same-model selection",
+      "status": "Fail",
+      "startedAt": "2026-10-15T14:33:00.549Z",
+      "finishedAt": "2026-10-15T14:34:33.767Z",
+      "failure": {
+        "id": "API-E2E-004-A",
+        "description": "Agent Settings loads network-fresh, locks runtime identity, and saves a same-model selection",
+        "message": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"existing-run-root-card\"]').locator('[data-test=\"chat-thinking-trigger\"]') to be visible\n",
+        "browserState": {
+          "bodyText": "Stopped run model-settings fixture\n\nActual Settings editor with deterministic GraphQL boundaries.\n\nAgent settings\nTeam settings\n\nResponse not successful: Received status code 500\n\nRefresh",
+          "catalogByRuntimeKind": {},
+          "draftState": null
+        },
+        "stack": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"existing-run-root-card\"]').locator('[data-test=\"chat-thinking-trigger\"]') to be visible\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:539:60\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:399:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:530:3"
+      }
+    },
+    "API-E2E-004-B": {
+      "id": "API-E2E-004-B",
+      "description": "Flat Team Settings renders root plus direct Agents and saves one exact configured-Agent patch",
+      "status": "Pass",
+      "startedAt": "2026-10-15T14:34:33.812Z",
+      "finishedAt": "2026-10-15T14:34:34.446Z",
+      "details": {
+        "mutation": {
+          "input": {
+            "teamRunId": "team-run-browser-1",
+            "patches": [
+              {
+                "scopeKind": "CONFIGURED_AGENT",
+                "scopeAddress": "/reviewer",
+                "llmModelIdentifier": "gpt-5.6-luna",
+                "llmConfig": {
+                  "reasoning_effort": "high",
+                  "reasoning_summary": "auto"
+                }
+              }
+            ]
+          }
+        },
+        "memberAddresses": [
+          "/coordinator",
+          "/lead",
+          "/reviewer"
+        ],
+        "savedPaths": [
+          "/workspace/browser-probe",
+          "/workspace/browser-probe",
+          "/workspace/member-not-registered",
+          null
+        ],
+        "resumeReads": 1
+      }
+    },
+    "API-E2E-004-C": {
+      "id": "API-E2E-004-C",
+      "description": "Narrow browser viewport keeps the existing Team Settings editor usable without page overflow",
+      "status": "Pass",
+      "startedAt": "2026-10-15T14:34:34.446Z",
+      "finishedAt": "2026-10-15T14:34:34.643Z",
+      "details": {
+        "viewportWidth": 390,
+        "documentScrollWidth": 390,
+        "saveRect": {
+          "left": 293.25,
+          "right": 357,
+          "width": 63.75,
+          "top": 797,
+          "bottom": 829
+        }
+      }
+    },
+    "API-E2E-004-D": {
+      "id": "API-E2E-004-D",
+      "description": "A supported external activation makes an already-open Agent Save return RUN_ACTIVE and relock",
+      "status": "Fail",
+      "startedAt": "2026-10-15T14:34:34.643Z",
+      "finishedAt": "2026-10-15T14:36:04.684Z",
+      "failure": {
+        "id": "API-E2E-004-D",
+        "description": "A supported external activation makes an already-open Agent Save return RUN_ACTIVE and relock",
+        "message": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"existing-run-root-card\"]').locator('[data-test=\"chat-thinking-trigger\"]') to be visible\n",
+        "browserState": {
+          "bodyText": "Stopped run model-settings fixture\n\nActual Settings editor with deterministic GraphQL boundaries.\n\nAgent settings\nTeam settings\n\nResponse not successful: Received status code 500\n\nRefresh",
+          "catalogByRuntimeKind": {
+            "autobyteus": {
+              "runtimeKind": "autobyteus",
+              "currentRequestId": 1,
+              "state": "ready",
+              "hasSuccessfulPayload": true,
+              "providersById": {
+                "OPENAI": {
+                  "__typename": "ProviderModelCatalogSnapshotObject",
+                  "runtimeKind": "autobyteus",
+                  "ownerProvider": {
+                    "__typename": "CatalogProviderObject",
+                    "id": "OPENAI",
+                    "name": "OpenAI",
+                    "providerType": "OPENAI",
+                    "isCustom": false,
+                    "baseUrl": null,
+                    "catalogMode": "STATIC"
+                  },
+                  "sources": [
+                    {
+                      "__typename": "ModelSourceStatusObject",
+                      "modelKind": "LLM",
+                      "state": "READY",
+                      "modelCount": 1,
+                      "successfulUnitCount": 1,
+                      "failedUnitCount": 0,
+                      "safeMessage": null
+                    }
+                  ],
+                  "llmModels": [
+                    {
+                      "__typename": "ModelDetail",
+                      "modelIdentifier": "gpt-5.6-luna",
+                      "name": "GPT-5.6 Luna",
+                      "description": "Deterministic browser fixture model.",
+                      "value": "gpt-5.6-luna",
+                      "canonicalName": "gpt-5.6-luna",
+                      "providerId": "OPENAI",
+                      "providerName": "OpenAI",
+                      "providerType": "OPENAI",
+                      "runtime": "autobyteus",
+                      "hostUrl": null,
+                      "configSchema": {
+                        "type": "object",
+                        "properties": {
+                          "reasoning_effort": {
+                            "type": "string",
+                            "title": "Reasoning Effort",
+                            "enum": [
+                              "low",
+                              "high"
+                            ],
+                            "default": "low"
+                          },
+                          "reasoning_summary": {
+                            "type": "string",
+                            "title": "Reasoning Summary",
+                            "enum": [
+                              "none",
+                              "auto"
+                            ],
+                            "default": "auto"
+                          }
+                        }
+                      },
+                      "maxContextTokens": 128000,
+                      "activeContextTokens": 128000,
+                      "maxInputTokens": 120000,
+                      "maxOutputTokens": 8000,
+                      "metadataProvenance": null
+                    },
+                    {
+                      "__typename": "ModelDetail",
+                      "modelIdentifier": "browser-larger-model",
+                      "name": "Browser Larger Model",
+                      "description": "Deterministic browser fixture model.",
+                      "value": "browser-larger-model",
+                      "canonicalName": "browser-larger-model",
+                      "providerId": "OPENAI",
+                      "providerName": "OpenAI",
+                      "providerType": "OPENAI",
+                      "runtime": "autobyteus",
+                      "hostUrl": null,
+                      "configSchema": {
+                        "type": "object",
+                        "properties": {
+                          "reasoning_effort": {
+                            "type": "string",
+                            "title": "Reasoning Effort",
+                            "enum": [
+                              "low",
+                              "high"
+                            ],
+                            "default": "low"
+                          },
+                          "reasoning_summary": {
+                            "type": "string",
+                            "title": "Reasoning Summary",
+                            "enum": [
+                              "none",
+                              "auto"
+                            ],
+                            "default": "auto"
+                          }
+                        }
+                      },
+                      "maxContextTokens": 272000,
+                      "activeContextTokens": 272000,
+                      "maxInputTokens": 120000,
+                      "maxOutputTokens": 8000,
+                      "metadataProvenance": null
+                    }
+                  ],
+                  "audioModels": [],
+                  "imageModels": [],
+                  "videoModels": []
+                }
+              },
+              "errorMessage": null
+            }
+          },
+          "draftState": null
+        },
+        "stack": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"existing-run-root-card\"]').locator('[data-test=\"chat-thinking-trigger\"]') to be visible\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:624:60\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:399:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:621:3"
+      }
+    },
+    "API-E2E-004-E": {
+      "id": "API-E2E-004-E",
+      "description": "Compatible Agent replacement uses the locked-runtime model menu, target defaults and the complete canonical pair",
+      "status": "Fail",
+      "startedAt": "2026-10-15T14:36:04.735Z",
+      "finishedAt": "2026-10-15T14:37:35.057Z",
+      "failure": {
+        "id": "API-E2E-004-E",
+        "description": "Compatible Agent replacement uses the locked-runtime model menu, target defaults and the complete canonical pair",
+        "message": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"existing-run-root-card\"]').locator('[data-test=\"chat-thinking-trigger\"]') to be visible\n",
+        "browserState": {
+          "bodyText": "Stopped run model-settings fixture\n\nActual Settings editor with deterministic GraphQL boundaries.\n\nAgent settings\nTeam settings\n\nResponse not successful: Received status code 500\n\nRefresh",
+          "catalogByRuntimeKind": {},
+          "draftState": null
+        },
+        "stack": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"existing-run-root-card\"]').locator('[data-test=\"chat-thinking-trigger\"]') to be visible\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:651:60\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:399:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:646:3"
+      }
+    },
+    "API-E2E-004-F": {
+      "id": "API-E2E-004-F",
+      "description": "Flat Team replacement preserves divergent and directly edited Agents and verifies one all-scope save with Refresh",
+      "status": "Pass",
+      "startedAt": "2026-10-15T14:37:35.079Z",
+      "finishedAt": "2026-10-15T14:37:36.215Z",
+      "details": {
+        "mutation": {
+          "input": {
+            "teamRunId": "team-run-browser-1",
+            "patches": [
+              {
+                "scopeKind": "CONFIGURED_TEAM",
+                "scopeAddress": "/",
+                "llmModelIdentifier": "browser-larger-model",
+                "llmConfig": null
+              },
+              {
+                "scopeKind": "CONFIGURED_AGENT",
+                "scopeAddress": "/coordinator",
+                "llmModelIdentifier": "browser-larger-model",
+                "llmConfig": null
+              },
+              {
+                "scopeKind": "CONFIGURED_AGENT",
+                "scopeAddress": "/lead",
+                "llmModelIdentifier": "gpt-5.6-luna",
+                "llmConfig": {
+                  "reasoning_effort": "high",
+                  "reasoning_summary": "auto"
+                }
+              }
+            ]
+          }
+        },
+        "verificationReads": 2
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:9/graphql net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:9/graphql net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22closedTaskExecutions%22%2C%22%7B%5Cn%20%20%5C%22teamRunId%5C%22%3A%20%5C%22team-run-browser-1%5C%22%2C%5Cn%20%20%5C%22isActive%5C%22%3A%20false%2C%5Cn%20%20%5C%22executionTree%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22created_at%5C%22%3A%20%5C%222026-08-25T00%3A00%3A00.000Z%5C%22%2C%5Cn%20%20%20%20%5C%22archived_at%5C%22%3A%20null%2C%5Cn%20%20%20%20%5C%22application_binding%5C%22%3A%20null%2C%5Cn%20%20%20%20%5C%22handoffs%5C%22%3A%20%5B%5D%2C%5Cn%20%20%20%20%5C%22root_team%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%5C%22address%5C%22%3A%20%5C%22%2F%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22team_definition_id%5C%22%3A%20%5C%22team-definition-browser-1%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22team_definition_name%5C%22%3A%20%5C%22Browser%20Probe%20Team%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22team_run_id%5C%22%3A%20%5C%22team-run-browser-1%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22coordinator_address%5C%22%3A%20%5C%22%2Fcoordinator%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22default_launch_configuration%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22runtime_kind%5C%22%3A%20%5C%22autobyteus%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22llm_model_identifier%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22llm_config%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22reasoning_effort%5C%22%3A%20%5C%22low%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22reasoning_summary%5C%22%3A%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22auto_execute_tools%5C%22%3A%20false%2C%5Cn%20%20%20%20%20%20%20%20%5C%22workspace_root_path%5C%22%3A%20%5C%22%2Fworkspace%2Fbrowser-probe%5C%22%5Cn%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%5C%22members%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%7B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22kind%5C%22%3A%20%5C%22configured_agent%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22address%5C%22%3A%20%5C%22%2Fcoordinator%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22agent_definition_id%5C%22%3A%20%5C%22coordinator-definition%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22role%5C%22%3A%20%5C%22Coordinator%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22descriptio%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22selectionPresentation%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22ModelDetail%5C%22%2C%5Cn%20%20%5C%22modelIdentifier%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22GPT-5.6%20Luna%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Deterministic%20browser%20fixture%20model.%5C%22%2C%5Cn%20%20%5C%22value%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%5C%22canonicalName%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%5C%22providerId%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22providerName%5C%22%3A%20%5C%22OpenAI%5C%22%2C%5Cn%20%20%5C%22providerType%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22runtime%5C%22%3A%20%5C%22autobyteus%5C%22%2C%5Cn%20%20%5C%22hostUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22configSchema%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22type%5C%22%3A%20%5C%22object%5C%22%2C%5Cn%20%20%20%20%5C%22properties%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%5C%22reasoning_effort%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Effort%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22low%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22high%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22low%5C%22%5Cn%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%5C%22reasoning_summary%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Summary%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22none%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%7D%5Cn%20%20%20%20%7D%5Cn%20%20%7D%2C%5Cn%20%20%5C%22maxContextTokens%5C%22%3A%20128000%2C%5Cn%20%20%5C%22activeContextTokens%5C%22%3A%20128000%2C%5Cn%20%20%5C%22maxInputTokens%5C%22%3A%20120000%2C%5Cn%20%20%5C%22maxOutputTokens%5C%22%3A%208000%2C%5Cn%20%20%5C%22metadataProvenance%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22selectionPresentation%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22ModelDetail%5C%22%2C%5Cn%20%20%5C%22modelIdentifier%5C%22%3A%20%5C%22browser-larger-model%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22Browser%20Larger%20Model%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Deterministic%20browser%20fixture%20model.%5C%22%2C%5Cn%20%20%5C%22value%5C%22%3A%20%5C%22browser-larger-model%5C%22%2C%5Cn%20%20%5C%22canonicalName%5C%22%3A%20%5C%22browser-larger-model%5C%22%2C%5Cn%20%20%5C%22providerId%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22providerName%5C%22%3A%20%5C%22OpenAI%5C%22%2C%5Cn%20%20%5C%22providerType%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22runtime%5C%22%3A%20%5C%22autobyteus%5C%22%2C%5Cn%20%20%5C%22hostUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22configSchema%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22type%5C%22%3A%20%5C%22object%5C%22%2C%5Cn%20%20%20%20%5C%22properties%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%5C%22reasoning_effort%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Effort%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22low%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22high%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22low%5C%22%5Cn%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%5C%22reasoning_summary%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Summary%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22none%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%7D%5Cn%20%20%20%20%7D%5Cn%20%20%7D%2C%5Cn%20%20%5C%22maxContextTokens%5C%22%3A%20272000%2C%5Cn%20%20%5C%22activeContextTokens%5C%22%3A%20272000%2C%5Cn%20%20%5C%22maxInputTokens%5C%22%3A%20120000%2C%5Cn%20%20%5C%22maxOutputTokens%5C%22%3A%208000%2C%5Cn%20%20%5C%22metadataProvenance%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22closedTaskExecutions%22%2C%22%7B%5Cn%20%20%5C%22teamRunId%5C%22%3A%20%5C%22team-run-browser-1%5C%22%2C%5Cn%20%20%5C%22isActive%5C%22%3A%20false%2C%5Cn%20%20%5C%22executionTree%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22created_at%5C%22%3A%20%5C%222026-08-25T00%3A00%3A00.000Z%5C%22%2C%5Cn%20%20%20%20%5C%22archived_at%5C%22%3A%20null%2C%5Cn%20%20%20%20%5C%22application_binding%5C%22%3A%20null%2C%5Cn%20%20%20%20%5C%22handoffs%5C%22%3A%20%5B%5D%2C%5Cn%20%20%20%20%5C%22root_team%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%5C%22address%5C%22%3A%20%5C%22%2F%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22team_definition_id%5C%22%3A%20%5C%22team-definition-browser-1%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22team_definition_name%5C%22%3A%20%5C%22Browser%20Probe%20Team%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22team_run_id%5C%22%3A%20%5C%22team-run-browser-1%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22coordinator_address%5C%22%3A%20%5C%22%2Fcoordinator%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22default_launch_configuration%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22runtime_kind%5C%22%3A%20%5C%22autobyteus%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22llm_model_identifier%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22llm_config%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22reasoning_effort%5C%22%3A%20%5C%22low%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22reasoning_summary%5C%22%3A%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22auto_execute_tools%5C%22%3A%20false%2C%5Cn%20%20%20%20%20%20%20%20%5C%22workspace_root_path%5C%22%3A%20%5C%22%2Fworkspace%2Fbrowser-probe%5C%22%5Cn%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%5C%22members%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%7B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22kind%5C%22%3A%20%5C%22configured_agent%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22address%5C%22%3A%20%5C%22%2Fcoordinator%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22agent_definition_id%5C%22%3A%20%5C%22coordinator-definition%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22role%5C%22%3A%20%5C%22Coordinator%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22descriptio%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22selectionPresentation%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22ModelDetail%5C%22%2C%5Cn%20%20%5C%22modelIdentifier%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22GPT-5.6%20Luna%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Deterministic%20browser%20fixture%20model.%5C%22%2C%5Cn%20%20%5C%22value%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%5C%22canonicalName%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%5C%22providerId%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22providerName%5C%22%3A%20%5C%22OpenAI%5C%22%2C%5Cn%20%20%5C%22providerType%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22runtime%5C%22%3A%20%5C%22autobyteus%5C%22%2C%5Cn%20%20%5C%22hostUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22configSchema%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22type%5C%22%3A%20%5C%22object%5C%22%2C%5Cn%20%20%20%20%5C%22properties%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%5C%22reasoning_effort%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Effort%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22low%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22high%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22low%5C%22%5Cn%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%5C%22reasoning_summary%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Summary%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22none%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%7D%5Cn%20%20%20%20%7D%5Cn%20%20%7D%2C%5Cn%20%20%5C%22maxContextTokens%5C%22%3A%20128000%2C%5Cn%20%20%5C%22activeContextTokens%5C%22%3A%20128000%2C%5Cn%20%20%5C%22maxInputTokens%5C%22%3A%20120000%2C%5Cn%20%20%5C%22maxOutputTokens%5C%22%3A%208000%2C%5Cn%20%20%5C%22metadataProvenance%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22selectionPresentation%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22ModelDetail%5C%22%2C%5Cn%20%20%5C%22modelIdentifier%5C%22%3A%20%5C%22browser-larger-model%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22Browser%20Larger%20Model%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Deterministic%20browser%20fixture%20model.%5C%22%2C%5Cn%20%20%5C%22value%5C%22%3A%20%5C%22browser-larger-model%5C%22%2C%5Cn%20%20%5C%22canonicalName%5C%22%3A%20%5C%22browser-larger-model%5C%22%2C%5Cn%20%20%5C%22providerId%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22providerName%5C%22%3A%20%5C%22OpenAI%5C%22%2C%5Cn%20%20%5C%22providerType%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22runtime%5C%22%3A%20%5C%22autobyteus%5C%22%2C%5Cn%20%20%5C%22hostUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22configSchema%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22type%5C%22%3A%20%5C%22object%5C%22%2C%5Cn%20%20%20%20%5C%22properties%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%5C%22reasoning_effort%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Effort%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22low%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22high%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22low%5C%22%5Cn%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%5C%22reasoning_summary%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Summary%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22none%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%7D%5Cn%20%20%20%20%7D%5Cn%20%20%7D%2C%5Cn%20%20%5C%22maxContextTokens%5C%22%3A%20272000%2C%5Cn%20%20%5C%22activeContextTokens%5C%22%3A%20272000%2C%5Cn%20%20%5C%22maxInputTokens%5C%22%3A%20120000%2C%5Cn%20%20%5C%22maxOutputTokens%5C%22%3A%208000%2C%5Cn%20%20%5C%22metadataProvenance%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22closedTaskExecutions%22%2C%22%7B%5Cn%20%20%5C%22teamRunId%5C%22%3A%20%5C%22team-run-browser-1%5C%22%2C%5Cn%20%20%5C%22isActive%5C%22%3A%20false%2C%5Cn%20%20%5C%22executionTree%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22created_at%5C%22%3A%20%5C%222026-08-25T00%3A00%3A00.000Z%5C%22%2C%5Cn%20%20%20%20%5C%22archived_at%5C%22%3A%20null%2C%5Cn%20%20%20%20%5C%22application_binding%5C%22%3A%20null%2C%5Cn%20%20%20%20%5C%22handoffs%5C%22%3A%20%5B%5D%2C%5Cn%20%20%20%20%5C%22root_team%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%5C%22address%5C%22%3A%20%5C%22%2F%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22team_definition_id%5C%22%3A%20%5C%22team-definition-browser-1%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22team_definition_name%5C%22%3A%20%5C%22Browser%20Probe%20Team%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22team_run_id%5C%22%3A%20%5C%22team-run-browser-1%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22coordinator_address%5C%22%3A%20%5C%22%2Fcoordinator%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22default_launch_configuration%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22runtime_kind%5C%22%3A%20%5C%22autobyteus%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22llm_model_identifier%5C%22%3A%20%5C%22browser-larger-model%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22llm_config%5C%22%3A%20null%2C%5Cn%20%20%20%20%20%20%20%20%5C%22auto_execute_tools%5C%22%3A%20false%2C%5Cn%20%20%20%20%20%20%20%20%5C%22workspace_root_path%5C%22%3A%20%5C%22%2Fworkspace%2Fbrowser-probe%5C%22%5Cn%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%5C%22members%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%7B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22kind%5C%22%3A%20%5C%22configured_agent%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22address%5C%22%3A%20%5C%22%2Fcoordinator%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22agent_definition_id%5C%22%3A%20%5C%22coordinator-definition%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22role%5C%22%3A%20%5C%22Coordinator%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22description%5C%22%3A%20null%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22agent_run_id%5C%22%3A%20%5C%22coordinator-run-browser-1%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%22%5D%7D"
+    }
+  ],
+  "failures": [
+    {
+      "id": "GRAPHQL-HARNESS",
+      "message": "Unexpected GraphQL operation 'DelegatedLaunchModelOptions'"
+    },
+    {
+      "id": "GRAPHQL-HARNESS",
+      "message": "Unexpected GraphQL operation 'DelegatedLaunchModelOptions'"
+    },
+    {
+      "id": "GRAPHQL-HARNESS",
+      "message": "Unexpected GraphQL operation 'GetAgentRunCollaboration'"
+    },
+    {
+      "id": "API-E2E-004-A",
+      "description": "Agent Settings loads network-fresh, locks runtime identity, and saves a same-model selection",
+      "message": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"existing-run-root-card\"]').locator('[data-test=\"chat-thinking-trigger\"]') to be visible\n",
+      "browserState": {
+        "bodyText": "Stopped run model-settings fixture\n\nActual Settings editor with deterministic GraphQL boundaries.\n\nAgent settings\nTeam settings\n\nResponse not successful: Received status code 500\n\nRefresh",
+        "catalogByRuntimeKind": {},
+        "draftState": null
+      },
+      "stack": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"existing-run-root-card\"]').locator('[data-test=\"chat-thinking-trigger\"]') to be visible\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:539:60\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:399:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:530:3"
+    },
+    {
+      "id": "GRAPHQL-HARNESS",
+      "message": "Unexpected GraphQL operation 'DelegatedLaunchModelOptions'"
+    },
+    {
+      "id": "GRAPHQL-HARNESS",
+      "message": "Unexpected GraphQL operation 'DelegatedLaunchModelOptions'"
+    },
+    {
+      "id": "GRAPHQL-HARNESS",
+      "message": "Unexpected GraphQL operation 'GetAgentRunCollaboration'"
+    },
+    {
+      "id": "API-E2E-004-D",
+      "description": "A supported external activation makes an already-open Agent Save return RUN_ACTIVE and relock",
+      "message": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"existing-run-root-card\"]').locator('[data-test=\"chat-thinking-trigger\"]') to be visible\n",
+      "browserState": {
+        "bodyText": "Stopped run model-settings fixture\n\nActual Settings editor with deterministic GraphQL boundaries.\n\nAgent settings\nTeam settings\n\nResponse not successful: Received status code 500\n\nRefresh",
+        "catalogByRuntimeKind": {
+          "autobyteus": {
+            "runtimeKind": "autobyteus",
+            "currentRequestId": 1,
+            "state": "ready",
+            "hasSuccessfulPayload": true,
+            "providersById": {
+              "OPENAI": {
+                "__typename": "ProviderModelCatalogSnapshotObject",
+                "runtimeKind": "autobyteus",
+                "ownerProvider": {
+                  "__typename": "CatalogProviderObject",
+                  "id": "OPENAI",
+                  "name": "OpenAI",
+                  "providerType": "OPENAI",
+                  "isCustom": false,
+                  "baseUrl": null,
+                  "catalogMode": "STATIC"
+                },
+                "sources": [
+                  {
+                    "__typename": "ModelSourceStatusObject",
+                    "modelKind": "LLM",
+                    "state": "READY",
+                    "modelCount": 1,
+                    "successfulUnitCount": 1,
+                    "failedUnitCount": 0,
+                    "safeMessage": null
+                  }
+                ],
+                "llmModels": [
+                  {
+                    "__typename": "ModelDetail",
+                    "modelIdentifier": "gpt-5.6-luna",
+                    "name": "GPT-5.6 Luna",
+                    "description": "Deterministic browser fixture model.",
+                    "value": "gpt-5.6-luna",
+                    "canonicalName": "gpt-5.6-luna",
+                    "providerId": "OPENAI",
+                    "providerName": "OpenAI",
+                    "providerType": "OPENAI",
+                    "runtime": "autobyteus",
+                    "hostUrl": null,
+                    "configSchema": {
+                      "type": "object",
+                      "properties": {
+                        "reasoning_effort": {
+                          "type": "string",
+                          "title": "Reasoning Effort",
+                          "enum": [
+                            "low",
+                            "high"
+                          ],
+                          "default": "low"
+                        },
+                        "reasoning_summary": {
+                          "type": "string",
+                          "title": "Reasoning Summary",
+                          "enum": [
+                            "none",
+                            "auto"
+                          ],
+                          "default": "auto"
+                        }
+                      }
+                    },
+                    "maxContextTokens": 128000,
+                    "activeContextTokens": 128000,
+                    "maxInputTokens": 120000,
+                    "maxOutputTokens": 8000,
+                    "metadataProvenance": null
+                  },
+                  {
+                    "__typename": "ModelDetail",
+                    "modelIdentifier": "browser-larger-model",
+                    "name": "Browser Larger Model",
+                    "description": "Deterministic browser fixture model.",
+                    "value": "browser-larger-model",
+                    "canonicalName": "browser-larger-model",
+                    "providerId": "OPENAI",
+                    "providerName": "OpenAI",
+                    "providerType": "OPENAI",
+                    "runtime": "autobyteus",
+                    "hostUrl": null,
+                    "configSchema": {
+                      "type": "object",
+                      "properties": {
+                        "reasoning_effort": {
+                          "type": "string",
+                          "title": "Reasoning Effort",
+                          "enum": [
+                            "low",
+                            "high"
+                          ],
+                          "default": "low"
+                        },
+                        "reasoning_summary": {
+                          "type": "string",
+                          "title": "Reasoning Summary",
+                          "enum": [
+                            "none",
+                            "auto"
+                          ],
+                          "default": "auto"
+                        }
+                      }
+                    },
+                    "maxContextTokens": 272000,
+                    "activeContextTokens": 272000,
+                    "maxInputTokens": 120000,
+                    "maxOutputTokens": 8000,
+                    "metadataProvenance": null
+                  }
+                ],
+                "audioModels": [],
+                "imageModels": [],
+                "videoModels": []
+              }
+            },
+            "errorMessage": null
+          }
+        },
+        "draftState": null
+      },
+      "stack": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"existing-run-root-card\"]').locator('[data-test=\"chat-thinking-trigger\"]') to be visible\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:624:60\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:399:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:621:3"
+    },
+    {
+      "id": "GRAPHQL-HARNESS",
+      "message": "Unexpected GraphQL operation 'DelegatedLaunchModelOptions'"
+    },
+    {
+      "id": "GRAPHQL-HARNESS",
+      "message": "Unexpected GraphQL operation 'GetAgentRunCollaboration'"
+    },
+    {
+      "id": "API-E2E-004-E",
+      "description": "Compatible Agent replacement uses the locked-runtime model menu, target defaults and the complete canonical pair",
+      "message": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"existing-run-root-card\"]').locator('[data-test=\"chat-thinking-trigger\"]') to be visible\n",
+      "browserState": {
+        "bodyText": "Stopped run model-settings fixture\n\nActual Settings editor with deterministic GraphQL boundaries.\n\nAgent settings\nTeam settings\n\nResponse not successful: Received status code 500\n\nRefresh",
+        "catalogByRuntimeKind": {},
+        "draftState": null
+      },
+      "stack": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"existing-run-root-card\"]').locator('[data-test=\"chat-thinking-trigger\"]') to be visible\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:651:60\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:399:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs:646:3"
+    },
+    {
+      "id": "GRAPHQL-HARNESS",
+      "message": "Unexpected GraphQL operation 'DelegatedLaunchModelOptions'"
+    }
+  ],
+  "cleanup": {
+    "context": "closed",
+    "browser": "closed",
+    "devServer": {
+      "status": "terminated",
+      "pid": 77803,
+      "initialExitCode": null,
+      "initialSignalCode": null,
+      "sigtermTarget": "process-group",
+      "exitedAfterSigterm": true,
+      "finalExitCode": 0,
+      "finalSignalCode": null,
+      "processGroupExited": true
+    },
+    "devLog": "closed",
+    "temporaryPage": "removed"
+  },
+  "port": 51748,
+  "baseUrl": "http://127.0.0.1:51748",
+  "finishedAt": "2026-10-15T14:37:36.768Z",
+  "result": "Fail"
+}

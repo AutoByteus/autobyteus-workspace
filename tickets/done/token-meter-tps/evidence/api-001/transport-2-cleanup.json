@@ -1,0 +1,16 @@
+{
+  "runId": "tps_360a5d58_2917_482b_9d12_6d742744aa16_b47778d3e04c4439b85e0745cfadeadc",
+  "dataDir": "/tmp/token-tps-transport-RLDi9J",
+  "terminated": {
+    "terminateAgentRun": {
+      "success": true
+    }
+  },
+  "definitionDeleted": {
+    "deleteAgentDefinition": {
+      "success": true
+    }
+  },
+  "serverClosed": true,
+  "dataRemoved": true
+}

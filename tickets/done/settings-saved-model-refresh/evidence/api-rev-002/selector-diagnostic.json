@@ -1,0 +1,39 @@
+[
+  {
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes",
+    "rows": []
+  },
+  {
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace",
+    "rows": [
+      {
+        "text": "pair team 8b11Settings-only member fixture.Temporary task team · pair team 8b11 · /pair_team_8b11",
+        "root": "manager_3c53_3efcd7a4d1664ff0816e635ab185f1c7",
+        "kind": "task_team",
+        "address": "/pair_team_8b11",
+        "stopCount": 0
+      },
+      {
+        "text": "pair team 8b11Pair A settings.Temporary task team · pair team 8b11 · /pair_team_8b11",
+        "root": "manager_3c53_da35cd07c77a4b0cb4feb185b013173f",
+        "kind": "task_team",
+        "address": "/pair_team_8b11",
+        "stopCount": 0
+      },
+      {
+        "text": "pair team 8b11Pair B settings.Temporary task team · pair team 8b11 · /pair_team_8b11",
+        "root": "manager_3c53_da35cd07c77a4b0cb4feb185b013173f",
+        "kind": "task_team",
+        "address": "/pair_team_8b11",
+        "stopCount": 0
+      },
+      {
+        "text": "pair team 8b11Pair review work.Temporary task team · pair team 8b11 · /pair_team_8b11",
+        "root": "home_team_a559_66a16c92acfd44e6827f388bf103166d",
+        "kind": "task_team",
+        "address": "/pair_team_8b11",
+        "stopCount": 1
+      }
+    ]
+  }
+]

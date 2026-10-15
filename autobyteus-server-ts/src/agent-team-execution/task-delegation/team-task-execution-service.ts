@@ -24,15 +24,14 @@ export class TeamTaskExecutionService {
 
   assertInputAllowed(id: string): void { this.lifecycle.assertInputAllowed(id); }
   assertMessageScope(sender: string, recipient: string): void { this.lifecycle.assertMessageScope(sender, recipient); }
-  taskOwnerOf(id: string) { return this.lifecycle.taskOwnerOf(id); }
-  ensureTaskHelper(context: TaskDelegationContext, address: string, placement: TeamDelegationPlacement) {
-    return this.lifecycle.ensureTaskHelper(context, address, placement);
-  }
-  helperPlacement(id: string, address: string) { return this.lifecycle.helperPlacement(id, address); }
   releaseTaskExecutions(refs: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
     return this.lifecycle.releaseTaskExecutions(refs);
   }
   taskExecutionStatus(ref: TaskExecutionReference): AgentExecutionStatus { return this.lifecycle.taskExecutionStatus(ref); }
+  stopForUser(refs: readonly TaskExecutionReference[]) { return this.lifecycle.stopForUser(refs); }
+  whileTaskExecutionsStopped<T>(refs: readonly TaskExecutionReference[], operation: () => Promise<T> | T) {
+    return this.lifecycle.whileTaskExecutionsStopped(refs, operation);
+  }
   closedTaskExecutions(): readonly TaskExecutionReference[] { return this.lifecycle.closedTaskExecutions(); }
 
   closeExternalAdmission(): void { this.lifecycle.closeExternalAdmission(); }

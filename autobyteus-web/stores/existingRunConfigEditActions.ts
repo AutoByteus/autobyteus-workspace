@@ -1,3 +1,4 @@
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
 import type { ExistingRunConfigDraft } from '~/types/agent/ExistingRunConfigDraft'
@@ -82,11 +83,17 @@ export const existingRunConfigEditActions = {
    * After a lifecycle change (the stop icon): read the run's canonical settings again, so
    * editability comes from the server, through the same loader as Refresh.
    */
-  async reloadCanonical(this: any): Promise<void> {
+  async reloadCanonical(this: any, committed = false): Promise<boolean> {
     const target = this.loadTarget
-    if (!target || this.saving || this.reconciling) return
-    if (target.kind === 'agent') await this.loadAgentCanonical(target.runId)
-    else if (target.kind === 'team') await this.loadTeamCanonical(target.teamRunId)
-    else await this.loadAgentOrgCanonical(target.orgRunId)
+    if (!target || this.saving || this.reconciling) return false
+    if (committed) this.discardChanges()
+    const binding = useWindowNodeContextStore().bindingRevision
+    const loading = target.kind === 'agent' ? this.loadAgentCanonical(target.runId)
+      : target.kind === 'team' ? this.loadTeamCanonical(target.teamRunId) : this.loadAgentOrgCanonical(target.orgRunId)
+    const request = this.canonicalLoadRequestId
+    const loaded = await loading
+    if (request !== this.canonicalLoadRequestId || binding !== useWindowNodeContextStore().bindingRevision) return false
+    if (!loaded && committed) this.feedback = { kind: 'error', message: localizationRuntime.translate('runSettings.existing.savedRefreshFailed') }
+    return loaded
   },
 }

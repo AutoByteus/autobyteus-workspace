@@ -109,6 +109,14 @@
         </span>
       </span>
     </div>
+    <!-- SR-007: a running copy has the same stop icon as a running run. -->
+    <DelegatedStopButton
+      v-if="stopRoot && stopReference"
+      class="mr-1 self-center"
+      :root="stopRoot"
+      :reference="stopReference"
+      :name="row.displayName"
+    />
     <span
       class="hierarchy-identity-tooltip pointer-events-none absolute left-2 right-2 top-full z-50 hidden break-words rounded-md bg-slate-900 px-2 py-1.5 text-left text-[0.6875rem] font-medium leading-4 text-white shadow-lg"
       role="tooltip"
@@ -122,6 +130,8 @@ import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import WorkspaceHierarchyBranches from '~/components/workspace/history/WorkspaceHierarchyBranches.vue';
 import TaskWorkerTaskSummary from '~/components/workspace/history/TaskWorkerTaskSummary.vue';
+import DelegatedStopButton from '~/components/workspace/history/DelegatedStopButton.vue';
+import type { DelegatedReference, DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient';
 import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
@@ -138,7 +148,10 @@ const props = withDefaults(defineProps<{
   hasFollowingSibling?: boolean;
   /** The Task worker's current Task: shown as a summary line under the name (delegated-copy-task-locator). */
   task?: TaskWorkerTask | null;
+  /** The run this copy belongs to, when its rows offer the per-copy stop icon (SR-007). */
+  stopRoot?: DelegatedRoot | null;
 }>(), {
+  stopRoot: null,
   isSelected: false,
   hasChildren: false,
   expanded: false,
@@ -207,6 +220,13 @@ const rowClasses = computed(() => ({
   'is-selected text-indigo-900': props.isSelected,
   'text-gray-600 hover:bg-gray-50': !props.isSelected,
 }));
+
+/** A copy itself (an Agent or a whole Team), never one member of a Team copy. */
+const stopReference = computed<DelegatedReference | null>(() => {
+  if (props.row.transientKind === 'task_agent' && props.row.agentRunId) return { agentRunId: props.row.agentRunId };
+  if (props.row.transientKind === 'task_team' && props.row.teamRunIdForNode) return { teamRunId: props.row.teamRunIdForNode };
+  return null;
+});
 
 const activateRow = (): void => {
   if (props.hasChildren) emit('toggle', props.row);

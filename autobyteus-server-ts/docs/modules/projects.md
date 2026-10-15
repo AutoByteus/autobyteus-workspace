@@ -2,6 +2,8 @@
 
 ## Scope And Ownership
 
+The rules are defined in the [Collaboration Model](../design/collaboration_model.md) (CM-6, CM-7); this document describes the mechanics.
+
 Projects are durable, node-local work containers. Each has a unique name, an
 optional string description, and described links to absolute folder paths on the
 node. It also holds Project Tasks, each with a description, a business status and optional Task-owned context files. Manual authoring and four
@@ -29,7 +31,7 @@ an explicit `DONE` or `CANCELLED` closes every open agent run resource of the Ta
 then asks the runtime to stop exactly those runs. Neither is engineering
 acceptance nor proof that the stop succeeded. Other status writes do not start
 work, and any explicit status may follow any other. Only agents change a Task's
-status (through `create_or_update_task`); the app only displays it. The run that
+status (through `update_task`); the app only displays it. The run that
 assigned closed work can later reactivate it after the Task is reopened (see
 [Reactivation](#reactivation)).
 
@@ -37,7 +39,7 @@ The server ships no Project manager agent. Any Agent whose definition selects
 the Project tools can manage Projects through the existing Chat or `@`, for
 example the agent repository's **Project Task Manager** (`project-task-manager`,
 with its `project-task-management` skill) when that repository is configured as
-an agent package root. A managing Agent typically selects the four Project/Task
+an agent package root. A managing Agent typically selects the five Project/Task
 tools plus `list_available_agents`, `delegate_task` and `send_message_to`. It
 is not a Project-page panel or a scheduler. This feature does not guarantee
 worker completion reports, automatic DONE, scheduling, or a worker self-update
@@ -51,8 +53,9 @@ Projects is always on (projects-always-on): there is no Projects capability
 query, mutation or predefined setting. A value of the retired per-node web
 visibility flag stored by an earlier release is not read; it lists as an
 ordinary, deletable custom setting. Nothing migrates or deletes it. Tools must
-be selected explicitly in the agent definition, except `create_or_update_task`,
-which every agent with `delegate_task` gets automatically.
+be selected explicitly in the agent definition; no task tool is added
+automatically, not even to an agent with `delegate_task`. A definition that still
+lists the removed `create_or_update_task` gets no task tool from that name.
 
 ## Main Owners
 
@@ -252,7 +255,7 @@ only `task-execution-resource-schema.ts` maps them; no migration is involved.
 
 | Field | Meaning |
 | --- | --- |
-| `role` | `assigned`: a non-owned run's (e.g. the Manager's) `delegate_task(task_id)`, or, for a Task with no Project, the described `delegate_task` that created it. `delegated`: an open owned run's `delegate_task` without a task_id. `broughtIn`: an open owned run's `send_message_to` that started a new copy. |
+| `role` | `assigned`: a non-owned run's (e.g. the Manager's) `delegate_task(task_id)`, or, for a Task with no Project, the described `delegate_task` that created it. `delegated`: an open owned run's `delegate_task` without a task_id. `broughtIn`: legacy only: an open owned run's `send_message_to` that started a new copy before messaging stopped creating runs. Stored entries stay readable; nothing writes new ones. |
 | `assignedBy` | Present only on `assigned`: the run that made the assignment. |
 | `recipientAddress` | Optional, only on `assigned`: the exact `recipient_address` the work was delegated to. Written for assignments made since project-manager-ux; older entries have none (their root shows its kind). Readers accept both, so existing files are used as they are, with no migration. |
 | `hostRoot` | The top-level run the user started, which hosts this agent run. |
@@ -305,7 +308,7 @@ used and `TASK_AGENT_RESOURCE_CONFLICT` is logged.
 
 A **Task worker** is a copy that is its current Task's
 [root](#task-roots) (that Task's latest `assigned` entry). Sub-work copies
-(`delegated`, `broughtIn`) and `@` collaborators are no Task's root.
+(`delegated`, legacy `broughtIn`) and converted unowned runs are no Task's root.
 `TaskExecutionResourceService.rootTaskLocationOf(execution)` answers a copy's
 current Task location only when the copy is that Task's root, from the
 in-memory index (no scan of Task files); otherwise null. It never throws.
@@ -347,7 +350,7 @@ names the file and says to fix or restore it and restart:
 Recovery: there is no self-repair and no automatic reload. Fix or restore the
 file and restart.
 
-## Exactly Four Agent Tools
+## Exactly Five Agent Tools
 
 Inputs use snake_case; result fields use camelCase. Native tools and Agent
 Tools MCP share the parser, manifest, services and error projection.
@@ -357,7 +360,8 @@ Tools MCP share the parser, manifest, services and error projection.
 | `list_projects` | `{}` only; list all node-local Project ID/name/description, no selection or mutation | `{projects: [{projectId, name, description}]}` |
 | `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS, DONE or CANCELLED | `{projectId, tasks: [...]}` |
 | `create_or_update_project` | Omit `project_id` to create with required `name`; supply known `project_id` to patch `name?`, `description?`, `workspaces?` | `{project: {projectId, name, description, workspaces: [{workspaceRootPath, description}]}}` |
-| `create_or_update_task` | Two strict modes. Create: `{project_id, description, context_files?}` (**omit status**, no `task_id`). Update: `{task_id, description?, status?, context_files?}` with **no `project_id`**; the Task ID alone identifies a Project Task or a Task with no Project | `{task: {...}}` |
+| `create_task` | `{project_id, description, context_files?}` (**omit status**, no `task_id`); creates a TODO Project Task | `{task: {...}}` |
+| `update_task` | `{task_id, description?, status?, context_files?}` with **no `project_id`**; the Task ID alone identifies a Project Task or a Task with no Project. Its description also tells an agent how to close a Task a description-only delegation created and how to reopen a closed Task | `{task: {...}}` |
 
 `create_or_update_project` preserves omitted fields on patch. A blank Project
 description clears it; unknown IDs never create. Names are trimmed, nonblank
@@ -396,7 +400,7 @@ give the copy that did a DONE Task a follow-up Task with `delegate_task` and its
 `teamRunId` / `agentRunId` (see [Follow-up Task to an existing
 copy](#follow-up-task-to-an-existing-copy)).
 
-`create_or_update_task` returns `{task: {projectId, taskId, status}}`, with
+`create_task` and `update_task` return `{task: {projectId, taskId, status}}`, with
 `projectId: null` for a Task with no Project. When the call attached context
 files, `task` also has `attachedContextFiles: [{storedFilename, displayName}]`:
 exactly the files this call attached, in argument order. Calls that attach no
@@ -458,9 +462,12 @@ Task input validation (Project rules are above):
   removal/edit tool, or implicit Project binding.
 
 Exposure:
-- The tool names are opt-in in both native and session MCP exposure, except
-  `create_or_update_task`: `automaticCollaborationToolNames` adds it wherever
-  `delegate_task` is (every member context, on every runtime).
+- The tool names are opt-in in both native and session MCP exposure: no task
+  tool is in `automaticCollaborationToolNames`, so an agent has `create_task`
+  and/or `update_task` only when its definition lists them (every runtime).
+  Collaboration texts (`delegate_task`, `send_message_to`, the `@` note,
+  reactivation errors) name no task tool; closing and reopening guidance lives
+  in `update_task`'s own description.
 - They need no collaboration-member context.
 - Their first-party names are protected against configured MCP collisions.
 - Selecting one does not expose the others. Unselected tools stay absent or
@@ -533,18 +540,18 @@ Task goes to the copy by `target_team_run_id` / `target_agent_run_id`.
 ### Ownership
 
 - **Owned runs.** A Task owns its assigned copies, their configured Team
-  members, and the copies its open owned runs create: `delegated` sub-work and
-  `broughtIn` helpers, even when a helper is physically hosted as a sibling in
-  the enclosing root.
+  members, and the copies its open owned runs create: `delegated` sub-work (and
+  stored legacy `broughtIn` helpers), even when a copy is physically hosted as a
+  sibling in the enclosing root.
 - **Hosting.** All runs of an assignment are hosted in one root: the top-level
   run the user started. Two Tasks in the same root stay fully separate.
 - **Workers cannot assign.** A Task-owned run may not call `delegate_task` with
   any `task_id` (`TASK_AGENT_RESOURCE_OWNED_SENDER`). Workers delegate sub-work
   without a task_id.
-- **Address messaging order:** the sender's own Team instance; then the Task's
-  open helper at that address; then an existing unowned run in the root; then a
-  new `broughtIn` copy.
-- **Borrowed, not adopted.** Existing unowned advisers and collaborators are
+- **Address messaging order:** the sender's own Team instance, then run-wide
+  placements; any other address is not found. Messaging never creates a copy
+  (CM-4).
+- **Borrowed, not adopted.** Existing unowned agents are
   borrowed, never adopted. Unowned agents are never checked
   against Task data. Another Task's run is never a shared helper
   (`TASK_AGENT_RESOURCE_CONFLICT`). Definition or address equality is not
@@ -596,7 +603,7 @@ Task status is the agent's responsibility; the software never changes it. To
 continue with the same worker after DONE or CANCELLED:
 
 1. The agent moves the Task back to TODO or IN_PROGRESS with
-   `create_or_update_task` (this alone reopens and starts nothing).
+   `update_task` (this alone reopens and starts nothing).
 2. The run that assigned the work (the entry's `assignedBy`) sends
    `send_message_to(target_agent_run_id=<the copy's agent run ID>)`: the Agent
    copy's `target_agent_run_id`, or a Team copy's
@@ -626,7 +633,7 @@ The sender's root reactivates exactly that `assigned` entry
 - The message then follows the normal wake / restore / deliver path. The
   accepted result's `message` ends with "<run ID> was reactivated."
 
-Helper entries (`delegated`, `broughtIn`) and the Task's other assignments stay
+Helper entries (`delegated`, legacy `broughtIn`) and the Task's other assignments stay
 closed; the reactivated worker may start new helpers. Refusals change nothing:
 
 | Case | Code | Message says |
@@ -659,7 +666,7 @@ stays DONE; the delegator creates Task B and gives it to the same copy:
 ```text
 delegate_task({recipient_address: "/review_team", task_id: "A"})
   → {delegated: true, target_kind: "team", target_team_run_id: "team_9f…", target_team_coordinator_agent_run_id: "lead_1a…"}
-create_or_update_task({task_id: "A", status: "DONE"})
+update_task({task_id: "A", status: "DONE"})
 delegate_task({target_team_run_id: "team_9f…", task_id: "B"})   // an Agent copy: target_agent_run_id
   → {delegated: true, target_kind: "team", target_team_run_id: "team_9f…", target_team_coordinator_agent_run_id: "lead_1a…"}
 ```
@@ -740,11 +747,11 @@ A Task with no Project makes a description-only delegation closable. The user's
    `{delegated: true, target_kind, <the copy's IDs>, task_id}`. A call rejected before the link creates no
    Task; a dispatch failure after the link returns no `task_id` and leaves the
    Task with a `failed` assignment until its run is deleted.
-   `create_or_update_task` never creates one.
+   `create_task` never creates one.
 2. **Owned like Project Task work.** The copy, its Team members and its
-   `delegated`/`broughtIn` sub-work belong to that Task (the message-scope rules
+   `delegated` sub-work (and stored legacy `broughtIn` helpers) belong to that Task (the message-scope rules
    above apply). Every entry has the delegator's host root.
-3. **DONE or CANCELLED.** `create_or_update_task({task_id, status: "DONE"})` (or
+3. **DONE or CANCELLED.** `update_task({task_id, status: "DONE"})` (or
    `"CANCELLED"`, when the work turned out not to be needed) runs the same
    closure as a Project Task: close every open entry, write the status, ask the
    host root to stop exactly those runs; the run tree hides them live and after
@@ -883,7 +890,7 @@ A successful Task metadata Save is the only publication boundary.
 - New immutable copies are prepared and validated before the metadata commit.
   Old saved bytes are not deleted before a successful commit.
 
-Agent-attached files (`create_or_update_task` `context_files`) use the same
+Agent-attached files (`create_task` / `update_task` `context_files`) use the same
 publication boundary without a draft. `ProjectTaskContextStore.importLocalFiles`
 first validates every source (path, regular readable file, policy type by
 extension through `contextFileMimeTypeForPath`, size), writing nothing on

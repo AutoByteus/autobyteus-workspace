@@ -1,0 +1,18 @@
+{
+  "API-001": {
+    "result": "Pass",
+    "observed": "Zero shipped delta; exact two-value proposal; pinned local arm64 image"
+  },
+  "API-002": {
+    "result": "Pass",
+    "observed": "Installed5.22 native605 query/schema/RPC listMigrationDirectories and existing-env/canonical DB checks Pass; only tmpfs mounts"
+  },
+  "API-003": {
+    "result": "Pass",
+    "observed": "reread no start; named update starts actual normal backend;3 HTTP200/statusok; existing-env/migrations; sibling PIDs unchanged"
+  },
+  "API-004": {
+    "result": "Pass",
+    "observed": "Same-container owned backend repeat startup/3 health observations; sibling PIDs retained; cleanup follows"
+  }
+}

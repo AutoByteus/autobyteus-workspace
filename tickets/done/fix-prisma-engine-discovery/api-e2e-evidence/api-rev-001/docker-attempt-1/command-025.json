@@ -1,0 +1,11 @@
+{
+  "command": [
+    "docker",
+    "port",
+    "api-prisma-90067e31-699-recreated",
+    "8000/tcp"
+  ],
+  "exit": 0,
+  "stdout": "127.0.0.1:62101\n",
+  "stderr": ""
+}

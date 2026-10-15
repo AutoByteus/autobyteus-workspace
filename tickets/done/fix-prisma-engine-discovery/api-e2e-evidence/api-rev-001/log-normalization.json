@@ -1,0 +1,38 @@
+[
+  {
+    "path": "typecheck.log",
+    "rawSha256": "15a9ee80dbaf5fcc68c2b9864b1fd167df448a8ed772622c2b0339df58990741",
+    "committedTextSha256": "ddea330b0f838c1b6a28d03258a33f85d38dc444860179a2fafec3ddf1678c68",
+    "change": "trailing whitespace/blank EOF only; no assertion/result lines dropped"
+  },
+  {
+    "path": "integration.log",
+    "rawSha256": "37eab5d1a4bcb63cca729fb561f06b3489d096be01b84f45eeb910a8d9feacb1",
+    "committedTextSha256": "9067917e0dbb4f399cdb29f8ff8b730b2a9bd204b17a2f03f5f2c290d801f3c9",
+    "change": "trailing whitespace/blank EOF only; no assertion/result lines dropped"
+  },
+  {
+    "path": "unit.log",
+    "rawSha256": "9f5086cb585abc1800e9cd493d59c87fa9a6f4e5342ce46873a9fe108cf2d1c2",
+    "committedTextSha256": "01e587137e491141d753a843f75b187b4662645f2f328dcde7ff768def18c2d7",
+    "change": "trailing whitespace/blank EOF only; no assertion/result lines dropped"
+  },
+  {
+    "path": "cadence-diagnostic.log",
+    "rawSha256": "41463f438b86d377d5ad785a2f9d98144809cfb1ce201b51bcc35ebb56f32c96",
+    "committedTextSha256": "1a9ccd960c8d925187605e5566ea294818912fb351bb0d169a927bfd972c567e",
+    "change": "trailing whitespace/blank EOF only; no assertion/result lines dropped"
+  },
+  {
+    "path": "focused.log",
+    "rawSha256": "ac0e50e522ca19189e9f92a52f8181a5c78b8d1e845f0626129e359b0a5b9d25",
+    "committedTextSha256": "3c5870608ef0f1ec78bb8adf650a25e8d0cd7e49b8c3bfb5175f4e437d9ac28d",
+    "change": "trailing whitespace/blank EOF only; no assertion/result lines dropped"
+  },
+  {
+    "path": "docker-attempt-1/startup-first.log",
+    "rawSha256": "0936deb5419b6a757144c9d807d5bf21fe97a5210732fbe0e44a2e8cc9ff2176",
+    "committedTextSha256": "9fd51ce56906b402e172d02a1b4a5759662430d464f1b664ef2ef172350e9220",
+    "change": "trailing whitespace/blank EOF only; no assertion/result lines dropped"
+  }
+]

@@ -1,0 +1,628 @@
+{
+  "state": {
+    "ticketCommit": "057c60d5b9d5925f7c984987c241d224891b538b",
+    "checkedTarget": "8a4dfe4279fe05d0180c313c87a2ac8bef23c71a",
+    "ticketPush": "Completed",
+    "mergeCommit": "eef8296fd8d8181a85ead907dc80e9752441d4c0",
+    "sourceDelta": [
+      "autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md",
+      "autobyteus-server-ts/package.json",
+      "autobyteus-server-ts/src/startup/migrations.ts",
+      "autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs",
+      "autobyteus-server-ts/tests/unit/startup/migrations-command.test.ts",
+      "autobyteus-server-ts/tests/unit/startup/migrations-prisma-engine-env.test.ts"
+    ],
+    "targetPush": "Completed",
+    "remoteEqualityAndTicketAncestry": true,
+    "generatedPreserved": {
+      "root": "/Users/normy/autobyteus_org/autobyteus-delivery-records/fix-prisma-engine-discovery/generated-prerequisites",
+      "files": 286,
+      "roots": [
+        "applications/brief-studio/dist/",
+        "autobyteus-application-backend-sdk/dist/",
+        "autobyteus-application-devkit/dist/",
+        "autobyteus-application-frontend-sdk/dist/",
+        "autobyteus-application-sdk-contracts/dist/"
+      ],
+      "hashEquality": true
+    },
+    "gitCommonDir": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git",
+    "cleanup": {
+      "taskWorktreeAbsent": true,
+      "localTicketBranchDeleted": true,
+      "localFinalizeBranchDeleted": true,
+      "initialGuard": "branch -d refused against stale shared local HEAD; original exit1 retained. No lost work or merge failure.",
+      "resolution": "Verified exact branch refs, no checked-out owners, remote ticket equality and personal ancestry, then deleted only these two reachable local refs with -D. No main checkout edits.",
+      "prune": "Not required: registration absent; no global prune",
+      "remoteTicketBranch": "Retained at057c60d5b9d5925f7c984987c241d224891b538b for provenance",
+      "generatedFilesPreserved": true,
+      "liveDockerNodesPinsVolumesAuthBackups": "Not touched; no Docker/live command"
+    }
+  },
+  "coreCommands": [
+    {
+      "utc": "2026-10-13T16:57:23.092557+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exit": 0,
+      "output": "codex/fix-prisma-engine-discovery\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:23.107782+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "output": "129cc8403bdce7ddd32bb8752d48c38a6eb9017d\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:25.051880+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "fetch",
+        "origin",
+        "personal"
+      ],
+      "exit": 0,
+      "output": "From github.com-ryan:AutoByteus/autobyteus-workspace\n * branch                  personal   -> FETCH_HEAD\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:25.068186+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/personal"
+      ],
+      "exit": 0,
+      "output": "8a4dfe4279fe05d0180c313c87a2ac8bef23c71a\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:25.327533+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "add",
+        "--",
+        "tickets/in-progress/fix-prisma-engine-discovery",
+        "tickets/done/fix-prisma-engine-discovery",
+        "autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "utc": "2026-10-13T16:57:25.360082+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "exit": 0,
+      "output": "autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md\ntickets/done/fix-prisma-engine-discovery/api-e2e-coverage-investigation.md\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/cadence-diagnostic.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/cadence-diagnostic.log\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/diagnose-cadence.py\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1.log\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/api-created.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/api-prisma-90067e31-699-first.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/api-prisma-90067e31-699-recreated.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/backend-first.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/backend-recreated.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/build-identity.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/cleanup.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-001.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-002.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-003.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-004.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-005.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-006.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-007.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-008.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-009.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-010.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-011.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-012.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-013.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-014.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-015.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-016.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-017.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-018.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-019.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-020.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-021.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-022.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-023.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-024.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-025.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-026.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-027.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-028.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-029.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-030.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/command-031.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/dist-audit.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/events.jsonl\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/health-first.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/health-recreated.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/native-fixture.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/native-proof.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/ownership.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/recreation-proof.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/startup-first.log\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-attempt-1/startup-recreated.log\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/docker-command.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/failure-origin-analysis.md\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/final-gates.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/finalize-evidence.py\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/focused.log\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/gate-off.log\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/initial-image-dist-audit.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/input-audit.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/integration-prepare.log\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/integration.log\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/log-normalization.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/repository-cleanup.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/repository-private-cleanup.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/repository-results.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/run-repository.py\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/typecheck.log\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-001/unit.log\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-002/continuation-audit.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-evidence/api-rev-002/final-gates.json\ntickets/done/fix-prisma-engine-discovery/api-e2e-execution-coverage-report.md\ntickets/done/fix-prisma-engine-discovery/api-e2e-revision-record.md\ntickets/done/fix-prisma-engine-discovery/api-e2e-test-case-ledger.md\ntickets/done/fix-prisma-engine-discovery/api-e2e-test-review-report.md\ntickets/done/fix-prisma-engine-discovery/architecture-review-revision-record.md\ntickets/done/fix-prisma-engine-discovery/artifact-location-map.md\ntickets/done/fix-prisma-engine-discovery/code-review-evidence/crr-001/final-gates.json\ntickets/done/fix-prisma-engine-discovery/code-review-evidence/crr-001/focused-checks.json\ntickets/done/fix-prisma-engine-discovery/code-review-evidence/crr-001/focused-checks.log\ntickets/done/fix-prisma-engine-discovery/code-review-evidence/crr-001/input-audit.json\ntickets/done/fix-prisma-engine-discovery/code-review-evidence/crr-002/failure-origin-audit.json\ntickets/done/fix-prisma-engine-discovery/code-review-evidence/crr-003/final-gates.json\ntickets/done/fix-prisma-engine-discovery/code-review-evidence/crr-003/test-review-audit.json\ntickets/done/fix-prisma-engine-discovery/code-review-report.md\ntickets/done/fix-prisma-engine-discovery/code-review-revision-record.md\ntickets/done/fix-prisma-engine-discovery/delivery-custody-resolution.md\ntickets/done/fix-prisma-engine-discovery/delivery-evidence/dr-001/check-cleanup.json\ntickets/done/fix-prisma-engine-discovery/delivery-evidence/dr-001/check-integrated.py\ntickets/done/fix-prisma-engine-discovery/delivery-evidence/dr-001/docs-scope-audit.json\ntickets/done/fix-prisma-engine-discovery/delivery-evidence/dr-001/focused.log\ntickets/done/fix-prisma-engine-discovery/delivery-evidence/dr-001/generated-prerequisites.json\ntickets/done/fix-prisma-engine-discovery/delivery-evidence/dr-001/integrated-checks.json\ntickets/done/fix-prisma-engine-discovery/delivery-evidence/dr-001/integration-audit.json\ntickets/done/fix-prisma-engine-discovery/delivery-evidence/dr-001/pre-archive-gates.json\ntickets/done/fix-prisma-engine-discovery/delivery-evidence/dr-001/raw-check-output.json\ntickets/done/fix-prisma-engine-discovery/delivery-evidence/dr-001/typecheck.log\ntickets/done/fix-prisma-engine-discovery/delivery-evidence/dr-001/upstream-artifact-inventory.json\ntickets/done/fix-prisma-engine-discovery/delivery-evidence/dr-001/verification.json\ntickets/done/fix-prisma-engine-discovery/delivery-revision-record.md\ntickets/done/fix-prisma-engine-discovery/design-review-report.md\ntickets/done/fix-prisma-engine-discovery/design-spec.md\ntickets/done/fix-prisma-engine-discovery/docs-sync-report.md\ntickets/done/fix-prisma-engine-discovery/handoff-summary.md\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/build.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/check-results.json\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/cleanup.json\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/final-gates-initial.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/final-gates.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/focused-units.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/graph-regression.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/hygiene.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/install-sdk.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/install-workspace.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/install.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/licensing.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/log-normalization.json\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/native-local-check.mjs\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/native-local.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/prebuild-complete-deps.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/prebuild.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units-complete-deps.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/setup-corrected-units.log\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/source-audit.json\ntickets/done/fix-prisma-engine-discovery/implementation-evidence/ir-001/typecheck.log\ntickets/done/fix-prisma-engine-discovery/implementation-handoff.md\ntickets/done/fix-prisma-engine-discovery/implementation-revision-record.md\ntickets/done/fix-prisma-engine-discovery/investigation-evidence/available-image-dependency-metadata.json\ntickets/done/fix-prisma-engine-discovery/investigation-evidence/cli-dependency-metadata.json\ntickets/done/fix-prisma-engine-discovery/investigation-evidence/recurrence-node2-readonly.json\ntickets/done/fix-prisma-engine-discovery/investigation-evidence/requirements-r2-superseded.md\ntickets/done/fix-prisma-engine-discovery/investigation-notes.md\ntickets/done/fix-prisma-engine-discovery/recurrence-findings-handoff.md\ntickets/done/fix-prisma-engine-discovery/release-deployment-report.md\ntickets/done/fix-prisma-engine-discovery/requirements-doc.md\ntickets/done/fix-prisma-engine-discovery/root-cause-summary.md\ntickets/done/fix-prisma-engine-discovery/solution-handoff.md\ntickets/done/fix-prisma-engine-discovery/solution-revision-record.md\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:26.557587+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "python3",
+        "scripts/check_licensing.py"
+      ],
+      "exit": 0,
+      "output": "Licensing is consistent.\nTracked files scanned: 6571\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:26.841019+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "python3",
+        "scripts/check_repository_artifact_hygiene.py"
+      ],
+      "exit": 0,
+      "output": "Repository artifact hygiene check passed.\nTracked files scanned: 63986\nPath-length threshold: 200\nLongest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:27.111710+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "utc": "2026-10-13T16:57:27.211509+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "utc": "2026-10-13T16:57:27.320585+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "8a4dfe4279fe05d0180c313c87a2ac8bef23c71a"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "utc": "2026-10-13T16:57:27.380205+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "add",
+        "--",
+        "tickets/done/fix-prisma-engine-discovery/delivery-evidence/dr-001/archive-gates.json"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "utc": "2026-10-13T16:57:27.437353+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "utc": "2026-10-13T16:57:27.588763+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "commit",
+        "-q",
+        "-m",
+        "fix(delivery): verify and archive CLI-owned Prisma engine discovery"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "utc": "2026-10-13T16:57:27.602953+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "output": "057c60d5b9d5925f7c984987c241d224891b538b\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:27.677809+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "diff",
+        "--name-only"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "utc": "2026-10-13T16:57:27.701410+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "utc": "2026-10-13T16:57:29.468077+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "fetch",
+        "origin",
+        "personal"
+      ],
+      "exit": 0,
+      "output": "From github.com-ryan:AutoByteus/autobyteus-workspace\n * branch                  personal   -> FETCH_HEAD\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:29.483539+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/personal"
+      ],
+      "exit": 0,
+      "output": "8a4dfe4279fe05d0180c313c87a2ac8bef23c71a\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:34.046772+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "push",
+        "origin",
+        "codex/fix-prisma-engine-discovery"
+      ],
+      "exit": 0,
+      "output": "remote: \nremote: Create a pull request for 'codex/fix-prisma-engine-discovery' on GitHub by visiting:        \nremote:      https://github.com/AutoByteus/autobyteus-workspace/pull/new/codex/fix-prisma-engine-discovery        \nremote: \nremote: GitHub found 940 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 429 moderate, 70 low). To find out more, visit:        \nremote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        \nremote: \nTo github.com-ryan:AutoByteus/autobyteus-workspace.git\n * [new branch]            codex/fix-prisma-engine-discovery -> codex/fix-prisma-engine-discovery\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:34.231281+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "checkout",
+        "-b",
+        "finalize/fix-prisma-engine-discovery",
+        "origin/personal"
+      ],
+      "exit": 0,
+      "output": "Switched to a new branch 'finalize/fix-prisma-engine-discovery'\nbranch 'finalize/fix-prisma-engine-discovery' set up to track 'origin/personal'.\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:34.628230+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "merge",
+        "--no-ff",
+        "--no-stat",
+        "-m",
+        "Merge source-only Prisma engine discovery correction",
+        "codex/fix-prisma-engine-discovery"
+      ],
+      "exit": 0,
+      "output": "Merge made by the 'ort' strategy.\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:34.644357+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "output": "eef8296fd8d8181a85ead907dc80e9752441d4c0\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:34.663528+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD^{tree}"
+      ],
+      "exit": 0,
+      "output": "be37a7c0ee043975b4cba008584bc56572647dc1\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:34.683008+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "rev-parse",
+        "codex/fix-prisma-engine-discovery^{tree}"
+      ],
+      "exit": 0,
+      "output": "be37a7c0ee043975b4cba008584bc56572647dc1\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:35.424949+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "python3",
+        "scripts/check_licensing.py"
+      ],
+      "exit": 0,
+      "output": "Licensing is consistent.\nTracked files scanned: 6571\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:35.718907+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "python3",
+        "scripts/check_repository_artifact_hygiene.py"
+      ],
+      "exit": 0,
+      "output": "Repository artifact hygiene check passed.\nTracked files scanned: 63987\nPath-length threshold: 200\nLongest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:35.765389+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "8a4dfe4279fe05d0180c313c87a2ac8bef23c71a",
+        "HEAD"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "utc": "2026-10-13T16:57:35.783572+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "diff",
+        "--name-only",
+        "8a4dfe4279fe05d0180c313c87a2ac8bef23c71a",
+        "HEAD",
+        "--",
+        ".",
+        ":!tickets"
+      ],
+      "exit": 0,
+      "output": "autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md\nautobyteus-server-ts/package.json\nautobyteus-server-ts/src/startup/migrations.ts\nautobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs\nautobyteus-server-ts/tests/unit/startup/migrations-command.test.ts\nautobyteus-server-ts/tests/unit/startup/migrations-prisma-engine-env.test.ts\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:37.340543+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "fetch",
+        "origin",
+        "personal"
+      ],
+      "exit": 0,
+      "output": "From github.com-ryan:AutoByteus/autobyteus-workspace\n * branch                  personal   -> FETCH_HEAD\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:37.356816+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/personal"
+      ],
+      "exit": 0,
+      "output": "8a4dfe4279fe05d0180c313c87a2ac8bef23c71a\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:39.960326+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "push",
+        "origin",
+        "HEAD:personal"
+      ],
+      "exit": 0,
+      "output": "remote: \nremote: GitHub found 940 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 429 moderate, 70 low). To find out more, visit:        \nremote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        \nremote: \nTo github.com-ryan:AutoByteus/autobyteus-workspace.git\n   8a4dfe4279..eef8296fd8  HEAD -> personal\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:41.594035+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "ls-remote",
+        "origin",
+        "refs/heads/personal"
+      ],
+      "exit": 0,
+      "output": "eef8296fd8d8181a85ead907dc80e9752441d4c0\trefs/heads/personal\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:41.662512+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "057c60d5b9d5925f7c984987c241d224891b538b",
+        "eef8296fd8d8181a85ead907dc80e9752441d4c0"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "utc": "2026-10-13T16:57:42.281377+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "utc": "2026-10-13T16:57:42.297566+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "rev-parse",
+        "--git-common-dir"
+      ],
+      "exit": 0,
+      "output": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git\n"
+    },
+    {
+      "utc": "2026-10-13T16:57:42.312013+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "rev-parse",
+        "--git-common-dir"
+      ],
+      "exit": 0,
+      "output": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git\n"
+    },
+    {
+      "utc": "2026-10-13T16:58:00.417924+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-delivery-records/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "--git-dir=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git",
+        "worktree",
+        "remove",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "utc": "2026-10-13T16:58:00.454916+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-delivery-records/fix-prisma-engine-discovery",
+      "command": [
+        "git",
+        "--git-dir=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git",
+        "branch",
+        "-d",
+        "codex/fix-prisma-engine-discovery"
+      ],
+      "exit": 1,
+      "output": "error: the branch 'codex/fix-prisma-engine-discovery' is not fully merged\nhint: If you are sure you want to delete it, run 'git branch -D codex/fix-prisma-engine-discovery'\nhint: Disable this message with \"git config set advice.forceDeleteBranch false\"\n"
+    }
+  ],
+  "cleanupRecoveryCommands": [
+    {
+      "command": [
+        "fetch",
+        "origin",
+        "personal"
+      ],
+      "exit": 0,
+      "output": "From github.com-ryan:AutoByteus/autobyteus-workspace\n * branch                  personal   -> FETCH_HEAD\n"
+    },
+    {
+      "command": [
+        "ls-remote",
+        "origin",
+        "refs/heads/personal"
+      ],
+      "exit": 0,
+      "output": "eef8296fd8d8181a85ead907dc80e9752441d4c0\trefs/heads/personal\n"
+    },
+    {
+      "command": [
+        "merge-base",
+        "--is-ancestor",
+        "057c60d5b9d5925f7c984987c241d224891b538b",
+        "eef8296fd8d8181a85ead907dc80e9752441d4c0"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "ls-remote",
+        "origin",
+        "refs/heads/codex/fix-prisma-engine-discovery"
+      ],
+      "exit": 0,
+      "output": "057c60d5b9d5925f7c984987c241d224891b538b\trefs/heads/codex/fix-prisma-engine-discovery\n"
+    },
+    {
+      "command": [
+        "worktree",
+        "list",
+        "--porcelain"
+      ],
+      "exit": 0,
+      "output": "worktree /Users/normy/autobyteus_org/autobyteus-workspace-superrepo\nHEAD 92de6460030480c33cef6481d2dd46d2fc9a34be\nbranch refs/heads/personal\n\nworktree /Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility\nHEAD 9267d11c8e82f9798b3870362b221edf39d3d7df\nbranch refs/heads/codex/internal-agent-frontend-visibility\n\nworktree /Users/normy/autobyteus_org/autobyteus-workspace-superrepo-codex-reopen-run-config\nHEAD 2f0a2d94f4b5dd6a26f1c90ae987e8d16f8ed87b\nbranch refs/heads/codex/reopen-run-config\n\nworktree /Users/normy/autobyteus_org/autobyteus-workspace-superrepo-mcp-http-codex-tool-exposure\nHEAD 79857c513dd6d6e25c4b7761cb5aa0d3a805c227\nbranch refs/heads/codex/mcp-http-codex-tool-exposure\n\nworktree /Users/normy/autobyteus_org/autobyteus-workspace-superrepo-raw-trace-usefulness-analysis\nHEAD fbd7b6764bd43751956d69ffe22b943d06188444\nbranch refs/heads/codex/raw-trace-usefulness-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice\nHEAD 141268a74dc836872e78c3d0be9a2234dd39e005\nbranch refs/heads/codex/active-run-skill-update-notice\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification\nHEAD 08a70d783fc3735b72c46d5d2017d6992ea551cc\nbranch refs/heads/codex/agent-input-delivery-simplification-v2\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-loop-structure-refactor\nHEAD 4612c80665a35c3f6ccdce11bd68c4cf121002d7\nbranch refs/heads/codex/agent-loop-structure-refactor\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-self-evolving-feature\nHEAD 66bdc6d7f6fdcda2b11d39e9f3b7db18478cd723\nbranch refs/heads/codex/agent-self-evolving-feature\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-skill-runtime-support-investigation\nHEAD f2d8074eca1ab2d4df4e3545fbafa268b23be65d\nbranch refs/heads/codex/agent-skill-runtime-support-investigation\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-codex-output-not-visible-manual-test\nHEAD d8ce4d8678637c2259a15a3950d9caaac6a7e05e\ndetached\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-mcp-runtime-regression\nHEAD 515ed72a82d552fefb6f1356a671bf213bec0cbe\nbranch refs/heads/codex/agent-team-mcp-runtime-regression\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-released-history-migration-recovery\nHEAD 2b0f8ea99296bb3f983c497d1f5c00a4d839f404\nbranch refs/heads/codex/agent-team-released-history-migration-recovery\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-real-sse\nHEAD c572fcd686513045f53c01c34f3198dd565fd8a4\nbranch refs/heads/codex/agent-tools-mcp-real-sse\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/agent-web-preview-tools\nHEAD 688b5e732a4cc763ffc50ac7981d544e26cd5da7\nbranch refs/heads/codex/agent-web-preview-tools\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/agy-installer-gzip-docker-fix\nHEAD 4c36086ad749ad638dc924f219715652ac11f51c\nbranch refs/heads/codex/agy-installer-gzip-docker-fix\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/agy-linked-skills-beta-release\nHEAD e04cfef23550c3b78286a53befc6bd5d71fb1061\nbranch refs/heads/finalize/agy-linked-skills-beta\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation\nHEAD a727971dabab141a39404a00ca6f7db46696f0b9\nbranch refs/heads/codex/agy-mcp-tool-call-presentation\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/agy-runtime-support\nHEAD c3cc4d0d49db1146c18a3c251518041ee233c512\nbranch refs/heads/codex/agy-runtime-support\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime\nHEAD 97ea4ae2055510bcfc657624e3f9b2c5c6048227\nbranch refs/heads/codex/antigravity-cli-runtime\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-refresh\nHEAD 9e22168b11d1b7cd392a8dad40613775bd221a4a\nbranch refs/heads/codex/antigravity-cli-runtime-refresh\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/app-store-privacy-policy\nHEAD 5bd29cfb7b5e36dd712026ce7a5158bf10879cc3\nbranch refs/heads/codex/app-store-privacy-policy\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/app-store-publishing-pipeline-investigation\nHEAD 167584a056b8a81b066e10a435fb81d7e75f7b4b\nbranch refs/heads/codex/app-store-publishing-pipeline-investigation\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening\nHEAD 0811503a6c547698e7b77e1064d98890101acc1b\nbranch refs/heads/codex/application-execution-scope-boundary-hardening\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/application-runtime-streaming\nHEAD 4df1f718038b629dbbc1c5673a35402603201b48\nbranch refs/heads/codex/application-runtime-streaming\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/artifact-tab-missing-reference-files\nHEAD 1bed2087bc583add5f07d61a1e7fd61da28a4a2a\nbranch refs/heads/codex/artifact-tab-missing-reference-files\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/artifacts-tab-resizer-disappears\nHEAD ea1892dbbe6cb12118bdb6d91cfc63564f12c4e7\nbranch refs/heads/codex/artifacts-tab-resizer-disappears\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/astra-fable-pricing-support-finalize\nHEAD 851bf4085e9167f93781d339bfb88d01e1ae0586\ndetached\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-agent-memory-compaction-investigation\nHEAD b2d5c4d1afb899d79cb8a7a7ac9220c711071e67\nbranch refs/heads/codex/autobyteus-ts-agent-memory-compaction-investigation\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-google-genai-tts-upgrade\nHEAD 63077fc7c7640e7743f82d8522ec58c725219ea7\nbranch refs/heads/codex/autobyteus-ts-google-genai-tts-upgrade\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/autonomous-scheduled-agent-runs\nHEAD a712b4b673ebc983b55a33846c34f73512ce78c8\nbranch refs/heads/codex/autonomous-scheduled-agent-runs\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/backend-flat-application-folders-analysis\nHEAD 4f58a9f8466b1d2dcf539528bd5ce8ef5c4fc5f2\nbranch refs/heads/codex/backend-flat-application-folders-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan\nHEAD a727ae96e3234789585708607710a5d1637f908d\nbranch refs/heads/codex/busy-quit-shutdown-orphan\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/chat-drafts-manual-test\nHEAD 88fad73cbd20201642acdcfe75e69b1897ec135c\ndetached\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/check-codex-app-server-env\nHEAD fd2bc6125c6e1a7bfdcf86c8ead2e8d00109f508\nbranch refs/heads/codex/check-codex-app-server-env\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-runtime-support\nHEAD c21a968213019ec9ab740b7a6497e83d60133e4c\nbranch refs/heads/codex/claude-agent-sdk-runtime-support\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-runtime-workflow\nHEAD 4d9853ab95e0147a23ed362638f6b2ab01601ceb\nbranch refs/heads/codex/claude-agent-sdk-runtime-workflow\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/claude-code-cli-runtime-support\nHEAD c3cc4d0d49db1146c18a3c251518041ee233c512\nbranch refs/heads/codex/claude-code-cli-runtime-support\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-partial-messages-streaming-restart\nHEAD 50455091499b0d5c676016bf31a1ca1bbd01337f\nbranch refs/heads/codex/claude-sdk-partial-messages-streaming-restart\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-clarify-agent-definition-id-vs-run-id\nHEAD 12ba48c941fc150d416ca822a79e543cb86d36e0\nbranch refs/heads/codex/clarify-agent-definition-id-vs-run-id\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-mcp-result-circular-rendering\nHEAD 46acf801847780d936796f3adf493e5ac2378700\nbranch refs/heads/codex/codex-mcp-result-circular-rendering\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-mental-health-assessment-frontend\nHEAD 396366dca44625da8be76cf4d8eadc5dd598a8e8\nbranch refs/heads/codex/mental-health-assessment-frontend\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-cache-token-cost\nHEAD 0a332ab69f460d3064808cc885a4038112a5c8fa\nbranch refs/heads/codex/codex-runtime-cache-token-cost\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-thread-resume-fix-electron-test\nHEAD 434c67e8b98efff84f0303c66d715faee82c5fca\nbranch refs/heads/delivery/codex-runtime-thread-resume-fix-electron-test\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/codex-team-runtime\nHEAD f93a3cf1f613d1bdc1dd07537dbbc4ef1b4ab23b\nbranch refs/heads/codex/codex-run-history-e2e-artifact-leakage\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/compression-current-behavior\nHEAD 4391c29389e23adf4866908e47dc49f3ef492f10\nbranch refs/heads/codex/compression-current-behavior\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication\nHEAD b0b077b02571098a6bf7993ab46b67a69fdb8f9d\nbranch refs/heads/codex/cross-node-agent-communication\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-first-load-models-401\nHEAD a3beeec29a701e6731d985f76d083a12bd82478f\nbranch refs/heads/codex/custom-provider-first-load-models-401\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records\nHEAD ea6d6b011035d71dc9594d61ad035470985fca8e\ndetached\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status\nHEAD 2b7648350d57e90a997c82493124471594c4b3c5\nbranch refs/heads/codex/delegated-team-aggregate-status\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel\nHEAD 32e8f65c640f6d66a9b4ace8488dbbfd1a8e7a1e\nbranch refs/heads/codex/desktop-beta-update-channel\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel-finalize\nHEAD fcdfcd2ca4200dff27ef766e477c38d0969e55f6\nbranch refs/heads/release/desktop-beta-v1.4.91\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/docker-browser-link-open-fix\nHEAD 03d7880b45afd2b032de6e842e41429fad0a2cb0\nbranch refs/heads/codex/docker-browser-link-open-fix\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/docker-upgrade-backend-not-ready\nHEAD 80e2bd195c42ea3ced778dbc051d4d00edaef16f\nbranch refs/heads/codex/docker-upgrade-backend-not-ready\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/duplicate-project-task-manager-investigation\nHEAD f777a6559edf767f15b5653dc57998414e8078e6\nbranch refs/heads/codex/duplicate-project-task-manager-investigation\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/dynamic-agent-team-runtime\nHEAD 7d9b4ba69bf1473b47f931cb93716eb176d69bf9\nbranch refs/heads/codex/dynamic-agent-team-runtime\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/dynamic-mcp-tool-exposure-investigation\nHEAD 7d6d6f4b47180ef34bed3e4d6493346ddd9eb16b\nbranch refs/heads/codex/dynamic-mcp-tool-exposure-investigation\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-tool-success-mapping\nHEAD ecd466ff87bb2b8c71b02ab25a7b5433f7bbb686\nbranch refs/heads/codex/edit-file-tool-success-mapping\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/electron-language-settings\nHEAD 7546f39de3c55ebe01615107a304da76c3d28766\nbranch refs/heads/codex/electron-language-settings\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/electron-llm-422-analysis\nHEAD cb33bb0856df5543a5f37c82556b951209708e89\nbranch refs/heads/codex/electron-llm-422-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-beta-release\nHEAD 2056b04f3b654ffe583aa956c371869f7d06444d\nbranch refs/heads/delivery/embedded-browser-beta\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-open-tab-investigation\nHEAD 18ec3757b44f1eb5a04b8a86417223bcb048f0e4\nbranch refs/heads/codex/embedded-browser-open-tab-investigation\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-cross-compaction-earlier-browsing\nHEAD d487c0859905a91650387c4af41f4fc5754f214a\nbranch refs/heads/codex/event-monitor-cross-compaction-earlier-browsing\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-watcher-fd-usage\nHEAD 5875b06d87d3c92b80c0dfa3675eea844324cb7c\nbranch refs/heads/codex/file-explorer-watcher-fd-usage\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/finalize-diagram-zoom-viewer-v1.4.20\nHEAD e60561506d058fd00677e23c945e408317903a81\nbranch refs/heads/delivery/diagram-zoom-viewer-finalize-v1.4.20\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/finalize-run-settings-ui-unification\nHEAD d9ffaa7cbf0b8907e002d9da1482d3a9aa5ae469\ndetached\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-team-domain-simplification\nHEAD c3a31881256cac6c3690b7c6c14f6051aeec7111\nbranch refs/heads/codex/flat-agent-team-domain-simplification\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/flutter-mobile-consolidation-feasibility\nHEAD 79857c513dd6d6e25c4b7761cb5aa0d3a805c227\nbranch refs/heads/codex/flutter-mobile-consolidation-feasibility\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-rpa-thinking-level-options\nHEAD eb78ce75bbe497296eb47953936c8f262a7ec189\nbranch refs/heads/codex/gemini-rpa-thinking-level-options\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/generalized-agent-communication-router\nHEAD 29ebe384e621643033bf416e910ae4f42b757301\nbranch refs/heads/codex/generalized-agent-communication-router\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/generate-media-artifact-regression-analysis\nHEAD b6802dc87b9a7079dbf1d2baac7cafb780066f1a\nbranch refs/heads/codex/generate-media-artifact-regression-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/github-agent-package-import-finalize\nHEAD 0a02ba65a05905596dc100691800ed0b86298bdf\ndetached\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/gpt4o-tts-generation-config-schema\nHEAD 70984d2a89eb1a7dc6de026e0095f516eb2de1a9\nbranch refs/heads/codex/gpt4o-tts-generation-config-schema\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/grok-build-runtime-support-finalize\nHEAD f7b4f7f4abe5f36a4ae78fd013a869fd61b6c69e\nbranch refs/heads/delivery/grok-build-runtime-support-finalize\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/handoff-display-label-only-finalize\nHEAD 467c1bc12d439ee79243d124402c2f65f25c3cd2\ndetached\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/historical-run-config-readonly\nHEAD 0ee19d1c14c1b112dd7dc28680f551bcdd861d6a\nbranch refs/heads/codex/historical-run-config-readonly\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/idle-run-model-update\nHEAD 54890a07f74e941a7a12b6daaa26364f4c927b72\nbranch refs/heads/codex/idle-run-model-update-pre-refresh-20260819\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/idle-run-model-update-current\nHEAD 1b2e9b94d1de3b7f38aa2803082e0166a469a978\nbranch refs/heads/codex/idle-run-model-update-v2\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/idle-run-model-update-refresh\nHEAD 0194fb4fffa69037a46aeace491024fdf816dde7\nbranch refs/heads/codex/idle-run-model-update\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/image-edit-rpa-input-fix\nHEAD 29ebe384e621643033bf416e910ae4f42b757301\nbranch refs/heads/codex/image-edit-rpa-input-fix\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/independent-agent-instruction-codex-runtime\nHEAD 814a80bb65f56c9fb8b28cdb0b50c1ee29744c13\nbranch refs/heads/codex/independent-agent-instruction-codex-runtime\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/interagent-message-interrupt-ui\nHEAD 1bed2087bc583add5f07d61a1e7fd61da28a4a2a\nbranch refs/heads/codex/interagent-message-interrupt-ui\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/investigate-electron-update-regression\nHEAD 03d7880b45afd2b032de6e842e41429fad0a2cb0\nbranch refs/heads/codex/investigate-electron-update-regression\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/job-search-companion-app\nHEAD 3e5d6add526e669b0ac0b37fbbd694af1cc47102\nbranch refs/heads/codex/job-search-companion-app\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/llm-image-url-message-history-fix\nHEAD 00631e7a091f3202eb31fd7b03161a24b8730ccd\nbranch refs/heads/codex/llm-image-url-message-history-fix\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/llm-runtime-compaction-top-layer-e2e\nHEAD f72781601d3a1bc84b84c7f3ff2e4107925bb2c7\nbranch refs/heads/codex/llm-runtime-compaction-top-layer-e2e\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing\nHEAD 08eb3dd2fd8204bcaca41890052d11b075e9a961\nbranch refs/heads/codex/mac-arm64-updater-signing\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/managed-audio-service\nHEAD d6f6c7a9ff11f8a3a2f11aabd413de2ef8818b2b\nbranch refs/heads/codex/managed-audio-service\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-environment-refresh-on-agent-resume\nHEAD d17f45621d4bfe87f7de3b5da10a9fc45e3256aa\nbranch refs/heads/codex/mcp-environment-refresh-on-agent-resume\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-gateway-token-generation\nHEAD fd2bc6125c6e1a7bfdcf86c8ead2e8d00109f508\nbranch refs/heads/codex/mcp-gateway-token-generation\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-preview-timeout-analysis\nHEAD f8a0fe6a457659d8f0e221ff3405a364560e8b01\nbranch refs/heads/codex/mcp-preview-timeout-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-server-json-view-validation\nHEAD fd2bc6125c6e1a7bfdcf86c8ead2e8d00109f508\nbranch refs/heads/codex/mcp-server-json-view-validation\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-tickets\nHEAD 97ea4ae2055510bcfc657624e3f9b2c5c6048227\nbranch refs/heads/codex/mcp-tickets\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-tool-name-overlap-analysis\nHEAD fd2bc6125c6e1a7bfdcf86c8ead2e8d00109f508\nbranch refs/heads/codex/mcp-tool-name-overlap-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/media-generation-cost-analysis\nHEAD 06e0985b5f6e05e812751280a07d82d35eb8c112\nbranch refs/heads/codex/media-generation-cost-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/memory-compaction-file-backed-redesign\nHEAD 48537ace4fdc67b0baa8c48ffc886eec7697b4cf\nbranch refs/heads/codex/memory-compaction-file-backed-redesign\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/memory-sync-transparency-design\nHEAD e0cc8a3b811761085d4c687df9e54ac14b3db37b\nbranch refs/heads/codex/memory-sync-transparency-design\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/messaging-gateway-desktop-distribution\nHEAD 1102923924a33cf40341964e6664ee5d26c21f3e\nbranch refs/heads/codex/messaging-gateway-distribution-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab\nHEAD 56c6d4bfa27ced68678e4d21dccd4acbcb31aa76\nbranch refs/heads/codex/mobile-artifacts-tab\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-client-tailscale-feasibility\nHEAD 97871321ea03d34b0cb981715f81ee440e2fff40\nbranch refs/heads/codex/mobile-client-tailscale-feasibility\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-vnc-viewer-investigation\nHEAD aef6e851040034bb5b0a613fcb5341f7f73393c0\nbranch refs/heads/codex/mobile-vnc-viewer-investigation\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/move-tools-to-home-menu\nHEAD a9a02c416a81aff12fd5bc37d47fe2301db6469b\nbranch refs/heads/codex/move-tools-to-home-menu\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/multi-agent-team-bootstrap-analysis\nHEAD d8a341e9b5d73b73c79ef8589566870e257df2db\nbranch refs/heads/codex/multi-agent-team-bootstrap-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/multi-provider-secret-vault\nHEAD d0bcd0dab2263fa284cf07de8d98214e5d19af73\nbranch refs/heads/codex/multi-provider-secret-vault\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/native-agent-org-graph-analysis\nHEAD a098b205ca990bf86b5e452950a49fc5dc39c8d1\nbranch refs/heads/codex/native-agent-org-graph-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace\nHEAD b89835a1c46db42f2e9df383a48a5300c6db8749\nbranch refs/heads/codex/offline-org-team-workspace\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/offline-org-team-workspace-finalize\nHEAD 0f54978ba34165c476dcba67ce1d31ab27257108\nbranch refs/heads/delivery/offline-org-team-workspace-finalize\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/ollama-api-image-input\nHEAD 7f6396afadd44a9a3d19652eee39e2bd18c4b81b\nbranch refs/heads/codex/ollama-api-image-input\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/opencode-free-models\nHEAD 2005fcd7a928af5efc7b2cc7fa266a7c2a8c5786\nbranch refs/heads/codex/opencode-free-models\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-draft-input-retention-finalize\nHEAD 1a0244206541d570e01335203e16c49af120d9f5\ndetached\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/personal-codex-baseline\nHEAD 7546f39de3c55ebe01615107a304da76c3d28766\nbranch refs/heads/codex/codex-live-websocket-stabilization\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/personal-electron-build\nHEAD 8b43ee5be10ad30d581afa5e9c890a821ceffbe1\ndetached\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/personal-finalize-team-agent-instruction-composition-20260309\nHEAD 50455091499b0d5c676016bf31a1ca1bbd01337f\nbranch refs/heads/codex/personal-finalize-team-agent-instruction-composition-20260309\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/personal-release-notes-finalize\nHEAD 41ee2405f4f0ce7a7efd382eb51c7ecc15b978d0\nbranch refs/heads/codex/personal-release-notes-finalize\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/personal-release-server-docker-desktop-only-analysis\nHEAD 2f545609568b7cb369e4b4b086fa9268cb7fd3e8\nbranch refs/heads/codex/personal-release-server-docker-desktop-only-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/project-centric-execution\nHEAD 04ce285b455d556d88ff24d5526c065921f98360\nbranch refs/heads/codex/project-centric-execution\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks-release\nHEAD 8900e786bed796d2aa5fc56b0657fae4243e3154\nbranch refs/heads/delivery/project-tasks-release\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts\nHEAD d3d7980caeaaf514e2e7f3f7f3bdf44d06424bcf\nbranch refs/heads/codex/provider-native-tool-history-rendering\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/qwen-multi-billing-endpoint-support\nHEAD 2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b\nbranch refs/heads/codex/qwen-multi-billing-endpoint-support\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/read-media-file-investigation\nHEAD 2e3fe9e34c6770469735b26dfc248b7b2ceeefd4\nbranch refs/heads/codex/read-media-file-investigation\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/release-diagram-zoom-viewer-v1.4.20\nHEAD bda6615a754c8fe913fb2650d7bdae9c4e1ed013\nbranch refs/heads/release/diagram-zoom-viewer-v1.4.20\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/release-notes-licensing-allowlist\nHEAD ebf68c4af8e5fe2e6d893afcf75b0269b2c1ef65\nbranch refs/heads/codex/release-notes-licensing-allowlist\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/release-notes-workflow\nHEAD 56beeb001c7229c09bbbd55ca638551011cee8f2\nbranch refs/heads/codex/release-notes-workflow\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/remove-default-delegate-task\nHEAD 54890a07f74e941a7a12b6daaa26364f4c927b72\nbranch refs/heads/codex/remove-default-delegate-task\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/remove-media-output-path-restriction\nHEAD 3adb737a98389d11c08b4bde7556a8c8059d0c2d\nbranch refs/heads/codex/remove-media-output-path-restriction\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode\nHEAD 5d67d59d1fa98ece41cc2828f03f691ae03be995\nbranch refs/heads/codex/remove-skill-access-mode\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode-beta-release\nHEAD 8caa610ff438c288d9aca9f2efe2c33924fbf517\nbranch refs/heads/finalize/remove-skill-access-mode-beta\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel\nHEAD a3a761a0a0f918ded5d79eb9457fbd704c8049bd\nbranch refs/heads/codex/remove-web-todo-panel\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel-beta-release\nHEAD e9aa4a74ca36f62303bb7f5f0efd74bf89a9ea71\nbranch refs/heads/finalize/remove-web-todo-panel-beta\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/resume-run-reasoning-effort\nHEAD 63077fc7c7640e7743f82d8522ec58c725219ea7\nbranch refs/heads/codex/resume-run-reasoning-effort\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/resumed-session-instruction-refresh\nHEAD 7d130309ea1c646edd856aa8c5f44ee2da94d8a6\nbranch refs/heads/codex/resumed-session-instruction-refresh\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/run-continuity-after-agent-definition-rename\nHEAD 5a2e38b005ccbbf84790e55c338d935f30e5abb4\nbranch refs/heads/codex/run-continuity-after-agent-definition-rename\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/run-continuity-electron-build\nHEAD 852fce05be76e591a5d9354083d787d849017888\ndetached\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification\nHEAD e3339d1547bef2fc007e67f1d17a7978da24c9e3\nbranch refs/heads/codex/run-settings-ui-unification\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability\nHEAD 63aac5939f1ebcfb691f796990739a3e94fd5f45\nbranch refs/heads/codex/runtime-lifecycle-usability\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-model-identifier-dropdown\nHEAD 87d99ddc607fa30aa046c47151cec7b5639c2399\nbranch refs/heads/codex/runtime-model-identifier-dropdown\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch\nHEAD 3005d420ad01f1e4fb29e43a6a95ef19e7e370c4\nbranch refs/heads/codex/runtime-specific-stopped-model-switch\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch-finalize\nHEAD 826e7043ef1f116e4227fbd88a854958d1f255d5\nbranch refs/heads/delivery/runtime-specific-stopped-model-switch-finalize\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning-user-build-20260727\nHEAD 3877b39bdcad2e8c88bb9f86d190308aaf034829\ndetached\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/secure-remote-passkeys\nHEAD cfeda548bfb1838fd21961b09f13733f2a95e139\nbranch refs/heads/codex/secure-remote-passkeys\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/send-message-to-all-duplicate-ui\nHEAD bad2d71829032b82f1dd9f3d08496d9ae85b1f0a\nbranch refs/heads/codex/send-message-to-all-duplicate-ui\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/send-message-user-target\nHEAD d645926cdae5aad11e678d4c73ad2aeb2971b76c\nbranch refs/heads/codex/send-message-user-target\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-suite-repair\nHEAD cb01dea2392e4bd7233855218e9a1a5b65ec3530\nbranch refs/heads/codex/server-e2e-suite-repair\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/server-read-page-necessity-analysis\nHEAD 990d12374147a5128a912da3ec0e4782a7389bd5\nbranch refs/heads/codex/server-read-page-necessity-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-basics-applications-card-toggle\nHEAD cd72f52b667bd7699757437016586be318db9d79\nbranch refs/heads/codex/server-settings-basics-applications-card-toggle\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-basics-runtime-controls\nHEAD ff918464045be411c53be89bcff5592f8aeb0d8a\nbranch refs/heads/codex/server-settings-basics-runtime-controls\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/server-test-failure-recovery\nHEAD 84224a58d8975d0b016af340e6b48e51d715af78\nbranch refs/heads/codex/server-test-failure-recovery\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh\nHEAD e00d34ffdd7ed2421522ddde7182b3ed48a3f223\nbranch refs/heads/codex/settings-saved-model-refresh\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/shared-context-filesystem\nHEAD dd62965cbc55abc9b576d3cd95be4ae89ea45e34\nbranch refs/heads/codex/shared-context-filesystem\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces\nHEAD 64b3d4abefa1c183cf3846dc90bdb4ea4fce392b\nbranch refs/heads/codex/shared-network-workspaces\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/shooting-jet-html\nHEAD 88bd4da5c296c9b5223cb716eb4c9458b8d723ae\nbranch refs/heads/codex/shooting-jet-html\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/solution-engineering-ticket-app\nHEAD 4f5db14dea313f5df42fd0d8c7cbdc8310b7e021\nbranch refs/heads/codex/solution-engineering-ticket-app\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/status-dot-contrast-analysis\nHEAD 75a42b9ccca76bcdb8e224a00c5950e9a108bc2e\nbranch refs/heads/codex/status-dot-contrast-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-run-unavailable-model-options\nHEAD a2694ed453e353550d8b345fa82ef489634dcaf2\nbranch refs/heads/codex/stopped-run-unavailable-model-options\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility-repro-baseline\nHEAD 80e2bd195c42ea3ced778dbc051d4d00edaef16f\ndetached\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-team-memory-location\nHEAD b3a2b15393bbf16fefccce9174b982a641bd42dc\nbranch refs/heads/codex/task-agent-team-memory-location\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/task-status-dotted-border\nHEAD a64ee085aba28df22112f40a996e382a0e84a210\nbranch refs/heads/codex/task-status-dotted-border\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-expanded-team-view\nHEAD ea1892dbbe6cb12118bdb6d91cfc63564f12c4e7\nbranch refs/heads/codex/team-run-expanded-team-view\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/team-runtime-interrupt-ui\nHEAD 00631e7a091f3202eb31fd7b03161a24b8730ccd\nbranch refs/heads/codex/team-runtime-interrupt-ui\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/telegram-streaming-support\nHEAD d9a10b1f3ea59d9a8b46ac7ad39dcbe0ae50ac2f\nbranch refs/heads/codex/telegram-streaming-support\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/terminal-slow-after-files\nHEAD e4bc6dfe6657f77bad1997589f0d556cafb3d86b\nbranch refs/heads/codex/terminal-slow-after-files\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience\nHEAD d28c56d5de8e5429e73dd7c42b78767cc531180c\nbranch refs/heads/codex/test-vault-developer-experience\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-input-clarity\nHEAD e0c34e46c9c4880948998ea6566729e9ffcc3790\nbranch refs/heads/codex/token-meter-input-clarity\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/unify-history-release-v1.4.79\nHEAD fdbd07124f0eaaa1310379c1ca8e2449f97b0dcf\ndetached\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/vertical-ai-application-sdk-experience\nHEAD 31b1719ae86ab053da1238cc1b9891fab3d08294\nbranch refs/heads/codex/vertical-ai-application-sdk-experience\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-audio-source-selection-wt\nHEAD ad7e12d06357ab9691a346a80288521243899ae6\nbranch refs/heads/codex/voice-input-audio-source-selection\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime\nHEAD 7c08c09a1a79bd31e0ac3370e1f8201ef5d5470f\nbranch refs/heads/codex/voice-input-bilingual-runtime\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-personal-analysis\nHEAD d1f6b528aad540d8ad01c173a852559f2450394d\nbranch refs/heads/codex/voice-input-feasibility-analysis\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-runtime-reliability\nHEAD 4b29481d5b6eaea64aebb20abcb5e4d784ea1178\nbranch refs/heads/codex/voice-input-runtime-reliability\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-transcription-architecture\nHEAD b02a6a78c74c3d65c78e9fd7144d3b956a639ca7\nbranch refs/heads/codex/voice-input-transcription-architecture\n\nworktree /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal\nHEAD beb6b3b494779eba207feac94a70cb050db7dcbc\nbranch refs/heads/codex/work-journal\n\nworktree /Users/normy/autobyteus_worktrees/codex-fruit-website\nHEAD 44131e709d399072c332117e2a0d6acf71be6515\nbranch refs/heads/codex/fruit-website\n\nworktree /Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model\nHEAD a13af34ee506bf5971e5f512e91c87ee3175fb82\nbranch refs/heads/codex/token-statistics-custom-provider-model\n\n"
+    },
+    {
+      "command": [
+        "rev-parse",
+        "refs/heads/codex/fix-prisma-engine-discovery"
+      ],
+      "exit": 0,
+      "output": "057c60d5b9d5925f7c984987c241d224891b538b\n"
+    },
+    {
+      "command": [
+        "merge-base",
+        "--is-ancestor",
+        "057c60d5b9d5925f7c984987c241d224891b538b",
+        "eef8296fd8d8181a85ead907dc80e9752441d4c0"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "branch",
+        "-D",
+        "codex/fix-prisma-engine-discovery"
+      ],
+      "exit": 0,
+      "output": "Deleted branch codex/fix-prisma-engine-discovery (was 057c60d5b9).\n"
+    },
+    {
+      "command": [
+        "show-ref",
+        "--verify",
+        "--quiet",
+        "refs/heads/codex/fix-prisma-engine-discovery"
+      ],
+      "exit": 1,
+      "output": ""
+    },
+    {
+      "command": [
+        "rev-parse",
+        "refs/heads/finalize/fix-prisma-engine-discovery"
+      ],
+      "exit": 0,
+      "output": "eef8296fd8d8181a85ead907dc80e9752441d4c0\n"
+    },
+    {
+      "command": [
+        "merge-base",
+        "--is-ancestor",
+        "eef8296fd8d8181a85ead907dc80e9752441d4c0",
+        "eef8296fd8d8181a85ead907dc80e9752441d4c0"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "branch",
+        "-D",
+        "finalize/fix-prisma-engine-discovery"
+      ],
+      "exit": 0,
+      "output": "Deleted branch finalize/fix-prisma-engine-discovery (was eef8296fd8).\n"
+    },
+    {
+      "command": [
+        "show-ref",
+        "--verify",
+        "--quiet",
+        "refs/heads/finalize/fix-prisma-engine-discovery"
+      ],
+      "exit": 1,
+      "output": ""
+    }
+  ],
+  "reportPublicationParent": "eef8296fd8d8181a85ead907dc80e9752441d4c0"
+}

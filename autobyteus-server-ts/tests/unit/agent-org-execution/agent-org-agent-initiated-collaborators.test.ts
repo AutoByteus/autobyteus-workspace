@@ -17,7 +17,7 @@ const memberRun = (copy: TaskTeamExecution, address: string) => {
   return member.agentRunId;
 };
 
-describe("agent-initiated collaborators and team instances in an AgentOrg", () => {
+describe("agent-initiated delegation, messaging and team instances in an AgentOrg", () => {
   it("gives a closed Team copy a follow-up Task by its team run ID; its coordinator gets B's work from the delegator (AC-002)", async () => {
     const f = await buildOrg();
     const director = identity(f, "/director", "director");
@@ -62,7 +62,7 @@ describe("agent-initiated collaborators and team instances in an AgentOrg", () =
       .rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });
   });
 
-  it("lists, brings in on the first message and reuses the instance (AC-002, AC-004)", async () => {
+  it("lists the catalog and never creates a run for send_message_to: an outside address is not found with delegate_task guidance (AC-005)", async () => {
     const f = await buildOrg();
     const director = identity(f, "/director", "director");
     await expect(f.owner.listAvailableAgents(director)).resolves.toEqual([
@@ -71,24 +71,16 @@ describe("agent-initiated collaborators and team instances in an AgentOrg", () =
       { name: "Designer", kind: "agent", address: "/designer", description: "Designs" },
       { name: "Product Team", kind: "agent_team", address: "/product_team", description: "Product" },
     ]);
-    const results = await Promise.all([
-      f.owner.deliverLogicalMessage(director, { recipientAddress: "/code_reviewer", content: "one" }),
-      f.owner.deliverLogicalMessage(director, { recipientAddress: "/code_reviewer", content: "two" }),
-    ]);
-    expect(results).toEqual([expect.objectContaining({ accepted: true }), expect.objectContaining({ accepted: true })]);
-    const collaborators = f.owner.getExecutionTreeSnapshot().rootOrg.collaborators;
-    expect(collaborators).toEqual([expect.objectContaining({ kind: "agent", address: "/code_reviewer", addedViaAgentRunId: "director" })]);
-    expect((await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId))!.rootOrg.collaborators).toEqual(collaborators);
+    for (const address of ["/code_reviewer", "/product_team"]) {
+      await expect(f.owner.deliverLogicalMessage(director, { recipientAddress: address, content: "one" }))
+        .rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND", message: expect.stringContaining("delegate_task") });
+    }
+    expect(f.teams.list().map((run) => run.teamRunId)).toEqual(["configured-team"]);
+    expect(f.owner.getExecutionTreeSnapshot().rootOrg.taskExecutions).toEqual([]);
+    expect(f.owner.getCommunicationSnapshot().messages).toEqual([]);
   });
 
-  it("a failed add returns COLLABORATOR_ADD_FAILED and writes nothing", async () => {
-    const f = await buildOrg({ runnable: false });
-    await expect(f.owner.deliverLogicalMessage(identity(f, "/director", "director"), { recipientAddress: "/product_team", content: "x" }))
-      .resolves.toMatchObject({ accepted: false, code: "COLLABORATOR_ADD_FAILED" });
-    expect((await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId))!.rootOrg.collaborators).toEqual([]);
-  });
-
-  it("catalog copies record their source and add no collaborator; a mounted-Team member's catalog copy goes to the root (AC-005, AC-006, AC-013)", async () => {
+  it("catalog copies record their source; a mounted-Team member's catalog copy goes to the root (AC-005, AC-006, AC-013)", async () => {
     const f = await buildOrg();
     const lead = identity(f, "/target/lead", "configured-lead");
     await expect(f.owner.delegateToNewCopy({ identity: lead }, { recipient_address: "/product_team", description: "Design" }))
@@ -97,7 +89,6 @@ describe("agent-initiated collaborators and team instances in an AgentOrg", () =
       .resolves.toMatchObject({ delegated: true });
     await flushMicrotasks();
     const tree = f.owner.getExecutionTreeSnapshot();
-    expect(tree.rootOrg.collaborators).toEqual([]);
     const mounted = tree.rootOrg.members.find((member) => member.address === "/target")!;
     expect("teamRunId" in mounted && mounted.taskExecutions).toEqual([]);
     const [copy, reviewer] = tree.rootOrg.taskExecutions as TaskTeamExecution[];
@@ -109,20 +100,36 @@ describe("agent-initiated collaborators and team instances in an AgentOrg", () =
     expect(sources.require(copy!.address, "agent_team", copy!.source)).toMatchObject({
       node: { address: "/product_team", teamDefinitionId: "product-team", coordinatorAddress: "/product_team/designer" },
     });
-    expect(() => sources.require(copy!.address, "agent_team")).toThrow("is not configured or a collaborator");
+    expect(() => sources.require(copy!.address, "agent_team")).toThrow("is not configured");
   });
 
-  it("places copies by address from inside a mounted Team: teammate under the Team, Org-level placement at the root (REQ-012, AC-013)", async () => {
+  it("places a copy from inside a mounted Team at the root and refuses the Team's own addresses at any depth (REQ-012, AC-003, DEC-008)", async () => {
     const f = await buildOrg();
     const lead = { identity: identity(f, "/target/lead", "configured-lead") };
-    await f.owner.delegateToNewCopy(lead, { recipient_address: "/target/writer", description: "Draft" });
-    await f.owner.delegateToNewCopy(lead, { recipient_address: "/director", description: "Decide" });
+    for (const own of ["/target/writer", "/target", "/target/lead"]) {
+      await expect(f.owner.delegateToNewCopy(lead, { recipient_address: own, description: "Draft" }))
+        .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED", message: expect.stringContaining("send_message_to") });
+    }
+    await expect(f.owner.delegateToNewCopy(lead, { recipient_address: "/director", description: "Decide" })).resolves.toMatchObject({ delegated: true });
     await flushMicrotasks();
     const tree = f.owner.getExecutionTreeSnapshot();
     const mounted = tree.rootOrg.members.find((member) => member.address === "/target")!;
-    expect("teamRunId" in mounted && mounted.taskExecutions.map((task) => [task.address, task.delegatorAgentRunId]))
-      .toEqual([["/target/writer", "configured-lead"]]);
+    expect("teamRunId" in mounted && mounted.taskExecutions).toEqual([]);
     expect(tree.rootOrg.taskExecutions.map((task) => [task.address, task.delegatorAgentRunId])).toEqual([["/director", "configured-lead"]]);
     expect((await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId))!.rootOrg.taskExecutions).toEqual(tree.rootOrg.taskExecutions);
+  });
+
+  it("allows delegating to a Team the sender does not belong to, and refuses a delegated copy's own sub-team addresses (AC-003, DEC-008)", async () => {
+    const f = await buildOrg();
+    const director = { identity: identity(f, "/director", "director") };
+    await expect(f.owner.delegateToNewCopy(director, { recipient_address: "/target", description: "Own-team work" })).resolves.toMatchObject({ delegated: true });
+    await expect(f.owner.delegateToNewCopy(director, { recipient_address: "/target/writer", description: "Writer work" })).resolves.toMatchObject({ delegated: true });
+    await flushMicrotasks();
+    const [copy] = f.owner.getExecutionTreeSnapshot().rootOrg.taskExecutions as TaskTeamExecution[];
+    const copyLead = { identity: identity(f, "/target/lead", memberRun(copy!, "/target/lead")) };
+    // Inside its own copy instance: refused before any placement.
+    await expect(f.owner.delegateToNewCopy(copyLead, { recipient_address: "/target/writer", description: "again" }))
+      .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED" });
+    expect(f.owner.getExecutionTreeSnapshot().rootOrg.taskExecutions).toHaveLength(2);
   });
 });

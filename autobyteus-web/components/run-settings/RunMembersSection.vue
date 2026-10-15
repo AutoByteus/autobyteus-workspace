@@ -31,6 +31,7 @@
         @toggle="toggle"
         @change="(key, change) => emit('change', key, change)"
         @reset="(key, reset) => emit('reset', key, reset)"
+        @stop="emit('stop', $event)"
       />
     </div>
   </section>
@@ -40,7 +41,7 @@
 import { computed, ref } from 'vue'
 import type { ChatModelOption } from '~/composables/chat/useChatModelCatalog'
 import type { RunMemberSettingChange, RunMemberSettingReset, RunSettingFlags } from '~/types/runSettings/RunSettings'
-import { countCustomizedMembers, type RunMemberNode } from '~/utils/runSettings/runMemberTree'
+import { countCustomizedMembers, type RunMemberDelegatedFacts, type RunMemberNode } from '~/utils/runSettings/runMemberTree'
 import RunMemberRow from './RunMemberRow.vue'
 
 const props = withDefaults(defineProps<{
@@ -51,11 +52,12 @@ const props = withDefaults(defineProps<{
   runtimeLocked?: boolean
   lockedModelsFor?: ((key: string) => readonly ChatModelOption[] | null) | null
   readOnly?: boolean
-  /** The section's `data-test` (a saved run has a second, read-only section for collaborators and copies). */
+  /** The section's `data-test` (a saved run has a second, read-only section for delegated copies). */
   testId?: string
 }>(), { testId: 'run-members', title: '', description: '', locked: () => ({}), runtimeLocked: false, lockedModelsFor: null, readOnly: false })
 
 const emit = defineEmits<{
+  (event: 'stop', reference: NonNullable<RunMemberDelegatedFacts['stop']>): void
   (event: 'change', key: string, change: RunMemberSettingChange): void
   (event: 'reset', key: string, reset: RunMemberSettingReset): void
   (event: 'reset-all'): void

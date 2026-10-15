@@ -1,0 +1,15 @@
+{
+  "recordedUtc": "2026-10-13T03:57:34.457048+00:00",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli",
+  "worktreeRemoval": "Completed",
+  "prune": "Completed",
+  "localTicketBranchCleanup": "Completed",
+  "localFinalizeBranchCleanup": "Completed",
+  "branchDeletionSafety": "Both former branch tips verified ancestors of pushed origin/personal before deletion",
+  "remoteTicketBranchCleanup": "Not required \u2014 retained pushed checkpoint for traceability; guide does not request deletion",
+  "privateRuntimeCleanup": "All three Delivery target runs plus lifecycle/regression/typecheck receipts have zero sampled remnants, roots removed",
+  "archivedEvidencePreserved": "archive-preservation.json; full ticket tree and source snapshot in persistent receipt directory",
+  "sharedCheckoutFilesChangedByDelivery": false,
+  "userAppOrDataChangedByDelivery": false,
+  "release": "Not required"
+}

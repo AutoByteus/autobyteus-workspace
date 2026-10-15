@@ -58,11 +58,10 @@ describe("autobyteus runtime tool exposure", () => {
       "get_handoff_rules",
       "send_message_to",
       "delegate_task",
-      "create_or_update_task",
     ]);
   });
 
-  it("gives a standalone Agent-root host the collaboration tools and create_or_update_task but no handoff rules", () => {
+  it("gives a standalone Agent-root host the collaboration tools but no task tools and no handoff rules", () => {
     const exposure = resolveAutoByteusRuntimeAgentToolExposure({ toolNames: [] }, { teamScoped: false } as any);
     expect(exposure.requestedToolNames).toEqual([
       "run_bash",
@@ -71,7 +70,6 @@ describe("autobyteus runtime tool exposure", () => {
       "write_file",
       "send_message_to",
       "delegate_task",
-      "create_or_update_task",
     ]);
   });
 

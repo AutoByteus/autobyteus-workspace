@@ -1,0 +1,52 @@
+{
+  "scope": "same scoped config/full graph; default compiler-host parsing retained",
+  "current": [
+    {
+      "file": null,
+      "line": null,
+      "code": 2688,
+      "message": "Cannot find type definition file for 'node'.\n  The file is in the program because:\n    Entry point of type library 'node' specified in compilerOptions"
+    },
+    {
+      "file": "autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+      "line": 500,
+      "code": 2367,
+      "message": "This comparison appears to be unintentional because the types '0 | 1 | 2' and '3' have no overlap."
+    }
+  ],
+  "virtualCandidate": [
+    {
+      "file": null,
+      "line": null,
+      "code": 2688,
+      "message": "Cannot find type definition file for 'node'.\n  The file is in the program because:\n    Entry point of type library 'node' specified in compilerOptions"
+    }
+  ],
+  "sourceUnchanged": true,
+  "feasibilityOnly": true
+}
+node:assert:150
+  throw new AssertionError(obj);
+  ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+2 !== 1
+
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/tickets/in-progress/claude-interrupt-resume-fixture-types/evidence/design-recovery/probe-ready-state-typing.cjs:47:8)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 1,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.1

@@ -62,6 +62,7 @@ type FakeState = {
   restoreFailure: Error | null;
   restoreCalls: string[];
   shutdownCalls: string[];
+  userStopCalls: string[];
 };
 
 const createFakeAdapter = (overrides: Partial<RootTaskExecutionAdapter<string>> = {}) => {
@@ -73,6 +74,7 @@ const createFakeAdapter = (overrides: Partial<RootTaskExecutionAdapter<string>> 
     restoreFailure: null,
     restoreCalls: [],
     shutdownCalls: [],
+    userStopCalls: [],
   };
   const adapter: RootTaskExecutionAdapter<string> = {
     isOpen: () => true,
@@ -84,7 +86,7 @@ const createFakeAdapter = (overrides: Partial<RootTaskExecutionAdapter<string>> 
     beginActivation: vi.fn(() => ({ prepare: async () => ({ targetAgentRunId: "child-run",
       commit: async () => ({ committed: true }), acceptSeed: async guard => { guard(); return { accepted: true }; } }),
       cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })), })),
-    registrationFor: () => null, taskExecutionAt: () => null, taskExecutionTargetOf: () => null,
+    registrationFor: () => null, taskExecutionTargetOf: () => null,
     ownershipChainFor: (agentRunId) => state.chains.get(agentRunId) ?? [],
     cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async () => ({ accepted: false, code: "UNAVAILABLE" })),
     taskExecutionChainFor: (agentRunId) => state.chains.get(agentRunId) ?? [],
@@ -104,6 +106,11 @@ const createFakeAdapter = (overrides: Partial<RootTaskExecutionAdapter<string>> 
         if (state.restoreFailure && state.live.size > 0) throw state.restoreFailure;
         state.live.add(taskExecutionReferenceKey(reference));
       }
+    },
+    shutDownForUser: async (reference) => {
+      const key = taskExecutionReferenceKey(reference);
+      state.userStopCalls.push(key);
+      return state.live.delete(key);
     },
     tryShutDownIfQuiet: async (reference) => {
       const key = taskExecutionReferenceKey(reference);
@@ -504,10 +511,6 @@ describe("RootTaskExecutionLifecycle launch notes (DS-003, DS-004 b; REQ-008)", 
         const id = `run-${++next}`;
         return { ...input, ownedAgentRunIds: [id], target: { root: caller.root, execution: { agentRunId: id }, ingressAgentRunId: id } };
       }),
-      taskExecutionAt: (address, among) => {
-        const found = address === "/helper" ? among.find((reference) => "agentRunId" in reference && reference.agentRunId !== "run-1") : undefined;
-        return found && "agentRunId" in found ? { root: caller.root, execution: found, ingressAgentRunId: found.agentRunId } : null;
-      },
     });
     return fake;
   };
@@ -520,19 +523,147 @@ describe("RootTaskExecutionLifecycle launch notes (DS-003, DS-004 b; REQ-008)", 
     await expect(lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Again" }, { launchNotes: [] }))
       .resolves.toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "run-2" }, taskId: "ad_hoc_task_2" });
   });
+});
 
-  it("a Task helper returns notes only from the dispatch that started it (or the attempt it joined); a reused helper has none", async () => {
-    const { lifecycle, state } = notesSetup();
-    await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, {});
-    state.chains.set("run-1", [{ agentRunId: "run-1" }]);
-    const placement = { launchNotes: ["helper: its agent default could not be used"] };
-    const [first, joined] = await Promise.all([
-      lifecycle.ensureTaskHelper({ identity: worker }, "/helper", placement),
-      lifecycle.ensureTaskHelper({ identity: worker }, "/helper", placement),
-    ]);
-    expect(first).toEqual({ target: { root: caller.root, execution: { agentRunId: "run-2" }, ingressAgentRunId: "run-2" }, launchNotes: placement.launchNotes });
-    expect(joined).toEqual(first);
-    const reused = await lifecycle.ensureTaskHelper({ identity: worker }, "/helper", placement);
-    expect(reused).toEqual({ target: { root: caller.root, execution: { agentRunId: "run-2" }, ingressAgentRunId: "run-2" } });
+describe("RootTaskExecutionLifecycle user Stop (SR-006, DS-002)", () => {
+  const outside: TaskExecutionReference = { agentRunId: "outside-run" };
+
+  it("stops live copies innermost first through the queue, reports offline ones, and the next message resumes", async () => {
+    const { lifecycle, state } = setup();
+    state.chains.set("child-run", [child, team]);
+    state.chains.set("team-member", [team]);
+    state.live.add("team:task-team-run");
+    state.live.add("agent:child-run");
+
+    await expect(lifecycle.stopForUser([child, team, outside])).resolves.toEqual({
+      stopped: [child, team], alreadyStopped: [outside],
+    });
+    expect(state.userStopCalls).toEqual(["agent:child-run", "team:task-team-run"]);
+    expect(state.live.size).toBe(0);
+
+    // REQ-004: after the Stop completes, a message restores the copy (Task open, nothing closed).
+    const lease = await lifecycle.acquireLiveLease("child-run");
+    expect(state.restoreCalls).toEqual(["child-run"]);
+    expect(state.live.has("agent:child-run")).toBe(true);
+    lease.release();
+  });
+
+  it("AR-006: drains a held lease outside the queue while the holder's inner wakes still run, then stops", async () => {
+    const { lifecycle, state } = setup();
+    state.chains.set("child-run", [child]);
+    state.chains.set("outside-run", [outside]);
+    state.live.add("agent:child-run");
+
+    // A member of the copy is mid-send_message_to: it holds its lease and its delivery wakes another copy.
+    let releaseDelivery!: () => void;
+    const deliveryGate = new Promise<void>((resolve) => { releaseDelivery = resolve; });
+    const delivery = lifecycle.withLiveLease("child-run", async () => {
+      await deliveryGate;
+      const inner = await lifecycle.withLiveLease("outside-run", async () => ({ accepted: true as const }));
+      const intoStopping = await lifecycle.withLiveLease("child-run", async () => ({ accepted: true as const }));
+      return { accepted: inner.accepted && !intoStopping.accepted, code: intoStopping.code } as never;
+    });
+    await flush();
+
+    let stopped = false;
+    const stop = lifecycle.stopForUser([child]).then((result) => { stopped = true; return result; });
+    await flush();
+    expect(stopped).toBe(false);
+    expect(state.userStopCalls).toEqual([]);
+
+    releaseDelivery();
+    await expect(delivery).resolves.toEqual({ accepted: true, code: "TASK_EXECUTION_STOPPING" });
+    await expect(stop).resolves.toEqual({ stopped: [child], alreadyStopped: [] });
+    expect(state.live.has("agent:outside-run")).toBe(true);
+
+    // The root queue keeps processing unrelated wakes afterwards.
+    const unrelated = await lifecycle.acquireLiveLease("outside-run");
+    unrelated.release();
+  });
+
+  it("refuses new leases on a stopping chain before any queue step, and at the head for wakes queued earlier", async () => {
+    let finishStop!: () => void;
+    const { lifecycle, state } = setup({
+      shutDownForUser: async (reference) => {
+        await new Promise<void>((resolve) => { finishStop = resolve; });
+        return state.live.delete(taskExecutionReferenceKey(reference));
+      },
+    });
+    state.chains.set("child-run", [child]);
+    state.live.add("agent:child-run");
+
+    const stop = lifecycle.stopForUser([child]);
+    await flush();
+    await expect(lifecycle.withLiveLease("child-run", async () => ({ accepted: true as const })))
+      .resolves.toEqual({ accepted: false, code: "TASK_EXECUTION_STOPPING", message: "This copy is being stopped by the user." });
+    await expect(lifecycle.acquireLiveLease("child-run")).rejects.toMatchObject({ code: "TASK_EXECUTION_STOPPING" });
+    finishStop();
+    await stop;
+    expect(state.restoreCalls).toEqual([]);
+  });
+
+  it("refuses at the queue head a wake queued before the copy was marked", async () => {
+    let releaseHead!: () => void;
+    const { lifecycle, state } = setup();
+    state.chains.set("child-run", [child]);
+    state.live.add("agent:child-run");
+    // Occupy the queue head so the wake is queued, then mark the copy before it runs.
+    const blocker = lifecycle.whileTaskExecutionsStopped([], () => new Promise<void>((resolve) => { releaseHead = resolve; }));
+    await flush();
+    const wake = lifecycle.acquireLiveLease("child-run");
+    const stop = lifecycle.stopForUser([child]);
+    await flush();
+    releaseHead();
+    await blocker;
+    await expect(wake).rejects.toMatchObject({ code: "TASK_EXECUTION_STOPPING" });
+    await expect(stop).resolves.toEqual({ stopped: [child], alreadyStopped: [] });
+  });
+
+  it("idle shutdown skips a copy being stopped; a second overlapping Stop joins and finds it offline", async () => {
+    let finishStop!: () => void;
+    const { lifecycle, state, timers } = setup({
+      shutDownForUser: async (reference) => {
+        await new Promise<void>((resolve) => { finishStop = resolve; });
+        return state.live.delete(taskExecutionReferenceKey(reference));
+      },
+    });
+    state.chains.set("child-run", [child]);
+    state.live.add("agent:child-run");
+    state.quiet.add("agent:child-run");
+    lifecycle.onAgentStatus("child-run", "idle");
+    const first = lifecycle.stopForUser([child]);
+    const second = lifecycle.stopForUser([child]);
+    timers.advance(GRACE);
+    await flush();
+    expect(state.shutdownCalls).toEqual([]);
+    finishStop();
+    await expect(first).resolves.toEqual({ stopped: [child], alreadyStopped: [] });
+    await expect(second).resolves.toEqual({ stopped: [], alreadyStopped: [child] });
+  });
+});
+
+describe("RootTaskExecutionLifecycle model-change step (AR-001)", () => {
+  it("runs only while every listed copy is stopped; a wake queued behind it restores after the change", async () => {
+    const { lifecycle, state } = setup();
+    state.chains.set("child-run", [child]);
+    state.live.add("agent:child-run");
+    await expect(lifecycle.whileTaskExecutionsStopped([child], () => "saved")).resolves.toEqual({ ran: false, running: [child] });
+
+    state.live.delete("agent:child-run");
+    const order: string[] = [];
+    const change = lifecycle.whileTaskExecutionsStopped([child], async () => { order.push("commit"); return "saved"; });
+    const wake = lifecycle.acquireLiveLease("child-run").then((lease) => { order.push("restore"); return lease; });
+    await expect(change).resolves.toEqual({ ran: true, value: "saved" });
+    (await wake).release();
+    expect(order).toEqual(["commit", "restore"]);
+  });
+
+  it("refuses while a live lease holds the copy", async () => {
+    const { lifecycle, state } = setup();
+    state.chains.set("child-run", [child]);
+    const lease = await lifecycle.acquireLiveLease("child-run");
+    state.live.delete("agent:child-run");
+    await expect(lifecycle.whileTaskExecutionsStopped([child], () => "saved")).resolves.toMatchObject({ ran: false });
+    lease.release();
   });
 });

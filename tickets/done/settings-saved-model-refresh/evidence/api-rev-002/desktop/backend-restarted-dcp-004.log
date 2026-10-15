@@ -1,0 +1,157 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:62833
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:62833
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/db/probe.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.22                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:99996) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1791909914853,"pid":99996,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:63431"}
+{"level":30,"time":1791909914878,"pid":99996,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:62833"}
+[2026-10-13T16:45:14.878Z] [INFO] [server.runtime] Server listening on 127.0.0.1:62833
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/memory/agents/manager_3c53_da35cd07c77a4b0cb4feb185b013173f/collaboration/pair_team_8b11_5f687527d552456d8806d77c9b70fbf7/engineer_6a6c_fc305e0ad2e2471bb5ab7301dfbba4b0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/memory/agents/manager_3c53_da35cd07c77a4b0cb4feb185b013173f/collaboration/pair_team_8b11_5f687527d552456d8806d77c9b70fbf7/unoffered_7a97_d88835c52ce4438695bab5a3909d46ff/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/memory/agents/manager_3c53_da35cd07c77a4b0cb4feb185b013173f/collaboration/pair_team_8b11_7f4a753c1fef4a9b847928850432205b/engineer_6a6c_be3276669a96433f8360f24acce77bda/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/memory/agents/manager_3c53_da35cd07c77a4b0cb4feb185b013173f/collaboration/pair_team_8b11_7f4a753c1fef4a9b847928850432205b/unoffered_7a97_a98435e1724d4eb8b125f242b9cf302a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/memory/agents/manager_3c53_3efcd7a4d1664ff0816e635ab185f1c7/collaboration/pair_team_8b11_547bdcafef7c420aad28b69c2e9238ad/engineer_6a6c_db82ae8bcc4f413b87c243f84e097724/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/memory/agents/manager_3c53_3efcd7a4d1664ff0816e635ab185f1c7/collaboration/pair_team_8b11_547bdcafef7c420aad28b69c2e9238ad/unoffered_7a97_0afe0c8e079542bda13c1e768c2cdb8f/raw_traces_active.jsonl
+Agent websocket attached for run manager_3c53_204db132245648f89eea2ae2a69a1539
+Created agent session 9c7c0c7c-af4b-4cef-8219-3db74bf1fb1b for run manager_3c53_204db132245648f89eea2ae2a69a1539
+Agent WebSocket connected: session=9c7c0c7c-af4b-4cef-8219-3db74bf1fb1b, run=manager_3c53_204db132245648f89eea2ae2a69a1539
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run manager_3c53_204db132245648f89eea2ae2a69a1539: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791909923975,"pid":99996,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_7OHfQOg0zUiBRNpuPRHEfhAiM3wAzlG7aT1VhYTo8FU","statusCode":405,"elapsedMs":0.19624996185302734,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run writer_50fe_c60ef3652dbc4063893ada3236d7c82b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/memory/agent_teams/home_team_a559_66a16c92acfd44e6827f388bf103166d/manager_3c53_e4b0a171e3f34768ba8a375b70c5bf17/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/memory/agent_teams/home_team_a559_66a16c92acfd44e6827f388bf103166d/worker_be95_2480e8bbf9574390b88f0ce530e23eb5/raw_traces_active.jsonl
+Agent team websocket attached for team run home_team_a559_66a16c92acfd44e6827f388bf103166d
+Created agent session e6e5b9a6-16c9-48ac-acf5-567b2d891b2e for run home_team_a559_66a16c92acfd44e6827f388bf103166d
+Agent Team WebSocket connected: session=e6e5b9a6-16c9-48ac-acf5-567b2d891b2e, run=home_team_a559_66a16c92acfd44e6827f388bf103166d
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/memory/agent_teams/home_team_a559_66a16c92acfd44e6827f388bf103166d/manager_3c53_e4b0a171e3f34768ba8a375b70c5bf17/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XoVeQJ/server-data/memory/agent_teams/home_team_a559_66a16c92acfd44e6827f388bf103166d/manager_3c53_e4b0a171e3f34768ba8a375b70c5bf17/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run manager_3c53_e4b0a171e3f34768ba8a375b70c5bf17: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791909931133,"pid":99996,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_GztKc0D8jgwW4Zt6fEV9S2uCzyh5kyqUe8I8chZmsDo","statusCode":405,"elapsedMs":0.23899996280670166,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lead_fe07_b9e5bec3770744ab931bea42524f759f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791909941701,"pid":99996,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_TO9LNJ5qVYcZHypj9x9zYhhjGbyC_dN7m7gZtbxlo0o","statusCode":405,"elapsedMs":0.1610410213470459,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run unoffered_7a97_2bdc3830fa0f4008a15fe4ee917c4784: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lead_fe07_b9e5bec3770744ab931bea42524f759f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791909958428,"pid":99996,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_TO9LNJ5qVYcZHypj9x9zYhhjGbyC_dN7m7gZtbxlo0o","statusCode":405,"elapsedMs":0.4037909507751465,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run unoffered_7a97_2bdc3830fa0f4008a15fe4ee917c4784: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 9c7c0c7c-af4b-4cef-8219-3db74bf1fb1b
+Agent WebSocket disconnected: 9c7c0c7c-af4b-4cef-8219-3db74bf1fb1b
+Closed agent session e6e5b9a6-16c9-48ac-acf5-567b2d891b2e
+[2026-10-13T16:46:00.095Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-13T16:46:00.183Z] [INFO] [server.runtime] Server closed cleanly.

@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+    "--no-watch"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types",
+  "expectedExit": 0,
+  "environment": "PATH + fresh private HOME/TMPDIR + explicit TEST_DELIVERY_EXECUTION marker, target-only AGY_ERROR_EVIDENCE_DIR",
+  "RUN_CLAUDE_E2E": "absent",
+  "revision": "d9dad8fe1e6b65921a1efd07ebd9899fd009e061"
+}

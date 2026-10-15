@@ -3,27 +3,34 @@ import { AgentRunState } from '~/types/agent/AgentRunState'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import { AgentRunCollaborationContext } from '../agentRunCollaborationContext'
 import { AgentRunCollaborationIndex } from '../agentRunCollaborationIndex'
-import { agentRootView, created } from './agentRootFixture'
+import { agentRootView, created, launch } from './agentRootFixture'
 
 /**
  * task-run-resources-workspace-cleanup REQ-001/004/008: a closed task execution (Task DONE) and
  * everything under it leave the listing; the tree, contexts and Team-tab messages keep them.
  */
+const agentSource = { kind: 'agent' as const, agentDefinitionId: 'computer-use', launchConfiguration: launch }
+const teamSource = { kind: 'agent_team' as const, teamDefinitionId: 'product-team', coordinatorAddress: '/product_team/prototyper', handoffs: [],
+  members: [{ address: '/product_team/prototyper', agentDefinitionId: 'prototyper' }, { address: '/product_team/bootstrapper', agentDefinitionId: 'bootstrapper' }],
+  defaultLaunchConfiguration: launch }
+
 export const closureView = (closed: Array<{ agentRunId: string } | { teamRunId: string }> = []) => {
   const view = agentRootView()
   view.execution_tree = {
     ...view.execution_tree,
     taskExecutions: [
-      { address: '/computer_use_agent', agentRunId: 'writer-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created },
+      ...view.execution_tree.taskExecutions,
+      { address: '/computer_use_agent', agentRunId: 'writer-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created, source: agentSource },
       { address: '/product_team', teamRunId: 'review-team', delegatorAgentRunId: 'host-run', startedAt: created,
         members: [
           { address: '/product_team/prototyper', agentRunId: 'rp-run', platformAgentRunId: null },
           { address: '/product_team/bootstrapper', agentRunId: 'rb-run', platformAgentRunId: null },
         ],
         taskExecutions: [
-          { address: '/computer_use_agent', agentRunId: 'helper-run', platformAgentRunId: null, delegatorAgentRunId: 'rp-run', startedAt: created },
-        ] },
-      { address: '/computer_use_agent', agentRunId: 'other-task-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created },
+          { address: '/computer_use_agent', agentRunId: 'helper-run', platformAgentRunId: null, delegatorAgentRunId: 'rp-run', startedAt: created, source: agentSource },
+        ],
+        source: teamSource },
+      { address: '/computer_use_agent', agentRunId: 'other-task-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created, source: agentSource },
     ],
   }
   view.closed_task_executions = closed

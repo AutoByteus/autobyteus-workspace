@@ -163,14 +163,14 @@ and then renders two sibling sections from the validated current member context:
 native `Working Environment`. The first teaches one canonical absolute non-root
 address grammar and the member's exact address. The second explains universal
 collaboration through an intent-first distinction (REQ-009 wording):
-`send_message_to` reaches the one instance at an address, and an available
-agent or team that is not yet in the run is brought in on first use;
+`send_message_to` reaches the one instance at an address in the sender's run and
+never creates a run (an address not in the run is not found; use `delegate_task`);
 `delegate_task` with an address spawns a new copy of an Agent or AgentTeam and
 delivers its complete assignment as the first message; with a copy's own ID it
 gives a new saved Task to that existing copy. A "Work Requests and Results"
 subsection covers Agent and AgentTeam (coordinator) addresses, teammates inside
-the sender's own team instance, first-use bring-in, and run-ID selection, which
-never brings anything in. A "Delegated Agents" subsection explains that every
+the sender's own team instance, the not-found rule for outside addresses, and
+run-ID selection, which never brings anything in. A "Delegated Agents" subsection explains that every
 call with an address spawns another copy (copies can work in parallel), the
 explicitly named result (`target_agent_run_id` for an Agent copy;
 `target_team_run_id` and `target_team_coordinator_agent_run_id` for a Team copy;
@@ -208,7 +208,7 @@ Sending a message to an AgentTeam address delivers it through that AgentTeam's c
 On receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.
 
 Choose the collaboration mode based on your primary intent.
-`send_message_to` reaches the one instance at an address, brought in on first use.
+`send_message_to` reaches the one instance at an address in your run and never creates a run.
 `delegate_task` with an address spawns a new copy of an Agent or AgentTeam for new work;
 with a copy's own ID it gives a new saved Task to that existing copy.
 Never use both to deliver the same work.
@@ -224,12 +224,11 @@ at an address.
   to that Team instance's coordinator.
 - Inside your own team instance, a teammate's address reaches the member of
   that same instance.
-- An available agent or team that is not yet in the run is brought in on
-  first use; later messages to its address reach the same instance.
+- An address that is not in your run is not found. To give work to an outside
+  Agent or AgentTeam, use `delegate_task`, then message the copy by its run ID.
 - When an exact AgentRun ID is known, `target_agent_run_id` may instead
   select that specific execution: any AgentRun in the same root, including a
-  shut-down delegated agent, or a currently active AgentRun elsewhere. A run ID
-  never brings anything in.
+  shut-down delegated agent, or a currently active AgentRun elsewhere.
 
 A successful call returns the exact AgentRun that accepted the message as
 `target_agent_run_id`. For an AgentTeam recipient, this is its coordinator
@@ -240,9 +239,10 @@ refused with its coordinator's agent run ID to use.
 
 Use `delegate_task` with `recipient_address` to spawn a new copy of an Agent or
 AgentTeam for new work. The `recipient_address` identifies what to copy (a mounted
-Agent or AgentTeam, a collaborator, or an available agent or team); it is not an
+Agent or AgentTeam outside your own team, or an available agent or team); it is not an
 alias for the new copy. Every call with an address spawns another copy, so copies
-can work in parallel.
+can work in parallel. Never delegate to yourself, a teammate or your own team:
+use `send_message_to` with that address.
 
 - Supply task_id alone for saved Task text/files, or description and optional reference_files without task_id.
 - The work description and reference files become the copy's first message,
@@ -254,9 +254,7 @@ can work in parallel.
   work). If `delegated` is false, nothing was started and `message` explains
   why; correct the problem and delegate again, or report the failure.
 - A description-only delegation that creates a Task also returns its
-  `task_id`. When the work is finished, call `create_or_update_task` with that
-  `task_id` and status `DONE` (or `CANCELLED` if the work turned out not to be
-  needed); this stops the copy and removes it from the run.
+  `task_id`.
 - While you work on a Task yourself, a description-only delegation is sub-work
   of your Task: it returns no `task_id` and closes only with your Task.
 
@@ -273,7 +271,7 @@ in both directions. A copy that stays quiet is shut down after a while, but not
 while it has a running background task; a message to it restores it with its
 conversation. A copy whose Task is `DONE` or `CANCELLED` is stopped. To continue
 that same Task with it, the run that assigned the work first moves the Task out of
-`DONE` or `CANCELLED` (for example to `IN_PROGRESS`) with `create_or_update_task`,
+`DONE` or `CANCELLED` (for example to `IN_PROGRESS`),
 then messages the copy; that reactivates it with its conversation. Setting the
 status alone starts nothing.
 
@@ -298,7 +296,7 @@ follows the recipient’s instructions and applicable skills, without acknowledg
 replies. Skill-defined intermediate handoffs and blockers remain valid. This guidance
 does not turn informational notifications into new assignments.
 The standalone section also covers the `[Mentioned collaborators]` note, `send_message_to` reaching the
-one instance at an address (brought in on first use), `delegate_task` always
+one instance at an address in the run (never creating one), `delegate_task` always
 spawning a new copy, `list_available_agents` when selected, and the member's
 own address. It does not instruct standalone agents to call `get_handoff_rules`;
 without applicable rules, results or specific blockers return to the requesting agent.

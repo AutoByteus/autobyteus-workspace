@@ -1,0 +1,49 @@
+
+> autobyteus@1.5.3-beta.4 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts stores/__tests__/existingRunConfigStore.spec.ts stores/__tests__/delegatedLaunchDraftStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web
+
+stderr | components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/existingRunConfigStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/existingRunConfigStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/delegatedLaunchDraftStore.spec.ts (5 tests) 10ms
+ ✓ stores/__tests__/existingRunConfigStore.spec.ts (24 tests) 173ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts (3 tests) 24ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts (1 test) 30ms
+
+ Test Files  4 passed (4)
+      Tests  33 passed (33)
+   Start at  17:19:14
+   Duration  7.45s (transform 4.07s, setup 24.42s, collect 1.55s, tests 237ms, environment 1.07s, prepare 704ms)

@@ -1,0 +1,27 @@
+{
+  "startedAt": "2026-10-13T04:04:50.048Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-create"
+    }
+  ],
+  "details": {
+    "picker": "Choose members\n\nAdd a direct Agent or an existing Team.\n\nSearch members\nAgents\nTeams\n\nAPI Desktop Engineering Team\n\nCoordinator: API Coordinator\n\nAdd\n\nAPI Desktop Research Team\n\nCoordinator: API Coordinator\n\nAdd\nDone",
+    "buttons": [
+      {
+        "text": "Add",
+        "aria": "Add API Desktop Engineering Team"
+      },
+      {
+        "text": "Add",
+        "aria": "Add API Desktop Research Team"
+      }
+    ]
+  },
+  "result": "Pass",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-create",
+  "finishedAt": "2026-10-13T04:04:50.343Z"
+}

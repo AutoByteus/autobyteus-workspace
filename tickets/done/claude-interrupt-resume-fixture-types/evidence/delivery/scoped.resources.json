@@ -1,0 +1,75 @@
+{
+  "actualExit": 0,
+  "expectedExit": 0,
+  "seconds": 13.356,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 61847,
+      "ppid": 61845,
+      "pgid": 61847,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-server-ts typecheck:claude-interrupt-resume-e2e"
+    },
+    {
+      "pid": 62495,
+      "ppid": 61847,
+      "pgid": 61847,
+      "command": "sh -c pnpm prepare:shared && tsc -p tsconfig.claude-interrupt-resume-e2e.json --noEmit"
+    },
+    {
+      "pid": 62496,
+      "ppid": 62495,
+      "pgid": 61847,
+      "command": "(node)"
+    },
+    {
+      "pid": 62527,
+      "ppid": 62496,
+      "pgid": 61847,
+      "command": "(node)"
+    },
+    {
+      "pid": 62558,
+      "ppid": 62527,
+      "pgid": 61847,
+      "command": "sh -c node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs"
+    },
+    {
+      "pid": 62588,
+      "ppid": 62527,
+      "pgid": 61847,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-application-sdk-contracts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 62589,
+      "ppid": 62558,
+      "pgid": 61847,
+      "command": "node ./scripts/clean-dist.mjs"
+    },
+    {
+      "pid": 62596,
+      "ppid": 62558,
+      "pgid": 61847,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-ts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 62720,
+      "ppid": 62527,
+      "pgid": 61847,
+      "command": "(node)"
+    },
+    {
+      "pid": 62743,
+      "ppid": 62495,
+      "pgid": 61847,
+      "command": "(node)"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delivery-fixture-types-l5ksj4x5",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

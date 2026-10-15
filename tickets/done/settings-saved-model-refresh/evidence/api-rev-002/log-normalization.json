@@ -1,0 +1,29 @@
+{
+  "files": [
+    {
+      "path": "web-regression.log",
+      "beforeSha256": "ff4fc3acb0d38c356ac34ad199b0a997905de33b0fdd95de868e460fd60287a2",
+      "afterSha256": "4224a2c766d3370c3fd926625e7f92c47844b1be3377594d3a98b9bab3f0fe79",
+      "operation": "Trailing whitespace and excess EOF blank lines only"
+    },
+    {
+      "path": "server-e2e.log",
+      "beforeSha256": "c6c633a98407ec00414b2e7e50224b657aef22c5117540d9a510cf22745608fd",
+      "afterSha256": "570ed067b3b1afb67431a0070d5871f6b5a9fdf6e270d9afa61ed9ed716c9cb0",
+      "operation": "Trailing whitespace and excess EOF blank lines only"
+    },
+    {
+      "path": "narrow.log",
+      "beforeSha256": "a163bdd925f3f44ef07920429411cb9aad419916c66584bafa775dfe6c704781",
+      "afterSha256": "0a05f16370baeacf1a384c2ec1a5f33e6d94be49b642b6d1af68d8471d93f580",
+      "operation": "Trailing whitespace and excess EOF blank lines only"
+    },
+    {
+      "path": "desktop/desktop-start.log",
+      "beforeSha256": "33524fb7de770c696564cc2c83a788690ca9258921ed12bbebfdc5811c75a175",
+      "afterSha256": "a72279ea0f33f786226a352f9c436d41af680a5d33319a2b2bb817de6c929ca7",
+      "operation": "Trailing whitespace and excess EOF blank lines only"
+    }
+  ],
+  "historicalEvidenceTouched": false
+}

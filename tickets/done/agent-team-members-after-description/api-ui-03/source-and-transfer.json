@@ -1,0 +1,188 @@
+{
+  "recordedAt": "2026-10-13T04:44:49.421098+00:00",
+  "revision": "API-REV-003",
+  "result": "Pass",
+  "scope": "R1 UI/source/coverage transfer only; no full-app health or follow-up-fix acceptance",
+  "incomingHead": "52a5a1ee4ca88f35d2ee21b472018bb32d481360",
+  "inputHead": "37779bf701244631b3234e86be8de77a379a361b",
+  "sourceSeparation": "cf18b16f46230d20bc2c1d8c1c19f7fc81bb8b71",
+  "integratedBase": "f13bdd0eb79aacc63dffa5995b9c86f359001468",
+  "historicalDesktopBuild": "59a5bd76de232b9bdd05c369d53e3586178d789d",
+  "teamComponentBlob": "82982846da660d3bb9c8b9349589e14cc8b5de17",
+  "baselineGraphqlAndStoreDelta": "",
+  "trackedRuntimeAndUiCoverageDeltaVersusDesktopBuiltHead": "",
+  "workingTreeBefore": " M autobyteus-web/docs/agent_teams.md\n M tickets/in-progress/agent-team-members-after-description/api-e2e-coverage-investigation.md\n M tickets/in-progress/agent-team-members-after-description/api-e2e-test-case-ledger.md\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/in-progress/agent-team-members-after-description/delivery-01/\n?? tickets/in-progress/agent-team-members-after-description/delivery-revision-record.md\n?? tickets/in-progress/agent-team-members-after-description/docs-sync-report.md\n?? tickets/in-progress/agent-team-members-after-description/handoff-summary.md\n?? tickets/in-progress/agent-team-members-after-description/release-deployment-report.md\n",
+  "protectedHashes": {
+    "autobyteus-web/docs/agent_teams.md": "ef221dd1e7866906ab383b14e79c312bca8419dae357f576a63db2b7b651af3d",
+    "tickets/in-progress/agent-team-members-after-description/requirements-doc.md": "28e458cef9e601d8261d7759085f665c6ce18eb597d27e0a58111a90d03377fe",
+    "tickets/in-progress/agent-team-members-after-description/design-spec.md": "840406d571615047e4060dee96d1ef21a11977b80a2220f97e8c8d60aed05328",
+    "tickets/in-progress/agent-team-members-after-description/investigation-notes.md": "fb68f153153ad79bd6cd3407bf34e8fc1f932a53a24b5ac77d832fe6553921ec",
+    "tickets/in-progress/agent-team-members-after-description/solution-revision-record.md": "16413b134cb9ed4032e79dfba7c8d6070dac34d3d16186259cd12cf2e8e8d7f9",
+    "tickets/in-progress/agent-team-members-after-description/scope-separation-handoff.md": "2c9b901289faa8905b0aa093c4726792caa86f9ffd9d556da599bfa17c02c465",
+    "tickets/in-progress/agent-team-members-after-description/backlog-linkage-result.md": "66cd91c169ff6a3152a5e4f6c0f669da267f20a0702eafd0d75e6d0979a3d273",
+    "tickets/in-progress/agent-team-members-after-description/retention-transfer-result.md": "d7ff926ab09e5fee0dcde4b40753f4f7ce5e406a2face757c7276157070b5af7",
+    "tickets/in-progress/agent-team-members-after-description/docs-sync-report.md": "3a0bb25531edbdb3e1318813565be25a648fde184229bd295e53fb0c47018f4e",
+    "tickets/in-progress/agent-team-members-after-description/handoff-summary.md": "897221c44e5acf29403ab548cea3f49532c75e3515a648def8faec3d76621d11",
+    "tickets/in-progress/agent-team-members-after-description/release-deployment-report.md": "23dfae7cd3ed55664b105767827ebf804876d0be8b1cd1cf6818fd4a53f6ea21",
+    "tickets/in-progress/agent-team-members-after-description/delivery-revision-record.md": "571b19c645e54ea54de175f046305847853e87ed8ca18d80f4c46d0e03626ebc",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/licensing.log": "d6c76a1c6db96e22926b2c8c5ab4ec3fa673848af3fd6049e6bfbde91cd2859c",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/desktop-verification.mjs": "b000934c4b3748f1f126965e940b40ee2a917a443f02c2a05465ea3e18830211",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/build-provenance.json": "d768b9925fa678ab38432340e8964e87d2279a68ea2b7c4af847405da2646afd",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/integrated-tests.log": "c5a745b580dcd06698ee0addbd1d0c8daca0da82a0a510f817295c424a3ef314",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/isolated-start.json": "3646be32644a3d532a725aef99d50a9db50a0b4ba3fc3bee33fedc959bccdd9a",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/artifact-hygiene.log": "609d3bdc61f17aa8d5cb6c1d1e0f19752a1bce70d2e3a3784cefc1598af787b2",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/desktop-build.log": "bdd0afcaf66996b129d6fd522785662267f0c9638c9f130f21b849b08cd7c698"
+  },
+  "cacheFollowUp": "project_task_6b9ce371-7593-42d7-9d20-3c637512830a",
+  "processFollowUp": "project_task_4c7b3e0e-9edb-45da-914c-ce22c9a999c4",
+  "followUpsState": "TODO / not dispatched (confirmed Task Manager context; not queried or dispatched here)",
+  "retainedRef": "preserve/agent-definition-cache-fix-d8bac59860",
+  "retainedCommit": "d8bac598606001b702e300eeaeefe06c3caf0d3d",
+  "preservedPreparedWorkReview": "Unreviewed; not executed this round",
+  "patchSHA256": "cba06b15a3313885f6dea7bce49dc02edc8e161c8dbea02b129d9ffac8fc019d",
+  "patchPaths": [
+    "autobyteus-web/graphql/mutations/agentDefinitionMutations.ts",
+    "autobyteus-web/graphql/mutations/agentOrgDefinitionMutations.ts",
+    "autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts"
+  ],
+  "fullSpecSHA256": "c0ed8fa6a41cf029cd54c4b650bca2dc3c01c6b2ca7467e22bdada36bb562067",
+  "fullSpecEqualsRetainedRef": true,
+  "originalTwoCaseSpecRetrievableAt": "b6b514f2309ed5d498e1270bd4f43cba66a6bbef",
+  "originalSpecSHA256": "03e58fb8b5ef4cc1e659448e196977310686b2e2ae1fadb4fa8f2ea52aee2ebe",
+  "activeBaselineSpecAbsent": true,
+  "manifestCommittedBeforeExclusion": true,
+  "priorExpandedResult": "API-REV-002 Fail91.43% unchanged at b6b514f2309ed5d498e1270bd4f43cba66a6bbef",
+  "priorReportSHA256": "91d4e849d4cff0e134b34504452b85456fdcc4e7157ce5b18537ef3bec2a2bbc",
+  "priorFailures": "API-F001 / API-F002 Open; deferred, not resolved",
+  "historicalRawErrorsReviewed": [
+    {
+      "file": "e02-create-coordinator.json",
+      "event": {
+        "type": "error",
+        "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22loadIssue%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentDefinition%5C%22%2C%5Cn%20%20%5C%22id%5C%22%3A%20%5C%22api-coordinator%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22API%20Coordinator%5C%22%2C%5Cn%20%20%5C%22role%5C%22%3A%20%5C%22Disposable%20desktop%20verification%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Test-owned%20coordinator%20for%20inspecting%20Team%20definitions%20in%20the%20isolated%20Electron%20app.%5C%22%2C%5Cn%20%20%5C%22instructions%5C%22%3A%20%5C%22Definition%20inspection%20only.%20Do%20not%20execute%20model%20turns.%5C%22%2C%5Cn%20%20%5C%22category%5C%22%3A%20%5C%22API%20verification%5C%22%2C%5Cn%20%20%5C%22avatarUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22toolNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22inputProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22llmResponseProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolExecutionResultProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolInvocationPreprocessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22lifecycleProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillScope%5C%22%3A%20%5C%22CONFIGURED%5C%22%2C%5Cn%20%20%5C%22ownershipScope%5C%22%3A%20%5C%22SHARED%5C%22%2C%5Cn%20%20%5C%22ownerTeamId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerTeamName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerPackageId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerLocalApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22defaultLaunchConfig%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+      }
+    },
+    {
+      "file": "e02-create-other-members.json",
+      "event": {
+        "type": "error",
+        "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22loadIssue%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentDefinition%5C%22%2C%5Cn%20%20%5C%22id%5C%22%3A%20%5C%22api-architect%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22API%20Architect%5C%22%2C%5Cn%20%20%5C%22role%5C%22%3A%20%5C%22Disposable%20desktop%20verification%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Test-owned%20member%20for%20isolated%20desktop%20Team%20inspection.%5C%22%2C%5Cn%20%20%5C%22instructions%5C%22%3A%20%5C%22Definition%20inspection%20only.%20Do%20not%20execute%20model%20turns.%5C%22%2C%5Cn%20%20%5C%22category%5C%22%3A%20%5C%22API%20verification%5C%22%2C%5Cn%20%20%5C%22avatarUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22toolNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22inputProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22llmResponseProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolExecutionResultProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolInvocationPreprocessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22lifecycleProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillScope%5C%22%3A%20%5C%22CONFIGURED%5C%22%2C%5Cn%20%20%5C%22ownershipScope%5C%22%3A%20%5C%22SHARED%5C%22%2C%5Cn%20%20%5C%22ownerTeamId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerTeamName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerPackageId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerLocalApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22defaultLaunchConfig%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+      }
+    },
+    {
+      "file": "e02-create-other-members.json",
+      "event": {
+        "type": "error",
+        "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22loadIssue%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentDefinition%5C%22%2C%5Cn%20%20%5C%22id%5C%22%3A%20%5C%22api-implementer%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22API%20Implementer%5C%22%2C%5Cn%20%20%5C%22role%5C%22%3A%20%5C%22Disposable%20desktop%20verification%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Test-owned%20member%20for%20isolated%20desktop%20Team%20inspection.%5C%22%2C%5Cn%20%20%5C%22instructions%5C%22%3A%20%5C%22Definition%20inspection%20only.%20Do%20not%20execute%20model%20turns.%5C%22%2C%5Cn%20%20%5C%22category%5C%22%3A%20%5C%22API%20verification%5C%22%2C%5Cn%20%20%5C%22avatarUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22toolNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22inputProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22llmResponseProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolExecutionResultProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolInvocationPreprocessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22lifecycleProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillScope%5C%22%3A%20%5C%22CONFIGURED%5C%22%2C%5Cn%20%20%5C%22ownershipScope%5C%22%3A%20%5C%22SHARED%5C%22%2C%5Cn%20%20%5C%22ownerTeamId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerTeamName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerPackageId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerLocalApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22defaultLaunchConfig%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+      }
+    },
+    {
+      "file": "e02-create-other-members.json",
+      "event": {
+        "type": "error",
+        "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22loadIssue%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentDefinition%5C%22%2C%5Cn%20%20%5C%22id%5C%22%3A%20%5C%22api-reviewer%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22API%20Reviewer%5C%22%2C%5Cn%20%20%5C%22role%5C%22%3A%20%5C%22Disposable%20desktop%20verification%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Test-owned%20member%20for%20isolated%20desktop%20Team%20inspection.%5C%22%2C%5Cn%20%20%5C%22instructions%5C%22%3A%20%5C%22Definition%20inspection%20only.%20Do%20not%20execute%20model%20turns.%5C%22%2C%5Cn%20%20%5C%22category%5C%22%3A%20%5C%22API%20verification%5C%22%2C%5Cn%20%20%5C%22avatarUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22toolNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22inputProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22llmResponseProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolExecutionResultProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolInvocationPreprocessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22lifecycleProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillScope%5C%22%3A%20%5C%22CONFIGURED%5C%22%2C%5Cn%20%20%5C%22ownershipScope%5C%22%3A%20%5C%22SHARED%5C%22%2C%5Cn%20%20%5C%22ownerTeamId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerTeamName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerPackageId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerLocalApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22defaultLaunchConfig%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+      }
+    },
+    {
+      "file": "e02-create-other-members.json",
+      "event": {
+        "type": "error",
+        "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22loadIssue%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentDefinition%5C%22%2C%5Cn%20%20%5C%22id%5C%22%3A%20%5C%22api-validator%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22API%20Validator%5C%22%2C%5Cn%20%20%5C%22role%5C%22%3A%20%5C%22Disposable%20desktop%20verification%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Test-owned%20member%20for%20isolated%20desktop%20Team%20inspection.%5C%22%2C%5Cn%20%20%5C%22instructions%5C%22%3A%20%5C%22Definition%20inspection%20only.%20Do%20not%20execute%20model%20turns.%5C%22%2C%5Cn%20%20%5C%22category%5C%22%3A%20%5C%22API%20verification%5C%22%2C%5Cn%20%20%5C%22avatarUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22toolNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22inputProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22llmResponseProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolExecutionResultProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolInvocationPreprocessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22lifecycleProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillScope%5C%22%3A%20%5C%22CONFIGURED%5C%22%2C%5Cn%20%20%5C%22ownershipScope%5C%22%3A%20%5C%22SHARED%5C%22%2C%5Cn%20%20%5C%22ownerTeamId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerTeamName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerPackageId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerLocalApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22defaultLaunchConfig%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+      }
+    },
+    {
+      "file": "e02-create-other-members.json",
+      "event": {
+        "type": "error",
+        "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22loadIssue%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentDefinition%5C%22%2C%5Cn%20%20%5C%22id%5C%22%3A%20%5C%22api-delivery%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22API%20Delivery%5C%22%2C%5Cn%20%20%5C%22role%5C%22%3A%20%5C%22Disposable%20desktop%20verification%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Test-owned%20member%20for%20isolated%20desktop%20Team%20inspection.%5C%22%2C%5Cn%20%20%5C%22instructions%5C%22%3A%20%5C%22Definition%20inspection%20only.%20Do%20not%20execute%20model%20turns.%5C%22%2C%5Cn%20%20%5C%22category%5C%22%3A%20%5C%22API%20verification%5C%22%2C%5Cn%20%20%5C%22avatarUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22toolNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22inputProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22llmResponseProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolExecutionResultProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolInvocationPreprocessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22lifecycleProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillScope%5C%22%3A%20%5C%22CONFIGURED%5C%22%2C%5Cn%20%20%5C%22ownershipScope%5C%22%3A%20%5C%22SHARED%5C%22%2C%5Cn%20%20%5C%22ownerTeamId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerTeamName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerPackageId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerLocalApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22defaultLaunchConfig%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+      }
+    },
+    {
+      "file": "e04-org-roundtrip.json",
+      "event": {
+        "type": "error",
+        "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22loadIssues%22%2C%22%7B%5Cn%20%20%5C%22id%5C%22%3A%20%5C%22api-desktop-verification-org%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22API%20Desktop%20Verification%20Org%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Disposable%20Org%20for%20testing%20Team%20and%20Agent%20return%20context%20through%20actual%20Electron%20pages.%5C%22%2C%5Cn%20%20%5C%22instructions%5C%22%3A%20%5C%22%5C%22%2C%5Cn%20%20%5C%22category%5C%22%3A%20null%2C%5Cn%20%20%5C%22avatarUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22revision%5C%22%3A%20%5C%22ccddcc291250c320d9b6ed96b628eb2e0463e225c3ddabdab27afabf5bc50600%5C%22%2C%5Cn%20%20%5C%22handoffs%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22members%5C%22%3A%20%5B%5Cn%20%20%20%20%7B%5Cn%20%20%20%20%20%20%5C%22memberName%5C%22%3A%20%5C%22api_desktop_engineering_team%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22ref%5C%22%3A%20%5C%22api-desktop-engineering-team%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22refType%5C%22%3A%20%5C%22AGENT_TEAM%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22refScope%5C%22%3A%20%5C%22SHARED%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentOrgMember%5C%22%5Cn%20%20%20%20%7D%5Cn%20%20%5D%2C%5Cn%20%20%5C%22defaultLaunchConfig%5C%22%3A%20null%2C%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentOrgDefinition%5C%22%5Cn%7D%22%5D%7D"
+      }
+    }
+  ],
+  "historicalFailureSummary": {
+    "consoleErrors": [
+      {
+        "artifact": "e02-create-coordinator.json",
+        "code": 13,
+        "field": "loadIssue"
+      },
+      {
+        "artifact": "e02-create-other-members.json",
+        "code": 13,
+        "field": "loadIssue"
+      },
+      {
+        "artifact": "e02-create-other-members.json",
+        "code": 13,
+        "field": "loadIssue"
+      },
+      {
+        "artifact": "e02-create-other-members.json",
+        "code": 13,
+        "field": "loadIssue"
+      },
+      {
+        "artifact": "e02-create-other-members.json",
+        "code": 13,
+        "field": "loadIssue"
+      },
+      {
+        "artifact": "e02-create-other-members.json",
+        "code": 13,
+        "field": "loadIssue"
+      },
+      {
+        "artifact": "e04-org-roundtrip.json",
+        "code": 13,
+        "field": "loadIssues"
+      }
+    ],
+    "sourceBlobs": {
+      "autobyteus-web/stores/agentDefinitionStore.ts": {
+        "73f743211c8b86c704acb33f216154e42b7a67b8": "57142058049d10b48bd799fd893731aaa60492bf",
+        "HEAD": "57142058049d10b48bd799fd893731aaa60492bf"
+      },
+      "autobyteus-web/stores/agentOrgDefinitionStore.ts": {
+        "73f743211c8b86c704acb33f216154e42b7a67b8": "c5e96481390b304c4ae241f48529bc92cff6ad36",
+        "HEAD": "c5e96481390b304c4ae241f48529bc92cff6ad36"
+      },
+      "autobyteus-web/graphql/queries/agentDefinitionQueries.ts": {
+        "73f743211c8b86c704acb33f216154e42b7a67b8": "5aadaaf5a534d176400ae3ae708476a924eeec96",
+        "HEAD": "5aadaaf5a534d176400ae3ae708476a924eeec96"
+      },
+      "autobyteus-web/graphql/queries/agentOrgDefinitionQueries.ts": {
+        "73f743211c8b86c704acb33f216154e42b7a67b8": "486fb7b4988f3e61eca5b50db75791552e24359d",
+        "HEAD": "486fb7b4988f3e61eca5b50db75791552e24359d"
+      },
+      "autobyteus-web/graphql/mutations/agentDefinitionMutations.ts": {
+        "73f743211c8b86c704acb33f216154e42b7a67b8": "5a2b9a24d594c24ab65efe4fa57f9d55daff0519",
+        "HEAD": "5a2b9a24d594c24ab65efe4fa57f9d55daff0519"
+      },
+      "autobyteus-web/graphql/mutations/agentOrgDefinitionMutations.ts": {
+        "73f743211c8b86c704acb33f216154e42b7a67b8": "7129932ea7cb82bcddf6c84c4cd4322d08e19a28",
+        "HEAD": "7129932ea7cb82bcddf6c84c4cd4322d08e19a28"
+      }
+    },
+    "targetJourneySteps": [
+      "e02-real-detail-layout.json",
+      "e03-member-and-actions.json",
+      "e04-create-alternate.json",
+      "e04-org-return-journey.json"
+    ],
+    "targetJourneysErrorFree": true,
+    "finalRoundResult": "Fail",
+    "reason": "Observed baseline incomplete definition mutation cache writes; valid durable reproductions fail; not a layout or navigation failure."
+  },
+  "originalScreenshots": [
+    "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_7fd4b73e-075b-464c-b313-bbbd59f45797/context/ctx_bead01630695__ctx_d14cdea5a095_image.png",
+    "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_7fd4b73e-075b-464c-b313-bbbd59f45797/context/ctx_c24347a1bf54__ctx_bbd544eb13b5_image.png",
+    "/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_7fd4b73e-075b-464c-b313-bbbd59f45797/context/ctx_d4bde7a7b647__ctx_597efd71434c_image.png"
+  ],
+  "newBaselineTestsOrBuildOrDesktopRun": false
+}

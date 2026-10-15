@@ -1,0 +1,12 @@
+{
+  "recordedAt": "2026-10-13T04:53:21.652785+00:00",
+  "stagedRawLogCheckExit": 2,
+  "stagedRawLogNotices": [
+    "tickets/in-progress/agent-team-members-after-description/api-ui-03/focused.log:26: new blank line at EOF.",
+    "tickets/in-progress/agent-team-members-after-description/api-ui-03/related.log:386: new blank line at EOF."
+  ],
+  "stagedReportsCheckExit": 0,
+  "scopedProbeCommittedSourceCheck": "git diff --check passed before helper commit",
+  "rawLogBytesRetained": true,
+  "disposition": "terminal trailing blank lines in raw logs only; no source/report whitespace defect; artifact hygiene passes"
+}

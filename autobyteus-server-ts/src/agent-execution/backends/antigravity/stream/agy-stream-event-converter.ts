@@ -9,10 +9,14 @@ import type { AgyNativeImagePathResolution } from "./agy-step-output-reader.js";
 import type { AgyBackgroundToolStep } from "./agy-background-task-monitor.js";
 import type { AgyNativeToolArgumentLookup } from "./agy-native-tool-arguments-reader.js";
 import { buildAgyCompactionStatusPayload } from "./agy-compaction-status-payload.js";
+import { MIN_TPS_DURATION_MS, type ModelCallThroughput } from "../../../domain/model-call-throughput.js";
 
 export type AgyNativeImagePathResolver = (stepIndex: number) => AgyNativeImagePathResolution;
-/** `compactionDetection`: the run's AGY CLI is proven to stream compactions as checkpoint steps. */
-export type AgyStreamEventConverterOptions = Readonly<{ compactionDetection: boolean }>;
+/**
+ * `compactionDetection`: the run's AGY CLI is proven to stream compactions as checkpoint steps.
+ * `now`: the step-update receipt clock in milliseconds (default `Date.now`).
+ */
+export type AgyStreamEventConverterOptions = Readonly<{ compactionDetection: boolean; now?: () => number }>;
 
 const number = (value: unknown): number | null => typeof value === "number" && Number.isFinite(value) ? value : null;
 const denial = (error: string): boolean => /permission|denied|not allowed|approval/i.test(error);
@@ -35,6 +39,8 @@ export class AgyStreamEventConverter {
   /** Started tool steps without DONE/ERROR yet (stepIndex -> start payload); AGY never finishes a daemon step. */
   private readonly openTools = new Map<number, Record<string, unknown>>();
   private textSeen = false;
+  /** Receipt time of each agent_response step's first `text_delta` in this turn. */
+  private readonly firstTextDeltaAtMs = new Map<number, number>();
   /** Checkpoint steps already reported for this conversation; step indices never repeat across turns. */
   private readonly checkpoints = new Set<number>();
 
@@ -48,6 +54,7 @@ export class AgyStreamEventConverter {
     if (this.turnId) throw new Error("AGY_TURN_ALREADY_ACTIVE");
     this.turnId = turnId;
     this.textSteps.clear(); this.textOpen.clear(); this.toolStarts.clear(); this.toolTerminals.clear(); this.openTools.clear();
+    this.firstTextDeltaAtMs.clear();
     this.textSeen = false;
     return [this.event(AgentRunEventType.TURN_STARTED, { turn_id: turnId })];
   }
@@ -107,9 +114,11 @@ export class AgyStreamEventConverter {
   }
 
   private agentResponse(payload: Record<string, unknown>, turnId: string, stepIndex: number, state: string): AgentRunEvent[] {
+    const receivedAtMs = (this.options.now ?? Date.now)();
     const events: AgentRunEvent[] = [];
     const delta = agyString(payload.text_delta);
     const id = `agy-text-${turnId}-${stepIndex}`;
+    if (delta && !this.firstTextDeltaAtMs.has(stepIndex)) this.firstTextDeltaAtMs.set(stepIndex, receivedAtMs);
     if (delta) {
       if (!this.textSteps.has(stepIndex)) {
         this.textSteps.add(stepIndex); this.textOpen.add(stepIndex);
@@ -121,15 +130,35 @@ export class AgyStreamEventConverter {
     if (state === "DONE" && this.textOpen.delete(stepIndex))
       events.push(this.event(AgentRunEventType.SEGMENT_END, { id, turn_id: turnId }));
     const usage = state === "DONE" ? agyRecord(payload.usage) : null;
-    if (usage) events.push(this.callUsage(usage, turnId, stepIndex));
+    if (usage) events.push(this.callUsage(usage, turnId, stepIndex, this.callThroughput(payload, usage, stepIndex, receivedAtMs)));
     return events;
+  }
+
+  /**
+   * DEC-002: generation speed (first `text_delta` → DONE) when AGY reports no thinking, because
+   * thinking is not streamed as text; otherwise, or when that window is too short, AGY's own step
+   * `duration_seconds` (end to end), rounded to integer milliseconds.
+   */
+  private callThroughput(payload: Record<string, unknown>, usage: Record<string, unknown>, stepIndex: number,
+    doneAtMs: number): ModelCallThroughput | null {
+    const outputTokens = number(usage.output_tokens);
+    const firstDeltaAtMs = this.firstTextDeltaAtMs.get(stepIndex);
+    this.firstTextDeltaAtMs.delete(stepIndex);
+    if (outputTokens === null) return null;
+    if (usage.thinking_tokens === 0 && firstDeltaAtMs !== undefined && doneAtMs - firstDeltaAtMs >= MIN_TPS_DURATION_MS)
+      return { method: "generation", output_tokens: outputTokens, duration_ms: doneAtMs - firstDeltaAtMs };
+    const durationSeconds = number(payload.duration_seconds);
+    return durationSeconds !== null && durationSeconds > 0
+      ? { method: "end_to_end", output_tokens: outputTokens, duration_ms: Math.round(durationSeconds * 1000) }
+      : null;
   }
 
   /**
    * One model call per DONE `agent_response` step (REQ-005). AGY input excludes cache reads, so
    * the call's prompt is input + cache read; AGY reports no window or threshold (DEC-003).
    */
-  private callUsage(usage: Record<string, unknown>, turnId: string, stepIndex: number): AgentRunEvent {
+  private callUsage(usage: Record<string, unknown>, turnId: string, stepIndex: number,
+    outputThroughput: ModelCallThroughput | null): AgentRunEvent {
     const input = number(usage.input_tokens);
     const cacheRead = number(usage.cache_read_tokens);
     return this.event(AgentRunEventType.TOKEN_USAGE_UPDATED, {
@@ -153,6 +182,7 @@ export class AgyStreamEventConverter {
       effective_context_window_tokens: null,
       context_window_usage_percent: null,
       context_compaction_threshold_tokens: null,
+      output_throughput: outputThroughput,
       raw_usage_json: usage,
     });
   }

@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-13T16:42:38.686899+00:00",
+  "revision": "288f3a08fb220539dd782a39dbb523df07839f10",
+  "originalSourceMerge": "4c77cec80d965e0f96658cb2d2881fa6d6a39d96",
+  "fileCount": 151,
+  "byteVerified": true,
+  "fullManifest": "/home/autobyteus/workspace/.codex/delivery-records/sidebar-stop-red-default/latest-pre-cleanup-custody.json",
+  "root": "/home/autobyteus/workspace/.codex/delivery-records/sidebar-stop-red-default/package",
+  "scope": "Complete archived ticket plus changed source/test/docs, focused unchanged tests and applicable guides; concurrent TPS docs retained. Inspection custody, not runnable checkout."
+}

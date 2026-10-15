@@ -1,0 +1,144 @@
+{
+  "surface": "desktop",
+  "source": "delegated-launch-defaults-evidence.json",
+  "variants": [
+    {
+      "host": "Agent",
+      "control": "root",
+      "redEnabledGrayDisabledIncludingHover": true,
+      "exactOneNativeRequest": {
+        "agentRunId": "manager_5b33_e5565928f1114dc69f8dcd0a4b3d60f8"
+      },
+      "key": "Space",
+      "realSuccess": true,
+      "taskPreservedParentActiveAndResumed": false,
+      "inactiveHistory": true
+    },
+    {
+      "host": "Agent",
+      "control": "copy",
+      "redEnabledGrayDisabledIncludingHover": true,
+      "exactOneNativeRequest": {
+        "input": {
+          "rootKind": "AGENT",
+          "rootRunId": "manager_5b33_e5565928f1114dc69f8dcd0a4b3d60f8",
+          "agentRunId": "writer_8260_ed37ef7eba4e4e8fb5900f0594a476f4"
+        }
+      },
+      "key": "Enter",
+      "realSuccess": true,
+      "taskPreservedParentActiveAndResumed": true,
+      "inactiveHistory": false
+    },
+    {
+      "host": "Team",
+      "control": "root",
+      "redEnabledGrayDisabledIncludingHover": true,
+      "exactOneNativeRequest": {
+        "teamRunId": "home_team_37bf_36d29e9caffb4384876f24915777ba55"
+      },
+      "key": "Enter",
+      "realSuccess": true,
+      "taskPreservedParentActiveAndResumed": false,
+      "inactiveHistory": true
+    },
+    {
+      "host": "Team",
+      "control": "copy",
+      "redEnabledGrayDisabledIncludingHover": true,
+      "exactOneNativeRequest": {
+        "input": {
+          "rootKind": "AGENT_TEAM",
+          "rootRunId": "home_team_37bf_36d29e9caffb4384876f24915777ba55",
+          "teamRunId": "pair_team_1dbf_d9e355fee2264275b18a862ee5c89df9"
+        }
+      },
+      "key": "Space",
+      "realSuccess": true,
+      "taskPreservedParentActiveAndResumed": true,
+      "inactiveHistory": false
+    },
+    {
+      "host": "Org",
+      "control": "root",
+      "redEnabledGrayDisabledIncludingHover": true,
+      "exactOneNativeRequest": {
+        "agentOrgRunId": "hostorg_org_3b59_f0a681db7b6a43c9a8baf3a3b573cb9e"
+      },
+      "key": "Space",
+      "realSuccess": true,
+      "taskPreservedParentActiveAndResumed": false,
+      "inactiveHistory": true
+    },
+    {
+      "host": "Org",
+      "control": "copy",
+      "redEnabledGrayDisabledIncludingHover": true,
+      "exactOneNativeRequest": {
+        "input": {
+          "rootKind": "AGENT_ORG",
+          "rootRunId": "hostorg_org_3b59_f0a681db7b6a43c9a8baf3a3b573cb9e",
+          "agentRunId": "writer_8260_60a16f84ce9a487f84ee7f1b692ea5fb"
+        }
+      },
+      "key": "Enter",
+      "realSuccess": true,
+      "taskPreservedParentActiveAndResumed": true,
+      "inactiveHistory": false
+    }
+  ],
+  "settings": {
+    "noLaunchAndSameUrl": {
+      "runId": "manager_5b33_1ae02030cc994550a8280fe760287b9b",
+      "copyId": "writer_8260_9a547eff3bfd494ab5c8ba8f58ec310f",
+      "neighborId": "writer_8260_32cce39253e34fb5a497b221385b15d3",
+      "first": {
+        "summary": "Gemini test \u00b7 Antigravity \u00b7 Auto-approve",
+        "editor": "Gemini test\nAntigravity",
+        "expanded": "true",
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=manager_5b33_1ae02030cc994550a8280fe760287b9b"
+      },
+      "repeat": {
+        "summary": "Alt test model \u00b7 Antigravity \u00b7 Auto-approve",
+        "editor": "Alt test model\nAntigravity",
+        "expanded": "true",
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=manager_5b33_1ae02030cc994550a8280fe760287b9b"
+      }
+    },
+    "committedReadFailure": "Settings were saved, but could not be refreshed. Refresh before making more changes.\nRefresh",
+    "readOnlyRecovered": {
+      "summary": "Gemini test \u00b7 Antigravity \u00b7 Auto-approve",
+      "editor": "Gemini test\nAntigravity",
+      "expanded": "true",
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=manager_5b33_61c734656122468c91056c01edb299e6"
+    },
+    "sameModelConfiguration": [
+      {
+        "effort": "low",
+        "displayed": "Low",
+        "selection": {
+          "llmModelIdentifier": "grok-4.7",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "selectedAt": "2026-10-13T17:22:50.251Z"
+        },
+        "summary": "Grok 4.7 \u00b7 Grok Build \u00b7 Auto-approve"
+      },
+      {
+        "effort": "xhigh",
+        "displayed": "Xhigh",
+        "selection": {
+          "llmModelIdentifier": "grok-4.7",
+          "llmConfig": {
+            "reasoning_effort": "xhigh"
+          },
+          "selectedAt": "2026-10-13T17:22:50.827Z"
+        },
+        "summary": "Grok 4.7 \u00b7 Grok Build \u00b7 Auto-approve"
+      }
+    ]
+  },
+  "orgHistoryUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-3b59&orgRunId=hostorg_org_3b59_f0a681db7b6a43c9a8baf3a3b573cb9e&mode=history&memberAddress=/manager",
+  "result": "Pass"
+}

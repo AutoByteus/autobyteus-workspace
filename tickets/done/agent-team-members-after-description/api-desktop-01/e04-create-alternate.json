@@ -1,0 +1,64 @@
+{
+  "startedAt": "2026-10-13T04:02:54.006Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [
+    {
+      "name": "CreateAgentTeamDefinition",
+      "query": "createAgentTeamDefinition(input: $input) {"
+    },
+    {
+      "name": "GetAgentDefinitions",
+      "query": "agentDefinitions {"
+    },
+    {
+      "name": "GetAgentTeamDefinitions",
+      "query": "agentTeamDefinitions {"
+    },
+    {
+      "name": "GetAgentOrgDefinitions",
+      "query": "agentOrgDefinitions {"
+    },
+    {
+      "name": "GetDefinitionProblems",
+      "query": "definitionProblems(kind: $kind) {"
+    },
+    {
+      "name": "GetDefinitionProblems",
+      "query": "definitionProblems(kind: $kind) {"
+    },
+    {
+      "name": "GetDefinitionProblems",
+      "query": "definitionProblems(kind: $kind) {"
+    }
+  ],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-create"
+    }
+  ],
+  "details": {
+    "alternatePass": true,
+    "orgCatalog": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nAgent Orgs\nSearch Agent Orgs\nReload\nCreate Agent Org\n\nNo organizations found\n\nNo organizations matched “”",
+    "buttons": [
+      "Chat",
+      "",
+      "",
+      "Agents",
+      "Agent Teams",
+      "Agent Orgs",
+      "Projects",
+      "Skills",
+      "Memory",
+      "Nodes",
+      "",
+      "Temp Workspace",
+      "Settings",
+      " Reload",
+      "Create Agent Org"
+    ]
+  },
+  "result": "Pass",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-list",
+  "finishedAt": "2026-10-13T04:02:55.640Z"
+}

@@ -1,0 +1,132 @@
+Licensing is consistent.
+Tracked files scanned: 6555
+Repository artifact hygiene check passed.
+Tracked files scanned: 62873
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:159: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:162: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:209: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:212: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:259: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:262: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:280: trailing whitespace.
++[41m[1m FAIL [22m[49m tests/unit/startup/migrations-prisma-engine-env.test.ts[2m > [22mCLI-owned Prisma migration engines[2m > [22mdeclines automatic selection for invalid native revision
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:283: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:286: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:307: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:310: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:331: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:334: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:355: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:358: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:379: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:382: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:403: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:406: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:427: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:430: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:451: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:454: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:475: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:478: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:499: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:502: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:523: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:526: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:595: trailing whitespace.
++[32m- Expected:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:603: trailing whitespace.
++[31m+ Received:[39m
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/base-regression.log:621: new blank line at EOF.
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/focused-units.log:118: trailing whitespace.
++prisma:error
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/focused-units.log:123: trailing whitespace.
++  54
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/focused-units.log:141: trailing whitespace.
++prisma:error
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/focused-units.log:146: trailing whitespace.
++  54
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/focused-units.log:449: new blank line at EOF.
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/graph-regression.log:142: trailing whitespace.
++- Expected:
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/graph-regression.log:145: trailing whitespace.
+++ Received:
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/graph-regression.log:159: trailing whitespace.
++    158|
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/graph-regression.log:166: trailing whitespace.
++- Expected:
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/graph-regression.log:169: trailing whitespace.
+++ Received:
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/graph-regression.log:183: trailing whitespace.
++    158|
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/graph-regression.log:190: trailing whitespace.
++- Expected:
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/graph-regression.log:193: trailing whitespace.
+++ Received:
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/graph-regression.log:207: trailing whitespace.
++    169|
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/graph-regression.log:216: new blank line at EOF.
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/native-local.log:95: trailing whitespace.
++
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/prebuild-complete-deps.log:24: new blank line at EOF.
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units-complete-deps.log:5443: trailing whitespace.
++prisma:error
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units-complete-deps.log:5448: trailing whitespace.
++  54
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units-complete-deps.log:5466: trailing whitespace.
++prisma:error
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units-complete-deps.log:5471: trailing whitespace.
++  54
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units-complete-deps.log:6445: trailing whitespace.
++stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units-complete-deps.log:6750: trailing whitespace.
++FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-MNHTWW' with ignore strategies:
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units-complete-deps.log:6759: trailing whitespace.
++FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-dfn4tD' with ignore strategies:
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units-complete-deps.log:10711: new blank line at EOF.
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units.log:2367: trailing whitespace.
++stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units.log:3347: trailing whitespace.
++prisma:error
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units.log:3352: trailing whitespace.
++  54
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units.log:3370: trailing whitespace.
++prisma:error
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units.log:3375: trailing whitespace.
++  54
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units.log:9603: trailing whitespace.
++FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-lLOvTS' with ignore strategies:
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/server-units.log:9612: trailing whitespace.
++FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-96RnTW' with ignore strategies:
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/setup-corrected-units.log:113: new blank line at EOF.
+tickets/in-progress/fix-prisma-engine-discovery/implementation-evidence/ir-001/typecheck.log:20: new blank line at EOF.
+licensing_exit=0 hygiene_exit=0 staged_whitespace_exit=2

@@ -27,7 +27,7 @@ export declare const collaboratorMentionsDtoSchema: z.ZodArray<z.ZodObject<{
 }, z.core.$strict>>;
 /**
  * Where a mentioned definition is relative to the run: `not_in_run` (delegate to its catalog
- * address), `in_run` (a configured member or a collaborator, also messageable directly), or
+ * address), `in_run` (a configured member of the run, messageable directly), or
  * `run_agent` (the standalone Agent run's own agent, reached only with `send_message_to`).
  */
 export type MentionedCollaboratorPresence = "not_in_run" | "in_run" | "run_agent";
@@ -55,7 +55,8 @@ export type ParsedCollaboratorMentionNote = Readonly<{
 export declare const composeCollaboratorMentionNote: (text: string, collaborators: readonly MentionedCollaborator[]) => string;
 /**
  * Recognizes only a note at the very end of the content, in exactly the composed form: its
- * guidance line is the one its entries compose to, or a guidance saved by an earlier release.
+ * guidance line is the one its entries compose to, the one the previous release
+ * composed, or a guidance saved by an earlier release.
  */
 export declare const parseCollaboratorMentionNote: (content: string) => ParsedCollaboratorMentionNote | null;
 /**

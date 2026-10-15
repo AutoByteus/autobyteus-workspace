@@ -15,15 +15,8 @@ import { FlatAgentExecutionContext, FlatTeamExecutionContext, type ConfiguredMem
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { FlatTeamExecutionCallbacks } from "./flat-team-execution-callbacks.js";
 
-/** The collaborator hosting of one TeamRun's manager (used by a Team root for its root TeamRun). */
-export type FlatTeamCollaboratorHost = Pick<
-  FlatTeamExecutionManager,
-  "prepareCollaboratorAgent" | "prepareCollaboratorTeam" | "requireCollaboratorTeam"
->;
-
 export type PreparedFlatTeamExecution = Readonly<{
   teamRun: TeamRun;
-  collaboratorHost: FlatTeamCollaboratorHost;
   commitAfterDurability(): void;
   abort(): Promise<void>;
 }>;
@@ -147,7 +140,7 @@ export function beginFlatTeamPreparation(input: {
           if (cancelled) throw new Error("Flat Team preparation cancelled.");
           let committed = false;
           return Object.freeze({
-            teamRun: teamRun!, collaboratorHost: manager!,
+            teamRun: teamRun!,
             commitAfterDurability: () => {
               if (cancelled || committed) throw new Error(`Flat Team '${teamRunId}' is not publishable.`);
               // From here on, release goes through the published TeamRun (members activated by first input).

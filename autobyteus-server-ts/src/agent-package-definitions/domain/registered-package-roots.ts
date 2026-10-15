@@ -27,7 +27,7 @@ export const listRegisteredPackageRoots = (config: PackageRootConfig): Registere
     if (roots.some((root) => root.rootPath === rootPath)) continue;
     roots.push(Object.freeze({
       rootPath,
-      sourceClass: "external_read_only",
+      sourceClass: "registered_package",
       kindDirs: Object.freeze({
         agents: path.join(rootPath, "agents"),
         "agent-teams": path.join(rootPath, "agent-teams"),

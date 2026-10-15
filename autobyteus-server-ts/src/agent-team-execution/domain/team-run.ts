@@ -84,6 +84,8 @@ export class TeamRun {
     this.backend.discardReleasedDirectTaskExecution(reference);
   }
   hasLiveDirectTaskExecution(reference: TaskExecutionReference) { return this.backend.hasLiveDirectTaskExecution(reference); }
+  shutDownDirectTaskExecutionForUser(reference: TaskExecutionReference) { return this.backend.shutDownDirectTaskExecutionForUser(reference); }
+  getRetainedAgentControl(agentRunId: string) { return this.backend.getRetainedAgentControl(agentRunId); }
   tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference) {
     return this.backend.tryShutDownDirectTaskExecutionIfQuiet(reference);
   }

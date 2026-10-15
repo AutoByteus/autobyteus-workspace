@@ -31,6 +31,7 @@ import type { ProviderNativeAssistantTurn } from '../../llm/provider-native/prov
 import type { LlmResponseFinish } from '../../llm/utils/llm-response-finish.js';
 import { resolveRequestMaxOutputTokens } from '../../llm/utils/max-output-tokens.js';
 import { OUTPUT_LIMIT_DISCARDED_TOOL_CALL_ERROR } from './output-limit-recovery.js';
+import { LlmCallTiming } from './llm-call-throughput.js';
 
 export type LlmPhaseOutcome =
   | { kind: 'compaction_blocked' }
@@ -200,6 +201,7 @@ export class LlmPhase {
     let completeResponse: CompleteResponse;
     let finish: LlmResponseFinish | null = null;
     let truncatedToolNames: string[] | null = null;
+    const callTiming = new LlmCallTiming();
     const notifyTokenUsage = (): void => {
       if (!tokenUsage) return;
       const latestPromptTokens = resolveLatestPromptTokens(tokenUsage);
@@ -215,13 +217,15 @@ export class LlmPhase {
         effective_context_window_tokens: requestCapacity?.effectiveContextCapacity ?? null,
         context_window_usage_percent: percentOf(latestPromptTokens, requestCapacity?.effectiveContextCapacity),
         // The prompt size at which this agent's automatic compaction triggers; null when it is off.
-        context_compaction_threshold_tokens: compactionTokenBudget?.triggerThresholdTokens ?? null
+        context_compaction_threshold_tokens: compactionTokenBudget?.triggerThresholdTokens ?? null,
+        output_throughput: callTiming.throughput(tokenUsage)
       });
     };
 
     try {
       turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
       turn.executionScope.throwIfAborted({ kind: 'llm_stream_start' });
+      callTiming.start();
       const stream = llmInstance.streamMessages(
         request.outboundMessages,
         conversationRequestKwargs(agentId, request.tools),
@@ -233,6 +237,7 @@ export class LlmPhase {
         stream as AsyncIterable<ChunkResponse>
       )) {
         turn.executionScope.throwIfAborted({ kind: 'llm_stream_chunk' });
+        callTiming.observeChunk(chunkResponse);
         if (chunkResponse.content) completeResponseText += chunkResponse.content;
         if (chunkResponse.reasoning) completeReasoningText += chunkResponse.reasoning;
         if (chunkResponse.providerNativeAssistantTurn) providerNativeAssistantTurn = chunkResponse.providerNativeAssistantTurn;

@@ -76,6 +76,8 @@ export interface TokenUsageUpdatedPayload {
   context_compaction_threshold_tokens?: number | null;
   /** True when the observation reports exactly one provider model call. */
   reports_model_call?: boolean;
+  /** This model call's TPS; null when the call has none. */
+  output_throughput?: TokenUsageOutputThroughput | null;
   run_summary_after_event: TokenUsageRunSummaryDto | null;
   quality_flags?: string[];
 }
@@ -134,3 +136,18 @@ export interface TokenUsageRunSummary {
 
 type TeamTokenUsageMessage = Extract<TeamStreamServerMessage, { type: 'TOKEN_USAGE_UPDATED' }>;
 export type TeamTokenUsageDetails = TeamTokenUsageMessage['payload'];
+
+/** One model call's TPS as its runtime measured it (server `output_throughput`). */
+export interface TokenUsageOutputThroughput {
+  method: 'generation' | 'end_to_end';
+  output_tokens: number;
+  duration_ms: number;
+}
+
+/** The newest TPS received for one exact AgentRun, with the model that call reported. */
+export interface TokenUsageTps {
+  method: TokenUsageOutputThroughput['method'];
+  outputTokens: number;
+  durationMs: number;
+  model: string | null;
+}

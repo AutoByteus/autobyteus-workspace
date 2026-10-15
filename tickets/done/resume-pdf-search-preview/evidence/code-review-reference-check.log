@@ -1,0 +1,108 @@
+CRR-001 read-only reference / source checks, 2026-10-12. Governing contract: shared Core Principle 7.
+
+$ git grep -n -E toShallowJson|getAllFilePaths -- :!tickets :!autobyteus-server-ts/tickets :!autobyteus-web/tickets :!docs
+Exit 1
+
+$ git grep -n toJson -- autobyteus-server-ts/src
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool-native-schema-projector.ts:15:      canonicalizeApplicationAgentToolSchema(projected.toJsonSchema()),
+autobyteus-server-ts/src/agent-tools/browser/browser-tool-serialization.ts:1:import { toJsonString } from "../json-utils.js";
+autobyteus-server-ts/src/agent-tools/browser/browser-tool-serialization.ts:26:  toJsonString(value, 2);
+autobyteus-server-ts/src/agent-tools/json-utils.ts:10:export function toJsonString(
+autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-schema-mapper.ts:14:      ? schemaSource.toJsonSchema()
+autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-schema-mapper.ts:32:  typeof (value as ParameterSchema).toJsonSchema === "function";
+autobyteus-server-ts/src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts:7:import { toJsonString } from "../../json-utils.js";
+autobyteus-server-ts/src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts:50:            return createAgentToolsMcpSuccessResult(toJsonString({ success: true, artifacts }));
+autobyteus-server-ts/src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts:53:              toJsonString(buildErrorPayload(error)),
+autobyteus-server-ts/src/agent-tools/media/media-tool-serialization.ts:1:import { toJsonString } from "../json-utils.js";
+autobyteus-server-ts/src/agent-tools/media/media-tool-serialization.ts:3:export const toMediaJsonString = (value: unknown): string => toJsonString(value, 2);
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-serialization.ts:1:import { toJsonString } from "../json-utils.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-serialization.ts:43:  toJsonString(value, 2);
+autobyteus-server-ts/src/api/graphql/converters/tool-definition-converter.ts:72:      jsonSchema: coreParam.toJsonSchemaProperty(),
+autobyteus-server-ts/src/api/graphql/types/llm-provider-model-catalog.ts:128:  configSchema: model.parameterSchema?.toJsonSchemaDict?.() ?? null,
+autobyteus-server-ts/src/api/graphql/types/skills.ts:191:      return tree.toJson();
+autobyteus-server-ts/src/api/websocket/agent.ts:72:              ).toJson(),
+autobyteus-server-ts/src/api/websocket/agent.ts:133:              ).toJson(),
+autobyteus-server-ts/src/application-backend-api-gateway/notifications/application-backend-notification-hub.ts:13:const toJson = (payload: ApplicationBackendNotificationHubMessage): string => JSON.stringify(payload);
+autobyteus-server-ts/src/application-backend-api-gateway/notifications/application-backend-notification-hub.ts:28:    connection.send(toJson({ type: "connected", applicationId }));
+autobyteus-server-ts/src/application-backend-api-gateway/notifications/application-backend-notification-hub.ts:50:    const payload = toJson({ type: "notification", notification });
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:173:  toJson(): string | null {
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:174:    return this.rootNode ? this.rootNode.toJson() : null;
+autobyteus-server-ts/src/file-explorer/file-system-changes.ts:248:  toJson(): string {
+autobyteus-server-ts/src/file-explorer/file-system-changes.ts:258:export const serializeChangeEvent = (event: FileSystemChangeEvent): string => event.toJson();
+autobyteus-server-ts/src/file-explorer/tree-node.ts:166:  toJson(): string {
+autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts:81:      (event) => this.handleChangeEvent(event.toJson()),
+autobyteus-server-ts/src/mcp-gateway/mcp-gateway-tool-catalog.ts:81:  const schema = schemaSource ? schemaSource.toJsonSchema() : {};
+autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-model-normalizer.ts:67:  return new ParameterSchema(parameters).toJsonSchemaDict();
+autobyteus-server-ts/src/runtime-management/grok/grok-build-launch-profile.ts:43:  })]).toJsonSchemaDict();
+autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:139:      connection.send(errorMsg.toJson());
+autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:483:    connection.send(errorMsg.toJson());
+autobyteus-server-ts/src/services/agent-streaming/models.ts:55:  toJson(): string {
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:86:      connection.send(connectedMsg.toJson());
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:103:        connection.send(errorMsg.toJson());
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:126:        connection.send(errorMsg.toJson());
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:149:          connection.send(msg.toJson());
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:180:        return createPongMessage().toJson();
+autobyteus-server-ts/src/services/file-explorer-streaming/models.ts:23:  toJson(): string {
+Exit 0
+
+$ git grep -n toJson -- autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts
+autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts:103:        toJson?: () => string | null;
+autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts:110:      treeJson: fileExplorer?.toJson?.() ?? null,
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js:45:        const jsonValue = explorer.toJson();
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts:62:    const jsonValue = explorer.toJson();
+Exit 0
+
+$ git grep -n -E file-explorer/file-explorer|WorkspaceFileExplorer -- autobyteus-server-ts/src
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:39:export class WorkspaceFileExplorer {
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:381:        explorer: WorkspaceFileExplorer,
+autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts:3:import type { WorkspaceFileExplorer } from "../file-explorer.js";
+autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts:54:  private fileExplorer: WorkspaceFileExplorer;
+autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts:70:    fileExplorer: WorkspaceFileExplorer,
+autobyteus-server-ts/src/file-explorer/watcher/watchdog-handler.ts:2:import type { WorkspaceFileExplorer } from "../file-explorer.js";
+autobyteus-server-ts/src/file-explorer/watcher/watchdog-handler.ts:18:  private fileExplorer: WorkspaceFileExplorer;
+autobyteus-server-ts/src/file-explorer/watcher/watchdog-handler.ts:23:    fileExplorer: WorkspaceFileExplorer,
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session-manager.ts:2:import type { WatcherLease } from "../../file-explorer/file-explorer.js";
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session-manager.ts:3:import type { WorkspaceFileExplorerLease } from "../../workspaces/filesystem-workspace.js";
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session-manager.ts:15:  fileExplorerLease?: WorkspaceFileExplorerLease | null,
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session-manager.ts:32:    fileExplorerLease: WorkspaceFileExplorerLease | null = null,
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session.ts:2:import type { WatcherLease } from "../../file-explorer/file-explorer.js";
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session.ts:3:import type { WorkspaceFileExplorerLease } from "../../workspaces/filesystem-workspace.js";
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session.ts:20:  private fileExplorerLease: WorkspaceFileExplorerLease | null;
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session.ts:28:    fileExplorerLease: WorkspaceFileExplorerLease | null = null,
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:2:import type { WatcherLease, WorkspaceFileExplorer } from "../../file-explorer/file-explorer.js";
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:3:import type { WorkspaceFileExplorerLease } from "../../workspaces/filesystem-workspace.js";
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:52:    let fileExplorerLease: WorkspaceFileExplorerLease;
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:70:    let pendingFileExplorerLease: WorkspaceFileExplorerLease | null = fileExplorerLease;
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:113:    fileExplorer: WorkspaceFileExplorer,
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:115:    fileExplorerLease: WorkspaceFileExplorerLease,
+autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:3:  WorkspaceFileExplorer,
+autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:4:} from '../file-explorer/file-explorer.js';
+autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:19:export type WorkspaceFileExplorerConsumerReason = string;
+autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:21:export type WorkspaceFileExplorerLease = {
+autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:22:  readonly fileExplorer: WorkspaceFileExplorer;
+autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:31:  private fileExplorer: WorkspaceFileExplorer | null = null;
+autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:90:    reason: WorkspaceFileExplorerConsumerReason,
+autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:91:  ): Promise<WorkspaceFileExplorerLease> {
+autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:93:      this.fileExplorer = new WorkspaceFileExplorer(this.rootPath);
+autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:94:      logger.info(`Created WorkspaceFileExplorer for ${this.workspaceId} (${reason}).`);
+Exit 0
+
+$ git grep -n -E toJson|WorkspaceFileExplorer|file-explorer -- package.json pnpm-workspace.yaml autobyteus-server-ts/package.json autobyteus-server-ts/scripts autobyteus-server-ts/vitest.config.ts
+autobyteus-server-ts/scripts/integration-test-prerequisites.mjs:22:  path.join(serverRoot, "dist", "file-explorer", "watcher", "runtime", "watcher-runtime-process.js"),
+Exit 0
+
+$ git diff --numstat e4ddf9dbf HEAD -- autobyteus-server-ts/src/file-explorer/file-explorer.ts
+7	34	autobyteus-server-ts/src/file-explorer/file-explorer.ts
+Exit 0
+
+$ git diff --check e4ddf9dbf HEAD
+Exit 0
+
+Explorer.toJson remaining direct calls are unit tests and an E2E diagnostics accessor.
+SkillResolver uses TreeNode.toJson, NOT WorkspaceFileExplorer.toJson: SkillService.getSkillFileTree returns Promise<TreeNode>, constructed by DirectoryTraversal.buildTree (skill-service.ts:385-393).
+All production explorer importers inspected: filesystem workspace, file-explorer streaming and watcher types. No serialization call or dynamic/reflection/configuration entrypoint for explorer.toJson found; private package index exports hosts/server only.
+Explorer non-empty lines=406
+Independent exact TS->JS parity: autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js (not executed)
+Independent exact TS->JS parity: autobyteus-server-ts/tests/integration/file-explorer/file-explorer.integration.test.js (not executed)
+Independent exact TS->JS parity: autobyteus-server-ts/tests/integration/file-explorer/file-search.integration.test.js (not executed)
+Independent exact TS->JS parity: autobyteus-server-ts/tests/unit/api/graphql/converters/workspace-converter.test.js (not executed)

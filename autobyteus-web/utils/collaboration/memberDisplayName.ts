@@ -1,5 +1,5 @@
 /**
- * One display-name rule for members, collaborators and senders in every root (F-03): the last
+ * One display-name rule for members, delegated copies and senders in every root (F-03): the last
  * address segment with `_` and `-` read as spaces (`/product_team/product_prototyper` →
  * `product prototyper`). Rows and the Team/Org tab use it as is; "From <Sender>:" uses the
  * title-case form.

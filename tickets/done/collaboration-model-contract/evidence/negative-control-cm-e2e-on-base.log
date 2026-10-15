@@ -1,0 +1,477 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract-api-base/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract-api-base/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:87045) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract-api-base/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract-api-base/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract-api-base/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract-api-base/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: cmc-manager-904617
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: cmc-mate-904617
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: cmc-sibling-904617
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: cmc-outsider-904617
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: cmc-stranger-904617
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: cmc-team-904617
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: cmc-mounted-904617
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy
+[22m[39mCreated and registered workspace ID: agent_ws_ef40f4a168ac17c4a18785c1117f7cf81ca0d4199dbf52eee77b9e30e847895c
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy
+[22m[39mReusing registered workspace ID: agent_ws_ef40f4a168ac17c4a18785c1117f7cf81ca0d4199dbf52eee77b9e30e847895c
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy
+[22m[39mAGY compaction detection off for run cmc_manager_904617_d70ea6bff63e47828476fab69b4bd1cf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy
+[22m[39mAgent websocket attached for run cmc_manager_904617_d70ea6bff63e47828476fab69b4bd1cf
+Created agent session 170c62ef-33da-4d80-8883-3e139b2884a6 for run cmc_manager_904617_d70ea6bff63e47828476fab69b4bd1cf
+Agent WebSocket connected: session=170c62ef-33da-4d80-8883-3e139b2884a6, run=cmc_manager_904617_d70ea6bff63e47828476fab69b4bd1cf
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory/agents/cmc_manager_904617_d70ea6bff63e47828476fab69b4bd1cf/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy
+[22m[39mReusing registered workspace ID: agent_ws_ef40f4a168ac17c4a18785c1117f7cf81ca0d4199dbf52eee77b9e30e847895c
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy
+[22m[39mAGY compaction detection off for run cmc_outsider_904617_98670a0ad15449159f1079f69671bef5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mReusing registered workspace ID: agent_ws_ef40f4a168ac17c4a18785c1117f7cf81ca0d4199dbf52eee77b9e30e847895c
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mAgent team websocket attached for team run cmc_team_904617_eee0c618479c45198ee505410c065424
+Created agent session 3a61967a-bb23-49dd-9ee6-eeeeb408d53d for run cmc_team_904617_eee0c618479c45198ee505410c065424
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mAgent Team WebSocket connected: session=3a61967a-bb23-49dd-9ee6-eeeeb408d53d, run=cmc_team_904617_eee0c618479c45198ee505410c065424
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory/agent_teams/cmc_team_904617_eee0c618479c45198ee505410c065424/cmc_manager_904617_10b71c38ce94429e8d5dc782ece083a0/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mReusing registered workspace ID: agent_ws_ef40f4a168ac17c4a18785c1117f7cf81ca0d4199dbf52eee77b9e30e847895c
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory/agent_teams/cmc_team_904617_eee0c618479c45198ee505410c065424/cmc_manager_904617_10b71c38ce94429e8d5dc782ece083a0/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory/agent_teams/cmc_team_904617_eee0c618479c45198ee505410c065424/cmc_manager_904617_10b71c38ce94429e8d5dc782ece083a0/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mAGY compaction detection off for run cmc_manager_904617_10b71c38ce94429e8d5dc782ece083a0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory/agent_teams/cmc_team_904617_eee0c618479c45198ee505410c065424/cmc_manager_904617_10b71c38ce94429e8d5dc782ece083a0/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mReusing registered workspace ID: agent_ws_ef40f4a168ac17c4a18785c1117f7cf81ca0d4199dbf52eee77b9e30e847895c
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[22m[39mAGY compaction detection off for run cmc_mate_904617_720b28d7f4b94a1a87a1515ea35aaa84: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mReusing registered workspace ID: agent_ws_ef40f4a168ac17c4a18785c1117f7cf81ca0d4199dbf52eee77b9e30e847895c
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory/agent_orgs/cmc_org_904617_4a210a3b79cd40579fa34160ed59ff67/cmc_manager_904617_c304b5bb326c4aa2a81838e5659fd14f/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mReusing registered workspace ID: agent_ws_ef40f4a168ac17c4a18785c1117f7cf81ca0d4199dbf52eee77b9e30e847895c
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory/agent_orgs/cmc_org_904617_4a210a3b79cd40579fa34160ed59ff67/cmc_manager_904617_c304b5bb326c4aa2a81838e5659fd14f/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory/agent_orgs/cmc_org_904617_4a210a3b79cd40579fa34160ed59ff67/cmc_manager_904617_c304b5bb326c4aa2a81838e5659fd14f/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mAGY compaction detection off for run cmc_manager_904617_c304b5bb326c4aa2a81838e5659fd14f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory/agent_orgs/cmc_org_904617_4a210a3b79cd40579fa34160ed59ff67/cmc_manager_904617_c304b5bb326c4aa2a81838e5659fd14f/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mReusing registered workspace ID: agent_ws_ef40f4a168ac17c4a18785c1117f7cf81ca0d4199dbf52eee77b9e30e847895c
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mAGY compaction detection off for run cmc_sibling_904617_26bb697c34784e4bbc854fd2ed3135a2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mReusing registered workspace ID: agent_ws_ef40f4a168ac17c4a18785c1117f7cf81ca0d4199dbf52eee77b9e30e847895c
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mAGY compaction detection off for run cmc_mate_904617_609ccea6b834421fb6019238eef45fe1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory/agent_orgs/cmc_org_904617_4a210a3b79cd40579fa34160ed59ff67/cmc_mounted_904617_39a62c09db744715b68766eaa1cf92bd/cmc_mate_904617_e42fdc730fcc44ab83c8fc4783685fc6/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mReusing registered workspace ID: agent_ws_ef40f4a168ac17c4a18785c1117f7cf81ca0d4199dbf52eee77b9e30e847895c
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory/agent_orgs/cmc_org_904617_4a210a3b79cd40579fa34160ed59ff67/cmc_mounted_904617_39a62c09db744715b68766eaa1cf92bd/cmc_mate_904617_e42fdc730fcc44ab83c8fc4783685fc6/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory/agent_orgs/cmc_org_904617_4a210a3b79cd40579fa34160ed59ff67/cmc_mounted_904617_39a62c09db744715b68766eaa1cf92bd/cmc_mate_904617_e42fdc730fcc44ab83c8fc4783685fc6/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mAGY compaction detection off for run cmc_mate_904617_e42fdc730fcc44ab83c8fc4783685fc6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/memory/agent_orgs/cmc_org_904617_4a210a3b79cd40579fa34160ed59ff67/cmc_mounted_904617_39a62c09db744715b68766eaa1cf92bd/cmc_mate_904617_e42fdc730fcc44ab83c8fc4783685fc6/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.F6AS7HJym0/cmc-e2e-IanygL/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mReusing registered workspace ID: agent_ws_ef40f4a168ac17c4a18785c1117f7cf81ca0d4199dbf52eee77b9e30e847895c
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[22m[39mAGY compaction detection off for run cmc_stranger_904617_659c0e3876844788a150b9db573b4937: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mClosed agent session 3a61967a-bb23-49dd-9ee6-eeeeb408d53d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22m[2mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mClosed agent session 170c62ef-33da-4d80-8883-3e139b2884a6
+Agent WebSocket disconnected: 170c62ef-33da-4d80-8883-3e139b2884a6
+
+ [31m❯[39m tests/e2e/projects/collaboration-model-contract.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 3346[2mms[22m[39m
+[31m     [31m×[31m CM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy[39m[33m 670[2mms[22m[39m
+[31m     [31m×[31m CM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID[39m[33m 493[2mms[22m[39m
+[31m     [31m×[31m CM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team[39m[33m 1297[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22mCM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy
+[31m[1mAssertionError[22m: {"accepted":true,"code":"DELIVERED","message":"Delivered message to /cmc_outsider_904617.","target_agent_run_id":"cmc_outsider_904617_98670a0ad15449159f1079f69671bef5","isError":false}: expected { accepted: true, …(4) } to match object { accepted: false, …(1) }
+(3 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "accepted": false,[39m
+[32m-   "code": "COLLABORATION_TARGET_NOT_FOUND",[39m
+[31m+   "accepted": true,[39m
+[31m+   "code": "DELIVERED",[39m
+[2m  }[22m
+
+[36m [2m❯[22m expectNotFound tests/e2e/projects/collaboration-model-contract.e2e.test.ts:[2m203:44[22m[39m
+    [90m201| [39m  }[33m;[39m
+    [90m202| [39m  [35mconst[39m expectNotFound [33m=[39m (result[33m:[39m [33mRec[39m) [33m=>[39m {
+    [90m203| [39m    expect(result, JSON.stringify(result)).toMatchObject({ accepted: f…
+    [90m   | [39m                                           [31m^[39m
+    [90m204| [39m    [34mexpect[39m([33mString[39m(result[33m.[39mmessage))[33m.[39m[34mtoContain[39m([32m"delegate_task"[39m)[33m;[39m
+    [90m205| [39m  }[33m;[39m
+[90m [2m❯[22m tests/e2e/projects/collaboration-model-contract.e2e.test.ts:[2m250:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22mCM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+[31m[1mAssertionError[22m: {"delegated":true,"target_kind":"agent","target_agent_run_id":"cmc_mate_904617_720b28d7f4b94a1a87a1515ea35aaa84","task_id":"ad_hoc_task_d2d60c93-3882-4899-9add-0704ac16c7ac","isError":false}: expected '{"delegated":true,"target_kind":"agen…' to contain 'COLLABORATION_SELF_TARGET_REJECTED'[39m
+
+Expected: [32m"COLLABORATION_SELF_TARGET_REJECTED"[39m
+Received: [31m"{"delegated":true,"target_kind":"agent","target_agent_run_id":"cmc_mate_904617_720b28d7f4b94a1a87a1515ea35aaa84","task_id":"ad_hoc_task_d2d60c93-3882-4899-9add-0704ac16c7ac","isError":false}"[39m
+
+[36m [2m❯[22m expectRefused tests/e2e/projects/collaboration-model-contract.e2e.test.ts:[2m197:60[22m[39m
+    [90m195| [39m
+    [90m196| [39m  [35mconst[39m expectRefused [33m=[39m (result[33m:[39m [33mRec[39m[33m,[39m address[33m:[39m string) [33m=>[39m {
+    [90m197| [39m    expect(JSON.stringify(result), JSON.stringify(result)).toContain("…
+    [90m   | [39m                                                           [31m^[39m
+    [90m198| [39m    [34mexpect[39m([33mJSON[39m[33m.[39m[34mstringify[39m(result))[33m.[39m[34mtoContain[39m(address)[33m;[39m
+    [90m199| [39m    [34mexpect[39m([33mJSON[39m[33m.[39m[34mstringify[39m(result))[33m.[39m[34mtoContain[39m([32m"send_message_to"[39m)[33m;[39m
+[90m [2m❯[22m tests/e2e/projects/collaboration-model-contract.e2e.test.ts:[2m276:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/projects/collaboration-model-contract.e2e.test.ts[2m > [22mCollaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22mCM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team
+[31m[1mAssertionError[22m: {"delegated":true,"target_kind":"agent","target_agent_run_id":"cmc_stranger_904617_659c0e3876844788a150b9db573b4937","task_id":"ad_hoc_task_9fbf372b-e9c8-4077-9e5b-dde218170e04","isError":false}: expected '{"delegated":true,"target_kind":"agen…' to contain 'COLLABORATION_SELF_TARGET_REJECTED'[39m
+
+Expected: [32m"COLLABORATION_SELF_TARGET_REJECTED"[39m
+Received: [31m"{"delegated":true,"target_kind":"agent","target_agent_run_id":"cmc_stranger_904617_659c0e3876844788a150b9db573b4937","task_id":"ad_hoc_task_9fbf372b-e9c8-4077-9e5b-dde218170e04","isError":false}"[39m
+
+[36m [2m❯[22m expectRefused tests/e2e/projects/collaboration-model-contract.e2e.test.ts:[2m197:60[22m[39m
+    [90m195| [39m
+    [90m196| [39m  [35mconst[39m expectRefused [33m=[39m (result[33m:[39m [33mRec[39m[33m,[39m address[33m:[39m string) [33m=>[39m {
+    [90m197| [39m    expect(JSON.stringify(result), JSON.stringify(result)).toContain("…
+    [90m   | [39m                                                           [31m^[39m
+    [90m198| [39m    [34mexpect[39m([33mJSON[39m[33m.[39m[34mstringify[39m(result))[33m.[39m[34mtoContain[39m(address)[33m;[39m
+    [90m199| [39m    [34mexpect[39m([33mJSON[39m[33m.[39m[34mstringify[39m(result))[33m.[39m[34mtoContain[39m([32m"send_message_to"[39m)[33m;[39m
+[90m [2m❯[22m tests/e2e/projects/collaboration-model-contract.e2e.test.ts:[2m308:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[90m (3)[39m
+[2m   Start at [22m 15:19:22
+[2m   Duration [22m 12.40s[2m (transform 5.74s, setup 30ms, import 8.43s, tests 3.35s, environment 0ms)[22m
+

@@ -1,0 +1,40 @@
+{
+  "browserRun03": {
+    "browserClosed": true,
+    "processes": [
+      {
+        "pid": 24840,
+        "exitCode": null,
+        "signal": "SIGTERM",
+        "liveGroupMembers": 0
+      },
+      {
+        "pid": 24718,
+        "exitCode": 0,
+        "signal": null,
+        "liveGroupMembers": 0
+      }
+    ],
+    "fixturePageRemoved": true,
+    "ownedRootRemoved": true,
+    "baseClosed": true,
+    "frontClosed": true
+  },
+  "temporaryTestFilesRemoved": [
+    "autobyteus-server-ts/tests/.tmp/api-env.ts",
+    "autobyteus-server-ts/tests/.tmp/api-vitest.config.ts",
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal"
+  ],
+  "ignoredRegistryRemoved": "autobyteus-server-ts/workspaces.json",
+  "registryContainedOnlyOwnedRoots": true,
+  "corepackHomeDataFixturesRemoved": "/tmp/resume-pdf-api.RwYhMo",
+  "originalReadOnlySHA256": "7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5",
+  "productionDiffFromSourceReviewEmpty": true,
+  "retained": [
+    "assigned worktree/dependencies/current build prerequisites",
+    "upstream dirty informational solution history",
+    "all API evidence and synthetic durable fixture"
+  ],
+  "userRuntimeRequestsOrMutation": false
+}

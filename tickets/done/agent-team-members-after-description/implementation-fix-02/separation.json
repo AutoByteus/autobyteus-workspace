@@ -1,0 +1,22 @@
+{
+  "recordedAt": "2026-10-13T04:33:52.754643+00:00",
+  "trigger": "User explicit follow-up rather than fixing this ticket, relayed Code Reviewer / CRR-002",
+  "noFurtherBaselineFixReviewBuildOrTestExecutedAfterStop": true,
+  "preservedFixCommit": "d8bac598606001b702e300eeaeefe06c3caf0d3d",
+  "preservedLocalRef": "refs/heads/preserve/agent-definition-cache-fix-d8bac59860",
+  "revertCommit": "09731dcd140a08e5bdab6e0889d54aaaf2812f22",
+  "restoredThreePathBlobsMatchPreFixParent": {
+    "autobyteus-web/graphql/mutations/agentDefinitionMutations.ts": "5a2b9a24d594c24ab65efe4fa57f9d55daff0519",
+    "autobyteus-web/graphql/mutations/agentOrgDefinitionMutations.ts": "7129932ea7cb82bcddf6c84c4cd4322d08e19a28",
+    "autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts": "382e003fe77a1e61d34dae6aa6422962a16fa7f0"
+  },
+  "teamTemplateBlob": "82982846da660d3bb9c8b9349589e14cc8b5de17",
+  "patchExport": "baseline-fix-d8bac59860.patch.gz",
+  "fullPreparedRegressionExport": "follow-up-cache-regression.spec.ts",
+  "deliveryProtectedFilesUnchanged": true,
+  "remainingBaselineRegression": "API-added original 2-case definitionMutationCache.spec.ts still tracked; API owner must disposition/transfer to follow-up without suppressing or erasing failure history",
+  "followUpTaskCreation": "Not confirmed; Code Reviewer owns already-requested creation through /project_task_manager",
+  "currentTicket": "R1 unchanged, Small/Low; baseline correction removed from net source/test delivery delta; new scoped API disposition still required",
+  "fixReviewedOrDeployed": false,
+  "newLiveResourcesStarted": false
+}

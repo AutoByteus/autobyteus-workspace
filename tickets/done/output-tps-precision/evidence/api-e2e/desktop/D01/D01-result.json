@@ -1,0 +1,364 @@
+{
+  "journey": "D01 standalone",
+  "errors": [],
+  "frames": [
+    {
+      "t": 1791966447243,
+      "url": "ws://127.0.0.1:63602/ws/agent/tps_writer_0dccd87da6954f379ee2d0f4e7283f46",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payload": {
+        "usage_event_id": "b9d0a728-e53a-45c3-8612-f8fc73419882",
+        "idempotency_key": "codex_token_usage:tps_writer_0dccd87da6954f379ee2d0f4e7283f46:01a13984-36d4-7f53-a4d7-fe678f125196:01a13985-fa7b-7163-9188-d55b613dc0fa:cumulative_snapshot:9907:5888:185:18:10092:10092",
+        "observed_at": "2026-10-14T08:27:27.231Z",
+        "run_id": "tps_writer_0dccd87da6954f379ee2d0f4e7283f46",
+        "root_team_run_id": null,
+        "turn_id": "01a13985-fa7b-7163-9188-d55b613dc0fa",
+        "llm_call_id": null,
+        "call_sequence": null,
+        "agent_definition_id": "tps-writer",
+        "workspace_id": "agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d",
+        "task_id": null,
+        "team_name": null,
+        "agent_name": "TPS Writer",
+        "run_summary": "Write one plain-text paragraph of about 120 words about lighthouses. Do not use tools.",
+        "run_created_at": "2026-10-14T08:25:28.505Z",
+        "member_display_name": null,
+        "runtime_kind": "codex_app_server",
+        "model_provider": "OPENAI",
+        "provider_name": null,
+        "model_identifier": "gpt-5.6-luna",
+        "model_value": "gpt-5.6-luna",
+        "selected_match_state": null,
+        "selected_model_value": null,
+        "selected_resolved_raw_model_id": null,
+        "claude_sdk_model_usage": [],
+        "claude_sdk_session_id": null,
+        "claude_sdk_query_kind": null,
+        "ingestion_kind": "codex_thread_token_usage",
+        "usage_scope": "cumulative_snapshot",
+        "reports_model_call": true,
+        "snapshot_series_key": "codex_thread:01a13984-36d4-7f53-a4d7-fe678f125196",
+        "previous_snapshot_event_id": null,
+        "input_token_semantic": "gross_includes_cache",
+        "reported_input_tokens": 9907,
+        "reported_output_tokens": 185,
+        "reported_total_tokens": 10092,
+        "accounting_input_tokens": 9907,
+        "accounting_output_tokens": 185,
+        "accounting_total_tokens": 10092,
+        "standard_input_tokens": 4019,
+        "cache_miss_input_tokens": 4019,
+        "cache_read_input_tokens": 5888,
+        "cache_creation_input_tokens": null,
+        "cache_creation_5m_input_tokens": null,
+        "cache_creation_1h_input_tokens": null,
+        "cache_state": "positive",
+        "reasoning_output_tokens": 18,
+        "billable_input_tokens": 9907,
+        "billable_output_tokens": 185,
+        "cost_basis": "api_price_estimate",
+        "currency": "USD",
+        "input_price_per_million": 0.2,
+        "output_price_per_million": 1.2,
+        "cached_input_read_price_per_million": 0.02,
+        "cached_input_write_price_per_million": 0.25,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "pricing_source": "autobyteus_model_catalog",
+        "pricing_status": "trusted",
+        "pricing_missing_reason": null,
+        "pricing_snapshot_json": {
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "price_config_id": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "canonical_name": "gpt-5.6-luna",
+          "currency": "USD",
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "input_price_tiers": [
+            {
+              "tier_id": "standard_le_272k",
+              "max_input_tokens": 272000,
+              "input_price_per_million": 0.2,
+              "output_price_per_million": 1.2,
+              "cached_input_read_price_per_million": 0.02,
+              "cached_input_write_price_per_million": 0.25,
+              "cached_input_write_5m_price_per_million": null,
+              "cached_input_write_1h_price_per_million": null,
+              "trusted_dimensions": {
+                "input": true,
+                "output": true,
+                "cached_input_read": true,
+                "cached_input_write": true,
+                "cached_input_write_5m": false,
+                "cached_input_write_1h": false
+              }
+            },
+            {
+              "tier_id": "long_context_gt_272k",
+              "max_input_tokens": null,
+              "input_price_per_million": 0.4,
+              "output_price_per_million": 1.8,
+              "cached_input_read_price_per_million": 0.04,
+              "cached_input_write_price_per_million": 0.5,
+              "cached_input_write_5m_price_per_million": null,
+              "cached_input_write_1h_price_per_million": null,
+              "trusted_dimensions": {
+                "input": true,
+                "output": true,
+                "cached_input_read": true,
+                "cached_input_write": true,
+                "cached_input_write_5m": false,
+                "cached_input_write_1h": false
+              }
+            }
+          ],
+          "pricing_status": "trusted",
+          "trusted_dimensions": {
+            "input": true,
+            "output": true,
+            "cached_input_read": true,
+            "cached_input_write": true,
+            "cached_input_write_5m": false,
+            "cached_input_write_1h": false
+          },
+          "missing_reason": null,
+          "source": "autobyteus_model_catalog",
+          "effective_from": null,
+          "effective_to": null,
+          "version": null,
+          "pricing_schedule_id": null,
+          "pricing_schedule_period_id": null,
+          "pricing_schedule_effective_from": null,
+          "pricing_schedule_window_timezone": null,
+          "pricing_schedule_peak_days": null,
+          "pricing_schedule_peak_days_timezone": null,
+          "selected_tier_id": "standard_le_272k"
+        },
+        "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+        "selected_pricing_tier_id": "standard_le_272k",
+        "missing_price_dimensions": [],
+        "estimated_api_input_cost": 0.00092156,
+        "estimated_api_standard_input_cost": 0.0008038,
+        "estimated_api_cache_read_input_cost": 0.00011776,
+        "estimated_api_cache_creation_input_cost": null,
+        "estimated_api_cache_creation_5m_input_cost": null,
+        "estimated_api_cache_creation_1h_input_cost": null,
+        "estimated_api_output_cost": 0.00022199999999999998,
+        "estimated_api_reasoning_output_cost": 0.0000216,
+        "estimated_api_total_cost": 0.00114356,
+        "api_cost_status": "estimated",
+        "meter_delta_input_tokens": 9907,
+        "meter_delta_output_tokens": 185,
+        "meter_delta_total_tokens": 10092,
+        "run_summary_after_event": {
+          "run_id": "tps_writer_0dccd87da6954f379ee2d0f4e7283f46",
+          "root_team_run_id": null,
+          "agent_definition_id": "tps-writer",
+          "workspace_id": "agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d",
+          "gross_input_tokens": 9907,
+          "standard_input_tokens": 4019,
+          "cache_miss_input_tokens": 4019,
+          "cache_read_input_tokens": 5888,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 0,
+          "output_tokens": 185,
+          "reasoning_output_tokens": 18,
+          "billable_output_tokens": 185,
+          "total_tokens": 10092,
+          "cache_read_input_token_rate": 0.5943272433632785,
+          "standard_input_token_rate": 0.40567275663672153,
+          "cache_creation_input_token_rate": 0,
+          "cache_state": "positive",
+          "estimated_api_input_cost": 0.00092156,
+          "estimated_api_standard_input_cost": 0.0008038,
+          "estimated_api_cache_read_input_cost": 0.00011776,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.000222,
+          "estimated_api_reasoning_output_cost": 0.0000216,
+          "estimated_api_total_cost": 0.00114356,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "unit_prices": {
+            "standard_input": {
+              "status": "single",
+              "price_per_million": 0.2
+            },
+            "cache_read_input": {
+              "status": "single",
+              "price_per_million": 0.02
+            },
+            "cache_creation_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_5m_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_1h_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "output": {
+              "status": "single",
+              "price_per_million": 1.2
+            },
+            "reasoning_output": {
+              "status": "single",
+              "price_per_million": 1.2
+            }
+          },
+          "usage_report_count": 1,
+          "revision": 1,
+          "updated_at": "2026-10-14T08:27:27.231Z",
+          "latest_prompt_tokens": 10092,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 3.905572755417957,
+          "context_compaction_threshold_tokens": null,
+          "latest_model_provider": "OPENAI",
+          "latest_model_identifier": "gpt-5.6-luna",
+          "latest_runtime_kind": "codex_app_server",
+          "latest_selected_raw_model_id": null,
+          "has_cache_write_rate_assumption": false
+        },
+        "latest_prompt_tokens": 10092,
+        "effective_context_window_tokens": 258400,
+        "context_window_usage_percent": 3.905572755417957,
+        "context_compaction_threshold_tokens": null,
+        "output_throughput": {
+          "method": "end_to_end",
+          "output_tokens": 185,
+          "duration_ms": 2716
+        },
+        "raw_usage_json": {
+          "totalTokens": 10092,
+          "inputTokens": 9907,
+          "cachedInputTokens": 5888,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 185,
+          "reasoningOutputTokens": 18
+        },
+        "raw_event_json": {
+          "threadId": "01a13984-36d4-7f53-a4d7-fe678f125196",
+          "turnId": "01a13985-fa7b-7163-9188-d55b613dc0fa",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 10092,
+              "inputTokens": 9907,
+              "cachedInputTokens": 5888,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 185,
+              "reasoningOutputTokens": 18
+            },
+            "last": {
+              "totalTokens": 10092,
+              "inputTokens": 9907,
+              "cachedInputTokens": 5888,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 185,
+              "reasoningOutputTokens": 18
+            },
+            "modelContextWindow": 258400
+          },
+          "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+            "reported_input_tokens": 9907,
+            "reported_output_tokens": 185,
+            "reported_total_tokens": 10092,
+            "accounting_input_tokens": null,
+            "accounting_output_tokens": null,
+            "accounting_total_tokens": null,
+            "standard_input_tokens": null,
+            "cache_miss_input_tokens": null,
+            "cache_read_input_tokens": 5888,
+            "cache_creation_input_tokens": null,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 18,
+            "billable_input_tokens": null,
+            "billable_output_tokens": null
+          },
+          "autobyteus_cumulative_snapshot_source_tokens": {
+            "reported_input_tokens": 9907,
+            "reported_output_tokens": 185,
+            "reported_total_tokens": 10092,
+            "accounting_input_tokens": 9907,
+            "accounting_output_tokens": 185,
+            "accounting_total_tokens": 10092,
+            "standard_input_tokens": 4019,
+            "cache_miss_input_tokens": 4019,
+            "cache_read_input_tokens": 5888,
+            "cache_creation_input_tokens": null,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 18,
+            "billable_input_tokens": 9907,
+            "billable_output_tokens": 185
+          }
+        },
+        "quality_flags": [
+          "first_cumulative_snapshot_baselined_from_provider_delta"
+        ]
+      }
+    },
+    {
+      "t": 1791966447243,
+      "url": "ws://127.0.0.1:63602/ws/agent/tps_writer_0dccd87da6954f379ee2d0f4e7283f46",
+      "type": "TURN_COMPLETED",
+      "payload": {
+        "turnId": "01a13985-fa7b-7163-9188-d55b613dc0fa",
+        "turn_id": "01a13985-fa7b-7163-9188-d55b613dc0fa"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "no reading before any call shows \"—\""
+    },
+    {
+      "name": "single-call Codex turn shows its own end-to-end reading",
+      "shown": "68.1 tokens/s",
+      "frame": {
+        "method": "end_to_end",
+        "output_tokens": 185,
+        "duration_ms": 2716
+      },
+      "model": "gpt-5.6-luna",
+      "msAfterSend": 3124,
+      "cardText": "TPS\n\n68.1 tokens/s\n\ngpt-5.6-luna · incl. time to first token\n\nHow TPS is measured"
+    },
+    {
+      "name": "keyboard help states method, tokens and seconds",
+      "helpText": "Output tokens of the latest model call ÷ time from sending the request to its end (185 tokens in 2.72 s). Includes waiting for the first token, so it reads lower than pure generation speed."
+    },
+    {
+      "name": "idle keeps the value",
+      "shown": "68.1 tokens/s"
+    },
+    {
+      "name": "other run shows \"—\" immediately"
+    },
+    {
+      "name": "back to the run shows its newest reading"
+    },
+    {
+      "name": "after reload the card shows \"—\""
+    },
+    {
+      "name": "history (terminated) run shows \"—\""
+    }
+  ],
+  "status": "pass"
+}

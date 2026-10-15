@@ -1,0 +1,412 @@
+{
+  "layer": "Implementation rendered self-check: actual components, fixture contexts and intercepted HTTP",
+  "states": {
+    "agent-root": {
+      "rest": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "hover": {
+        "color": "rgb(220, 38, 38)",
+        "background": "rgb(254, 242, 242)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "leave": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "focus": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": true,
+        "outline": "auto",
+        "shadow": "none"
+      },
+      "pending": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "0.5",
+        "cursor": "not-allowed",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "disabledHover": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "0.5",
+        "cursor": "not-allowed",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "afterRelease": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "label": "Terminate run"
+    },
+    "team-root": {
+      "rest": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "hover": {
+        "color": "rgb(220, 38, 38)",
+        "background": "rgb(254, 242, 242)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "leave": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "focus": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": true,
+        "outline": "auto",
+        "shadow": "none"
+      },
+      "pending": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "0.5",
+        "cursor": "not-allowed",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "disabledHover": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "0.5",
+        "cursor": "not-allowed",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "afterRelease": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "label": "Terminate team"
+    },
+    "org-root": {
+      "rest": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "hover": {
+        "color": "rgb(220, 38, 38)",
+        "background": "rgb(254, 242, 242)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "leave": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "focus": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0s",
+        "focus": true,
+        "outline": "auto",
+        "shadow": "none"
+      },
+      "pending": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "0.5",
+        "cursor": "not-allowed",
+        "transition": "0s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "disabledHover": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "0.5",
+        "cursor": "not-allowed",
+        "transition": "0s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "afterRelease": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "label": "Stop Agent Org"
+    },
+    "agent-copy": {
+      "rest": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "hover": {
+        "color": "rgb(220, 38, 38)",
+        "background": "rgb(254, 242, 242)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "leave": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "focus": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": true,
+        "outline": "solid",
+        "shadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      },
+      "pending": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "0.6",
+        "cursor": "default",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "disabledHover": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "0.6",
+        "cursor": "default",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "afterRelease": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "label": "Stop Writer copy"
+    },
+    "team-copy": {
+      "rest": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "hover": {
+        "color": "rgb(220, 38, 38)",
+        "background": "rgb(254, 242, 242)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "leave": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "focus": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": true,
+        "outline": "solid",
+        "shadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      },
+      "pending": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "0.6",
+        "cursor": "default",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "disabledHover": {
+        "color": "rgb(153, 153, 153)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "0.6",
+        "cursor": "default",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "afterRelease": {
+        "color": "rgb(239, 68, 68)",
+        "background": "rgba(0, 0, 0, 0)",
+        "opacity": "1",
+        "cursor": "pointer",
+        "transition": "0.15s",
+        "focus": false,
+        "outline": "none",
+        "shadow": "none"
+      },
+      "label": "Stop Review Team copy"
+    }
+  },
+  "requests": [
+    {
+      "rootKind": "AGENT",
+      "rootRunId": "host-run",
+      "agentRunId": "writer-run"
+    },
+    {
+      "rootKind": "AGENT",
+      "rootRunId": "host-run",
+      "teamRunId": "review-team"
+    }
+  ],
+  "errors": [],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtStopped": true,
+    "routeRemoved": true,
+    "homeRemoved": true,
+    "portsReleased": true
+  },
+  "home": "/tmp/red-stop-preview-home-nSkjuG",
+  "ports": [
+    45371,
+    46427
+  ],
+  "nuxtPid": 27973,
+  "browser": "153.0.8010.52",
+  "rootActions": [
+    {
+      "kind": "Agent",
+      "id": "agent-root"
+    },
+    {
+      "kind": "Team",
+      "id": "team-root"
+    },
+    {
+      "kind": "Org",
+      "id": "org-root"
+    }
+  ],
+  "result": "PASS — implementation preview only"
+}

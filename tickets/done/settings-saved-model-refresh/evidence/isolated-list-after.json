@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "list",
+  "result": {
+    "instances": []
+  },
+  "_evidenceFilter": {
+    "scope": "Only instances owned by this validation retained; unrelated registry entries not altered.",
+    "ownedInstanceIds": [
+      "iso-59252-bcc2",
+      "iso-59834-9b3a",
+      "iso-60250-d35b",
+      "iso-60438-b50d",
+      "iso-61113-cfed"
+    ],
+    "unrelatedInstanceCount": 3
+  }
+}

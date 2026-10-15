@@ -1,0 +1,19 @@
+{
+  "privateDirectory": "/Users/normy/autobyteus_org/autobyteus-private-backups/docker-node2-prisma-o1-_p9x5ye3",
+  "directoryMode": "0700",
+  "archive": "/Users/normy/autobyteus_org/autobyteus-private-backups/docker-node2-prisma-o1-_p9x5ye3/affected-state.tar",
+  "archiveMode": "0o600",
+  "archiveBytes": 25487360,
+  "archiveSha256": "7e72d68a0a981ff9974125aaea0805ca7f280611c3317e84ebf6a7d61c6d4b74",
+  "archivedRegularFiles": 132,
+  "scope": "Entire actual /home/autobyteus/data including canonical DB + any WAL/SHM, root-key/.env/settings/memory/app-data migration inputs; actual original Supervisor file/permissions. No root-home/browser/workspace copies or edits. Custom workspace/package roots recorded and retained as original binds.",
+  "canonicalDataPathProvenBy": "Actual existing program + daemon/login shell filtered path metadata + dotenv parsed settings + installed AppConfig/database-location contract; not defaults alone",
+  "dbPath": "/home/autobyteus/data/db/production.db",
+  "rootKeyPath": "/home/autobyteus/data/db/production.db.secret.key",
+  "snapshotQuickCheck": [
+    "ok"
+  ],
+  "consistency": "No backend/DB writer before and after tar; copied SQLite checked read-only; target identity/config unchanged",
+  "settingsAndRootKeyHashesMatchBefore": true,
+  "automaticRestoreAuthorized": false
+}

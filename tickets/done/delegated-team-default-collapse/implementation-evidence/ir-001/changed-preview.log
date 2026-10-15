@@ -1,0 +1,13 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 90000ms exceeded.
+Call log:
+[2m  - waiting for locator('[role="treeitem"][data-team-run-id="software-team-4"][data-node-kind="agent_team"]').locator('[data-test="workspace-team-transient-disclosure"]')[22m
+
+    at /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/implementation-evidence/ir-001/rendered-preview.mjs:55:77 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.3

@@ -22,6 +22,14 @@ export class CollaboratorAddError extends Error {
   }
 }
 
-/** `delegate_task` to an address that is not mounted, not a collaborator and not an available agent of this run. */
+/** `delegate_task` to an address that is not mounted and not an available agent of this run. */
 export const delegationTargetUnavailableMessage = (address: string): string =>
-  `'${address}' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.`;
+  `'${address}' is not a mounted Agent or Agent Team or an available agent of this run.`;
+
+/** `send_message_to(address)` to an address that is not a standing instance of the sender's run (CM-4). */
+export const messageTargetNotFoundMessage = (address: string): string =>
+  `${address} is not in this run. To give work to an outside Agent or Team, use delegate_task, then send_message_to its run ID.`;
+
+/** `delegate_task(address)` to the sender itself, a teammate or its own Team (CM-1). */
+export const ownTeamDelegationRefusedMessage = (address: string): string =>
+  `${address} is in your own team. Use send_message_to with recipient_address ${address}.`;

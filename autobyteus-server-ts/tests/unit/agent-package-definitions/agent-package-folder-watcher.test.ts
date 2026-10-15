@@ -13,7 +13,7 @@ let monitor: AgentPackageFolderWatcher | null = null;
 
 const rootAt = (rootPath: string): RegisteredPackageRoot => ({
   rootPath,
-  sourceClass: "external_read_only",
+  sourceClass: "registered_package",
   kindDirs: {
     agents: path.join(rootPath, "agents"),
     "agent-teams": path.join(rootPath, "agent-teams"),

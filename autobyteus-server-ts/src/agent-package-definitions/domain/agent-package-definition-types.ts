@@ -67,7 +67,7 @@ export type KindFolderName = "agents" | "agent-teams" | "agent-orgs";
 /** One registered agent package folder in precedence order, with its three kind folders. */
 export type RegisteredPackageRoot = Readonly<{
   rootPath: string;
-  sourceClass: Extract<DefinitionSourceClass, "server_data" | "external_read_only">;
+  sourceClass: Extract<DefinitionSourceClass, "server_data" | "registered_package">;
   kindDirs: Readonly<Record<KindFolderName, string>>;
 }>;
 

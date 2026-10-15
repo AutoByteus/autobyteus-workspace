@@ -1,0 +1,276 @@
+Auto-merging autobyteus-web/docs/agent_execution_architecture.md
+Merge made by the 'ort' strategy.
+ .../workspace/history/DelegatedStopButton.vue      |   4 +-
+ .../history/WorkspaceAgentOrgHistoryCollection.vue |   2 +-
+ .../history/WorkspaceHistoryWorkspaceSection.vue   |   4 +-
+ .../history/__tests__/DelegatedStopButton.spec.ts  |  13 +-
+ .../WorkspaceHistoryWorkspaceSection.spec.ts       |  45 +
+ .../__tests__/useWorkspaceHistoryMutations.spec.ts |  31 +
+ .../docs/agent_execution_architecture.md           |  15 +-
+ autobyteus-web/docs/settings.md                    |   7 +-
+ .../tests/e2e/delegated-launch-defaults-probe.mjs  | 225 +++--
+ .../api-e2e-coverage-investigation.md              |  63 ++
+ .../api-e2e-execution-coverage-report.md           | 164 ++++
+ .../api-e2e-revision-record.md                     |  18 +
+ .../api-e2e-test-case-ledger.md                    |  46 +
+ .../artifact-location-map.md                       |   8 +
+ .../delivery-revision-record.md                    |   3 +
+ .../done/sidebar-stop-red-default/design-spec.md   | 144 ++++
+ .../sidebar-stop-red-default/docs-sync-report.md   |  19 +
+ .../evidence/api-browser-1.log                     |   9 +
+ .../DCP-001-copy-after-row-click-hover.png         | Bin 0 -> 104760 bytes
+ .../DCP-001-copy-after-row-click-leave.png         | Bin 0 -> 104530 bytes
+ .../DCP-001-copy-after-row-click-rest.png          | Bin 0 -> 104530 bytes
+ .../api-browser-1/DCP-001-copy-disabled-hover.png  | Bin 0 -> 103542 bytes
+ .../api-browser-1/DCP-001-copy-keyboard-focus.png  | Bin 0 -> 103771 bytes
+ .../api-browser-1/DCP-001-copy-pending.png         | Bin 0 -> 103200 bytes
+ .../DCP-001-copy-unselected-hover.png              | Bin 0 -> 134936 bytes
+ .../DCP-001-copy-unselected-leave.png              | Bin 0 -> 134519 bytes
+ .../api-browser-1/DCP-001-copy-unselected-rest.png | Bin 0 -> 134519 bytes
+ .../api-browser-1/DCP-001-parent-hover.png         | Bin 0 -> 134684 bytes
+ .../api-browser-1/DCP-001-parent-leave.png         | Bin 0 -> 134519 bytes
+ .../evidence/api-browser-1/DCP-001-parent-rest.png | Bin 0 -> 134519 bytes
+ .../api-browser-1/DCP-001-root-disabled-hover.png  | Bin 0 -> 193398 bytes
+ .../api-browser-1/DCP-001-root-keyboard-focus.png  | Bin 0 -> 193829 bytes
+ .../api-browser-1/DCP-001-root-pending.png         | Bin 0 -> 193398 bytes
+ .../api-browser-1/DCP-001-root-stopped-history.png | Bin 0 -> 194095 bytes
+ ...DCP-001-settings-copy-changed-save-bar-1280.png | Bin 0 -> 105090 bytes
+ .../DCP-001-settings-copy-saved-1280.png           | Bin 0 -> 92325 bytes
+ .../DCP-001-settings-running-copy-1280.png         | Bin 0 -> 101964 bytes
+ ...DCP-001-settings-stopped-copy-editable-1280.png | Bin 0 -> 99724 bytes
+ .../DCP-001-sidebar-stop-icon-1280.png             | Bin 0 -> 101964 bytes
+ .../DCP-002-copy-after-row-click-hover.png         | Bin 0 -> 195991 bytes
+ .../DCP-002-copy-after-row-click-leave.png         | Bin 0 -> 195558 bytes
+ .../DCP-002-copy-after-row-click-rest.png          | Bin 0 -> 195558 bytes
+ .../api-browser-1/DCP-002-copy-disabled-hover.png  | Bin 0 -> 151501 bytes
+ .../api-browser-1/DCP-002-copy-keyboard-focus.png  | Bin 0 -> 151661 bytes
+ .../api-browser-1/DCP-002-copy-pending.png         | Bin 0 -> 151120 bytes
+ .../DCP-002-copy-unselected-hover.png              | Bin 0 -> 191914 bytes
+ .../DCP-002-copy-unselected-leave.png              | Bin 0 -> 191516 bytes
+ .../api-browser-1/DCP-002-copy-unselected-rest.png | Bin 0 -> 191516 bytes
+ .../api-browser-1/DCP-002-parent-hover.png         | Bin 0 -> 192138 bytes
+ .../api-browser-1/DCP-002-parent-leave.png         | Bin 0 -> 191516 bytes
+ .../evidence/api-browser-1/DCP-002-parent-rest.png | Bin 0 -> 191516 bytes
+ .../DCP-002-plus-from-copy-lead-1280.png           | Bin 0 -> 68339 bytes
+ .../api-browser-1/DCP-002-root-disabled-hover.png  | Bin 0 -> 209485 bytes
+ .../api-browser-1/DCP-002-root-keyboard-focus.png  | Bin 0 -> 209457 bytes
+ .../api-browser-1/DCP-002-root-pending.png         | Bin 0 -> 209157 bytes
+ .../api-browser-1/DCP-002-root-stopped-history.png | Bin 0 -> 209816 bytes
+ .../DCP-002-settings-team-copy-saved-1280.png      | Bin 0 -> 111620 bytes
+ .../DCP-002-sidebar-team-copy-stop-1280.png        | Bin 0 -> 133848 bytes
+ .../DCP-003-copy-after-row-click-hover.png         | Bin 0 -> 95535 bytes
+ .../DCP-003-copy-after-row-click-leave.png         | Bin 0 -> 95328 bytes
+ .../DCP-003-copy-after-row-click-rest.png          | Bin 0 -> 95328 bytes
+ .../api-browser-1/DCP-003-copy-disabled-hover.png  | Bin 0 -> 198228 bytes
+ .../api-browser-1/DCP-003-copy-keyboard-focus.png  | Bin 0 -> 198770 bytes
+ .../api-browser-1/DCP-003-copy-pending.png         | Bin 0 -> 198218 bytes
+ .../DCP-003-copy-unselected-hover.png              | Bin 0 -> 147728 bytes
+ .../DCP-003-copy-unselected-leave.png              | Bin 0 -> 147519 bytes
+ .../api-browser-1/DCP-003-copy-unselected-rest.png | Bin 0 -> 147519 bytes
+ .../DCP-003-org-settings-copy-saved-1280.png       | Bin 0 -> 105124 bytes
+ .../DCP-003-org-sidebar-stop-icon-1280.png         | Bin 0 -> 154547 bytes
+ .../api-browser-1/DCP-003-parent-hover.png         | Bin 0 -> 148044 bytes
+ .../api-browser-1/DCP-003-parent-leave.png         | Bin 0 -> 147519 bytes
+ .../evidence/api-browser-1/DCP-003-parent-rest.png | Bin 0 -> 147519 bytes
+ .../api-browser-1/DCP-003-root-disabled-hover.png  | Bin 0 -> 203371 bytes
+ .../api-browser-1/DCP-003-root-keyboard-focus.png  | Bin 0 -> 205604 bytes
+ .../api-browser-1/DCP-003-root-pending.png         | Bin 0 -> 203016 bytes
+ .../api-browser-1/DCP-003-root-stopped-history.png | Bin 0 -> 205978 bytes
+ .../evidence/api-browser-1/backend.log             | 217 +++++
+ .../delegated-launch-defaults-evidence.json        | 927 +++++++++++++++++++++
+ .../evidence/api-browser-1/frontend.log            |  25 +
+ .../evidence/api-build.log                         |  45 +
+ .../evidence/api-cleanup.json                      |  26 +
+ .../evidence/api-outer-home-1.txt                  |   1 +
+ .../evidence/api-unit-actions.log                  |  49 ++
+ .../evidence/api-unit-direct.log                   |  33 +
+ .../evidence/delivery/archive-gates.json           |  11 +
+ .../evidence/delivery/archive-hygiene.log          |   4 +
+ .../evidence/delivery/archive-licensing.log        |   2 +
+ .../evidence/delivery/cleanup-runtime.json         |  29 +
+ .../evidence/delivery/integration.json             |  27 +
+ .../evidence/delivery/unit.log                     |  65 ++
+ .../evidence/delivery/verification.json            | 193 +++++
+ .../evidence/delivery/whitespace-correction.json   |  24 +
+ .../evidence/implementation-install.log            | 115 +++
+ .../evidence/implementation-old-token-negative.log | 269 ++++++
+ .../evidence/implementation-prepare.log            |  28 +
+ .../evidence/implementation-unit-final.log         |  65 ++
+ .../evidence/implementation-unit-first.log         |  65 ++
+ .../local-preview/agent-copy-disabled-hover.png    | Bin 0 -> 52279 bytes
+ .../evidence/local-preview/agent-copy-focus.png    | Bin 0 -> 52580 bytes
+ .../evidence/local-preview/agent-copy-hover.png    | Bin 0 -> 52463 bytes
+ .../evidence/local-preview/agent-copy-leave.png    | Bin 0 -> 52037 bytes
+ .../evidence/local-preview/agent-copy-pending.png  | Bin 0 -> 52043 bytes
+ .../evidence/local-preview/agent-copy-rest.png     | Bin 0 -> 52039 bytes
+ .../local-preview/agent-root-disabled-hover.png    | Bin 0 -> 49579 bytes
+ .../evidence/local-preview/agent-root-focus.png    | Bin 0 -> 46695 bytes
+ .../evidence/local-preview/agent-root-hover.png    | Bin 0 -> 46818 bytes
+ .../evidence/local-preview/agent-root-leave.png    | Bin 0 -> 46354 bytes
+ .../evidence/local-preview/agent-root-pending.png  | Bin 0 -> 49207 bytes
+ .../evidence/local-preview/agent-root-rest.png     | Bin 0 -> 46353 bytes
+ .../evidence/local-preview/inspect.mjs             | 110 +++
+ .../evidence/local-preview/inspection.log          | 412 +++++++++
+ .../evidence/local-preview/nuxt.log                |  19 +
+ .../local-preview/org-root-disabled-hover.png      | Bin 0 -> 52308 bytes
+ .../evidence/local-preview/org-root-focus.png      | Bin 0 -> 51263 bytes
+ .../evidence/local-preview/org-root-hover.png      | Bin 0 -> 51308 bytes
+ .../evidence/local-preview/org-root-leave.png      | Bin 0 -> 50905 bytes
+ .../evidence/local-preview/org-root-pending.png    | Bin 0 -> 52041 bytes
+ .../evidence/local-preview/org-root-rest.png       | Bin 0 -> 50903 bytes
+ .../evidence/local-preview/preview.vue             |  76 ++
+ .../evidence/local-preview/result.json             | 412 +++++++++
+ .../local-preview/team-copy-disabled-hover.png     | Bin 0 -> 52242 bytes
+ .../evidence/local-preview/team-copy-focus.png     | Bin 0 -> 52604 bytes
+ .../evidence/local-preview/team-copy-hover.png     | Bin 0 -> 52446 bytes
+ .../evidence/local-preview/team-copy-leave.png     | Bin 0 -> 52033 bytes
+ .../evidence/local-preview/team-copy-pending.png   | Bin 0 -> 52025 bytes
+ .../evidence/local-preview/team-copy-rest.png      | Bin 0 -> 52033 bytes
+ .../local-preview/team-root-disabled-hover.png     | Bin 0 -> 51298 bytes
+ .../evidence/local-preview/team-root-focus.png     | Bin 0 -> 49567 bytes
+ .../evidence/local-preview/team-root-hover.png     | Bin 0 -> 49647 bytes
+ .../evidence/local-preview/team-root-leave.png     | Bin 0 -> 49203 bytes
+ .../evidence/local-preview/team-root-pending.png   | Bin 0 -> 50900 bytes
+ .../evidence/local-preview/team-root-rest.png      | Bin 0 -> 49203 bytes
+ .../evidence/local-rendered-check.md               |  30 +
+ .../sidebar-stop-red-default/handoff-summary.md    |  43 +
+ .../implementation-handoff.md                      |  95 +++
+ .../implementation-revision-record.md              |  19 +
+ .../investigation-notes.md                         |  68 ++
+ .../release-deployment-report.md                   |  38 +
+ .../sidebar-stop-red-default/requirements-doc.md   |  70 ++
+ .../sidebar-stop-red-default/solution-handoff.md   |  54 ++
+ .../solution-revision-record.md                    |  23 +
+ 141 files changed, 4412 insertions(+), 97 deletions(-)
+ create mode 100644 tickets/done/sidebar-stop-red-default/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/api-e2e-revision-record.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/artifact-location-map.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/delivery-revision-record.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/design-spec.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/docs-sync-report.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-copy-after-row-click-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-copy-after-row-click-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-copy-after-row-click-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-copy-disabled-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-copy-keyboard-focus.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-copy-pending.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-copy-unselected-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-copy-unselected-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-copy-unselected-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-parent-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-parent-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-parent-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-root-disabled-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-root-keyboard-focus.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-root-pending.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-root-stopped-history.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-settings-copy-changed-save-bar-1280.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-settings-copy-saved-1280.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-settings-running-copy-1280.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-settings-stopped-copy-editable-1280.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-001-sidebar-stop-icon-1280.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-copy-after-row-click-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-copy-after-row-click-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-copy-after-row-click-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-copy-disabled-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-copy-keyboard-focus.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-copy-pending.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-copy-unselected-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-copy-unselected-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-copy-unselected-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-parent-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-parent-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-parent-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-plus-from-copy-lead-1280.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-root-disabled-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-root-keyboard-focus.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-root-pending.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-root-stopped-history.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-settings-team-copy-saved-1280.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-002-sidebar-team-copy-stop-1280.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-copy-after-row-click-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-copy-after-row-click-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-copy-after-row-click-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-copy-disabled-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-copy-keyboard-focus.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-copy-pending.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-copy-unselected-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-copy-unselected-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-copy-unselected-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-org-settings-copy-saved-1280.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-org-sidebar-stop-icon-1280.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-parent-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-parent-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-parent-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-root-disabled-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-root-keyboard-focus.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-root-pending.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/DCP-003-root-stopped-history.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/backend.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/delegated-launch-defaults-evidence.json
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-browser-1/frontend.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-build.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-cleanup.json
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-outer-home-1.txt
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-unit-actions.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/api-unit-direct.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/delivery/archive-gates.json
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/delivery/archive-hygiene.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/delivery/archive-licensing.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/delivery/cleanup-runtime.json
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/delivery/integration.json
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/delivery/unit.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/delivery/verification.json
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/delivery/whitespace-correction.json
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/implementation-install.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/implementation-old-token-negative.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/implementation-prepare.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/implementation-unit-final.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/implementation-unit-first.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/agent-copy-disabled-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/agent-copy-focus.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/agent-copy-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/agent-copy-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/agent-copy-pending.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/agent-copy-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/agent-root-disabled-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/agent-root-focus.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/agent-root-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/agent-root-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/agent-root-pending.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/agent-root-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/inspect.mjs
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/inspection.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/nuxt.log
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/org-root-disabled-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/org-root-focus.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/org-root-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/org-root-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/org-root-pending.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/org-root-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/preview.vue
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/result.json
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/team-copy-disabled-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/team-copy-focus.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/team-copy-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/team-copy-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/team-copy-pending.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/team-copy-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/team-root-disabled-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/team-root-focus.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/team-root-hover.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/team-root-leave.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/team-root-pending.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-preview/team-root-rest.png
+ create mode 100644 tickets/done/sidebar-stop-red-default/evidence/local-rendered-check.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/handoff-summary.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/implementation-handoff.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/implementation-revision-record.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/investigation-notes.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/release-deployment-report.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/requirements-doc.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/solution-handoff.md
+ create mode 100644 tickets/done/sidebar-stop-red-default/solution-revision-record.md

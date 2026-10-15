@@ -1,0 +1,152 @@
+IR-002 pre-removal owner-specific reference trace at1921e5096
+Workspace explorer toJson callers:
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:173:  toJson(): string | null {
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:174:    return this.rootNode ? this.rootNode.toJson() : null;
+autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts:103:        toJson?: () => string | null;
+autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts:110:      treeJson: fileExplorer?.toJson?.() ?? null,
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js:45:        const jsonValue = explorer.toJson();
+autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts:62:    const jsonValue = explorer.toJson();
+\nAll production serializer owners:
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool-native-schema-projector.ts:15:      canonicalizeApplicationAgentToolSchema(projected.toJsonSchema()),
+autobyteus-server-ts/src/agent-tools/browser/browser-tool-serialization.ts:1:import { toJsonString } from "../json-utils.js";
+autobyteus-server-ts/src/agent-tools/browser/browser-tool-serialization.ts:26:  toJsonString(value, 2);
+autobyteus-server-ts/src/agent-tools/json-utils.ts:10:export function toJsonString(
+autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-schema-mapper.ts:14:      ? schemaSource.toJsonSchema()
+autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-schema-mapper.ts:32:  typeof (value as ParameterSchema).toJsonSchema === "function";
+autobyteus-server-ts/src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts:7:import { toJsonString } from "../../json-utils.js";
+autobyteus-server-ts/src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts:50:            return createAgentToolsMcpSuccessResult(toJsonString({ success: true, artifacts }));
+autobyteus-server-ts/src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts:53:              toJsonString(buildErrorPayload(error)),
+autobyteus-server-ts/src/agent-tools/media/media-tool-serialization.ts:1:import { toJsonString } from "../json-utils.js";
+autobyteus-server-ts/src/agent-tools/media/media-tool-serialization.ts:3:export const toMediaJsonString = (value: unknown): string => toJsonString(value, 2);
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-serialization.ts:1:import { toJsonString } from "../json-utils.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-serialization.ts:43:  toJsonString(value, 2);
+autobyteus-server-ts/src/api/graphql/converters/tool-definition-converter.ts:72:      jsonSchema: coreParam.toJsonSchemaProperty(),
+autobyteus-server-ts/src/api/graphql/types/llm-provider-model-catalog.ts:128:  configSchema: model.parameterSchema?.toJsonSchemaDict?.() ?? null,
+autobyteus-server-ts/src/api/graphql/types/skills.ts:191:      return tree.toJson();
+autobyteus-server-ts/src/api/websocket/agent.ts:72:              ).toJson(),
+autobyteus-server-ts/src/api/websocket/agent.ts:133:              ).toJson(),
+autobyteus-server-ts/src/application-backend-api-gateway/notifications/application-backend-notification-hub.ts:13:const toJson = (payload: ApplicationBackendNotificationHubMessage): string => JSON.stringify(payload);
+autobyteus-server-ts/src/application-backend-api-gateway/notifications/application-backend-notification-hub.ts:28:    connection.send(toJson({ type: "connected", applicationId }));
+autobyteus-server-ts/src/application-backend-api-gateway/notifications/application-backend-notification-hub.ts:50:    const payload = toJson({ type: "notification", notification });
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:173:  toJson(): string | null {
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:174:    return this.rootNode ? this.rootNode.toJson() : null;
+autobyteus-server-ts/src/file-explorer/file-system-changes.ts:248:  toJson(): string {
+autobyteus-server-ts/src/file-explorer/file-system-changes.ts:258:export const serializeChangeEvent = (event: FileSystemChangeEvent): string => event.toJson();
+autobyteus-server-ts/src/file-explorer/tree-node.ts:166:  toJson(): string {
+autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts:81:      (event) => this.handleChangeEvent(event.toJson()),
+autobyteus-server-ts/src/mcp-gateway/mcp-gateway-tool-catalog.ts:81:  const schema = schemaSource ? schemaSource.toJsonSchema() : {};
+autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-model-normalizer.ts:67:  return new ParameterSchema(parameters).toJsonSchemaDict();
+autobyteus-server-ts/src/runtime-management/grok/grok-build-launch-profile.ts:43:  })]).toJsonSchemaDict();
+autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:139:      connection.send(errorMsg.toJson());
+autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:483:    connection.send(errorMsg.toJson());
+autobyteus-server-ts/src/services/agent-streaming/models.ts:55:  toJson(): string {
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:86:      connection.send(connectedMsg.toJson());
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:103:        connection.send(errorMsg.toJson());
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:126:        connection.send(errorMsg.toJson());
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:149:          connection.send(msg.toJson());
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:180:        return createPongMessage().toJson();
+autobyteus-server-ts/src/services/file-explorer-streaming/models.ts:23:  toJson(): string {
+\nExplorer importers:
+autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts:3:import type { WorkspaceFileExplorer } from "../file-explorer.js";
+autobyteus-server-ts/src/file-explorer/watcher/watchdog-handler.ts:2:import type { WorkspaceFileExplorer } from "../file-explorer.js";
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session-manager.ts:2:import type { WatcherLease } from "../../file-explorer/file-explorer.js";
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session.ts:2:import type { WatcherLease } from "../../file-explorer/file-explorer.js";
+autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:2:import type { WatcherLease, WorkspaceFileExplorer } from "../../file-explorer/file-explorer.js";
+autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:4:} from '../file-explorer/file-explorer.js';
+\nIndex/package and configuration/script entrypoints:
+export { startServer, type ServerOptions } from "./app.js";
+export { startConfiguredServer } from "./server-runtime.js";
+export {
+  buildStudioServer,
+  type StudioServer,
+} from "./compositions/build-studio-server.js";
+export {
+  startStandaloneApplicationHost,
+  type StandaloneApplicationHostHandle,
+} from "./standalone-application-host/start-standalone-application-host.js";
+export type {
+  StandaloneApplicationHostConfig,
+  StandaloneApplicationHostConfigInput,
+} from "./standalone-application-host/config/standalone-application-host-config.js";
+export {
+  validateStandaloneApplicationPackage,
+} from "./application-platform/launch-configuration/application-standalone-package-validator.js";
+{
+  "name": "autobyteus-server-ts",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepare:shared": "pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build",
+    "prebuild": "pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma",
+    "build": "pnpm run build:full",
+    "build:full": "node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs",
+\nLive TreeNode Skill serialization:
+
+  getDisabledSkills(): string[] {
+    return this.disabledStore.getDisabledSkills();
+  }
+
+  async getSkillFileTree(name: string): Promise<TreeNode> {
+    const skill = this.getSkill(name);
+    if (!skill) {
+      throw new Error(`Skill '${name}' not found`);
+    }
+
+    const traversal = new DirectoryTraversal();
+    return traversal.buildTree(skill.rootPath);
+  }
+
+  uploadFile(skillName: string, relativePath: string, content: Buffer | Uint8Array | string): boolean {
+    const skill = this.getSkill(skillName);
+    if (!skill) {
+      throw new Error(`Skill '${skillName}' not found`);
+  @Query(() => Skill, { nullable: true })
+  skill(@Arg("name", () => String) name: string): Skill | null {
+    const service = SkillService.getInstance();
+    const skill = service.getSkill(name);
+    if (!skill) {
+      return null;
+    }
+    return mapSkill(skill);
+  }
+
+  @Query(() => String, { nullable: true })
+  async skillFileTree(@Arg("name", () => String) name: string): Promise<string | null> {
+    const service = SkillService.getInstance();
+    try {
+      const tree = await service.getSkillFileTree(name);
+      return tree.toJson();
+    } catch {
+      return null;
+    }
+  }
+\nIR-002 post-removal owner-specific reference trace
+Deprecated explorer members/callers: expect no matches outside task records
+\nRetained live getTree/TreeNode serializer and Skill paths:
+autobyteus-server-ts/src/api/graphql/types/skills.ts:191:      return tree.toJson();
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:169:  getTree(): TreeNode | null {
+autobyteus-server-ts/src/file-explorer/tree-node.ts:166:  toJson(): string {
+    return this.disabledStore.getDisabledSkills();
+  }
+
+  async getSkillFileTree(name: string): Promise<TreeNode> {
+    const skill = this.getSkill(name);
+    if (!skill) {
+      throw new Error(`Skill '${name}' not found`);
+    }
+
+    const traversal = new DirectoryTraversal();
+    return traversal.buildTree(skill.rootPath);
+  }
+
+  uploadFile(skillName: string, relativePath: string, content: Buffer | Uint8Array | string): boolean {
+    const skill = this.getSkill(skillName);
+    if (!skill) {
+      throw new Error(`Skill '${skillName}' not found`);
+    }
+\nSource guardrails:
+explorer effective non-empty lines=403
+0	4	autobyteus-server-ts/src/file-explorer/file-explorer.ts

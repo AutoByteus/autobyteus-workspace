@@ -19,9 +19,7 @@ import { dispatchAgentStreamMessage } from '~/services/agentStreaming/agentStrea
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState'
 import { projectAgentOrgReference } from '~/services/agentOrgExecution/agentOrgReferenceProjection'
 import { createChildContext } from './agentRunCollaborationChildContextFactory'
-import { collaboratorExecutionNodes } from '~/services/collaborators/agentSourceSelectors'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
-import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService'
 import { AgentRunCollaborationIndex, type AgentRootChildAgent } from './agentRunCollaborationIndex'
 import {
   agentRunKey,
@@ -48,7 +46,7 @@ const nameAt = memberDisplayName
 
 /**
  * The client view of one standalone run's collaboration root: its task children (with one
- * AgentContext each), their collaborators and messages. The host stays on its own Agent stream.
+ * AgentContext each), their messages. The host stays on its own Agent stream.
  */
 export class AgentRunCollaborationContext {
   readonly hostRunId: string
@@ -158,17 +156,13 @@ export class AgentRunCollaborationContext {
       }
       this.view = { ...this.view,
         closed_task_executions: removeReopenedTaskExecutions(this.view.closed_task_executions, event.task_executions) }
-    } else if (event.kind === 'collaborator_added') {
-      // One hosted instance per entry: its executions get contexts now, Offline. Applied in
-      // place (no reload) so a pending send that added it keeps its acknowledgement.
-      const tree = this.view.execution_tree
-      if (tree.collaborators.some((entry) => entry.address === event.collaborator.address)) {
-        this.requireReopen(`Collaborator address '${event.collaborator.address}' is already in use.`)
+    } else if (event.kind === 'delegated_launch_selections_changed') {
+      // A Save on the live run (DS-001): reload so the records and the member contexts show the choice.
+      if (event.selections.some((entry) => 'agentRunId' in entry ? !this.index.agents.has(entry.agentRunId) : !this.index.teams.has(entry.teamRunId))) {
+        this.requireReopen('A saved model choice names no child of this run.')
         throw new Error(this.error!)
       }
-      this.commitTree({ ...tree, collaborators: [...tree.collaborators, event.collaborator] })
-      this.addContextsForNewChildren()
-      collaboratorCandidatesService.invalidate('agent', this.hostRunId)
+      return 'checkpoint_required'
     } else {
       this.assertMessagesCorrelated([event.message])
       this.view = { ...this.view, communication_messages: {
@@ -348,9 +342,9 @@ export class AgentRunCollaborationContext {
     }
   }
 
-  /** Collaborators (hosted by the root) first, then extra copies and other delegated children. */
+  /** The root's delegated children. */
   private rootExecutionNodes() {
-    return [...collaboratorExecutionNodes(this.view.execution_tree.collaborators), ...this.view.execution_tree.taskExecutions]
+    return this.view.execution_tree.taskExecutions
   }
 
   private closedSubtrees() {

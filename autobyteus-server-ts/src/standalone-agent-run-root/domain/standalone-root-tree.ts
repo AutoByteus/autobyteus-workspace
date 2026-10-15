@@ -1,7 +1,6 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
 import type {
-  CollaboratorEntry,
   IsoTimestamp,
   TaskExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
@@ -15,14 +14,13 @@ export type StandaloneRootHost = Readonly<{
 
 /**
  * `memory/agents/<hostRunId>/collaboration/collaboration_tree.json`: created on the first
- * admitted mention. Read tolerantly, written exactly. Every task execution is hosted by the
- * root and sits at a collaborator address.
+ * delegation. Read tolerantly, written exactly. Every task execution is hosted by the root and
+ * carries the catalog source it was started from.
  */
 export type StandaloneRootTreeFile = Readonly<{
   subjectKind: "agent";
   createdAt: IsoTimestamp;
   host: StandaloneRootHost;
-  collaborators: readonly CollaboratorEntry[];
   taskExecutions: readonly TaskExecution[];
 }>;
 
@@ -43,7 +41,6 @@ export const emptyStandaloneRootTree = (input: Readonly<{
   subjectKind: "agent",
   createdAt: input.createdAt,
   host: Object.freeze({ ...input.host }),
-  collaborators: Object.freeze([]),
   taskExecutions: Object.freeze([]),
 });
 

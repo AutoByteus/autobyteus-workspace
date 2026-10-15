@@ -263,7 +263,6 @@ export const buildTestTeamContext = (input: {
     created_at: NOW, archived_at: null,
     application_binding: null, handoffs: [],
     root_team: {
-      collaborators: [],
       address: '/',
       team_definition_id: input.teamDefinitionId ?? 'test-team-definition',
       team_definition_name: input.teamDefinitionName ?? 'Test Team',

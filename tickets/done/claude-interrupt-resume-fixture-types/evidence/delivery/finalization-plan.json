@@ -1,0 +1,9 @@
+{
+  "ticketBranch": "codex/claude-interrupt-resume-fixture-types",
+  "target": "origin/personal",
+  "currentBase": "2614fc38c26248998e0eb563bfcd7ebe2f72fcbe",
+  "method": "ticket commit/push, fresh finalize branch, no-ff merge/push; no shared-checkout operations",
+  "release": "Not required \u2014 explicitly no new version",
+  "persistentReceiptDirectory": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types",
+  "finalPostCleanupProof": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/final-repository-state.json"
+}

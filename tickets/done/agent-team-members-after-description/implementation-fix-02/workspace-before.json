@@ -1,0 +1,18 @@
+{
+  "startHead": "ba869880e7ecc49fdd1c31b27a5f144ba5a7da98",
+  "protectedDeliveryFiles": {
+    "autobyteus-web/docs/agent_teams.md": "ef221dd1e7866906ab383b14e79c312bca8419dae357f576a63db2b7b651af3d",
+    "tickets/in-progress/agent-team-members-after-description/delivery-revision-record.md": "571b19c645e54ea54de175f046305847853e87ed8ca18d80f4c46d0e03626ebc",
+    "tickets/in-progress/agent-team-members-after-description/docs-sync-report.md": "3a0bb25531edbdb3e1318813565be25a648fde184229bd295e53fb0c47018f4e",
+    "tickets/in-progress/agent-team-members-after-description/handoff-summary.md": "897221c44e5acf29403ab548cea3f49532c75e3515a648def8faec3d76621d11",
+    "tickets/in-progress/agent-team-members-after-description/release-deployment-report.md": "23dfae7cd3ed55664b105767827ebf804876d0be8b1cd1cf6818fd4a53f6ea21",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/licensing.log": "d6c76a1c6db96e22926b2c8c5ab4ec3fa673848af3fd6049e6bfbde91cd2859c",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/desktop-verification.mjs": "b000934c4b3748f1f126965e940b40ee2a917a443f02c2a05465ea3e18830211",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/build-provenance.json": "d768b9925fa678ab38432340e8964e87d2279a68ea2b7c4af847405da2646afd",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/integrated-tests.log": "c5a745b580dcd06698ee0addbd1d0c8daca0da82a0a510f817295c424a3ef314",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/isolated-start.json": "3646be32644a3d532a725aef99d50a9db50a0b4ba3fc3bee33fedc959bccdd9a",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/artifact-hygiene.log": "609d3bdc61f17aa8d5cb6c1d1e0f19752a1bce70d2e3a3784cefc1598af787b2",
+    "tickets/in-progress/agent-team-members-after-description/delivery-01/desktop-build.log": "bdd0afcaf66996b129d6fd522785662267f0c9638c9f130f21b849b08cd7c698"
+  },
+  "initialStatus": " M autobyteus-web/docs/agent_teams.md\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/in-progress/agent-team-members-after-description/delivery-01/\n?? tickets/in-progress/agent-team-members-after-description/delivery-revision-record.md\n?? tickets/in-progress/agent-team-members-after-description/docs-sync-report.md\n?? tickets/in-progress/agent-team-members-after-description/handoff-summary.md\n?? tickets/in-progress/agent-team-members-after-description/release-deployment-report.md\n"
+}

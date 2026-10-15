@@ -1,0 +1,230 @@
+{
+  "at": "2026-10-13T06:17:47.828997+00:00",
+  "purpose": "Read-only corroboration of OWN normal saved files; no internal file edits, corruption or injected issues",
+  "entries": [
+    {
+      "id": "cache-control-agent",
+      "kind": "agents",
+      "row": {
+        "__typename": "AgentDefinition",
+        "id": "cache-control-agent",
+        "name": "Cache Control Agent",
+        "role": "Cache validation observer",
+        "description": "Disposable definition for real catalog cache proof.",
+        "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+        "category": "Cache validation",
+        "avatarUrl": null,
+        "toolNames": [],
+        "inputProcessorNames": [],
+        "llmResponseProcessorNames": [],
+        "toolExecutionResultProcessorNames": [],
+        "toolInvocationPreprocessorNames": [],
+        "lifecycleProcessorNames": [],
+        "skillNames": [],
+        "skillScope": "CONFIGURED",
+        "ownershipScope": "SHARED",
+        "ownerTeamId": null,
+        "ownerTeamName": null,
+        "ownerApplicationId": null,
+        "ownerApplicationName": null,
+        "ownerPackageId": null,
+        "ownerLocalApplicationId": null,
+        "defaultLaunchConfig": null,
+        "loadIssue": null
+      },
+      "markdownPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-P0m63x/server-data/agents/cache-control-agent/agent.md",
+      "markdown": "---\nname: Cache Control Agent\ndescription: Disposable definition for real catalog cache proof.\ncategory: Cache validation\nrole: Cache validation observer\n---\n\nKeep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+      "configPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-P0m63x/server-data/agents/cache-control-agent/agent-config.json",
+      "config": {
+        "toolNames": [],
+        "skillNames": [],
+        "skillScope": "CONFIGURED",
+        "inputProcessorNames": [],
+        "llmResponseProcessorNames": [],
+        "toolExecutionResultProcessorNames": [],
+        "toolInvocationPreprocessorNames": [],
+        "lifecycleProcessorNames": [],
+        "avatarUrl": null,
+        "defaultLaunchConfig": null
+      },
+      "markdownSHA256": "3599b7f66d363d58668b841b0dcd1bcd0ebe0dff0440275eaf6286268502403b",
+      "configSHA256": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+      "readerMatchesPersistedContent": true,
+      "storageWrittenByValidation": false
+    },
+    {
+      "id": "cache-validation-agent",
+      "kind": "agents",
+      "row": {
+        "__typename": "AgentDefinition",
+        "id": "cache-validation-agent",
+        "name": "Cache Validation Agent Edited",
+        "role": "Cache validation observer",
+        "description": "Description updated through the ordinary Agent edit form.",
+        "instructions": "Keep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+        "category": "Cache validation",
+        "avatarUrl": null,
+        "toolNames": [],
+        "inputProcessorNames": [],
+        "llmResponseProcessorNames": [],
+        "toolExecutionResultProcessorNames": [],
+        "toolInvocationPreprocessorNames": [],
+        "lifecycleProcessorNames": [],
+        "skillNames": [],
+        "skillScope": "CONFIGURED",
+        "ownershipScope": "SHARED",
+        "ownerTeamId": null,
+        "ownerTeamName": null,
+        "ownerApplicationId": null,
+        "ownerApplicationName": null,
+        "ownerPackageId": null,
+        "ownerLocalApplicationId": null,
+        "defaultLaunchConfig": null,
+        "loadIssue": null
+      },
+      "markdownPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-P0m63x/server-data/agents/cache-validation-agent/agent.md",
+      "markdown": "---\nname: Cache Validation Agent Edited\ndescription: Description updated through the ordinary Agent edit form.\ncategory: Cache validation\nrole: Cache validation observer\n---\n\nKeep this instruction content unchanged during the ordinary edit.\nNo model execution is needed.",
+      "configPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-P0m63x/server-data/agents/cache-validation-agent/agent-config.json",
+      "config": {
+        "toolNames": [],
+        "skillNames": [],
+        "skillScope": "CONFIGURED",
+        "inputProcessorNames": [],
+        "llmResponseProcessorNames": [],
+        "toolExecutionResultProcessorNames": [],
+        "toolInvocationPreprocessorNames": [],
+        "lifecycleProcessorNames": [],
+        "avatarUrl": null,
+        "defaultLaunchConfig": null
+      },
+      "markdownSHA256": "2e94124942bddb7ba51fbac20fed82f83913e1ba8c431406ba039578f730e615",
+      "configSHA256": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+      "readerMatchesPersistedContent": true,
+      "storageWrittenByValidation": false
+    },
+    {
+      "id": "cache-control-org",
+      "kind": "agent-orgs",
+      "row": {
+        "id": "cache-control-org",
+        "name": "Cache Control Org",
+        "description": "Disposable Org with real referenced Agents and preserved routing.",
+        "instructions": "",
+        "category": null,
+        "avatarUrl": null,
+        "revision": "33ee7edf3a717fd6f918c4efa7b59a809f18c8238083b3c4d9188e6622db2eff",
+        "handoffs": [],
+        "members": [
+          {
+            "memberName": "cache_control_agent",
+            "ref": "cache-control-agent",
+            "refType": "AGENT",
+            "refScope": "SHARED",
+            "__typename": "AgentOrgMember"
+          }
+        ],
+        "defaultLaunchConfig": null,
+        "loadIssues": [],
+        "__typename": "AgentOrgDefinition"
+      },
+      "markdownPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-P0m63x/server-data/agent-orgs/cache-control-org/org.md",
+      "markdown": "---\nname: Cache Control Org\ndescription: Disposable Org with real referenced Agents and preserved routing.\n---\n\n",
+      "configPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-P0m63x/server-data/agent-orgs/cache-control-org/org-config.json",
+      "config": {
+        "members": [
+          {
+            "memberName": "cache_control_agent",
+            "ref": "cache-control-agent",
+            "refType": "agent",
+            "refScope": "shared"
+          }
+        ],
+        "handoffs": [],
+        "avatarUrl": null,
+        "defaultLaunchConfig": null
+      },
+      "markdownSHA256": "700245f512f6e004b214d433dab25f7466762cc61e66530d14d7cf6a6c35dcdb",
+      "configSHA256": "2800c00d2d382a79b67d980176edc0341599e12fcaf6ccaf5d5b2aa84566bba0",
+      "readerMatchesPersistedContent": true,
+      "storageWrittenByValidation": false
+    },
+    {
+      "id": "cache-validation-org",
+      "kind": "agent-orgs",
+      "row": {
+        "id": "cache-validation-org",
+        "name": "Cache Validation Org Edited",
+        "description": "Description edited through the ordinary Org edit form.",
+        "instructions": "Preserve existing hidden Org instruction content during ordinary visible-field edits.",
+        "category": "Preserved category",
+        "avatarUrl": null,
+        "revision": "9b7b80ce9fb93e382c3273b78087a73e76f63d1a23aa256e112d66c478a4c8e5",
+        "handoffs": [
+          {
+            "from": "/cache_control_agent",
+            "to": "/cache_validation_agent_edited",
+            "rules": [
+              "When this review is complete, hand the package to the next member.",
+              "Preserve the original member identity and rules."
+            ],
+            "__typename": "AgentOrgHandoff"
+          }
+        ],
+        "members": [
+          {
+            "memberName": "cache_control_agent",
+            "ref": "cache-control-agent",
+            "refType": "AGENT",
+            "refScope": "SHARED",
+            "__typename": "AgentOrgMember"
+          },
+          {
+            "memberName": "cache_validation_agent_edited",
+            "ref": "cache-validation-agent",
+            "refType": "AGENT",
+            "refScope": "SHARED",
+            "__typename": "AgentOrgMember"
+          }
+        ],
+        "defaultLaunchConfig": null,
+        "loadIssues": [],
+        "__typename": "AgentOrgDefinition"
+      },
+      "markdownPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-P0m63x/server-data/agent-orgs/cache-validation-org/org.md",
+      "markdown": "---\nname: Cache Validation Org Edited\ndescription: Description edited through the ordinary Org edit form.\ncategory: Preserved category\n---\n\nPreserve existing hidden Org instruction content during ordinary visible-field edits.",
+      "configPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-P0m63x/server-data/agent-orgs/cache-validation-org/org-config.json",
+      "config": {
+        "members": [
+          {
+            "memberName": "cache_control_agent",
+            "ref": "cache-control-agent",
+            "refType": "agent",
+            "refScope": "shared"
+          },
+          {
+            "memberName": "cache_validation_agent_edited",
+            "ref": "cache-validation-agent",
+            "refType": "agent",
+            "refScope": "shared"
+          }
+        ],
+        "handoffs": [
+          {
+            "from": "/cache_control_agent",
+            "to": "/cache_validation_agent_edited",
+            "rules": [
+              "When this review is complete, hand the package to the next member.",
+              "Preserve the original member identity and rules."
+            ]
+          }
+        ],
+        "avatarUrl": null,
+        "defaultLaunchConfig": null
+      },
+      "markdownSHA256": "9943cfaf6598dc682fa909da01b2b6185e6890b2ae564b585e72d58b261ad5c3",
+      "configSHA256": "fe70de32fb5ba863ce7a7100570cdc1763cfb3511cd4777c69abac97333d19d4",
+      "readerMatchesPersistedContent": true,
+      "storageWrittenByValidation": false
+    }
+  ]
+}

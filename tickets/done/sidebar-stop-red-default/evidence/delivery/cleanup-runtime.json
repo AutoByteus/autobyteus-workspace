@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-10-13T16:34:48.573031+00:00",
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 34130,
+      "alive": false
+    },
+    {
+      "label": "frontend",
+      "pid": 34372,
+      "alive": false
+    }
+  ],
+  "ports": [
+    {
+      "url": "http://127.0.0.1:33931",
+      "listening": false
+    },
+    {
+      "url": "http://127.0.0.1:36623",
+      "listening": false
+    }
+  ],
+  "ownedRootExists": false,
+  "outerHomeExists": false,
+  "deliveryOuterHomeExists": false,
+  "matchingOwnedProcesses": []
+}

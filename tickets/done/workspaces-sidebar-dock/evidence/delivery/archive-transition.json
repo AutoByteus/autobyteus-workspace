@@ -1,0 +1,8 @@
+{
+  "verification": "Complete for R2 approved source-only before archive",
+  "from": "tickets/in-progress/workspaces-sidebar-dock",
+  "to": "tickets/done/workspaces-sidebar-dock",
+  "beforeFinalTicketCommit": true,
+  "noReleaseInstallRestartAuthority": true,
+  "currentHeadBeforeArchive": "9e270f51f0009303a13e4b784fcde1d38fe266b4"
+}

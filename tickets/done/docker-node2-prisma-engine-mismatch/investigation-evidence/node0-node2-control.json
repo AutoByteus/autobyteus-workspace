@@ -1,0 +1,231 @@
+{
+  "observedAt": "2026-10-13T12:33:19.133998+00:00",
+  "nodes": [
+    {
+      "name": "autobyteus-server-0",
+      "id": "ccc8477d16d13e0ef8fa8167e4c663fd2716eadc50b3f82629d5b42a04d248eb",
+      "imageId": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+      "imageTag": "autobyteus/autobyteus-server:beta",
+      "created": "2026-10-13T11:44:40.829735512Z",
+      "startedAt": "2026-10-13T11:44:41.031329137Z",
+      "running": true,
+      "ports": {
+        "5900/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "5908"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "5908"
+          }
+        ],
+        "6080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "64611"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "64611"
+          }
+        ],
+        "8000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8001"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "8001"
+          }
+        ],
+        "9223/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "9228"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "9228"
+          }
+        ]
+      },
+      "mounts": [
+        {
+          "Type": "volume",
+          "Name": "autobyteus-server-0-workspace",
+          "Source": "/var/lib/docker/volumes/autobyteus-server-0-workspace/_data",
+          "Destination": "/app/autobyteus-server-ts/workspace",
+          "RW": true
+        },
+        {
+          "Type": "volume",
+          "Name": "autobyteus-server-0-data",
+          "Source": "/var/lib/docker/volumes/autobyteus-server-0-data/_data",
+          "Destination": "/home/autobyteus/data",
+          "RW": true
+        },
+        {
+          "Type": "volume",
+          "Name": "autobyteus-server-0-root-home",
+          "Source": "/var/lib/docker/volumes/autobyteus-server-0-root-home/_data",
+          "Destination": "/root",
+          "RW": true
+        },
+        {
+          "Type": "volume",
+          "Name": "autobyteus-server-0-chromium-profile",
+          "Source": "/var/lib/docker/volumes/autobyteus-server-0-chromium-profile/_data",
+          "Destination": "/home/vncuser/.config/chromium",
+          "RW": true
+        },
+        {
+          "Type": "bind",
+          "Name": null,
+          "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-0",
+          "Destination": "/home/autobyteus/workspace",
+          "RW": true
+        },
+        {
+          "Type": "bind",
+          "Name": null,
+          "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/shared",
+          "Destination": "/home/autobyteus/shared",
+          "RW": true
+        }
+      ],
+      "health": [
+        {
+          "httpStatus": 200,
+          "body": {
+            "status": "ok",
+            "message": "Server is running"
+          }
+        },
+        {
+          "httpStatus": 200,
+          "body": {
+            "status": "ok",
+            "message": "Server is running"
+          }
+        }
+      ],
+      "supervisor": {
+        "exit": 0,
+        "out": "autobyteus_server                RUNNING   pid 53, uptime 0:48:37",
+        "err": ""
+      }
+    },
+    {
+      "name": "autobyteus-server-2",
+      "id": "7317070ee17555232f70a573c231b5716c0c8b67fd6b2a1c36e340346c14dcb1",
+      "imageId": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+      "imageTag": "autobyteus/autobyteus-server:beta",
+      "created": "2026-10-13T12:13:31.079487424Z",
+      "startedAt": "2026-10-13T12:13:31.136860216Z",
+      "running": true,
+      "ports": {
+        "5900/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "5910"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "5910"
+          }
+        ],
+        "6080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "6082"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "6082"
+          }
+        ],
+        "8000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8003"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "8003"
+          }
+        ],
+        "9223/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "9230"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "9230"
+          }
+        ]
+      },
+      "mounts": [
+        {
+          "Type": "volume",
+          "Name": "autobyteus-server-2-chromium-profile",
+          "Source": "/var/lib/docker/volumes/autobyteus-server-2-chromium-profile/_data",
+          "Destination": "/home/vncuser/.config/chromium",
+          "RW": true
+        },
+        {
+          "Type": "bind",
+          "Name": null,
+          "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-2",
+          "Destination": "/home/autobyteus/workspace",
+          "RW": true
+        },
+        {
+          "Type": "bind",
+          "Name": null,
+          "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/shared",
+          "Destination": "/home/autobyteus/shared",
+          "RW": true
+        },
+        {
+          "Type": "volume",
+          "Name": "autobyteus-server-2-workspace",
+          "Source": "/var/lib/docker/volumes/autobyteus-server-2-workspace/_data",
+          "Destination": "/app/autobyteus-server-ts/workspace",
+          "RW": true
+        },
+        {
+          "Type": "volume",
+          "Name": "autobyteus-server-2-data",
+          "Source": "/var/lib/docker/volumes/autobyteus-server-2-data/_data",
+          "Destination": "/home/autobyteus/data",
+          "RW": true
+        },
+        {
+          "Type": "volume",
+          "Name": "autobyteus-server-2-root-home",
+          "Source": "/var/lib/docker/volumes/autobyteus-server-2-root-home/_data",
+          "Destination": "/root",
+          "RW": true
+        }
+      ],
+      "health": [
+        {
+          "errorType": "ConnectionResetError",
+          "error": "[Errno 54] Connection reset by peer"
+        },
+        {
+          "errorType": "ConnectionResetError",
+          "error": "[Errno 54] Connection reset by peer"
+        }
+      ],
+      "supervisor": {
+        "exit": 3,
+        "out": "autobyteus_server                FATAL     Exited too quickly (process log may have details)",
+        "err": ""
+      }
+    }
+  ]
+}

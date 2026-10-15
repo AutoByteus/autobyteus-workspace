@@ -1,6 +1,7 @@
 import { asObject, asString, logger, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 import type { ClaudeSdkContextUsage } from "../../../../runtime-management/claude/client/claude-sdk-streaming-session.js";
+import type { ModelCallThroughput } from "../../../domain/model-call-throughput.js";
 
 const countOf = (value: unknown): number | null =>
   typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : null;
@@ -10,6 +11,8 @@ type OpenMessage = Readonly<{
   model: string | null;
   cacheCreation5m: number | null;
   cacheCreation1h: number | null;
+  /** Receipt time of `message_start`, which precedes all of the message's generation (thinking included). */
+  startedAtMs: number;
 }>;
 
 export type ClaudeCallUsageTrackerInput = Readonly<{
@@ -19,6 +22,8 @@ export type ClaudeCallUsageTrackerInput = Readonly<{
   /** The open process's SDK context read (`ClaudeSdkStreamingSession.readContextUsage`). */
   readContextUsage(): Promise<ClaudeSdkContextUsage | null>;
   emitEvent(event: ClaudeSessionEvent): void;
+  /** Frame receipt clock in milliseconds; defaults to `Date.now`. */
+  now?(): number;
 }>;
 
 /** One main-loop `stream_event` frame, or null for any other frame (subagent frames included). */
@@ -33,11 +38,18 @@ const mainLoopStreamEvent = (frame: unknown): Record<string, unknown> | null => 
  * `message_delta` (final usage) and emits one `claude_sdk_call` model-call observation carrying
  * the SDK's own context reading (D-1, D-2). `observe` resolves only after that emission, so the
  * awaiting frame pump never handles a later frame (in particular `result`) first (D-10).
+ *
+ * The call's TPS is generation speed from `message_start` receipt to `message_delta` receipt, both
+ * stamped when the frame arrives, so the context read awaited before emission is excluded.
  */
 export class ClaudeCallUsageTracker {
   private openMessage: OpenMessage | null = null;
 
-  constructor(private readonly input: ClaudeCallUsageTrackerInput) {}
+  private readonly now: () => number;
+
+  constructor(private readonly input: ClaudeCallUsageTrackerInput) {
+    this.now = input.now ?? Date.now;
+  }
 
   /** Forgets an unfinished message; called when a CLI process opens or exits. */
   reset(): void {
@@ -45,6 +57,7 @@ export class ClaudeCallUsageTracker {
   }
 
   async observe(frame: unknown): Promise<void> {
+    const receivedAtMs = this.now();
     const event = mainLoopStreamEvent(frame);
     if (event?.type === "message_start") {
       const message = asObject(event.message);
@@ -55,6 +68,7 @@ export class ClaudeCallUsageTracker {
         model: asString(message?.model),
         cacheCreation5m: countOf(cacheCreation?.ephemeral_5m_input_tokens),
         cacheCreation1h: countOf(cacheCreation?.ephemeral_1h_input_tokens),
+        startedAtMs: receivedAtMs,
       } : null;
       return;
     }
@@ -72,6 +86,11 @@ export class ClaudeCallUsageTracker {
     const cacheCreation = countOf(usage.cache_creation_input_tokens) ?? 0;
     const splitMatches = message.cacheCreation5m !== null && message.cacheCreation1h !== null &&
       message.cacheCreation5m + message.cacheCreation1h === cacheCreation;
+    const outputThroughput: ModelCallThroughput = {
+      method: "generation",
+      output_tokens: output,
+      duration_ms: receivedAtMs - message.startedAtMs,
+    };
     const reading = await this.input.readContextUsage();
     const sessionId = this.input.getSessionId();
     const window = reading?.rawMaxTokens ?? null;
@@ -105,6 +124,7 @@ export class ClaudeCallUsageTracker {
         effective_context_window_tokens: window,
         context_window_usage_percent: reading && window ? 100 * (reading.totalTokens / window) : null,
         context_compaction_threshold_tokens: reading?.autoCompactThreshold ?? null,
+        output_throughput: outputThroughput,
         raw_usage_json: null,
         raw_event_json: null,
         quality_flags: reading ? [] : ["claude_sdk_context_usage_unavailable"],

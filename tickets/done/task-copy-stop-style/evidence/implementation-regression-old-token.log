@@ -1,0 +1,125 @@
+
+> autobyteus@1.5.3-beta.4 test:nuxt /home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/DelegatedStopButton.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style/autobyteus-web
+
+stderr | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/history/__tests__/DelegatedStopButton.spec.ts (11 tests | 4 failed) 69ms
+   × sidebar 'Agent' copy Stop > matches normal run color tokens, retaining focus and semantics (selected=false) 23ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(15) ] to deeply equal ArrayContaining{…}
+   × sidebar 'Agent' copy Stop > matches normal run color tokens, retaining focus and semantics (selected=true) 6ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(15) ] to deeply equal ArrayContaining{…}
+   ✓ sidebar 'Agent' copy Stop > stops exactly this copy without selecting or toggling its row; activation keys are contained 6ms
+   ✓ sidebar 'Agent' copy Stop > keeps pending visible, disabled and pulsing, prevents duplicate stops, then hides the stopped copy 5ms
+   ✓ sidebar 'Agent' copy Stop > does not offer Stop without a live copy or a root 6ms
+   × sidebar 'Team' copy Stop > matches normal run color tokens, retaining focus and semantics (selected=false) 4ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(15) ] to deeply equal ArrayContaining{…}
+   × sidebar 'Team' copy Stop > matches normal run color tokens, retaining focus and semantics (selected=true) 4ms
+     → expected [ 'inline-flex', 'h-6', 'w-6', …(15) ] to deeply equal ArrayContaining{…}
+   ✓ sidebar 'Team' copy Stop > stops exactly this copy without selecting or toggling its row; activation keys are contained 4ms
+   ✓ sidebar 'Team' copy Stop > keeps pending visible, disabled and pulsing, prevents duplicate stops, then hides the stopped copy 6ms
+   ✓ sidebar 'Team' copy Stop > does not offer Stop without a live copy or a root 3ms
+   ✓ Team copy member rows > never offers an individual member Stop in place of the whole Team 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Agent' copy Stop > matches normal run color tokens, retaining focus and semantics (selected=false)
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Agent' copy Stop > matches normal run color tokens, retaining focus and semantics (selected=true)
+AssertionError: expected [ 'inline-flex', 'h-6', 'w-6', …(15) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   "text-gray-400",
++ [
++   "inline-flex",
++   "h-6",
++   "w-6",
++   "flex-shrink-0",
++   "items-center",
++   "justify-center",
++   "rounded-md",
++   "text-red-500",
+    "transition-colors",
+    "hover:bg-red-50",
+    "hover:text-red-600",
+    "focus:outline-none",
+    "focus-visible:ring-2",
+    "focus-visible:ring-red-500/40",
+    "disabled:cursor-default",
+    "disabled:opacity-60",
++   "mr-1",
++   "self-center",
+  ]
+
+ ❯ components/workspace/history/__tests__/DelegatedStopButton.spec.ts:47:30
+     45|     const wrapper = mount(WorkspaceTransientExecutionRow, { props: { r…
+     46|     const button = wrapper.get(stopSelector)
+     47|     expect(button.classes()).toEqual(expect.arrayContaining([
+       |                              ^
+     48|       'text-gray-400', 'transition-colors', 'hover:bg-red-50', 'hover:…
+     49|       'focus:outline-none', 'focus-visible:ring-2', 'focus-visible:rin…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Team' copy Stop > matches normal run color tokens, retaining focus and semantics (selected=false)
+ FAIL  components/workspace/history/__tests__/DelegatedStopButton.spec.ts > sidebar 'Team' copy Stop > matches normal run color tokens, retaining focus and semantics (selected=true)
+AssertionError: expected [ 'inline-flex', 'h-6', 'w-6', …(15) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   "text-gray-400",
++ [
++   "inline-flex",
++   "h-6",
++   "w-6",
++   "flex-shrink-0",
++   "items-center",
++   "justify-center",
++   "rounded-md",
++   "text-red-500",
+    "transition-colors",
+    "hover:bg-red-50",
+    "hover:text-red-600",
+    "focus:outline-none",
+    "focus-visible:ring-2",
+    "focus-visible:ring-red-500/40",
+    "disabled:cursor-default",
+    "disabled:opacity-60",
++   "mr-1",
++   "self-center",
+  ]
+
+ ❯ components/workspace/history/__tests__/DelegatedStopButton.spec.ts:47:30
+     45|     const wrapper = mount(WorkspaceTransientExecutionRow, { props: { r…
+     46|     const button = wrapper.get(stopSelector)
+     47|     expect(button.classes()).toEqual(expect.arrayContaining([
+       |                              ^
+     48|       'text-gray-400', 'transition-colors', 'hover:bg-red-50', 'hover:…
+     49|       'focus:outline-none', 'focus-visible:ring-2', 'focus-visible:rin…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 7 passed (11)
+   Start at  15:12:22
+   Duration  9.38s (transform 5.49s, setup 8.03s, collect 313ms, tests 69ms, environment 444ms, prepare 247ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

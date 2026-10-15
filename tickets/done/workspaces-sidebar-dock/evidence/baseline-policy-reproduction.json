@@ -1,0 +1,141 @@
+{
+  "sourceRevision": "d9bccf2550b918ab138e30486ef4dbf1d5e9d1ff",
+  "method": "execute unchanged bundled production policy, UI-supported drag widths; not rendered/runtime acceptance",
+  "cases": [
+    {
+      "viewportWidth": 1000,
+      "rightWidth": 450,
+      "collapsed": {
+        "left": "strip",
+        "leftActivation": "redock-panel",
+        "right": "docked",
+        "centerFloor": 200
+      },
+      "afterForceVisible": {
+        "left": "docked",
+        "right": "docked"
+      },
+      "bothDockedMinimum": 930
+    },
+    {
+      "viewportWidth": 1000,
+      "rightWidth": 400,
+      "collapsed": {
+        "left": "strip",
+        "leftActivation": "redock-panel",
+        "right": "docked",
+        "centerFloor": 200
+      },
+      "afterForceVisible": {
+        "left": "docked",
+        "right": "docked"
+      },
+      "bothDockedMinimum": 930
+    },
+    {
+      "viewportWidth": 1000,
+      "rightWidth": 746,
+      "collapsed": {
+        "left": "strip",
+        "leftActivation": "open-drawer",
+        "right": "docked",
+        "centerFloor": 200
+      },
+      "afterForceVisible": {
+        "left": "docked",
+        "right": "strip"
+      },
+      "bothDockedMinimum": 930
+    },
+    {
+      "viewportWidth": 1280,
+      "rightWidth": 450,
+      "collapsed": {
+        "left": "strip",
+        "leftActivation": "redock-panel",
+        "right": "docked",
+        "centerFloor": 200
+      },
+      "afterForceVisible": {
+        "left": "docked",
+        "right": "docked"
+      },
+      "bothDockedMinimum": 930
+    },
+    {
+      "viewportWidth": 1280,
+      "rightWidth": 680,
+      "collapsed": {
+        "left": "strip",
+        "leftActivation": "redock-panel",
+        "right": "docked",
+        "centerFloor": 200
+      },
+      "afterForceVisible": {
+        "left": "docked",
+        "right": "docked"
+      },
+      "bothDockedMinimum": 930
+    },
+    {
+      "viewportWidth": 1280,
+      "rightWidth": 1026,
+      "collapsed": {
+        "left": "strip",
+        "leftActivation": "open-drawer",
+        "right": "docked",
+        "centerFloor": 200
+      },
+      "afterForceVisible": {
+        "left": "docked",
+        "right": "strip"
+      },
+      "bothDockedMinimum": 930
+    },
+    {
+      "viewportWidth": 1440,
+      "rightWidth": 450,
+      "collapsed": {
+        "left": "strip",
+        "leftActivation": "redock-panel",
+        "right": "docked",
+        "centerFloor": 200
+      },
+      "afterForceVisible": {
+        "left": "docked",
+        "right": "docked"
+      },
+      "bothDockedMinimum": 930
+    },
+    {
+      "viewportWidth": 1440,
+      "rightWidth": 840,
+      "collapsed": {
+        "left": "strip",
+        "leftActivation": "redock-panel",
+        "right": "docked",
+        "centerFloor": 200
+      },
+      "afterForceVisible": {
+        "left": "docked",
+        "right": "docked"
+      },
+      "bothDockedMinimum": 930
+    },
+    {
+      "viewportWidth": 1440,
+      "rightWidth": 1186,
+      "collapsed": {
+        "left": "strip",
+        "leftActivation": "open-drawer",
+        "right": "docked",
+        "centerFloor": 200
+      },
+      "afterForceVisible": {
+        "left": "docked",
+        "right": "strip"
+      },
+      "bothDockedMinimum": 930
+    }
+  ]
+}

@@ -11,6 +11,7 @@ export declare const teamTaskExecutionStartedPayloadSchema: z.ZodObject<{
         delegator_agent_run_id: string | null;
         started_at: string;
         source?: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+        user_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
         kind: "task_agent";
         address: string;
@@ -19,6 +20,7 @@ export declare const teamTaskExecutionStartedPayloadSchema: z.ZodObject<{
         delegator_agent_run_id: string | null;
         started_at: string;
         source?: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+        user_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
     }>, unknown>>, z.ZodType<Readonly<{
         kind: "task_team";
         address: string;
@@ -28,6 +30,7 @@ export declare const teamTaskExecutionStartedPayloadSchema: z.ZodObject<{
         delegator_agent_run_id: string | null;
         started_at: string;
         source?: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+        user_team_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
         kind: "task_team";
         address: string;
@@ -37,6 +40,7 @@ export declare const teamTaskExecutionStartedPayloadSchema: z.ZodObject<{
         delegator_agent_run_id: string | null;
         started_at: string;
         source?: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+        user_team_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
     }>, unknown>>]>;
 }, z.core.$strict>;
 export type TeamTaskExecutionStartedPayload = Readonly<z.infer<typeof teamTaskExecutionStartedPayloadSchema>>;
@@ -67,10 +71,35 @@ export declare const teamTaskExecutionsReopenedPayloadSchema: z.ZodObject<{
     }, z.core.$strict>]>>;
 }, z.core.$strict>;
 export type TeamTaskExecutionsReopenedPayload = TeamTaskExecutionsClosedPayload;
-/** A collaborator entry was committed at the root; it precedes any task execution at its address. */
-export declare const teamCollaboratorAddedPayloadSchema: z.ZodObject<{
+/**
+ * The user's model choices of these delegated copies were saved on the live run
+ * (DS-001). Each names one record by its run ID (unique in the tree) with its choice as now recorded.
+ */
+export declare const teamDelegatedLaunchSelectionsChangedPayloadSchema: z.ZodObject<{
     change_sequence: z.ZodNumber;
-    collaborator: z.ZodType<import("./team-execution-view-dtos.js").CollaboratorEntryDto, unknown, z.core.$ZodTypeInternals<import("./team-execution-view-dtos.js").CollaboratorEntryDto, unknown>>;
+    selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agent_run_id: z.ZodString;
+        selection: z.ZodType<Readonly<{
+            llm_model_identifier: string;
+            llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
+            selected_at: string;
+        }>, unknown, z.core.$ZodTypeInternals<Readonly<{
+            llm_model_identifier: string;
+            llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
+            selected_at: string;
+        }>, unknown>>;
+    }, z.core.$strict>, z.ZodObject<{
+        team_run_id: z.ZodString;
+        selection: z.ZodType<Readonly<{
+            llm_model_identifier: string;
+            llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
+            selected_at: string;
+        }>, unknown, z.core.$ZodTypeInternals<Readonly<{
+            llm_model_identifier: string;
+            llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
+            selected_at: string;
+        }>, unknown>>;
+    }, z.core.$strict>]>>;
 }, z.core.$strict>;
-export type TeamCollaboratorAddedPayload = Readonly<z.infer<typeof teamCollaboratorAddedPayloadSchema>>;
+export type TeamDelegatedLaunchSelectionsChangedPayload = Readonly<z.infer<typeof teamDelegatedLaunchSelectionsChangedPayloadSchema>>;
 //# sourceMappingURL=team-task-execution-message-dtos.d.ts.map

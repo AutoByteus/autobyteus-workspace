@@ -1,0 +1,2526 @@
+{
+  "startedAt": "2026-10-13T03:29:13.789Z",
+  "platform": "linux-arm64",
+  "node": "v22.23.3",
+  "uid": 61193,
+  "display": ":100",
+  "cases": {
+    "API-006": {
+      "result": "Pass",
+      "details": {
+        "instance": {
+          "instanceId": "iso-35653-51e9",
+          "pid": 33435,
+          "executablePath": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus",
+          "backendUrl": "http://127.0.0.1:34469",
+          "graphqlUrl": "http://127.0.0.1:34469/graphql",
+          "controlEndpoint": "http://127.0.0.1:35653",
+          "controlPort": 35653,
+          "serverPort": 34469,
+          "dataRoot": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz",
+          "ownsDataRoot": true,
+          "keepDataRoot": false,
+          "databaseUrl": "file:/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/db/production.db",
+          "logPath": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-app/iso-35653-51e9.log"
+        },
+        "build": {
+          "head": "ea6c3235a332d225871d0081b11ba36f24500e4c",
+          "executable": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus",
+          "asar": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar",
+          "asarSha256": "307f910bd37f983a9a323b7d7543f436bc02a30df6af695039cfa7dfbe69ada6",
+          "embedded": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/file-explorer/file-explorer.js",
+          "embeddedSha256": "90b6abe16699570f760c89a8b5d9d266e42344582f815b493a400a2e46abb308",
+          "sourceSha256": "8e43f4b98bcf7d8aa02b535fa22ee503beafa399e5dd47b1c647f2a16e78bd4e"
+        },
+        "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+        "agentId": "electron-resume-test"
+      }
+    },
+    "API-002": {
+      "result": "Pass",
+      "details": {
+        "paths": [
+          "resume-notes.md",
+          "applications/nested/resume sample.pdf"
+        ],
+        "pdfSha256": "999bd43e8b679a7f1b65482120948444dca47a1e541122cae3bb27862069e87d",
+        "denied": [
+          {
+            "locator": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace/applications/nested/resume sample.pdf",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          },
+          {
+            "locator": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/outside.txt",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          },
+          {
+            "locator": "../outside.txt",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          },
+          {
+            "locator": "../workspace-sibling/leak.txt",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          }
+        ],
+        "textRead": true
+      }
+    },
+    "API-003": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+          "url": "file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/index.html#/chat",
+          "electron": true,
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [],
+          "preview": null,
+          "openFiles": [],
+          "searchLoading": false,
+          "spinner": false,
+          "alerts": [],
+          "canvases": []
+        },
+        "searched": {
+          "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+          "url": "file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/index.html#/chat",
+          "electron": true,
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [
+            {
+              "path": "resume-notes.md",
+              "id": "3094e73e-b0d4-5bb6-aad1-da4398c4de88",
+              "reused": true
+            },
+            {
+              "path": "applications/nested/resume sample.pdf",
+              "id": "search-applications/nested/resume sample.pdf",
+              "reused": false
+            }
+          ],
+          "preview": null,
+          "openFiles": [],
+          "searchLoading": false,
+          "spinner": false,
+          "alerts": [],
+          "canvases": []
+        },
+        "rendered": {
+          "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+          "url": "file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/index.html#/chat",
+          "electron": true,
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [
+            {
+              "path": "resume-notes.md",
+              "id": "3094e73e-b0d4-5bb6-aad1-da4398c4de88",
+              "reused": true
+            },
+            {
+              "path": "applications/nested/resume sample.pdf",
+              "id": "search-applications/nested/resume sample.pdf",
+              "reused": false
+            }
+          ],
+          "preview": {
+            "path": "applications/nested/resume sample.pdf",
+            "type": "PDF",
+            "mode": "preview",
+            "accessIntent": null,
+            "content": null,
+            "url": "http://127.0.0.1:34469/rest/workspaces/agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+            "relativeResourceContext": {
+              "kind": "workspace",
+              "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6"
+            },
+            "isLoading": false,
+            "error": null
+          },
+          "openFiles": [
+            "applications/nested/resume sample.pdf"
+          ],
+          "searchLoading": false,
+          "spinner": false,
+          "alerts": [],
+          "canvases": [
+            {
+              "width": 368,
+              "height": 449,
+              "ink": 1074
+            },
+            {
+              "width": 353,
+              "height": 431,
+              "ink": 1028
+            }
+          ]
+        },
+        "searchedText": {
+          "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+          "url": "file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/index.html#/chat",
+          "electron": true,
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [
+            {
+              "path": "resume-notes.md",
+              "id": "3094e73e-b0d4-5bb6-aad1-da4398c4de88",
+              "reused": true
+            },
+            {
+              "path": "applications/nested/resume sample.pdf",
+              "id": "search-applications/nested/resume sample.pdf",
+              "reused": false
+            }
+          ],
+          "preview": {
+            "path": "resume-notes.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": null,
+            "content": "# ELECTRON SYNTHETIC RESUME NOTES\n\nReal packaged workspace reader.\n",
+            "url": null,
+            "relativeResourceContext": {
+              "kind": "workspace",
+              "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6"
+            },
+            "isLoading": false,
+            "error": null
+          },
+          "openFiles": [
+            "applications/nested/resume sample.pdf",
+            "resume-notes.md"
+          ],
+          "searchLoading": false,
+          "spinner": false,
+          "alerts": [],
+          "canvases": []
+        },
+        "treeText": {
+          "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+          "url": "file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/index.html#/chat",
+          "electron": true,
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [
+            {
+              "path": "resume-notes.md",
+              "id": "3094e73e-b0d4-5bb6-aad1-da4398c4de88",
+              "reused": true
+            },
+            {
+              "path": "applications/nested/resume sample.pdf",
+              "id": "search-applications/nested/resume sample.pdf",
+              "reused": false
+            }
+          ],
+          "preview": {
+            "path": "resume-notes.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": null,
+            "content": "# ELECTRON SYNTHETIC RESUME NOTES\n\nReal packaged workspace reader.\n",
+            "url": null,
+            "relativeResourceContext": {
+              "kind": "workspace",
+              "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6"
+            },
+            "isLoading": false,
+            "error": null
+          },
+          "openFiles": [
+            "applications/nested/resume sample.pdf",
+            "resume-notes.md"
+          ],
+          "searchLoading": false,
+          "spinner": false,
+          "alerts": [],
+          "canvases": []
+        },
+        "treePdf": {
+          "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+          "url": "file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/index.html#/chat",
+          "electron": true,
+          "paths": [
+            "workspace",
+            "applications",
+            "applications/nested",
+            "applications/nested/resume sample.pdf",
+            "resume-notes.md"
+          ],
+          "openFolders": {
+            "applications": true,
+            "applications/nested": true
+          },
+          "results": [],
+          "preview": {
+            "path": "applications/nested/resume sample.pdf",
+            "type": "PDF",
+            "mode": "preview",
+            "accessIntent": null,
+            "content": null,
+            "url": "http://127.0.0.1:34469/rest/workspaces/agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+            "relativeResourceContext": {
+              "kind": "workspace",
+              "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6"
+            },
+            "isLoading": false,
+            "error": null
+          },
+          "openFiles": [
+            "applications/nested/resume sample.pdf",
+            "resume-notes.md"
+          ],
+          "searchLoading": false,
+          "spinner": false,
+          "alerts": [],
+          "canvases": [
+            {
+              "width": 368,
+              "height": 449,
+              "ink": 1074
+            },
+            {
+              "width": 353,
+              "height": 431,
+              "ink": 1028
+            }
+          ]
+        }
+      }
+    },
+    "API-007": {
+      "result": "Fail",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n404 !== 200\n\n    at file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs:261:12\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async run (file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs:130:36)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs:247:3"
+    }
+  },
+  "requests": [
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetSkills",
+        "variables": {},
+        "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+      },
+      "result": {
+        "data": {
+          "skills": [
+            {
+              "name": "retrospective-skill-improver",
+              "description": "Retrospectively analyzes target run work traces and improves durable skill packages when reusable guidance, SOPs, examples, or package structure should change.",
+              "content": "# Retrospective Skill Improver\n\n## Purpose\n\nUse work trace evidence for a target run/agent to improve editable skill packages. A useful update turns observed friction into stable guidance that future agents can reuse.\n\nWork trace body entries use role/event labels such as `user`, `assistant`, `tool`, and neutral trace events. The task message and manifest provide the target identity.\n\n## Workflow\n\n1. Read the task message for dynamic scope: work trace paths, editable skill roots, package trees, target AgentRun id, and completion message type.\n2. Read the relevant work trace files as retrospective Skill Improvement evidence.\n3. Inspect each relevant editable skill package, starting from `SKILL.md` and then any referenced files needed to understand the current guidance.\n4. Decide whether the evidence supports a durable improvement:\n   - explain that current guidance stands;\n   - revise a concise rule, example, or SOP;\n   - add or update a reference/template/example file;\n   - improve package flow or file organization.\n5. Use the listed editable skill roots for file edits.\n6. After meaningful durable file changes, send the final `skill_update` once using the task-supplied completion target.\n\n## Evidence Interpretation\n\nUse visible user messages, visible assistant messages, tool calls, tool results/errors, neutral trace events, retries, corrections, and feedback signals. Prefer repeated or explicit evidence over isolated inconvenience.\n\nBase improvements on the observable evidence present in the readable work trace.\n\nHigh-signal patterns include:\n\n- explicit user correction or future-facing guidance;\n- repeated retries, corrections, or backtracking;\n- tool exploration that converges into a precise repeatable procedure;\n- repeated rediscovery of environment facts or command sequences;\n- example or routing gaps in the existing skill;\n- file-organization friction where package flow made relevant guidance hard to find;\n- repeated overlong or overfragmented guidance causing confusion.\n\n## Durable Improvement Check\n\nBefore editing a skill, confirm:\n\n- The change would help future runs for the same class of task.\n- The lesson can be generalized using stable, reusable details.\n- The package location is right: entry file, reference, example, template, script, or package structure.\n- The current package guidance or organization contributed to the observed friction.\n\nFor temporary outages, task-specific facts, or run-specific data, treat the trace as context and explain that current guidance stands.\n\n## Package Improvement Scope\n\n`SKILL.md` is the entry file, not the whole skill. Improve the file that owns the guidance:\n\n- `SKILL.md` for concise workflow, routing, and mandatory rules;\n- `references/*.md` for detailed SOPs, examples, and troubleshooting;\n- `templates/*` for reusable output structures;\n- `scripts/*` or assets when reusable executable or static support is justified.\n\nKeep the package easy to navigate. Prefer a referenced SOP/example file over expanding `SKILL.md` when the lesson needs detail.\n\n## Required References\n\nRead these references when relevant:\n\n- `references/high-signal-trace-patterns.md` for evidence signals.\n- `references/package-improvement-playbook.md` for choosing the right file/change shape.\n- `references/examples.md` for sample trace-to-skill transformations.\n\n## Final Response And Notification\n\nIf current guidance stands, explain that decision.\n\nIf meaningful durable skill package files changed, call `send_message_to` exactly once with:\n\n- `target_agent_run_id` from the task message;\n- `message_type` from the task message;\n- concise target-facing content explaining what changed, why it matters, and how future work should use it;\n- `reference_files` containing absolute paths for updated or directly relevant surviving files inside editable roots.\n\nFor deleted files, mention them in message content rather than `reference_files`.",
+              "rootPath": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver",
+              "fileCount": 4,
+              "isReadonly": false,
+              "isDisabled": false,
+              "__typename": "Skill"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetAgentDefinitions",
+        "variables": {},
+        "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssue {\n      code\n      reason\n      definitionPath\n      packageRoot\n      __typename\n    }\n  }\n}"
+      },
+      "result": {
+        "data": {
+          "agentDefinitions": [
+            {
+              "__typename": "AgentDefinition",
+              "id": "autobyteus-daily-assistant",
+              "name": "Daily Assistant",
+              "role": "General Agent",
+              "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+              "instructions": "You are Daily Assistant, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+              "category": null,
+              "avatarUrl": null,
+              "toolNames": [
+                "run_bash",
+                "read_file",
+                "read_url",
+                "search_web",
+                "close_tab",
+                "dom_snapshot",
+                "list_tabs",
+                "navigate_to",
+                "open_tab",
+                "run_script",
+                "screenshot",
+                "get_process_output",
+                "start_background_process",
+                "stop_background_process",
+                "download_media",
+                "edit_image",
+                "generate_image",
+                "generate_speech",
+                "read_media_file",
+                "list_available_agents"
+              ],
+              "inputProcessorNames": [],
+              "llmResponseProcessorNames": [],
+              "toolExecutionResultProcessorNames": [],
+              "toolInvocationPreprocessorNames": [],
+              "lifecycleProcessorNames": [],
+              "skillNames": [],
+              "skillScope": "ALL_INSTALLED",
+              "ownershipScope": "SHARED",
+              "ownerTeamId": null,
+              "ownerTeamName": null,
+              "ownerApplicationId": null,
+              "ownerApplicationName": null,
+              "ownerPackageId": null,
+              "ownerLocalApplicationId": null,
+              "defaultLaunchConfig": null,
+              "loadIssue": null
+            },
+            {
+              "__typename": "AgentDefinition",
+              "id": "autobyteus-retrospective-skill-improver",
+              "name": "Retrospective Skill Improver",
+              "role": "retrospective skill improver",
+              "description": "Improves configured durable skill packages from target run work-trace evidence.",
+              "instructions": "You are the Retrospective Skill Improver, the worker agent for Skill Improvement.\n\nYour job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.\n\nThe task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.\n\nUse the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.\n\nWhen the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.\n\nAfter meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.\n",
+              "category": "skill-improvement",
+              "avatarUrl": null,
+              "toolNames": [
+                "run_bash",
+                "send_message_to"
+              ],
+              "inputProcessorNames": [],
+              "llmResponseProcessorNames": [],
+              "toolExecutionResultProcessorNames": [],
+              "toolInvocationPreprocessorNames": [],
+              "lifecycleProcessorNames": [],
+              "skillNames": [
+                "retrospective-skill-improver"
+              ],
+              "skillScope": "CONFIGURED",
+              "ownershipScope": "SHARED",
+              "ownerTeamId": null,
+              "ownerTeamName": null,
+              "ownerApplicationId": null,
+              "ownerApplicationName": null,
+              "ownerPackageId": null,
+              "ownerLocalApplicationId": null,
+              "defaultLaunchConfig": null,
+              "loadIssue": null
+            },
+            {
+              "__typename": "AgentDefinition",
+              "id": "electron-resume-test",
+              "name": "Electron Resume Test",
+              "role": null,
+              "description": "Synthetic owned preview validation, no inference.",
+              "instructions": "Test fixture; no model messages.",
+              "category": null,
+              "avatarUrl": null,
+              "toolNames": [],
+              "inputProcessorNames": [],
+              "llmResponseProcessorNames": [],
+              "toolExecutionResultProcessorNames": [],
+              "toolInvocationPreprocessorNames": [],
+              "lifecycleProcessorNames": [],
+              "skillNames": [],
+              "skillScope": "CONFIGURED",
+              "ownershipScope": "SHARED",
+              "ownerTeamId": null,
+              "ownerTeamName": null,
+              "ownerApplicationId": null,
+              "ownerApplicationName": null,
+              "ownerPackageId": null,
+              "ownerLocalApplicationId": null,
+              "defaultLaunchConfig": null,
+              "loadIssue": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetAgentTeamDefinitions",
+        "variables": {},
+        "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n  }\n}"
+      },
+      "result": {
+        "data": {
+          "agentTeamDefinitions": []
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetAgentOrgDefinitions",
+        "variables": {},
+        "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n    __typename\n  }\n}"
+      },
+      "result": {
+        "data": {
+          "agentOrgDefinitions": []
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetAllWorkspaces",
+        "variables": {},
+        "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+      },
+      "result": {
+        "data": {
+          "workspaces": [
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+              "name": "workspace",
+              "displayName": "workspace",
+              "config": {
+                "rootPath": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace",
+                "workspaceId": null
+              },
+              "workspaceRootPath": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace",
+              "absolutePath": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace",
+              "kind": "filesystem",
+              "isTemp": false
+            },
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "temp_ws_default",
+              "name": "Temp Workspace",
+              "displayName": "Temp Workspace",
+              "config": {
+                "rootPath": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/temp_workspace",
+                "workspaceId": "temp_ws_default"
+              },
+              "workspaceRootPath": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/temp_workspace",
+              "absolutePath": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/temp_workspace",
+              "kind": "temp",
+              "isTemp": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "ListWorkspaceRunHistory",
+        "variables": {
+          "limitPerAgent": 6
+        },
+        "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+      },
+      "result": {
+        "data": {
+          "listWorkspaceRunHistory": []
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "ListCollaborationRootHistory",
+        "variables": {},
+        "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+      },
+      "result": {
+        "data": {
+          "listCollaborationRootHistory": []
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetApplicationsCapability",
+        "variables": {},
+        "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+      },
+      "result": {
+        "data": {
+          "applicationsCapability": {
+            "enabled": false,
+            "scope": "BOUND_NODE",
+            "settingKey": "ENABLE_APPLICATIONS",
+            "source": "SERVER_SETTING",
+            "__typename": "ApplicationsCapability"
+          }
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetRuntimeAvailabilityKinds",
+        "variables": {},
+        "query": "query GetRuntimeAvailabilityKinds {\n  runtimeAvailabilityKinds\n}"
+      },
+      "result": {
+        "data": {
+          "runtimeAvailabilityKinds": [
+            "autobyteus",
+            "codex_app_server",
+            "claude_agent_sdk",
+            "antigravity_cli",
+            "grok_build"
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetRuntimeAvailability",
+        "variables": {
+          "runtimeKind": "autobyteus"
+        },
+        "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+      },
+      "result": {
+        "data": {
+          "runtimeAvailability": {
+            "runtimeKind": "autobyteus",
+            "enabled": true,
+            "reason": null,
+            "__typename": "RuntimeAvailabilityObject"
+          }
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetRuntimeAvailability",
+        "variables": {
+          "runtimeKind": "codex_app_server"
+        },
+        "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+      },
+      "result": {
+        "data": {
+          "runtimeAvailability": {
+            "runtimeKind": "codex_app_server",
+            "enabled": true,
+            "reason": null,
+            "__typename": "RuntimeAvailabilityObject"
+          }
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetRuntimeAvailability",
+        "variables": {
+          "runtimeKind": "claude_agent_sdk"
+        },
+        "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+      },
+      "result": {
+        "data": {
+          "runtimeAvailability": {
+            "runtimeKind": "claude_agent_sdk",
+            "enabled": true,
+            "reason": null,
+            "__typename": "RuntimeAvailabilityObject"
+          }
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetRuntimeAvailability",
+        "variables": {
+          "runtimeKind": "grok_build"
+        },
+        "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+      },
+      "result": {
+        "data": {
+          "runtimeAvailability": {
+            "runtimeKind": "grok_build",
+            "enabled": true,
+            "reason": null,
+            "__typename": "RuntimeAvailabilityObject"
+          }
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+          "folderPath": ""
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "result": {
+        "data": {
+          "folderChildren": "{\"id\":\"c984eea4-c843-5816-b16c-42ccac7ac935\",\"name\":\"workspace\",\"path\":\"workspace\",\"is_file\":false,\"children\":[{\"id\":\"b300cdc4-3ae2-52f6-affe-1dc517c9b482\",\"name\":\"applications\",\"path\":\"applications\",\"is_file\":false,\"children\":[],\"children_loaded\":false},{\"id\":\"3094e73e-b0d4-5bb6-aad1-da4398c4de88\",\"name\":\"resume-notes.md\",\"path\":\"resume-notes.md\",\"is_file\":true,\"children\":[],\"children_loaded\":true}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetRuntimeAvailability",
+        "variables": {
+          "runtimeKind": "antigravity_cli"
+        },
+        "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+      },
+      "result": {
+        "data": {
+          "runtimeAvailability": {
+            "runtimeKind": "antigravity_cli",
+            "enabled": false,
+            "reason": "Antigravity model discovery failed; check authentication or network and retry.",
+            "__typename": "RuntimeAvailabilityObject"
+          }
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetProviderModelCatalogSnapshots",
+        "variables": {
+          "runtimeKind": "autobyteus"
+        },
+        "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+      },
+      "result": {
+        "data": {
+          "providerModelCatalogSnapshots": [
+            {
+              "runtimeKind": "autobyteus",
+              "ownerProvider": {
+                "id": "ANTHROPIC",
+                "name": "Anthropic",
+                "providerType": "ANTHROPIC",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "STATIC",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [],
+              "llmModels": [
+                {
+                  "modelIdentifier": "claude-fable-5",
+                  "name": "claude-fable-5",
+                  "description": null,
+                  "value": "claude-fable-5",
+                  "canonicalName": "claude-fable-5",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "thinking_enabled": {
+                        "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "thinking_display": {
+                        "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                        "type": "string",
+                        "default": "omitted",
+                        "enum": [
+                          "omitted",
+                          "summarized"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1000000,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "claude-fable-5-1",
+                  "name": "claude-fable-5-1",
+                  "description": null,
+                  "value": "claude-fable-5-1",
+                  "canonicalName": "claude-fable-5-1",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": null,
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1000000,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "claude-haiku-5-5",
+                  "name": "claude-haiku-5-5",
+                  "description": null,
+                  "value": "claude-haiku-5-5",
+                  "canonicalName": "claude-haiku-5-5",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "thinking_enabled": {
+                        "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "thinking_display": {
+                        "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                        "type": "string",
+                        "default": "omitted",
+                        "enum": [
+                          "omitted",
+                          "summarized"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1000000,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "claude-opus-4.7",
+                  "name": "claude-opus-4.7",
+                  "description": null,
+                  "value": "claude-opus-4-7",
+                  "canonicalName": "claude-opus-4.7",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "thinking_enabled": {
+                        "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "thinking_display": {
+                        "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                        "type": "string",
+                        "default": "omitted",
+                        "enum": [
+                          "omitted",
+                          "summarized"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1000000,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "claude-opus-4.8",
+                  "name": "claude-opus-4.8",
+                  "description": null,
+                  "value": "claude-opus-4-8",
+                  "canonicalName": "claude-opus-4.8",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "thinking_enabled": {
+                        "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "thinking_display": {
+                        "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                        "type": "string",
+                        "default": "omitted",
+                        "enum": [
+                          "omitted",
+                          "summarized"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1000000,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "claude-opus-5",
+                  "name": "claude-opus-5",
+                  "description": null,
+                  "value": "claude-opus-5",
+                  "canonicalName": "claude-opus-5",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "thinking_enabled": {
+                        "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "thinking_display": {
+                        "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                        "type": "string",
+                        "default": "omitted",
+                        "enum": [
+                          "omitted",
+                          "summarized"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1000000,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "claude-opus-5-5",
+                  "name": "claude-opus-5-5",
+                  "description": null,
+                  "value": "claude-opus-5-5",
+                  "canonicalName": "claude-opus-5-5",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "thinking_display": {
+                        "description": "Adaptive thinking display mode. Claude Opus 5.5 always uses adaptive thinking.",
+                        "type": "string",
+                        "default": "omitted",
+                        "enum": [
+                          "omitted",
+                          "summarized"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1000000,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "claude-sonnet-4.6",
+                  "name": "claude-sonnet-4.6",
+                  "description": null,
+                  "value": "claude-sonnet-4-6",
+                  "canonicalName": "claude-sonnet-4.6",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "thinking_enabled": {
+                        "description": "Enable extended thinking summaries in Claude responses",
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "thinking_budget_tokens": {
+                        "description": "Token budget for extended thinking (min 1024)",
+                        "type": "integer",
+                        "default": 1024,
+                        "minimum": 1024
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1000000,
+                  "maxOutputTokens": 64000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "claude-sonnet-5",
+                  "name": "claude-sonnet-5",
+                  "description": null,
+                  "value": "claude-sonnet-5",
+                  "canonicalName": "claude-sonnet-5",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "thinking_enabled": {
+                        "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "thinking_display": {
+                        "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                        "type": "string",
+                        "default": "omitted",
+                        "enum": [
+                          "omitted",
+                          "summarized"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1000000,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "claude-sonnet-5-5",
+                  "name": "claude-sonnet-5-5",
+                  "description": null,
+                  "value": "claude-sonnet-5-5",
+                  "canonicalName": "claude-sonnet-5-5",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "thinking_enabled": {
+                        "description": "Request Anthropic adaptive thinking. Off sends the lowest setting (between_tools): Claude still writes short progress notes between tool calls. No fixed budget is sent.",
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "thinking_display": {
+                        "description": "Controls whether adaptive thinking content is omitted or summarized. Summarized keeps the progress notes between tool calls visible.",
+                        "type": "string",
+                        "default": "summarized",
+                        "enum": [
+                          "omitted",
+                          "summarized"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1000000,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "audioModels": [],
+              "imageModels": [],
+              "videoModels": [],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            },
+            {
+              "runtimeKind": "autobyteus",
+              "ownerProvider": {
+                "id": "DEEPSEEK",
+                "name": "DeepSeek",
+                "providerType": "DEEPSEEK",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "STATIC",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [],
+              "llmModels": [
+                {
+                  "modelIdentifier": "deepseek-v4-flash",
+                  "name": "deepseek-v4-flash",
+                  "description": null,
+                  "value": "deepseek-v4-flash",
+                  "canonicalName": "deepseek-v4-flash",
+                  "providerId": "DEEPSEEK",
+                  "providerName": "DeepSeek",
+                  "providerType": "DEEPSEEK",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls DeepSeek V4 thinking effort when thinking mode is enabled.",
+                        "type": "string",
+                        "default": "high",
+                        "enum": [
+                          "high",
+                          "max"
+                        ]
+                      },
+                      "thinking_type": {
+                        "description": "Enable or disable DeepSeek V4 thinking mode.",
+                        "type": "string",
+                        "default": "enabled",
+                        "enum": [
+                          "enabled",
+                          "disabled"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": 384000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "deepseek-v4-pro",
+                  "name": "deepseek-v4-pro",
+                  "description": null,
+                  "value": "deepseek-v4-pro",
+                  "canonicalName": "deepseek-v4-pro",
+                  "providerId": "DEEPSEEK",
+                  "providerName": "DeepSeek",
+                  "providerType": "DEEPSEEK",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls DeepSeek V4 thinking effort when thinking mode is enabled.",
+                        "type": "string",
+                        "default": "high",
+                        "enum": [
+                          "high",
+                          "max"
+                        ]
+                      },
+                      "thinking_type": {
+                        "description": "Enable or disable DeepSeek V4 thinking mode.",
+                        "type": "string",
+                        "default": "enabled",
+                        "enum": [
+                          "enabled",
+                          "disabled"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": 384000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "audioModels": [],
+              "imageModels": [],
+              "videoModels": [],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            },
+            {
+              "runtimeKind": "autobyteus",
+              "ownerProvider": {
+                "id": "GEMINI",
+                "name": "Gemini",
+                "providerType": "GEMINI",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "STATIC",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [],
+              "llmModels": [
+                {
+                  "modelIdentifier": "gemini-3.1-pro-preview",
+                  "name": "gemini-3.1-pro-preview",
+                  "description": null,
+                  "value": "gemini-3.1-pro-preview",
+                  "canonicalName": "gemini-3.1-pro-preview",
+                  "providerId": "GEMINI",
+                  "providerName": "Gemini",
+                  "providerType": "GEMINI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "thinking_level": {
+                        "description": "How deeply the model should reason before responding",
+                        "type": "string",
+                        "default": "medium",
+                        "enum": [
+                          "low",
+                          "medium",
+                          "high"
+                        ]
+                      },
+                      "include_thoughts": {
+                        "description": "Include model thought summaries in responses",
+                        "type": "boolean",
+                        "default": false
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1048576,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1048576,
+                  "maxOutputTokens": 65536,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gemini-3.8-flash",
+                  "name": "gemini-3.8-flash",
+                  "description": null,
+                  "value": "gemini-3.8-flash",
+                  "canonicalName": "gemini-3.8-flash",
+                  "providerId": "GEMINI",
+                  "providerName": "Gemini",
+                  "providerType": "GEMINI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "thinking_level": {
+                        "description": "How deeply the model should reason before responding",
+                        "type": "string",
+                        "default": "medium",
+                        "enum": [
+                          "low",
+                          "medium",
+                          "high"
+                        ]
+                      },
+                      "include_thoughts": {
+                        "description": "Include model thought summaries in responses",
+                        "type": "boolean",
+                        "default": false
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1048576,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1048576,
+                  "maxOutputTokens": 65536,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "audioModels": [
+                {
+                  "modelIdentifier": "gemini-3.8-flash-lite-tts",
+                  "name": "gemini-3.8-flash-lite-tts",
+                  "value": "gemini-3.8-flash-lite-tts",
+                  "canonicalName": "gemini-3.8-flash-lite-tts",
+                  "providerId": "GEMINI",
+                  "providerName": "Gemini",
+                  "providerType": "GEMINI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gemini-3.8-flash-tts",
+                  "name": "gemini-3.8-flash-tts",
+                  "value": "gemini-3.8-flash-tts",
+                  "canonicalName": "gemini-3.8-flash-tts",
+                  "providerId": "GEMINI",
+                  "providerName": "Gemini",
+                  "providerType": "GEMINI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "imageModels": [
+                {
+                  "modelIdentifier": "gemini-2.5-flash-image",
+                  "name": "gemini-2.5-flash-image",
+                  "description": "Fast conversational multimodal image model.",
+                  "value": "gemini-2.5-flash-image",
+                  "canonicalName": "gemini-2.5-flash-image",
+                  "providerId": "GEMINI",
+                  "providerName": "Gemini",
+                  "providerType": "GEMINI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gemini-3-pro-image",
+                  "name": "gemini-3-pro-image",
+                  "description": "GA Nano Banana Pro / Gemini 3 Pro Image model for high-quality complex image tasks.",
+                  "value": "gemini-3-pro-image",
+                  "canonicalName": "gemini-3-pro-image",
+                  "providerId": "GEMINI",
+                  "providerName": "Gemini",
+                  "providerType": "GEMINI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gemini-3.1-flash-image",
+                  "name": "gemini-3.1-flash-image",
+                  "description": "GA Nano Banana 2 / Gemini 3.1 Flash Image model for versatile image generation and editing.",
+                  "value": "gemini-3.1-flash-image",
+                  "canonicalName": "gemini-3.1-flash-image",
+                  "providerId": "GEMINI",
+                  "providerName": "Gemini",
+                  "providerType": "GEMINI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gemini-3.1-flash-lite-image",
+                  "name": "gemini-3.1-flash-lite-image",
+                  "description": "Fast, cost-efficient Gemini 3.1 Flash-Lite Image model with 1K output; best for lightweight image generation and edits, not multiple references or multi-turn editing.",
+                  "value": "gemini-3.1-flash-lite-image",
+                  "canonicalName": "gemini-3.1-flash-lite-image",
+                  "providerId": "GEMINI",
+                  "providerName": "Gemini",
+                  "providerType": "GEMINI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "imagen-4",
+                  "name": "imagen-4",
+                  "description": "High-fidelity stateless model; text-to-image only.",
+                  "value": "imagen-4.0-generate-001",
+                  "canonicalName": "imagen-4",
+                  "providerId": "GEMINI",
+                  "providerName": "Gemini",
+                  "providerType": "GEMINI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "videoModels": [
+                {
+                  "modelIdentifier": "gemini-omni-flash-preview",
+                  "name": "gemini-omni-flash-preview",
+                  "value": "gemini-omni-flash-preview",
+                  "canonicalName": "gemini-omni-flash-preview",
+                  "providerId": "GEMINI",
+                  "providerName": "Gemini",
+                  "providerType": "GEMINI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            },
+            {
+              "runtimeKind": "autobyteus",
+              "ownerProvider": {
+                "id": "GLM",
+                "name": "GLM",
+                "providerType": "GLM",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "STATIC",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [],
+              "llmModels": [
+                {
+                  "modelIdentifier": "glm-5.3",
+                  "name": "glm-5.3",
+                  "description": null,
+                  "value": "glm-5.3",
+                  "canonicalName": "glm-5.3",
+                  "providerId": "GLM",
+                  "providerName": "GLM",
+                  "providerType": "GLM",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls GLM-5.3 thinking effort. Thinking is always enabled.",
+                        "type": "string",
+                        "default": "max",
+                        "enum": [
+                          "low",
+                          "high",
+                          "max"
+                        ]
+                      },
+                      "thinking_type": {
+                        "description": "GLM-5.3 thinking is always enabled.",
+                        "type": "string",
+                        "default": "enabled",
+                        "enum": [
+                          "enabled"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1000000,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "audioModels": [],
+              "imageModels": [],
+              "videoModels": [],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            },
+            {
+              "runtimeKind": "autobyteus",
+              "ownerProvider": {
+                "id": "GROK",
+                "name": "Grok",
+                "providerType": "GROK",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "STATIC",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [],
+              "llmModels": [
+                {
+                  "modelIdentifier": "grok-4.7",
+                  "name": "grok-4.7",
+                  "description": null,
+                  "value": "grok-4.7",
+                  "canonicalName": "grok-4.7",
+                  "providerId": "GROK",
+                  "providerName": "Grok",
+                  "providerType": "GROK",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls Grok reasoning effort. Reasoning is always enabled.",
+                        "type": "string",
+                        "default": "high",
+                        "enum": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 500000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "audioModels": [],
+              "imageModels": [],
+              "videoModels": [],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            },
+            {
+              "runtimeKind": "autobyteus",
+              "ownerProvider": {
+                "id": "KIMI",
+                "name": "Kimi",
+                "providerType": "KIMI",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "STATIC",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [],
+              "llmModels": [
+                {
+                  "modelIdentifier": "kimi-k3",
+                  "name": "kimi-k3",
+                  "description": null,
+                  "value": "kimi-k3",
+                  "canonicalName": "kimi-k3",
+                  "providerId": "KIMI",
+                  "providerName": "Kimi",
+                  "providerType": "KIMI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls Kimi K3 reasoning effort. Thinking is always enabled.",
+                        "type": "string",
+                        "default": "max",
+                        "enum": [
+                          "low",
+                          "high",
+                          "max"
+                        ]
+                      },
+                      "thinking_type": {
+                        "description": "Kimi K3 thinking is always enabled.",
+                        "type": "string",
+                        "default": "enabled",
+                        "enum": [
+                          "enabled"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "audioModels": [],
+              "imageModels": [],
+              "videoModels": [],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            },
+            {
+              "runtimeKind": "autobyteus",
+              "ownerProvider": {
+                "id": "LMSTUDIO",
+                "name": "LM Studio",
+                "providerType": "LMSTUDIO",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "DISCOVERED",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [
+                {
+                  "modelKind": "LLM",
+                  "state": "IDLE",
+                  "modelCount": 0,
+                  "successfulUnitCount": 0,
+                  "failedUnitCount": 0,
+                  "safeMessage": null,
+                  "__typename": "ModelSourceStatusObject"
+                }
+              ],
+              "llmModels": [],
+              "audioModels": [],
+              "imageModels": [],
+              "videoModels": [],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            },
+            {
+              "runtimeKind": "autobyteus",
+              "ownerProvider": {
+                "id": "MINIMAX",
+                "name": "MiniMax",
+                "providerType": "MINIMAX",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "STATIC",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [],
+              "llmModels": [
+                {
+                  "modelIdentifier": "minimax-m3",
+                  "name": "minimax-m3",
+                  "description": null,
+                  "value": "MiniMax-M3",
+                  "canonicalName": "minimax-m3",
+                  "providerId": "MINIMAX",
+                  "providerName": "MiniMax",
+                  "providerType": "MINIMAX",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": null,
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 1000000,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "audioModels": [],
+              "imageModels": [],
+              "videoModels": [],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            },
+            {
+              "runtimeKind": "autobyteus",
+              "ownerProvider": {
+                "id": "MISTRAL",
+                "name": "Mistral",
+                "providerType": "MISTRAL",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "STATIC",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [],
+              "llmModels": [
+                {
+                  "modelIdentifier": "devstral-2",
+                  "name": "devstral-2",
+                  "description": null,
+                  "value": "devstral-2512",
+                  "canonicalName": "devstral-2",
+                  "providerId": "MISTRAL",
+                  "providerName": "Mistral",
+                  "providerType": "MISTRAL",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": null,
+                  "maxContextTokens": 256000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "mistral-large-3",
+                  "name": "mistral-large-3",
+                  "description": null,
+                  "value": "mistral-large-2512",
+                  "canonicalName": "mistral-large-3",
+                  "providerId": "MISTRAL",
+                  "providerName": "Mistral",
+                  "providerType": "MISTRAL",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": null,
+                  "maxContextTokens": 256000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "audioModels": [],
+              "imageModels": [],
+              "videoModels": [],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            },
+            {
+              "runtimeKind": "autobyteus",
+              "ownerProvider": {
+                "id": "OLLAMA",
+                "name": "Ollama",
+                "providerType": "OLLAMA",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "DISCOVERED",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [
+                {
+                  "modelKind": "LLM",
+                  "state": "IDLE",
+                  "modelCount": 0,
+                  "successfulUnitCount": 0,
+                  "failedUnitCount": 0,
+                  "safeMessage": null,
+                  "__typename": "ModelSourceStatusObject"
+                }
+              ],
+              "llmModels": [],
+              "audioModels": [],
+              "imageModels": [],
+              "videoModels": [],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            },
+            {
+              "runtimeKind": "autobyteus",
+              "ownerProvider": {
+                "id": "OPENAI",
+                "name": "OpenAI",
+                "providerType": "OPENAI",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "STATIC",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [],
+              "llmModels": [
+                {
+                  "modelIdentifier": "gpt-5.4",
+                  "name": "gpt-5.4",
+                  "description": null,
+                  "value": "gpt-5.4",
+                  "canonicalName": "gpt-5.4",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                        "type": "string",
+                        "default": "none",
+                        "enum": [
+                          "none",
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh"
+                        ]
+                      },
+                      "reasoning_summary": {
+                        "description": "Include a reasoning summary in the response when supported.",
+                        "type": "string",
+                        "default": "none",
+                        "enum": [
+                          "none",
+                          "auto",
+                          "concise",
+                          "detailed"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-5.4-mini",
+                  "name": "gpt-5.4-mini",
+                  "description": null,
+                  "value": "gpt-5.4-mini",
+                  "canonicalName": "gpt-5.4-mini",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                        "type": "string",
+                        "default": "none",
+                        "enum": [
+                          "none",
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh"
+                        ]
+                      },
+                      "reasoning_summary": {
+                        "description": "Include a reasoning summary in the response when supported.",
+                        "type": "string",
+                        "default": "none",
+                        "enum": [
+                          "none",
+                          "auto",
+                          "concise",
+                          "detailed"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 400000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-5.5",
+                  "name": "gpt-5.5",
+                  "description": null,
+                  "value": "gpt-5.5",
+                  "canonicalName": "gpt-5.5",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                        "type": "string",
+                        "default": "none",
+                        "enum": [
+                          "none",
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh"
+                        ]
+                      },
+                      "reasoning_summary": {
+                        "description": "Include a reasoning summary in the response when supported.",
+                        "type": "string",
+                        "default": "none",
+                        "enum": [
+                          "none",
+                          "auto",
+                          "concise",
+                          "detailed"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1050000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-luna",
+                  "name": "gpt-5.6-luna",
+                  "description": null,
+                  "value": "gpt-5.6-luna",
+                  "canonicalName": "gpt-5.6-luna",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                        "type": "string",
+                        "default": "medium",
+                        "enum": [
+                          "none",
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max"
+                        ]
+                      },
+                      "reasoning_summary": {
+                        "description": "Include a reasoning summary in the response when supported.",
+                        "type": "string",
+                        "default": "none",
+                        "enum": [
+                          "none",
+                          "auto",
+                          "concise",
+                          "detailed"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1050000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-sol",
+                  "name": "gpt-5.6-sol",
+                  "description": null,
+                  "value": "gpt-5.6-sol",
+                  "canonicalName": "gpt-5.6-sol",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                        "type": "string",
+                        "default": "medium",
+                        "enum": [
+                          "none",
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max"
+                        ]
+                      },
+                      "reasoning_summary": {
+                        "description": "Include a reasoning summary in the response when supported.",
+                        "type": "string",
+                        "default": "none",
+                        "enum": [
+                          "none",
+                          "auto",
+                          "concise",
+                          "detailed"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1050000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-terra",
+                  "name": "gpt-5.6-terra",
+                  "description": null,
+                  "value": "gpt-5.6-terra",
+                  "canonicalName": "gpt-5.6-terra",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                        "type": "string",
+                        "default": "medium",
+                        "enum": [
+                          "none",
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max"
+                        ]
+                      },
+                      "reasoning_summary": {
+                        "description": "Include a reasoning summary in the response when supported.",
+                        "type": "string",
+                        "default": "none",
+                        "enum": [
+                          "none",
+                          "auto",
+                          "concise",
+                          "detailed"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1050000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-6-astra",
+                  "name": "gpt-6-astra",
+                  "description": null,
+                  "value": "gpt-6-astra",
+                  "canonicalName": "gpt-6-astra",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                        "type": "string",
+                        "default": "medium",
+                        "enum": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max"
+                        ]
+                      },
+                      "reasoning_summary": {
+                        "description": "Include a reasoning summary in the response when supported.",
+                        "type": "string",
+                        "default": "none",
+                        "enum": [
+                          "none",
+                          "auto",
+                          "concise",
+                          "detailed"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1050000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-6-luna",
+                  "name": "gpt-6-luna",
+                  "description": null,
+                  "value": "gpt-6-luna",
+                  "canonicalName": "gpt-6-luna",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                        "type": "string",
+                        "default": "medium",
+                        "enum": [
+                          "none",
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max"
+                        ]
+                      },
+                      "reasoning_summary": {
+                        "description": "Include a reasoning summary in the response when supported.",
+                        "type": "string",
+                        "default": "none",
+                        "enum": [
+                          "none",
+                          "auto",
+                          "concise",
+                          "detailed"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1050000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-6-sol",
+                  "name": "gpt-6-sol",
+                  "description": null,
+                  "value": "gpt-6-sol",
+                  "canonicalName": "gpt-6-sol",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_effort": {
+                        "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                        "type": "string",
+                        "default": "medium",
+                        "enum": [
+                          "none",
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max"
+                        ]
+                      },
+                      "reasoning_summary": {
+                        "description": "Include a reasoning summary in the response when supported.",
+                        "type": "string",
+                        "default": "none",
+                        "enum": [
+                          "none",
+                          "auto",
+                          "concise",
+                          "detailed"
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "maxContextTokens": 1050000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": 128000,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "audioModels": [
+                {
+                  "modelIdentifier": "gpt-4o-mini-tts",
+                  "name": "gpt-4o-mini-tts",
+                  "value": "gpt-4o-mini-tts",
+                  "canonicalName": "gpt-4o-mini-tts",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "imageModels": [
+                {
+                  "modelIdentifier": "gpt-image-1.5",
+                  "name": "gpt-image-1.5",
+                  "description": "OpenAI's stateless image model with fast renders, improved text rendering, and higher fidelity edits.",
+                  "value": "gpt-image-1.5",
+                  "canonicalName": "gpt-image-1.5",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-image-2",
+                  "name": "gpt-image-2",
+                  "description": "OpenAI's state-of-the-art image generation and editing model with flexible image sizes.",
+                  "value": "gpt-image-2",
+                  "canonicalName": "gpt-image-2",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "videoModels": [],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            },
+            {
+              "runtimeKind": "autobyteus",
+              "ownerProvider": {
+                "id": "QWEN",
+                "name": "Qwen",
+                "providerType": "QWEN",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "STATIC",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [],
+              "llmModels": [
+                {
+                  "modelIdentifier": "qwen:deepseek-v4-flash-0731",
+                  "name": "DeepSeek V4 Flash 0731 (Qwen)",
+                  "description": null,
+                  "value": "deepseek-v4-flash-0731",
+                  "canonicalName": "deepseek-v4-flash-0731",
+                  "providerId": "QWEN",
+                  "providerName": "Qwen",
+                  "providerType": "QWEN",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": null,
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "qwen:deepseek-v4-pro",
+                  "name": "DeepSeek V4 Pro (Qwen)",
+                  "description": null,
+                  "value": "deepseek-v4-pro",
+                  "canonicalName": "deepseek-v4-pro",
+                  "providerId": "QWEN",
+                  "providerName": "Qwen",
+                  "providerType": "QWEN",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": null,
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "qwen:glm-5.2",
+                  "name": "GLM-5.2 (Qwen)",
+                  "description": null,
+                  "value": "glm-5.2",
+                  "canonicalName": "glm-5.2",
+                  "providerId": "QWEN",
+                  "providerName": "Qwen",
+                  "providerType": "QWEN",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": null,
+                  "maxContextTokens": 198000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "qwen3-max",
+                  "name": "qwen3-max",
+                  "description": null,
+                  "value": "qwen3-max",
+                  "canonicalName": "qwen3-max",
+                  "providerId": "QWEN",
+                  "providerName": "Qwen",
+                  "providerType": "QWEN",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": null,
+                  "maxContextTokens": 262144,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 258048,
+                  "maxOutputTokens": 65536,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "qwen3.7-max",
+                  "name": "qwen3.7-max",
+                  "description": null,
+                  "value": "qwen3.7-max",
+                  "canonicalName": "qwen3.7-max",
+                  "providerId": "QWEN",
+                  "providerName": "Qwen",
+                  "providerType": "QWEN",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": null,
+                  "maxContextTokens": 262144,
+                  "activeContextTokens": null,
+                  "maxInputTokens": 258048,
+                  "maxOutputTokens": 65536,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "qwen3.8-max",
+                  "name": "qwen3.8-max",
+                  "description": null,
+                  "value": "qwen3.8-max",
+                  "canonicalName": "qwen3.8-max",
+                  "providerId": "QWEN",
+                  "providerName": "Qwen",
+                  "providerType": "QWEN",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": null,
+                  "maxContextTokens": 1000000,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "audioModels": [],
+              "imageModels": [],
+              "videoModels": [],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "SearchFiles",
+        "variables": {
+          "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+          "query": "resume"
+        },
+        "query": "query SearchFiles($workspaceId: String!, $query: String!) {\n  searchFiles(workspaceId: $workspaceId, query: $query)\n}"
+      },
+      "result": {
+        "data": {
+          "searchFiles": [
+            "resume-notes.md",
+            "applications/nested/resume sample.pdf"
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/rest/workspaces/agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+      "status": 200,
+      "contentType": "application/pdf"
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetFileContent",
+        "variables": {
+          "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+          "filePath": "resume-notes.md"
+        },
+        "query": "query GetFileContent($workspaceId: String!, $filePath: String!) {\n  fileContent(workspaceId: $workspaceId, filePath: $filePath)\n}"
+      },
+      "result": {
+        "data": {
+          "fileContent": "# ELECTRON SYNTHETIC RESUME NOTES\n\nReal packaged workspace reader.\n"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+          "folderPath": "applications"
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "result": {
+        "data": {
+          "folderChildren": "{\"id\":\"b300cdc4-3ae2-52f6-affe-1dc517c9b482\",\"name\":\"applications\",\"path\":\"applications\",\"is_file\":false,\"children\":[{\"id\":\"2b387004-6df4-5b92-9101-58024b5de68d\",\"name\":\"nested\",\"path\":\"applications/nested\",\"is_file\":false,\"children\":[],\"children_loaded\":false}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+          "folderPath": "applications/nested"
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "result": {
+        "data": {
+          "folderChildren": "{\"id\":\"2b387004-6df4-5b92-9101-58024b5de68d\",\"name\":\"nested\",\"path\":\"applications/nested\",\"is_file\":false,\"children\":[{\"id\":\"e7ed1549-3298-5f08-88b5-efae4ef54b85\",\"name\":\"resume sample.pdf\",\"path\":\"applications/nested/resume sample.pdf\",\"is_file\":true,\"children\":[],\"children_loaded\":true}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:34469/rest/workspaces/agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+      "status": 200,
+      "contentType": "application/pdf"
+    }
+  ],
+  "browserErrors": [],
+  "cleanup": {
+    "stop": {
+      "instanceId": "iso-35653-51e9",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "list": {
+      "instances": []
+    },
+    "dataRootRemoved": true,
+    "cdpClosed": true,
+    "fixtureRemoved": true
+  },
+  "fixture": {
+    "fixture": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin",
+    "root": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/electron-resume-fixture-x0Gqin/workspace",
+    "pdfPath": "applications/nested/resume sample.pdf",
+    "textPath": "resume-notes.md",
+    "pdfSha256": "999bd43e8b679a7f1b65482120948444dca47a1e541122cae3bb27862069e87d"
+  },
+  "instance": {
+    "instanceId": "iso-35653-51e9",
+    "pid": 33435,
+    "executablePath": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus",
+    "backendUrl": "http://127.0.0.1:34469",
+    "graphqlUrl": "http://127.0.0.1:34469/graphql",
+    "controlEndpoint": "http://127.0.0.1:35653",
+    "controlPort": 35653,
+    "serverPort": 34469,
+    "dataRoot": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-root-7wZrOz/server-data/db/production.db",
+    "logPath": "/tmp/resume-electron-api.Kcl9Y8/launch-tmp/autobyteus-isolated-app/iso-35653-51e9.log"
+  },
+  "build": {
+    "head": "ea6c3235a332d225871d0081b11ba36f24500e4c",
+    "executable": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus",
+    "asar": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar",
+    "asarSha256": "307f910bd37f983a9a323b7d7543f436bc02a30df6af695039cfa7dfbe69ada6",
+    "embedded": "/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/file-explorer/file-explorer.js",
+    "embeddedSha256": "90b6abe16699570f760c89a8b5d9d266e42344582f815b493a400a2e46abb308",
+    "sourceSha256": "8e43f4b98bcf7d8aa02b535fa22ee503beafa399e5dd47b1c647f2a16e78bd4e"
+  },
+  "workspaceId": "agent_ws_bfb1559c0bdaf928856c917aae3ef0dcb793b8dcbbd83a7fd4a5ecfc2e1b16e6",
+  "browser": "148.0.7778.265",
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n404 !== 200\n\n    at file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs:261:12\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async run (file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs:130:36)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs:247:3",
+  "finishedAt": "2026-10-13T03:29:36.774Z"
+}

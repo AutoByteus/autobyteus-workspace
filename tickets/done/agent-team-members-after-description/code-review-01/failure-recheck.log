@@ -1,0 +1,96 @@
+
+> autobyteus@1.5.3-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/definitionMutationCache.spec.ts stores/__tests__/agentDefinitionStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentDefinitionStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentDefinitionStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/definitionMutationCache.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentDefinitionStore.spec.ts (5 tests) 6ms
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition creation publishes a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition creation publishes a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition creation publishes a complete current-query cache row > creates a healthy Org without missing-field errors or an unreadable catalog cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition creation publishes a complete current-query cache row > creates a healthy Org without missing-field errors or an unreadable catalog cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ❯ stores/__tests__/definitionMutationCache.spec.ts (2 tests | 2 failed) 21ms
+   × definition creation publishes a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache 17ms
+     → Creation must not publish a row missing fields required by its catalog query: expected [ 'loadIssue' ] to deeply equal []
+   × definition creation publishes a complete current-query cache row > creates a healthy Org without missing-field errors or an unreadable catalog cache 4ms
+     → Creation must not publish a row missing fields required by its catalog query: expected [ 'loadIssues' ] to deeply equal []
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition creation publishes a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache
+AssertionError: Creation must not publish a row missing fields required by its catalog query: expected [ 'loadIssue' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "loadIssue",
++ ]
+
+ ❯ stores/__tests__/definitionMutationCache.spec.ts:87:107
+     85|       return details.message === 13 ? [details.args[0]] : []
+     86|     })
+     87|     expect(missingFields, 'Creation must not publish a row missing fie…
+       |                                                                                                           ^
+     88|     const cached = io.client.readQuery({ query })
+     89|     expect(cached).not.toBeNull()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition creation publishes a complete current-query cache row > creates a healthy Org without missing-field errors or an unreadable catalog cache
+AssertionError: Creation must not publish a row missing fields required by its catalog query: expected [ 'loadIssues' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "loadIssues",
++ ]
+
+ ❯ stores/__tests__/definitionMutationCache.spec.ts:87:107
+     85|       return details.message === 13 ? [details.args[0]] : []
+     86|     })
+     87|     expect(missingFields, 'Creation must not publish a row missing fie…
+       |                                                                                                           ^
+     88|     const cached = io.client.readQuery({ query })
+     89|     expect(cached).not.toBeNull()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 5 passed (7)
+   Start at  06:18:51
+   Duration  6.86s (transform 3.79s, setup 12.32s, collect 61ms, tests 27ms, environment 472ms, prepare 275ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -43,6 +43,7 @@ const codexObservation = async (update: (typeof P6_UPDATES)[number]): Promise<To
     params: { threadId: THREAD, turnId: update.turnId,
       tokenUsage: { total: update.total, last: update.last, modelContextWindow: 258_400 } },
     runId: "codex-run", turnId: update.turnId, threadId: THREAD, model: "gpt-6-luna",
+    takeModelCallThroughput: () => null,
   })!;
   const { turnId, ...fields } = resolved;
   const payload = createTokenUsageUpdatedPayload({ runId: "codex-run",

@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-10-13T15:30:17.626035+00:00",
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 13192,
+      "alive": false
+    },
+    {
+      "label": "frontend",
+      "pid": 13294,
+      "alive": false
+    }
+  ],
+  "ports": [
+    {
+      "url": "http://127.0.0.1:43419",
+      "listening": false
+    },
+    {
+      "url": "http://127.0.0.1:35115",
+      "listening": false
+    }
+  ],
+  "ownedRoot": "/tmp/delegated-launch-defaults-Us7rBB",
+  "ownedRootExists": false,
+  "outerHome": "/tmp/task-copy-stop-delivery-home-c9h4ub75",
+  "outerHomeExists": false,
+  "matchingOwnedProcesses": []
+}

@@ -1,0 +1,10 @@
+const fs=require('fs'),path=require('path'),crypto=require('crypto'),{createRequire}=require('module');
+function meta(p){try{const s=fs.statSync(p);return {path:p,realPath:fs.realpathSync(p),size:s.size,mtime:s.mtime.toISOString(),ctime:s.ctime.toISOString(),birthtime:s.birthtime.toISOString(),sha256:s.isFile()?crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex'):null}}catch(e){return {path:p,error:e.code}}}
+const root='/app/autobyteus-server-ts',cli=root+'/node_modules/prisma/build/index.js';
+const r=createRequire(cli),out={platform:process.platform,arch:process.arch,cli:meta(cli),resolver:meta(root+'/dist/startup/migrations.js'),packageCandidates:[],cache:[],overrideEnvironment:{}};
+for(const n of ['prisma/package.json','@prisma/engines/package.json','@prisma/engines-version/package.json']){try{const p=r.resolve(n),j=JSON.parse(fs.readFileSync(p));out.packageCandidates.push({name:n,path:p,realPath:fs.realpathSync(p),version:j.version,dependencies:j.dependencies,scripts:j.scripts});}catch(e){out.packageCandidates.push({name:n,error:e.code})}}
+for(const n of ['HOME','PRISMA_SCHEMA_ENGINE_BINARY','PRISMA_QUERY_ENGINE_LIBRARY','PRISMA_QUERY_ENGINE_BINARY'])out.overrideEnvironment[n]=process.env[n]||null;
+const cache='/root/.cache/prisma/master';
+try{for(const rev of fs.readdirSync(cache))for(const target of fs.readdirSync(path.join(cache,rev))){const dir=path.join(cache,rev,target);if(!fs.statSync(dir).isDirectory())continue;out.cache.push({revision:rev,target,files:fs.readdirSync(dir).map(f=>meta(path.join(dir,f)))});}}catch(e){out.cacheError=e.code}
+try{const p=r.resolve('@prisma/engines/package.json'),dir=path.dirname(p);out.bundled=fs.readdirSync(dir).filter(f=>/^(schema-engine|libquery_engine)/.test(f)&&!/sha256/.test(f)).map(f=>meta(path.join(dir,f)));}catch(e){out.bundledError=e.code}
+(async()=>{try{out.selected=(await import(root+'/dist/startup/migrations.js')).resolvePrismaEnginePair(root)}catch(e){out.resolverError={name:e.name,message:e.message}} console.log(JSON.stringify(out,null,2));})();

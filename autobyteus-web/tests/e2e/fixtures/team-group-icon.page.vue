@@ -83,10 +83,11 @@ const teamAvatars = { showTeamMemberAvatar: () => false, getTeamMemberInitials: 
 const history = useRunHistoryStore();
 history.workspaceGroups = [{ agentDefinitions: [{ runs: [{ runId: 'preview-host' }] }], teamDefinitions: [] }] as any;
 const tree = taskBearingView().execution_tree;
-tree.rootOrg.collaborators = [{
-  kind: 'agent_team', address: '/product_team', teamDefinitionId: 'product-team', teamRunId: 'product-run',
-  coordinatorAddress: '/product_team/lead', members: [{ address: '/product_team/lead', agentDefinitionId: 'lead', agentRunId: 'product-lead', platformAgentRunId: null }],
-  handoffs: [], defaultLaunchConfiguration: tree.rootOrg.defaultLaunchConfiguration, taskExecutions: [], addedAt: tree.createdAt, addedViaAgentRunId: 'agent-director',
+tree.rootOrg.taskExecutions = [...tree.rootOrg.taskExecutions, {
+  address: '/product_team', teamRunId: 'product-run', delegatorAgentRunId: 'agent-director', startedAt: tree.createdAt, taskExecutions: [],
+  members: [{ address: '/product_team/lead', agentRunId: 'product-lead', platformAgentRunId: null }],
+  source: { kind: 'agent_team', teamDefinitionId: 'product-team', coordinatorAddress: '/product_team/lead', handoffs: [],
+    members: [{ address: '/product_team/lead', agentDefinitionId: 'lead' }], defaultLaunchConfiguration: tree.rootOrg.defaultLaunchConfiguration },
 }];
 const groups = [{ stableKey: 'agent_org_definition:org-definition', definitionId: 'org-definition', name: 'Preview Org', runs: [{
   stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run', createdAt: tree.createdAt,

@@ -1,0 +1,77 @@
+{
+  "seconds": 9.727,
+  "exit": 1,
+  "timedout": false,
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-claude-validation-_o9cw0me",
+  "privateStateEntryCountBeforeRemoval": 1330,
+  "privateTopLevelStateBeforeRemoval": [
+    "home",
+    "home/.cache",
+    "home/Library",
+    "tmp",
+    "tmp/node-compile-cache"
+  ],
+  "privateTmpNonCacheStateBeforeRemoval": [],
+  "ownedGroupRemaining": [],
+  "fixtureChildrenObserved": [
+    {
+      "pid": 77168,
+      "ppid": 77055,
+      "pgid": 77026,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    }
+  ],
+  "ownedProcessesObserved": [
+    {
+      "pid": 77026,
+      "ppid": 77023,
+      "pgid": 77026,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-interrupt-resume-owned-harness.probe.test.ts --no-watch --reporter=verbose --reporter=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/evidence/api-e2e/case-reporter.mjs"
+    },
+    {
+      "pid": 77036,
+      "ppid": 77026,
+      "pgid": 77026,
+      "command": "node ./node_modules/.bin/../vitest/vitest.mjs run tests/e2e/runtime/claude-interrupt-resume-owned-harness.probe.test.ts --no-watch --reporter=verbose --reporter=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/tickets/in-progress/claude-interrupt-resume-fake-cli/evidence/api-e2e/case-reporter.mjs"
+    },
+    {
+      "pid": 77044,
+      "ppid": 77036,
+      "pgid": 77026,
+      "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/@esbuild+darwin-arm64@0.27.3/node_modules/@esbuild/darwin-arm64/bin/esbuild --service=0.27.3 --ping"
+    },
+    {
+      "pid": 77047,
+      "ppid": 77036,
+      "pgid": 77026,
+      "command": "(node)"
+    },
+    {
+      "pid": 77052,
+      "ppid": 77047,
+      "pgid": 77026,
+      "command": "(schema-engine-da)"
+    },
+    {
+      "pid": 77055,
+      "ppid": 77036,
+      "pgid": 77026,
+      "command": "(node)"
+    },
+    {
+      "pid": 77168,
+      "ppid": 77055,
+      "pgid": 77026,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    },
+    {
+      "pid": 77171,
+      "ppid": 77055,
+      "pgid": 77026,
+      "command": "(node)"
+    }
+  ],
+  "privateRootRemoved": true,
+  "unhandledErrorMarker": false,
+  "testWorkspaceRemnants": []
+}

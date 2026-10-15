@@ -122,7 +122,7 @@ export const closeTaskExecutionResources = (file: TaskExecutionResourceFile, now
   ({ taskId: file.taskId, executionResources: file.executionResources.map(r => r.closedAt === null ? { ...r, closedAt: now } : r) });
 
 export const ASSIGNER_ONLY_REACTIVATION_MESSAGE = "This Task work is closed. Only the run that assigned it can reactivate it: "
-  + "move the Task to TODO or IN_PROGRESS with create_or_update_task, then message the copy's agent run ID (for a Team copy, its coordinator's).";
+  + "reopen the Task (move it to TODO or IN_PROGRESS), then message the copy's agent run ID (for a Team copy, its coordinator's).";
 /**
  * Reactivation preconditions on the copy's last entry in the file: it is an `assigned` entry,
  * `requestedBy` is its assigner, and it started. Task status and "is it the copy's current Task" are
@@ -176,7 +176,7 @@ export const assertTaskExecutionAssignable = (history: TaskExecutionHistory | nu
   }
   if (currentTaskId === input.taskId) {
     throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", `This copy's most recent assignment is already Task ${input.taskId}. To continue it, `
-      + `move Task ${input.taskId} to TODO or IN_PROGRESS with create_or_update_task, then message the copy (for a Team, its coordinator).`);
+      + `reopen Task ${input.taskId} (move it to TODO or IN_PROGRESS), then message the copy (for a Team, its coordinator).`);
   }
   if (!history.everStarted) {
     throw new ProjectError("TASK_REACTIVATION_UNAVAILABLE", `This copy never started, so it has no conversation to resume; ${newCopyHint(input.taskId)}`);

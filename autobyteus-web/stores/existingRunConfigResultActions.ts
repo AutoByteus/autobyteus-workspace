@@ -98,30 +98,41 @@ export const existingRunConfigResultActions = {
 
   async reconcileAgentFailure(this: any, outcome: string, runId: string): Promise<void> {
     if (!requiresOutcomeVerification(outcome)) return
+    const request = this.canonicalLoadRequestId, binding = useWindowNodeContextStore().bindingRevision
+    const current = () => request === this.canonicalLoadRequestId && binding === useWindowNodeContextStore().bindingRevision
     this.reconciliationRequired = true
     this.reconciling = true
     this.cachedLifecycleLock = null
     try {
-      this.syncAgentCanonical(await useRunHistoryStore().refreshAgentResumeConfig(runId))
+      const { payload, delegatedSnapshot } = await this.readAgentCanonical(runId)
+      if (!current()) return
+      this.syncAgentCanonical(payload, delegatedSnapshot)
+      this.feedback = null
     } catch (error) {
+      if (!current()) return
       this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
     } finally {
-      this.reconciling = false
+      if (current()) this.reconciling = false
     }
   },
 
   async reconcileTeamFailure(this: any, outcome: string, teamRunId: string): Promise<void> {
     if (!requiresOutcomeVerification(outcome)) return
+    const request = this.canonicalLoadRequestId, binding = useWindowNodeContextStore().bindingRevision
+    const current = () => request === this.canonicalLoadRequestId && binding === useWindowNodeContextStore().bindingRevision
     this.reconciliationRequired = true
     this.reconciling = true
     this.cachedLifecycleLock = null
     try {
-      this.syncTeamCanonical(await useRunHistoryStore().refreshTeamResumeConfig(teamRunId))
+      const payload = await useRunHistoryStore().refreshTeamResumeConfig(teamRunId)
+      if (!current()) return
+      this.syncTeamCanonical(payload)
       this.feedback = null
     } catch (error) {
+      if (!current()) return
       this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
     } finally {
-      this.reconciling = false
+      if (current()) this.reconciling = false
     }
   },
 

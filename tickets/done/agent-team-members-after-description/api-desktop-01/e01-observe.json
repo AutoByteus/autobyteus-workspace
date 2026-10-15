@@ -1,0 +1,206 @@
+{
+  "startedAt": "2026-10-13T03:56:12.574Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"
+    }
+  ],
+  "details": {
+    "title": "",
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+    "viewport": null,
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nDaily Assistant\n\nAll your skills are available. Type / to use a skill, or @ to delegate to an agent or team.\n\nContext Files (0)\n(drag, paste, or upload)\nTemp workspace\nAuto-approve\nclaude-fable-5\nAutoByteus\nOff",
+    "controls": [
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Chat",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Agents",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Agent Teams",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Agent Orgs",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Projects",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Skills",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Memory",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Nodes",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Temp Workspace",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Settings",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Daily Assistant",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "role": null,
+        "text": "",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "TEXTAREA",
+        "id": "",
+        "role": "combobox",
+        "text": "",
+        "placeholder": "Ask anything · / for skills · @ for an agent or team",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Temp workspace",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Auto-approve",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "claude-fable-5AutoByteus",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "Off",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "",
+        "placeholder": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "role": null,
+        "text": "",
+        "placeholder": null,
+        "href": null
+      }
+    ]
+  },
+  "result": "Pass",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "finishedAt": "2026-10-13T03:56:12.678Z"
+}

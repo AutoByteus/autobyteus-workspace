@@ -1,0 +1,75 @@
+{
+  "actualExit": 0,
+  "expectedExit": 0,
+  "seconds": 13.312,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 25128,
+      "ppid": 25125,
+      "pgid": 25128,
+      "command": "(node)"
+    },
+    {
+      "pid": 25166,
+      "ppid": 25128,
+      "pgid": 25128,
+      "command": "(bash)"
+    },
+    {
+      "pid": 25167,
+      "ppid": 25166,
+      "pgid": 25128,
+      "command": "(node)"
+    },
+    {
+      "pid": 25198,
+      "ppid": 25167,
+      "pgid": 25128,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build"
+    },
+    {
+      "pid": 25233,
+      "ppid": 25198,
+      "pgid": 25128,
+      "command": "sh -c node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs"
+    },
+    {
+      "pid": 25263,
+      "ppid": 25198,
+      "pgid": 25128,
+      "command": "(node)"
+    },
+    {
+      "pid": 25264,
+      "ppid": 25233,
+      "pgid": 25128,
+      "command": "(node)"
+    },
+    {
+      "pid": 25273,
+      "ppid": 25233,
+      "pgid": 25128,
+      "command": "(node)"
+    },
+    {
+      "pid": 26581,
+      "ppid": 25198,
+      "pgid": 25128,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-application-backend-sdk/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 26592,
+      "ppid": 25166,
+      "pgid": 25128,
+      "command": "(node)"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delivery-fixture-types-3fi66i54",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

@@ -1,0 +1,60 @@
+{
+  "sourceAudit": [
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts",
+      "baseEqualsCurrent": true,
+      "sha256": "f49c643385cf59d91a39f29cf7da75c4e6087c6fdbf99df1428b85751b8d3208"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "baseEqualsCurrent": true,
+      "sha256": "53d0f3e045090df1834bdf79418e81e964bec4c6b7e2dcf9ae30b52083724826"
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-content-cadence-scheduler.ts",
+      "baseEqualsCurrent": true,
+      "sha256": "e00bbb3d894472aea87977e610f90962bf9c00f104ee08ad70e7da19c3f6ea51"
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts",
+      "baseEqualsCurrent": true,
+      "sha256": "b868c637d8dbcd70049d34568ecf91f4ca1d1908af4214cb116b6bc37c8b8771"
+    },
+    {
+      "path": "autobyteus-server-ts/src/config/streaming-content-flush-interval-setting.ts",
+      "baseEqualsCurrent": true,
+      "sha256": "93f1c0a2f3647e6946bb6cae3b01adaf9de182828fe0e5eb14f4d504dc01c312"
+    }
+  ],
+  "runs": [
+    {
+      "name": "cadence-diagnostic",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/integration/agent/api-cadence-diagnostic.integration.test.ts",
+        "-t",
+        "coalesces a representative|uses a changed interval",
+        "--no-watch"
+      ],
+      "exit": 1
+    },
+    {
+      "name": "unit",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "test:unit"
+      ],
+      "exit": 0
+    }
+  ],
+  "diagnosticChange": "log type/time/delta before existing AGENT_INPUT_STATE trace filtering; unchanged assertions/production",
+  "temporaryTestRemoved": true,
+  "privateRootAbsent": true
+}

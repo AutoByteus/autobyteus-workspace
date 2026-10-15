@@ -1,0 +1,25 @@
+DR-001 initial delivery integration refresh; 2026-10-12T16:43:48.602702+00:00
+First refresh completed before any delivery-owned edit; this repeat captures its unchanged checked refs.
+$ git rev-parse HEAD origin/personal
+ea6c3235a332d225871d0081b11ba36f24500e4c
+2756d7b298ca5b203ebd2310d172b37a5d381b5c
+exit=0
+$ git fetch origin personal
+From https://github.com/AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+exit=0
+$ git rev-parse origin/personal
+2756d7b298ca5b203ebd2310d172b37a5d381b5c
+exit=0
+$ git rev-list --left-right --count HEAD...origin/personal
+18	0
+exit=0
+$ git merge-base --is-ancestor origin/personal HEAD
+exit=0
+$ git diff --stat 7f321575058d744c8e635b3aff0a6d1f4557e2c4 HEAD -- autobyteus-server-ts/src autobyteus-web/components autobyteus-web/stores :!autobyteus-web/stores/__tests__/**
+exit=0
+$ git log -1 --format=%H %s -- RELEASE.md
+3514fe48eabedc5b0a33522110aa30665e3af17c fix(release): keep RELEASE.md clear of the licensing check's license-claim pattern
+exit=0
+Already current: 18 ticket commits ahead, zero latest-base commits missing; no merge/rebase/checkpoint needed.
+No new effective behavior integrated; upstream API-REV-001/CRR-003 covers unchanged source/test candidate. No executable rerun required by delivery integration policy.

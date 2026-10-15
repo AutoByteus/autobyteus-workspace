@@ -43,7 +43,7 @@ const commandAck = (
 
 /**
  * Agent-root stream `/ws/agent-collaboration/:hostRunId`: snapshot, events and commands for
- * the run's collaborators. Connecting resolves the run's root and makes its host ready
+ * the run's delegated copies. Connecting resolves the run's root and makes its host ready
  * (restoring it when needed). Child commands use the active root as is: a crashed host is not
  * restarted for them. Commands for the host itself stay on `/ws/agent/:runId`.
  */
@@ -55,7 +55,7 @@ export class AgentCollaborationStreamHandler {
   /** The run's root with its host ready, as the stream's connect needs it. */
   private async readyRoot(hostRunId: string): Promise<StandaloneAgentRunRoot> {
     const root = await this.roots.resolveRoot(hostRunId);
-    if (!root) throw new StandaloneRootUnavailableError(`Agent run '${hostRunId}' cannot host collaborators.`);
+    if (!root) throw new StandaloneRootUnavailableError(`Agent run '${hostRunId}' cannot host delegated copies.`);
     await root.ensureHostReady();
     return root;
   }

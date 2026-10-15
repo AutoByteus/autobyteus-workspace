@@ -1,0 +1,576 @@
+
+> autobyteus@1.5.3-beta.4 test:nuxt /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run utils/layout/__tests__ composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts layouts/__tests__/default-docking.spec.ts layouts/__tests__/default-drawer.spec.ts composables/__tests__/useRightPanel.spec.ts components/layout/__tests__ composables/__tests__/useAccessibleDrawer.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web
+
+stderr | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceToolShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | layouts/__tests__/default-docking.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceToolShell.taskLocate.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | layouts/__tests__/default-drawer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/LeftSidebarStrip.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useRightPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/RightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | layouts/__tests__/default-drawer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.taskLocate.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/LeftSidebarStrip.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useRightPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | layouts/__tests__/default-docking.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useRightPanel.spec.ts (8 tests) 229ms
+ ✓ components/layout/__tests__/LeftSidebarStrip.spec.ts (14 tests) 83ms
+ ✓ layouts/__tests__/default-drawer.spec.ts (5 tests) 178ms
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: A.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "A.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'A.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "A.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: C.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "C.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'C.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "C.txt" via GraphQL.
+
+stderr | components/layout/__tests__/WorkspaceToolShell.taskLocate.spec.ts > WorkspaceToolShell: "Show Task in Projects" reveal (delegated-copy-task-locator REQ-004) > shows Projects in the docked panel and marks the request revealed
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | components/layout/__tests__/WorkspaceToolShell.taskLocate.spec.ts > WorkspaceToolShell: "Show Task in Projects" reveal (delegated-copy-task-locator REQ-004) > reopens a hidden panel docked (VIS-011)
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | components/layout/__tests__/WorkspaceToolShell.taskLocate.spec.ts > WorkspaceToolShell: "Show Task in Projects" reveal (delegated-copy-task-locator REQ-004) > opens the right drawer on Projects in a narrow window (VIS-013)
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | components/layout/__tests__/WorkspaceToolShell.taskLocate.spec.ts > WorkspaceToolShell: "Show Task in Projects" reveal (delegated-copy-task-locator REQ-004) > opens the tools of a start surface first
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | components/layout/__tests__/WorkspaceToolShell.taskLocate.spec.ts > WorkspaceToolShell: "Show Task in Projects" reveal (delegated-copy-task-locator REQ-004) > reveals a request placed before it mounted (a run opened from a page with no right panel, REQ-012)
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | components/layout/__tests__/WorkspaceToolShell.taskLocate.spec.ts > WorkspaceToolShell: "Show Task in Projects" reveal (delegated-copy-task-locator REQ-004) > stops being the shell when it unmounts
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+ ✓ components/layout/__tests__/WorkspaceToolShell.taskLocate.spec.ts (6 tests) 60ms
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts (20 tests) 148ms
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: ordinary first host
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: ordinary first host
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: ordinary first host
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: narrow
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: narrow
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: narrow
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: short height
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: short height
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+ ✓ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts (27 tests) 347ms
+ ✓ layouts/__tests__/default-docking.spec.ts (4 tests) 292ms
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: short height
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: wide visible dock
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: wide visible dock
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: wide user-hidden redocks
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: wide user-hidden redocks
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > reveals the stored ordinary error on the fresh drawer with one activation: local-file-preview:unavailable
+[FileExplorer] Opening file: /workspace/B/missing.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > reveals the stored ordinary error on the fresh drawer with one activation: local-file-preview:unavailable
+[FileExplorer] Determined file type for "/workspace/B/missing.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/missing.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > reveals the stored ordinary error on the fresh drawer with one activation: local-file-preview:not-regular-file
+[FileExplorer] Opening file: /workspace/B/missing.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > reveals the stored ordinary error on the fresh drawer with one activation: local-file-preview:not-regular-file
+[FileExplorer] Determined file type for "/workspace/B/missing.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/missing.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > real monitor lazily imports the real launcher and reveals the setup-bound fresh Files host
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > real monitor lazily imports the real launcher and reveals the setup-bound fresh Files host
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: B.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "B.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'B.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "B.txt" via GraphQL.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > real lazy monitor does not reveal/focus obsolete content after run-switch
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > real lazy monitor does not reveal/focus obsolete content after run-switch
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > real lazy monitor does not reveal/focus obsolete content after monitor-unmount
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > real lazy monitor does not reveal/focus obsolete content after monitor-unmount
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: A.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "A.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'A.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "A.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: C.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "C.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'C.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "C.txt" via GraphQL.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > actual selected mapper/Files boundary remote-electron, inside true
+[FileExplorer] Opening file: brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > actual selected mapper/Files boundary remote-electron, inside true
+[FileExplorer] Determined file type for "brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "brief.md" via GraphQL.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > actual selected mapper/Files boundary embedded-no-bridge, inside true
+[FileExplorer] Opening file: brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > actual selected mapper/Files boundary embedded-no-bridge, inside true
+[FileExplorer] Determined file type for "brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "brief.md" via GraphQL.
+
+ ✓ components/layout/__tests__/WorkspaceToolShell.spec.ts (15 tests) 629ms
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: B.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "B.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'B.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "B.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Opening file: /workspace/B/user.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Determined file type for "/workspace/B/user.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/user.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Opening file: /workspace/B/user.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Determined file type for "/workspace/B/user.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/user.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+ ✓ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts (4 tests) 1363ms
+   ✓ retains A while canonical B metadata fails; prior consumers mounted: false  688ms
+   ✓ retains A while canonical B metadata fails; prior consumers mounted: true  630ms
+stderr | composables/__tests__/useAccessibleDrawer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useAccessibleDrawer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useAccessibleDrawer.spec.ts (3 tests) 31ms
+stdout | components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/layout/__tests__/RightSidebarStrip.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts (3 tests) 30ms
+stderr | composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/layout/__tests__/responsiveLayoutPolicy.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/layout/__tests__/workspaceSurfaceOrder.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/layout/__tests__/RightSidebarStrip.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/layout/__tests__/RightSidebarStrip.spec.ts (2 tests) 17ms
+stdout | composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/layout/__tests__/useResponsiveWorkspaceShell.spec.ts (3 tests) 12ms
+stdout | utils/layout/__tests__/responsiveLayoutPolicy.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/layout/__tests__/workspaceSurfaceOrder.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/layout/__tests__/responsiveLayoutPolicy.spec.ts (30 tests) 12ms
+ ✓ utils/layout/__tests__/workspaceSurfaceOrder.spec.ts (2 tests) 2ms
+
+ Test Files  15 passed (15)
+      Tests  146 passed (146)
+   Start at  14:22:07
+   Duration  27.54s (transform 14.52s, setup 149.97s, collect 27.17s, tests 3.43s, environment 29.05s, prepare 10.38s)

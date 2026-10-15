@@ -1,4 +1,4 @@
-import { CREATE_OR_UPDATE_TASK_TOOL_NAME, isProjectTaskToolName } from "../../agent-tools/project-tasks/project-task-tool-contract.js";
+import { isProjectTaskToolName } from "../../agent-tools/project-tasks/project-task-tool-contract.js";
 import { BROWSER_TOOL_NAMES } from "../../agent-tools/browser/browser-tool-contract.js";
 import { MEDIA_TOOL_NAMES } from "../../agent-tools/media/media-tool-contract.js";
 import {
@@ -12,15 +12,15 @@ import { LIST_AVAILABLE_AGENTS_TOOL_NAME } from "../../agent-tools/agent-discove
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 
 /**
- * Collaboration tools every member context always gets: `send_message_to`, `delegate_task` and
- * `create_or_update_task` (which marks a delegation's Task DONE or CANCELLED) for every member, plus
- * `get_handoff_rules` only for Team-scoped members (REQ-012).
+ * Collaboration tools every member context always gets: `send_message_to` and `delegate_task` for every
+ * member, plus `get_handoff_rules` only for Team-scoped members (REQ-012). Task tools (`create_task`,
+ * `update_task`) are never automatic: an agent has them only when its configuration lists them.
  */
 export const automaticCollaborationToolNames = (
   context: MemberExecutionContext | null | undefined,
 ): readonly string[] => {
   if (!context) return [];
-  const always = [SEND_MESSAGE_TO_TOOL_NAME, DELEGATE_TASK_TOOL_NAME, CREATE_OR_UPDATE_TASK_TOOL_NAME];
+  const always = [SEND_MESSAGE_TO_TOOL_NAME, DELEGATE_TASK_TOOL_NAME];
   return context.teamScoped ? [GET_HANDOFF_RULES_TOOL_NAME, ...always] : always;
 };
 

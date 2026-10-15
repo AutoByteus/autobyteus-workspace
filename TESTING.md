@@ -86,7 +86,10 @@ not paid inference. Agent-run testing is not the user's verification.
 - **Clean environment elsewhere.** E2E folders, `autobyteus-ts` integration tests and live
   suites inherit the shell, which carries the live app's variables and provider keys. Run
   them with a clean environment, e.g. `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" …`,
-  or unset the inherited `AUTOBYTEUS_*` roots, as the test file states.
+  or unset the inherited `AUTOBYTEUS_*` roots, as the test file states. A live suite that
+  uses a signed-in CLI (`claude`, `codex`) also needs the real `HOME` and, on macOS,
+  `USER` and `LOGNAME`; without them the CLI reports "Not logged in" and the run hangs
+  until its step timeout.
 - **Gates.** Live and costly tests stay skipped unless their gate is set. A skip is not a
   pass. Real-provider runs spend the user's credits: run them only when the change needs
   real-provider proof.
@@ -118,6 +121,11 @@ not paid inference. Agent-run testing is not the user's verification.
     `HOME` gives a signed-out `agy`. For a signed-in one, copy only
     `antigravity-oauth-token` into the throwaway home; never symlink it or point at the
     user's real folder, because `agy` writes into that folder. Never print or commit it.
+    Known gap: `agy` 1.3.5 has no `antigravity-oauth-token` file, and a throwaway `HOME`
+    gives a signed-out `agy` (checked 2026-10-14). No isolated signed-in recipe is known for
+    that version yet. Until one is, live AGY suites run on the host login with the real
+    `HOME`; each run adds its own conversations to the user's `agy` history. Say so in your
+    report.
   - **Isolated desktop instances.** The embedded server receives only a system-baseline
     environment. Of the CLI homes, only `CODEX_HOME` passes through, so start (and
     `restart`) the instance with it set. Other runtime variables reach only in-process
@@ -140,6 +148,14 @@ not paid inference. Agent-run testing is not the user's verification.
   <test> tar -C <dir> -xf -`. Remove the container with `docker rm -f -v` afterwards.
 - **Data.** Every run uses its own data root, database, ports and processes. Create data
   through public APIs or the UI, never by editing another run's files.
+- **Migrations and upgrades are tested on small synthesized data.** The source is a few
+  test-made records with the released structure, covering each shape that exists, older
+  ones included; the target is what the new build makes of it. Learn the structure by
+  reading real user data (read-only) or what a released build wrote, and check that the
+  synthesized records have the same keys and shapes. Never copy real data into a test, and
+  never run a migration, startup or conversion on real user data or a copy of it; use a
+  test-owned data root, and never wake a converted run against real runtime sessions.
+  Prove the conversion, that nothing is lost, and that a second start changes nothing.
 - **Build outputs** such as the application SDK `dist/` folders and
   `autobyteus-web/electron-dist/` are untracked. Stage paths explicitly; never `git add -A`.
   Exception: the three contract packages (`autobyteus-agent-presentation-contracts`,
@@ -149,6 +165,37 @@ not paid inference. Agent-run testing is not the user's verification.
 - **Known baseline exception.** Two content-cadence cases in
   `tests/integration/agent/agent-status-websocket.integration.test.ts` fail because of a
   reported product defect. Remove this note when it is fixed.
+
+## Environment-specific setup: headless Linux and containers
+
+The virtual-display and root-container recipes below apply **only when those
+environment conditions exist**, such as a headless Linux testing container.
+They are not the setup procedure for every developer's host desktop. On a normal
+host desktop, use its existing graphical session and normal non-root account;
+do not install Xvfb or switch numeric UID/GID just because you are running tests.
+Use the supported platform's isolated-instance instructions. The global
+test-layer, evidence, isolation and safety rules above still apply.
+
+- A full product journey still needs the **actual isolated Electron worktree build**.
+  A browser/component fixture is not a substitute for this layer.
+- The validation agent owns ordinary setup: dependencies, a private HOME/temp root,
+  an unprivileged runtime identity, and a real or owned virtual display. Do not
+  hand routine test setup to the user when it can safely be prepared locally.
+- Electron must not run as root. In a root-only container, build as the worktree
+  owner, then launch the current unpacked build as an unprivileged user with
+  isolated-app start --from-worktree. Preserve Chromium's sandbox; do not add
+  --no-sandbox or change host security settings to force a pass.
+- When Xvfb is needed, keep it alive for **start → automation → stop**. Wrap the
+  complete owning probe/session in xvfb-run, not just the short-lived start command.
+- Verify the reported instance/ports, packaged identity, renderer assertions and
+  cleanup. A launch, skipped case, or screenshot alone is not a journey pass.
+  If safe setup cannot work, report the precise missing dependency and attempted
+  diagnostics—never a desktop pass based only on browser evidence.
+
+The runnable preflight, root-container and virtual-display recipes are in
+[Isolated instances on Linux](docs/isolated-app-instances.md#linux). Keep
+shared setup guidance separate from ticket-specific journeys. Temporary
+ticket-owned automation does not require a new global package command.
 
 ## Browser probes
 

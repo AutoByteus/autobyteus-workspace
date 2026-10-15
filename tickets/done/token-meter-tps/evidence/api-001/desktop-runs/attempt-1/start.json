@@ -1,0 +1,15 @@
+{
+  "instanceId": "iso-42155-574d",
+  "pid": 34798,
+  "executablePath": "/home/autobyteus/workspace/.codex/worktrees/token-meter-tps/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus",
+  "backendUrl": "http://127.0.0.1:41725",
+  "graphqlUrl": "http://127.0.0.1:41725/graphql",
+  "controlEndpoint": "http://127.0.0.1:42155",
+  "controlPort": 42155,
+  "serverPort": 41725,
+  "dataRoot": "/tmp/token-tps-desktop-BtOj9p/tmp/autobyteus-isolated-root-K39f7m",
+  "ownsDataRoot": true,
+  "keepDataRoot": false,
+  "databaseUrl": "file:/tmp/token-tps-desktop-BtOj9p/tmp/autobyteus-isolated-root-K39f7m/server-data/db/production.db",
+  "logPath": "/tmp/token-tps-desktop-BtOj9p/tmp/autobyteus-isolated-app/iso-42155-574d.log"
+}

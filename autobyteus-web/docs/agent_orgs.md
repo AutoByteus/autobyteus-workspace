@@ -50,10 +50,24 @@ independently launchable and keep their own coordinator and Team-local handoffs.
   identities. Long labels wrap and narrow direction cards stack; unavailable
   endpoints remain readable, while malformed addresses use the localized generic
   endpoint label.
-- Save is atomic and retains a failed draft for correction.
+- Save is atomic and retains a failed draft for correction. Orgs from a
+  registered agent package are saved into their package folder, like that
+  package's Agents and Teams.
 - Mutation members contain only `memberName`, `ref`, `refType`, and `refScope`;
   Apollo response metadata such as `__typename` is not echoed into input.
   An omitted optional update remains omitted rather than resetting stored intent.
+
+### Mutation Response And Catalog Cache Contract
+
+Create and update share `AgentOrgDefinitionFields`. It selects the catalog's
+`loadIssues` entries with `kind`, `definitionId`, `name`, `code`, `reason`,
+`definitionPath`, `packageRoot`, and `usingLastGood`. The existing store can
+therefore publish complete mutation responses into the full catalog cache;
+an older normalized row is not a substitute for a complete update response.
+Healthy saves return the server's explicit empty list. Diagnostic values are
+preserved rather than replaced with synthetic defaults or hidden, without
+changing warning generation, expected revisions, input omission, members,
+handoffs, save navigation, or cache ownership.
 
 Canonical `org-config.json` and `team-config.json` output has no `schemaVersion`.
 Org input validation remains strict. Referenced Team inputs use the supported-field
@@ -496,17 +510,10 @@ does not own polling, lifecycle, focus, readiness, or command authority.
 Task Agents and task Teams are transient execution projections. They can be
 nested by task delegation without changing the fixed configured Org topology.
 A task Agent row shows the member marker (solid status dot and initials); the
-starter is kept in the accessible label, not as a visible line. Collaborators
-(shared Agents and Agent Teams brought in by an agent's first message to a
-listed address, or with `@` in runs saved by earlier releases; `@` itself adds
-nothing) are one hosted instance per
-entry in `rootOrg.collaborators`. `AgentOrgExecutionViewIndex` lists them with
-the task-row look (`collaboratorExecutionNodes`), Offline until their first
-message, ahead of the delegated children, and resolves their source from the
-entry. The Org context applies `collaborator_added` in place (no checkpoint
-reload), adds the new contexts and invalidates the `@` candidates. An extra copy that `delegate_task`
-starts at a collaborator address is an ordinary task row. A catalog copy
-(`delegate_task` to a listed catalog Agent or Team) carries `source` on its task
+starter is kept in the accessible label, not as a visible line. The Org context has no
+collaborator concept: runs that earlier releases recorded as collaborators were converted at
+startup into ordinary task rows. A catalog copy (`delegate_task` to a listed catalog Agent or Team;
+`send_message_to` never creates one) carries `source` on its task
 DTO; `AgentOrgExecutionViewIndex` and the Org history rows resolve it with
 `catalogAgentSourceAt` / `catalogTeamSourceAt`.
 
@@ -680,7 +687,7 @@ report for the exact acceptance scope.
 - `services/agentOrgExecution/agentOrgCommunicationPerspective.ts`: root-owned
   Messages facet.
 - `utils/agentOrgHistoryRows.ts`: Org Workspaces rows, including delegated rows
-  with their delegator (for the accessible label), collaborator rows, and
+  with their delegator (for the accessible label), and
   per-`teamRunId` task-Team disclosure
   (`hasChildren`/`expanded`; descendants are emitted only while expanded).
 - `composables/useWorkspaceHistoryTreeState.ts`: local Org run, mounted-Team

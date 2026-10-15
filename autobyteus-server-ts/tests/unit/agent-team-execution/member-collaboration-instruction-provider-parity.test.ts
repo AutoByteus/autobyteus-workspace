@@ -136,7 +136,6 @@ describe("member collaboration instruction provider parity", () => {
       "get_handoff_rules",
       "send_message_to",
       "delegate_task",
-      "create_or_update_task",
     ]);
   });
 

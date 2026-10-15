@@ -39,12 +39,14 @@ it('deletes only the exact package including owned descendants, preserving share
   for (const file of protectedPaths) expect(await fs.readFile(path.join(root, file), 'utf8')).toBe(`Exact preserved ${file}`);
   expect(await service.deleteDefinition(created.id!)).toBe(false);
 });
-it('keeps external packages read-only for avatar edit and deletion', async () => {
+it('saves avatar edits and deletes in a registered package folder, like its Agents (SR-003)', async () => {
   const { root, config, provider, created } = await setup();
   const external = path.join(root, 'external'); await fs.mkdir(path.join(external, 'agent-orgs'), { recursive: true });
   await fs.rename(path.join(root, 'agent-orgs', created.id!), path.join(external, 'agent-orgs', created.id!));
   const reader = new FileAgentOrgDefinitionProvider(config(root, [external])); const loaded = await reader.getById(created.id!);
-  const sourceFile = path.join(external, 'agent-orgs', created.id!, 'org-config.json'); const before = await fs.readFile(sourceFile);
-  loaded!.avatarUrl = '/forbidden.png'; await expect(reader.update(loaded!)).rejects.toThrow(); await expect(reader.delete(created.id!)).rejects.toThrow();
-  expect(await fs.readFile(sourceFile)).toEqual(before); expect(await provider.getById(created.id!)).toBeNull();
+  const sourceFile = path.join(external, 'agent-orgs', created.id!, 'org-config.json');
+  loaded!.avatarUrl = '/package.png'; await expect(reader.update(loaded!)).resolves.toMatchObject({ avatarUrl: '/package.png' });
+  expect(JSON.parse(await fs.readFile(sourceFile, 'utf8')).avatarUrl).toBe('/package.png');
+  expect(await provider.getById(created.id!)).toBeNull();
+  await expect(reader.delete(created.id!)).resolves.toBe(true); await expect(fs.stat(path.dirname(sourceFile))).rejects.toMatchObject({ code: 'ENOENT' });
 });

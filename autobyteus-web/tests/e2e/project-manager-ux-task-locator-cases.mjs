@@ -35,15 +35,15 @@ export const createTaskLocatorCases = (h) => {
 
   /**
    * One Agent run (Manager) with: an agent copy on a Project Task (its own work sub-delegates: a sub-work copy),
-   * a task Team copy on a long-described Task, an agent copy on a Temp task, and a `@` collaborator brought in by
-   * `send_message_to`. One Team run whose manager delegates a Task of another Project to its member (Team host).
+   * a task Team copy on a long-described Task and an agent copy on a Temp task. One Team run whose manager delegates a Task of
+   * another Project to a catalog Agent (Team host: a Team never delegates its own member).
    */
   const setupLocator = async () => {
     if (shared.locator) return shared.locator;
     const { ids, names } = await createDefinitions('PmuLocate');
     const suffix = randomUUID().slice(0, 4);
-    names.advisor = `Style Advisor ${suffix}`; names.verifier = `Link Verifier ${suffix}`;
-    ids.advisor = await createAgent(names.advisor); ids.verifier = await createAgent(names.verifier);
+    names.verifier = `Link Verifier ${suffix}`;
+    ids.verifier = await createAgent(names.verifier);
     const projectA = await createProject(`Locate Desktop ${randomUUID().slice(0, 6)}`);
     const tasks = {
       // The worker's own work is one sub-delegation (a sub-work copy shares this Task and shows no summary).
@@ -63,11 +63,10 @@ export const createTaskLocatorCases = (h) => {
     const teamWorker = await started(projectA, tasks.team, 'team copy');
     input.send(callTool('delegate_task', { recipient_address: `/${segment(names.helper)}`, description: 'Check the FAQ links.\nReport broken ones.' }));
     const temp = await startedTemp('Check the FAQ links.');
-    input.send(callTool('send_message_to', { recipient_address: `/${segment(names.advisor)}`, content: 'Keep an eye on the style guide.' }));
 
     const teamRoot = await createRoot('team', ids);
     const teamInput = await managerInput(teamRoot);
-    teamInput.send(callTool('delegate_task', { recipient_address: '/worker', task_id: tasks.teamHost }));
+    teamInput.send(callTool('delegate_task', { recipient_address: `/${segment(names.worker)}`, task_id: tasks.teamHost }));
     const teamHostWorker = await started(projectB, tasks.teamHost, 'Team-host copy');
     shared.locator = { ids, names, projectA, projectB, tasks, agentRoot, teamRoot, input, teamInput,
       workers: { agent: agentWorker.ingressAgentRunId, team: teamWorker.teamRunId, temp: temp.root.ingressAgentRunId ?? null, teamHost: teamHostWorker.ingressAgentRunId },
@@ -118,7 +117,7 @@ export const createTaskLocatorCases = (h) => {
     .map((e) => `${e.getAttribute('data-test')}:${e.getAttribute('data-agent-run-id') ?? e.getAttribute('data-run-id') ?? e.getAttribute('data-tab-name') ?? ''}`).sort());
   const pickerSelect = (page) => page.locator('[data-test="right-side-projects-panel"] [data-testid="projects-panel-picker-select"]');
   const rightTab = (page, name) => page.locator(`[data-test="right-side-tab-list"] [data-tab-name="${name}"]`);
-  /** The user picks the Projects tab (a run with a collaborator switches the panel to Team once after it opens). */
+  /** The user picks the Projects tab (a run with a Team member switches the panel to Team once after it opens). */
   const showProjectsTab = (page) => until('Projects tab chosen', async () => {
     if ((await rightTab(page, 'projects').getAttribute('aria-selected')) !== 'true') await rightTab(page, 'projects').click();
     await sleep(600);
@@ -162,7 +161,7 @@ export const createTaskLocatorCases = (h) => {
   // ------------------------------------------------------------ PMU-020
   /**
    * AC-001/002/003/016, REQ-001/002/008, QR-001: summaries under the agent copy, the task Team copy, the Temp copy
-   * (Agent host) and the Team-host copy; none under team members, the sub-work copy and the `@` collaborator. The
+   * (Agent host) and the Team-host copy; none under team members and the sub-work copy. The
    * server answers each worker's current Task (GraphQL) and the tree reads them in batches, never the Task lists.
    */
   const rows = async () => {
@@ -171,16 +170,13 @@ export const createTaskLocatorCases = (h) => {
     const operations = recordGraphql(page);
     await openHostRun(page, s);
     await expandRow(teamRow(page, s.agentRoot.rootId, s.names.squad));
-    // Sub-work (the agent copy's own delegate_task) and the collaborator rows appear in the host tree.
+    // Sub-work (the agent copy's own delegate_task) appears in the host tree.
     const subWork = addressRow(page, `/${segment(s.names.verifier)}`);
-    const collaborator = addressRow(page, `/${segment(s.names.advisor)}`);
     await expandRow(agentRow(page, s.workers.agent));
     await until('sub-work copy row shown', async () => (await subWork.count()) === 1, 60000);
-    await until('collaborator row shown', async () => (await collaborator.count()) === 1, 60000);
     const tempRow = page.locator(`${ROW}[data-member-address="/${segment(s.names.helper)}"][data-transient-kind="task_agent"]:visible`).first();
     s.workers.temp ??= await tempRow.getAttribute('data-agent-run-id');
     const subWorkRunId = await subWork.getAttribute('data-agent-run-id');
-    const collaboratorRunId = await collaborator.getAttribute('data-agent-run-id');
     await until('Temp copy summary', async () => (await summaryIn(agentRow(page, s.workers.temp)).count()) === 1, 15000);
     await sleep(1000);
 
@@ -193,8 +189,8 @@ export const createTaskLocatorCases = (h) => {
     assert(byRun(s.workers.agent)?.summary === 'Ship the copy Task summary in the tree' && byRun(s.workers.agent).height === 46, 'agent copy: first line as summary, 46 px row', listed);
     assert(byRun(s.workers.temp)?.summary === 'Check the FAQ links.', 'Temp copy summary', listed);
     assert(teamListed?.summary?.startsWith('Review the locate journey') && teamListed.height === 46, 'task Team copy summary', listed);
-    const oneLine = listed.filter((r) => r.kind === 'task_team_child' || r.agentRunId === subWorkRunId || r.agentRunId === collaboratorRunId);
-    assert(oneLine.length >= 4 && oneLine.every((r) => r.summary === null && r.height === 28 && !/Task:/.test(r.label)), 'members, sub-work and collaborator: one line, no Task in the name', oneLine);
+    const oneLine = listed.filter((r) => r.kind === 'task_team_child' || r.agentRunId === subWorkRunId);
+    assert(oneLine.length >= 3 && oneLine.every((r) => r.summary === null && r.height === 28 && !/Task:/.test(r.label)), 'members and sub-work: one line, no Task in the name', oneLine);
     assert(byRun(s.workers.agent).label.endsWith(', Task: Ship the copy Task summary in the tree'), 'row accessible name gains the Task', byRun(s.workers.agent));
 
     // REQ-002 values (the agent copy; the Team row for weight and ellipsis), elbow and chevron on the name line.
@@ -227,12 +223,12 @@ export const createTaskLocatorCases = (h) => {
     await shot(page, 'pmu-020-summary-hover');
     await page.mouse.move(1200, 850);
 
-    // The server's answers through the real GraphQL query (sub-work and collaborator are no Task's root).
-    const answers = await workerTasks([s.workers.agent, s.workers.temp, subWorkRunId, collaboratorRunId, s.workers.teamHost], [s.workers.team]);
+    // The server's answers through the real GraphQL query (sub-work is no Task's root).
+    const answers = await workerTasks([s.workers.agent, s.workers.temp, subWorkRunId, s.workers.teamHost], [s.workers.team]);
     const answer = (id) => answers.find((a) => a.workerRunId === id)?.task ?? null;
     assert(answer(s.workers.agent)?.taskId === s.tasks.agent && answer(s.workers.agent).projectId === s.projectA && answer(s.workers.temp)?.projectId === null
       && answer(s.workers.team)?.taskId === s.tasks.team && answer(s.workers.teamHost)?.taskId === s.tasks.teamHost
-      && answer(subWorkRunId) === null && answer(collaboratorRunId) === null, 'GraphQL taskWorkerTasks answers', answers);
+      && answer(subWorkRunId) === null, 'GraphQL taskWorkerTasks answers', answers);
 
     // QR-001 / AC-016: batched reads of the shown workers; the tree never reads a Task list.
     const reads = operations.filter((o) => o.name === 'GetTaskWorkerTasks');
@@ -248,7 +244,7 @@ export const createTaskLocatorCases = (h) => {
     assert(teamHostSummary === 'Draft the release notes for the beta', 'Team-host copy summary', { teamHostSummary });
     await shot(page, 'pmu-020-rows-team-host');
     assertNoBrowserErrors(errors);
-    return { listed, style, team, hover, answers, reads: reads.map((o) => o.variables), listScopes, teamHostSummary, subWorkRunId, collaboratorRunId };
+    return { listed, style, team, hover, answers, reads: reads.map((o) => o.variables), listScopes, teamHostSummary, subWorkRunId };
   };
 
   // ------------------------------------------------------------ PMU-021
@@ -531,7 +527,7 @@ export const createTaskLocatorCases = (h) => {
     await shot(page, 'pmu-024-reconnect-reread');
 
     // VIS-008: the copy's Task is done, then the copy is given a follow-up Task with its run ID.
-    input.send(callTool('create_or_update_task', { task_id: live.first, status: 'DONE' }));
+    input.send(callTool('update_task', { task_id: live.first, status: 'DONE' }));
     await until('worker row leaves at DONE', async () => (await agentRow(page, worker).count()) === 0, 30000);
     input.send(callTool('delegate_task', { target_agent_run_id: worker, task_id: live.followUp }));
     await until('worker row returns with the follow-up Task', async () => (await workerSummary().count()) === 1
@@ -548,7 +544,7 @@ export const createTaskLocatorCases = (h) => {
 
     // DEC-006 / VIS-010: the Task is cancelled; the summary is clicked before its row leaves.
     net.holdClosure = true;
-    input.send(callTool('create_or_update_task', { task_id: live.followUp, status: 'CANCELLED' }));
+    input.send(callTool('update_task', { task_id: live.followUp, status: 'CANCELLED' }));
     await until('Task cancelled on the server', async () => (await projectTasks(projectL)).find((t) => t.taskId === live.followUp)?.status === 'CANCELLED', 30000);
     await until('board knows it is cancelled', async () => (await page.locator('[data-test="right-side-projects-panel"] [data-testid="project-tasks-cancelled-toggle"]').count()) === 1, 15000);
     assert((await workerSummary().count()) === 1, 'the row is still shown when the summary is clicked', { held: net.held.length });
@@ -603,7 +599,7 @@ export const createTaskLocatorCases = (h) => {
   };
 
   return {
-    'PMU-020': ['Task summaries under delegated copy rows (Agent host: agent, task Team, Temp copies; Team host): one line for members, sub-work and the @ collaborator; spec values, hover; GraphQL answers; batched reads, no Task-list reads', rows],
+    'PMU-020': ['Task summaries under delegated copy rows (Agent host: agent, task Team, Temp copies; Team host): one line for members and sub-work; spec values, hover; GraphQL answers; batched reads, no Task-list reads', rows],
     'PMU-021': ['Show Task in Projects, docked: picker switch (remembered after reload), centred / focused / 2.4 s highlight, center and selection unchanged, Temp tasks, Enter opens, back from an open Task, only the latest highlighted, search kept / cleared, keyboard Tab / Enter / Space; a row click (agent copy, Team copy) opens the copy and locates nothing', locateDocked],
     'PMU-022': ['Show Task in Projects: hidden panel reopened docked; 900×800 drawer with reduced motion (static highlight); New chat start surface opens its tools', revealVariants],
     'PMU-023': ['Show Task in Projects from pages with no right panel: Agents page (wide and narrow) opens the Agent run; Projects page opens the selected Team run without collapsing it; then locates', noRightPanel],

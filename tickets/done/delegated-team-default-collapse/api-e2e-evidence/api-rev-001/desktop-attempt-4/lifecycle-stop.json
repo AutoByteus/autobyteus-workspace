@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-45663-3de0",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-Hv2HJh",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}

@@ -1,0 +1,64 @@
+diff --cc autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs
+index ebe0db895e,015991608c..0000000000
+--- a/autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs
++++ b/autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs
+@@@ -59,13 -59,12 +59,17 @@@
+  //           shows each copy's recorded values; the run is stopped and reopened from the UI; the first copy's engineer
+  //           then starts on Grok (its recorded value). Runs last (it edits a definition).
+  //
++ // DCP-001/002 also cover task-copy-stop-style AC-001..004: actual parent/copy CSS rest/hover/leave,
++ // selected Agent/Team row presentation, native keyboard focus and activation, held outgoing Stop pending
++ // (forwarded unchanged to the real backend), exact target, Task-open readback and parent survival.
++ // Optional --ledger-file <file> appends per-case checkpoints before the next journey starts.
+  // Prerequisites: `pnpm -C autobyteus-server-ts build`, Google Chrome. No CLI logins.
+  // Usage: pnpm -C autobyteus-web test:e2e:delegated-launch-defaults [--output-dir <fresh dir>] [--cases DLP-001,DLP-003] [--keep]
+ +// --desktop builds/owns an isolated app on macOS and selects the private backend via Node Manager.
+ +// --skip-build requires this worktree's verified-current bundle. --ledger-file <absolute path> appends case results.
+ +// Focused SSR-001..004 cases are opt-in via test:e2e:settings-saved-model-refresh (see its case-module header).
+ +import { desktopAdapter } from './fixtures/settings-refresh-desktop.mjs'
+ +import { registerSavedRefreshCases } from './settings-saved-model-refresh-cases.mjs'
+  import { spawn } from 'node:child_process'
+  import { createWriteStream, existsSync } from 'node:fs'
+  import fs from 'node:fs/promises'
+@@@ -89,9 -88,11 +93,13 @@@ const arg = (name, fallback) => 
+    return i !== -1 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : fallback
+  }
+  const outDir = path.resolve(webDir, arg('output-dir', `test-results/delegated-launch-defaults-${Date.now()}`))
+ +const desktop = process.argv.includes('--desktop')
+ +const ledger = arg('ledger-file', null)
+  const keep = process.argv.includes('--keep')
++ const ledgerFile = arg('ledger-file', null)
++ const checkpoint = async (id, event, detail = '') => {
++   if (ledgerFile) await fs.appendFile(path.resolve(ledgerFile), `\n- ${new Date().toISOString()} ${id} ${event} ${detail}\n`)
++ }
+  const onlyCases = arg('cases', null)?.split(',') ?? null
+  const chrome = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH
+    ?? ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find(existsSync))
+@@@ -1358,13 -1443,10 +1484,14 @@@ try 
+      await page.goto(`${frontUrl}${route}`, { waitUntil: 'domcontentloaded' }).catch(() => {}); await delay(4000)
+    }
+    browserErrors.length = 0
+ -  for (const c of cases) {
+ +  const selectedCases = onlyCases ? onlyCases.map(id => {
+ +    const found = cases.find(c => c.id === id); assert(found, `Unknown case ${id}`); return found
+ +  }) : cases
+ +  for (const c of selectedCases) {
+      if (onlyCases && !onlyCases.includes(c.id)) continue
++     await checkpoint(c.id, 'Started', outDir)
+      const started = Date.now()
+ +    if (ledger) await fs.appendFile(ledger, `\n- ${new Date().toISOString()} ${c.id} Started (${desktop ? 'desktop' : 'browser'}); ${outDir}\n`)
+      const errorsBefore = browserErrors.length
+      try {
+        const details = await c.fn(page, context)
+@@@ -1377,7 -1459,7 +1504,11 @@@
+        evidence.cases[c.id] = { title: c.title, result: 'Fail', ms: Date.now() - started, error: error.message, details: error.details ?? null }
+      }
+      const outcome = evidence.cases[c.id]
+++<<<<<<< HEAD
+ +    if (ledger) await fs.appendFile(ledger, `\n- ${new Date().toISOString()} ${c.id} ${outcome.result}: ${outcome.error ?? 'assertions passed'}; ${outDir}\n`)
+++=======
++     await checkpoint(c.id, 'Completed', `${outcome.result}; ${outcome.error ?? ''}; ${path.join(outDir, 'delegated-launch-defaults-evidence.json')}`)
+++>>>>>>> origin/personal
+      console.log(`${c.id} ${outcome.result} ${c.title}${outcome.error ? ` — ${outcome.error}` : ''}`)
+      await fs.writeFile(path.join(outDir, 'delegated-launch-defaults-evidence.json'), JSON.stringify(evidence, null, 2))
+    }

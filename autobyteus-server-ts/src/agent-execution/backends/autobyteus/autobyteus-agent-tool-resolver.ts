@@ -7,7 +7,6 @@ import type { RuntimeAgentToolExposure } from "../../shared/runtime-agent-tool-e
 import { ensureAutoByteusSendMessageToToolRegistered } from "../../../agent-tools/agent-communication/send-message-to.js";
 import { ensureAutoByteusGetHandoffRulesToolRegistered } from "../../../agent-tools/agent-communication/get-handoff-rules.js";
 import { buildAgentRunMessageSenderContext } from "../../../agent-communication/domain/agent-run-message-sender.js";
-import { resolveAutoByteusExecutionToolNames } from "./autobyteus-collaboration-tool-exposure.js";
 import {
   createAutoByteusSendMessageToToolForSender,
   isSendMessageToToolName,
@@ -47,14 +46,10 @@ export const resolveAutoByteusAgentTools = (input: {
 }): AutoByteusAgentToolResolution => {
   const { agentDefinition, memberExecutionContext = null } = input;
   const logger = input.logger ?? defaultLogger;
-  const resolvedToolNames = resolveAutoByteusExecutionToolNames({
-    toolNames: input.runtimeToolExposure.requestedToolNames,
-    memberExecutionContext,
-  });
   const tools: BaseTool[] = [];
   const actualToolNames: string[] = [];
 
-  for (const name of resolvedToolNames) {
+  for (const name of input.runtimeToolExposure.requestedToolNames) {
     if (isSendMessageToToolName(name) || isGetHandoffRulesToolName(name)) {
       if (isSendMessageToToolName(name)) ensureAutoByteusSendMessageToToolRegistered();
       else ensureAutoByteusGetHandoffRulesToolRegistered();
@@ -86,7 +81,7 @@ export const resolveAutoByteusAgentTools = (input: {
     if (name.trim() === LIST_AVAILABLE_AGENTS_TOOL_NAME) {
       if (!memberExecutionContext?.collaboration.listAvailableAgents) {
         logger.warn(
-          `Tool '${name}' defined in agent definition '${agentDefinition.name}' requires a run that can bring in collaborators. Skipping.`,
+          `Tool '${name}' defined in agent definition '${agentDefinition.name}' requires a run that can delegate to available agents. Skipping.`,
         );
         continue;
       }

@@ -1,0 +1,19 @@
+{
+  "initialCheckedBase": "d9bccf2550b918ab138e30486ef4dbf1d5e9d1ff",
+  "initialIntegration": "5508a275704ed5465ab731f4b0cebfa7d8751991",
+  "laterRemoteBase": "e9adde57ab75ad29432e873d639070bd2c18eda0",
+  "currentIntegratedHead": "a4f428097daffdcb29af8e3fc583b2b34ad07906",
+  "newBaseImpact": "Only upstream autobyteus-web version release bump1.5.3-beta.3\u2192beta.4; not Delivery-created/public release",
+  "O1BoundaryDiff": "empty",
+  "ticketNonTicketDiffAgainstPinnedCurrentBase": "empty",
+  "postIntegrationActualHealth": {
+    "utc": "2026-10-13T13:42:06.780064+00:00",
+    "status": 200,
+    "body": {
+      "status": "ok",
+      "message": "Server is running"
+    }
+  },
+  "noLiveRepairReplayOrNewSourceBuild": true,
+  "initialReportBuilderAttempt": "Read-only source-empty assertion compared moving origin ref after another fetch changed it; no docs persisted or runtime mutation. Reintegrated latest version base before authoring final docs."
+}

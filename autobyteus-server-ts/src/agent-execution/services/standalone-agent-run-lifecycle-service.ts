@@ -193,7 +193,7 @@ export class StandaloneAgentRunLifecycleService {
     if (isCollaborationEligibleStandaloneRun(metadata) !== Boolean(input.memberExecutionContext)) {
       throw new Error(isCollaborationEligibleStandaloneRun(metadata)
         ? `Run '${runId}' is activated only by its standalone run root (its host member context is missing).`
-        : `Run '${runId}' cannot host collaborators; it takes no member context.`);
+        : `Run '${runId}' cannot host delegated copies; it takes no member context.`);
     }
     if (metadata.preparedAt && !metadata.startedAt) return this.activatePrepared(metadata, input);
     if (!metadata.startedAt) throw new Error(`Run '${runId}' is not in a supported activation state.`);

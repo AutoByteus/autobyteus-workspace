@@ -24,7 +24,6 @@ const tree = (): TeamRunExecutionTreeDto => ({
   application_binding: null,
   handoffs: [],
   root_team: {
-    collaborators: [],
     address: '/',
     team_definition_id: 'root-def',
     team_definition_name: 'Nested Classroom',

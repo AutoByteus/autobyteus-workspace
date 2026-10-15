@@ -1,0 +1,2 @@
+Clean env: PATH, private HOME, TMPDIR only; private HOME removed after completion.
+pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts --no-watch

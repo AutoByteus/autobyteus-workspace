@@ -1,0 +1,47 @@
+{
+  "startedAt": "2026-10-13T03:56:29.610Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [
+    {
+      "name": "GetDefinitionProblems",
+      "query": "definitionProblems(kind: $kind) {"
+    },
+    {
+      "name": "GetServerSettings",
+      "query": "getServerSettings {"
+    }
+  ],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"
+    }
+  ],
+  "details": {
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nReload\nCreate Agent\nIndividual agents\n2 agents\nDA\nDaily Assistant\n\nGeneral-purpose agent for practical tasks, with awareness of available specialist agents and teams.\n\nTools 20\nrun_bash\nread_file\nread_url\n+17\nSkills\nAll installed skills\nRun\nView Details\n→\nRS\nRetrospective Skill Improver\n\nImproves configured durable skill packages from target run work-trace evidence.\n\nTools 2\nrun_bash\nsend_message_to\nSkills 1\nretrospective-skill-improver\nRun\nView Details\n→",
+    "buttons": [
+      "Chat",
+      "",
+      "",
+      "Agents",
+      "Agent Teams",
+      "Agent Orgs",
+      "Projects",
+      "Skills",
+      "Memory",
+      "Nodes",
+      "",
+      "Temp Workspace",
+      "Settings",
+      " Reload",
+      "Create Agent",
+      "Run",
+      "View Details→",
+      "Run",
+      "View Details→"
+    ]
+  },
+  "result": "Pass",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=list",
+  "finishedAt": "2026-10-13T03:56:29.756Z"
+}
