@@ -22,3 +22,10 @@
 - AC-007 user check: "checked works" (2026-10-14), after beta `v1.5.4-beta.2` was published.
 - Release: `v1.5.4-beta.2` completed (four of four workflows, 17 assets, Docker `:beta`). Merge `3e9f62d2cd`, release commit `50b7436229`. Cleanup completed.
 - Terminal return to `/solution_designer`: `Sent` after this record commit is pushed.
+
+### DR-002 — Stable release v1.5.4
+
+- Trigger: `/solution_designer` reopened the Task for one step. The user tested beta `v1.5.4-beta.2` and asked for a stable release.
+- Result: stable `v1.5.4` released: release commit `907c861ff4`, tag `v1.5.4`, four of four workflows, GitHub Latest with 17 assets, Docker `1.5.4`, `:latest` and `:beta` on one digest. Curated notes in `stable-v1.5.4-release-notes.md`. Details are in `release-deployment-report.md` → DR-002.
+- Not replayed: merge, docs and checks of DR-001.
+- Terminal return to `/solution_designer`: `Sent` after this record commit is pushed.
