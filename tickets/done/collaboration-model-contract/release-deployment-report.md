@@ -67,7 +67,7 @@ None (no release).
 - Bootstrap context source: RELEASE.md Finalization Target
 - Ticket branch: `codex/collaboration-model-contract`
 - Finalization target: `origin/personal`, via `finalize/collaboration-model-contract` with `merge --no-ff`
-- Results: see the Finalization Result section of delivery-revision-record.md
+- Merge `--no-ff` commit `eda468e014` pushed to `origin/personal` (unchanged at `8878625d94` before). Status: Completed.
 
 ## Release / Publication / Deployment
 

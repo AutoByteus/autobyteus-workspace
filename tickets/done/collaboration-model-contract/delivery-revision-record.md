@@ -26,4 +26,8 @@
 
 ## Finalization Result
 
-(Filled after the push.)
+- Ticket branch `codex/collaboration-model-contract` pushed with three delivery commits on top of the implementation commits: `docs(testing)` rules, `test(collaboration)` suites and probes, and `docs(delivery)` archive (9477ac93e9bc38ffb34da710ec9e78f5b2951c4f).
+- `origin/personal` had not advanced (`8878625d94`) before the merge or before the push.
+- Merged with `--no-ff` on `finalize/collaboration-model-contract`: merge commit `eda468e014`, pushed to `origin/personal`.
+- Release: none (RELEASE.md default). `check_licensing.py` and `check_repository_artifact_hygiene.py` passed before the commit.
+- Cleanup: ticket worktree, local `codex/collaboration-model-contract` and `finalize/collaboration-model-contract`, and remote `codex/collaboration-model-contract` removed after this record was pushed. Untracked `*/dist/` build output was not committed.
