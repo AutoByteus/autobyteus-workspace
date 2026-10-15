@@ -1,0 +1,8 @@
+live-claude exit 1
+server-e2e-agy-scripted-all exit 1
+typecheck exit 0
+unit exit 0
+integration exit 1
+autobyteus-agent-presentation-contracts exit 0
+autobyteus-team-stream-contracts exit 0
+autobyteus-collaboration-stream-contracts exit 0

@@ -199,7 +199,7 @@ kind's capability and catalog. Accepted same-kind evidence can recover inherited
 views without resetting model/configuration/override intent; it does not heal
 different runtimes or discard an explicit failed edit. Missing exact models,
 invalid schemas, required owned references and structural admission still block
-launch. See the [Org configuration contract](../../../autobyteus-web/docs/agent_orgs.md#readiness-and-runtime-catalog-failure).
+launch. See the [Org configuration contract](../../../autobyteus-web/docs/agent_orgs.md#readiness).
 
 ## Activation Publication And Exact Continuation
 

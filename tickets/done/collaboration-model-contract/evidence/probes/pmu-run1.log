@@ -1,0 +1,6 @@
+
+> autobyteus@1.5.4 test:e2e:project-manager-ux /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web
+> node tests/e2e/project-manager-ux-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/tickets/in-progress/collaboration-model-contract/evidence/probes/pmu-run1
+
+Project manager UX probe: Fail. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/tickets/in-progress/collaboration-model-contract/evidence/probes/pmu-run1/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.
