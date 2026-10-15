@@ -154,4 +154,89 @@ describe('FileExplorerTabs visible draft lifecycle', () => {
     expect(value(w)).toBe('peer committed')
     expect(store.getActiveFileData('draft-a')?.editorDraft).toBeUndefined()
   })
+  describe('later input while a Save is pending', () => {
+    const ok = { data: { writeFileContent: JSON.stringify({ changes: [] }) } }
+    const submitted = () => mutate.mock.calls.map(call => call[0].variables.content)
+    // Edit to a checkpoint, start Save (held), then apply later input before the Save settles.
+    const pendingSave = async (laterInputs: string[]) => {
+      const ctx = addFile(); const w = subject(); const pending = deferred()
+      await w.get('textarea').setValue('saved checkpoint')
+      mutate.mockReturnValueOnce(pending.promise)
+      await save(w)
+      expect(ctx.state.saveContentLoading['notes.md']).toBe(true)
+      for (const input of laterInputs) await w.get('textarea').setValue(input)
+      return { ...ctx, w, pending }
+    }
+
+    it.each([['AC-001 revert to the pre-save committed text', 'draft-a original'], ['AC-002 clear to empty text', '']])(
+      '%s: stays visible, unsaved, and is the next Save payload', async (_label, laterInput) => {
+        const { file, w, pending } = await pendingSave([laterInput])
+        expect(value(w)).toBe(laterInput)
+        expect(file.editorDraft).toEqual({ content: laterInput })
+        pending.resolve(ok); await flushPromises()
+        expect(file.content).toBe('saved checkpoint')
+        expect(value(w)).toBe(laterInput)
+        expect(file.editorDraft).toEqual({ content: laterInput })
+        await save(w)
+        expect(submitted()).toEqual(['saved checkpoint', laterInput])
+        expect(file.editorDraft).toBeUndefined()
+      })
+
+    it('AC-003 later input that ends equal to the saved content leaves the editor clean', async () => {
+      const { file, w, pending } = await pendingSave(['draft-a original', 'saved checkpoint'])
+      pending.resolve(ok); await flushPromises()
+      expect(file.content).toBe('saved checkpoint')
+      expect(file.editorDraft).toBeUndefined()
+      expect(value(w)).toBe('saved checkpoint')
+    })
+
+    it('AC-004a failed Save keeps a later input that differs from committed text, with the error', async () => {
+      const { file, w, pending } = await pendingSave(['later edit'])
+      pending.reject(new Error('write refused')); await flushPromises()
+      expect(file.content).toBe('draft-a original')
+      expect(file.editorDraft).toEqual({ content: 'later edit' })
+      expect(value(w)).toBe('later edit')
+      expect(w.text()).toContain('write refused')
+      await save(w)
+      expect(submitted()).toEqual(['saved checkpoint', 'later edit'])
+    })
+
+    it('AC-004b failed Save with later input equal to the unchanged committed text is clean and refreshes', async () => {
+      const { file, w, pending, peer } = await pendingSave(['draft-a original'])
+      expect(file.editorDraft).toEqual({ content: 'draft-a original' })
+      pending.reject(new Error('write refused')); await flushPromises()
+      expect(file.content).toBe('draft-a original')
+      expect(file.editorDraft).toBeUndefined()
+      expect(value(w)).toBe('draft-a original')
+      expect(w.text()).toContain('write refused')
+      peer(); await flushPromises()
+      expect(value(w)).toBe('peer committed')
+    })
+
+    it('AC-005 a different later edit survives Save completion and is the next Save payload', async () => {
+      const { file, w, pending } = await pendingSave(['later independent edit'])
+      pending.resolve(ok); await flushPromises()
+      expect(value(w)).toBe('later independent edit')
+      expect(file.editorDraft).toEqual({ content: 'later independent edit' })
+      await save(w)
+      expect(submitted()).toEqual(['saved checkpoint', 'later independent edit'])
+    })
+
+    it('AC-008 an ordinary Save with no later input clears the draft', async () => {
+      const { file, w, pending } = await pendingSave([])
+      pending.resolve(ok); await flushPromises()
+      expect(file.content).toBe('saved checkpoint')
+      expect(file.editorDraft).toBeUndefined()
+      expect(value(w)).toBe('saved checkpoint')
+    })
+
+    it('keeps a pending Save in one workspace/path from affecting another', async () => {
+      const { store } = addFile(); addFile('draft-b'); const w = subject(); const pending = deferred()
+      await w.get('textarea').setValue('saved checkpoint')
+      mutate.mockReturnValueOnce(pending.promise); await save(w)
+      store.updateEditorDraft('draft-b', 'notes.md', 'draft-b original')
+      expect(store.getActiveFileData('draft-b')?.editorDraft).toBeUndefined()
+      pending.resolve(ok); await flushPromises()
+    })
+  })
 })
