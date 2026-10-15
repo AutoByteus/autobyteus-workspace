@@ -47,3 +47,9 @@ Scope: SR022 / ARCH006 / CR006(P1) / API-F004. Not API/E2E qualification.
   unqualified/unpublished. cleanup.json inventories removed owned scratch and
   retained candidates. Execution scripts are receipts; scratch is intentionally
   gone after handoff, not a claim of indefinitely runnable local paths.
+
+Raw final/initial race logs retain eight whitespace-only diagnostic lines; two
+expiry mutation logs each retain one more generated-config diagnostic blank.
+The artifact-only default git diff --check reports ten (artifact-whitespace.log).
+Source commit whitespace check passes. Raw evidence is not trimmed; artifact
+check uses core.whitespace=-blank-at-eol only, not a source waiver.

@@ -12,5 +12,7 @@
   "upstreamVerdictsUnchanged": true,
   "codeReviewRequired": true,
   "apiFreshnessNotExecuted": true,
-  "cleanupVerified": true
+  "cleanupVerified": true,
+  "rawDiagnosticWhitespaceLinesPreserved": 10,
+  "artifactOnlyWhitespaceExemption": "blank-at-eol; source check unchanged"
 }

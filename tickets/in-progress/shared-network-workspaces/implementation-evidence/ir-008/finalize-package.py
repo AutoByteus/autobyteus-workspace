@@ -9,7 +9,7 @@ assert all(x['rc']==x['expected'] for x in checks) and len(checks)==18
 assert json.loads((E/'cleanup.json').read_text())['absent']
 p=sp.run(['git','show','--format=','--check',a['sourceCommit']],capture_output=True,text=True)
 assert p.returncode==0,p.stdout+p.stderr
-final={'round':'IR-008','sourceCommit':a['sourceCommit'],'sourceWhitespaceRC':p.returncode,'localCommandsExpected':len(checks),'goPackages':7,'goTopLevelPass':56,'goFirstLevelSubcasePass':140,'mutationControls':7,'currentCanonicalHandoff':str(T/'implementation-handoff.md'),'currentRevisionRecord':str(T/'implementation-revision-record.md'),'upstreamVerdictsUnchanged':True,'codeReviewRequired':True,'apiFreshnessNotExecuted':True,'cleanupVerified':True}
+final={'round':'IR-008','sourceCommit':a['sourceCommit'],'sourceWhitespaceRC':p.returncode,'localCommandsExpected':len(checks),'goPackages':7,'goTopLevelPass':56,'goFirstLevelSubcasePass':140,'mutationControls':7,'currentCanonicalHandoff':str(T/'implementation-handoff.md'),'currentRevisionRecord':str(T/'implementation-revision-record.md'),'upstreamVerdictsUnchanged':True,'codeReviewRequired':True,'apiFreshnessNotExecuted':True,'cleanupVerified':True,'rawDiagnosticWhitespaceLinesPreserved':10,'artifactOnlyWhitespaceExemption':'blank-at-eol; source check unchanged'}
 (E/'final-checks.json').write_text(json.dumps(final,indent=2)+'\n')
 incoming=json.loads((T/'architecture-review-evidence/arch-rev-006/package-index.json').read_text())['reference_files']
 refs=set(incoming);refs.update(str(R/x['path']) for x in a['delta']);refs.update(str(p) for p in E.rglob('*') if p.is_file())
