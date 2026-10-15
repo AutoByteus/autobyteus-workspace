@@ -90,7 +90,8 @@ describe("list_available_agents (REQ-001/002)", () => {
     expect(defaultToolRegistry.getToolDefinition(LIST_AVAILABLE_AGENTS_TOOL_NAME)).toBe(definition);
     expect(definition.origin).toBe(ToolOrigin.LOCAL);
     expect(definition.category).toBe(ToolCategory.AGENT_COMMUNICATION);
-    expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).toContain("reaches the one instance at that address");
+    expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).toContain("reaches the one instance at that address in your run and never creates a run");
+    expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).not.toMatch(/brings? it into the run|first use/);
     expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).toContain("with an address spawns a new copy (with a copy's own ID it gives that copy a new Task)");
     expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).toContain("message a copy by its agent run ID (a Team copy's coordinator)");
   });

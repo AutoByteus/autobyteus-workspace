@@ -10,18 +10,22 @@ export const agentRootView = (): MutableView => ({
   closed_task_executions: [], execution_tree: {
     subjectKind: 'agent', createdAt: created,
     host: { address: '/research_assistant', agentRunId: 'host-run', agentDefinitionId: 'research-assistant' },
-    // Each collaborator is one hosted instance whose runs are recorded in its entry.
-    collaborators: [
-      { kind: 'agent', address: '/computer_use_agent', agentDefinitionId: 'computer-use', agentRunId: 'cua-run', platformAgentRunId: null,
-        launchConfiguration: launch, addedAt: created, addedViaAgentRunId: 'host-run' },
-      { kind: 'agent_team', address: '/product_team', teamDefinitionId: 'product-team', teamRunId: 'team-run', coordinatorAddress: '/product_team/prototyper',
+    // Delegated runs of the host: an Agent copy and a Team copy, each recording its catalog source.
+    taskExecutions: [
+      { address: '/computer_use_agent', agentRunId: 'cua-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created,
+        source: { kind: 'agent', agentDefinitionId: 'computer-use', launchConfiguration: launch } },
+      { address: '/product_team', teamRunId: 'team-run', delegatorAgentRunId: 'host-run', startedAt: created,
         members: [
-          { address: '/product_team/prototyper', agentDefinitionId: 'prototyper', agentRunId: 'pp-run', platformAgentRunId: null },
-          { address: '/product_team/bootstrapper', agentDefinitionId: 'bootstrapper', agentRunId: 'pb-run', platformAgentRunId: null },
+          { address: '/product_team/prototyper', agentRunId: 'pp-run', platformAgentRunId: null },
+          { address: '/product_team/bootstrapper', agentRunId: 'pb-run', platformAgentRunId: null },
         ],
-        handoffs: [], defaultLaunchConfiguration: launch, taskExecutions: [], addedAt: created, addedViaAgentRunId: 'host-run' },
+        taskExecutions: [],
+        source: { kind: 'agent_team', teamDefinitionId: 'product-team', coordinatorAddress: '/product_team/prototyper', handoffs: [],
+          members: [
+            { address: '/product_team/prototyper', agentDefinitionId: 'prototyper' },
+            { address: '/product_team/bootstrapper', agentDefinitionId: 'bootstrapper' },
+          ], defaultLaunchConfiguration: launch } },
     ],
-    taskExecutions: [],
   },
   communication_messages: { schemaVersion: 1, subjectKind: 'agent', hostRunId: 'host-run', messages: [{
     messageId: 'm1', senderAgentRunId: 'cua-run', receiverAgentRunId: 'host-run', content: 'Done, research assistant.',

@@ -25,7 +25,7 @@ describe('Agent root closed task executions', () => {
       expect(context.getAgentContext(hidden)).not.toBeNull()
     }
     expect(context.isListed('other-task-run')).toBe(true)
-    expect(context.view.execution_tree.taskExecutions).toHaveLength(3)
+    expect(context.view.execution_tree.taskExecutions).toHaveLength(5)
     expect(context.messagesView('host-run').listMessages().map((message) => message.messageId)).toContain('m-writer')
   })
 

@@ -26,11 +26,9 @@ import {
   projectAgentOrgCommunicationPerspective,
   projectAgentOrgMessageIdentity,
 } from './agentOrgCommunicationPerspective'
-import { collaboratorAgentSourceAt, collaboratorTeamSourceAt, catalogAgentSourceAt, catalogTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
+import { catalogAgentSourceAt, catalogTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { createAgentContext } from './agentOrgMemberContextFactory'
-import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService'
-import { collaboratorExecutionNodes } from '~/services/collaborators/agentSourceSelectors'
 import {
   agentRunKey,
   collaborationTreeWalk,
@@ -253,18 +251,6 @@ export class AgentOrgExecutionContext {
         this.correlationFailure('A saved model choice names no agent or Team of this AgentOrg.')
       }
       return 'checkpoint_required'
-    } else if (event.kind === 'collaborator_added') {
-      // One hosted instance per entry: its executions get contexts now, Offline. Applied in
-      // place (no checkpoint) so the pending send that added it keeps its acknowledgement.
-      const root = this.view.execution_tree.rootOrg
-      if ((root.collaborators ?? []).some((entry) => entry.address === event.collaborator.address)
-        || this.index.configured.has(event.collaborator.address)) {
-        this.correlationFailure(`AgentOrg collaborator address '${event.collaborator.address}' is already in use.`)
-      }
-      this.commitView({ ...this.view, execution_tree: { ...this.view.execution_tree,
-        rootOrg: { ...root, collaborators: [...(root.collaborators ?? []), event.collaborator] } } })
-      this.addContextsForNewAgents()
-      collaboratorCandidatesService.invalidate('agent_org', this.orgRunId)
     } else {
       try {
         assertAgentOrgCommunicationMessagesCorrelated(this.index, [event.message])
@@ -297,7 +283,7 @@ export class AgentOrgExecutionContext {
     this.phase = 'reopen_required'
   }
 
-  /** Offline contexts for indexed agents without one (a collaborator's new executions). */
+  /** Offline contexts for indexed agents without one (a new delegated copy's executions). */
   private addContextsForNewAgents(): void {
     const workspaceFor = (rootPath: string | null) => rootPath
       ? [...this.index.agents.values()].map((agent) => this.contexts.get(agent.agentRunId)?.config.workspaceMetadata)
@@ -325,7 +311,7 @@ export class AgentOrgExecutionContext {
 
   private closedSubtrees() {
     const root = this.view.execution_tree.rootOrg
-    return collectClosedSubtrees<CollaborationTreeNode>([...root.members, ...collaboratorExecutionNodes(root.collaborators ?? []), ...root.taskExecutions],
+    return collectClosedSubtrees<CollaborationTreeNode>([...root.members, ...root.taskExecutions],
       this.view.closed_task_executions, collaborationTreeWalk)
   }
 
@@ -352,11 +338,8 @@ export class AgentOrgExecutionContext {
     const runId = 'agentRunId' in execution ? execution.agentRunId : execution.teamRunId
     const address = parseAgentTeamAddress(execution.address)
     const configured = this.index.configured.get(address)
-    const collaborators = this.view.execution_tree.rootOrg.collaborators ?? []
     // A catalog copy carries its own source (REQ-011).
     const source = configured
-      ?? collaboratorAgentSourceAt(collaborators, address)
-      ?? collaboratorTeamSourceAt(collaborators, address)
       ?? catalogAgentSourceAt([execution], address)
       ?? catalogTeamSourceAt([execution], address)
     const hostKnown = event.host_kind === 'root'

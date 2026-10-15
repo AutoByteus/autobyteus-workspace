@@ -247,7 +247,7 @@ export class AgentTeamRunManager {
 
   /**
    * AR-004: one all-or-nothing Save of a stopped Team run: its configured model settings and the
-   * user model choices of its delegated copies and collaborators (DS-001), validated together in
+   * user model choices of its delegated copies (DS-001), validated together in
    * one catalog read and written in one tree write.
    */
   async updateStoppedRunLaunchChanges(input: {
@@ -366,7 +366,7 @@ export class AgentTeamRunManager {
     } as const;
   }
 
-  /** Model options of every editable delegated copy and collaborator of the run (its current tree). */
+  /** Model options of every editable delegated copy of the run (its current tree). */
   async delegatedLaunchModelOptions(
     rootTeamRunIdInput: string,
     modelOptions: Pick<RunModelSelectionService, "listOptionsMany">,

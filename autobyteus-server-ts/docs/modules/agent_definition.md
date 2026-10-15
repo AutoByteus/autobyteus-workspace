@@ -97,7 +97,7 @@ These defaults are consumed by:
 
 - the native agent create/edit/detail surfaces,
 - direct agent launch preparation,
-- delegated catalog copies and collaborators that an agent starts with `delegate_task` or `send_message_to`. The agent, or each Team member, runs on its own usable default first, then its Team's default, then the run root's settings. See [Launch configuration of collaborators and catalog copies](./agent_communication.md#launch-configuration-of-collaborators-and-catalog-copies),
+- delegated catalog copies that an agent starts with `delegate_task`. The agent, or each Team member, runs on its own usable default first, then its Team's default, then the run root's settings. See [Launch configuration of catalog copies](./agent_communication.md#launch-configuration-of-catalog-copies),
 - the web Team and Org launch forms, which seed each member row from its usable default (see [Agent Team Definition](./agent_team_definition.md#default-launch-preferences)), and
 - application-authored backend orchestration flows that choose to reuse persisted defaults when calling `context.agentExecution.startAgent(...)`.
 
@@ -133,7 +133,7 @@ previous release displayed.
 
 The shipped prompt allows straightforward work directly and specialist
 collaboration when useful. `list_available_agents` is selected by this definition,
-but runtime availability and eligible collaborators still follow the existing
+but runtime availability and eligible catalog definitions still follow the existing
 context/eligibility rules. Discovery is not an installed-public-package inventory
 and does not grant the specialist's skills to the caller. Direct work uses relevant
 available skills or reasoning/tools; no guaranteed delegation or routing order is

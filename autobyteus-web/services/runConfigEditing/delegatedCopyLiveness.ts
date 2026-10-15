@@ -13,11 +13,8 @@ const camelAgentIds = (members: readonly CamelMember[]): string[] =>
 const snakeAgentIds = (members: readonly TaskTeamMemberExecutionDto[]): string[] =>
   members.flatMap((member) => member.kind === 'task_team_agent' ? [member.agent_run_id] : snakeAgentIds(member.members))
 
-/** The agents of a Team copy or collaborator Team of a Team root, by its run ID. */
+/** The agents of a Team copy of a Team root, by its run ID. */
 const teamRootTeamAgents = (tree: TeamRunExecutionTreeDto, teamRunId: string): string[] => {
-  for (const entry of tree.root_team.collaborators ?? []) {
-    if (entry.kind === 'agent_team' && entry.team_run_id === teamRunId) return entry.members.map((member) => member.agent_run_id)
-  }
   const visit = (tasks: readonly TaskExecutionDto[]): string[] | null => {
     for (const task of tasks) {
       if (task.kind !== 'task_team') continue
@@ -27,14 +24,11 @@ const teamRootTeamAgents = (tree: TeamRunExecutionTreeDto, teamRunId: string): s
     }
     return null
   }
-  return visit([
-    ...tree.root_team.task_executions,
-    ...(tree.root_team.collaborators ?? []).flatMap((entry) => entry.kind === 'agent_team' ? entry.task_executions : []),
-  ]) ?? []
+  return visit(tree.root_team.task_executions) ?? []
 }
 
 /**
- * DS-002: whether a delegated copy or collaborator of a live root runs (any of its agents is not
+ * DS-002: whether a delegated copy of a live root runs (any of its agents is not
  * offline), for its stop icon. A Team counts as one unit. False when the root has no live view (or a
  * view still without its index or agent contexts).
  */

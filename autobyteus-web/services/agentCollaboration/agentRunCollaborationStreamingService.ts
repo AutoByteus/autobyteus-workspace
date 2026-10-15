@@ -71,9 +71,9 @@ export class AgentRunCollaborationStreamingService {
       this.socket = null
       this.phase = 'disconnected'
       this.rejectPending('The Agent collaboration stream closed before command acknowledgement.')
-      // 4004: this run cannot host collaborators; retrying cannot help.
+      // 4004: this run cannot host delegated copies; retrying cannot help.
       if (!this.intentionalClose && event.code !== 4004) this.scheduleRecovery('The Agent collaboration stream closed.')
-      else if (event.code === 4004) this.settleReadiness(new Error('This run cannot host collaborators.'))
+      else if (event.code === 4004) this.settleReadiness(new Error('This run cannot host delegated copies.'))
     }
   }
 

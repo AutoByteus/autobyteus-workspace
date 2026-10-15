@@ -2,8 +2,6 @@ import type { TaskExecutionResourcePort } from "../../agent-collaboration/execut
 import { resolveMemberCollaborationScope, type MemberHostTeam } from "../../agent-collaboration/execution/domain/member-instance-scope.js";
 import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
-import { prepareCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
-import type { ConfiguredAgentActivationMode } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import {
   MemberCollaborationContext,
@@ -92,7 +90,7 @@ export class StandaloneRootBuilder {
           throw error;
         }
       },
-      // Application-owned runs never host collaborators.
+      // Application-owned runs never host delegated copies.
       applicationExecutionContext: () => null,
     });
     const persistence = new StandaloneRootPersistenceCoordinator({
@@ -113,11 +111,6 @@ export class StandaloneRootBuilder {
       workspaceManager: this.dependencies.workspaceManager,
     });
     const teams = new RootTeamExecutionDirectory(this.dependencies.flatTeamExecutionFactory);
-    // Member contexts read the live tree, so one callback set serves collaborator Teams too.
-    const prepareCollaborators = (entries: StandaloneRootTreeSnapshot["collaborators"], mode: ConfiguredAgentActivationMode) =>
-      prepareCollaboratorHandles({ root, rootAgents, teams, teamCallbacks: callbacks, entries, mode });
-    // Collaborators are restored with the root, without preparing a runtime.
-    const restored = await prepareCollaborators(input.tree.collaborators, "restore");
     run = new StandaloneAgentRunRoot({
       root,
       tree: input.tree,
@@ -127,7 +120,6 @@ export class StandaloneRootBuilder {
       rootAgents,
       teams,
       callbacks,
-      prepareCollaboratorHandles: (entries) => prepareCollaborators(entries, "fresh"),
       persistence,
       publisher: new RootEventPublisher<StandaloneRootEvent>(),
       taskExecutionIdentity: this.dependencies.taskExecutionIdentity,
@@ -137,17 +129,15 @@ export class StandaloneRootBuilder {
       collaboratorAdmission: this.dependencies.collaboratorAdmission,
       onTerminated: () => { if (run) input.onTerminated(run); },
     });
-    restored.commitAfterDurability();
     run.activate();
     retained.splice(0).forEach(([identity, event]) => run!.onAgentExecutionEvent(identity, event));
     return run;
   }
 
   /**
-   * A child directly under the root (a collaborator Agent or any Agent copy) belongs to no Team
-   * (no handoff rules); a member of its hosting Team instance (a collaborator Team or any copy,
-   * including a catalog copy prepared from its recorded source) is Team-scoped with that
-   * instance's handoffs and instructions (REQ-007).
+   * A child directly under the root (an Agent copy) belongs to no Team (no handoff rules); a
+   * member of its hosting Team instance (a Team copy prepared from its recorded source) is
+   * Team-scoped with that instance's handoffs and instructions (REQ-007).
    */
   private async buildChildContext(input: Readonly<{
     identity: CollaborationMemberExecutionIdentity;

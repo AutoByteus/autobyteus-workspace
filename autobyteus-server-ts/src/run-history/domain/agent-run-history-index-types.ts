@@ -20,7 +20,7 @@ export interface RunHistoryItem {
   createdAt: string;
   archivedAt: string | null;
   terminatedAt: string | null;
-  /** The run hosts collaborators (a stored or active Agent root package exists). */
+  /** The run hosts delegated copies (a stored or active Agent root package exists). */
   hasCollaboration: boolean;
 }
 

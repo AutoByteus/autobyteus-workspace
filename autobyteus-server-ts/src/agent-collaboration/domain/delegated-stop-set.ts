@@ -1,20 +1,16 @@
 import type {
-  CollaboratorEntry,
   TaskExecution,
   TaskTeamMemberExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
-import type { AgentTeamAddress } from "./agent-team-address.js";
 import type { DelegatedLaunchForest, DelegatedRunReference } from "./delegated-launch-selection.js";
 
-/** The Stop target: one delegated copy (Agent or Team) or one collaborator, by its run identity. */
+/** The Stop target: one delegated copy (Agent or Team), by its run identity. */
 export type DelegatedStopTarget = DelegatedRunReference;
 
 export type DelegatedStopSet = Readonly<{
-  /** The collaborator itself, when the target is one (stopped through its host, not the task queue). */
-  collaborator: Readonly<{ address: AgentTeamAddress; agentRunIds: readonly string[] }> | null;
-  /** Task copies to stop, innermost first; the target copy (when it is one) is last. */
+  /** Task copies to stop, innermost first; the target copy is last. */
   executions: readonly DelegatedRunReference[];
-  /** Every AgentRun inside the set (the collaborator's and every listed copy's agents). */
+  /** Every AgentRun inside the set (every listed copy's agents). */
   agentRunIds: ReadonlySet<string>;
   /**
    * Copies recorded before delegators were recorded (no `delegatorAgentRunId`) and not contained in
@@ -27,7 +23,7 @@ type Node = Readonly<{
   reference: DelegatedRunReference;
   key: string;
   delegatorAgentRunId?: string;
-  /** The Team copy (or collaborator Team) whose TeamRun hosts this copy, by key. */
+  /** The Team copy whose TeamRun hosts this copy, by key. */
   hostKey: string | null;
   agentRunIds: readonly string[];
 }>;
@@ -39,11 +35,11 @@ const memberAgentRunIds = (members: readonly TaskTeamMemberExecution[]): string[
   members.flatMap((member) => "agentRunId" in member ? [member.agentRunId] : memberAgentRunIds(member.members));
 
 /**
- * AR-002: the Stop set of a copy or collaborator X is X plus, recursively, every task copy whose
- * delegator is an agent of the set (Task helpers record their requesting agent as delegator too) and
+ * AR-002: the Stop set of a copy X is X plus, recursively, every task copy whose
+ * delegator is an agent of the set and
  * every copy hosted inside a Team of the set (its TeamRun stops with it). Evaluated over all
  * task-execution lists of the tree. Innermost first: deeper descendants before their ancestors.
- * `null` when the target is no delegated copy or collaborator of the tree.
+ * `null` when the target is no delegated copy of the tree.
  */
 export const delegatedStopSet = (forest: DelegatedLaunchForest, target: DelegatedStopTarget): DelegatedStopSet | null => {
   const nodes: Node[] = [];
@@ -65,28 +61,16 @@ export const delegatedStopSet = (forest: DelegatedLaunchForest, target: Delegate
       }
     }
   };
-  const collaboratorKeys = new Map<string, CollaboratorEntry>();
-  for (const entry of forest.collaborators) {
-    if (entry.kind === "agent_team") {
-      collaboratorKeys.set(`team:${entry.teamRunId}`, entry);
-      collect(entry.taskExecutions, `team:${entry.teamRunId}`);
-    } else collaboratorKeys.set(`agent:${entry.agentRunId}`, entry);
-  }
-  const collaboratorLists = new Set(forest.collaborators.flatMap((entry) => entry.kind === "agent_team" ? [entry.taskExecutions] : []));
-  forest.taskExecutionLists.filter((list) => !collaboratorLists.has(list)).forEach((list) => collect(list, null));
+  forest.taskExecutionLists.forEach((list) => collect(list, null));
 
   const targetKey = keyOf(target);
-  const collaborator = collaboratorKeys.get(targetKey) ?? null;
   const targetNode = nodes.find((node) => node.key === targetKey) ?? null;
-  if (!collaborator && !targetNode) return null;
+  if (!targetNode) return null;
 
   const depth = new Map<string, number>([[targetKey, 0]]);
   /** Depth of the set member containing each agent: a copy delegated by that agent is one deeper. */
   const agentDepth = new Map<string, number>();
-  const collaboratorAgents = collaborator
-    ? (collaborator.kind === "agent" ? [collaborator.agentRunId] : collaborator.members.map((member) => member.agentRunId))
-    : targetNode!.agentRunIds;
-  collaboratorAgents.forEach((id) => agentDepth.set(id, 0));
+  targetNode.agentRunIds.forEach((id) => agentDepth.set(id, 0));
   let grew = true;
   while (grew) {
     grew = false;
@@ -105,10 +89,6 @@ export const delegatedStopSet = (forest: DelegatedLaunchForest, target: Delegate
     .sort((left, right) => depth.get(right.key)! - depth.get(left.key)!)
     .map((node) => node.reference);
   return Object.freeze({
-    collaborator: collaborator ? Object.freeze({
-      address: collaborator.address,
-      agentRunIds: Object.freeze(collaborator.kind === "agent" ? [collaborator.agentRunId] : collaborator.members.map((member) => member.agentRunId)),
-    }) : null,
     executions: Object.freeze(executions),
     agentRunIds,
     unattributed: Object.freeze(nodes.filter((node) => !depth.has(node.key) && node.delegatorAgentRunId === undefined).map((node) => node.reference)),

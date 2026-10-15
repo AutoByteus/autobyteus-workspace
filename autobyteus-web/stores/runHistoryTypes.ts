@@ -197,8 +197,6 @@ export interface RunHistoryTransientExecutionRow extends RunHistoryTeamExecution
   currentStatus: AgentStatus | string | null;
   /** Display name of the AgentRun that started a delegated child row; null otherwise. */
   delegatedBy: string | null;
-  /** A collaborator Team row opens once when it appears (F-02). */
-  opensOnAppear?: boolean;
 }
 
 export type RunHistoryTeamExecutionRow =

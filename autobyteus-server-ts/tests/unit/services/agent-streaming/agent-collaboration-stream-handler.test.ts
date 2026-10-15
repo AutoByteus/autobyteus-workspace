@@ -55,9 +55,9 @@ describe("AgentCollaborationStreamHandler", () => {
     expect(wire[1]).toMatchObject({ payload: { root_agent: { is_active: false } } });
   });
 
-  it("closes with AGENT_ROOT_UNAVAILABLE when the run cannot host collaborators or its host cannot be made ready", async () => {
+  it("closes with AGENT_ROOT_UNAVAILABLE when the run cannot host delegated copies or its host cannot be made ready", async () => {
     for (const [roots, message] of [
-      [{ resolveRoot: vi.fn(async () => null), getActive: () => null }, `Agent run '${HOST}' cannot host collaborators.`],
+      [{ resolveRoot: vi.fn(async () => null), getActive: () => null }, `Agent run '${HOST}' cannot host delegated copies.`],
       [{ resolveRoot: vi.fn(async () => { throw Object.assign(new Error("not found"), { code: "AGENT_ROOT_UNAVAILABLE" }); }), getActive: () => null }, "not found"],
       [{ resolveRoot: vi.fn(async () => ({ ...fakeRoot(), ensureHostReady: vi.fn(async () => { throw new Error("restore failed"); }) }) as never), getActive: () => null }, "restore failed"],
     ] as const) {

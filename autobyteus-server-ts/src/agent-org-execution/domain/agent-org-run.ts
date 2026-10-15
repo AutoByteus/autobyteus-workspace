@@ -8,11 +8,8 @@ import type { RunModelSelectionValidator } from "../../llm-management/services/r
 import { createAgentOrgDelegatedLaunchCommand } from "../services/agent-org-run-delegated-launches.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import type { TaskExecutionResourcePort, TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import { taskScopedMessageRecipient } from "../../agent-collaboration/collaborators/task-scoped-message-recipient.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { AgentOrgIndexedAgentExecution } from "../services/agent-org-execution-index.js";
-import type { PreparedCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
-import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { createCollaborationMemberExecutionIdentity, sameCollaborationMemberExecutionIdentity, sameRootExecutionIdentity, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -130,36 +127,18 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources });
     this.collaborators = new AgentOrgRunCollaborators({
       admission: options.collaboratorAdmission,
-      identities: options.taskExecutionIdentity,
-      persistence: options.persistence,
       getTree: () => this.tree,
-      assertAdmitting: () => this.assertAdmitting(),
-      prepareHandles: (entries) => options.prepareCollaboratorHandles(entries),
-      replaceTree: (tree) => this.replaceTree(tree),
-      publish: (event) => options.publisher.publish(event),
     });
     this.delegatedLaunches = createAgentOrgDelegatedLaunchCommand({
-      root: options.root,
-      rootAgents: options.rootAgents,
-      teams: options.teams,
       taskExecutions: this.taskExecutions,
       persistence: options.persistence,
       getTree: () => this.tree,
       getIndex: () => this.index,
       assertAdmitting: () => this.assertAdmitting(),
       replaceTree: (tree) => this.replaceTree(tree),
-      publishAgentOffline: (identity) => this.onAgentExecutionEvent(identity, {
-        kind: "status_overlay",
-        snapshot: createCollaborationAgentStatusSnapshot({ execution: identity, status: "offline" }),
-      }),
       publishSelectionsChanged: (selections) => options.publisher.publish({ kind: "delegated_launch_selections_changed", selections }),
     });
-    const recipients: AgentOrgRecipientResolver = new AgentOrgRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators,
-      taskScope: sender => taskScopedMessageRecipient({ sender, lifecycle: this.taskExecutions,
-        resolvePlacement: address => recipients.resolveDelegationPlacement(sender, address),
-        getAgent: id => this.index.requireAgent(id),
-      }),
-    });
+    const recipients = new AgentOrgRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators });
     this.delivery = new AgentOrgRunMessageDelivery({
       orgRunId: this.orgRunId,
       root: options.root,
@@ -199,11 +178,11 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     return this.taskExecutions.taskExecutionStatus(execution);
   }
 
-  /** DS-002: the user's Stop of one delegated copy or collaborator and the copies it started. */
+  /** DS-002: the user's Stop of one delegated copy and the copies it started. */
   stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
     return this.operationGate.run(() => this.delegatedLaunches.stop(target));
   }
-  /** DS-001: the user's model choice for stopped delegated copies or collaborators of this live run. */
+  /** DS-001: the user's model choice for stopped delegated copies of this live run. */
   updateDelegatedLaunchSelections(
     changes: readonly DelegatedLaunchChange[],
     validator: RunModelSelectionValidator,

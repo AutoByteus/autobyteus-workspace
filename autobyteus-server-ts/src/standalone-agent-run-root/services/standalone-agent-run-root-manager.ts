@@ -134,7 +134,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
 
   /**
    * The root of an eligible run: the registered one, else loaded from its package (or empty)
-   * and registered. It never starts the host. Null for a run that cannot host collaborators.
+   * and registered. It never starts the host. Null for a run that cannot host delegated copies.
    */
   async resolveRoot(hostRunIdInput: string): Promise<StandaloneAgentRunRoot | null> {
     const hostRunId = hostRunIdInput.trim();
@@ -241,7 +241,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
 
   /**
    * DS-001 / AR-004 on a stopped Agent root (no registered root): validates the user model choices
-   * of its delegated copies and collaborators, and the host's own new model when given, in one
+   * of its delegated copies, and the host's own new model when given, in one
    * catalog read, then writes the stored collaboration tree once. All or nothing for the tree; the
    * host's model is written by its own run service afterwards (a separate file).
    */
@@ -271,7 +271,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     if (!metadata) return outcome("NOT_FOUND", `Agent run '${hostRunId}' was not found.`, null);
     const dir = this.layout.getAgentRunCollaborationDirPath(hostRunId);
     const tree = await this.store.readTree(dir, hostRunId);
-    if (!tree) return outcome("NOT_FOUND", "This run has no delegated copies or collaborators.", null);
+    if (!tree) return outcome("NOT_FOUND", "This run has no delegated copies.", null);
     const plan = planDelegatedLaunchValidation({ ...this.delegatedLaunchReader(hostRunId, tree), changes: input.changes });
     if (plan.kind === "refused") return outcome(plan.result.outcome, plan.result.message, tree, plan.result.fieldErrors);
     const host = input.hostSelection ? [{
@@ -302,7 +302,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     return outcome("UPDATED", "Saved. The new model is used when the copy resumes.", readback);
   }
 
-  /** Model options of every editable delegated copy and collaborator of the run (live or stored tree). */
+  /** Model options of every editable delegated copy of the run (live or stored tree). */
   async delegatedLaunchModelOptions(
     hostRunIdInput: string,
     modelOptions: Pick<RunModelSelectionService, "listOptionsMany">,
@@ -316,7 +316,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
 
   private delegatedLaunchReader(hostRunId: string, tree: StandaloneRootTreeSnapshot) {
     const closed = new Set(this.closedTaskExecutionsFor(hostRunId, tree).map(taskExecutionReferenceKey));
-    const sources = new StandaloneRootTaskSourceResolver(() => new StandaloneRootExecutionIndex(tree));
+    const sources = new StandaloneRootTaskSourceResolver();
     return {
       forest: standaloneDelegatedLaunchForest(tree),
       readTaskSource: (address: string, recorded: Parameters<StandaloneRootTaskSourceResolver["resolve"]>[1]) => sources.resolve(address, recorded ?? null),

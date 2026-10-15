@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { nonEmptyStringSchema } from "./schema-helpers.js";
 import {
-  collaboratorEntryDtoSchema,
   taskAgentExecutionDtoSchema,
   taskTeamExecutionDtoSchema,
   userLaunchSelectionDtoSchema,
@@ -36,16 +35,8 @@ export type TeamTaskExecutionsClosedPayload = Readonly<z.infer<typeof teamTaskEx
 export const teamTaskExecutionsReopenedPayloadSchema = teamTaskExecutionsClosedPayloadSchema;
 export type TeamTaskExecutionsReopenedPayload = TeamTaskExecutionsClosedPayload;
 
-/** A collaborator entry was committed at the root; it precedes any task execution at its address. */
-export const teamCollaboratorAddedPayloadSchema = z.object({
-  change_sequence: z.number().int().positive(),
-  collaborator: collaboratorEntryDtoSchema,
-}).strict();
-
-export type TeamCollaboratorAddedPayload = Readonly<z.infer<typeof teamCollaboratorAddedPayloadSchema>>;
-
 /**
- * The user's model choices of these delegated copies or collaborators were saved on the live run
+ * The user's model choices of these delegated copies were saved on the live run
  * (DS-001). Each names one record by its run ID (unique in the tree) with its choice as now recorded.
  */
 export const teamDelegatedLaunchSelectionsChangedPayloadSchema = z.object({

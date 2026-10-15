@@ -17,7 +17,7 @@ import {
   collaborationMemberLaunchSource,
   type CollaborationLaunchConfigurationSourceDto,
   type CollaborationTaskExecutionDto,
-  type CollaboratorEntryDto,
+  type TaskAgentExecutionSourceDto,
   type UserLaunchSelectionDto as CamelSelectionDto,
 } from '@autobyteus/collaboration-stream-contracts'
 import { collectConfiguredTeams } from '~/services/teamExecution/teamExecutionTreeSelectors'
@@ -37,14 +37,14 @@ import {
 } from '~/utils/runSettings/runMemberTree'
 
 /**
- * DS-004 / REQ-007 (SR-006, SR-007): a run's collaborators and open delegated copies as member rows.
- * One row per collaborator or copy, with a badge; a Team row edits its Team-level choice and has its
+ * DS-004 / REQ-007 (SR-006, SR-007): a run's open delegated copies as member rows.
+ * One row per copy, with a badge; a Team row edits its Team-level choice and has its
  * agents as child rows. Each row shows what it runs with by the single launch rule (its own user
  * choice, else its Team's when it follows the Team, else its started value; the contract packages'
  * functions), with this edit's choices applied. A row with a choice shows no origin; others say where
  * their launch came from, with recorded fallbacks as notes (a Team-level one once, on the Team row).
  * Model and its settings are editable only while the copy is stopped; runtime, approval and
- * workspace never are. The copy or collaborator itself carries the stop target. Closed copies (Task
+ * workspace never are. The copy itself carries the stop target. Closed copies (Task
  * DONE or CANCELLED) are left out, with everything under one. Keys are `<address>@<run ID>`.
  */
 type Launch = Readonly<{
@@ -67,7 +67,7 @@ export type DelegatedRowControl = Readonly<{
   editable: boolean
   /** An agent of the run is live (not offline). */
   isAgentLive(agentRunId: string): boolean
-  /** A stop of this copy or collaborator is in flight. */
+  /** A stop of this copy is in flight. */
   isStopping(reference: StopReference): boolean
   /** This edit's choice for a target, if any. */
   draftOf(target: TargetKey): Selection | null
@@ -215,33 +215,9 @@ export const teamDelegatedLaunchNodes = (
   const build = builders(deps, control, snakeRule)
   const live = (ids: readonly string[]) => ids.some((id) => control.isAgentLive(id))
   const closedKeys = new Set(closed.map(referenceKey))
-  const collaborators = tree.root_team.collaborators ?? []
-  /** A Team copy without a recorded source runs as (and is led like) the collaborator or configured Team at its address. */
-  const inRunTeamAt = (address: string) => collaborators.flatMap((entry) => entry.kind === 'agent_team' && entry.address === address ? [entry] : [])[0]
-    ?? collectConfiguredTeams(tree).find((team) => team !== tree.root_team && team.address === address)
+  /** A Team copy without a recorded source runs as (and is led like) the configured Team at its address. */
+  const inRunTeamAt = (address: string) => collectConfiguredTeams(tree).find((team) => team !== tree.root_team && team.address === address)
   const result: RunMemberNode[] = []
-  for (const entry of collaborators) {
-    if (entry.kind === 'agent') {
-      result.push(build.agent({ key: `${entry.address}@${entry.agent_run_id}`, address: entry.address,
-        started: snakeLaunch(entry.launch_configuration), recorded: { agent: snakeChoice(entry.user_launch_selection) },
-        target: `agent:${entry.agent_run_id}`, stop: { agentRunId: entry.agent_run_id }, running: live([entry.agent_run_id]),
-        facts: factsOf(snakeSource(entry.launch_source), true, 'collaborator') }))
-      continue
-    }
-    const running = live(entry.members.map((member) => member.agent_run_id))
-    const teamChoice = snakeChoice(entry.user_team_launch_selection)
-    const teamTarget: TargetKey = `team:${entry.team_run_id}`
-    result.push(build.team({ key: `${entry.address}@${entry.team_run_id}`, address: entry.address,
-      started: snakeLaunch(entry.default_launch_configuration), recorded: { team: teamChoice },
-      target: teamTarget, stop: { teamRunId: entry.team_run_id }, running,
-      facts: factsOf(snakeSource(entry.default_launch_source), true, 'collaborator') },
-    entry.members.map((member) => build.agent({ key: `${member.address}@${member.agent_run_id}`, address: member.address,
-      started: snakeLaunch(teamMemberLaunchConfiguration(entry, member)),
-      recorded: { agent: snakeChoice(member.user_launch_selection), team: teamChoice },
-      followsTeam: teamMemberFollowsTeam(member), target: `agent:${member.agent_run_id}`, teamTarget, stop: null, running,
-      facts: factsOf(snakeSource(teamMemberLaunchSource(entry, member)), Boolean(member.launch_source)) },
-    member.address === entry.coordinator_address))))
-  }
   const visit = (tasks: readonly TeamTaskExecutionDto[]): void => {
     for (const task of tasks) {
       if (task.kind === 'task_agent') {
@@ -279,16 +255,13 @@ export const teamDelegatedLaunchNodes = (
       visit(task.task_executions)
     }
   }
-  visit([
-    ...collectConfiguredTeams(tree).flatMap((team) => team.task_executions),
-    ...collaborators.flatMap((entry) => entry.kind === 'agent_team' ? entry.task_executions : []),
-  ])
+  visit(collectConfiguredTeams(tree).flatMap((team) => team.task_executions))
   return result
 }
 
 // --- Org and Agent roots (camelCase DTOs) ---
 
-type CamelLaunch = Extract<CollaboratorEntryDto, { kind: 'agent' }>['launchConfiguration']
+type CamelLaunch = TaskAgentExecutionSourceDto['launchConfiguration']
 const camelLaunch = (launch: CamelLaunch | null | undefined): Launch => launch ? {
   runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier,
   llmConfig: launch.llmConfig, autoExecuteTools: launch.autoExecuteTools,
@@ -305,10 +278,9 @@ const camelAgentIds = (members: readonly CamelTeamMember[]): string[] =>
   members.flatMap((member) => 'agentRunId' in member ? [member.agentRunId] : camelAgentIds(member.members))
 
 export const collaborationDelegatedLaunchNodes = (input: Readonly<{
-  collaborators: readonly CollaboratorEntryDto[]
   /** Every task-execution list of the root (see `collaborationTaskExecutionLists`). */
   taskExecutions: readonly CollaborationTaskExecutionDto[]
-  /** The launch of an in-run Agent or Team at an address (configured placement or collaborator), for copies without a recorded source. */
+  /** The launch of an in-run Agent or Team at an address (configured placement), for copies without a recorded source. */
   launchAt(address: string): CamelLaunch | null
   /** The coordinator address of the in-run Team at an address, for Team copies without a recorded source. */
   coordinatorAt(address: string): string | null
@@ -318,28 +290,6 @@ export const collaborationDelegatedLaunchNodes = (input: Readonly<{
   const live = (ids: readonly string[]) => ids.some((id) => control.isAgentLive(id))
   const closedKeys = new Set((input.closed ?? []).map(referenceKey))
   const result: RunMemberNode[] = []
-  for (const entry of input.collaborators) {
-    if (entry.kind === 'agent') {
-      result.push(build.agent({ key: `${entry.address}@${entry.agentRunId}`, address: entry.address,
-        started: camelLaunch(entry.launchConfiguration), recorded: { agent: camelChoice(entry.userLaunchSelection) },
-        target: `agent:${entry.agentRunId}`, stop: { agentRunId: entry.agentRunId }, running: live([entry.agentRunId]),
-        facts: factsOf(camelSource(entry.launchSource), true, 'collaborator') }))
-      continue
-    }
-    const running = live(entry.members.map((member) => member.agentRunId))
-    const teamChoice = camelChoice(entry.userTeamLaunchSelection)
-    const teamTarget: TargetKey = `team:${entry.teamRunId}`
-    result.push(build.team({ key: `${entry.address}@${entry.teamRunId}`, address: entry.address,
-      started: camelLaunch(entry.defaultLaunchConfiguration), recorded: { team: teamChoice },
-      target: teamTarget, stop: { teamRunId: entry.teamRunId }, running,
-      facts: factsOf(camelSource(entry.defaultLaunchSource), true, 'collaborator') },
-    entry.members.map((member) => build.agent({ key: `${member.address}@${member.agentRunId}`, address: member.address,
-      started: camelLaunch(collaborationMemberLaunchConfiguration(entry, member)),
-      recorded: { agent: camelChoice(member.userLaunchSelection), team: teamChoice },
-      followsTeam: collaborationMemberFollowsTeam(member), target: `agent:${member.agentRunId}`, teamTarget, stop: null, running,
-      facts: factsOf(camelSource(collaborationMemberLaunchSource(entry, member)), Boolean(member.launchSource)) },
-    member.address === entry.coordinatorAddress))))
-  }
   const visit = (tasks: readonly CollaborationTaskExecutionDto[]): void => {
     for (const task of tasks) {
       if ('agentRunId' in task) {

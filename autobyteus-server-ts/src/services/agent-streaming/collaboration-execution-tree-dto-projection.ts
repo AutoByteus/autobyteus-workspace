@@ -6,7 +6,6 @@ import {
   type AgentOrgExecutionTreeDto,
   type AgentRunCollaborationTreeDto,
   type CollaborationTaskExecutionDto,
-  type CollaboratorEntryDto,
   type TaskAgentExecutionSourceDto,
   type TaskTeamExecutionSourceDto,
 } from "@autobyteus/collaboration-stream-contracts";
@@ -17,7 +16,7 @@ import type { LaunchConfigurationSource } from "../../agent-collaboration/domain
 import type { StandaloneRootTreeSnapshot } from "../../standalone-agent-run-root/domain/standalone-root-tree.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
 import type {
-  CollaboratorEntry, ConfiguredAgentExecutionNode, ConfiguredExecutionNode,
+  ConfiguredAgentExecutionNode, ConfiguredExecutionNode,
   RecordedMemberLaunch, TaskExecution, TaskTeamMemberExecution, UserLaunchSelection,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
@@ -96,29 +95,6 @@ export const projectCollaborationTaskExecution = (execution: TaskExecution): Col
     ...projectSelection("userTeamLaunchSelection", execution.userTeamLaunchSelection) };
 };
 
-export const projectCollaborationCollaborator = (entry: CollaboratorEntry): CollaboratorEntryDto => {
-  const identity = { address: entry.address, addedAt: entry.addedAt, addedViaAgentRunId: entry.addedViaAgentRunId };
-  if (entry.kind === "agent") return {
-    ...identity, kind: "agent", agentDefinitionId: entry.agentDefinitionId, agentRunId: entry.agentRunId,
-    platformAgentRunId: entry.platformAgentRunId, launchConfiguration: projectLaunch(entry.launchConfiguration),
-    ...projectOptionalLaunch(entry, "launchSource", false),
-    ...projectSelection("userLaunchSelection", entry.userLaunchSelection),
-  };
-  return {
-    ...identity, kind: "agent_team", teamDefinitionId: entry.teamDefinitionId, teamRunId: entry.teamRunId,
-    coordinatorAddress: entry.coordinatorAddress,
-    members: entry.members.map((member) => ({
-      address: member.address, agentDefinitionId: member.agentDefinitionId,
-      agentRunId: member.agentRunId, platformAgentRunId: member.platformAgentRunId, ...projectMemberLaunch(member),
-      ...projectSelection("userLaunchSelection", member.userLaunchSelection),
-    })),
-    handoffs: entry.handoffs.map(projectHandoff), defaultLaunchConfiguration: projectLaunch(entry.defaultLaunchConfiguration),
-    ...projectOptionalLaunch(entry, "defaultLaunchSource", false),
-    taskExecutions: entry.taskExecutions.map(projectCollaborationTaskExecution),
-    ...projectSelection("userTeamLaunchSelection", entry.userTeamLaunchSelection),
-  };
-};
-
 const projectConfiguredAgent = (member: ConfiguredAgentExecutionNode) => ({
   address: member.address, agentDefinitionId: member.agentDefinitionId, role: member.role, description: member.description,
   agentRunId: member.agentRunId, platformAgentRunId: member.platformAgentRunId, launchConfiguration: projectLaunch(member.launchConfiguration),
@@ -134,7 +110,6 @@ const projectConfigured = (member: ConfiguredExecutionNode): AgentOrgExecutionTr
 export const projectAgentCollaborationTree = (tree: StandaloneRootTreeSnapshot): AgentRunCollaborationTreeDto => ({
   subjectKind: "agent", createdAt: tree.createdAt,
   host: { address: tree.host.address, agentRunId: tree.host.agentRunId, agentDefinitionId: tree.host.agentDefinitionId },
-  collaborators: tree.collaborators.map(projectCollaborationCollaborator),
   taskExecutions: tree.taskExecutions.map(projectCollaborationTaskExecution),
 });
 
@@ -147,7 +122,7 @@ export const projectAgentOrgExecutionTree = (tree: AgentOrgRunExecutionTreeSnaps
   rootOrg: {
     address: tree.rootOrg.address, orgDefinitionId: tree.rootOrg.orgDefinitionId, orgDefinitionName: tree.rootOrg.orgDefinitionName,
     orgRunId: tree.rootOrg.orgRunId, defaultLaunchConfiguration: projectLaunch(tree.rootOrg.defaultLaunchConfiguration),
-    members: tree.rootOrg.members.map(projectConfigured), collaborators: tree.rootOrg.collaborators.map(projectCollaborationCollaborator),
+    members: tree.rootOrg.members.map(projectConfigured),
     taskExecutions: tree.rootOrg.taskExecutions.map(projectCollaborationTaskExecution),
   },
 });

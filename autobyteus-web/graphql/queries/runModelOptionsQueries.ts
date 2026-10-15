@@ -28,7 +28,7 @@ export const AgentOrgRunModelOptions = gql`query AgentOrgRunModelOptions($orgRun
   }
 }`
 
-/** Model options of every editable delegated copy and collaborator of a run (agent and Team level). */
+/** Model options of every editable delegated copy of a run (agent and Team level). */
 export const DelegatedLaunchModelOptions = gql`query DelegatedLaunchModelOptions($rootKind: String!, $rootRunId: String!) {
   delegatedLaunchModelOptions(rootKind: $rootKind, rootRunId: $rootRunId) {
     scope agentRunId teamRunId currentModelIdentifier unavailableReason

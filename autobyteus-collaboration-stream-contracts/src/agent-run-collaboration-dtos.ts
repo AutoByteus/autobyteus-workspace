@@ -9,7 +9,6 @@ import {
   agentOrgAgentStatusDtoSchema,
   agentOrgCommunicationMessageDtoSchema,
   closedTaskExecutionsDtoSchema,
-  collaboratorEntryDtoSchema,
   taskExecutionDtoSchema,
   taskExecutionsClosedEventDtoSchema,
   delegatedLaunchSelectionsChangedEventDtoSchema,
@@ -20,7 +19,7 @@ const timestamp = nonEmptyStringSchema;
 
 /**
  * The collaboration package of one standalone Agent run (root kind `agent`): its host
- * Agent, the collaborators brought in with `@`, and their task executions.
+ * Agent and its delegated copies (task executions).
  */
 export const agentRunCollaborationTreeDtoSchema = z.object({
   subjectKind: z.literal("agent"),
@@ -30,7 +29,6 @@ export const agentRunCollaborationTreeDtoSchema = z.object({
     agentRunId: nonEmptyStringSchema,
     agentDefinitionId: nonEmptyStringSchema,
   }).strict(),
-  collaborators: z.array(collaboratorEntryDtoSchema),
   taskExecutions: z.array(taskExecutionDtoSchema),
 }).strict();
 
@@ -59,7 +57,6 @@ export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", 
     host_kind: z.enum(["root", "team"]), host_run_id: nonEmptyStringSchema, execution: taskExecutionDtoSchema,
   }).strict(),
   z.object({ kind: z.literal("communication"), message: agentOrgCommunicationMessageDtoSchema }).strict(),
-  z.object({ kind: z.literal("collaborator_added"), collaborator: collaboratorEntryDtoSchema }).strict(),
   taskExecutionsClosedEventDtoSchema,
   taskExecutionsReopenedEventDtoSchema,
   delegatedLaunchSelectionsChangedEventDtoSchema,

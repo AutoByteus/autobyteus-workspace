@@ -8,7 +8,6 @@ import type { RunModelSelectionValidator } from "../../llm-management/services/r
 import { createStandaloneDelegatedLaunchCommand } from "../services/standalone-root-delegated-launches.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import type { TaskExecutionResourcePort, TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import { taskScopedMessageRecipient } from "../../agent-collaboration/collaborators/task-scoped-message-recipient.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { collectStandaloneRootInputSnapshots } from "../services/standalone-root-input-snapshot.js";
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
@@ -45,8 +44,6 @@ import { createFrozenRootTerminationScope, type FrozenRootTerminationScope } fro
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
-import type { PreparedCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
-import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { TaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
@@ -76,7 +73,7 @@ export type StandaloneRootPackageSnapshot = Readonly<{
 
 /**
  * The single owner of one collaboration-eligible standalone Agent run (root kind `agent`): its
- * host agent (through its handle), collaborators, task copies, messages, package and lifecycle.
+ * host agent (through its handle), delegated copies, messages, package and lifecycle.
  * It lives from first use until an explicit Stop, a history delete or archive, or server
  * shutdown; a host crash does not end it (the next use makes the host ready again).
  */
@@ -113,8 +110,6 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
-    /** Prepares hosted handles for new collaborator entries (published after the tree write). */
-    prepareCollaboratorHandles(entries: readonly CollaboratorEntry[]): Promise<PreparedCollaboratorHandles>;
     onTerminated?(): void;
   }>) {
     this.tree = options.tree;
@@ -132,13 +127,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     this.collaborators = new StandaloneRootCollaborators({
       admission: options.collaboratorAdmission,
       rootLaunchConfiguration: options.rootLaunchConfiguration,
-      identities: options.taskExecutionIdentity,
-      persistence: options.persistence,
       getTree: () => this.tree,
-      assertAdmitting: () => this.assertAdmitting(),
-      prepareHandles: (entries) => options.prepareCollaboratorHandles(entries),
-      replaceTree: (tree) => this.replaceTree(tree),
-      publish: (event) => options.publisher.publish(event),
     });
     this.taskExecutions = new RootTaskExecutionLifecycle(new StandaloneRootTaskExecutionAdapter({
       root: options.root,
@@ -164,27 +153,15 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       activityInspector: options.activityInspector,
     }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources });
     this.delegatedLaunches = createStandaloneDelegatedLaunchCommand({
-      root: options.root,
-      rootAgents: options.rootAgents,
-      teams: options.teams,
       taskExecutions: this.taskExecutions,
       persistence: options.persistence,
       getTree: () => this.tree,
       getIndex: () => this.index,
       assertAdmitting: () => this.assertAdmitting(),
       replaceTree: (tree) => this.replaceTree(tree),
-      publishAgentOffline: (identity) => this.onAgentExecutionEvent(identity, {
-        kind: "status_overlay",
-        snapshot: createCollaborationAgentStatusSnapshot({ execution: identity, status: "offline" }),
-      }),
       publishSelectionsChanged: (selections) => options.publisher.publish({ kind: "delegated_launch_selections_changed", selections }),
     });
-    const recipients: StandaloneRootRecipientResolver = new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators,
-      taskScope: sender => taskScopedMessageRecipient({ sender, lifecycle: this.taskExecutions,
-        resolvePlacement: address => recipients.resolveDelegationPlacement(sender, address),
-        getAgent: id => this.index.requireAgent(id),
-      }),
-    });
+    const recipients = new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators });
     this.delivery = new StandaloneRootMessageDelivery({
       hostRunId: this.hostRunId,
       root: options.root,
@@ -220,11 +197,11 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
     return this.taskExecutions.releaseTaskExecutions(executions);
   }
-  /** DS-002: the user's Stop of one delegated copy or collaborator and the copies it started. */
+  /** DS-002: the user's Stop of one delegated copy and the copies it started. */
   stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
     return this.operationGate.run(() => this.delegatedLaunches.stop(target));
   }
-  /** DS-001: the user's model choice for stopped delegated copies or collaborators of this live run. */
+  /** DS-001: the user's model choice for stopped delegated copies of this live run. */
   updateDelegatedLaunchSelections(
     changes: readonly DelegatedLaunchChange[],
     validator: RunModelSelectionValidator,
@@ -248,11 +225,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   getCommunicationSnapshot(): StandaloneRootMessagesFileV1 { return this.messages; }
   /** Children only: every child without a live execution reports `offline`. */
   getAgentStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {
-    // Root-level Teams: task Teams and collaborator Teams (each reports its members and nested children).
-    const teamRunIds = [
-      ...this.tree.taskExecutions.flatMap((task) => "teamRunId" in task ? [task.teamRunId] : []),
-      ...this.tree.collaborators.flatMap((entry) => entry.kind === "agent_team" ? [entry.teamRunId] : []),
-    ];
+    // Root-level Teams: task Teams (each reports its members and nested children).
+    const teamRunIds = this.tree.taskExecutions.flatMap((task) => "teamRunId" in task ? [task.teamRunId] : []);
     const live = [
       ...this.options.rootAgents.getStatusSnapshots(),
       ...teamRunIds.flatMap((teamRunId) => this.options.teams.get(teamRunId)?.getLeafAgentStatusSnapshots() ?? []),
@@ -305,7 +279,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     return this.delivery.listAvailableAgents(sender);
   }
 
-  /** The root's collaborator facts as seen by one agent of the run (the `@` candidates query). */
+  /** The root's catalog facts as seen by one agent of the run (the `@` candidates query). */
   collaboratorPortFor(viewerAgentRunId: string): CollaboratorRootPort { return this.collaborators.portFor(viewerAgentRunId); }
 
   delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {

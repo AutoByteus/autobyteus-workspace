@@ -1,10 +1,10 @@
 # Token Meter: TPS
 
 Select an agent (including Project Task Manager, a Team/Org member, or a
-delegated/collaborator copy) and open the workspace's **Token** tab. The **TPS**
+delegated copy) and open the workspace's **Token** tab. The **TPS**
 card shows how fast that exact AgentRun's latest model call generated output:
 the value in tokens/s and the model that call reported. It never describes a
-Team or the collaborators included in the usage/cost totals below it.
+Team or the delegated copies included in the usage/cost totals below it.
 
 ## What the number measures
 

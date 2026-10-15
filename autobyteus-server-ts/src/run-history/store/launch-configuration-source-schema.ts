@@ -42,7 +42,7 @@ export const parseLaunchConfigurationSource = (value: unknown, label: string): L
 };
 
 /**
- * Optional launch fields of collaborator and catalog-copy records: absent keys truthfully mean
+ * Optional launch fields of catalog-copy records: absent keys truthfully mean
  * "runs on the Team's launch" (member `launchConfiguration`) or "source not recorded"; present
  * values are validated and projected exactly.
  */
@@ -60,7 +60,7 @@ export const parseOptionalLaunchFields = (
 });
 
 /**
- * The optional user model choice of a copy or collaborator record (`userLaunchSelection` on
+ * The optional user model choice of a copy record (`userLaunchSelection` on
  * agent-level records, `userTeamLaunchSelection` on team-level records). Absent truthfully means
  * no user choice (every record written before selections existed); present values are validated
  * and projected exactly.

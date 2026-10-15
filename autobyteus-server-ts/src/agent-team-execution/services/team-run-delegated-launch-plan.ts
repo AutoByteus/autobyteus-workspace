@@ -11,7 +11,6 @@ import type { RunModelSelectionService, RunModelSelectionValidator } from "../..
 import type { RunModelConfigFieldError, RunModelConfigUpdateOutcome } from "../../run-history/domain/run-model-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { TeamTaskSourceResolver } from "../task-delegation/team-task-source-resolver.js";
-import { TeamExecutionIndex } from "./team-execution-index.js";
 import { buildTeamRunConfigFromExecutionTree } from "./team-run-execution-tree-builder.js";
 import { applyTeamDelegatedLaunchSelections, teamDelegatedLaunchForest } from "./team-run-execution-tree-mutator.js";
 import {
@@ -20,10 +19,10 @@ import {
   type TeamRunModelConfigPatch,
 } from "./team-run-model-config-mutator.js";
 
-/** The copies and collaborators of one (stored or live) Team tree, their started sources and closed copies. */
+/** The delegated copies of one (stored or live) Team tree, their started sources and closed copies. */
 const reader = (tree: TeamRunExecutionTreeSnapshot, closed: readonly TaskExecutionReference[]) => {
   const closedKeys = new Set(closed.map(taskExecutionReferenceKey));
-  const sources = new TeamTaskSourceResolver({ config: buildTeamRunConfigFromExecutionTree(tree), getIndex: () => new TeamExecutionIndex(tree) });
+  const sources = new TeamTaskSourceResolver({ config: buildTeamRunConfigFromExecutionTree(tree) });
   return {
     forest: teamDelegatedLaunchForest(tree),
     readTaskSource: (address: string, recorded: Parameters<TeamTaskSourceResolver["resolve"]>[1]) => sources.resolve(address, recorded ?? null),
@@ -45,7 +44,7 @@ const delegatedRefusal = (refusal: DelegatedLaunchUpdateResult): StoppedTeamLaun
 
 /**
  * AR-004: the stopped Team run's Save plan — its configured model settings and the user model
- * choices of its delegated copies and collaborators (DS-001), validated together in one catalog
+ * choices of its delegated copies (DS-001), validated together in one catalog
  * read — as the tree to write, or the refusal. The caller owns the gates and the one tree write.
  */
 export const planStoppedTeamLaunchSave = async (input: {
@@ -104,7 +103,7 @@ export const planStoppedTeamLaunchSave = async (input: {
     : configuredTree };
 };
 
-/** Model options of every editable delegated copy and collaborator of the tree. */
+/** Model options of every editable delegated copy of the tree. */
 export const teamDelegatedLaunchModelOptions = (
   tree: TeamRunExecutionTreeSnapshot,
   closed: readonly TaskExecutionReference[],

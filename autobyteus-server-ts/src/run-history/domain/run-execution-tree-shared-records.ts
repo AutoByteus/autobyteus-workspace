@@ -7,7 +7,7 @@ import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain
 export type IsoTimestamp = string;
 
 /**
- * The user's model choice for one delegated copy or collaborator instance (DEC-005): it replaces
+ * The user's model choice for one delegated copy (DEC-005): it replaces
  * only the model and its settings; the runtime, tool approval and workspace stay as started.
  * Recorded beside the started values, never over them, so extra and teammate copies still start
  * on the started values (AR-005).
@@ -18,10 +18,10 @@ export type UserLaunchSelection = Readonly<{
   selectedAt: IsoTimestamp;
 }>;
 
-/** Optional on an agent-level copy or collaborator record; absent truthfully means no user choice. */
+/** Optional on an agent-level copy record; absent truthfully means no user choice. */
 export type RecordedUserLaunchSelection = Readonly<{ userLaunchSelection?: UserLaunchSelection }>;
 
-/** Optional on a team-level copy or collaborator record; followers of the team resolve to it. */
+/** Optional on a team-level copy record; followers of the team resolve to it. */
 export type RecordedUserTeamLaunchSelection = Readonly<{ userTeamLaunchSelection?: UserLaunchSelection }>;
 
 export type ConfiguredAgentExecutionNode = Readonly<{
@@ -49,7 +49,7 @@ export type ConfiguredTeamExecutionNode = Readonly<{
 export type ConfiguredExecutionNode = ConfiguredAgentExecutionNode | ConfiguredTeamExecutionNode;
 
 /**
- * One member's own launch inside a recorded Team (a collaborator Team or a catalog Team copy).
+ * One member's own launch inside a recorded Team (a catalog Team copy).
  * `launchConfiguration` is present only when the member runs on its own agent default; absent,
  * the member runs on the Team's `defaultLaunchConfiguration` (every record written before
  * per-member values existed). `launchSource` is present only when the member's agent definition
@@ -94,8 +94,8 @@ export type TaskExecutionSource = TaskAgentExecutionSource | TaskTeamExecutionSo
 /**
  * A delegated child Agent. Liveness (live / shut down) is runtime-only and never persisted.
  * `delegatorAgentRunId` is written for every new child; children recorded before it existed have none.
- * `source` is present only for a copy started from the catalog; otherwise the copy's source is
- * the configured placement or collaborator at its address.
+ * `source` is present only for a copy started from the catalog; absent, the copy's source is
+ * the configured placement at its address.
  */
 export type TaskAgentExecution = Readonly<{
   address: AgentTeamAddress;
@@ -134,52 +134,6 @@ export type TaskTeamExecution = Readonly<{
 
 export type TaskExecution = TaskAgentExecution | TaskTeamExecution;
 
-/**
- * A collaborator of a run: one instance of a shared Agent definition brought in, with a
- * snapshot of its resolved launch settings and its single execution identity. It is hosted
- * by the root and starts on its first message; it is not a task execution.
- * `addedViaAgentRunId` is the agent that brought it in. `launchSource` is absent on records
- * written before sources existed ("not recorded").
- */
-export type CollaboratorAgentEntry = Readonly<{
-  kind: "agent";
-  address: AgentTeamAddress;
-  agentDefinitionId: string;
-  agentRunId: string;
-  platformAgentRunId: string | null;
-  launchConfiguration: AgentLaunchConfiguration;
-  launchSource?: LaunchConfigurationSource;
-  addedAt: IsoTimestamp;
-  addedViaAgentRunId: string;
-}> & RecordedUserLaunchSelection;
-
-/** A collaborator Team member: its layout, identity and own launch (see `RecordedMemberLaunch`). */
-export type CollaboratorTeamMember = Readonly<{
-  address: AgentTeamAddress;
-  agentDefinitionId: string;
-  agentRunId: string;
-  platformAgentRunId: string | null;
-}> & RecordedMemberLaunch & RecordedUserLaunchSelection;
-
-/**
- * A collaborator Agent Team: one TeamRun with one run per member, its layout and rebased
- * Team-local handoffs, snapshotted when added. Its own delegations live in `taskExecutions`.
- */
-export type CollaboratorTeamEntry = Readonly<{
-  kind: "agent_team";
-  address: AgentTeamAddress;
-  teamDefinitionId: string;
-  teamRunId: string;
-  coordinatorAddress: AgentTeamAddress;
-  members: readonly CollaboratorTeamMember[];
-  handoffs: readonly CollaborationHandoff[];
-  taskExecutions: readonly TaskExecution[];
-  addedAt: IsoTimestamp;
-  addedViaAgentRunId: string;
-}> & RecordedTeamLaunch & RecordedUserTeamLaunchSelection;
-
-export type CollaboratorEntry = CollaboratorAgentEntry | CollaboratorTeamEntry;
-
 export type TeamRunApplicationBinding = Readonly<{
   applicationId: string;
   bindingId: string;
@@ -207,18 +161,9 @@ export const isTaskTeamNestedTeamExecution = (
   value: TaskTeamMemberExecution,
 ): value is TaskTeamNestedTeamExecution => "teamRunId" in value;
 
-/** Every AgentRun ID a collaborator list holds: Agents, Team members and their delegated children. */
-export const listCollaboratorAgentRunIds = (collaborators: readonly CollaboratorEntry[]): string[] =>
-  collaborators.flatMap((entry) => entry.kind === "agent"
-    ? [entry.agentRunId]
-    : entry.members.map((member) => member.agentRunId));
-
-export const isCollaboratorTeamEntry = (entry: CollaboratorEntry): entry is CollaboratorTeamEntry =>
-  entry.kind === "agent_team";
-
 /**
  * The launch a recorded Team member runs with: its own, else the Team's (DS-005). Every reader
- * of a collaborator-Team or catalog-Team-copy member's launch uses this; none reads the Team's
+ * of a catalog-Team-copy member's launch uses this; none reads the Team's
  * `defaultLaunchConfiguration` for a member directly.
  */
 export const effectiveMemberLaunchConfiguration = (
@@ -227,9 +172,9 @@ export const effectiveMemberLaunchConfiguration = (
 ): AgentLaunchConfiguration => member.launchConfiguration ?? team.defaultLaunchConfiguration;
 
 /**
- * Whether a copy or collaborator Team member follows its Team's launch, so a Team-level user
+ * Whether a copy Team member follows its Team's launch, so a Team-level user
  * selection applies to it (AR-003):
- * - `recorded` (collaborator Teams, catalog Team copies): iff the member records no own launch;
+ * - `recorded` (catalog Team copies): iff the member records no own launch;
  * - `configured` (copies of configured Team placements, which record no own-default fact): iff the
  *   member's configured launch equals the Team's (runtime, model and settings), the same equality
  *   the configured-Team editor uses.
@@ -251,7 +196,7 @@ export type EffectiveCopyAgentLaunch = Readonly<{
 }>;
 
 /**
- * The single launch rule of a delegated copy or collaborator agent (DS-003): its own user
+ * The single launch rule of a delegated copy agent (DS-003): its own user
  * selection, else (when it follows its Team) the Team's user selection, else its started launch.
  * A selection replaces only the model and its settings. Every restore, hosting and view site uses
  * this; none combines selections and started values inline.

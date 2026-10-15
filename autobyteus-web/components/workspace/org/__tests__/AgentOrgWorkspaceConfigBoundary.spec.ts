@@ -89,7 +89,7 @@ describe('AgentOrg workspace configuration boundary', () => {
     center.mode = 'chat'
     state.context = {
       phase: 'historical', error: null,
-      executionTree: { rootOrg: { collaborators: [], orgDefinitionId: 'org-def', orgRunId: 'org-run' } },
+      executionTree: { rootOrg: { orgDefinitionId: 'org-def', orgRunId: 'org-run' } },
     }
     readOrg.mockImplementation(async (orgRunId: string) => {
       const tree = structuredClone(taskBearingView().execution_tree)

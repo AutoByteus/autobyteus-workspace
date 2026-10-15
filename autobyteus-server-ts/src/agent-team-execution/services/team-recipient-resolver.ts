@@ -13,18 +13,10 @@ import type { TeamDelegationPlacement } from "./resolved-team-recipient.js";
  * placements. Message resolution is the shared `MessageRecipientResolution`.
  */
 export class TeamRecipientResolver {
-  /**
-   * A configured Agent placement first, then a collaborator of this run (or a member of a
-   * collaborator Team). Delegating there starts an extra copy (REQ-013).
-   */
+  /** A configured Agent placement outside the sender's own Team (CM-1 is checked before this). */
   resolveInRunDelegationPlacement(index: TeamExecutionIndex, address: AgentTeamAddress): TeamDelegationPlacement {
     const node = index.getConfiguredPlacement(address);
     if (node) return Object.freeze({ kind: "agent", address: node.address });
-    const collaborator = index.getCollaborator(address);
-    if (collaborator?.kind === "agent_team") {
-      return Object.freeze({ kind: "agent_team", address: collaborator.address, coordinatorAddress: collaborator.coordinatorAddress });
-    }
-    if (index.getMessagePlacement(address)?.kind === "agent") return Object.freeze({ kind: "agent", address });
     throw new CollaborationContractError(
       "COLLABORATION_TARGET_NOT_FOUND",
       delegationTargetUnavailableMessage(address),

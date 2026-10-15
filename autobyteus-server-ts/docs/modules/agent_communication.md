@@ -227,7 +227,7 @@ runs require explicit configuration; every valid team member context receives
 automatically (a member with no Team scope, such as a standalone host, gets all
 but `get_handoff_rules`), with duplicates removed. No task tool is automatic: an
 agent that should close the Task its delegation created lists `update_task` in its
-definition (see [Collaborators](#collaborators)). The root topology resolver and active delivery binding
+definition (see [Delegated catalog copies](#delegated-catalog-copies)). The root topology resolver and active delivery binding
 still authorize each team-route call:
 
 - AutoByteus uses the server-owned local `BaseTool` wrapper.
@@ -263,41 +263,34 @@ context.
 
 ## Communication Versus Task Execution
 
+The rules are defined in the [Collaboration Model](../design/collaboration_model.md) (CM-1 … CM-9); this document describes the mechanics.
+
 `send_message_to(recipient_address)` reaches **the one instance at that
-address**: a configured member, a collaborator or its member, or a teammate
-inside the sender's own team instance. An available catalog Agent or Agent Team
-that is not yet in the run is brought in on its first message (see
-[Collaborators](#collaborators)); later messages reach that same instance. `send_message_to(target_agent_run_id)` reaches existing
-executions only and never brings anything in. `delegate_task` instead always
-spawns one new task copy (an Agent or AgentTeam) and delivers the complete work
-packet during that same call. The `recipient_address` identifies what to copy; it
-is not an alias for the spawned copy, and callers must not repeat one assignment
-through both operations. The shared prompt and both tool descriptions state this
-identically on every runtime (REQ-009).
+address in the sender's run**: a configured member, an agent already hosted by
+the run, or a teammate inside the sender's own team instance. It never creates a
+run (CM-4): an address that is not in the run is `COLLABORATION_TARGET_NOT_FOUND`
+with guidance to use `delegate_task`. `send_message_to(target_agent_run_id)`
+reaches existing executions only. `delegate_task` always spawns one new task copy
+(an Agent or AgentTeam) and delivers the complete work packet during that same
+call, and it refuses the sender's own team (CM-1, below). The `recipient_address`
+identifies what to copy; it is not an alias for the spawned copy, and callers must
+not repeat one assignment through both operations. The shared prompt and both tool
+descriptions state this identically on every runtime (REQ-009).
 
 ### Task-linked message scope
 
-The ordinary one-instance/run-wide behavior below is unchanged for unowned
-senders. Unowned agents (configured members, hosts, collaborators) are
-never checked against Task data. Every delegated copy is Task-owned: a linked
-copy by its Project Task, sub-work by its creator's Task, and a description-only
-copy of an unowned sender by the Task with no Project that its delegation
-created. So two copies owned by different Tasks cannot message each other by
-run ID; messages to and from their delegators and configured members work.
+Unowned agents (configured members, hosts, converted runs) are never checked
+against Task data. Every delegated copy is Task-owned: a linked copy by its
+Project Task, sub-work by its creator's Task, and a description-only copy of an
+unowned sender by the Task with no Project that its delegation created. So two
+copies owned by different Tasks cannot message each other by run ID; messages to
+and from their delegators and configured members work.
 
-A Task-owned sender resolves an address in this order:
-1. Its deepest own Team instance, with no fall-through on a miss.
-2. That Task's open `broughtIn` helper at the address (dedupe key: Task plus
-   address).
-3. An existing **unowned** run in the root. Such an adviser is borrowed, not
-   adopted, so DONE never stops it.
-4. Otherwise, one new helper copy, recorded as `broughtIn` in that Task's
-   `agent_run_resources.json` before resources are acquired. Concurrent
-   requests from the same Task reuse it. Different Tasks get distinct copies.
-
-Another Task's run is never borrowable: a sender and a recipient owned by
-different Tasks fail with `TASK_AGENT_RESOURCE_CONFLICT`. Follow-up by exact
-run ID never creates a copy.
+A Task-owned sender resolves an address exactly like any other sender (below).
+There is no per-Task helper bring-in any more: `broughtIn` records already stored
+in a Task's `agent_run_resources.json` stay readable and keep their open or closed
+state, but nothing writes new ones. Follow-up by exact run ID never creates a
+copy.
 
 Before any wake or acceptance, both sender and recipient input, and deferred
 publication, consult the Task record. A closed sender or recipient fails with
@@ -311,37 +304,23 @@ front with `TASK_AGENT_RESOURCES_UNAVAILABLE`. See
 
 Every root (Team, Org, Agent) resolves `send_message_to(address)` with the shared
 `agent-collaboration/collaborators/message-recipient-resolution.ts`, inside its
-operation gate:
+operation gate. The function only resolves:
 
 1. **The sender's own team instances**, deepest first (the structural root `/`
    is not one): the instance's own address reaches its coordinator; an address
    under the instance's prefix reaches that instance's member. There is **no
    fall-through** inside the prefix (AR-003): a miss is
-   `COLLABORATION_TARGET_NOT_FOUND`, never run-wide or catalog, so two parallel
-   copies of a team never cross. This is how a collaborator Team, a delegated
-   Team copy and a mounted Org Team each work as one unit (REQ-007).
-2. **Run-wide**: a configured placement, a collaborator, or a collaborator-Team
-   member.
-3. **Catalog**: an address that `CatalogAddressMap` maps to an eligible
-   definition not in the run is brought in by the root's `*Collaborators.bringInAt`
-   (`CollaboratorAdmission.ensure`, inside the operation the root's gate already
-   admitted; no gate re-entry), then resolved again and delivered; the first
-   message starts it. A failed add returns `COLLABORATOR_ADD_FAILED` with the
-   reason in `message` and adds nothing.
+   `COLLABORATION_TARGET_NOT_FOUND`, never run-wide, so two parallel copies of a
+   team never cross. This is how a delegated Team copy and a mounted Org Team
+   each work as one unit (REQ-007).
+2. **Run-wide standing placements**: a configured placement, or the run's own
+   agent (an Agent root's host).
 
-   **Concurrency.** The root gates (`RootOperationGate`,
-   `RootTeamRunMaterializationGate`) are admission and drain barriers, not
-   mutexes: they let operations run concurrently and only drain them on
-   termination. Collaborator admissions are serialized by a per-root
-   `CollaboratorAdmissionQueue` (`collaborator-admission-queue.ts`, a promise
-   chain inside each root's `*Collaborators` service). It serializes catalog
-   bring-ins (`bringInAt`) and `@` mention resolutions alike, and
-   `bringInAt` re-reads the catalog map against the current tree inside the
-   queue. So when two first messages to the same new address arrive together,
-   the second finds the instance the first committed and reuses it; no second
-   instance and no duplicate-address failure (RS-003).
-
-Any other address is the normal `COLLABORATION_TARGET_NOT_FOUND`.
+Any other address is `COLLABORATION_TARGET_NOT_FOUND` ("<address> is not in this
+run. To give work to an outside Agent or Team, use delegate_task, then
+send_message_to its run ID."). Nothing is allocated, hosted or written, so a message
+can never start an agent; the first message to an existing but Offline agent
+starts it (`fresh` on first activation, `restore` after the run is reopened).
 
 After delegation, parent and child communicate only through `send_message_to`
 with exact run IDs, in both directions. There is no task submission, review, or
@@ -351,22 +330,30 @@ conversation) before delivery; a target outside the sender's root must be
 active. See
 [Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle).
 
-## Collaborators
+## Delegated catalog copies
 
-A collaborator is a shared Agent or Agent Team definition brought into a live run
-by an agent's first `send_message_to` to its catalog address (Team runs, Org runs,
-and standalone Agent runs); later messages reuse the same single instance. The
-user's `@` no longer adds collaborators: it steers the focused agent to
-`delegate_task` (see `@` below). Stored runs keep, restore and message the
-collaborators that earlier releases added on `@`; nothing is migrated. The run hosts **one instance per
-collaborator**, recorded as a root-level entry in the run's execution tree
-(`collaborators`), at its root-level catalog address. An entry snapshots each
-agent's resolved launch settings and their source (see
-[Launch configuration](#launch-configuration-of-collaborators-and-catalog-copies)),
-and for a Team, its member layout and Team-local handoffs. Its runs are recorded
-in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
-`agentRunId` per member and the Team's own `taskExecutions` for a Team.
+A listed shared Agent or Agent Team definition that is not in the run is reached
+only by `delegate_task` (CM-5). Each call spawns one new, independent copy at the
+root of the run, with its delegator recorded and a `source` snapshot of the
+definition (below). The user's `@` steers the focused agent to the same tool (see
+`@` below). Runs recorded by earlier releases as *collaborators* are converted at
+startup into ordinary, unowned delegated runs of the same root (migration
+`20261015_collaborators_to_delegated_runs_v1`; their memory never moves, see
+[Run History](./run_history.md)). The runtime has no collaborator concept.
 
+- **Own-team refusal (CM-1, DEC-008).** `resolveDelegationPlacement`
+  (`catalog-delegation.ts`) first asks the root's index `isOwnTeamAddress(sender,
+  address)`. It is true for the sender's own address, any address inside (or equal
+  to) a team instance that contains the sender at any depth, and, in a Team root,
+  every configured root placement for a configured member. Then
+  `COLLABORATION_SELF_TARGET_REJECTED` is raised, with `send_message_to` guidance,
+  before any placement, preparation, Task link or run allocation. Siblings,
+  parents and outside units are allowed: a delegated copy that is not a
+  configured member may delegate to a configured placement; an Org agent may
+  delegate to a mounted Team it does not belong to.
+- **Hosting.** A new copy is always hosted at the root (the former "teammate copy"
+  placement under the delegator's Team instance is gone). Copies already stored
+  under a Team instance keep their recorded host on restore (DEC-006).
 - **Catalog addresses (REQ-003).** `CatalogAddressMap`
   (`catalog-address-map.ts`) is the only allocator. It is a pure function of the
   eligible catalog and the run's addresses in use: a definition already in the
@@ -375,7 +362,13 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   not used by the run, otherwise `<segment>_<6 hex of sha256(definitionId)>` for
   every colliding definition. Listing twice with an unchanged catalog gives the
   same addresses; an address that maps to nothing is the normal not found.
-  Stored collaborator addresses never change.
+- **Placement order for `delegate_task(address)`.** CM-1 refusal, then the root's
+  in-run configured placement, then a listed catalog definition (a fresh copy with
+  a source snapshot built by `CollaboratorEntryBuilder` and resolved per agent by
+  `CollaboratorLaunchResolver`; the task record persists it as the optional
+  `source`). Activation and restore use the record's `source` first. Each call is
+  a new copy, so parallel copies are allowed. A catalog definition that cannot run
+  returns `delegated: false` with "<name> cannot be delegated to: <reason>".
 - **`@` (mention resolution).** A user message with `mentions`
   (`{kind, definition_id}[]`, at most 8) is resolved by the root
   (`resolveCollaboratorMentions` → `CollaboratorAdmission.resolveMentions`),
@@ -383,81 +376,37 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   by the shared candidate policy (`requireEligible`: shared, not an Org, not a
   built-in, not the port's `ownDefinition()`; it may already be in the run) and
   answered with its name, kind, address and `presence` (`not_in_run`, `in_run`
-  or `run_agent`): a definition already in the run resolves to its collaborator
-  entry's address, else its preferred in-run placement address (the standalone
-  host, a configured member, an Org mounted Team, a collaborator-Team member);
-  any other to its catalog address. `presence` is `run_agent` only when that
-  placement is the standalone host (rank `run_agent`, ranked first). **Nothing is
-  written, allocated, hosted or published.** `ownDefinition()` is a Team or Org
-  run's own definition. A standalone Agent root builds its port **per viewer**
-  (the focused or sending agent): its `ownDefinition()` is the host definition
-  only when the viewer is the host. The host is always an in-run placement at
-  its host address. So the host's own composer never offers the host, and a
-  member of a delegated copy can mention it. A host self-mention is still
-  rejected ("… is this run's own definition."). The `@` caller
-  (Team, Org and collaboration stream handlers, and the standalone host path
-  `AgentRunCommandCoordinator.post` → `StandaloneAgentRunRoot.postUserMessage` →
-  `StandaloneRootMessageDelivery.postToHost`) appends a `[Mentioned collaborators]`
-  note with each name, kind and address, telling the agent to `delegate_task` to
-  the address and follow up by the returned run ID. The note names no task tool
-  and says nothing about closing a Task; an agent with `update_task` learns that
-  from the tool's own description. An entry already in the run reads `- Name (Agent) at /address, already
-  in this run`, and the guidance then adds that such an agent or team can instead
-  be messaged directly with `send_message_to` at its address, or `delegate_task`
-  used for a separate copy; a note with no in-run mention is unchanged. A
-  `run_agent` entry (the standalone host, mentioned from a copy member) reads
-  `- Name (Agent) at /address, the run's own agent` and gets its own sentence,
-  `Use send_message_to with recipient_address /address to message Name;
-  delegate_task cannot target it.`. It gets no `delegate_task` alternative, and
-  the `delegate_task` sentence is left out when every entry is the run agent.
-  `delegate_task` to the host stays refused, and nothing ever brings in or
-  copies the host. Runnability is checked when the agent delegates. An ineligible
-  mention returns `COLLABORATOR_ADD_FAILED` with its name and reason: nothing is
-  posted and the client keeps the draft (agent-stream `AGENT_COMMAND_ACK`,
-  Team-stream `ERROR`, collaboration-stream ack; each carries
-  `collaborator_name`). The note wording is owned by
-  `@autobyteus/agent-presentation-contracts` (`collaboratorMentionNote`), which
-  still parses the guidance lines of notes saved by earlier releases.
-- **Admission (agent-initiated bring-in, DS-001).** `CollaboratorAdmission.ensure`
-  (`collaborator-admission.ts`), run by the root's `*Collaborators.bringInAt`:
-  1. the definition is re-validated by the shared candidate policy
-     (`requireAdmissible` = `requireEligible` plus "not already in the run unless
-     it is a collaborator whose entry is reused"), so a bring-in never creates a
-     second instance;
-  2. each new placement (an Agent, or every member of a Team) gets its runtime,
-     model and model settings from `CollaboratorLaunchResolver` (see
-     [Launch configuration](#launch-configuration-of-collaborators-and-catalog-copies));
-  3. run IDs are allocated (`agentRunId`, `teamRunId`, member run IDs);
-  4. the root prepares the hosted executions, commits the new entry in one
-     tree write, publishes the executions (Offline) and emits
-     `collaborator_added`. `addedViaAgentRunId` is the sender.
-
-  Admission is all-or-nothing. Any failure returns `COLLABORATOR_ADD_FAILED`
-  with the collaborator's name and the reason, and nothing is written.
-- **Reaching a collaborator.** A collaborator and the members of a collaborator
-  Team are reachable with `send_message_to` by address, like configured members:
-  a collaborator Agent, a collaborator Team (its coordinator), or a member of a
-  collaborator Team. The first message starts it (`fresh` on first activation,
-  `restore` after the run is reopened); teammates inside a collaborator Team
-  resolve to their own instance (DI-001). `send_message_to` never allocates.
-- **Extra copies (REQ-013).** `delegate_task` to a collaborator address (or a
-  collaborator Team member address) starts an extra, separate copy: an ordinary
-  task execution with the system task notice and its own run IDs, projected from
-  the entry by the root's task source resolver. Every copy (extra or catalog) is
-  placed by address (REQ-012, `resolveTaskCopyHost` in
-  `agent-collaboration/execution/task/task-copy-host.ts`, shared by all roots):
-  inside the delegator's own Team instance whose address is the copy's parent (a
-  teammate copy), otherwise at the root, with its delegator recorded. Existing
-  copies keep their recorded host on restore.
-- **Catalog copies (REQ-005, Q-1).** `delegate_task` to a catalog address that is
-  not in the run starts a task copy only (no collaborator entry). Placement
-  order: a teammate inside the sender's own catalog Team copy (from that copy's
-  snapshot), configured, collaborator, then catalog. A catalog placement carries
-  a source snapshot built by `CollaboratorEntryBuilder` and resolved per agent by
-  `CollaboratorLaunchResolver`, exactly as for a bring-in; the task record persists it
-  as the optional `source` (`TaskExecutionSource`). Activation and restore use the
-  record's `source` first. Each call is a new copy, so parallel copies are
-  allowed. The task DTOs (`task_execution_started` and the views) carry `source`.
+  or `run_agent`): a definition already in the run resolves to its preferred
+  in-run placement address (the standalone host, a configured member, an Org
+  mounted Team); any other to its catalog address. `presence` is `run_agent` only
+  when that placement is the standalone host. **Nothing is written, allocated,
+  hosted or published.** `ownDefinition()` is a Team or Org run's own definition.
+  A standalone Agent root builds its port **per viewer** (the focused or sending
+  agent): its `ownDefinition()` is the host definition only when the viewer is the
+  host. The host is always an in-run placement at its host address, so the host's
+  own composer never offers the host, and a member of a delegated copy can mention
+  it. A host self-mention is still rejected ("… is this run's own definition."). The
+  `@` caller (Team, Org and collaboration stream handlers, and the standalone host
+  path `AgentRunCommandCoordinator.post` → `StandaloneAgentRunRoot.postUserMessage`
+  → `StandaloneRootMessageDelivery.postToHost`) appends a `[Mentioned
+  collaborators]` note with each name, kind and address, telling the agent to
+  `delegate_task` to the address and follow up by the returned run ID. The note
+  names no task tool and says nothing about closing a Task; an agent with
+  `update_task` learns that from the tool's own description. An entry already in
+  the run reads `- Name (Agent) at /address, already in this run`, and the
+  guidance adds that such an agent or team can be messaged directly with
+  `send_message_to` at its address, or `delegate_task` used for a separate copy; a
+  note with no in-run mention is unchanged. A `run_agent` entry (the standalone
+  host, mentioned from a copy member) reads `- Name (Agent) at /address, the run's
+  own agent` and gets its own sentence, `Use send_message_to with recipient_address
+  /address to message Name; delegate_task cannot target it.`. `delegate_task` to the
+  host stays refused, and nothing ever copies the host. Runnability is checked when
+  the agent delegates. An ineligible mention returns `COLLABORATOR_ADD_FAILED` with
+  its name and reason: nothing is posted and the client keeps the draft
+  (agent-stream `AGENT_COMMAND_ACK`, Team-stream `ERROR`, collaboration-stream
+  ack; each carries `collaborator_name`; the code keeps its name). The note wording
+  is owned by `@autobyteus/agent-presentation-contracts` (`collaboratorMentionNote`),
+  which still parses the guidance lines of notes saved by earlier releases.
 - **Task closure (DONE or CANCELLED).** Every root view (Agent, Team, Org; live snapshot and
   stored read) carries `closed_task_executions` beside the unfiltered tree: the
   task executions whose current Task is DONE or CANCELLED, read through the Task port
@@ -480,20 +429,19 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   (`listAvailableAgents`), which returns `{name, kind, address, description}` for
   every eligible definition once, with the `@` eligibility (Q-2): an in-run
   definition at its in-run address (the standalone host, then configured
-  placement or Org mounted Team, then collaborator entry, then collaborator-Team
-  member; ties go to the smallest address), any other at its catalog address.
-  Definitions come from the live [agent package definitions](./agent_package_definitions.md):
-  a definition just written to an agent package is listed once the change is
-  detected, without Reload. A Team or Org whose ID exists in more than one
-  registered package is not listed, because it is unavailable to every reader.
-  In a standalone Agent run the sender is the viewer: a copy member's list holds
-  the host at its host address plus exactly the host's own list, and the host's
-  list never holds itself. Listing never writes, so
-  a standalone run that only lists gets no `collaboration/` package.
-- **In the run.** Configured placements, every entry, every member Agent of a
-  collaborator Team, and a standalone run's host count as in the run: they are
-  never brought in again, and `@` addresses that instance. A failed add writes
-  no entry.
+  placement or Org mounted Team; ties go to the smallest address), any other at its
+  catalog address. Definitions come from the live
+  [agent package definitions](./agent_package_definitions.md): a definition just
+  written to an agent package is listed once the change is detected, without
+  Reload. A Team or Org whose ID exists in more than one registered package is not
+  listed, because it is unavailable to every reader. In a standalone Agent run the
+  sender is the viewer: a copy member's list holds the host at its host address plus
+  exactly the host's own list, and the host's list never holds itself. Listing
+  never writes, so a standalone run that only lists gets no `collaboration/`
+  package.
+- **In the run.** Configured placements and a standalone run's host count as in the
+  run: `@` addresses that instance, and `send_message_to` reaches it. Delegated
+  copies are not "in the run" by address: they are reached by their run ID.
 - **Candidates.** GraphQL `collaboratorMentionCandidates(rootSubjectKind,
   rootRunId, focusedAgentRunId)` lists the `@` options of an active or stored root from the same
   policy: shared Agents (minus built-ins such as the Daily Assistant), then
@@ -505,17 +453,18 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   membership-checked (an unknown ID gets the non-host view of the menu; the
   send-time re-check verifies). Application-owned runs list none.
 
-### Launch configuration of collaborators and catalog copies
+### Launch configuration of catalog copies
 
-A collaborator or catalog copy is started by an agent, not by a user launch form,
-so nobody picks its runtime and model. `CollaboratorLaunchResolver`
-(`collaborator-launch-resolver.ts`) is the single owner of that choice for a
-bring-in and a catalog copy. For each agent it takes runtime, model and model
-settings **together** from the first usable layer:
+A catalog copy is started by an agent, not by a user launch form, so nobody picks
+its runtime and model. `CollaboratorLaunchResolver`
+(`collaborator-launch-resolver.ts`; the "collaborator" file names are a cosmetic
+leftover of FU-1) is the single owner of that choice for a catalog copy. For each
+agent it takes runtime, model and model settings **together** from the first
+usable layer:
 
 ```text
-Agent copy or collaborator Agent:   agent default -> inherited from the run root
-Team copy or collaborator Team:
+Agent copy:                         agent default -> inherited from the run root
+Team copy:
   the Team itself:                  team default  -> inherited from the run root
   each member:                      agent default -> the Team's resolved launch
 ```
@@ -523,9 +472,8 @@ Team copy or collaborator Team:
 - **Layers.** The agent default is the member's agent definition
   `defaultLaunchConfig` (shared or team-local). The team default is the Team
   definition's `defaultLaunchConfig`. "Inherited" is the run root's launch
-  configuration, as before this rule existed. It is never the delegating
-  member's. Workspace and auto-approve always come from the run root. Antigravity
-  still forces auto-approve.
+  configuration. It is never the delegating member's. Workspace and auto-approve
+  always come from the run root. Antigravity still forces auto-approve.
 - **Usable.** A configured layer is usable only when it names both a runtime and
   a model, the runtime is available (`RuntimeAvailabilityService`), and the model
   and its settings pass `RunModelSelectionValidator.validateMany` for the run's
@@ -535,78 +483,73 @@ Team copy or collaborator Team:
 - **Fallback.** An unusable configured layer is skipped, and the next layer is
   used. The skip is recorded with a reason: `incomplete`,
   `runtime_unavailable`, `model_unavailable` or `model_settings_invalid`. The
-  agent still starts. When no layer is usable for some agent, the bring-in or
-  copy fails as before (`COLLABORATOR_ADD_FAILED`, or `delegated: false` with
-  "<name> cannot be delegated to: <reason>"), and nothing is added.
+  agent still starts. When no layer is usable for some agent, the copy fails with
+  `delegated: false` and "<name> cannot be delegated to: <reason>", and nothing is
+  added.
 - **Notes.** `launch-configuration-notes.ts` renders each skip as one line, for
   example `reviewer: its agent default codex_app_server / sol-6.1 could not be
   used (<reason>); it runs on claude_agent_sdk / sonnet (inherited from the
   run).` A Team-level skip is written once, as "its members without their own
   default run on …". `delegate_task` returns these lines as `launch_notes` (see
-  [Agent Tools](./agent_tools.md)). A `send_message_to` that brought the agent or
-  team in appends them to its accepted `message` under
-  `Launch configuration notes:`. Only the call that started the instance carries
-  notes. Reusing a collaborator, a Task helper, or delegating to a teammate inside
-  a copy carries none.
+  [Agent Tools](./agent_tools.md)). Only the call that started the copy carries
+  notes.
 - **Recorded, not re-read.** The resolved values and their source
   (`launchSource` / `defaultLaunchSource`: the origin and the skipped layers) are
-  written into the collaborator entry or the copy's `source` when it starts. A
-  member that runs on its own default also records its own `launchConfiguration`
-  (see [Run History](./run_history.md)). Extra copies at a collaborator address,
-  teammates delegated inside a copy, and restore use these recorded values
-  through `effectiveMemberLaunchConfiguration`. Editing a definition default later
-  changes only copies and collaborators started afterwards. Records written
-  before this rule have no source and restore on their recorded Team-level value.
+  written into the copy's `source` when it starts. A member that runs on its own
+  default also records its own `launchConfiguration` (see
+  [Run History](./run_history.md)). Restore uses these recorded values through
+  `effectiveMemberLaunchConfiguration`. Editing a definition default later changes
+  only copies started afterwards. Records written before this rule have no source
+  and restore on their recorded Team-level value.
 - **Unchanged.** Delegation to a configured placement uses that placement's
   launch configuration. Single-agent starts and application launch baselines
   have their own rules. An installed but unauthenticated runtime passes these
   checks and fails at its first turn as a run error, not as a fallback.
 
-### User Model Choice And Stop Of Copies And Collaborators
+### User Model Choice And Stop Of Copies
 
-The user can stop one delegated copy or collaborator of a running run and change
-its model while it is stopped (`run-history/services/delegated-launch-selection-service.ts`,
+The user can stop one delegated copy of a running run and change its model while
+it is stopped (`run-history/services/delegated-launch-selection-service.ts`,
 GraphQL `stopDelegatedExecution`, `updateDelegatedLaunchSelections`,
 `delegatedLaunchModelOptions`).
 
 - **Stop.** `stopDelegatedExecution({rootKind, rootRunId, agentRunId | teamRunId})`
-  stops the copy or collaborator and the copies it started (`delegatedStopSet`: by
-  recorded delegator, including Task helpers, and the copies a stopped Team copy
-  hosts), innermost first. It interrupts the turn and releases the runtime into the
-  same state as idle shutdown: the copy stays indexed and offline, its Task stays
-  open, and its next message restores it with its conversation. Task copies are
-  stopped through the root's task lifecycle (`RootTaskExecutionLifecycle.stopForUser`):
+  stops the copy and the copies it started (`delegatedStopSet`: by recorded
+  delegator, including Task helpers, and the copies a stopped Team copy hosts),
+  innermost first. It interrupts the turn and releases the runtime into the same
+  state as idle shutdown: the copy stays indexed and offline, its Task stays open,
+  and its next message restores it with its conversation. Copies are stopped
+  through the root's task lifecycle (`RootTaskExecutionLifecycle.stopForUser`):
   while a copy is being stopped, a live lease on it is refused with
   `TASK_EXECUTION_STOPPING` (a `send_message_to` or `delegate_task` into, from or by
   it returns `accepted: false`), leases already held are drained outside the queue,
-  and the `stop` steps never wait at the queue head. A collaborator is stopped under
-  its handles' activation fences. Copies recorded before delegators were stored
-  cannot be attributed and keep running (`notStoppedUnattributed`).
+  and the `stop` steps never wait at the queue head. Copies recorded before
+  delegators were stored cannot be attributed and keep running
+  (`notStoppedUnattributed`).
 - **Choice.** `updateDelegatedLaunchSelections` records a choice per agent
   (`agentRunId`) or per Team (`teamRunId`): only the model and its settings; the
   runtime, tool approval and workspace stay. It is validated like stopped-run model
   switching (`RunModelSelectionValidator.validateMany`, the copy's current model for
   the capacity rule), all or nothing. On a running run, it is saved only while every
   named copy is stopped: the root re-checks this at one serialization point (the task
-  queue's `reconfigure` step and the collaborators' activation fences), commits the
-  tree, then gives retained collaborator handles the new model and publishes the
-  committed choices to the root's live views like its other tree mutations (Team
+  queue's `reconfigure` step), commits the tree, then publishes the committed
+  choices to the root's live views like its other tree mutations (Team
   `DELEGATED_LAUNCH_SELECTIONS_CHANGED`, Org and Agent
   `delegated_launch_selections_changed`; each names a record by run ID with its
   choice as now recorded). A copy woken meanwhile refuses the whole Save with
-  `COPY_RUNNING`. On a stopped run, the run's
-  own changed settings and the copies' choices are saved in one write
-  (`updateStoppedRunLaunchChanges` / `updateStoppedRunConfig`; an Agent run's own
-  model is in its metadata and is written after the collaboration tree).
-- **Per instance.** The choice belongs to that instance only: extra copies at a
-  collaborator address and teammates delegated inside a copy start on the recorded
-  started values (`projectCollaboratorCopySource`, `projectTaskSourceMember`).
+  `COPY_RUNNING`. On a stopped run, the run's own changed settings and the copies'
+  choices are saved in one write (`updateStoppedRunLaunchChanges` /
+  `updateStoppedRunConfig`; an Agent run's own model is in its metadata and is
+  written after the collaboration tree).
+- **Per instance.** The choice belongs to that instance only: extra copies at the
+  same address and teammates started inside a copy start on the recorded started
+  values (`projectTaskSourceMember`).
 
-The shared policy, admission, launch resolver, identity allocator, entry
-builder, catalog address map, message-recipient resolution, catalog delegation
-and source projection live in
+The shared policy, admission (`@` and eligibility), launch resolver, identity
+allocator, entry builder, catalog address map, message-recipient resolution,
+catalog delegation and source projection live in
 `src/agent-collaboration/collaborators/`; each root implements
-`CollaboratorRootPort` and hosts its collaborators in its existing backends (see
+`CollaboratorRootPort` and delegates through its existing backends (see
 [Agent Team Execution](./agent_team_execution.md), [Agent Orgs](./agent_orgs.md)
 and [Standalone Agent Run Root](./standalone_agent_run_root.md)).
 
@@ -614,22 +557,20 @@ Known limits:
 
 - Renaming, unsharing or deleting a listed definition mid-run and reusing its
   name is unsupported (design principle 6); stored addresses never move.
-- An address reaches a collaborator only inside its own run. Its run ID follows
-  the existing [`target_agent_run_id` rules](#target_agent_run_id-global-direct-route):
-  a sender in another root reaches it only through the global live-only path
-  (while it is active, without a Team/Org tab row). An Offline collaborator is
-  never woken from another root (`TARGET_AGENT_RUN_NOT_ACTIVE`).
-- A build older than this collaborator model rejects execution trees whose
-  collaborator entries carry run IDs (downgrade). There is no migration, and none
-  is needed, because the earlier entry shape was never released.
-- Catalog copies record an optional `source` on their task execution. A build
-  older than agent-initiated collaborators ignores it, so it cannot restore a
-  catalog copy (unsupported downgrade). Stored runs need no migration: copies
-  without `source` read as before, and earlier copies keep their recorded
-  placement.
-- Self-delegation: every root refuses it with `COLLABORATION_SELF_TARGET_REJECTED`
-  ("An Agent cannot delegate a task to its own logical placement."), including a
-  standalone run's root (REQ-004).
+- A delegated run's run ID follows the existing
+  [`target_agent_run_id` rules](#target_agent_run_id-global-direct-route): a sender
+  in another root reaches it only through the global live-only path (while it is
+  active, without a Team/Org tab row). An Offline run is never woken from another
+  root (`TARGET_AGENT_RUN_NOT_ACTIVE`).
+- A build older than this release cannot read execution trees converted by the
+  startup migration (their collaborators now sit in `taskExecutions`). Downgrade is
+  unsupported.
+- A converted collaborator Team that never started has no conversation; waking it
+  by run ID reports `TASK_EXECUTION_CONTEXT_UNAVAILABLE`, like any copy without a
+  saved conversation. Nothing is lost.
+- Own-team delegation: every root refuses it with
+  `COLLABORATION_SELF_TARGET_REJECTED` (CM-1, DEC-008), including a standalone
+  run's root; use `send_message_to` for a teammate.
 
 ### Sender Of An Agent-To-Agent Message (RD-004)
 

@@ -101,11 +101,10 @@ The Pinia stores act as the primary interface for the UI components to interact 
 This store owns collaboration contexts, exact child selection and ephemeral
 Team disclosure beneath standalone Agent runs. Disclosure is keyed by
 `hostRunId` and `teamRunId`, not a displayed name or shared logical address.
-An absent choice means collapsed. Stored inspection, stream publication and
-collaborator additions never open member lists; explicit toggles retain their
-choices across same-session refresh/reselection. Fresh frontend sessions start
-collapsed again. There is no automatic-opening helper, suppression Set or
-policy-only collaborator-added callback.
+An absent choice means collapsed. Stored inspection and stream publication never open member lists; explicit
+toggles retain their choices across same-session refresh/reselection. Fresh
+frontend sessions start collapsed again. There is no automatic-opening helper,
+suppression Set or policy callback.
 
 `AgentRunTaskRows` uses the existing exact disclosure/selection actions;
 `useTaskRootNavigation` deliberately reveals only its target Team and selects
@@ -479,7 +478,7 @@ ordinary tree-row style: no border or tint at rest, `gray-50` hover, a 2px
 `indigo-500` `:focus-visible` ring, and the same selected treatment as a member
 row. A transient task-Team row uses an unboxed 16px `slate-500` filled
 people-group icon (`heroicons:user-group-20-solid`) and a semibold name. Team
-identity uses this group glyph regardless of configured, collaborator or delegated
+identity uses this group glyph regardless of configured or delegated
 role; existing image-first Team avatars remain unchanged. Project/Temp Task Team
 workers and Memory Team groups use the same glyph, retaining their existing sizes
 and Memory task-role boxes/colors. Unrelated capability icons, including the model
@@ -1474,7 +1473,7 @@ the UI must not imply improver completion proves downstream improvement.
 
 **+** on a run starts another run like it, through `useRunStart`:
 
-- **Agent** (the Chat run view, including an `@` collaborator child's view):
+- **Agent** (the Chat run view, including a delegated child's view):
   `copyAgentFromConfig(displayed config)` opens New chat for the agent on
   screen, prefilled with its workspace (temp when it has none), runtime, model,
   `llmConfig` (thinking and other model settings) and tool approval.
@@ -1785,9 +1784,9 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Preserves gross input, standard/uncached input, cache-read/cache-write input, cache state, cache hit rates, output/reasoning/billable output, nullable component costs, server-provided component `unitPrices`, `apiCostStatus` (`estimated`, `price_missing`, `partial_price_missing`, `local_no_api_bill`, or `mixed`), missing price dimensions, latest prompt/context-window fields, latest model/runtime, and `usageReportCount`.
     - Missing price data is rendered as price missing/partial rather than `$0`; local runtime rows are rendered as `Local / no API bill`; mixed-currency/provider aggregates keep token totals but no fake aggregate monetary total.
     - Powers the right-side `Token` tab (`TokenUsageMeterPanel.vue`). The internal tab id may remain `usage`; the user-visible label is token-oriented. Workspace headers intentionally do not render token/cost chips; token usage detail belongs in the Token tab rather than the agent/team top header.
-    - `useTokenUsageWorkspaceScope.ts` owns the Token tab subject boundary. Single-agent workspaces display the selected host's standalone usage/cost roll-up, which may include collaborators and task copies; team workspaces resolve the focused leaf member's agent run as the primary summary. TPS uses the exact selected run separately, never that roll-up. Team aggregates must not override a focused member primary summary; if a focused route is not a leaf run, the panel shows a focused-run unavailable state instead of falling back to the aggregate.
+    - `useTokenUsageWorkspaceScope.ts` owns the Token tab subject boundary. Single-agent workspaces display the selected host's standalone usage/cost roll-up, which may include its delegated copies; team workspaces resolve the focused leaf member's agent run as the primary summary. TPS uses the exact selected run separately, never that roll-up. Team aggregates must not override a focused member primary summary; if a focused route is not a leaf run, the panel shows a focused-run unavailable state instead of falling back to the aggregate.
     - `TokenUsageMeterPanel.vue` is presentation-only: it renders the `TPS` card independently of totals availability, followed by the existing hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and collapsed `Calculation details`). It never imports provider pricing metadata or recalculates model prices.
-    - TPS is a real-time fact of each model call, not accounting or a Team/collaborator aggregate. The runtime integration measures the call and its usage event carries `output_throughput` (method, output tokens, integer duration ms), already accepted or nulled on the server. `tokenUsageThroughput.ts`, private to the meter, keeps the newest TPS per run: both live intakes record it right after the seen-key de-duplication (so Team's two effects record one value), independent of the summary. `getRunTps` and the scope composable use the selected target's exact `context.state.runId`, even where the cost summary rolls up other agents. The card shows "TPS", the value, the call's reported model and, for end-to-end readings only, "incl. time to first token"; with no received value (including after reload and for history) it shows "—". See [TPS](token_meter.md) for the methods per runtime. The unchanged empty Team summary builder lives in `tokenUsageTeamAggregate.ts`.
+    - TPS is a real-time fact of each model call, not accounting or a Team aggregate. The runtime integration measures the call and its usage event carries `output_throughput` (method, output tokens, integer duration ms), already accepted or nulled on the server. `tokenUsageThroughput.ts`, private to the meter, keeps the newest TPS per run: both live intakes record it right after the seen-key de-duplication (so Team's two effects record one value), independent of the summary. `getRunTps` and the scope composable use the selected target's exact `context.state.runId`, even where the cost summary rolls up other agents. The card shows "TPS", the value, the call's reported model and, for end-to-end readings only, "incl. time to first token"; with no received value (including after reload and for history) it shows "—". See [TPS](token_meter.md) for the methods per runtime. The unchanged empty Team summary builder lives in `tokenUsageTeamAggregate.ts`.
     - For Claude Agent SDK runs, the server's selected-model-only canonical and raw identity, configured API-equivalent estimate, and cache-write-rate assumption flow through the strict cumulative DTO into `TokenUsageMeterStore`. The panel labels this as a configured estimate rather than a subscription charge, shows the selected raw model, and visibly marks any cache writes priced at the assumed 1-hour rate. Auxiliary-model usage is not silently merged into the selected run meter; the browser does not recompute the price or infer the cache duration.
     - `TeamTokenUsageSummary.vue` renders the subordinate team comparison as one semantic grouped-metric table for team workspaces. The table keeps `Member`, `Gross input`, `Output`, and `Total` columns available at all widths; each metric cell pairs the token count with its matching API cost subline, the Team subtitle explains once that costs are estimated and that Total cost is input plus output cost, horizontal scrolling is scoped to the Team table region when the right-side panel is too narrow, visible focused-member state is preserved, and the explicitly labeled `Team total` aggregate remains the final row when available.
     - `Gross input` is cumulative input sent to provider context and may include discounted cache-hit tokens. It is distinct from `latestPromptTokens`, which is the latest model-call prompt/context size used for the latest prompt progress bar.

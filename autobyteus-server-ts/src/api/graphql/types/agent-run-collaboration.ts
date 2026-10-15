@@ -20,7 +20,7 @@ export class CollaboratorMentionCandidateObject {
 
 @ObjectType()
 export class CollaboratorMentionCandidatesPayload {
-  /** `AVAILABLE`, or `UNAVAILABLE_APPLICATION_ROOT` for runs that cannot host collaborators. */
+  /** `AVAILABLE`, or `UNAVAILABLE_APPLICATION_ROOT` for runs that cannot involve other agents. */
   @Field(() => String) availability!: "AVAILABLE" | "UNAVAILABLE_APPLICATION_ROOT";
   @Field(() => [CollaboratorMentionCandidateObject]) candidates!: CollaboratorMentionCandidateObject[];
 }

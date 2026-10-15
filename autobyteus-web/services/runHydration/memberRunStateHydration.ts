@@ -5,7 +5,7 @@ import { fetchRunFileChanges, mergeHydratedRunFileChanges } from './runFileChang
 
 /**
  * Hydration of one collaboration member's run state (Team members, AgentOrg members and the
- * collaborators of a standalone run): the member's projection and its recorded artifacts are
+ * delegated copies of a standalone run): the member's projection and its recorded artifacts are
  * fetched together and committed together.
  */
 

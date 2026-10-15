@@ -47,7 +47,7 @@ describe('agentOrgContextsStore lifecycle ownership', () => {
     vi.clearAllMocks()
   })
 
-  it('observes only the affected root on inspection, ACK, inactivity and topology changes', async () => {
+  it('observes only the affected root on inspection, ACK and inactivity', async () => {
     const store = useAgentOrgContextsStore()
     await store.openForInspection('org-run')
 
@@ -65,8 +65,6 @@ describe('agentOrgContextsStore lifecycle ownership', () => {
     mocks.instances[0]?.options.onInactive()
     expect(mocks.applyAgentOrgActivity).toHaveBeenCalledExactlyOnceWith('org-run', false)
     expect(mocks.refreshAgentOrgHistoryItem).toHaveBeenCalledTimes(3)
-    mocks.instances[0]?.options.onExecutionTreeChanged()
-    expect(mocks.refreshAgentOrgHistoryItem).toHaveBeenCalledTimes(4)
     expect(mocks.refreshAgentOrgHistoryItem.mock.calls.every(([id]) => id === 'org-run')).toBe(true)
     store.releaseContext('org-run')
   })

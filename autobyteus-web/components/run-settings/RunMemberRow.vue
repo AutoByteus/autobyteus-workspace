@@ -65,7 +65,7 @@
           </span>
         </span>
       </button>
-      <!-- SR-007: a running copy or collaborator has the same small red stop icon as a running run. -->
+      <!-- SR-007: a running copy has the same small red stop icon as a running run. -->
       <button
         v-if="stopVisible"
         type="button"
@@ -101,7 +101,7 @@
     </div>
 
     <div v-if="expanded" class="border-t border-gray-100 pb-2.5 pl-[3.25rem] pr-3 pt-1.5" data-test="run-member-detail">
-      <!-- A collaborator or copy Team: its own (Team-level) notes once, then its agents. -->
+      <!-- A copy Team: its own (Team-level) notes once, then its agents. -->
       <p
         v-for="(note, index) in notesInDetail ? noteTexts : []"
         :key="index"
@@ -209,7 +209,6 @@ const UNUSABLE_REASON_KEY: Readonly<Record<MemberLaunchNote['reason'], string>> 
 }
 const BADGE_KEY: Readonly<Record<NonNullable<RunMemberNode['badge']>, string>> = {
   delegated_copy: 'runSettings.delegated.copy',
-  collaborator: 'runSettings.delegated.collaborator',
 }
 const SOURCE_LABEL_KEY: Readonly<Record<RunMemberLaunchSource, string>> = {
   agent_default: 'runSettings.delegated.source.agent_default',
@@ -224,16 +223,16 @@ const LAYER_LABEL_KEY: Readonly<Record<RunMemberLaunchFallback['layer'], string>
 }
 const modelOf = (runtimeKind: string | null, llmModelIdentifier: string | null): string =>
   [runtimeKind ? presentation.runtimeShortLabel(runtimeKind) : null, llmModelIdentifier].filter(Boolean).join(' · ') || '—'
-/** An own default a fresh start could not use (it follows its parent), or a recorded fallback of a collaborator or copy. */
+/** An own default a fresh start could not use (it follows its parent), or a recorded fallback of a copy. */
 const noteText = (note: RunMemberNote): string => note.kind === 'unusable_default'
   ? t('runSettings.members.defaultUnusable', { model: modelOf(note.runtimeKind, note.llmModelIdentifier), reason: t(UNUSABLE_REASON_KEY[note.reason]) })
   : t('runSettings.delegated.fallback', { layer: t(LAYER_LABEL_KEY[note.layer]), model: modelOf(note.runtimeKind, note.llmModelIdentifier), detail: note.detail })
 const noteTexts = computed(() => props.node.launchNotes.map(noteText))
-/** A collaborator or copy Team: collapsed, it counts the notes below it; expanded, it shows its own notes once. */
+/** A copy Team: collapsed, it counts the notes below it; expanded, it shows its own notes once. */
 const notesInDetail = computed(() => props.node.kind === 'team' && Boolean(props.node.badge))
 const noteCount = computed(() => countRunMemberNotes(props.node))
 const expanded = computed(() => props.expandedKeys.has(props.node.key))
-/** The copy or collaborator itself (not one member of a Team) while it runs or is being stopped. */
+/** The copy itself (not one member of a Team) while it runs or is being stopped. */
 const stopVisible = computed(() => Boolean(props.node.delegated?.stop && (props.node.delegated.running || props.node.delegated.stopping)))
 const STOP_LABEL_KEY = { idle: 'runSettings.delegated.stop', stopping: 'runSettings.delegated.stopping' } as const
 const stopLabel = computed(() => t(STOP_LABEL_KEY[props.node.delegated?.stopping ? 'stopping' : 'idle'], { name: props.node.name }))
@@ -241,7 +240,7 @@ const customized = computed(() => isRunMemberCustomized(props.node))
 const childCustomizedCount = computed(() => countCustomizedMembers(props.node.children))
 /**
  * What this member runs with, in one line: workspace (teams), model · runtime, other settings on, approval;
- * a collaborator or copy then says where its launch came from.
+ * a copy then says where its launch came from.
  */
 const summary = computed(() => {
   const values = props.node.values

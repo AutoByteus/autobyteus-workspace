@@ -12,7 +12,6 @@ import {
 } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
 import {
-  teamCollaboratorAddedPayloadSchema,
   teamDelegatedLaunchSelectionsChangedPayloadSchema,
   teamTaskExecutionReferenceDtoSchema,
   teamTaskExecutionStartedPayloadSchema,
@@ -73,7 +72,6 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("TASK_EXECUTION_STARTED"), payload: teamTaskExecutionStartedPayloadSchema }).strict(),
   z.object({ type: z.literal("TASK_EXECUTIONS_CLOSED"), payload: teamTaskExecutionsClosedPayloadSchema }).strict(),
   z.object({ type: z.literal("TASK_EXECUTIONS_REOPENED"), payload: teamTaskExecutionsReopenedPayloadSchema }).strict(),
-  z.object({ type: z.literal("COLLABORATOR_ADDED"), payload: teamCollaboratorAddedPayloadSchema }).strict(),
   z.object({ type: z.literal("DELEGATED_LAUNCH_SELECTIONS_CHANGED"), payload: teamDelegatedLaunchSelectionsChangedPayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
   z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
@@ -96,7 +94,6 @@ export type TeamStreamServerMessage =
   | Readonly<{ type: "TASK_EXECUTION_STARTED"; payload: z.infer<typeof teamTaskExecutionStartedPayloadSchema> }>
   | Readonly<{ type: "TASK_EXECUTIONS_CLOSED"; payload: z.infer<typeof teamTaskExecutionsClosedPayloadSchema> }>
   | Readonly<{ type: "TASK_EXECUTIONS_REOPENED"; payload: z.infer<typeof teamTaskExecutionsReopenedPayloadSchema> }>
-  | Readonly<{ type: "COLLABORATOR_ADDED"; payload: z.infer<typeof teamCollaboratorAddedPayloadSchema> }>
   | Readonly<{ type: "DELEGATED_LAUNCH_SELECTIONS_CHANGED"; payload: z.infer<typeof teamDelegatedLaunchSelectionsChangedPayloadSchema> }>
   | Readonly<{ type: "TEAM_COMMUNICATION_MESSAGE"; payload: z.infer<typeof teamCommunicationMessagePayloadSchema> }>
   | Readonly<{ type: "MEMBER_INPUT_MESSAGE"; payload: z.infer<typeof teamMemberInputMessagePayloadSchema> }>

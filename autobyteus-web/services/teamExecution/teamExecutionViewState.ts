@@ -105,7 +105,7 @@ const sequenceOf = (message: Exclude<TeamStreamServerMessage,
 };
 
 const targetAgentRunId = (message: Exclude<TeamStreamServerMessage,
-  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE' | 'COLLABORATOR_ADDED' | 'DELEGATED_LAUNCH_SELECTIONS_CHANGED' }>): string | null => {
+  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE' | 'DELEGATED_LAUNCH_SELECTIONS_CHANGED' }>): string | null => {
   if (message.type === 'MEMBER_INPUT_MESSAGE') return message.payload.recipient_agent_run_id;
   if (message.type === 'ERROR') return message.payload.agent_run_id;
   return message.payload.agent_run_id;
@@ -397,26 +397,6 @@ export const createTeamExecutionViewState = (
         publication.value = { ...publication.value, closed: removeReopenedTaskExecutions(publication.value.closed, reopened),
           changeSequence: sequence ?? publication.value.changeSequence };
         effects.push({ kind: 'reconcile_team_navigation' });
-      } else if (message.type === 'COLLABORATOR_ADDED') {
-        // One hosted instance per entry: its executions are placed (Offline) with the entry.
-        const collaborators = publication.value.tree.root_team.collaborators ?? [];
-        if (collaborators.some((entry) => entry.address === message.payload.collaborator.address)) {
-          throw new Error(`Duplicate collaborator address '${message.payload.collaborator.address}'.`);
-        }
-        const nextTree = structuredClone(publication.value.tree);
-        nextTree.root_team = { ...nextTree.root_team, collaborators: [...collaborators, structuredClone(message.payload.collaborator)] };
-        const nextLocations = collectValidatedLocations(nextTree);
-        const planned = planContextAssociations(nextTree, nextLocations);
-        publication.value = { ...publication.value, tree: nextTree, locations: nextLocations,
-          contexts: prepareContextAssociations(planned), changeSequence: sequence ?? publication.value.changeSequence };
-        if (planned.length > 0) {
-          effects.push({
-            kind: 'invalidate_team_member_projection',
-            agentRunIds: Object.freeze(planned.map((entry) => entry.agentRunId)),
-          });
-        }
-        effects.push({ kind: 'reconcile_team_navigation' });
-        effects.push({ kind: 'collaborators_changed' });
       } else if (message.type === 'DELEGATED_LAUNCH_SELECTIONS_CHANGED') {
         // A Save on the live run (DS-001): records take the choices; contexts the model their agent now runs with.
         const nextTree = recordDelegatedLaunchSelections(publication.value.tree, message.payload.selections);

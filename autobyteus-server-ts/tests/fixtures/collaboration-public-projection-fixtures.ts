@@ -38,21 +38,22 @@ const team = (linked: boolean) => ({
     members: [{ address: "/packet/lead", agentDefinitionId: "lead-definition" }], handoffs: [], defaultLaunchConfiguration: projectionLaunch },
 
 });
-const collaborators = (linked: boolean) => [{
-  kind: "agent", address: "/borrowed", agentDefinitionId: "borrowed-definition", agentRunId: "borrowed-run",
-  platformAgentRunId: "borrowed-provider", launchConfiguration: projectionLaunch, addedAt: startedAt, addedViaAgentRunId: "manager",
-}, {
-  kind: "agent_team", address: "/shared", teamDefinitionId: "shared-definition", teamRunId: "shared-team",
-  coordinatorAddress: "/shared/lead", members: [{ address: "/shared/lead", agentDefinitionId: "shared-lead-definition", agentRunId: "shared-lead", platformAgentRunId: "shared-provider" }],
-  handoffs: [{ from: "/shared/lead", to: "/shared/lead", rules: ["deliver"] }], defaultLaunchConfiguration: projectionLaunch,
-  taskExecutions: [taskAgent("/shared/helper", "shared-helper", linked, "shared-lead")],
-  addedAt: startedAt, addedViaAgentRunId: "manager",
-}];
+/** Root-level delegated runs started by `manager` for catalog Agents and Teams (formerly collaborators). */
+const delegatedRuns = (linked: boolean) => [
+  taskAgent("/borrowed", "borrowed-run", linked, "manager"),
+  {
+    address: "/shared", teamRunId: "shared-team", startedAt, delegatorAgentRunId: "manager", ...stamp(linked),
+    members: [{ address: "/shared/lead", agentRunId: "shared-lead", platformAgentRunId: "shared-provider" }],
+    taskExecutions: [taskAgent("/shared/helper", "shared-helper", linked, "shared-lead")],
+    source: { kind: "agent_team", teamDefinitionId: "shared-definition", coordinatorAddress: "/shared/lead",
+      members: [{ address: "/shared/lead", agentDefinitionId: "shared-lead-definition" }],
+      handoffs: [{ from: "/shared/lead", to: "/shared/lead", rules: ["deliver"] }], defaultLaunchConfiguration: projectionLaunch },
+  },
+];
 export const agentProjectionTree = (linked: boolean) => validateStandaloneRootTreePayload({
   subjectKind: "agent", createdAt: startedAt,
   host: { address: "/manager", agentRunId: "manager", agentDefinitionId: "manager-definition" },
-  collaborators: collaborators(linked),
-  taskExecutions: [taskAgent("/solo", "solo-copy", linked, "manager"), team(linked)],
+  taskExecutions: [taskAgent("/solo", "solo-copy", linked, "manager"), team(linked), ...delegatedRuns(linked)],
 }, "manager");
 export const orgProjectionTree = (linked: boolean) => {
   const base = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/manager", "manager"), {
@@ -64,7 +65,7 @@ export const orgProjectionTree = (linked: boolean) => {
   return validateAgentOrgRunExecutionTreePayload({
     ...base, archivedAt: "2026-10-03T01:00:00.000Z", applicationBinding: { applicationId: "app", bindingId: "binding" },
     handoffs: [{ from: "/manager", to: "/configured/lead", rules: ["coordinate"] }],
-    rootOrg: { ...base.rootOrg, defaultLaunchConfiguration: projectionLaunch, collaborators: collaborators(linked),
-      taskExecutions: [taskAgent("/solo", "solo-copy", linked, "manager"), team(linked)] },
+    rootOrg: { ...base.rootOrg, defaultLaunchConfiguration: projectionLaunch,
+      taskExecutions: [taskAgent("/solo", "solo-copy", linked, "manager"), team(linked), ...delegatedRuns(linked)] },
   }, "org-root");
 };

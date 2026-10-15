@@ -144,7 +144,7 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
       const base = testAgentOrgExecutionTree({ orgRunId: 'root', members: [testOrgAgentNode('/Manager', 'manager')] });
       tree = { ...base, rootOrg: { ...base.rootOrg, taskExecutions: tasks } }; index = new AgentOrgExecutionIndex(tree);
     } else {
-      tree = { subjectKind: 'agent', createdAt: now, host: { address: '/Manager', agentRunId: 'root', agentDefinitionId: 'manager' }, collaborators: [], taskExecutions: tasks };
+      tree = { subjectKind: 'agent', createdAt: now, host: { address: '/Manager', agentRunId: 'root', agentDefinitionId: 'manager' }, taskExecutions: tasks };
       index = new StandaloneRootExecutionIndex(tree);
     }
     const options = { root: f.root, rootAgents: f.rootAgents, teams: f.teams, callbacks: f.callbacks, getTree: () => tree, getIndex: () => index, tokenUsageReadiness: {}, publishTaskExecutionsClosed: vi.fn(), publishTaskExecutionsReopened: vi.fn(), activityInspector: presentConversation };

@@ -112,7 +112,6 @@ export const materializeTeamRoot = async (
     });
     root = new RootTeamRun({
       rootRun: prepared.teamRun,
-      collaboratorHost: prepared.collaboratorHost,
       config: input.config,
       tree,
       messages: input.messages,
@@ -124,8 +123,6 @@ export const materializeTeamRoot = async (
       onTerminated: () => { if (root) input.onTerminated(root); },
     });
     prepared.commitAfterDurability();
-    // Collaborators are restored with the root, without preparing a runtime.
-    await root.restoreCollaborators(input.mode);
     return root;
   } catch (error) {
     if (!root) await prepared.abort().catch(() => undefined);

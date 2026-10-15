@@ -37,7 +37,7 @@ export class MemberExecutionContextBuilder {
     /** The root's `list_available_agents` for this member; absent in application-owned runs. */
     listAvailableAgents?: ((identity: CollaborationMemberExecutionIdentity) => Promise<readonly AvailableCollaborator[]>) | null;
     taskCommands: MemberTaskCommandCapability;
-    /** The TeamRun hosting the Agent (a collaborator Team or any copy); absent for the root TeamRun's own members. */
+    /** The TeamRun hosting the Agent (a Team copy); absent for the root TeamRun's own members. */
     hostTeam?: MemberHostTeam | null;
   }): Promise<MemberExecutionContext> {
     const root = requireRootExecutionIdentityKind(input.teamContext.rootIdentity, "agent_team");

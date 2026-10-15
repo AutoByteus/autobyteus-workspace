@@ -89,7 +89,7 @@ export const GET_AGENT_RUN_TOKEN_USAGE_SUMMARY = gql`
   }
 `;
 
-/** A standalone run's usage including its collaborators and task copies (REQ-006). */
+/** A standalone run's usage including its delegated copies (REQ-006). */
 export const GET_STANDALONE_RUN_TOKEN_USAGE_SUMMARY = gql`
   ${TOKEN_USAGE_RUN_SUMMARY_FIELDS}
   query GetStandaloneRunTokenUsageSummary($runId: String!) {
