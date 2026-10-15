@@ -66,7 +66,7 @@ None (no release).
 - Bootstrap context source: RELEASE.md Finalization Target
 - Ticket branch: `codex/task-tool-split`
 - Finalization target: `origin/personal`, via `finalize/task-tool-split` with `merge --no-ff`
-- Results: recorded in the Finalization Result section of delivery-revision-record.md after the push.
+- Ticket branch commit `a27b7be6ce`, pushed. Target unchanged before merge. Merge `--no-ff` commit `32ab7d2164` pushed to `origin/personal`. Status: Completed.
 
 ## Release / Publication / Deployment
 
