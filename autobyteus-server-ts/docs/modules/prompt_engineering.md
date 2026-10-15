@@ -254,9 +254,7 @@ can work in parallel.
   work). If `delegated` is false, nothing was started and `message` explains
   why; correct the problem and delegate again, or report the failure.
 - A description-only delegation that creates a Task also returns its
-  `task_id`. When the work is finished, call `create_or_update_task` with that
-  `task_id` and status `DONE` (or `CANCELLED` if the work turned out not to be
-  needed); this stops the copy and removes it from the run.
+  `task_id`.
 - While you work on a Task yourself, a description-only delegation is sub-work
   of your Task: it returns no `task_id` and closes only with your Task.
 
@@ -273,7 +271,7 @@ in both directions. A copy that stays quiet is shut down after a while, but not
 while it has a running background task; a message to it restores it with its
 conversation. A copy whose Task is `DONE` or `CANCELLED` is stopped. To continue
 that same Task with it, the run that assigned the work first moves the Task out of
-`DONE` or `CANCELLED` (for example to `IN_PROGRESS`) with `create_or_update_task`,
+`DONE` or `CANCELLED` (for example to `IN_PROGRESS`),
 then messages the copy; that reactivates it with its conversation. Setting the
 status alone starts nothing.
 

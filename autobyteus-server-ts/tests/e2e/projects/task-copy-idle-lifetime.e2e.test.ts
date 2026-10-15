@@ -184,7 +184,7 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
     expect(listed?.value).toBe(String(GRACE_MS));
     const suffix = randomUUID().slice(0, 6);
     names.worker = `TIL Worker ${suffix}`; names.squad = `TIL Squad ${suffix}`;
-    ids.manager = await agentDefinition(`TIL Manager ${suffix}`, ["create_or_update_task"]);
+    ids.manager = await agentDefinition(`TIL Manager ${suffix}`, ["create_task", "update_task"]);
     ids.worker = await agentDefinition(names.worker, []);
     ids.squad = (await graphql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: names.squad, description: "Task Team", instructions: "Follow requests.", coordinatorMemberName: "lead",
@@ -363,7 +363,7 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
 
     // AC-007: Task DONE stops a copy whose background step is still running, at once.
     const doneAt = Date.now();
-    await root.managerCalls(callTool("create_or_update_task", { task_id: doneCopy.taskId, status: "DONE" }));
+    await root.managerCalls(callTool("update_task", { task_id: doneCopy.taskId, status: "DONE" }));
     const doneStopped = await root.signal("DONE copy's task stopped", (e) => e.agentRunId === doneCopy.ingress && e.kind === "background" && e.status === "stopped", PROMPT_STOP_MS);
     await until(() => !processLive(doneCopy.ingress), `${kind}: DONE copy process gone`, PROMPT_STOP_MS);
     const doneStopMs = Date.now() - doneAt;

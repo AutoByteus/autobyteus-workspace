@@ -99,7 +99,7 @@ type TeamExecutionAddress = Readonly<{
 | --- | --- | --- | --- |
 | Current standalone Team run | `FlatTeamExecutionManager` | Each configured Agent owns one runtime-specific `AgentRun`; delegated task Teams are task-scoped child executions | `ConfiguredAgentExecutionRegistry`, `TaskAgentExecutionRegistry`, and `TaskTeamExecutionRegistry` keep configured and task lifecycles distinct. |
 | AutoByteus member | `FlatTeamAgentExecutionHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | `composeNativeAutoByteusPrompt` consumes `MemberTeamContext` and emits Team Instruction plus AgentTeam Addressing/Collaboration before native guidance. |
-| Codex or Claude member | `FlatTeamAgentExecutionHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | `composeSharedCarpenterPrompt` projects shared Team Instruction plus AgentTeam Addressing/Collaboration through provider instruction boundaries. `get_handoff_rules`, `send_message_to`, `delegate_task` and `create_or_update_task` remain automatically exposed through Agent Tools MCP. |
+| Codex or Claude member | `FlatTeamAgentExecutionHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | `composeSharedCarpenterPrompt` projects shared Team Instruction plus AgentTeam Addressing/Collaboration through provider instruction boundaries. `get_handoff_rules`, `send_message_to`, and `delegate_task` remain automatically exposed through Agent Tools MCP; task tools never are. |
 
 ## Durable Member Activation And Restore
 
@@ -524,7 +524,7 @@ from the delegator. The address path is `delegateToNewCopy`. See
 a description-only `delegate_task` from an agent that is not working on a Task.
 Every delegated copy therefore belongs to a Task (linked: the Project Task;
 sub-work: its creator's Task; otherwise its own ad-hoc Task), and
-`create_or_update_task({task_id, status: "DONE"})` closes it (see
+an agent that selected `update_task` closes it with `update_task({task_id, status: "DONE"})` (see
 [Projects](./projects.md#tasks-with-no-project-ad-hoc)).
 
 After delegation, parent and child talk only through `send_message_to` with run
@@ -665,7 +665,7 @@ Agent selects the single rule whose condition most specifically applies and
 notifies only that rule's recipient; it does not fan out one outcome to
 additional recipients. The renderer injects no flat recipient, representative,
 or delegation roster. Runtime exposure automatically includes `get_handoff_rules`,
-`send_message_to`, `delegate_task` and `create_or_update_task` for a valid Team
+`send_message_to` and `delegate_task` for a valid Team
 context, with identical copy across AutoByteus, Codex, and Claude.
 
 `send_message_to.recipient_address` resolves through the root logical placement

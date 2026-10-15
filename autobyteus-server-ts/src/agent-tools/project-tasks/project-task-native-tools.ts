@@ -32,11 +32,16 @@ export class CreateOrUpdateProjectTool extends ProjectTaskNativeTool {
   static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.create_or_update_project; }
   static getArgumentSchema() { return buildProjectTaskToolSchema("create_or_update_project"); }
 }
-export class CreateOrUpdateTaskTool extends ProjectTaskNativeTool {
-  static getName() { return "create_or_update_task"; }
-  static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.create_or_update_task; }
-  static getArgumentSchema() { return buildProjectTaskToolSchema("create_or_update_task"); }
+export class CreateTaskTool extends ProjectTaskNativeTool {
+  static getName() { return "create_task"; }
+  static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.create_task; }
+  static getArgumentSchema() { return buildProjectTaskToolSchema("create_task"); }
+}
+export class UpdateTaskTool extends ProjectTaskNativeTool {
+  static getName() { return "update_task"; }
+  static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.update_task; }
+  static getArgumentSchema() { return buildProjectTaskToolSchema("update_task"); }
 }
 export function registerProjectTaskTools(): void {
-  registerToolClass(ListProjectsTool); registerToolClass(ListProjectTasksTool); registerToolClass(CreateOrUpdateProjectTool); registerToolClass(CreateOrUpdateTaskTool);
+  registerToolClass(ListProjectsTool); registerToolClass(ListProjectTasksTool); registerToolClass(CreateOrUpdateProjectTool); registerToolClass(CreateTaskTool); registerToolClass(UpdateTaskTool);
 }

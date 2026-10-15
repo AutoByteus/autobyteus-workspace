@@ -263,7 +263,7 @@ const runCase = async (id, title, fn) => {
 let writerSequence = 0;
 const toolWrite = async args => {
   const output = path.join(outputDir, `external-tool-${++writerSequence}.json`);
-  await run(process.execPath, [path.join(serverDir, 'tests/fixtures/project-task-tool-writer.mjs'), nodeA.dataRoot, 'create_or_update_task', JSON.stringify(args), output], serverDir, nodeA.env, path.join(outputDir, 'external-tool.log'));
+  await run(process.execPath, [path.join(serverDir, 'tests/fixtures/project-task-tool-writer.mjs'), nodeA.dataRoot, 'task_id' in args ? 'update_task' : 'create_task', JSON.stringify(args), output], serverDir, nodeA.env, path.join(outputDir, 'external-tool.log'));
   return JSON.parse(await fs.readFile(output, 'utf8')).task;
 };
 const blankProject = async name => { await goto('/projects'); await page.getByTestId('projects-new-button').click(); await page.getByTestId('project-name-input').fill(name); await page.getByTestId('project-form-submit').click(); await page.getByTestId('project-detail-name').waitFor(); return (await api.projects(nodeA)).find(p => p.name === name); };

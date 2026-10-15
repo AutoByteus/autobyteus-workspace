@@ -531,7 +531,7 @@ export const createTaskLocatorCases = (h) => {
     await shot(page, 'pmu-024-reconnect-reread');
 
     // VIS-008: the copy's Task is done, then the copy is given a follow-up Task with its run ID.
-    input.send(callTool('create_or_update_task', { task_id: live.first, status: 'DONE' }));
+    input.send(callTool('update_task', { task_id: live.first, status: 'DONE' }));
     await until('worker row leaves at DONE', async () => (await agentRow(page, worker).count()) === 0, 30000);
     input.send(callTool('delegate_task', { target_agent_run_id: worker, task_id: live.followUp }));
     await until('worker row returns with the follow-up Task', async () => (await workerSummary().count()) === 1
@@ -548,7 +548,7 @@ export const createTaskLocatorCases = (h) => {
 
     // DEC-006 / VIS-010: the Task is cancelled; the summary is clicked before its row leaves.
     net.holdClosure = true;
-    input.send(callTool('create_or_update_task', { task_id: live.followUp, status: 'CANCELLED' }));
+    input.send(callTool('update_task', { task_id: live.followUp, status: 'CANCELLED' }));
     await until('Task cancelled on the server', async () => (await projectTasks(projectL)).find((t) => t.taskId === live.followUp)?.status === 'CANCELLED', 30000);
     await until('board knows it is cancelled', async () => (await page.locator('[data-test="right-side-projects-panel"] [data-testid="project-tasks-cancelled-toggle"]').count()) === 1, 15000);
     assert((await workerSummary().count()) === 1, 'the row is still shown when the summary is clicked', { held: net.held.length });

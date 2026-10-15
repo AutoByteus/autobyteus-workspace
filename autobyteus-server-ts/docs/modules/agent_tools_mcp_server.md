@@ -250,7 +250,7 @@ one canonical AutoByteus tool name. The default adapter set currently covers:
 - `delegate_task` from `src/agent-tools/task-delegation`
 - `publish_artifacts`
 - `list_projects`, `list_project_tasks`, `create_or_update_project`,
-  `create_or_update_task` from
+  `create_task`, `update_task` from
   `src/agent-tools/project-tasks`
 
 The catalog filters by the session's resolved effective tool names. That set is
@@ -323,16 +323,16 @@ category-wide native task exposure are not restored.
   entire change. Registration/existence are not required; Save never registers or
   creates folders. Old workspace_id rows are rejected, not translated.
   Result is saved projectId/name/description and workspaceRootPath/description only.
-- `create_or_update_task` → `{task}`, two strict modes. Create
-  `{project_id, description, context_files?}`: required nonempty description,
-  **omit status** (new TODO). Update `{task_id, description?, status?,
+- `create_task` → `{task}`. `{project_id, description, context_files?}`:
+  required nonempty description, **omit status** and `task_id` (new TODO).
+- `update_task` → `{task}`. `{task_id, description?, status?,
   context_files?}` with **no project_id**: the unique Task ID patches text
   and/or status of a Project Task or a Task with no Project (`projectId: null`
   in the result). Unknown IDs fail, never upsert.
   Null/blank IDs are invalid, not omitted; hidden input keys (including
   `project_id` with `task_id`) fail. Omitted fields/context are preserved
-  through a locked current-record patch. Added automatically wherever
-  `delegate_task` is.
+  through a locked current-record patch. Neither task tool is added
+  automatically: an agent has them only when its definition selects them.
   `context_files` (array of absolute node-local file paths, Project Tasks only)
   copies each file into the Task's saved context. A patch appends and never
   removes. The app's file types and 25 MiB limit apply, and any invalid entry

@@ -55,7 +55,8 @@ export type ParsedCollaboratorMentionNote = Readonly<{
 export declare const composeCollaboratorMentionNote: (text: string, collaborators: readonly MentionedCollaborator[]) => string;
 /**
  * Recognizes only a note at the very end of the content, in exactly the composed form: its
- * guidance line is the one its entries compose to, or a guidance saved by an earlier release.
+ * guidance line is the one its entries compose to, the one the previous release
+ * composed, or a guidance saved by an earlier release.
  */
 export declare const parseCollaboratorMentionNote: (content: string) => ParsedCollaboratorMentionNote | null;
 /**

@@ -155,7 +155,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
     for (const call of [() => tasks.assertReopenable({ execution: worker, requestedBy: "manager" }),
       () => tasks.reopenAssignment({ execution: worker, requestedBy: "manager" })]) {
       await expect(call()).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED",
-        message: "This Task is CANCELLED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again." });
+        message: "This Task is CANCELLED. The run that assigned it can reopen the Task (move it to TODO or IN_PROGRESS) and then message this run ID again." });
     }
     expect(await resourcesFile(task.taskId)).toBe(closedFile);
     await setStatus(task.taskId, "IN_PROGRESS");

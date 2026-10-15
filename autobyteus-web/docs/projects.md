@@ -9,7 +9,7 @@ selected agent tools can create or change text/status. Project Tasks remain
 business records, distinct from execution children. Saved-ID delegation starts
 fresh copies for a Task, and the server records them as the Task's agent run
 resources. Status is TODO, IN_PROGRESS, DONE or CANCELLED; only agents change it
-(through `create_or_update_task`), and the app only displays it. DONE means the
+(through `update_task`), and the app only displays it. DONE means the
 work is finished; CANCELLED means the Task was dropped as not needed, not
 completed. Explicit DONE or CANCELLED closes those runs and asks the platform to
 stop only them. Other status writes do not start work. Neither is engineering
@@ -394,8 +394,8 @@ extension, microphone/permission/device or live transcription capability.
 
 ## Agent Tools / Scope Exclusions
 
-Exactly `list_projects`, `list_project_tasks`, `create_or_update_project`, `create_or_update_task` are selected
-independently per agent/node; `create_or_update_task` is also added automatically wherever `delegate_task` is. Project authoring uses a required name to create
+Exactly `list_projects`, `list_project_tasks`, `create_or_update_project`, `create_task`, `update_task` are selected
+independently per agent/node; none is added automatically (not even where `delegate_task` is). Project authoring uses a required name to create
 or a known project_id to patch: omitted fields persist, blank description clears.
 Optional workspaces [{workspace_path, description?}] reference absolute folder paths
 on the selected node: a supplied list replaces all links, [] unlinks only, omission
