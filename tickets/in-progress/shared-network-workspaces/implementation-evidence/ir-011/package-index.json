@@ -1,0 +1,296 @@
+{
+  "kind": "focused current integration package, not sprawling historical cumulative index",
+  "sourceCommit": "a4afd758a9766274b08f675c04952b19913fff0c",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "a53621fd9a2a4da3c1456fb15432524ace2716a53c94caa130c1ad88be1bac93",
+      "bytes": 640
+    },
+    {
+      "path": "DESIGN.md",
+      "sha256": "ddc9edf901b770b378b9816e22994a851471a9e965912813beef7345e94d2bca",
+      "bytes": 19304
+    },
+    {
+      "path": "TESTING.md",
+      "sha256": "9bb18ddda23d40bcf6908a5c6df994ce6cadfd0051574aadf26188d9df1810e8",
+      "bytes": 18438
+    },
+    {
+      "path": "autobyteus-server-ts/AGENTS.md",
+      "sha256": "9299e8afa43ae56c0f0652a870bbac411743876e79e0c24f00c880d5cdbeea07",
+      "bytes": 966
+    },
+    {
+      "path": "autobyteus-server-ts/src/compositions/build-studio-server.ts",
+      "sha256": "892857b08677c5fdf2af821b0a652b83de3d7133b0770d52ad8f894492d7f37c",
+      "bytes": 17678
+    },
+    {
+      "path": "autobyteus-server-ts/src/workspaces/workspace-manager.ts",
+      "sha256": "dd733ece0bae6bbba5a4eb24ca53640c53ea29f58fa3084eb4cb390623e0de55",
+      "bytes": 13065
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+      "sha256": "94b6a231e61fbe4bd1381ac661de6ed79b3e165b5d2f200eeed66cc9780367ee",
+      "bytes": 9226
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/helpers/studio-runtime-test-server.ts",
+      "sha256": "150f7e687ee3fc044c5732ec78408d541c2cd5cd3d954a03f3d7b724bab183da",
+      "bytes": 1511
+    },
+    {
+      "path": "autobyteus-web/docs/file_explorer.md",
+      "sha256": "ec401c41802ff127c14a5a2c6ea4924ce9a0b249e38ec67858cc66a3e2e5f2e4",
+      "bytes": 56578
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md",
+      "sha256": "59fca0d8f2838d073d57fa76eaf0393171aca90a9582761ec35468a41d7b37ac",
+      "bytes": 92412
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md",
+      "sha256": "38e701fb345bcaa460d8971849a7a9bd8a5ce2b19191d68f7fc22314d37100a9",
+      "bytes": 15618
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md",
+      "sha256": "828d23f2db30167bae710ee6fbb6efa6872d12d21a4ba99c514bad4d93295897",
+      "bytes": 29702
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md",
+      "sha256": "ee5db8666bf1f7538b6c1e178a73d04ddbc9182966504dad3c97e5848c92cea8",
+      "bytes": 192772
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/api-e2e-test-review-report.md",
+      "sha256": "6f860810ea5ee8c7ff75f564a962683f690e6ff5446ceebd56e1c0c26dc00ccd",
+      "bytes": 14084
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/approval-record-sr025.md",
+      "sha256": "a72250c99f6ba132e750c2e2e54c6740518ae872f482dcbee6843f9ad9106e63",
+      "bytes": 3582
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/architecture-review-revision-record.md",
+      "sha256": "e43eb2ddca143be3810e97a4d8807331d8c88d156af18d0525343d0a7a525251",
+      "bytes": 49669
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-report.md",
+      "sha256": "999711b76fec2e268335f6e3ab77c1540bb30fb1ea4427bf693a9a553445a743",
+      "bytes": 22648
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-revision-record.md",
+      "sha256": "c5f1c36a89f161cf3cc5da82016b6f9b4750d20c07bd6ccb1d2cb7908a85bf3f",
+      "bytes": 88009
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/delivery-evidence/dr-001/conflict.diff",
+      "sha256": "675f9968b6d6efcd0548fa92f24dcfd9392835e07b4596b8257631b637727bdd",
+      "bytes": 4237
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/delivery-evidence/dr-001/integration-state.json",
+      "sha256": "cdd8cb249132156f4d01ede3f267ca24731fc3bf36cbaae7882e703db39f1332",
+      "bytes": 1431
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/delivery-revision-record.md",
+      "sha256": "2ba6836718bb344b28a898abde4f9152abff613417161f23ca9ed84c2f20ef41",
+      "bytes": 2034
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/design-review-report.md",
+      "sha256": "ddb94b7c1b0434191b1afae6942ac9244943a351e2b89da424c5f7709ce10642",
+      "bytes": 29494
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/design-spec.md",
+      "sha256": "1b3974b7a0ebff69b9d5e5c6cb200669e5a47d27168ca843ffae0d51c96f52f1",
+      "bytes": 122834
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/docs-sync-report.md",
+      "sha256": "3cef4c5c12ae1cbb9b37e0ff2dc5a540420cbab0578bd03f5ddf255a897a14fe",
+      "bytes": 2881
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-008/user-command-only-direction.json",
+      "sha256": "ec32ff09070d94b1ffc14f45d68cc0b3957e8d13d8152d7a2dd49c81ca25dff6",
+      "bytes": 729
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/handoff-summary.md",
+      "sha256": "71d6af740c98c58f741fbbe5d8a93890e0971126afcb329ca2920c128a615ff2",
+      "bytes": 3074
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/adjacent-explorer.log",
+      "sha256": "b4b0a8d2c58ded71763c68500ec6c6c8668e73607ae3bfee5cbfff311afb79b1",
+      "bytes": 15139
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/audit-integration.py",
+      "sha256": "acc87617aa5efb83d20aba3d20489ad532ea3219cd4ba087d18ad4c8a942cd6a",
+      "bytes": 2692
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/base-test-before.ts",
+      "sha256": "5e4b95d5db9938a008bfa3983e46ec3f30deb69e6d4ec5373b66d7cda944242a",
+      "bytes": 6063
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/checks-and-limits.md",
+      "sha256": "99abc72bc318f73a15fec34f031dfec4d0eda24330bd601410935aa564888a7a",
+      "bytes": 5304
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/checks-result.json",
+      "sha256": "f3784457d67c1cfeda4edc9275bfa424e977c97b7624a892cdcc835419ca5c7c",
+      "bytes": 2084
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/cleanup.json",
+      "sha256": "1bdab29dcabc58ba306f4bd8833c287291ccb5ca3ac951accf9219d2cc263adf",
+      "bytes": 1612
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/fetch.log",
+      "sha256": "e77843f813a0e367edf47bbf8290693fbe2c280973d2f41499885cabc39fa655",
+      "bytes": 105
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/finalize-package.py",
+      "sha256": "696814197a7c84c6b3542602a3395d46903604b4a0eb974bbadc54699324b6f0",
+      "bytes": 3698
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/input-audit.json",
+      "sha256": "c79db743ac4ba77ef773655618466148c81ab03501777d01d5e598269830d33e",
+      "bytes": 67658
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/install.log",
+      "sha256": "4bf5a883f5f361b56ab275646a69befdffc605110d5f00fa1c3e40e52c652e46",
+      "bytes": 4684
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/integration-prepare.log",
+      "sha256": "2d8051174e322527c969b87668bafe88445634fd7f8d3800f4e889a3b63afccd",
+      "bytes": 3461
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/integration.diff",
+      "sha256": "b2b5e4fa00d73f8c994b8c15676cb1a445d9cb3ba54cb00724d79e6f509dc730",
+      "bytes": 1805
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/merge-attempt.log",
+      "sha256": "9bd113e578bd55547bd0d7e57d183479f33df8fbaba2bd87df96267cc9325a65",
+      "bytes": 327
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/overlap-paths.json",
+      "sha256": "666f57dc039934be407f2bbebc52856ab5e4f80cec9ed5907ac428e2df0ee3b3",
+      "bytes": 130
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/prior-implementation-handoff-ir010.md",
+      "sha256": "196bcf9ced64204b3007d6bc6fc3e9bf1cd6f0c90bb2edc21c9f3a832e13bc9c",
+      "bytes": 8453
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/routing.json",
+      "sha256": "807bcad2c60b4d113af182fea6baf87053f3faf32e36f39c948ddd1db60dbec8",
+      "bytes": 635
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/run-adjacent-checks.py",
+      "sha256": "a4d1bb727bf5e56f783d77d7f9462675e134280612d993a782c04259440bc6bb",
+      "bytes": 923
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/run-local-checks.py",
+      "sha256": "0671e83fa115ac79ffe8e23f928ea834f1d341ba8cc17f0484636bf60285347e",
+      "bytes": 1391
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/scratch-identity.json",
+      "sha256": "dd1aee782a42f34b6418d4826404372507a8a40a19f7f34c9522a2885e51b44b",
+      "bytes": 329
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/scratch-path.txt",
+      "sha256": "f0821d3f1de0a7e575e96e3d4609abac208d31498fac38db29640de36531f2c5",
+      "bytes": 71
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/server-typecheck.log",
+      "sha256": "02322399acaae52bf7c7d30f2622ceaa3dcfceeacb3b66375326b380c38c0800",
+      "bytes": 1113
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/source-audit.json",
+      "sha256": "f9b27eddea2e8fe00519bbac4f201eb56e74dad5fb39bc518746b40daf469ab5",
+      "bytes": 1603
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/ticket-test-before.ts",
+      "sha256": "2036b2e7e104395a7a5635d057b062aa60e4532448564008797f5ebd486da35a",
+      "bytes": 8792
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/workspace-rest.log",
+      "sha256": "903db989cf6c8500afca211db369568e74e970372de7169bac92e0bb2f0a8659",
+      "bytes": 22031
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-011/workspace-unit.log",
+      "sha256": "08b628006931a08b4481e66a9c8a9d0d622caa8b153d89b9dfe15c7cc3825bb4",
+      "bytes": 27006
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-handoff.md",
+      "sha256": "f1cfc0b655cd417221b50360cdd3721016cfd20a71bac7c478552cc11232a904",
+      "bytes": 8823
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-revision-record.md",
+      "sha256": "23533132924769958ef532cc220b7af96888877eb23d08471fa87af9c2af23e2",
+      "bytes": 43210
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/investigation-notes.md",
+      "sha256": "55a35e1c29fe8cc14a98725d8abd9952cf56b499de94e26cd00dc4a643ccfa70",
+      "bytes": 156253
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/release-deployment-report.md",
+      "sha256": "be5065f89067e7d45d52630e2b3afff912dddd72835f23bc50d32e03eaed561b",
+      "bytes": 5714
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/requirements-doc.md",
+      "sha256": "eeaac5c0b92fbfac2f83a1942549177365f53ada73c6328a0a75142a537023a1",
+      "bytes": 84801
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/solution-design-handoff.md",
+      "sha256": "1ea2674bb95e05b76825de17edf8a5c6395eeb4f3a7027ffc4bdeb317848bad1",
+      "bytes": 8379
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/solution-revision-record.md",
+      "sha256": "45194d94eaccf679d928d1d2b2886d7713f8dcdbb06052d9957d66525adb1792",
+      "bytes": 95858
+    }
+  ]
+}

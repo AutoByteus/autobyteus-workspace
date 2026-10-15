@@ -525,3 +525,41 @@ record does not imply an earlier Pass or completed implementation.
   successful test-code review, Delivery. No duplicate notification/delegation.
   DEC017 deferred scopes stay deferred, not broad requalification. No release,
   merge/push/tag/TaskDone or user-verification claim.
+
+### IR-011 — DR001 latest-personal integration lifecycle Local Fix
+
+- Trigger: Delivery `handoff-summary.md` / `delivery-revision-record.md`, DR001,
+  single REST-test merge conflict; implementation-owned Local Fix.
+- Prior authority: IR010 local implementation complete; CRR015 source Pass,
+  API008 command-only filesystem Pass95%, CRR016 successful test review Pass;
+  Delivery DR001 Blocked on integration (not a filesystem failure).
+- Current result: Local Fix complete, integrated candidate ready for independent
+  review. Delivery and API retain ownership of their verdicts; no product rescore.
+- Related SR025/DEC017 plus technical SR023/ARCH007 (historical ARCH008/SR024
+  alignment), CRR015/016, API008, DR001. Later direct user command-only instruction
+  in E8 controls; no new UI/editor/API gate or Solution Designer approval loop.
+- Large/High/Reviewed confirmed. SCN006/REQ011/AC010 healthy-content regression
+  maintenance only; IR009 filesystem/IR010 production unchanged. CR-FUP002 stays
+  in its existing nonblocking PM Task, not repaired/retested.
+- Development merge a4afd758a9766274b08f675c04952b19913fff0c integrates fresh
+  personal5096011674 into recovery4f44d115 on ticket branch. Not a target merge
+  or push. Only source conflict is workspace-content-rest.e2e.test.ts.
+- Deliberate resolution retains suite-scoped composed runtime/public removal;
+  excludes base route-only per-test close/private-map cleanup. Adds two public
+  cleanup postconditions and ownership comment, removes unused async/blank line
+  (6 additions/2 deletions). All six test bodies byte-identical, including socket
+  HTTP/GraphQL journey and five original controls. Docs auto-merge retains both
+  ticket draft semantics and base relative-path corrections.
+- Local checks from fresh clean scratch source/build: frozen install/prerequisite
+  build/typecheck exit0; REST6, workspace48, adjacent explorer12 tests exit0
+  (12files/66total). Narrow implementation checks, not API/E2E sign-off. No UI,
+  VM/Docker, NFS campaign, independent-client or publication run.
+- Evidence `implementation-evidence/ir-011`: source audit/diff, exact commands,
+  logs, checks-and-limits, cleanup. 7,330 non-ticket source files matched scratch;
+  309 protected artifacts/five old dist trees untouched; own scratch removed.
+  IR001–010 preserved byte prefix. Initial expected conflict/read lookup and
+  installation warnings disclosed. No prior result inferred from missing records.
+- Next: fresh most-specific Local Fix rule → independent source review; then
+  affected integrated validation as applicable and Delivery continuation. Keep
+  user scope and deferred qualifications; no broad campaign or duplicate handoff.
+- No release/target-merge/push/tag/deployment/TaskDone/user verification claimed.
