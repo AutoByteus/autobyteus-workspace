@@ -2,69 +2,63 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `requirements-doc.md`, **Approved SR018**; approval017/018 and DEC015 unchanged.
-- Upstream Investigation Notes: `investigation-notes.md`, current SR023 supplement inventory.
-- Upstream Solution Revision Record: `solution-revision-record.md`, **SR023**; previous history retained.
-- Reviewed Design Spec: `design-spec.md`, **Ready SR023**, commit **a4be96c45d4e9799c3dc18fc6b690b7edf579477**.
-- Supplemental Task Artifacts Reviewed: current handoff; CRR012 report/source trace/mac evidence and API005 raw Mac receipts; SR023 identity investigation, primary contracts/installed manuals, persisted-state evidence, probe source/build/harness/results/attempts/cleanup; prior resolution reports and raw API005 Linux freshness receipts. Full1346-reference input `evidence/design-recovery/sr023/package-index.json` preserves all1302 incoming references. Prior IR001–008/ARCH001–006/CRR001–012/API001–005 remain at their recorded scopes, not wholly reexecuted.
-- Relevant Solution Revision IDs: SR023 correction; ApprovedSR018 and SR019–022 policies preserved.
-- Architecture Review Revision Record: `architecture-review-revision-record.md`.
-- Current Architecture Review Revision ID: **ARCH-REV-007**; round **7**, 2026-10-15.
-- Trigger: **CRR012 Fail / Design Impact CR007 P1 / API-F005**, ordinary native-Mac boot rejects the same source.
-- Prior Review Round Reviewed: ARCH006 Pass on SR022, not approval of SR023; prior dispositions rechecked first.
-- Latest Authoritative Round: this architecture report only. **CRR012 Fail and API005 Fail57.14% / broader Required remain current at their boundaries.**
-- Ticket root: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces`. Ticket links below are relative; production paths are worktree-relative.
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`; branch `codex/shared-network-workspaces`; finalization `origin/personal`.
-- Current-State Evidence Basis: personal source/contract/raw-receipt review and `architecture-review-evidence/arch-rev-007/review-audit.py` / `review-checks.json`.1346 existing unique refs;1342 manifest and1296 protected hashes checked excluding two reviewer authorities;286 old dist files unchanged. Current designer authorities compared to input commit; production d65aeda24fc4b9a534a3941b194dd4a55b88c00c unchanged; approved basis byte-identical to prior review.11 dependency observations,9 incoming Mac failure observations and80 prior freshness checks re-evaluated. Root DESIGN/TESTING, migration guideline, shared principles, Example9 and full28-section template applied; no closer NFS/ticket AGENTS. **No reviewer build, suite, VM, mount, Docker, app or provider execution.**
+- Requirements: `requirements-doc.md`, **Approved SR024**; exact latest user clarification, chronology and informing approval in `approval-record-sr024.md`. Functional SR018 and DEC012/013/015 retained; DEC016 stages proof.
+- Investigation/history/design: `investigation-notes.md`, `solution-revision-record.md` SR024, `design-spec.md` **Ready SR024**; input commit **b1af17feda2dd4d3825ce6b3e727ce4114283c16**.
+- Current revision: **ARCH-REV-008**, round8,2026-10-15. Record: `architecture-review-revision-record.md`. Prior ARCH007 Pass on technical SR023 is not assumed approval of new acceptance.
+- Trigger: Solution Designer requests acceptance/design-alignment review only. Latest user requires all shared-filesystem cases across different nodes; VMs/non-agent actors acceptable. Earlier immediate-close suggestion is superseded.
+- Supplements reviewed: SR024 acceptance disposition and approval; canonical current handoff/inventory/history; current CRR013/API006 report and ledger scopes; focused API006 native-Mac/volume/replacement and peer-network receipts. Complete1610 incoming refs retained. Earlier technical/source/runtime evidence is carried at its recorded scope, not wholly re-audited.
+- Current production **d3c88f37c30ee74a89a95a4f6906992667c9b875 / IR009**, technical SR023/ARCH007 unchanged; **CRR013 source Pass100 / API006 Blocked67.86%** remain independent owner authorities. No CRR014 or new API result created here.
+- Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`; worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`; ticket `tickets/in-progress/shared-network-workspaces`; branch `codex/shared-network-workspaces`; finalization `origin/personal`. Links below are ticket-relative unless production paths.
+- Evidence basis: personally compared approval, current requirements/proof staging, design delta and next-work ownership; checked no production delta from the accepted source, all input reference existence and20 focused hashes, and scoped receipt facts in `architecture-review-evidence/arch-rev-008/review-audit.py` / `review-checks.json`. Read root AGENTS/DESIGN/TESTING, shared principles and full28-section template; no closer ticket instructions. Prior technical verdicts below are explicitly retained, not a new source audit. **No runtime tests, builds, VMs, network/host changes, provider calls or delegation.**
 
 ## Routing Classification Review
 
-- Task size **Large**, architectural risk **High**; independent architecture review required **Yes**.
-- Cumulative privileged multiplatform storage/client/runtime integration remains Large. This bounded delta spans a few files but changes persisted source identity and retry admission: High independently of evidence volume. No new subsystem or broad reaudit justified.
-- No classification correction or renewed behavior approval required. Fresh handoff rules govern routing.
+- **Large / High / Reviewed** retained for the cumulative privileged multiplatform storage/client/runtime package. Independent alignment review selected by current upstream rules.
+- SR024 alone is a small documentation/acceptance-sequencing delta, not a new High-risk code change. Artifact count does not justify size/risk. Technical spines, owners, interfaces and persistence remain unchanged; no duplicate implementation needed.
+- Fresh receiving-role rules govern routing after this result; next substantive work is validation, not implementation.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: **Confirmed**.
-- Approved SCN009/012/013, BEH001/004/005, REQ014/017/019 and AC007/014/017/018/019 require healthy same-source restart/retry without manual mounting, while preserving original bytes and refusing replacement. DEC015 does not defer ordinary healthy boot.
-- Current path: public create -> Plan/SourceIdentity -> Apply/hosted and pending records -> launchd RunAtLoad -> serial supervisor/admin lock -> Reconnect/CheckConfiguration/CheckSource -> Apple Ensure/mount/nonroot proof. Raw st_dev+inode is currently durable on both OSes. API005 shows changed raw device with unchanged APFS volume/inode/source; the guard fails before backend/mount. Status separately sees no matching mount. This is not an IR008 regression or nfsd-start failure.
-- Target: Mac APFS volumeUuid+inode, Linux device+inode unchanged; platform captures, config validates shape, setup binds/persists once. Trusted actual-device diskutil observation, not guessed device or marker-only fallback. Existing supervisor/consent/order remains.
-- Scope Guardrail: UC001–007 retained; affected source/identity/pending wiring/tests/docs only. No source/marker/private-data migration, runtime/REST/UI, engine, mount-policy or restart-policy expansion. Only Mac Docker STORAGE is deferred; native Mac and both-OS clients remain required. New product/migration/security obligations require upstream approval, not reviewer invention.
-- Every prospective blocking Design Impact traceable to approved authority: **Yes; no new blocker accepted**. Remaining ambiguity blocking implementation: **None**. Public corrected lifecycle remains unverified.
+- Overall basis **Confirmed**. DEC016/REQ012/016/AC011 governs current proof; IV-F01–F06 required, IV-D01–D03 deferred, IV-R01 release-only. Exact latest quote explicitly requires different-node file testing without agents. It does not authorize immediate closeout or silently pass unexecuted cases.
+- Supported path remains public guided create/join -> SetupService/OS backend -> original chosen export -> another node's kernel mount/native or managed Docker client -> nonroot committed write/fresh peer read -> filesystem-facing APIs/previews. Operator file processes exercise that filesystem contract without invoking a provider; they cannot prove native-agent tool/asset journeys.
+- Ordinary boot -> existing supervisor/locked Reconnect -> same-source binding -> backend/mount and selected-node completion remains. API006 public Mac boots/replacement controls now establish the scoped CR007 correction. No new mechanism is proposed or independently justified by acceptance metadata.
+- Scope Guardrail/Change Scope confirmed: all planned ordinary cross-node file, concurrency, documented lock/Git, permission, source/private/selected-node preservation, restart/reconnect and safe-detach cases stay required. Native Mac/native Linux/Docker-on-Linux STORAGE plus native/managed Docker CLIENTS on both OSes remain. Only Mac Docker STORAGE is deferred. No changed security, source-retention, outage, migration or release guarantee.
+- Missing peer transport is execution work, not unclear approved intent: Macguest TCP22 timed out/TCP2049 no-route in API006. Own-mounted reads do not establish cross-guest sharing. Investigate authorized disposable alternatives; no inferred hostbridge/firewall/live-node/credential/budget permission.
+- Prospective blocking findings traceable to approved authority: **Yes; none accepted**. No unresolved design-choice question or reason to re-ask physical/provider prerequisites for independent non-agent file checks.
 
 | Behavior ID | Kind | Design Alignment | Trigger / Current Evidence | Target Path Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH001 | Operational | Pass | Pass — public create and chosen-source contract | Pass — DS001 captures correct identity before export | Confirmed | Current public Mac create proof |
-| BEH002 | User/System | Pass | Pass — workspace/run/native tools | Pass — DS003 unchanged | Confirmed | Retain private-link/tool matrix |
-| BEH003 | Contract | Pass | Pass — healthy shared IO, API005 Linux freshness | Pass — DS002 unchanged | Confirmed | Preserve scoped resolution and remaining modes |
-| BEH004 | Operational | Pass | Pass — ordinary boot/reconnect, MP011 | Pass — DS001/006 stable binding before effects | Confirmed | Automatic mounted nonroot RW first |
-| BEH005 | Operational/Contract | Pass | Pass — retry/source preservation, MP012 | Pass — bound pending reused, detach exact-owned | Confirmed | Bind-once/refusal/partial-retry checks |
-| BEH006 | User/System | Pass | Pass — normal previews/completed artifacts | Pass — DS004 unchanged | Confirmed | Healthy current-product coverage remains |
-| BEH007 | User/Interaction | Pass | Pass — Guide/release availability | Pass — DS005 unchanged | Confirmed | No qualification/publication claim |
+| BEH001 | Operational | Pass | Pass — guided public create/join/selected source | Pass — DS001/006 unchanged | Confirmed | IV-F01/F04 missing actual peer/client cases |
+| BEH002 | User/System | Pass | Pass — ordinary workspace/native files | Pass — DS003 retained | Confirmed | File portions IV-F02/F03; authenticated agent journey IV-D02 |
+| BEH003 | Contract | Pass | Pass — committed peer IO/concurrency | Pass — DS002 retained | Confirmed | IV-F02/F03 exact bytes, <=5s, relevant modes; no lock-policy expansion |
+| BEH004 | Operational | Pass | Pass — restart/reconnect, scoped API006 closure | Pass — stable binding/DS006 | Confirmed | IV-F04 missing peer/managed-client lifecycle, no duplicate fix |
+| BEH005 | Contract | Pass | Pass — permissions/source/private preservation | Pass — existing guards/binding/exact-owned detach | Confirmed | IV-F03/F04, no loss or security waiver |
+| BEH006 | User/System | Pass | Pass — file/healthy preview actions | Pass — DS004 retained | Confirmed | IV-F05 API/browser proof, agent-produced journey separately deferred |
+| BEH007 | Interaction | Pass | Pass — Nodes Guide/candidate availability | Pass — DS005 retained | Confirmed | Applicable IV-F05/F06; unavailable public release stays truthful IV-R01 |
 
-**Prior findings:** CR006/API-F004 independently resolved by API005 at Linux native+Docker STORAGE/native+actual managedHTTP scope:40 unique1KiB/1MiB fixtures,80 reads, all<=5s. Recomputed maxima native storage0.927933s/native and0.934914s/HTTP; Docker storage0.827498s/native and0.839105s/HTTP. Not full AC003. CR005 retains API004/005 normalboots and separate Stop/policy/replacement/detach controls; recorded DNS null->[] normalization is not raw HostConfig equality. CR001–004 retain exact scopes. D001 deferred/not repaired; IMP-D001 current-source links/independent Source Update-Remove/AGY policy unchanged. **CR007 design accepted, not product closure.** Earlier raw-device selection lacked cross-boot evidence; the existing comparison faithfully exposed that design limitation.
+Prior findings were rechecked before finalizing this result: **CR007/API-F005 independently resolved at API006 native-Mac public create/two ordinary boots/automatic mounted nonroot RW/separate reconnect/real replacement refusal scope**. Source-only CRR013 does not supply that execution closure. API-F003/F004 and CR001–004 retain their earlier narrow scopes. D001 remains deferred/not fixed under DEC015; IMP-D001 current-source/private-link/AGY policy unchanged. None establishes a complete peer matrix.
 
 ## Supplemental Artifact Coherence Verdict
 
-| Artifact | Scope Clear? | Linked To Core? | Complete At Scope? | Consistent? | Status/Approval Clear? | Required Action |
+| Artifact | Scope Clear? | Linked To Core? | Complete At Scope? | Consistent? | Approval/Status Clear? | Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| Requirements/approval/scope feedback | Pass | Pass | Pass | Pass | Pass | No new approval inferred |
-| SR023 design/investigation/history/handoff | Pass | Pass | Pass | Pass | Pass | Current API-F005-first sequence supersedes historical orders |
-| CRR012/API005 failure and prior-resolution evidence | Pass | Pass | Pass | Pass | Pass | Preserve current Fail and scoped independent closures |
-| SR023 probe/contracts/state/cleanup | Pass | Pass | Pass | Pass | Pass | Dependency feasibility only, not public product |
-| Earlier cumulative supplements | Pass | Pass | Pass | Pass | Pass | Reuse unaffected evidence, do not repeat whole audit |
-| Reviewer audit/attempt note | Pass | Pass | Pass | Pass | Pass | Receipt checks only; no runtime signoff |
+| SR024 approval and requirements | Pass | Pass | Pass | Pass | Pass | Latest clarification controls, not earlier immediate-close draft |
+| Acceptance disposition and current inventory | Pass | Pass | Pass | Pass | Pass | Evidence/ownership supplement, not separate requirements authority |
+| Design/history/handoff alignment | Pass | Pass | Pass | Pass | Pass | No implementation delta; API mapping/completion next |
+| CRR013/API006 authorities and raw receipts | Pass | Pass | Pass | Pass | Pass | Preserve source Pass versus execution Blocked and scoped closures |
+| Earlier technical supplements / superseded drafts | Pass | Pass | Pass | Pass | Pass | Historical applicability retained; no new physical/agent gate inferred |
+| Reviewer checks / cumulative index | Pass | Pass | Pass | Pass | Pass | Artifact checks only, not new test confidence |
 
-Four designer canonical documents and evidence changed; production, requirements and specialist authorities did not. External Product specification **N/A — not applicable**; Delivery **N/A — not performed**. Actual helper rejects symlinks/permission failure; replacement “refusal” is harness comparison of captured values, not a product command. The design states that distinction correctly.
+Canonical SR024 sections explicitly qualify older physical/agent-before-delivery wording in retained history. Superseded initial drafts are marked historical, not competing approvals. External Product package **N/A — no UI change/request**; Delivery **N/A — not yet performed**. No upstream/specialist authority edited by reviewer.
 
 ## Task Design Health Assessment Verdict
 
-| Assessment Area | Result | Evidence | Required Action |
+| Assessment Area | Result | Evidence | Action |
 | --- | --- | --- | --- |
-| Current posture assessed | Pass | SR023 health paragraph and exact current-source trace | None |
-| Root classification supported | Pass | Missing invariant/shared-model lifetime mismatch; rawdev changes on ordinary boot | Do not label local IR008 regression |
-| Refactor/no-refactor explicit | Pass | Small OS-specific extraction, strict binding validation and existing pending sequencing | No broad source/supervision owner |
-| Concrete design supports decision | Pass | Identity variants, fd mapping, state dispositions, file map and tests | Implement bounded correction only |
+| Current posture assessed | Pass | SR024 acceptance alignment and Change Scope explicitly no production change | None |
+| Root classification supported | Pass | No new design issue: current implementation/source scope unchanged; remaining issue is proof coverage/VM transport | Do not invent a product defect |
+| Refactor decision explicit | Pass | No new subsystem/refactor/dependency/state/UI in SR024 | No source work solely for metadata |
+| Concrete decision supported | Pass | SR023 health/technical sections retained; CRR013 and API006 distinguish scoped closure from wider gaps | Proportionate validation next |
 
 ## Spine Inventory Verdict
 
@@ -77,7 +71,7 @@ Four designer canonical documents and evidence changed; production, requirements
 | DS005 | Nodes Guide -> release descriptor -> user's terminal -> DS001 | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS006 / DS006-L | Boot/job -> host proof -> selected failure eligibility/probe/consume/same-ID Start -> API | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
-SR023 adds detail inside DS001 and the host-proof portion of DS006, not another primary owner. Bounded local capture is canonical-path/fd observation -> actual volume query -> correlation -> persistent identity/error. Bound/unbound pending sequencing remains within SetupService. Return errors propagate without exporting, rebinding or false readiness.
+Retained SR023 design adds detail inside DS001 and the host-proof portion of DS006, not another primary owner. Bounded local capture is canonical-path/fd observation -> actual volume query -> correlation -> persistent identity/error. Bound/unbound pending sequencing remains within SetupService. Return errors propagate without exporting, rebinding or false readiness.
 
 ## Boundary Encapsulation Verdict
 
@@ -178,7 +172,7 @@ Adding volumeUuid does not reinterpret Device. Mixed/partial bindings refuse; a 
 | Legacy Apple acceptance/refresh branch | Pass | Pass | Pass | Pass | Not introduced; old bound fixtures explicitly disposed |
 | Existing source/marker/permission/reconnect machinery | Pass | N/A | Pass | Pass | Reachable and preserved, not dead code |
 
-No additional dead source established. Remove imports/helpers/tests actually made unreachable by this correction; no broad cleanup of reachable platform/backend code. No new unrelated follow-up; FUP001 remains PM-owned.
+SR024 touches no production modules, so no new dead-code removal is applicable. SR023 removal decisions and CRR013 implementation review remain their authorities; no repeat source cleanup requested. FUP001 remains PM-owned.
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -206,87 +200,74 @@ Local origin/personal tree, containing-tag search, release lock with empty quali
 
 | Area | Sequence Realistic? | Temporary Seams Explicit? | Cleanup Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Config variant + platform capture | Pass | Pass | Pass | Pass |
-| Plan/new Apply/pending bind-once persistence | Pass | Pass | Pass | Pass |
-| Current validation before reconnect effects | Pass | Pass | Pass | Pass |
-| Exact old fixture teardown then current public setup | Pass | Pass | Pass | Pass |
-| Source review -> API-F005 first -> remaining gates | Pass | Pass | Pass | Pass |
+| Approval -> canonical proof staging -> aligned design/history | Pass | Pass | Pass | Pass |
+| API evidence mapping -> missing cross-node filesystem cases -> new owner result | Pass | Pass | Pass | Pass |
+| Successful revised package -> proportional cumulative test review -> Delivery | Pass | Pass | Pass | Pass |
+| Deferred physical/native-agent/personal custody; unchanged release gates | Pass | Pass | Pass | Pass |
 
-No cross-resource atomicity claim. Save failure stops before export. Existing supervisor still refuses pending setup; consented retry, not automatic rebind, owns it. No engine rebuild or temporary dual-runtime identity path.
+**SR024 persisted-data transition: Not Affected.** The retained technical transition table above documents SR023, not a new conversion obligation. No rerun of fixture cutover, identity repair, engine rebuild or implementation is requested. New in-scope failures follow their owner route; acceptance metadata never turns a blocked test into a Pass.
 
 ## Example Adequacy Verdict
 
-| Topic | Needed? | Clear Example? | Avoided Shape Explained? | Verdict | Notes |
+| Topic | Needed? | Clear? | Avoided Shape Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Mac versus Linux identity | Yes | Pass | Pass | Pass | volumeUuid/inode versus device/inode |
-| Complete/stale-flag versus unbound pending | Yes | Pass | Pass | Pass | Complete reused, all-zero may bind; partial/hosted inconsistency refuses |
-| Real replacement control | Yes | Pass | Pass | Pass | Same inode/rawdev/copied marker but different volume UUID |
-| Dependency versus product acceptance | Yes | Pass | Pass | Pass | Helper boots/comparison do not prove automatic public mounted RW |
+| VM filesystem versus native-agent proof | Yes | Pass | Pass | Pass | Ordinary peer scripts valid for file contracts, not instructed native tools |
+| Different nodes versus self-mount | Yes | Pass | Pass | Pass | API006 network gap remains required despite each guest's own IO |
+| Required versus deferred versus release | Yes | Pass | Pass | Pass | IV-F01–F06 / D01–D03 / R01 with owners and no score inflation |
+| Technical identity/pending examples | No new example | Pass | Pass | Pass | Retain ARCH007/SR023, unchanged |
 
 ## Material Premise Validation (Only When Needed)
 
-### MP-011 — Same original APFS source after ordinary machine restart
+**No new material lifecycle premise or machinery in SR024.** This round changes proof staging from explicit user direction; it does not derive an operational contract from a test helper.
 
-- Authority/behaviors: SCN009/012/013, BEH001/004/005, REQ014/017/019; AC007/014/017/018/019. Reuses CRR012 premise ID.
-- Initiating basis: **Operational / Supported Normal Scenario**. Owner completes public native-Mac create on a supported nonempty APFS source, ordinarily reboots the same host, then resumes shared work. Approved restart contract exists independently of the proposed identity mechanism.
-- Forward witness: create -> Plan/SourceIdentity -> Apply saved pair -> OS launchd service -> locked serial Reconnect -> CheckConfiguration/CheckSource -> pair mismatch before Apple Ensure/mount. Public reconnect reaches the same guard; Status observes no mount.
-- Preconditions/consequence: original source remains available; raw device16777228 becomes30/27/30 across three boots, inode506781/501:20/755 and bytes/marker/saved record unchanged. Third-boot actual-device plist confirms same APFS VolumeUUID. Nine second/third-boot observations and two explicit reconnect failures corroborate the deterministic predicate, not a210s SLA. No manual hidden-state edit establishes reachability.
-- Reachability: **Reachable**. Corrected capture must survive reassignment without accepting a different directory/volume.
-- Response: platform observes persistent volume UUID+inode; existing config/setup persist and validate it. No retry escalation, marker bypass or identity rewrite. Eleven designer dependency observations support feasibility; current public correction still required.
-
-### MP-012 — Retry must preserve an already-established source binding
-
-- Authority/behaviors: REQ014/017, AC014/017, SCN009/012, BEH001/005; supported partial-setup retry and same-source preservation contract.
-- Initiating basis: **Contract exercised by public consented create/reconnect**. User creates a new source through guided setup; a later setup step does not complete, then user reviews and retries the same intended configuration. Approved partial retry, not an invented corrupt-record workflow, supplies the basis.
-- Forward witness: Apply saves NewSource intent -> nonroot CreateSource -> capture -> existing marker/handle/hosted work -> SaveIntent currently retains NewSource -> later mount/node/job step may leave pending setup under the explicitly supported incomplete-setup contract -> interactive PendingPlan currently recaptures when that flag is true. Service refuses pending setup, so it cannot be an automatic recreation owner.
-- Preconditions/consequence: an identity can already be bound while the old flag says new. Recapture would discard the evidence that retry must compare; genuinely zero initial intent has no such evidence. Same-source refusal applies at this boundary without inventing hostile timing or a new security promise.
-- Reachability: **Reachable governing retry/preservation contract**. Failed-step fixtures exercise this actual sequence, not proof of arbitrary corruption support.
-- Response: bind once, clear NewSource and atomically save before later source effects; complete pending identity reused/compared regardless of stale flag. True zero intent may establish first binding only through fresh plan/consent; old/partial/mixed and hosted-unbound inconsistency refuse. Reuse existing Store/lock, not a second journal.
-
-Apple's pinned [XNU mount header](https://raw.githubusercontent.com/apple-oss-distributions/xnu/xnu-12377.1.9/bsd/sys/mount.h) supplies mount-observation fields and local flag. Retained installed diskutil(8)/statfs(2) manuals document device info-plist and fd filesystem observation. Actual SR023 plists validate the selected field names; `Mounted` is absent. The older [getattrlist manual](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/getattrlist.2.html) distinguishes device/object attributes but is not a modern APFS lifetime guarantee. UUID+inode stability is an evidence-supported inference from actual boots/replacements, not an anti-clone guarantee or all-platform certification.
-
-MP001/002 remain reachable outage IO explicitly deferred DEC015; MP003/004 independent source deletion/current links unchanged. MP005 dependency fix, MP006 reboot fix and MP009 freshness now retain their independent scoped closures; MP007/008 Stop distinctions and MP010 exact-owned config lifecycle remain. No unsupported/Not-Reachable premise drives new machinery. Hypothetical supported old deployments are not established by schema existence; no migrator is selected. Evidence of an actual retained supported install must resolve its transition before that cutover, rather than being guessed safe.
+- **MP011 retained, scoped correction now independently executed:** supported owner public create -> ordinary Mac reboot -> launchd/locked Reconnect/source check -> mounted nonroot IO. API006 records distinct boots and raw-device16777228→16777229 with same APFS UUID/inode507558/saved binding. Actual replacement volume at same path/rawdev/inode but different UUID refuses; original restoration reconnects. Reachable supported normal lifecycle; closure is native-Mac VM scope, not peer/physical proof.
+- **MP012 retained:** approved partial-setup retry/preservation contract -> consented create -> source bind/save -> later incomplete setup -> consented PendingPlan retry. Bind-once validation prevents recapture replacing established identity; technical sequencing accepted ARCH007 and source review CRR013. No synthetic corruption or hostile timing is promoted into a new requirement.
+- MP001/002 outage IO remains reachable but deferred DEC015; MP003/004 current-source independent deletion retained; MP005/006/009 retain scoped dependency/restart/freshness closures; MP007/008 Stop semantics and MP010 exact-owned configuration contract unchanged. No Not-Reachable or Unclear premise drives a prescription.
+- API006 peer connectivity result is an observed missing validation capability, **not proof that the product cannot share files** and not grounds for speculative network machinery. Diagnose before classifying a product cause.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-**None blocking architecture handoff.** Public corrected Mac lifecycle and remaining qualification are downstream implementation/validation obligations, not ambiguous approved intent. If actual deployment evidence or current-product failure contradicts this choice, return it to Solution Designer; do not silently weaken replacement protection or narrow the platform. FUP001/access prerequisites unchanged.
+**None blocking this architecture alignment.** The next validation stage is not complete:
+
+| Item | Why It Matters | Required Action | Status |
+| --- | --- | --- | --- |
+| Macguest/Linuxguest TCP prerequisite and actual peer mounts | Self-mount IO cannot prove IV-F01–F04 | API owner investigates within authorized disposable resources; records safe alternatives/narrow blocker if still unavailable | Required, unresolved execution gap |
+| Both-OS managed-client / full file and API-preview case mapping | Scoped fixes do not prove all planned cases | Map carried evidence by build/path/case and execute missing IV-F01–F05 | Required, not blanket Pass or blanket impossibility |
+| Test-code review and Delivery completion | API006 is still Blocked | New successful revised-basis API result, selected af9f23 cumulative durable REST review, then IV-F06 | Not yet performed |
+
+No authenticated profiles/physical hosts/personal commands are prerequisites for independent filesystem coverage under DEC016. Deferred qualification and release are not fabricated as complete.
 
 ## Review Decision
 
-**Pass — ARCH-REV-007 / Ready SR023 / unchanged Approved SR018.** Bounded persistent identity, trusted capture and bind-once lifecycle design is implementation-ready. This does **not** close CR007/API-F005 or replace CRR012/API005 verdicts.
+**Pass — ARCH-REV-008 / Ready SR024 / Approved SR024**, acceptance/design alignment only. The technical SR023 design remains accepted and already implemented; **no new implementation handoff is warranted**. All required filesystem validation remains before closeout. This is not an API Pass, Delivery approval, release or TaskDone.
 
 ## Findings
 
-**No new blocking findings.**
-
-- CR007/API-F005: design recovery accepted; implementation/source/API closure pending.
-- CR006/API-F004: independently resolved at API005 Linux native+Docker STORAGE/native+managedHTTP scope only.
-- CR005/API-F003 and CR001–004: retain independently recorded scopes, no reopening.
-- D001: deferred/not repaired. IMP-D001: current-source/private-profile/AGY policy preserved.
-
-Prior-finding resolutions are in ARCH-REV-007; no renumbering or downstream report rewrite.
+**None new.** Prior resolution table is in ARCH-REV-008. CR007/API-F005 now scoped resolved by API006; F003/F004/CR001–004 scopes retained. D001 deferred/not repaired; IMP-D001 policy unchanged. No CRR014, new product defect, source prescription or unrelated follow-up created.
 
 ## Classification
 
-**Pass**, Large/High retained. No new Design Impact, Requirement Gap or Unclear blocker; no new behavior/security/migration obligation.
+**Pass**, cumulative Large/High. No Design Impact, Requirement Gap or Unclear architecture blocker. Validation remains independently **API006 Blocked67.86%** until the API owner publishes a revised-basis result; source **CRR013 Pass100** is not execution confidence.
 
 ## Recommended Recipient
 
-Exact primary implementation recipient from fresh rules, with complete cumulative package. Personal work only; no delegation/spawning or duplicate API dispatch. Informational Solution Designer notice only under the applicable post-primary-success rule; not duplicate forwarding authority.
+**Return result to `/software_engineering_team/solution_designer` (requesting coordinator).** Fresh rules returned only implementation-ready Pass, Fail/Blocked, and post-implementation informational routes. **None matches:** SR024 has no implementation delta; it is Pass and no primary implementation handoff occurred. Use the developer no-matching-rule return contract, not a duplicate implementation dispatch. Fresh rules/evaluation are in `architecture-review-evidence/arch-rev-008/routing.json`.
+
+Coordinator can route next API/E2E coverage work under its applicable rules. This is an actionable result return, not the post-implementation informational notification. No direct API/Code/Delivery dispatch from this review; no immediate closeout, delegation or spawning.
 
 ## Residual Risks
 
-- **API-F005 FIRST after implementation and selected source review:** current PUBLIC nativeMac create, >=2 ordinary whole-host boots (more if needed to witness actual raw-device change), automatic mounted nonroot RW before any manual reconnect/repair; separately public reconnect and real directory/volume replacement refusal. Retain original bytes/marker/identity/modes/private config and actual installed CLI/job/export/mount proof. No synthetic identity edits, manual repair or helper substitution.
-- Prototype is no-cgo arm64 dependency execution on one Mac26.6.2/25G83 guest. amd64 compile is not execution; same-volume public clones do not establish global UUID uniqueness. Replacement and symlink controls are limited to their actual helper/comparison scope. Private/OS-permission refusal still needs product coverage.
-- Implement the specified parser, not a blind probe copy: complete single plist/dict, unique typed keys, bounded accepted input, trailing-data refusal, valid nonzero UUID and exact device/mount/filesystem correlation; recheck observation and close fd on every exit. Probe success is not adversarial parser coverage. The1MiB accepted-payload bound is not a newly promised global process memory/time deadline for existing Commands.
-- One trusted diskutil query per capture adds observed0.0788–0.7405s dependency cost, not a restart SLA. No cache/global enumeration/runner overhaul or hostile administrator atomic-mount guarantee justified.
-- Focused durable tests must cover existing/new/unbound/complete/stale-flag/partial/old binding, save-before-later-failure, no stored mutation on mismatch, no backend/mount effects after refusal, plus Linux pair/path/nonroot regressions and fd/parser controls. Current Apple strict variants cannot silently adopt old bound state.
-- Preserve proportionate Linux freshness and ordinary reboot/Stop/policy-no/unselected/replacement/detach regressions. Keep full remaining bothOSnative+managedclients/LinuxnativeDockerstorage/independentphysical/nativeactualtools+unreadlinkedassets+peerclose+restore/Standalone-Team-Org/completedartifact+healthy previews gates. af9f23 successful test-code review still awaits a passed API package.
-- Nativeamd64 engine/hostedworkflow/signing/publicbootstrap/docs/userverification/finalization/authorizedrelease remain unqualified. Empty release qualification/Guide unavailable stay truthful. D001/DEC015, IMP-D001, FUP001 PMcustody, trusted-LAN/privateLAN/peerNAT/profile/inference prerequisites unchanged. No release/merge/push/tag/TaskDone/user-verification claim.
-- No reviewer live resource requires cleanup; upstream exact-owned cleanup Complete, five old dist trees untouched. Reviewer audit timestamp assertion correction is recorded, not hidden as product evidence.
+- Required matrix must retain public create/join, native and managed Docker clients on both OSes, approved storage modes, reciprocal exact bytes/<=5s committed visibility, all planned file operations, independent different-file concurrency, documented locking/Git/permissions, ordinary restart/reconnect/source/private/selected-node preservation, safe detach and filesystem-facing APIs/previews. No new distributed locking claim for Mac v3.
+- API006 TCP22 timeout/TCP2049 no-route is current VM peer work. Deferring physical hosts does not close it. No hostbridge/firewall/live-node/OS credential or budget change is authorized. If safe alternatives cannot establish transport, preserve exact missing capability rather than manufacture proof.
+- Evidence reuse requires current build/path/scope relevance. Historical normal-boot/freshness/preview evidence is neither discarded nor expanded automatically. API owner owns new ledger/status/confidence; no arithmetic removal of gaps to claim95% or all-tests-Pass.
+- IV-D01 physical private-LAN, IV-D02 authenticated native-agent journeys and IV-D03 personal verification remain later user-authorized qualification, with user/PM custody and normal API execution when resources are available. Existing non-agent regression tests remain required; do not create duplicate follow-ups/FUP001.
+- IV-F06 follows successful filesystem validation and selected durable test review. Delivery integrates, documents exact available candidate entrypoint/limits, verifies integrated state, finalizes and cleans up. No made-up public download or internal mount script offered as the product command.
+- IV-R01 qualification/signing/notarization/hosted/public-bootstrap/advertised platform gates unchanged. Feasible build/packaging checks remain required; empty qualification/Guide unavailable stay truthful. No release/push/merge/tag/TaskDone/user-verification claim here.
+- D001/DEC015 outage limitations, current-source links/no retention/independent Update-Remove/AGY policy, privacy and ordinary OS/disruption consent preserved. Technical UUID stability is not hostile-admin/anti-cloning protection. No new data transition.
+- No reviewer live resources; five existing untracked dist trees left untouched. No runtime suite run in this review. Prior records and raw failures remain intact; only canonical reviewer report/history and new reviewer evidence changed.
 
 ## Latest Authoritative Result
 
-- Review Decision: **Pass — ARCH-REV-007 / Ready SR023 / Approved SR018**.
-- Material-Premise Gate: **Pass** — supported ordinary boot and established retry/source-preservation contracts ground the correction.
-- Notes: CR007 design accepted, corrected public product unproved. **CRR012 Fail / API005 Fail57.14% remain authoritative.** Reviewer changes only report/history/evidence; no source execution or release claim.
+- Review Decision: **Pass — ARCH-REV-008 / Ready SR024 / Approved SR024**.
+- Material-Premise Gate: **Pass** — explicit approved proof staging, unchanged supported technical paths; no new speculative mechanism.
+- Notes: Acceptance alignment passed; **required different-node filesystem tests are not declared complete**. CRR013 source Pass100 and API006 Blocked67.86% retain separate authority. Proceed to validation coordination under fresh routes, not duplicate implementation or immediate closeout.

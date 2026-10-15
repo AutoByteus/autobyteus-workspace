@@ -1,0 +1,32 @@
+{
+  "review": "ARCH-REV-008",
+  "solution": "SR024",
+  "decision": "Pass",
+  "scope": "Acceptance/design alignment only; technical SR023 implemented in IR009, source reviewed CRR013",
+  "fresh_rules": {
+    "handoffs": [
+      {
+        "when": "When the architecture review passes and the cumulative reviewed architecture package is ready for implementation.",
+        "recipient_address": "/software_engineering_team/implementation_engineer"
+      },
+      {
+        "when": "When the architecture review is Fail or Blocked with a Design Impact, Requirement Gap, or Unclear finding that requires architecture revision or upstream requirements clarification before implementation.",
+        "recipient_address": "/software_engineering_team/solution_designer"
+      },
+      {
+        "when": "When architecture review passes and Solution Designer needs the informational pass notification after the primary implementation handoff succeeds.",
+        "recipient_address": "/software_engineering_team/solution_designer"
+      }
+    ]
+  },
+  "matching_rule": null,
+  "evaluation": [
+    "Primary implementation rule does not apply: no new implementation work or implementation-ready delta; next work is validation.",
+    "Fail/Blocked rule does not apply: alignment Pass with no finding.",
+    "Post-implementation informational rule does not apply: no primary implementation handoff this round."
+  ],
+  "action": "Return completed result and cumulative package to requesting Solution Designer under no-matching-rule contract.",
+  "recipient_address": "/software_engineering_team/solution_designer",
+  "no_duplicate_dispatch": true,
+  "delivery_status": "Pending actual send_message_to receipt; this record does not assert delivery."
+}

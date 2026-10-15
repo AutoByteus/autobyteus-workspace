@@ -13,6 +13,7 @@ The latest `design-review-report.md` is authoritative. This record indexes revie
 | ARCH-REV-005 | 5 / CRR008 CR005/API-F003 selected-client boot completion | SR-021 design; Approved SR-018 | Pass on SR020; later CRR008 Design Impact | **Pass on SR021** | CR005 design recovery accepted; product/API closure pending; API-F002 resolved at API003 scope |
 | ARCH-REV-006 | 6 / CRR010 CR006/API-F004 healthy source-write freshness | SR-022 design; Approved SR-018 | Pass on SR021; later CRR010 Design Impact | **Pass on SR022** | CR006 design accepted; product/API closure pending; CR005 resolved at API004 scope |
 | ARCH-REV-007 | 7 / CRR012 CR007/API-F005 ordinary Mac boot source identity | SR-023 design; Approved SR-018 | Pass on SR022; later CRR012 Design Impact | **Pass on SR023** | CR007 design accepted; product/API closure pending; CR006 resolved at API005 Linux scope |
+| ARCH-REV-008 | 8 / Approved SR024 VM filesystem acceptance alignment | SR-024; technical SR023 unchanged | Pass on SR023 | **Pass on SR024 alignment** | CR007 resolved at API006 nativeMac scope; no new finding; required peer matrix remains |
 
 ## Revision Entries
 
@@ -212,3 +213,36 @@ On 2026-10-13 the user explicitly prioritizes a working normal-path v1 and defer
 - No new blocking finding, score, requirement narrowing, unrelated follow-up or specialist-authority edit. Full28-section structural report complete; syntax/JSON/whitespace/package checks only, no reviewer build/test suite/VM/runtime/provider/OS administration operation.
 - Next configured stage: cumulative implementation handoff -> selected independent source review -> **API-F005 FIRST** current PUBLIC nativeMac create/ordinary whole-host boots/witness actual device reassignment/automatic mounted nonroot RW, then separately public reconnect and real directory/volume replacement refusal. No synthetic identity edits/manual repair/helper substitution. Proportionate Linux freshness/reboot/Stop regressions then all remaining bothOS/physical/nativeactualtools+unreadlinkedassets+peerclose+restore/Standalone-Team-Org/completedartifact+previews/amd64engine/hostedworkflow/signing/publicbootstrap/docs/user/finalization/authorizedrelease gates. Successful af9f23 test-code review still awaits passed API package.
 - Residuals: one trusted command per capture, actual parser/binding tests still required, no anti-cloning/hostile-admin atomic-mount guarantee, no amd64 execution or full product proof. D001/DEC015, IMP-D001, FUP001 PMcustody, physical/profile/inference/privateLAN/peerNAT prerequisites and onlyMacDocker STORAGE deferral unchanged. Five old dist trees untouched; no release/merge/push/tag/TaskDone/user-verification claim. End after required confirmed handoffs, no polling.
+
+
+### ARCH-REV-008 — Pass On SR024 Acceptance / Design Alignment
+
+- Round8,2026-10-15; requesting Solution Designer; Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`. Personal review only. Canonical report `design-review-report.md` in this ticket remains authoritative.
+- Input **b1af17feda2dd4d3825ce6b3e727ce4114283c16**, production **d3c88f37c30ee74a89a95a4f6906992667c9b875 / IR009**. Prior **ARCH007 Pass / SR023 / ApprovedSR018**; current **ARCH008 Pass / ReadySR024 / ApprovedSR024**. Cumulative **Large/High** retained; narrow delta is documentation/acceptance sequencing, not new code risk or implementation.
+- Basis confirmed before structural verdict: latest direct user requires all shared-filesystem cases across different nodes; distinct Mac/Linux VMs and non-agent processes accepted. Exact chronology/quote/informing approval in `approval-record-sr024.md`. DEC016 supersedes earlier immediate-close proposal and DEC014 physical pre-close sequencing, not filesystem contracts. IV-F01–F06 required; IV-D01–D03 deferred; IV-R01 unchanged release-only gates.
+- Reviewed current core/supplement inventory/disposition/handoff against that basis; no new UI/mechanism/interface/data transition. Retained complete28-section structural verdicts from ARCH007 for unchanged design rather than repeating full architecture/source audits. No requirement narrowing, new machinery or implied live-operation authority.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revisions | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR007 / API-F005 | ARCH007 accepted design; source/API correction pending then | **Independently resolved at API006 nativeMac public boot/reconnect/replacement scope** | SR023, IR009, CRR013, API006 | Current owner report; raw native/volume/control receipts and resolution record; actual changed rawdevice/same binding; no peer qualification implied |
+| CR006 / API-F004 | Scoped API005 Linuxnative/DockerSTORAGE/native+HTTP closure | **Scope retained** | SR022, API005/006 | Earlier40fixtures80reads<=5s retained; no full bothOS matrix claim |
+| CR005 / API-F003 | API004/005 normalboot/Stop/policy/replacement/detach resolved | **Scope retained** | SR021, API004–006 | Current owner report carries same scoped evidence; no reopening solely for metadata |
+| CR001–004 / API-F001/F002 | Scoped resolved | **Unchanged scopes** | Cumulative history | No full qualification inferred |
+| D001 | Deferred DEC015, not repaired | **Still deferred/non-blocking** | SR018–024 | No outage-isolation/local-responsiveness guarantee restored |
+| IMP-D001 | Current-source/private-profile policy accepted | **Policy preserved** | SR019 onward | No source retention/copy/refcount; agent qualification staged separately IV-D02 |
+
+- Reviewer checks: `architecture-review-evidence/arch-rev-008/review-audit.py` / `review-checks.json`;1610 input references exist,20 focused input hashes match, no production delta from IR009 to input/current tree, old architecture entries preserved as exact prefix. This is not rechecking all1610 semantic contents, all raw histories or all production code. Incoming designer's1586-protected/286-dist/1609-hash audit retained as upstream evidence, not represented as rerun here.
+- Scoped API006 facts corroborated: three distinct initial/ordinary boot IDs, rawdev16777228→16777229 with inode507558 and saved binding/actual UUID unchanged; replacement real volumes same rawdevice/inode but different UUID, exact original restoration. Owner's public-command scope retained. Peer receipt independently still shows TCP22 timed out and2049 no-route; does not establish sharing or product failure cause.
+- Material-premise gate **Pass**; no new premise-driven mechanism. Existing MP001–012 dispositions retained with MP011 scoped public correction now proved. No new blocker, finding ID, API score/result or CRR014.
+- Required next work remains API mapping/reuse and missing IV-F01–F05 cross-node filesystem execution; no waiting for agent profiles/physical hosts/personal commands. Actual VM networking gap persists; only authorized disposable diagnosis, no hostbridge/firewall/live-node/credential/budget inference. Both-OS Docker CLIENTS remain required; only MacDocker STORAGE deferred.
+- Then successful revised API package -> selected proportional cumulative af9f23 durable REST review -> Delivery IV-F06 integration/docs/available-entrypoint/verification/finalization/cleanup. Later physical/native-agent/personal qualification stays user/PM custody; release gates unchanged. No duplicate implementation or immediate closeout.
+- Fresh routing recorded with the completed result; exact returned recipient only. No delegation/spawning, runtime tests, VM/resources, release/push/merge/tag/TaskDone or user-verification claim. Five pre-existing dist trees untouched. No upstream/specialist files edited; prior raw history retained.
+
+ARCH008 fresh-route disposition: none of the returned rules matches this acceptance-only
+Pass (no implementation delta, no Fail/Blocked, no successful primary implementation
+handoff). Return the completed result with cumulative package to requesting
+`/software_engineering_team/solution_designer` under the no-match contract. No other
+recipient is notified for this outcome. `routing.json` records exact rules and evaluation;
+delivery success depends on the actual send_message_to receipt, not this pre-dispatch note.
