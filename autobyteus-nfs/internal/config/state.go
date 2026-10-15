@@ -7,8 +7,9 @@ import (
 )
 
 type Identity struct {
-	Device uint64 `json:"device"`
-	Inode  uint64 `json:"inode"`
+	Device     uint64 `json:"device,omitempty"`
+	VolumeUUID string `json:"volumeUuid,omitempty"`
+	Inode      uint64 `json:"inode"`
 }
 type HostedFilesystem struct {
 	InstallationID string   `json:"installationId"`
@@ -40,6 +41,7 @@ type NodeAttachment struct {
 	DescriptorDirectory string `json:"descriptorDirectory"`
 }
 
+// Validate checks metadata, including plans whose new source is not yet bound.
 func (h HostedFilesystem) Validate() error {
 	if !ValidID(h.InstallationID) || !ValidID(h.StorageID) || !AbsolutePath(h.Source) || h.DataUID == 0 || h.DataGID == 0 {
 		return errors.New("invalid hosted filesystem identity/source/nonroot owner")

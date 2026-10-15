@@ -23,6 +23,20 @@ func (s *Service) Apply(p Plan, consented bool) error {
 	if err := p.Attachment.Validate(); err != nil {
 		return err
 	}
+	if err := validateSourceIntent(p); err != nil {
+		return err
+	}
+	if p.Hosted != nil && p.Hosted.Identity == (config.Identity{}) {
+		if err := s.checkUnboundSource(); err != nil {
+			return err
+		}
+	}
+	if p.Hosted != nil && p.Hosted.Identity != (config.Identity{}) {
+		if err := platform.CheckSource(s.Runner, *p.Hosted); err != nil {
+			return err
+		}
+		p.NewSource = false
+	}
 	if err := platform.PreflightTarget(s.Runner, p.Attachment.Connection); err != nil {
 		return err
 	}
@@ -50,13 +64,11 @@ func (s *Service) Apply(p Plan, consented bool) error {
 			if err := service.CreateSource(s.Binary, h.Source, h.DataUID, h.DataGID, s.Lock); err != nil {
 				return err
 			}
-			id, err := platform.SourceIdentity(h.Source)
-			if err != nil {
+			if err := s.bindSource(&p); err != nil {
 				return err
 			}
-			h.Identity = id
 		}
-		if err := platform.CheckSource(*h); err != nil {
+		if err := platform.CheckSource(s.Runner, *h); err != nil {
 			return err
 		}
 		if err := service.NonrootProbe(s.Binary, h.Source, h.StorageID, h.DataUID, h.DataGID, true, s.Lock); err != nil {
@@ -180,11 +192,25 @@ func (s *Service) CheckConfiguration() (config.Attachment, *config.HostedFilesys
 	if err != nil {
 		return a, nil, err
 	}
-	if err = h.Validate(); err != nil {
+	if err = h.ValidateBound(); err != nil {
 		return a, nil, err
 	}
 	if h.StorageID != a.StorageID || h.InstallationID != a.InstallationID {
 		return a, nil, errors.New("source and attachment identities differ")
 	}
 	return a, &h, nil
+}
+
+// Called immediately after nonroot creation, before marker/handle/export effects.
+func (s *Service) bindSource(p *Plan) error {
+	id, err := platform.SourceIdentity(s.Runner, p.Hosted.Source)
+	if err != nil {
+		return err
+	}
+	p.Hosted.Identity = id
+	p.NewSource = false
+	if err := p.Hosted.ValidateBound(); err != nil {
+		return err
+	}
+	return s.SaveIntent(*p)
 }

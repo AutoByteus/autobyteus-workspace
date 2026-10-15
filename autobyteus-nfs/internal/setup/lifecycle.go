@@ -23,7 +23,7 @@ func (s *Service) Reconnect(retryConsumed bool) error {
 		return err
 	}
 	if h != nil {
-		if err = platform.CheckSource(*h); err != nil {
+		if err = platform.CheckSource(s.Runner, *h); err != nil {
 			return err
 		}
 		switch h.Backend {
@@ -77,6 +77,9 @@ func (s *Service) Detach(consented bool) error {
 	var pending Plan
 	if os.IsNotExist(err) {
 		if e := s.Store.Read("pending-setup.json", &pending); e != nil {
+			return e
+		}
+		if e := validateSourceIntent(pending); e != nil {
 			return e
 		}
 		a, h = pending.Attachment, pending.Hosted

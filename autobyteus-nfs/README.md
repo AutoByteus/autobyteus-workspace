@@ -59,7 +59,8 @@ are selected, explicit `--drained`. Connection input is never evaluated as shell
 ## Data, trust and limitations
 
 - The source contains a persistent `.autobyteus-nfs/storage.json` UUID and an owned
-  health directory. Source inode/device, actual mount source/protocol, marker and
+  health directory. Mac APFS volume UUID + directory inode (Linux device + inode),
+  actual mount source/protocol, marker and
   nonroot synced-write/read/remove checks distinguish an attachment from a same-
   named local directory. No Git repository is created as a health check.
 - NFS uses **unencrypted AUTH_SYS, coarse host trust**. An allowed subnet trusts
@@ -144,6 +145,28 @@ remains independent and can make links unavailable. AGY keeps its existing capsu
 manifest and missing-source warn/skip restore. Ordinary local materialization and
 runtime tool permissions are unchanged.
 
+### Mac source identity and interrupted setup
+
+Native Mac captures the actual open source directory's APFS volume UUID with the
+trusted system `diskutil info -plist` command. Raw device numbers can change at
+boot and are not saved as Mac identity. A different volume or directory is
+refused even if its marker and project bytes were copied; there is no identity
+refresh, marker fallback or automatic repair. APFS UUIDs are not cryptographic
+proof against a privileged clone/spoof of a volume.
+
+A newly created source is bound and saved to the existing pending intent before
+marker/handle/export work. An interrupted setup needs a fresh displayed plan and
+consent; a complete binding is reused, never reselected from the current path.
+Status does not repair identity, and detach does not require a live source.
+
+No supported released device-only Mac predecessor has been established for this
+unqualified package. Known owned test setups using that old binding must be
+**drained/detached with their matching old CLI before replacing it**, then freshly
+created on the preserved source/marker/storage UUID. The current CLI refuses an
+old or incomplete Apple binding; never hand-edit it or infer its original UUID
+from today's path. Evidence of an actual supported retained installation requires
+a concrete transition assessment, not this disposable-fixture procedure.
+
 ## Developer checks (not live-resource authorization)
 
 From this directory, with the pinned CI Go toolchain:
@@ -153,6 +176,11 @@ go test -race ./...
 go vet ./...
 go build ./cmd/autobyteus-nfs
 ```
+
+Source identity tests cover strict plist/variant parsing, descriptor correlation
+and closure, bind-before-failure, bound retry/refusal and unchanged Linux identity
+shape. One Mac test reads installed diskutil metadata for its own directory; this
+is not whole-host reboot or mounted NFS qualification.
 
 Unit tests use temporary owned files and fake Docker HTTP responses; they do not
 mount/export/recreate real nodes. Cross-compilation and `version` smoke do not

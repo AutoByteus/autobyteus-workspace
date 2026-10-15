@@ -41,7 +41,10 @@ func hostedConfigFixture(t *testing.T, engine, content string, pending, selected
 	s := Service{Store: config.Store{Directory: private, Owner: uint32(os.Getuid())}, Public: config.Store{Directory: public, Owner: uint32(os.Getuid()), Public: true}, Runner: runner, Docker: &docker.Client{}}
 	var h *config.HostedFilesystem
 	if engine != "" {
-		h = &config.HostedFilesystem{InstallationID: id, StorageID: id, Source: filepath.Join(root, "source"), Backend: engine, DataUID: 1000, DataGID: 1000, Allowlist: []string{"192.168.64.0/24"}}
+		h = &config.HostedFilesystem{InstallationID: id, StorageID: id, Source: filepath.Join(root, "source"), Identity: config.Identity{Device: 1, Inode: 2}, Backend: engine, DataUID: 1000, DataGID: 1000, Allowlist: []string{"192.168.64.0/24"}}
+		if engine == "apple" {
+			h.Identity = config.Identity{VolumeUUID: id, Inode: 2}
+		}
 	}
 	records := map[string]any{"attachment.json": a}
 	if h != nil {

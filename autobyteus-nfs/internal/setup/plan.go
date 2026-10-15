@@ -53,19 +53,14 @@ func (s *Service) Plan(req Request) (Plan, error) {
 		if err = platform.ValidateSourcePath(req.Source, c.MountRoot, s.User.Home); err != nil {
 			return p, err
 		}
-		id, err := platform.SourceIdentity(req.Source)
+		id, err := platform.SourceIdentity(s.Runner, req.Source)
 		if os.IsNotExist(err) {
 			p.NewSource = true
 			parent := filepath.Dir(req.Source)
-			if _, err = platform.SourceIdentity(parent); err != nil {
+			if _, err = platform.SourceIdentity(s.Runner, parent); err != nil {
 				return p, fmt.Errorf("new source requires an existing canonical parent: %w", err)
 			}
-			if err = platform.QualifyFilesystem(parent); err != nil {
-				return p, err
-			}
 		} else if err != nil {
-			return p, err
-		} else if err = platform.QualifyFilesystem(req.Source); err != nil {
 			return p, err
 		}
 		storageID, err := config.NewID()
@@ -100,7 +95,7 @@ func (s *Service) Plan(req Request) (Plan, error) {
 			return p, err
 		}
 		p.Hosted = &config.HostedFilesystem{InstallationID: installation, StorageID: storageID, Source: req.Source, Identity: id, Backend: selected, DataUID: s.User.UID, DataGID: s.User.GID, Allowlist: allow, EngineImage: s.Release.EngineImage}
-		if err = p.Hosted.Validate(); err != nil {
+		if err = validateSourceIntent(p); err != nil {
 			return p, err
 		}
 		if selected == "apple" {

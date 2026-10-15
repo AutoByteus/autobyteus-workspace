@@ -19,15 +19,30 @@ func (s *Service) PendingPlan() (Plan, error) {
 	if err := p.Attachment.Validate(); err != nil {
 		return p, err
 	}
+	if err := validateSourceIntent(p); err != nil {
+		return p, err
+	}
 	if p.Hosted != nil {
-		if err := p.Hosted.Validate(); err != nil {
-			return p, err
-		}
-		if p.NewSource {
-			id, err := platform.SourceIdentity(p.Hosted.Source)
+		if p.Hosted.Identity != (config.Identity{}) {
+			if err := platform.CheckSource(s.Runner, *p.Hosted); err != nil {
+				return p, err
+			}
+			p.NewSource = false
+		} else {
+			// Zero is an unbound intent, never permission to rebind hosted state.
+			if err := platform.ValidateSourcePath(p.Hosted.Source, p.Attachment.MountRoot, s.User.Home); err != nil {
+				return p, err
+			}
+			if err := s.checkUnboundSource(); err != nil {
+				return p, err
+			}
+			id, err := platform.SourceIdentity(s.Runner, p.Hosted.Source)
 			if err == nil {
 				p.Hosted.Identity = id
 				p.NewSource = false
+				if err := p.Hosted.ValidateBound(); err != nil {
+					return p, err
+				}
 			} else if !os.IsNotExist(err) {
 				return p, err
 			}
@@ -107,3 +122,27 @@ func (s *Service) SaveIntent(p Plan) error {
 	return nil
 }
 func alreadyAttached(n docker.Snapshot, a config.NodeAttachment) bool { return n.Attached(a) }
+
+// Only a genuinely new, completely zero binding may await source creation.
+func validateSourceIntent(p Plan) error {
+	if p.Hosted == nil {
+		return nil
+	}
+	if err := p.Hosted.Validate(); err != nil {
+		return err
+	}
+	if p.NewSource && p.Hosted.Identity == (config.Identity{}) {
+		return nil
+	}
+	return p.Hosted.ValidateBound()
+}
+
+func (s *Service) checkUnboundSource() error {
+	var hosted config.HostedFilesystem
+	if err := s.Store.Read("hosted-filesystem.json", &hosted); err == nil {
+		return errors.New("unbound pending source conflicts with hosted state")
+	} else if !os.IsNotExist(err) {
+		return err
+	}
+	return nil
+}

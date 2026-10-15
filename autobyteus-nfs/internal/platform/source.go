@@ -32,7 +32,9 @@ func ValidateSourcePath(source, mountRoot, home string) error {
 	}
 	return nil
 }
-func SourceIdentity(source string) (config.Identity, error) {
+
+// sourcePath observes the canonical real directory; raw device is capture-local on Mac.
+func sourcePath(source string) (config.Identity, error) {
 	info, err := os.Lstat(source)
 	if err != nil {
 		return config.Identity{}, err
@@ -50,13 +52,16 @@ func SourceIdentity(source string) (config.Identity, error) {
 	st := info.Sys().(*syscall.Stat_t)
 	return config.Identity{Device: uint64(st.Dev), Inode: st.Ino}, nil
 }
-func CheckSource(h config.HostedFilesystem) error {
-	id, err := SourceIdentity(h.Source)
+func CheckSource(r Runner, h config.HostedFilesystem) error {
+	if err := h.ValidateBound(); err != nil {
+		return err
+	}
+	id, err := SourceIdentity(r, h.Source)
 	if err != nil {
 		return err
 	}
 	if id != h.Identity {
-		return errors.New("selected source device/inode changed; no replacement will be exported")
+		return errors.New("selected source volume/directory identity changed; no replacement will be exported")
 	}
-	return QualifyFilesystem(h.Source)
+	return nil
 }
