@@ -1,7 +1,7 @@
 {
   "revision": "CRR-017",
   "outcome": "Pass",
-  "entryPoint": "Implementation Review — DR001/IR011 targeted test-lifecycle integration recovery",
+  "entryPoint": "Implementation Review \u2014 DR001/IR011 targeted test-lifecycle integration recovery",
   "rules": {
     "handoffs": [
       {
@@ -47,5 +47,12 @@
     "recipient_address": "/software_engineering_team/api_e2e_engineer"
   },
   "reason": "Completed test/fixture lifecycle Local Fix is more specific than generic source Pass. Send only API/E2E for affected integrated repository validation; no removed application gate or VM campaign.",
-  "delivery": "Pending"
+  "delivery": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /software_engineering_team/api_e2e_engineer.",
+    "target_agent_run_id": "api_e2e_engineer_4b3516b0eb7d448586471bee29383f50"
+  },
+  "referenceFileCount": 18,
+  "reviewCommit": "8082eb2478016b9a1ac0402a937846c5906e54df"
 }
