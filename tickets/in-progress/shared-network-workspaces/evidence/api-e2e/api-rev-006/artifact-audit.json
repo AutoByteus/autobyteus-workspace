@@ -3051,6 +3051,7 @@
   ],
   "newEvidencePaths": [
     "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-006/artifact-audit.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-006/artifact-whitespace.json",
     "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-006/audit-artifacts.py",
     "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-006/blockers.json",
     "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-006/build-console.log",

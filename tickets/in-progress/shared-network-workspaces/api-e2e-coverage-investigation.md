@@ -1,10 +1,12 @@
 # API/E2E Coverage Investigation — Shared Network Workspaces
 
 ## Investigation meta and authority
-**Previous complete: API-REV-005 complete, Fail/57.14%, CRR011 / IR008 / ApprovedSR018 / ReadySR022 / ARCH006. API-F004 independently resolved at executed Linux native/Docker+native/managedHTTP scope; new API-F005 ordinary Mac reboot changes source device number, rejecting same source.** Current [report](api-e2e-execution-coverage-report.md), [ledger](api-e2e-test-case-ledger.md), [revision](api-e2e-revision-record.md), [E5 cumulative package](evidence/api-e2e/api-rev-005/package-index.json) govern. Earlier decisions/results remain historical.
+**Latest complete: API-REV-006 Blocked/67.86%, broader Blocked; IR009 / CRR013 / ApprovedSR018 / ReadySR023 / ARCH007. API-F005 scoped nativeMac resolution proven by ordinary boots and real replacement controls; external physical/LAN/native-profile dependencies remain. Current [report](api-e2e-execution-coverage-report.md), [ledger](api-e2e-test-case-ledger.md), [revision](api-e2e-revision-record.md), and [E6 cumulative package](evidence/api-e2e/api-rev-006/package-index.json) govern. Round6 plan, corrections and final decision are below.**
+
+**Previous complete: API-REV-005 complete, Fail/57.14%, CRR011 / IR008 / ApprovedSR018 / ReadySR022 / ARCH006. API-F004 independently resolved at executed Linux native/Docker+native/managedHTTP scope; new API-F005 ordinary Mac reboot changes source device number, rejecting same source.** Historical [report](api-e2e-execution-coverage-report.md), [ledger](api-e2e-test-case-ledger.md), [revision](api-e2e-revision-record.md), [E5 cumulative package](evidence/api-e2e/api-rev-005/package-index.json) govern. Earlier decisions/results remain historical.
 
 Historical baseline: Round1 API-REV-001 Fail57.14%, triggered by CRR002 / IR003; no earlier API result.
-Assigned worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces. HEAD 3b7dd9a2895f4b8fedc5e1bcdd00c913d97fae2f. Task project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63.
+Assigned worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces. Historical initial HEAD 3b7dd9a2895f4b8fedc5e1bcdd00c913d97fae2f. Task project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63.
 Complete cumulative authority/supplement index: [package-index.json](evidence/api-e2e/api-rev-001/package-index.json). Requirements Approved SR018, Ready SR019 design, ARCH-REV003 and CRR002 Pass. The IR003 handoff's CRR001 Fail is historical trigger wording, not the current source verdict. IR001/IMP-D001 and all feasibility/failed rounds remain retained at their original scope. DR: N/A—not yet performed. No Product-owned supplement applies.
 
 ## Routing classification
